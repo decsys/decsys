@@ -1,0 +1,19 @@
+{
+  "name": "rating-scales",
+  "version": "0.4.0",
+  "description": "Reusable React Components for Rating Scales as used by the DECSYS Project",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/decsys/rating-scales.git"
+  },
+  "author": "Jonathan Couldridge <jon@jon.gg>",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/decsys/rating-scales/issues"
+  },
+  "homepage": "https://github.com/decsys/rating-scales#readme"
+}
