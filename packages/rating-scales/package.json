@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "lib": "babel src -d lib --no-comments --minified --delete-dir-on-start",
-    "dist:dev": "webpack --env.NODE_ENV=development",
+    "dist": "webpack --env.NODE_ENV=development",
     "dist:prod": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "precommit": "pretty-quick --staged"
