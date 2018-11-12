@@ -4,10 +4,23 @@
   "description": "Reusable React Components for Rating Scales as used by the DECSYS Project",
   "main": "lib/index.js",
   "scripts": {
+    "lib": "babel src -d lib --no-comments --minified --delete-dir-on-start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "eslintConfig": {
-    "extends": ["@universityofnottingham", "plugin:react/recommended"]
+    "extends": [
+      "@universityofnottingham",
+      "plugin:react/recommended"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ]
   },
   "repository": {
     "type": "git",
@@ -20,6 +33,11 @@
   },
   "homepage": "https://github.com/decsys/rating-scales#readme",
   "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.1.5",
+    "@babel/preset-react": "^7.0.0",
     "@universityofnottingham/eslint-config": "^1.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
