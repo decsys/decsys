@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf dist",
-    "lib": "babel src -d lib --no-comments --minified --delete-dir-on-start",
+    "lint": "eslint src/**/*.js",
+    "lib": "npm run lint && babel src -d lib --no-comments --minified --delete-dir-on-start",
     "dist": "webpack --env.NODE_ENV=development",
     "dist:prod": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
