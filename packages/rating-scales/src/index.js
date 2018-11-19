@@ -1,4 +1,4 @@
-// Test comments
+import LikertScale from "./likert/Scale";
+import EllipseScale from "./ellipse/Scale";
 
-export const Test = () =>
-  console.log("hello, world");
+export { LikertScale, EllipseScale };

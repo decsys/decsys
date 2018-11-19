@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title>React Likert</title>
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <div id="likert"></div>
+    <div id="results"></div>
+
+    <script src="../node_modules/react/umd/react.development.js"></script>
+    <script src="../node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="../node_modules/styled-components/dist/styled-components.js"></script>
+    <script src="../node_modules/@babel/standalone/babel.min.js"></script>
+
+    <script src="../dist/decsys.rating-scales.js"></script>
+
+    <script type="text/babel">
+      ReactDOM.render(
+        <DECSYS.LikertScale
+          radios={[["1", "Low"], ["2"], ["3"], ["4"], ["5", "High"]]}
+          radioOptions={{
+            labelAlignment: "above",
+            initialIndex: 0,
+            labelColor: "green"
+          }}
+          question="How much do you like this question?"
+          questionOptions={{
+            xAlign: "center",
+            textColor: "orange"
+          }}
+        />,
+        document.querySelector("#likert")
+      );
+    </script>
+    <script>
+      document.addEventListener("LikertSelected", e => {
+        console.log("handled LikertSelected");
+        document.querySelector("#results").innerHTML = `<dl>
+                                <dt>Value</dt><dd>${e.detail.value}</dd>
+                                <dt>Index</dt><dd>${e.detail.index}</dd>
+                            </dl>`;
+      });
+    </script>
+  </body>
+</html>

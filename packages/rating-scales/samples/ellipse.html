@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <title>React Ellipse</title>
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <div id="ellipse"></div>
+    <div id="results"></div>
+
+    <script src="../node_modules/react/umd/react.development.js"></script>
+    <script src="../node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="../node_modules/styled-components/dist/styled-components.js"></script>
+    <script src="../node_modules/@babel/standalone/babel.min.js"></script>
+
+    <script src="../dist/decsys.rating-scales.js"></script>
+
+    <script type="text/babel">
+      ReactDOM.render(
+        <DECSYS.EllipseScale
+          barOptions={{
+            minValue: 1,
+            maxValue: 10,
+            thickness: "1px"
+          }}
+          labels={{
+            min: "Easy",
+            mid: "Ok",
+            max: "Hard"
+          }}
+          labelOptions={{
+            yAlign: "above"
+          }}
+          question="How?"
+          questionOptions={{
+            xAlign: "center"
+          }}
+          minRangeValue={4.5}
+          maxRangeValue={10}
+          rangeMarkerOptions={{
+            markerColor: "blue",
+            length: "100px",
+            thickness: "1px"
+          }}
+          frameHeight="300px"
+          penOptions={{
+            color: "red",
+            thickness: 1
+          }}
+        />,
+        document.querySelector("#ellipse")
+      );
+    </script>
+    <script>
+      document.addEventListener("EllipseCompleted", e => {
+        document.querySelector("#results").innerHTML = `<dl>
+                                                        <dt>Min</dt><dd>${
+                                                          e.detail.minRangeValue
+                                                        }</dd>
+                                                        <dt>Max</dt><dd>${
+                                                          e.detail.maxRangeValue
+                                                        }</dd>
+                                                    </dl>`;
+      });
+    </script>
+  </body>
+</html>
