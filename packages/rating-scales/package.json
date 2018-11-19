@@ -7,6 +7,9 @@
     "dist",
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint src/**/*.js",
