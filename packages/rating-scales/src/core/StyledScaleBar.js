@@ -14,8 +14,6 @@ export const ClassName = "js--scalebar";
 const StyledScaleBar = styled.div.attrs({
   className: ClassName
 })`
-  display: flex;
-  justify-content: space-between;
   margin-left: ${props => props.leftMargin};
   margin-right: ${props => props.rightMargin};
   position: relative;

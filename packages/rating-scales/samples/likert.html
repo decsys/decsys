@@ -36,10 +36,11 @@
     <script>
       document.addEventListener("LikertSelected", e => {
         console.log("handled LikertSelected");
-        document.querySelector("#results").innerHTML = `<dl>
-                                <dt>Value</dt><dd>${e.detail.value}</dd>
-                                <dt>Index</dt><dd>${e.detail.index}</dd>
-                            </dl>`;
+        document.querySelector("#results").innerHTML = `
+                <dl>
+                  <dt>Value</dt><dd>${e.detail.value}</dd>
+                  <dt>Index</dt><dd>${e.detail.index}</dd>
+                </dl>`;
       });
     </script>
   </body>

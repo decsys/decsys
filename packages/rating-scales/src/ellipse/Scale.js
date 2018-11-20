@@ -8,7 +8,9 @@ import EllipseCanvas, * as Canvas from "./Canvas";
 import Pen from "./pen-line";
 import Frame from "../core/StyledFrame";
 import Question from "../core/StyledQuestion";
+import FlexContainer from "../core/StyledBarContainer";
 import UnitValue from "unit-value";
+import ScaleMarkerSet from "./ScaleMarkerSet";
 
 // private static helpers
 
@@ -124,6 +126,16 @@ export default class EllipseScale extends React.Component {
 
     /** Options for the Range Markers appearance */
     rangeMarkerOptions: PropTypes.shape({
+      /** A valid CSS Color value for the marker */
+      markerColor: PropTypes.string,
+      /** A valid CSS Dimension value for the length of the marker */
+      length: PropTypes.string,
+      /** A valid CSS Dimension value for the thickness of the marker */
+      thickness: PropTypes.string
+    }),
+
+    /** Options for the Scale Markers */
+    scaleMarkerOptions: PropTypes.shape({
       /** A valid CSS Color value for the marker */
       markerColor: PropTypes.string,
       /** A valid CSS Dimension value for the length of the marker */
@@ -265,16 +277,26 @@ export default class EllipseScale extends React.Component {
     // pre-calculate these so they can apply to both markers
     const rangeMarkerProps = {
       markerColor: this.props.rangeMarkerOptions.markerColor,
-      markerThickness:
+      thickness:
         this.props.rangeMarkerOptions.thickness != null
           ? this.props.rangeMarkerOptions.thickness
           : this.props.barOptions.thickness,
 
-      markerLength:
+      length:
         this.props.rangeMarkerOptions.length != null
           ? this.props.rangeMarkerOptions.length
           : UnitValue.multiply(this.props.barOptions.thickness, 1.5).toString()
     };
+
+    // adjust scale marker defaults if necessary
+    this.props.scaleMarkerOptions.thickness =
+      this.props.scaleMarkerOptions.thickness != null
+        ? this.props.scaleMarkerOptions.thickness
+        : this.props.barOptions.thickness;
+    this.props.scaleMarkerOptions.length =
+      this.props.scaleMarkerOptions.length != null
+        ? this.props.scaleMarkerOptions.length
+        : UnitValue.multiply(this.props.barOptions.thickness, 8).toString();
 
     return [
       <Frame key="EllipseFrame" frameHeight={this.props.frameHeight}>
@@ -282,7 +304,10 @@ export default class EllipseScale extends React.Component {
           {this.props.question}
         </Question>
         <RangeBar ref={e => (this.rangeBar = e)} {...this.props.barOptions}>
-          {labels}
+          <FlexContainer>
+            <ScaleMarkerSet {...this.props.scaleMarkerOptions} />
+          </FlexContainer>
+          <FlexContainer>{labels}</FlexContainer>
           <RangeMarker {...rangeMarkerProps} ref={e => (this.minMarker = e)} />
           <RangeMarker {...rangeMarkerProps} ref={e => (this.maxMarker = e)} />
         </RangeBar>

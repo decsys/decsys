@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Frame from "../core/StyledFrame";
 import ScaleBar from "../core/StyledScaleBar";
 import Question from "../core/StyledQuestion";
+import FlexContainer from "../core/StyledBarContainer";
 import Radio from "./Radio";
 
 /** A Likert Scale */
@@ -99,7 +100,9 @@ export default class LikertScale extends React.Component {
         <Question {...this.props.questionOptions}>
           {this.props.question}
         </Question>
-        <ScaleBar {...this.props.barOptions}>{radios}</ScaleBar>
+        <ScaleBar {...this.props.barOptions}>
+          <FlexContainer>{radios}</FlexContainer>
+        </ScaleBar>
       </Frame>
     );
   }

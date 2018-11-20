@@ -1,21 +1,14 @@
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import ScaleMarker from "./ScaleMarker";
 
 /**
  * A marker for the RangeBar to indicate
  * the range of an ellipse drawn against the bar
  */
-const RangeMarker = styled.div`
-  position: absolute;
+const RangeMarker = styled(ScaleMarker)`
   &::before {
-    border-left: ${props =>
-      `${props.markerThickness} solid ${props.markerColor}`};
-    position: absolute;
-    min-height: ${props => props.markerLength};
-    top: ${props => `calc(${props.markerLength} / -2)`};
-    left: ${props => `calc(${props.markerThickness} / -2)`};
-    z-index: 2;
-    content: "";
+    z-index: 3;
   }
 `;
 
