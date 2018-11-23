@@ -33,8 +33,14 @@ export default class EllipseScale extends React.Component {
   }
 
   static propTypes = {
-    /** An array of elements to consider for calculating canvas height */
-    heightElements: PropTypes.arrayOf(PropTypes.element),
+    /**
+     * An array of css selectors for elements
+     * to be used for calculating canvas height
+     */
+    heightElements: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.string)
+    ]),
 
     /** A valid CSS Dimension value for the height of the component's frame */
     frameHeight: PropTypes.string,
