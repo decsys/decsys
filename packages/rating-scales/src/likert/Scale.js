@@ -70,6 +70,8 @@ export default class LikertScale extends React.Component {
   };
 
   static defaultProps = {
+    barOptions: {},
+    questionOptions: {},
     radioOptions: {
       labelAlignment: "below"
     },

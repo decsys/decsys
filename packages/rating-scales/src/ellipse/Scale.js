@@ -145,6 +145,18 @@ export default class EllipseScale extends React.Component {
     })
   };
 
+  static defaultProps = {
+    // default all shapes to empty objects
+    // so we don't have to null check before accessing children
+    penOptions: {},
+    questionOptions: {},
+    barOptions: {},
+    labelOptions: {},
+    labels: {},
+    rangeMarkerOptions: {},
+    scaleMarkerOptions: {}
+  };
+
   componentDidMount() {
     // store these to avoid selecting them everytime
     this.mainElement = document.querySelector("body");
