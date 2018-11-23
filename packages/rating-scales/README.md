@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/decsys/rating-scales.svg?branch=master)](https://travis-ci.org/decsys/rating-scales)
+
 # DECSYS Rating Scales
 
 This package contains re-usable [React] Components used by the DECSYS project for native HTML/JS [Rating Scales].
@@ -60,15 +62,16 @@ Full Component reference documentation can be built by running `npm run docs` in
 
 # Building
 
-The build workflow consists of several simple npm scripts.
+The build workflow consists of several npm scripts.
+
+There are a number of sub-tasks composed into higher-level tasks you're more likely to want to run:
 
 - `npm run lint` will run eslint against the source.
-- `npm run lib` will clear `lib/` directory and (re)build the node.js library version.
+- `npm run lib` will lint and, if it passes, clear the `lib/` directory and build the node.js library version.
   - This just transpiles the ES2018+ source into something node can run today.
-  - This is run in CI to provide the `lib/` version included in the npm package.
-- `npm run dist` will build a development version for the browser.
-- `npm run dist:prod` will build a production version for the browser.
-  - This is run in CI to provide the `dist/` version included in the npm package.
+- `npm run dist` will lint and, if it passes, clear the `dist/` directory and build a development version for the browser.
+- `npm run prod` is used in CI to lint and, if it passes, build both the `lib` and `dist` outputs for production.
+- `npm run watch [lib|dist]` will run either the `lib` or `dist` script described above and then watch for changes in the `src/` directory.
 
 # Licensing
 

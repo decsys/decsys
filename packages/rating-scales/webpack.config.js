@@ -1,5 +1,6 @@
 const pkg = require("./package.json");
-const banner = require("webpack").BannerPlugin;
+const { BannerPlugin } = require("webpack");
+const CleanPlugin = require("clean-webpack-plugin");
 
 module.exports = env => {
   const prod = ((env && env.NODE_ENV) || "production") === "production";
@@ -8,12 +9,6 @@ module.exports = env => {
     entry: "./src/index.js",
     module: {
       rules: [
-        {
-          enforce: "pre",
-          test: /\.js$/,
-          exclude: /node_modules/,
-          loader: "eslint-loader"
-        },
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
@@ -35,7 +30,8 @@ module.exports = env => {
       library: "DECSYS"
     },
     plugins: [
-      new banner({
+      new CleanPlugin(["dist"]),
+      new BannerPlugin({
         banner: `${pkg.name} ${pkg.version} | ${new Date()}`,
         entryOnly: true
       })
