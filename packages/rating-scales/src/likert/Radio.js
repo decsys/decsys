@@ -36,7 +36,6 @@ RadioLabel.propTypes = {
  * It's intended for use as a secondary label, further from the scale bar.
  */
 const SecondaryRadioLabel = styled(RadioLabel)`
-  font-weight: bold;
   margin-top: ${props =>
     props.above ? `calc(${labelDistance} * -2)` : `calc(${labelDistance} * 2)`};
 `;
