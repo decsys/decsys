@@ -1,20 +1,12 @@
 import React, { Component } from "react";
-import { Route, Link } from "react-router-dom";
-import { Button } from "@smooth-ui/core-sc";
+import { Route } from "react-router-dom";
+import AppBar from "./partials/AppBar";
 
 class App extends Component {
   render() {
     return (
       <>
-        <Button as={Link} to="/">
-          Home
-        </Button>
-        <Button as={Link} to="/1">
-          Page 1
-        </Button>
-        <Button as={Link} to="/2">
-          Page 1
-        </Button>
+        <AppBar />
 
         <Route path="/" exact render={() => <p>Hello, World!</p>} />
         <Route path="/1" render={() => <p>Page 1</p>} />
