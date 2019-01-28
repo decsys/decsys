@@ -1,6 +1,21 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import { Route, Redirect, Switch } from "react-router-dom";
+import { Grid } from "@smooth-ui/core-sc";
 import AppBar from "./partials/AppBar";
+import Admin from "./partials/Admin";
+import Survey from "./partials/Survey";
+
+const IndexRouter = props => {
+  // TODO: Add first time check for creating an admin account?
+
+  // TODO: One day there will be a dashboard at `/`
+
+  return window.location.hostname === "localhost" ? (
+    <Redirect to="/admin" />
+  ) : (
+    <Survey />
+  );
+};
 
 class App extends Component {
   render() {
@@ -8,9 +23,14 @@ class App extends Component {
       <>
         <AppBar />
 
-        <Route path="/" exact render={() => <p>Hello, World!</p>} />
-        <Route path="/1" render={() => <p>Page 1</p>} />
-        <Route path="/2" render={() => <p>Page 2</p>} />
+        <Grid>
+          <Switch>
+            <Route path="/" exact component={IndexRouter} />
+            <Route path="/admin" component={Admin} />
+
+            <Route render={() => <h1>404</h1>} />
+          </Switch>
+        </Grid>
       </>
     );
   }
