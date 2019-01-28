@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { Normalize, ThemeProvider, Button } from "@smooth-ui/core-sc";
+import { BrowserRouter as Router } from "react-router-dom";
+import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import theme from "./themes";
 import * as serviceWorker from "./serviceWorker";
 
