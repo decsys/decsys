@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { Grid } from "@smooth-ui/core-sc";
 import AppBar from "./partials/AppBar";
-import Admin from "./partials/Admin";
+import Admin from "./partials/Admin/Admin";
 import Survey from "./partials/Survey";
 
 const IndexRouter = props => {

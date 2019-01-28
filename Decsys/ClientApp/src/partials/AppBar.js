@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import styled, { withTheme } from "styled-components";
 import { Link } from "react-router-dom";
 import { Box, Typography, Grid, Row } from "@smooth-ui/core-sc";
 
-const AppLink = styled(Typography).attrs({
+const AppBarLink = styled(Typography).attrs({
   uiAs: Link,
   p: "0.5em"
 })`
@@ -14,33 +14,25 @@ const AppLink = styled(Typography).attrs({
   }
 `;
 
-const AppBrand = styled(AppLink).attrs({
+const AppBarBrand = styled(AppBarLink).attrs({
   variant: "h4",
   display: "inline",
   mb: ".1rem",
   to: "/"
 })``;
 
-class AppBar extends Component {
-  render() {
-    return (
-      <Box
-        display="flex"
-        backgroundColor={this.props.theme.gray900}
-        alignItems="center"
-      >
-        <Grid>
-          <Row>
-            <AppBrand>DECSYS</AppBrand>
+const AppBar = props => (
+  <Box display="flex" backgroundColor={props.theme.gray900} alignItems="center">
+    <Grid>
+      <Row>
+        <AppBarBrand>DECSYS</AppBarBrand>
 
-            <Box ml="auto" mr="0.5em" display="flex" alignItems="center">
-              <AppLink to="/about">About</AppLink>
-            </Box>
-          </Row>
-        </Grid>
-      </Box>
-    );
-  }
-}
+        <Box uiAs="nav" ml="auto" mr="0.5em" display="flex" alignItems="center">
+          <AppBarLink to="/about">About</AppBarLink>
+        </Box>
+      </Row>
+    </Grid>
+  </Box>
+);
 
 export default withTheme(AppBar);
