@@ -65,7 +65,7 @@ class SurveyCardList extends Component {
   render() {
     return (
       <>
-        <Box display="flex" alignItems="center">
+        <Box display="flex" alignItems="center" mb="1em">
           Sort by:
           <SortButton {...this.state.sort} sortprop="active" sorter={this.sort}>
             Active

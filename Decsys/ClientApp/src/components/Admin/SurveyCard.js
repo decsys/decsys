@@ -1,7 +1,14 @@
 import { withTheme } from "styled-components";
 import React from "react";
 import { Button, Typography, Box } from "@smooth-ui/core-sc";
-import { CaretDown, Check, Times } from "styled-icons/fa-solid";
+import {
+  CaretDown,
+  Check,
+  Times,
+  Rocket,
+  Stop,
+  Play
+} from "styled-icons/fa-solid";
 
 const SurveyCard = props => (
   <Box
@@ -18,6 +25,7 @@ const SurveyCard = props => (
       p=".5em"
       mr="1em"
       backgroundColor={props.active ? "success" : "gray700"}
+      title={props.active ? "Active" : "Inactive"}
     >
       {props.active ? (
         <Check size="1em" color="white" />
@@ -30,20 +38,37 @@ const SurveyCard = props => (
       <Typography variant="h5" mb={0}>
         {props.name}
       </Typography>
-      <Box ml="auto">
+      <Box display="flex" alignItems="center" ml="auto">
         <Box
           backgroundColor="info"
           display="inline-block"
           px=".5em"
           borderRadius="8px"
           color="white"
+          mr="1em"
         >
           {props.runCount} runs
         </Box>
-        <Button ml=".5em" variant="success">
-          Launch
+
+        <Button
+          display="inline-flex"
+          alignItems="center"
+          ml=".5em"
+          variant={props.active ? "danger" : "success"}
+          width="100px"
+        >
+          {props.active ? <Stop size="1em" /> : <Play size="1em" />}
+          <Box width="100%">{props.active ? "Stop" : "Launch"}</Box>
         </Button>
-        <Button ml=".5em" variant="secondary">
+
+        <Button
+          display="inline-flex"
+          justifyContent="space-evenly"
+          alignItems="center"
+          ml=".5em"
+          variant="secondary"
+          width="100px"
+        >
           {/* Dropdown Button component */}
           Manage <CaretDown size="1em" />
         </Button>
