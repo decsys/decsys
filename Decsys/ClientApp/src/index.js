@@ -6,6 +6,8 @@ import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import theme from "./themes";
 import * as serviceWorker from "./serviceWorker";
 
+import "react-tabulator/lib/css/bootstrap/tabulator_bootstrap4.min.css";
+
 ReactDOM.render(
   <>
     <Normalize />

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { Grid } from "@smooth-ui/core-sc";
-import AppBar from "./partials/AppBar";
-import Admin from "./partials/Admin/Admin";
-import Survey from "./partials/Survey";
+import AppBar from "./components/AppBar";
+import Admin from "./components/Admin/Admin";
+import Survey from "./components/Survey";
 
 const IndexRouter = props => {
   // TODO: Add first time check for creating an admin account?
