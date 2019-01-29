@@ -90,7 +90,9 @@ class SurveyCardList extends Component {
 
         {this.state.surveys
           .filter(({ name }) =>
-            this.state.filter != null ? name.includes(this.state.filter) : true
+            this.state.filter != null
+              ? new RegExp(this.state.filter, "i").test(name)
+              : true
           )
           .map((survey, i) => (
             <Row key={i}>
