@@ -1,5 +1,5 @@
-import React from "react";
-import { withTheme } from "styled-components";
+import React, { Component } from "react";
+import styled, { withTheme } from "styled-components";
 import { Grid, Button, Typography, Row, Box, Alert } from "@smooth-ui/core-sc";
 import {
   PlusCircle,
@@ -9,10 +9,10 @@ import {
   Times
 } from "styled-icons/fa-solid";
 
-const data = [
-  { id: 1, name: "Jon Survey", runCount: 0, active: false },
-  { id: 2, name: "Lol Survey", runCount: 0, active: true }
-];
+const SortButton = styled(Button).attrs({
+  backgroundColor: "none",
+  fontWeight: props => (props.active ? "bold" : "normal")
+})``;
 
 const SurveyCard = withTheme(props => (
   <Box
@@ -63,17 +63,71 @@ const SurveyCard = withTheme(props => (
   </Box>
 ));
 
-const SurveyCardList = props => {
-  const cards = [];
-  for (let i = 0; i < props.surveys.length; i++) {
-    cards.push(
-      <Row key={i}>
-        <SurveyCard {...props.surveys[i]} />
-      </Row>
+class SurveyCardList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      surveys: [
+        { id: 1, name: "Jon Survey", runCount: 0, active: false },
+        { id: 3, name: "Abc Survey", runCount: 0, active: true },
+        { id: 2, name: "Lol Survey", runCount: 0, active: true }
+      ],
+      sort: {
+        current: "active"
+      }
+    };
+  }
+
+  componentDidMount() {
+    this.sort("active");
+  }
+
+  sort = sortProp => {
+    this.setState(prev => {
+      const ascending =
+        prev.sort.current === sortProp
+          ? !prev.sort[sortProp] || false
+          : prev.sort[sortProp] || false;
+      prev.surveys.sort((a, b) =>
+        ascending
+          ? a[sortProp] > b[sortProp]
+            ? -1
+            : 1
+          : a[sortProp] < b[sortProp]
+          ? -1
+          : 1
+      );
+      return {
+        sort: { [sortProp]: ascending, current: sortProp },
+        surveys: prev.surveys
+      };
+    });
+  };
+
+  render() {
+    return (
+      <>
+        <SortButton
+          onClick={e => this.sort("name", e)}
+          active={this.state.sort.current === "name"}
+        >
+          Sort by Name
+        </SortButton>
+        <SortButton
+          onClick={e => this.sort("active", e)}
+          active={this.state.sort.current === "active"}
+        >
+          Sort by Active
+        </SortButton>
+        {this.state.surveys.map((survey, i) => (
+          <Row key={i}>
+            <SurveyCard {...survey} />
+          </Row>
+        ))}
+      </>
     );
   }
-  return <>{cards}</>;
-};
+}
 
 const SurveyList = props => (
   <>
@@ -92,7 +146,7 @@ const SurveyList = props => (
           and results to an external source.
         </Alert>
       </Row>
-      <SurveyCardList surveys={data} />
+      <SurveyCardList />
     </Grid>
   </>
 );
