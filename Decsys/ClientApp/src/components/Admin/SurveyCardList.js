@@ -58,6 +58,10 @@ class SurveyCardList extends Component {
     });
   };
 
+  filterChange = e => {
+    this.setState({ filter: e.target.value });
+  };
+
   render() {
     return (
       <>
@@ -76,14 +80,23 @@ class SurveyCardList extends Component {
           >
             Run Count
           </SortButton>
-          <Input size="sm" ml="auto" placeholder="Filter" />
+          <Input
+            size="sm"
+            ml="auto"
+            placeholder="Filter"
+            onChange={this.filterChange}
+          />
         </Box>
 
-        {this.state.surveys.map((survey, i) => (
-          <Row key={i}>
-            <SurveyCard {...survey} />
-          </Row>
-        ))}
+        {this.state.surveys
+          .filter(({ name }) =>
+            this.state.filter != null ? name.includes(this.state.filter) : true
+          )
+          .map((survey, i) => (
+            <Row key={i}>
+              <SurveyCard {...survey} />
+            </Row>
+          ))}
       </>
     );
   }
