@@ -24,11 +24,7 @@ class SurveyCardList extends Component {
         { id: 3, name: "Abc Survey", runCount: 10, active: true },
         { id: 2, name: "Lol Survey", runCount: 0, active: true }
       ],
-      sort: {
-        active: true,
-        name: false,
-        runCount: true
-      }
+      sort: { name: true }
     };
   }
 
@@ -38,7 +34,7 @@ class SurveyCardList extends Component {
 
   numberSort = sortProp =>
     this.sortBy(sortProp, ({ [sortProp]: a }, { [sortProp]: b }, asc) =>
-      asc ? b - a : a - b
+      asc ? a - b : b - a
     );
 
   stringSort = sortProp =>
@@ -62,9 +58,7 @@ class SurveyCardList extends Component {
     });
   };
 
-  filterChange = e => {
-    this.setState({ filter: e.target.value });
-  };
+  filterChange = e => this.setState({ filter: e.target.value });
 
   render() {
     return (
