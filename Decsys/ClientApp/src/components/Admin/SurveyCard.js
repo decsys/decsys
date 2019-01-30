@@ -60,6 +60,9 @@ const SurveyCard = props => (
           ml=".5em"
           variant={props.active ? "danger" : "success"}
           width="100px"
+          onClick={() =>
+            props.active ? props.closer(props.id) : props.launcher(props.id)
+          }
         >
           {props.active ? <TimesCircle size="1em" /> : <Rocket size="1em" />}
           <Box width="100%">{props.active ? "Close" : "Launch"}</Box>

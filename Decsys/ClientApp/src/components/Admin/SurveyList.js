@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Button, Typography, Row, Box, Alert } from "@smooth-ui/core-sc";
+import { Grid, Button, Typography, Row, Alert } from "@smooth-ui/core-sc";
 import { PlusCircle, InfoCircle } from "styled-icons/fa-solid";
 
 import SurveyCardList from "./SurveyCardList";

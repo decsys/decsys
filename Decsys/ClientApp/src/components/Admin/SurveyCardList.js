@@ -8,7 +8,7 @@ const SortButton = ({ sortby, current, sorter, children }) => (
   <Button
     variant="white"
     fontWeight={current.key === sortby ? "bold" : "normal"}
-    onClick={e => sorter(sortby, e)}
+    onClick={() => sorter(sortby)}
   >
     {children}{" "}
     {current[sortby] ? <CaretUp size="1em" /> : <CaretDown size="1em" />}
@@ -34,13 +34,56 @@ class SurveyCardList extends Component {
     this.state = {
       surveys: {
         1: { id: 1, name: "Jon Survey", runCount: 15, active: false },
-        2: { id: 3, name: "Abc Survey", runCount: 10, active: true },
-        3: { id: 2, name: "Lol Survey", runCount: 0, active: true }
+        3: { id: 3, name: "Abc Survey", runCount: 10, active: true },
+        2: { id: 2, name: "Lol Survey", runCount: 0, active: true }
       },
+
+      sortedList: [],
+      filteredList: [],
+
       sort: { key: "active", name: true }
     };
   }
 
+  componentDidMount = () => this.sortList();
+
+  /**
+   * Sorts the master survey list according to the current Sort state.
+   */
+  sortList = () =>
+    this.setState(({ surveys, sort }) => ({
+      sortedList: Object.keys(surveys)
+        .map(k => surveys[k])
+        .sort(this.getPropertySorter(sort.key))
+    }));
+
+  /**
+   * Filters the current Sorted List.
+   *
+   * If there is no Sorted List, there'll be no Filtered List contents.
+   */
+  filterList = () =>
+    this.setState(({ filter, sortedList }) => {
+      if (!filter) return; // catches filter === null, undefined, 0, "", false
+      return {
+        filteredList: sortedList.filter(({ name }) =>
+          new RegExp(filter, "i").test(name)
+        )
+      };
+    });
+
+  /**
+   * Returns the list of surveys to use in the view,
+   * according to the following priority list:
+   * - Filtered List
+   * - Sorted List
+   */
+  getViewList = () =>
+    !!this.state.filter ? this.state.filteredList : this.state.sortedList;
+
+  /**
+   * Gets the appropriate sort function for a given survey property
+   */
   getPropertySorter = key => {
     switch (key) {
       case "name":
@@ -52,6 +95,7 @@ class SurveyCardList extends Component {
     }
   };
 
+  /** Handle a change of sorting */
   sortChange = key => {
     this.setState(({ sort }) => {
       const ascending =
@@ -60,9 +104,30 @@ class SurveyCardList extends Component {
       sort[key] = ascending;
       return { sort };
     });
+    this.sortList(); // update the sort list based on the new state
+    this.filterList(); // if necessary, update the filter list based on the new sort list
   };
 
-  filterChange = e => this.setState({ filter: e.target.value });
+  /** Handle a change of filter */
+  filterChange = e => {
+    this.setState({ filter: e.target.value });
+    this.filterList(); // update the filter list based on the new state
+  };
+
+  /** Launch a run of a Survey */
+  launchSurvey = id =>
+    this.setState(({ surveys }) => {
+      surveys[id].active = true;
+      surveys[id].runCount++;
+      return { surveys };
+    });
+
+  /** Close a currently active Survey run */
+  closeSurvey = id =>
+    this.setState(({ surveys }) => {
+      surveys[id].active = false;
+      return { surveys };
+    });
 
   render() {
     return (
@@ -86,19 +151,15 @@ class SurveyCardList extends Component {
           />
         </Row>
 
-        {Object.keys(this.state.surveys)
-          .map(k => this.state.surveys[k])
-          .filter(({ name }) =>
-            this.state.filter != null
-              ? new RegExp(this.state.filter, "i").test(name)
-              : true
-          )
-          .sort(this.getPropertySorter(this.state.sort.key))
-          .map((survey, i) => (
-            <Row key={i}>
-              <SurveyCard {...survey} />
-            </Row>
-          ))}
+        {this.getViewList().map((survey, i) => (
+          <Row key={i}>
+            <SurveyCard
+              {...survey}
+              launcher={this.launchSurvey}
+              closer={this.closeSurvey}
+            />
+          </Row>
+        ))}
       </>
     );
   }
