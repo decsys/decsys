@@ -6,8 +6,7 @@ import {
   Check,
   Times,
   Rocket,
-  Stop,
-  Play
+  TimesCircle
 } from "styled-icons/fa-solid";
 
 const SurveyCard = props => (
@@ -38,6 +37,7 @@ const SurveyCard = props => (
       <Typography variant="h5" mb={0}>
         {props.name}
       </Typography>
+
       <Box display="flex" alignItems="center" ml="auto">
         <Box
           backgroundColor="info"
@@ -47,7 +47,11 @@ const SurveyCard = props => (
           color="white"
           mr="1em"
         >
-          {props.runCount} runs
+          {props.runCount}
+          <Box uiAs="span" display={{ xs: "none", md: "inline" }}>
+            {" "}
+            runs
+          </Box>
         </Box>
 
         <Button
@@ -57,8 +61,8 @@ const SurveyCard = props => (
           variant={props.active ? "danger" : "success"}
           width="100px"
         >
-          {props.active ? <Stop size="1em" /> : <Play size="1em" />}
-          <Box width="100%">{props.active ? "Stop" : "Launch"}</Box>
+          {props.active ? <TimesCircle size="1em" /> : <Rocket size="1em" />}
+          <Box width="100%">{props.active ? "Close" : "Launch"}</Box>
         </Button>
 
         <Button

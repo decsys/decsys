@@ -25,30 +25,36 @@ class SurveyCardList extends Component {
         { id: 2, name: "Lol Survey", runCount: 0, active: true }
       ],
       sort: {
-        current: "active"
+        active: true,
+        name: false,
+        runCount: true
       }
     };
   }
 
   componentDidMount() {
-    this.sort("active");
+    this.numberSort("active"); //initial sort
   }
 
-  sort = sortProp => {
+  numberSort = sortProp =>
+    this.sortBy(sortProp, (a, b, asc) =>
+      asc ? b[sortProp] - a[sortProp] : a[sortProp] - b[sortProp]
+    );
+
+  stringSort = sortProp =>
+    this.sortBy(sortProp, (a, b, asc) =>
+      asc
+        ? a[sortProp].localeCompare(b[sortProp])
+        : b[sortProp].localeCompare(a[sortProp])
+    );
+
+  sortBy = (sortProp, sorter) => {
     this.setState(prev => {
       const ascending =
         prev.sort.current === sortProp
           ? !prev.sort[sortProp] || false
           : prev.sort[sortProp] || false;
-      prev.surveys.sort((a, b) =>
-        ascending
-          ? a[sortProp] > b[sortProp]
-            ? -1
-            : 1
-          : a[sortProp] < b[sortProp]
-          ? -1
-          : 1
-      );
+      prev.surveys.sort((a, b) => sorter(a, b, ascending));
       prev.sort.current = sortProp;
       prev.sort[sortProp] = ascending;
       return {
@@ -66,17 +72,27 @@ class SurveyCardList extends Component {
     return (
       <>
         <Box display="flex" alignItems="center" mb="1em">
-          Sort by:
-          <SortButton {...this.state.sort} sortprop="active" sorter={this.sort}>
+          <Box uiAs="span" mr=".5em" display={{ xs: "none", md: "inline" }}>
+            Sort by:
+          </Box>
+          <SortButton
+            {...this.state.sort}
+            sortprop="active"
+            sorter={this.numberSort}
+          >
             Active
           </SortButton>
-          <SortButton {...this.state.sort} sortprop="name" sorter={this.sort}>
+          <SortButton
+            {...this.state.sort}
+            sortprop="name"
+            sorter={this.stringSort}
+          >
             Name
           </SortButton>
           <SortButton
             {...this.state.sort}
             sortprop="runCount"
-            sorter={this.sort}
+            sorter={this.numberSort}
           >
             Run Count
           </SortButton>
