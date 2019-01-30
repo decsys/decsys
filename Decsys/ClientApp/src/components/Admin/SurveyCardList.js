@@ -37,15 +37,13 @@ class SurveyCardList extends Component {
   }
 
   numberSort = sortProp =>
-    this.sortBy(sortProp, (a, b, asc) =>
-      asc ? b[sortProp] - a[sortProp] : a[sortProp] - b[sortProp]
+    this.sortBy(sortProp, ({ [sortProp]: a }, { [sortProp]: b }, asc) =>
+      asc ? b - a : a - b
     );
 
   stringSort = sortProp =>
-    this.sortBy(sortProp, (a, b, asc) =>
-      asc
-        ? a[sortProp].localeCompare(b[sortProp])
-        : b[sortProp].localeCompare(a[sortProp])
+    this.sortBy(sortProp, ({ [sortProp]: a }, { [sortProp]: b }, asc) =>
+      asc ? a.localeCompare(b) : b.localeCompare(a)
     );
 
   sortBy = (sortProp, sorter) => {
