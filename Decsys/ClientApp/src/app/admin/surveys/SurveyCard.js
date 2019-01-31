@@ -1,13 +1,44 @@
 import { withTheme } from "styled-components";
 import React from "react";
 import { Button, Typography, Box } from "@smooth-ui/core-sc";
-import {
-  CaretDown,
-  Check,
-  Times,
-  Rocket,
-  TimesCircle
-} from "styled-icons/fa-solid";
+import { CaretDown, Rocket, TimesCircle } from "styled-icons/fa-solid";
+import ActiveIndicator from "../../common/ActiveIndicator";
+
+const RunCountBadge = ({ count }) => (
+  <Box
+    backgroundColor="info"
+    display="inline-block"
+    px=".5em"
+    borderRadius="8px"
+    color="white"
+    mr="1em"
+  >
+    {count}
+    <Box uiAs="span" display={{ xs: "none", md: "inline" }}>
+      {" "}
+      runs
+    </Box>
+  </Box>
+);
+
+const ToggleSurveyActiveButton = ({
+  active,
+  closeHandler,
+  launchHandler,
+  id
+}) => (
+  <Button
+    display="inline-flex"
+    alignItems="center"
+    ml=".5em"
+    variant={active ? "danger" : "success"}
+    width="100px"
+    onClick={() => (active ? closeHandler(id) : launchHandler(id))}
+  >
+    {active ? <TimesCircle size="1em" /> : <Rocket size="1em" />}
+    <Box width="100%">{active ? "Close" : "Launch"}</Box>
+  </Button>
+);
 
 const SurveyCard = props => (
   <Box
@@ -18,20 +49,7 @@ const SurveyCard = props => (
     borderBottom={`thin solid ${props.theme.gray400}`}
     backgroundColor="gray200"
   >
-    <Box
-      display="flex"
-      alignItems="center"
-      p=".5em"
-      mr="1em"
-      backgroundColor={props.active ? "success" : "gray700"}
-      title={props.active ? "Active" : "Inactive"}
-    >
-      {props.active ? (
-        <Check size="1em" color="white" />
-      ) : (
-        <Times size="1em" color="white" />
-      )}
-    </Box>
+    <ActiveIndicator active={props.active} />
 
     <Box display="flex" width="100%" alignItems="center" p=".5em">
       <Typography variant="h5" mb={0}>
@@ -39,34 +57,9 @@ const SurveyCard = props => (
       </Typography>
 
       <Box display="flex" alignItems="center" ml="auto">
-        <Box
-          backgroundColor="info"
-          display="inline-block"
-          px=".5em"
-          borderRadius="8px"
-          color="white"
-          mr="1em"
-        >
-          {props.runCount}
-          <Box uiAs="span" display={{ xs: "none", md: "inline" }}>
-            {" "}
-            runs
-          </Box>
-        </Box>
+        <RunCountBadge count={props.runCount} />
 
-        <Button
-          display="inline-flex"
-          alignItems="center"
-          ml=".5em"
-          variant={props.active ? "danger" : "success"}
-          width="100px"
-          onClick={() =>
-            props.active ? props.closer(props.id) : props.launcher(props.id)
-          }
-        >
-          {props.active ? <TimesCircle size="1em" /> : <Rocket size="1em" />}
-          <Box width="100%">{props.active ? "Close" : "Launch"}</Box>
-        </Button>
+        <ToggleSurveyActiveButton {...props} />
 
         <Button
           display="inline-flex"

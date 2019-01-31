@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 import { Grid } from "@smooth-ui/core-sc";
-import AppBar from "./common/AppBar";
+import AppBar from "./AppBar";
 import Admin from "./admin/Admin";
 import Survey from "./survey/Survey";
 
