@@ -1,7 +1,27 @@
 import { createSelector } from "reselect";
 
-// TODO: this should be sorted once sort state is in
+const getSurveys = state => state.data.surveys;
+const getSortState = state => state.admin.surveys.sort;
+
+/**
+ * Gets the appropriate sort function for a given survey property
+ */
+const getPropertySorter = (key, asc) => {
+  const defaultSorter = ({ [key]: a }, { [key]: b }) => (asc ? a - b : b - a);
+
+  const sorters = {
+    name: ({ [key]: a }, { [key]: b }) =>
+      asc ? a.localeCompare(b) : b.localeCompare(a)
+  };
+
+  return sorters[key] || defaultSorter;
+};
+
 export const getSurveysSortOrder = createSelector(
-  [state => state.data.surveys],
-  surveys => Object.keys(surveys)
+  [getSurveys, getSortState],
+  (surveys, sort) =>
+    Object.keys(surveys)
+      .map(id => surveys[id])
+      .sort(getPropertySorter(sort.key, sort[sort.key]))
+      .map(survey => survey.id)
 );

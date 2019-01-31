@@ -1,31 +1,7 @@
 import React, { Component } from "react";
-import { Button, Row, Input, Box } from "@smooth-ui/core-sc";
-import { CaretDown, CaretUp } from "styled-icons/fa-solid";
+import { Row, Input, Box } from "@smooth-ui/core-sc";
 
-import SurveyCard from "./old_SurveyCard";
-
-const SortButton = ({ sortby, current, sorter, children }) => (
-  <Button
-    variant="white"
-    fontWeight={current.key === sortby ? "bold" : "normal"}
-    onClick={() => sorter(sortby)}
-  >
-    {children}{" "}
-    {current[sortby] ? <CaretUp size="1em" /> : <CaretDown size="1em" />}
-  </Button>
-);
-
-const SortButtonsPanel = ({ keys, current, sorter }) =>
-  keys.map((sortKey, i) => {
-    const button = (label, key) => (
-      <SortButton key={i} sortby={key} current={current} sorter={sorter}>
-        {label}
-      </SortButton>
-    );
-    return typeof sortKey === "string"
-      ? button(sortKey, sortKey.toLocaleLowerCase())
-      : button(sortKey[0], sortKey[1]);
-  });
+import SortButtonsPanel from "./SortButtonsPanel";
 
 class SurveyCardList extends Component {
   constructor(props) {
