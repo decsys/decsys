@@ -1,19 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
 import theme from "./themes";
+import App from "./app/App";
+
 import * as serviceWorker from "./serviceWorker";
 
-import "react-tabulator/lib/css/bootstrap/tabulator_bootstrap4.min.css";
+//import "react-tabulator/lib/css/bootstrap/tabulator_bootstrap4.min.css";
+
+const store = createStore(() => {});
 
 ReactDOM.render(
   <>
     <Normalize />
     <Router>
       <ThemeProvider theme={theme}>
-        <App />
+        <Provider store={store}>
+          <App />
+        </Provider>
       </ThemeProvider>
     </Router>
   </>,

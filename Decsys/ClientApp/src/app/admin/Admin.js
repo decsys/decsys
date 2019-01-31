@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import SurveyList from "./SurveyList";
+import SurveyList from "./surveys/Survey";
 
 const Admin = props => (
   <Switch>
