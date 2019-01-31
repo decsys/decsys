@@ -6,19 +6,24 @@ import { Provider } from "react-redux";
 import { createStore } from "redux";
 import theme from "./themes";
 import App from "./app/App";
+import rootReducer from "./reducers";
 
 import * as serviceWorker from "./serviceWorker";
 
 //import "react-tabulator/lib/css/bootstrap/tabulator_bootstrap4.min.css";
-
-const store = createStore(() => {});
 
 ReactDOM.render(
   <>
     <Normalize />
     <Router>
       <ThemeProvider theme={theme}>
-        <Provider store={store}>
+        <Provider
+          store={createStore(
+            rootReducer,
+            window.__REDUX_DEVTOOLS_EXTENSION__ &&
+              window.__REDUX_DEVTOOLS_EXTENSION__()
+          )}
+        >
           <App />
         </Provider>
       </ThemeProvider>

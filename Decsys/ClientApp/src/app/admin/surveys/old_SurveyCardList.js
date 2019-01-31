@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Row, Input, Box } from "@smooth-ui/core-sc";
 import { CaretDown, CaretUp } from "styled-icons/fa-solid";
 
-import SurveyCard from "./SurveyCard";
+import SurveyCard from "./old_SurveyCard";
 
 const SortButton = ({ sortby, current, sorter, children }) => (
   <Button
@@ -155,8 +155,8 @@ class SurveyCardList extends Component {
           <Row key={i}>
             <SurveyCard
               {...survey}
-              launcher={this.launchSurvey}
-              closer={this.closeSurvey}
+              onLaunchClick={this.launchSurvey}
+              onCloseClick={this.closeSurvey}
             />
           </Row>
         ))}

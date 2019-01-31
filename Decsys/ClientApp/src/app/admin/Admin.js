@@ -1,6 +1,6 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
-import SurveyList from "./surveys/Survey";
+import Surveys from "./surveys/Surveys";
 
 const Admin = props => (
   <Switch>
@@ -10,7 +10,7 @@ const Admin = props => (
       render={() => <Redirect to={`${props.match.url}/surveys`} />}
     />
 
-    <Route path={`${props.match.url}/surveys`} component={SurveyList} />
+    <Route path={`${props.match.url}/surveys`} component={Surveys} />
   </Switch>
 );
 
