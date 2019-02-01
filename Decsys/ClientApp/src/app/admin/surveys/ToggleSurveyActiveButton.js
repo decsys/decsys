@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Button, Box } from "@smooth-ui/core-sc";
 import { TimesCircle, Rocket } from "styled-icons/fa-solid";
-import * as Types from "../../common/_types";
+import { LaunchSession, CloseSession } from "./_actions";
 
 let ToggleSurveyActiveButton = ({ onClick, active }) => (
   <Button
@@ -20,12 +20,8 @@ let ToggleSurveyActiveButton = ({ onClick, active }) => (
 
 ToggleSurveyActiveButton = connect(
   null,
-  (dispatch, ownProps) => ({
-    onClick: () =>
-      dispatch({
-        type: ownProps.active ? Types.CLOSE_SESSION : Types.LAUNCH_SESSION,
-        id: ownProps.id
-      })
+  (dispatch, { active, id }) => ({
+    onClick: () => dispatch(active ? CloseSession(id) : LaunchSession(id))
   })
 )(ToggleSurveyActiveButton);
 
