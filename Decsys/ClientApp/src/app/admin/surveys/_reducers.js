@@ -1,4 +1,4 @@
-import * as Types from "./_types";
+import * as types from "./_types";
 
 /**
  * Gets the appropriate sort function for a given survey property.
@@ -18,7 +18,7 @@ const getPropertySorter = (key, asc) => {
 };
 
 /**
- * Build a lookup list of object IDs
+ * Build a lookup list of object IDs and names
  * sorted by the specified object property,
  * ascending or descending.
  *
@@ -30,7 +30,7 @@ const getSortedLookup = (input, key, asc) =>
   Object.keys(input)
     .map(id => input[id])
     .sort(getPropertySorter(key, asc))
-    .map(input => input.id);
+    .map(({ id, name }) => ({ id, name }));
 
 /**
  * Filters a list of objects with a `name` property
@@ -47,11 +47,16 @@ const getFilteredLookup = (input, filter) =>
     : input.filter(({ name }) => new RegExp(filter, "i").test(name));
 
 const surveysReducer = (
-  state = { sorted: [], filtered: [], sort: { key: "active", name: true } },
+  state = {
+    sorted: [],
+    filtered: [],
+    sort: { key: "active", name: true },
+    filter: ""
+  },
   action
 ) => {
   switch (action.type) {
-    case Types.SORT_SURVEY_LIST:
+    case types.SORT_SURVEY_LIST:
       const sort = { ...state.sort, key: action.key, [action.key]: action.asc };
       const sorted = getSortedLookup(action.surveys, action.key, action.asc);
 
@@ -59,7 +64,13 @@ const surveysReducer = (
         ...state,
         sort,
         sorted,
-        filtered: getFilteredLookup()
+        filtered: getFilteredLookup(sorted, state.filter)
+      };
+    case types.FILTER_SURVEY_LIST:
+      return {
+        ...state,
+        filtered: getFilteredLookup(state.sorted, action.filter),
+        filter: action.filter
       };
     default:
       return state;

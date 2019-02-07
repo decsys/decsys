@@ -4,6 +4,7 @@ import { Box, Button, Typography } from "@smooth-ui/core-sc";
 import ToggleSurveyActiveButton from "./ToggleSurveyActiveButton";
 import ActiveIndicator from "../../common/ActiveIndicator";
 import RunCountBadge from "./RunCountBadge";
+import { CaretDown } from "styled-icons/fa-solid";
 
 const Survey = ({ name, active, runCount, id, theme }) => (
   <Box
@@ -14,7 +15,7 @@ const Survey = ({ name, active, runCount, id, theme }) => (
     borderBottom={`thin solid ${theme.gray400}`}
     backgroundColor="gray200"
   >
-    <ActiveIndicator active={active} />
+    <ActiveIndicator isActive={active} />
 
     <Box display="flex" width="100%" alignItems="center" p=".5em">
       <Typography variant="h5" mb={0}>
@@ -24,7 +25,7 @@ const Survey = ({ name, active, runCount, id, theme }) => (
       <Box display="flex" alignItems="center" ml="auto">
         <RunCountBadge count={runCount} />
 
-        <ToggleSurveyActiveButton active={active} id={id} />
+        <ToggleSurveyActiveButton isActive={active} id={id} />
 
         <Button
           display="inline-flex"
@@ -35,7 +36,7 @@ const Survey = ({ name, active, runCount, id, theme }) => (
           width="100px"
         >
           {/* Dropdown Button component */}
-          Manage {/*<CaretDown size="1em" />*/}
+          Manage <CaretDown size="1em" />
         </Button>
       </Box>
     </Box>

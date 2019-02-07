@@ -16,3 +16,8 @@ export const SortSurveyList = (surveys, key, asc) => ({
   key,
   asc
 });
+
+export const FilterSurveyList = filter => ({
+  type: types.FILTER_SURVEY_LIST,
+  filter
+});
