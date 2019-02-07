@@ -2,10 +2,10 @@ import React from "react";
 
 import SortButton from "./SortButton";
 
-const SortButtonsPanel = ({ keys, current, sorter }) =>
+const SortButtonsPanel = ({ keys }) =>
   keys.map((sortKey, i) => {
     const button = (label, key) => (
-      <SortButton key={i} sortby={key} current={current} sorter={sorter}>
+      <SortButton key={i} sortby={key}>
         {label}
       </SortButton>
     );

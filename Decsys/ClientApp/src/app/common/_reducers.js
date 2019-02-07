@@ -1,4 +1,4 @@
-import * as Types from "./_types";
+import * as types from "../admin/surveys/_types";
 
 const dataReducer = (
   state = {
@@ -11,7 +11,7 @@ const dataReducer = (
   action
 ) => {
   switch (action.type) {
-    case Types.LAUNCH_SESSION:
+    case types.LAUNCH_SESSION:
       return {
         ...state,
         surveys: {
@@ -25,7 +25,7 @@ const dataReducer = (
           }
         }
       };
-    case Types.CLOSE_SESSION:
+    case types.CLOSE_SESSION:
       return {
         ...state,
         surveys: {

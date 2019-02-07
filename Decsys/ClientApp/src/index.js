@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import { Provider } from "react-redux";
-import { createStore } from "redux";
+import { configureStore } from "redux-starter-kit";
 import theme from "./themes";
 import App from "./app/App";
 import rootReducer from "./reducers";
@@ -18,11 +18,9 @@ ReactDOM.render(
     <Router>
       <ThemeProvider theme={theme}>
         <Provider
-          store={createStore(
-            rootReducer,
-            window.__REDUX_DEVTOOLS_EXTENSION__ &&
-              window.__REDUX_DEVTOOLS_EXTENSION__()
-          )}
+          store={configureStore({
+            reducer: rootReducer
+          })}
         >
           <App />
         </Provider>
