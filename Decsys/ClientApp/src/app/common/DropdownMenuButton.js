@@ -23,9 +23,16 @@ const DropdownButton = styled(Button)`
   position: relative;
 `;
 
+/**
+ * A button which toggles a dropdown menu.
+ *
+ * All non specified props are passed onto the underlying `Button`
+ */
 class DropdownMenuButton extends Component {
   static propTypes = {
+    /** The actual button contents */
     button: PropTypes.node,
+    /** Whether to automatically display a downwards arrow after the content */
     caret: PropTypes.bool
   };
   static defaultProps = { caret: true };
