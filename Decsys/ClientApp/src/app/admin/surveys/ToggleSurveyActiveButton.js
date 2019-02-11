@@ -8,9 +8,7 @@ let ToggleSurveyActiveButton = ({ onClick, isActive }) => (
   <Button
     display="inline-flex"
     alignItems="center"
-    ml=".5em"
     variant={isActive ? "danger" : "success"}
-    width="100px"
     onClick={onClick}
   >
     {isActive ? <TimesCircle size="1em" /> : <Rocket size="1em" />}

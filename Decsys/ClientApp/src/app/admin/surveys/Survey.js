@@ -1,46 +1,44 @@
 import React from "react";
 import { withTheme } from "styled-components";
-import { Box, Button, Typography } from "@smooth-ui/core-sc";
+import { Typography, Box } from "@smooth-ui/core-sc";
 import ToggleSurveyActiveButton from "./ToggleSurveyActiveButton";
 import ActiveIndicator from "../../common/ActiveIndicator";
 import RunCountBadge from "./RunCountBadge";
-import { CaretDown } from "styled-icons/fa-solid";
+import FlexBox from "../../common/FlexBox";
+import { Grid, Cell } from "styled-css-grid";
+import ManageSurveyButton from "./ManageSurveyButton";
 
 const Survey = ({ name, active, runCount, id, theme }) => (
-  <Box
-    display="flex"
+  <FlexBox
     alignItems="stretch"
     variant={active ? "success" : "dark"}
-    width="100%"
     borderBottom={`thin solid ${theme.gray400}`}
     backgroundColor="gray200"
   >
     <ActiveIndicator isActive={active} />
 
-    <Box display="flex" width="100%" alignItems="center" p=".5em">
-      <Typography variant="h5" mb={0}>
-        {name}
-      </Typography>
+    <Box width="100%" p={1} ml={1}>
+      <Grid justifyContent="stretch" columns={"1fr auto 100px 100px"}>
+        <Cell middle>
+          <Typography variant="h5" mb={0}>
+            {name}
+          </Typography>
+        </Cell>
 
-      <Box display="flex" alignItems="center" ml="auto">
-        <RunCountBadge count={runCount} />
+        <Cell middle>
+          <RunCountBadge count={runCount} />
+        </Cell>
 
-        <ToggleSurveyActiveButton isActive={active} id={id} />
+        <Cell middle>
+          <ToggleSurveyActiveButton isActive={active} id={id} />
+        </Cell>
 
-        <Button
-          display="inline-flex"
-          justifyContent="space-evenly"
-          alignItems="center"
-          ml=".5em"
-          variant="secondary"
-          width="100px"
-        >
-          {/* Dropdown Button component */}
-          Manage <CaretDown size="1em" />
-        </Button>
-      </Box>
+        <Cell middle>
+          <ManageSurveyButton {...{ runCount, id }} />
+        </Cell>
+      </Grid>
     </Box>
-  </Box>
+  </FlexBox>
 );
 
 export default withTheme(Survey);

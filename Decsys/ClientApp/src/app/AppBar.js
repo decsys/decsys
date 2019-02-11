@@ -1,7 +1,9 @@
 import React from "react";
 import styled, { withTheme } from "styled-components";
 import { Link } from "react-router-dom";
-import { Box, Typography, Grid, Row } from "@smooth-ui/core-sc";
+import { Typography } from "@smooth-ui/core-sc";
+import FlexBox from "./common/FlexBox";
+import Container from "./common/Container";
 
 const AppBarLink = styled(Typography).attrs({
   uiAs: Link,
@@ -22,17 +24,14 @@ const AppBarBrand = styled(AppBarLink).attrs({
 })``;
 
 const AppBar = props => (
-  <Box display="flex" backgroundColor={props.theme.gray900} alignItems="center">
-    <Grid>
-      <Row>
+  <FlexBox backgroundColor={props.theme.gray900} alignItems="center">
+    <Container>
+      <FlexBox alignItems="center" justifyContent="space-between">
         <AppBarBrand>DECSYS</AppBarBrand>
-
-        <Box uiAs="nav" ml="auto" mr="0.5em" display="flex" alignItems="center">
-          <AppBarLink to="/about">About</AppBarLink>
-        </Box>
-      </Row>
-    </Grid>
-  </Box>
+        <AppBarLink to="/about">About</AppBarLink>
+      </FlexBox>
+    </Container>
+  </FlexBox>
 );
 
 export default withTheme(AppBar);

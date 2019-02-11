@@ -1,16 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box } from "@smooth-ui/core-sc";
 import { Check, Times } from "styled-icons/fa-solid";
+import FlexBox from "./FlexBox";
 
 const ActiveIndicator = props => {
   const { isActive, ...rest } = props;
   return (
-    <Box
-      display="flex"
+    <FlexBox
       alignItems="center"
       p=".5em"
-      mr="1em"
       backgroundColor={isActive ? "success" : "gray700"}
       title={isActive ? "Active" : "Inactive"}
       {...rest}
@@ -20,7 +18,7 @@ const ActiveIndicator = props => {
       ) : (
         <Times size="1em" color="white" />
       )}
-    </Box>
+    </FlexBox>
   );
 };
 

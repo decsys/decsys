@@ -1,27 +1,28 @@
 import React from "react";
-import { Typography, Grid, Row, Button, Alert } from "@smooth-ui/core-sc";
+import { Typography, Button, Alert } from "@smooth-ui/core-sc";
 import { InfoCircle, PlusCircle } from "styled-icons/fa-solid";
+import FlexBox from "../../common/FlexBox";
 import SurveyList from "./SurveyList";
+import Container from "../../common/Container";
 
 // TODO: Create New Survey wiring
 const Surveys = () => (
-  <Grid>
-    <Row my="3em" alignItems="center" justifyContent="space-between">
+  <Container>
+    <FlexBox my="3em" alignItems="center" justifyContent="space-between">
       <Typography variant="h1">My Surveys</Typography>
+
       <Button variant="secondary">
         <PlusCircle size="1em" /> Create New Survey
       </Button>
-    </Row>
+    </FlexBox>
 
-    <Row>
-      <Alert width="100%" variant="info">
-        <InfoCircle size="1em" /> Please don't forget to backup your surveys and
-        results to an external source.
-      </Alert>
-    </Row>
+    <Alert variant="info">
+      <InfoCircle size="1em" /> Please don't forget to backup your surveys and
+      results to an external source.
+    </Alert>
 
     <SurveyList />
-  </Grid>
+  </Container>
 );
 
 export default Surveys;

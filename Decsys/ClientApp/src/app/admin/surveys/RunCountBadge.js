@@ -1,21 +1,17 @@
 import React from "react";
-import { Box } from "@smooth-ui/core-sc";
+import { Typography } from "@smooth-ui/core-sc";
 
 const RunCountBadge = ({ count }) => (
-  <Box
+  <Typography
+    display="inline"
     backgroundColor="info"
-    display="inline-block"
-    px=".5em"
-    borderRadius="8px"
+    px={1}
+    borderRadius={8}
     color="white"
-    mr="1em"
   >
     {count}
-    <Box uiAs="span" display={{ xs: "none", md: "inline" }}>
-      {" "}
-      runs
-    </Box>
-  </Box>
+    <Typography display={{ xs: "none", md: "inline" }}> runs</Typography>
+  </Typography>
 );
 
 export default RunCountBadge;

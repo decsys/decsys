@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
-import { Grid } from "@smooth-ui/core-sc";
 import AppBar from "./AppBar";
 import Admin from "./admin/Admin";
 import Survey from "./survey/Survey";
@@ -23,14 +22,12 @@ class App extends Component {
       <>
         <AppBar />
 
-        <Grid>
-          <Switch>
-            <Route path="/" exact component={IndexRouter} />
-            <Route path="/admin" component={Admin} />
+        <Switch>
+          <Route path="/" exact component={IndexRouter} />
+          <Route path="/admin" component={Admin} />
 
-            <Route render={() => <h1>404</h1>} />
-          </Switch>
-        </Grid>
+          <Route render={() => <h1>404</h1>} />
+        </Switch>
       </>
     );
   }

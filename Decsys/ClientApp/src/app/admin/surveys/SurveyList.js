@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Survey from "./Survey";
 import SortButtonsPanel from "./SortButtonsPanel";
-import { Row, Typography } from "@smooth-ui/core-sc";
+import { Typography } from "@smooth-ui/core-sc";
 import { sortSurveyList } from "./_ops";
 import SurveyListFilterInput from "./SurveyListFilterInput";
+import FlexBox from "../../common/FlexBox";
 
 class SurveyList extends Component {
   componentDidMount() {
@@ -17,23 +18,20 @@ class SurveyList extends Component {
     const { filtered, sort, surveys } = this.props;
     return (
       <>
-        <Row alignItems="center" mb="1em">
-          <Typography mr=".5em">Sort by:</Typography>
+        <FlexBox alignItems="center" mb="1em">
+          <Typography mr=".5em" display={{ xs: "none", md: "inline" }}>
+            Sort by:
+          </Typography>
           <SortButtonsPanel
             keys={["Active", "Name", ["Run Count", "runCount"]]}
             sort={sort}
           />
 
           <SurveyListFilterInput size="sm" ml="auto" />
-        </Row>
+        </FlexBox>
 
         {filtered.map(
-          ({ id }) =>
-            !!surveys[id] && (
-              <Row key={id}>
-                <Survey {...surveys[id]} />
-              </Row>
-            )
+          ({ id }) => !!surveys[id] && <Survey key={id} {...surveys[id]} />
         )}
       </>
     );
