@@ -26,7 +26,7 @@ const DropdownButton = styled(Button)`
 /**
  * A button which toggles a dropdown menu.
  *
- * All non specified props are passed onto the underlying `Button`
+ * All non specified props are passed onto the underlying `Button`.
  */
 class DropdownMenuButton extends Component {
   static propTypes = {
