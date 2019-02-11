@@ -6,6 +6,7 @@ import { Typography } from "@smooth-ui/core-sc";
 import { sortSurveyList } from "./_ops";
 import SurveyListFilterInput from "./SurveyListFilterInput";
 import FlexBox from "../../common/FlexBox";
+import { isAnySurveyActive } from "./_selectors";
 
 class SurveyList extends Component {
   componentDidMount() {
@@ -15,7 +16,7 @@ class SurveyList extends Component {
   }
 
   render() {
-    const { filtered, sort, surveys } = this.props;
+    const { filtered, sort, surveys, allowLaunch } = this.props;
     return (
       <>
         <FlexBox alignItems="center" mb="1em">
@@ -31,7 +32,10 @@ class SurveyList extends Component {
         </FlexBox>
 
         {filtered.map(
-          ({ id }) => !!surveys[id] && <Survey key={id} {...surveys[id]} />
+          ({ id }) =>
+            !!surveys[id] && (
+              <Survey key={id} {...surveys[id]} allowLaunch={allowLaunch} />
+            )
         )}
       </>
     );
@@ -40,7 +44,8 @@ class SurveyList extends Component {
 
 const SurveyListContainer = connect(state => ({
   ...state.admin.surveys,
-  surveys: state.data.surveys
+  surveys: state.data.surveys,
+  allowLaunch: !isAnySurveyActive(state.data.surveys)
 }))(SurveyList);
 
 export default SurveyListContainer;

@@ -9,7 +9,7 @@ import FlexBox from "../../common/FlexBox";
 import { Grid, Cell } from "styled-css-grid";
 import ManageSurveyButton from "./ManageSurveyButton";
 
-const Survey = ({ name, active, runCount, id, theme }) => (
+const Survey = ({ name, active, runCount, id, allowLaunch, theme }) => (
   <FlexBox
     alignItems="stretch"
     variant={active ? "success" : "dark"}
@@ -21,23 +21,25 @@ const Survey = ({ name, active, runCount, id, theme }) => (
     <Box width="100%" p={1}>
       <Grid
         justifyContent="stretch"
-        columns={`80px 1fr 100px${active ? " 100px" : ""}${
-          runCount > 0 ? " 100px" : ""
-        } auto`}
+        columns={`80px 1fr${allowLaunch || active ? " 100px" : ""}${
+          active ? " 100px" : ""
+        }${runCount > 0 ? " 100px" : ""} auto`}
       >
         <Cell middle>
           <RunCountBadge count={runCount} />
         </Cell>
 
         <Cell middle>
-          <Typography variant="h5" mb={0} ml={1}>
+          <Typography title={name} variant="h5" mb={0} ml={1}>
             {name}
           </Typography>
         </Cell>
 
-        <Cell middle>
-          <ToggleSurveyActiveButton isActive={active} id={id} />
-        </Cell>
+        {(allowLaunch || active) && (
+          <Cell middle>
+            <ToggleSurveyActiveButton isActive={active} id={id} />
+          </Cell>
+        )}
 
         {active && (
           <Cell middle>

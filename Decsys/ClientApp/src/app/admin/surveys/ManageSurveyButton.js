@@ -21,6 +21,7 @@ class ManageSurveyButton extends Component {
     return (
       <>
         <DropdownMenuButton
+          title="More survey actions..."
           display="block"
           variant="secondary"
           button={<EllipsisV size="1em" />}
