@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import DropdownMenuButton from "../../common/DropdownMenuButton";
 import MenuItem from "../../common/MenuItem";
 import MenuRouterLink from "../../common/MenuRouterLink";
-import { DuplicateSurvey, DeleteSurvey } from "./_actions";
+import { DeleteSurvey } from "./_actions";
+import { duplicateSurvey } from "./_ops";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { EllipsisV } from "styled-icons/fa-solid";
 
@@ -49,7 +50,7 @@ class ManageSurveyButton extends Component {
 const ManageSurveyButtonContainer = connect(
   null,
   (dispatch, { id }) => ({
-    onDuplicateClick: () => dispatch(DuplicateSurvey(id)),
+    onDuplicateClick: () => dispatch(duplicateSurvey(id)),
     onDeleteClick: () => dispatch(DeleteSurvey(id))
   })
 )(ManageSurveyButton);

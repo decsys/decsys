@@ -43,7 +43,7 @@ const Survey = ({ name, active, runCount, id, allowLaunch, theme }) => (
 
         {active && (
           <Cell middle>
-            <Button variant="success" as={Link} to={`survey/${id}/dashboard`}>
+            <Button variant="success" uiAs={Link} to={`survey/${id}/dashboard`}>
               Dashboard
             </Button>
           </Cell>
@@ -54,7 +54,7 @@ const Survey = ({ name, active, runCount, id, allowLaunch, theme }) => (
             <Button
               textAlign="center"
               variant="secondary"
-              as={Link}
+              uiAs={Link}
               to={`survey/${id}/results`}
             >
               Results

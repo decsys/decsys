@@ -63,7 +63,25 @@ class DropdownMenuButton extends Component {
   }
 
   render() {
-    const { onClick: _, button, caret, ...rest } = this.props;
+    // remove props our top level component cares about
+    // or stuff we mustn't pass down to the DOM
+    const {
+      button,
+      caret,
+
+      onClick: _, //we don't want to allow an override of this
+
+      // used by onClickOutside HOC
+      enableOnClickOutside,
+      disableOnClickOutside,
+      stopPropagation,
+      preventDefault,
+      outsideClickIgnoreClass,
+      eventTypes,
+
+      ...rest
+    } = this.props;
+
     return (
       <div>
         <DropdownButton
