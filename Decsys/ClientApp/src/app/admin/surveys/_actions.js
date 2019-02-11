@@ -21,3 +21,13 @@ export const FilterSurveyList = filter => ({
   type: types.FILTER_SURVEY_LIST,
   filter
 });
+
+export const DuplicateSurvey = id => ({
+  type: types.DUPLICATE_SURVEY,
+  id
+});
+
+export const DeleteSurvey = id => ({
+  type: types.DELETE_SURVEY,
+  id
+});

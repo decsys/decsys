@@ -36,6 +36,14 @@ const dataReducer = (
           }
         }
       };
+    case types.DELETE_SURVEY:
+      // Bleh, use spread to isolate nested keys we want to remove
+      const { surveys, ...rest } = state;
+      const { [action.id]: _, ...keep } = surveys;
+      return {
+        ...rest,
+        surveys: keep
+      };
     default:
       return state;
   }
