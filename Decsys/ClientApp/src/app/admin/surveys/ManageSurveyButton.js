@@ -8,6 +8,9 @@ const ManageSurveyButton = ({ runCount, id }) => (
     {runCount <= 0 ? (
       <MenuRouterLink to={`survey/${id}`}>Edit</MenuRouterLink>
     ) : null}
+    <MenuRouterLink to={`survey/${id}/preview`}>Preview</MenuRouterLink>
+    <MenuRouterLink to={`survey/${id}/export`}>Export</MenuRouterLink>
+    <MenuItem onClick={() => alert("TODO complete action")}>Duplicate</MenuItem>
     <MenuItem onClick={() => alert("TODO confirm modal")}>Delete</MenuItem>
   </DropdownMenuButton>
 );

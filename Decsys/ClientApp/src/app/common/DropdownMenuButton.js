@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, cloneElement, Children } from "react";
 import PropTypes from "prop-types";
 import { Button } from "@smooth-ui/core-sc";
 import { CaretDown } from "styled-icons/fa-solid";
@@ -46,6 +46,18 @@ class DropdownMenuButton extends Component {
       open: !prev.open
     }));
 
+  /** Modify all menu items onClick to close the mneu before taking their action */
+  renderChildren() {
+    return Children.map(this.props.children, child =>
+      cloneElement(child, {
+        onClick: e => {
+          this.toggleMenu();
+          if (typeof child.props.onClick === "function") child.props.onClick(e);
+        }
+      })
+    );
+  }
+
   render() {
     return (
       <div>
@@ -59,7 +71,9 @@ class DropdownMenuButton extends Component {
           {this.props.button}{" "}
           {this.props.caret ? <CaretDown size="1em" /> : null}
         </DropdownButton>
-        {this.state.open && <DropdownMenu>{this.props.children}</DropdownMenu>}
+        {this.state.open && (
+          <DropdownMenu>{this.renderChildren()}</DropdownMenu>
+        )}
       </div>
     );
   }
