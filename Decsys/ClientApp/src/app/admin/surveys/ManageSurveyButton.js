@@ -5,6 +5,7 @@ import MenuItem from "../../common/MenuItem";
 import MenuRouterLink from "../../common/MenuRouterLink";
 import { DuplicateSurvey, DeleteSurvey } from "./_actions";
 import DeleteSurveyModal from "./DeleteSurveyModal";
+import { EllipsisV } from "styled-icons/fa-solid";
 
 class ManageSurveyButton extends Component {
   constructor(props) {
@@ -19,7 +20,12 @@ class ManageSurveyButton extends Component {
     const { name, runCount, id, onDuplicateClick, onDeleteClick } = this.props;
     return (
       <>
-        <DropdownMenuButton button="Manage">
+        <DropdownMenuButton
+          display="block"
+          variant="secondary"
+          button={<EllipsisV size="1em" />}
+          caret={false}
+        >
           {runCount <= 0 && (
             <MenuRouterLink to={`survey/${id}`}>Edit</MenuRouterLink>
           )}

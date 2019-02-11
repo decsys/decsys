@@ -21,9 +21,9 @@ const Survey = ({ name, active, runCount, id, theme }) => (
     <Box width="100%" p={1}>
       <Grid
         justifyContent="stretch"
-        columns={`80px 1fr 100px 100px${active ? " 100px" : ""}${
+        columns={`80px 1fr 100px${active ? " 100px" : ""}${
           runCount > 0 ? " 100px" : ""
-        }`}
+        } auto`}
       >
         <Cell middle>
           <RunCountBadge count={runCount} />

@@ -63,17 +63,23 @@ class DropdownMenuButton extends Component {
   }
 
   render() {
+    const { onClick: _, button, caret, ...rest } = this.props;
     return (
       <div>
         <DropdownButton
-          display="inline-flex"
+          display="flex"
           justifyContent="space-between"
           alignItems="center"
-          variant="secondary"
           onClick={this.toggleMenu}
+          {...rest}
         >
-          {this.props.button}{" "}
-          {this.props.caret ? <CaretDown size="1em" /> : null}
+          {button}
+          {caret && (
+            <>
+              {" "}
+              <CaretDown size="1em" />
+            </>
+          )}
         </DropdownButton>
         {this.state.open && (
           <DropdownMenu>{this.renderChildren()}</DropdownMenu>
