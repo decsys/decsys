@@ -1,0 +1,58 @@
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import DropdownMenuButton from "../../common/DropdownMenuButton";
+import MenuItem from "../../common/MenuItem";
+import MenuRouterLink from "../../common/MenuRouterLink";
+import { DeleteSurvey } from "./_actions";
+import { duplicateSurvey } from "./_ops";
+import DeleteSurveyModal from "./DeleteSurveyModal";
+import { EllipsisV } from "styled-icons/fa-solid";
+
+class ManageSurveyButton extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { showDeleteModal: false };
+  }
+
+  toggleDeleteModal = () =>
+    this.setState(prev => ({ showDeleteModal: !prev.showDeleteModal }));
+
+  render() {
+    const { name, runCount, id, onDuplicateClick, onDeleteClick } = this.props;
+    return (
+      <>
+        <DropdownMenuButton
+          title="More survey actions..."
+          display="block"
+          variant="secondary"
+          button={<EllipsisV size="1em" />}
+          caret={false}
+        >
+          {runCount <= 0 && (
+            <MenuRouterLink to={`survey/${id}`}>Edit</MenuRouterLink>
+          )}
+          <MenuRouterLink to={`survey/${id}/preview`}>Preview</MenuRouterLink>
+          <MenuRouterLink to={`survey/${id}/export`}>Export</MenuRouterLink>
+          <MenuItem onClick={onDuplicateClick}>Duplicate</MenuItem>
+          <MenuItem onClick={this.toggleDeleteModal}>Delete</MenuItem>
+        </DropdownMenuButton>
+        <DeleteSurveyModal
+          surveyName={name}
+          deleteSurvey={onDeleteClick}
+          closeModal={this.toggleDeleteModal}
+          modalOpened={this.state.showDeleteModal}
+        />
+      </>
+    );
+  }
+}
+
+const ManageSurveyButtonContainer = connect(
+  null,
+  (dispatch, { id }) => ({
+    onDuplicateClick: () => dispatch(duplicateSurvey(id)),
+    onDeleteClick: () => dispatch(DeleteSurvey(id))
+  })
+)(ManageSurveyButton);
+
+export default ManageSurveyButtonContainer;
