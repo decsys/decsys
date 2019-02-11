@@ -34,7 +34,7 @@ const Survey = ({ name, active, runCount, id, theme }) => (
         </Cell>
 
         <Cell middle>
-          <ManageSurveyButton {...{ runCount, id }} />
+          <ManageSurveyButton {...{ runCount, id, name }} />
         </Cell>
       </Grid>
     </Box>
