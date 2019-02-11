@@ -7,5 +7,5 @@ export const duplicateSurvey = id => (dispatch, getState) => {
   // TODO: AJAX
   dispatch(DuplicateSurvey(id));
   const { key, ...asc } = getState().admin.surveys.sort;
-  return sortSurveyList(key, asc[key]);
+  return sortSurveyList(key, asc[key])(dispatch, getState);
 };
