@@ -10,8 +10,6 @@ import rootReducer from "./reducers";
 
 import * as serviceWorker from "./serviceWorker";
 
-//import "react-tabulator/lib/css/bootstrap/tabulator_bootstrap4.min.css";
-
 ReactDOM.render(
   <>
     <Normalize />
