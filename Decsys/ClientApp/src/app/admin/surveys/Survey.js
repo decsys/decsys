@@ -1,6 +1,7 @@
 import React from "react";
 import { withTheme } from "styled-components";
-import { Typography, Box } from "@smooth-ui/core-sc";
+import { Typography, Box, Button } from "@smooth-ui/core-sc";
+import { Link } from "react-router-dom";
 import ToggleSurveyActiveButton from "./ToggleSurveyActiveButton";
 import ActiveIndicator from "../../common/ActiveIndicator";
 import RunCountBadge from "./RunCountBadge";
@@ -17,21 +18,47 @@ const Survey = ({ name, active, runCount, id, theme }) => (
   >
     <ActiveIndicator isActive={active} />
 
-    <Box width="100%" p={1} ml={1}>
-      <Grid justifyContent="stretch" columns={"1fr auto 100px 100px"}>
-        <Cell middle>
-          <Typography variant="h5" mb={0}>
-            {name}
-          </Typography>
-        </Cell>
-
+    <Box width="100%" p={1}>
+      <Grid
+        justifyContent="stretch"
+        columns={`80px 1fr 100px 100px${active ? " 100px" : ""}${
+          runCount > 0 ? " 100px" : ""
+        }`}
+      >
         <Cell middle>
           <RunCountBadge count={runCount} />
         </Cell>
 
         <Cell middle>
+          <Typography variant="h5" mb={0} ml={1}>
+            {name}
+          </Typography>
+        </Cell>
+
+        <Cell middle>
           <ToggleSurveyActiveButton isActive={active} id={id} />
         </Cell>
+
+        {active && (
+          <Cell middle>
+            <Button variant="success" as={Link} to={`survey/${id}/dashboard`}>
+              Dashboard
+            </Button>
+          </Cell>
+        )}
+
+        {runCount > 0 && (
+          <Cell middle>
+            <Button
+              textAlign="center"
+              variant="secondary"
+              as={Link}
+              to={`survey/${id}/results`}
+            >
+              Results
+            </Button>
+          </Cell>
+        )}
 
         <Cell middle>
           <ManageSurveyButton {...{ runCount, id, name }} />

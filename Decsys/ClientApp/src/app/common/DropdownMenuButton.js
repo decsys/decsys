@@ -48,16 +48,17 @@ class DropdownMenuButton extends Component {
 
   /** Modify all menu items onClick to close the mneu before taking their action */
   renderChildren() {
-    return Children.map(this.props.children, child =>
-      !!child
-        ? cloneElement(child, {
-            onClick: e => {
-              this.toggleMenu();
-              if (typeof child.props.onClick === "function")
-                child.props.onClick(e);
-            }
-          })
-        : null
+    return Children.map(
+      this.props.children,
+      child =>
+        !!child &&
+        cloneElement(child, {
+          onClick: e => {
+            this.toggleMenu();
+            if (typeof child.props.onClick === "function")
+              child.props.onClick(e);
+          }
+        })
     );
   }
 

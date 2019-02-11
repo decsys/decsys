@@ -20,9 +20,9 @@ class ManageSurveyButton extends Component {
     return (
       <>
         <DropdownMenuButton button="Manage">
-          {runCount <= 0 ? (
+          {runCount <= 0 && (
             <MenuRouterLink to={`survey/${id}`}>Edit</MenuRouterLink>
-          ) : null}
+          )}
           <MenuRouterLink to={`survey/${id}/preview`}>Preview</MenuRouterLink>
           <MenuRouterLink to={`survey/${id}/export`}>Export</MenuRouterLink>
           <MenuItem onClick={onDuplicateClick}>Duplicate</MenuItem>

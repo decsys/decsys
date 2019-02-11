@@ -23,7 +23,7 @@ class SurveyList extends Component {
             Sort by:
           </Typography>
           <SortButtonsPanel
-            keys={["Active", "Name", ["Run Count", "runCount"]]}
+            keys={["Active", ["Run Count", "runCount"], "Name"]}
             sort={sort}
           />
 

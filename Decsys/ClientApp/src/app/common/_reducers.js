@@ -9,7 +9,7 @@ const dataReducer = (
         id: 2,
         name: "Lol Survey with a  really long name i guess?",
         runCount: 0,
-        active: true
+        active: false
       }
     }
   },

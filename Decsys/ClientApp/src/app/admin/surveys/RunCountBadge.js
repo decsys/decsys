@@ -8,6 +8,7 @@ const RunCountBadge = ({ count }) => (
     px={1}
     borderRadius={8}
     color="white"
+    textAlign="center"
   >
     {count}
     <Typography display={{ xs: "none", md: "inline" }}> runs</Typography>
