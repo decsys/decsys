@@ -8,12 +8,12 @@ const Admin = props => (
     <Route
       exact
       path={`${props.match.url}`}
-      render={() => <Redirect to={`${props.match.url}/surveys`} />}
+      render={() => <Redirect to={`${props.match.path}/surveys`} />}
     />
 
-    <Route path={`${props.match.url}/surveys`} component={Surveys} />
+    <Route path={`${props.match.path}/surveys`} component={Surveys} />
 
-    <Route path={`${props.match.url}/survey/:id`} component={Survey} />
+    <Route path={`${props.match.path}/survey/:id`} component={Survey} />
   </Switch>
 );
 

@@ -6,11 +6,11 @@ import Export from "./export/Export";
 
 const Survey = props => (
   <Switch>
-    <Route exact path={`${props.match.url}`} component={Editor} />
+    <Route exact path={`${props.match.path}`} component={Editor} />
 
-    <Route path={`${props.match.url}/preview`} component={Preview} />
+    <Route path={`${props.match.path}/preview`} component={Preview} />
 
-    <Route path={`${props.match.url}/export`} component={Export} />
+    <Route path={`${props.match.path}/export`} component={Export} />
   </Switch>
 );
 
