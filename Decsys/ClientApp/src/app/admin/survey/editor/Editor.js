@@ -5,7 +5,6 @@ import SurveyEditorBar from "./SurveyEditorBar";
 import { Grid, Cell } from "styled-css-grid";
 import FlexBox from "../../../common/FlexBox";
 import { Typography } from "@smooth-ui/core-sc";
-import ActiveIndicator from "../../../common/ActiveIndicator";
 
 const ComponentTool = withTheme(({ name, theme }) => (
   <Typography m={1} p={1} borderRadius={5} border={1}>
