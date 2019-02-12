@@ -6,7 +6,7 @@ import { InfoCircle, PlusCircle } from "styled-icons/fa-solid";
 import FlexBox from "../../common/FlexBox";
 import SurveyList from "./SurveyList";
 import Container from "../../common/Container";
-import { CreateNewSurvey } from "./_actions";
+import { createNewSurvey } from "./_ops";
 
 // TODO: Create New Survey wiring
 let Surveys = ({ onCreateNewSurveyClick }) => (
@@ -16,14 +16,7 @@ let Surveys = ({ onCreateNewSurveyClick }) => (
 
       <Route
         render={({ history, match }) => (
-          <Button
-            variant="secondary"
-            onClick={() => {
-              onCreateNewSurveyClick(); // update state (TODO: AJAX)
-              // need the new id...
-              history.push(`survey/2`);
-            }}
-          >
+          <Button variant="secondary" onClick={onCreateNewSurveyClick}>
             <PlusCircle size="1em" /> Create New Survey
           </Button>
         )}
@@ -42,7 +35,7 @@ let Surveys = ({ onCreateNewSurveyClick }) => (
 Surveys = connect(
   null,
   dispatch => ({
-    onCreateNewSurveyClick: () => dispatch(CreateNewSurvey())
+    onCreateNewSurveyClick: () => dispatch(createNewSurvey())
   })
 )(Surveys);
 

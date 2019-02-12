@@ -9,7 +9,7 @@ const EditorBarButton = props => (
 
 const SurveyEditorBar = ({ name }) => (
   <Grid columnGap="0px" columns="1fr auto auto auto auto">
-    <Input size="lg" defaultValue={name} />
+    <Input size="lg" defaultValue={name} borderRadius={0} />
     <EditorBarButton>
       <Eye size="1em" /> Preview
     </EditorBarButton>

@@ -68,6 +68,14 @@ const dataReducer = (
           [dupe.id]: dupe
         }
       };
+    case types.CREATE_SURVEY:
+      return {
+        ...state,
+        surveys: {
+          ...state.surveys,
+          [action.survey.id]: action.survey
+        }
+      };
     default:
       return state;
   }
