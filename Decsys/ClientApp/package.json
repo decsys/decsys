@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@smooth-ui/core-sc": "^8.1.0",
+    "connected-react-router": "^6.3.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",

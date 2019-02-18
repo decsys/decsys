@@ -31,3 +31,8 @@ export const DeleteSurvey = id => ({
   type: types.DELETE_SURVEY,
   id
 });
+
+export const CreateNewSurvey = survey => ({
+  type: types.CREATE_SURVEY,
+  survey
+});

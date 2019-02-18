@@ -1,19 +1,26 @@
 import React from "react";
+import { connect } from "react-redux";
+import { Route } from "react-router-dom";
 import { Typography, Button, Alert } from "@smooth-ui/core-sc";
 import { InfoCircle, PlusCircle } from "styled-icons/fa-solid";
 import FlexBox from "../../common/FlexBox";
 import SurveyList from "./SurveyList";
 import Container from "../../common/Container";
+import { createNewSurvey } from "./_ops";
 
 // TODO: Create New Survey wiring
-const Surveys = () => (
+let Surveys = ({ onCreateNewSurveyClick }) => (
   <Container>
     <FlexBox my="3em" alignItems="center" justifyContent="space-between">
       <Typography variant="h1">My Surveys</Typography>
 
-      <Button variant="secondary">
-        <PlusCircle size="1em" /> Create New Survey
-      </Button>
+      <Route
+        render={({ history, match }) => (
+          <Button variant="secondary" onClick={onCreateNewSurveyClick}>
+            <PlusCircle size="1em" /> Create New Survey
+          </Button>
+        )}
+      />
     </FlexBox>
 
     <Alert variant="info">
@@ -24,5 +31,12 @@ const Surveys = () => (
     <SurveyList />
   </Container>
 );
+
+Surveys = connect(
+  null,
+  dispatch => ({
+    onCreateNewSurveyClick: () => dispatch(createNewSurvey())
+  })
+)(Surveys);
 
 export default Surveys;

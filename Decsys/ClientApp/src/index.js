@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router } from "react-router-dom";
+import { createBrowserHistory } from "history";
 import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import { Provider } from "react-redux";
 import { configureStore } from "redux-starter-kit";
@@ -9,21 +9,27 @@ import App from "./app/App";
 import rootReducer from "./reducers";
 
 import * as serviceWorker from "./serviceWorker";
+import { routerMiddleware, ConnectedRouter } from "connected-react-router";
+import thunk from "redux-thunk";
+
+const history = createBrowserHistory();
 
 ReactDOM.render(
   <>
     <Normalize />
-    <Router>
-      <ThemeProvider theme={theme}>
-        <Provider
-          store={configureStore({
-            reducer: rootReducer
-          })}
-        >
+
+    <ThemeProvider theme={theme}>
+      <Provider
+        store={configureStore({
+          reducer: rootReducer(history),
+          middleware: [routerMiddleware(history), thunk]
+        })}
+      >
+        <ConnectedRouter history={history}>
           <App />
-        </Provider>
-      </ThemeProvider>
-    </Router>
+        </ConnectedRouter>
+      </Provider>
+    </ThemeProvider>
   </>,
   document.getElementById("root")
 );
