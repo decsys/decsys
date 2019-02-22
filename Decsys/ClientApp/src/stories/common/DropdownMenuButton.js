@@ -1,18 +1,24 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
+import { action } from "@storybook/addon-actions";
 import DropdownMenuButton from "../../app/common/DropdownMenuButton";
 import MenuItem from "../../app/common/MenuItem";
 import { AngleRight, EllipsisV } from "styled-icons/fa-solid";
 
+const items = (
+  <>
+    <MenuItem onClick={action("Hello clicked")}>Hello</MenuItem>
+    <MenuItem onClick={action("Goodbye clicked")}>
+      <AngleRight size="1em" />
+      Goodbye
+    </MenuItem>
+  </>
+);
+
 storiesOf("DropdownMenuButton", module)
+  .add("Default", () => <DropdownMenuButton>{items}</DropdownMenuButton>)
   .add("Text", () => (
-    <DropdownMenuButton button="Hello">
-      <MenuItem>Hello</MenuItem>
-      <MenuItem>
-        <AngleRight size="1em" />
-        Goodbye
-      </MenuItem>
-    </DropdownMenuButton>
+    <DropdownMenuButton button="Hello">{items}</DropdownMenuButton>
   ))
   .add("Icon and Text", () => (
     <DropdownMenuButton
@@ -23,20 +29,12 @@ storiesOf("DropdownMenuButton", module)
         </>
       }
     >
-      <MenuItem>Hello</MenuItem>
-      <MenuItem>
-        <AngleRight size="1em" />
-        Goodbye
-      </MenuItem>
+      {items}
     </DropdownMenuButton>
   ))
   .add("Without caret", () => (
     <DropdownMenuButton button={<EllipsisV size="1em" />} caret={false}>
-      <MenuItem>Hello</MenuItem>
-      <MenuItem>
-        <AngleRight size="1em" />
-        Goodbye
-      </MenuItem>
+      {items}
     </DropdownMenuButton>
   ))
   .add("Pass on Button props", () => (
@@ -49,10 +47,6 @@ storiesOf("DropdownMenuButton", module)
       button={<EllipsisV size="1em" />}
       caret={false}
     >
-      <MenuItem>Hello</MenuItem>
-      <MenuItem>
-        <AngleRight size="1em" />
-        Goodbye
-      </MenuItem>
+      {items}
     </DropdownMenuButton>
   ));
