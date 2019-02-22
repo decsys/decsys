@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography } from "@smooth-ui/core-sc";
 
-const RunCountBadge = ({ count }) => (
+const RunCountBadge = ({ count = 0 }) => (
   <Typography
     display="inline"
     backgroundColor="info"
