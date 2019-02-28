@@ -9,11 +9,11 @@ namespace Decsys.Controllers
     [Route("api/[controller]")]
     public class SurveysController : Controller
     {
-        private readonly SurveyWriteService _surveyWrite;
+        private readonly SurveyService _surveys;
 
-        public SurveysController(SurveyWriteService surveyWrite)
+        public SurveysController(SurveyService surveys)
         {
-            _surveyWrite = surveyWrite;
+            _surveys = surveys;
         }
 
         private static readonly SurveySummary[] Summaries = new[]
@@ -27,12 +27,17 @@ namespace Decsys.Controllers
         public IEnumerable<SurveySummary> List() => Summaries;
 
         [HttpGet("{id}")]
-        public Survey Get(int id) => new Survey { Id = id, Name = "Test return value" };
+        public IActionResult Get(int id)
+        => _surveys.Get(id) switch
+        {
+            Survey s => Ok(s),
+            _ => (ActionResult)NotFound()
+        };
 
         [HttpPost]
         public IActionResult Create(string name = null)
         {
-            var id = _surveyWrite.Create(name);
+            var id = _surveys.Create(name);
             return Created(Url.Action("Get", new { id }), id);
         }
     }

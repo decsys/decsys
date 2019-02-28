@@ -35,7 +35,7 @@ namespace Decsys
 
             services.AddAutoMapper();
 
-            services.AddTransient<SurveyWriteService>();
+            services.AddTransient<SurveyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

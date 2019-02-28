@@ -1,18 +1,23 @@
-﻿using AutoMapper;
-using Decsys.Data.Entities;
-using Decsys.Models;
+﻿using Decsys.Data.Entities;
 using LiteDB;
 
 namespace Decsys.Services
 {
-    public class SurveyWriteService
+    public class SurveyService
     {
         private readonly LiteDatabase _db;
 
-        public SurveyWriteService(LiteDatabase db)
+        public SurveyService(LiteDatabase db)
         {
             _db = db;
         }
+
+        /// <summary>
+        /// Get a Survey by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to get.</param>
+        /// <returns>The requested Survey, or null if not found.</returns>
+        public Survey Get(int id) => _db.GetCollection<Survey>("Surveys").FindById(id);
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
