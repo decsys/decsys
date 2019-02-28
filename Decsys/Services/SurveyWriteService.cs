@@ -8,15 +8,13 @@ namespace Decsys.Services
     public class SurveyWriteService
     {
         private readonly LiteDatabase _db;
-        private readonly IMapper _mapper;
 
-        public SurveyWriteService(LiteDatabase db, IMapper mapper)
+        public SurveyWriteService(LiteDatabase db)
         {
             _db = db;
-            _mapper = mapper;
         }
 
-        public SurveySummary Create(string name = null)
+        public Survey Create(string name = null)
         {
             var surveys = _db.GetCollection<Survey>("Surveys");
             var id = surveys.Insert(name is null ? new Survey() : new Survey
@@ -24,7 +22,7 @@ namespace Decsys.Services
                 Name = name
             });
 
-            return _mapper.Map<SurveySummary>(surveys.FindById(id));
+            return surveys.FindById(id);
         }
     }
 }

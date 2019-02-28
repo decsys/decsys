@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Decsys.Data.Entities;
 using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,6 @@ namespace Decsys.Controllers
         public IEnumerable<SurveySummary> List() => Summaries;
 
         [HttpPost]
-        public SurveySummary Create(string name = null) => _surveyWrite.Create(name);
+        public Survey Create(string name = null) => _surveyWrite.Create(name);
     }
 }
