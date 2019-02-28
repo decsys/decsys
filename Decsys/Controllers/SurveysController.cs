@@ -26,7 +26,14 @@ namespace Decsys.Controllers
         [HttpGet]
         public IEnumerable<SurveySummary> List() => Summaries;
 
+        [HttpGet("{id}")]
+        public Survey Get(int id) => new Survey { Id = id, Name = "Test return value" };
+
         [HttpPost]
-        public Survey Create(string name = null) => _surveyWrite.Create(name);
+        public IActionResult Create(string name = null)
+        {
+            var id = _surveyWrite.Create(name);
+            return Created(Url.Action("Get", new { id }), id);
+        }
     }
 }

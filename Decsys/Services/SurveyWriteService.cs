@@ -14,15 +14,16 @@ namespace Decsys.Services
             _db = db;
         }
 
-        public Survey Create(string name = null)
-        {
-            var surveys = _db.GetCollection<Survey>("Surveys");
-            var id = surveys.Insert(name is null ? new Survey() : new Survey
-            {
-                Name = name
-            });
-
-            return surveys.FindById(id);
-        }
+        /// <summary>
+        /// Creates a Survey with the provided name (or the default one).
+        /// </summary>
+        /// <param name="name">The name to give the new Survey.</param>
+        /// <returns>The ID of the newly created Survey.</returns>
+        public int Create(string name = null)
+            => _db.GetCollection<Survey>("Surveys")
+                .Insert(name is null ? new Survey() : new Survey
+                {
+                    Name = name
+                });
     }
 }
