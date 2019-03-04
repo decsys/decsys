@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Modules</title>
+  </head>
+  <body>
+    Use the console to explore loaded modules
+
+    <script src="/node_modules/react/umd/react.development.js"></script>
+    <script src="/node_modules/react-dom/umd/react-dom.development.js"></script>
+    <script src="/api/components" type="module"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const list = document.querySelector("ul");
+        for (let i = 0; i < Object.keys(__DECSYS__.Components).length; i++) {
+          const item = document.createElement("li");
+          list.appendChild(item);
+          item.innerHTML = Object.keys(__DECSYS__.Components)[i];
+        }
+      });
+    </script>
+
+    <ul></ul>
+  </body>
+</html>

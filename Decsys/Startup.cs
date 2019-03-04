@@ -7,6 +7,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
 using Decsys.Services;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.StaticFiles;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace Decsys
 {
@@ -54,6 +60,17 @@ namespace Decsys
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // components' static files
+            // serve static files but only those we can validly map
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(env.ContentRootPath, Configuration["Paths:Components:Root"])),
+                RequestPath = "/static/components",
+                ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
+            });
+
             app.UseSpaStaticFiles();
 
             app.UseMvc(routes =>
@@ -72,6 +89,18 @@ namespace Decsys
             //        spa.UseReactDevelopmentServer(npmScript: "start");
             //    }
             //});
+        }
+
+        private IDictionary<string, string> GetValidMappings()
+        {
+            // in future we may want to make this a configurable list.
+            var validExtensions = new List<string> { ".js" };
+
+            // steal the mappings we want from a default FileExtensionContentTypeProvider
+            return new FileExtensionContentTypeProvider().Mappings
+                .Where(x => validExtensions.Contains(x.Key))
+                .ToDictionary(x => x.Key, x => x.Value,
+                    StringComparer.OrdinalIgnoreCase);
         }
     }
 }
