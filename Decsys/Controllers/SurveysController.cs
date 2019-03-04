@@ -28,17 +28,26 @@ namespace Decsys.Controllers
 
         [HttpGet("{id}")]
         public IActionResult Get(int id)
-        => _surveys.Get(id) switch
-        {
-            Survey s => Ok(s),
-            _ => (ActionResult)NotFound()
-        };
+            => Ok(_surveys.Get(id)) ?? (ActionResult)NotFound();
 
         [HttpPost]
         public IActionResult Create(string name = null)
         {
             var id = _surveys.Create(name);
             return Created(Url.Action("Get", new { id }), id);
+        }
+
+        [HttpPut("{id}/name")]
+        public IActionResult EditName(int id, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return BadRequest($"{nameof(name)} must not be empty.");
+
+            try
+            {
+                _surveys.EditName(id, name); return Ok(name);
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
         }
     }
 }

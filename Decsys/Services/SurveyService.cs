@@ -1,4 +1,5 @@
-﻿using Decsys.Data.Entities;
+﻿using System.Collections.Generic;
+using Decsys.Data.Entities;
 using LiteDB;
 
 namespace Decsys.Services
@@ -30,5 +31,18 @@ namespace Decsys.Services
                 {
                     Name = name
                 });
+
+        /// <summary>
+        /// Edit the name of a Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to edit.</param>
+        /// <param name="name">The new name for the Survey.</param>
+        public void EditName(int id, string name)
+        {
+            var surveys = _db.GetCollection<Survey>("Surveys");
+            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            survey.Name = name;
+            surveys.Update(survey);
+        }
     }
 }
