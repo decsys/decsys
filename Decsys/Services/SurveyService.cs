@@ -6,11 +6,15 @@ using LiteDB;
 
 namespace Decsys.Services
 {
+    /// <summary>
+    /// Top level Survey functionality.
+    /// </summary>
     public class SurveyService
     {
         private readonly LiteDatabase _db;
         private readonly IMapper _mapper;
 
+        /// <summary>DI Constructor</summary>
         public SurveyService(LiteDatabase db, IMapper mapper)
         {
             _db = db;

@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using Decsys.Data.Entities;
 using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     public class SurveysController : Controller
     {
@@ -16,10 +19,15 @@ namespace Decsys.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation("List summary data for all Surveys.")]
         public IEnumerable<SurveySummary> List() => _surveys.List();
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [SwaggerOperation("Get a single Survey by ID.")]
+        [SwaggerResponse(200, "The Survey with the requested ID.", typeof(Survey))]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        public IActionResult Get(
+            [SwaggerParameter("ID of the Survey to get.")] int id)
             => Ok(_surveys.Get(id)) ?? (ActionResult)NotFound();
 
         [HttpPost]

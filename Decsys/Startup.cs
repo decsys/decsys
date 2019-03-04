@@ -2,7 +2,6 @@ using LiteDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
@@ -13,7 +12,9 @@ using Microsoft.AspNetCore.StaticFiles;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Swashbuckle.AspNetCore.Swagger;
 
+#pragma warning disable 1591
 namespace Decsys
 {
     public class Startup
@@ -42,6 +43,12 @@ namespace Decsys
             services.AddAutoMapper();
 
             services.AddTransient<SurveyService>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "DECSYS API", Version = "v1" });
+                c.EnableAnnotations();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +87,14 @@ namespace Decsys
                     template: "{controller}/{action=Index}/{id?}");
             });
 
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.RoutePrefix = "api";
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DECSYS API v1");
+            });
+
             //app.UseSpa(spa =>
             //{
             //    spa.Options.SourcePath = "ClientApp";
@@ -104,3 +119,4 @@ namespace Decsys
         }
     }
 }
+#pragma warning restore 1591
