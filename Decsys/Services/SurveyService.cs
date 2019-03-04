@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using AutoMapper;
 using Decsys.Data.Entities;
+using Decsys.Models;
 using LiteDB;
 
 namespace Decsys.Services
@@ -7,10 +9,12 @@ namespace Decsys.Services
     public class SurveyService
     {
         private readonly LiteDatabase _db;
+        private readonly IMapper _mapper;
 
-        public SurveyService(LiteDatabase db)
+        public SurveyService(LiteDatabase db, IMapper mapper)
         {
             _db = db;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -19,6 +23,14 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to get.</param>
         /// <returns>The requested Survey, or null if not found.</returns>
         public Survey Get(int id) => _db.GetCollection<Survey>("Surveys").FindById(id);
+
+        // TODO: PAGINATE
+        /// <summary>
+        /// List summary data for all Surveys.
+        /// </summary>
+        /// <returns>All surveys summarised.</returns>
+        public IEnumerable<SurveySummary> List() =>
+            _mapper.Map<IEnumerable<SurveySummary>>(_db.GetCollection<Survey>("Surveys").FindAll());
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
