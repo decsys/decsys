@@ -49,6 +49,14 @@ namespace Decsys.Services
                 });
 
         /// <summary>
+        /// Attempt to delete a Survey by ID.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to delete.</param>
+        /// <returns>True if the deletion was successful, or false if the record was not found.</returns>
+        public bool Delete(int id)
+            => _db.GetCollection<Survey>("Surveys").Delete(id);
+
+        /// <summary>
         /// Edit the name of a Survey.
         /// </summary>
         /// <param name="id">The ID of the Survey to edit.</param>
