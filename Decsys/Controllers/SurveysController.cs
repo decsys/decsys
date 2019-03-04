@@ -38,7 +38,7 @@ namespace Decsys.Controllers
         }
 
         [HttpPut("{id}/name")]
-        public IActionResult EditName(int id, string name)
+        public IActionResult EditName(int id, [FromBody] string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest($"{nameof(name)} must not be empty.");
