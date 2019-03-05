@@ -21,6 +21,11 @@ namespace Decsys.Services
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Create a new Page in a given Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to create the new Page in.</param>
+        /// <param name="page">The new Page.</param>
         public void Create(int id, Models.Page page)
         {
             // TODO: temporary restriction
