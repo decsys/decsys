@@ -9,7 +9,7 @@ namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ComponentsController : Controller
+    public class ComponentsController : ControllerBase
     {
         private readonly IConfiguration _config;
         private readonly IFileProvider _fileProvider;
@@ -27,6 +27,8 @@ namespace Decsys.Controllers
             "and adds them by name to a global dictionary of available components.")]
         public FileResult GetComponentModules()
         {
+            // TODO: Move the hard work to a service?
+
             var output = new StringBuilder();
             const string global = "window.__DECSYS__";
             const string components = ".Components";
@@ -48,7 +50,7 @@ namespace Decsys.Controllers
 
                 // Import the component module, and some metadata
                 output.Append(
-                    "import File").Append(++counter)
+                    "import Module").Append(++counter)
                     .Append(", { name as name").Append(counter)
                     //.Append(" , version as version").Append(counter) // TODO: work out new versioning
                     .Append(" } from '/static/components/").Append(file.Name)
@@ -57,7 +59,7 @@ namespace Decsys.Controllers
                 // Add the module to our components dictionary
                 output.Append(global).Append(components)
                     .Append("[name").Append(counter)
-                    .Append("] = File").Append(counter)
+                    .Append("] = Module").Append(counter)
                     .AppendLine(";");
             }
 

@@ -8,6 +8,6 @@ namespace Decsys.Models
 
         public string Name { get; set; }
 
-        public IEnumerable<IPage> Pages { get; set; }
+        public IEnumerable<Page> Pages { get; set; }
     }
 }

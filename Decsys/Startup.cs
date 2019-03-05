@@ -43,6 +43,7 @@ namespace Decsys
             services.AddAutoMapper();
 
             services.AddTransient<SurveyService>();
+            services.AddTransient<PageService>();
 
             services.AddSwaggerGen(c =>
             {

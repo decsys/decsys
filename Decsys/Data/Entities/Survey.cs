@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using LiteDB;
 
 namespace Decsys.Data.Entities
 {
@@ -9,6 +8,6 @@ namespace Decsys.Data.Entities
 
         public string Name { get; set; } = "Untitled Survey";
 
-        public IEnumerable<BsonDocument> Pages { get; set; } = new List<BsonDocument>();
+        public IEnumerable<Page> Pages { get; set; } = new List<Page>();
     }
 }

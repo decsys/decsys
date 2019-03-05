@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
-using Decsys.Models;
+using Decsys.Data.Entities;
 using LiteDB;
-using SurveyEntity = Decsys.Data.Entities.Survey;
 
 namespace Decsys.Services
 {
@@ -26,8 +25,8 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="id">The ID of the Survey to get.</param>
         /// <returns>The requested Survey, or null if not found.</returns>
-        public Survey Get(int id) => _mapper.Map<Survey>(
-            _db.GetCollection<SurveyEntity>("Surveys")
+        public Models.Survey Get(int id) => _mapper.Map<Models.Survey>(
+            _db.GetCollection<Survey>("Surveys")
             .FindById(id));
 
         // TODO: PAGINATE
@@ -35,9 +34,9 @@ namespace Decsys.Services
         /// List summary data for all Surveys.
         /// </summary>
         /// <returns>All surveys summarised.</returns>
-        public IEnumerable<SurveySummary> List() =>
-            _mapper.Map<IEnumerable<SurveySummary>>(
-                _db.GetCollection<SurveyEntity>("Surveys")
+        public IEnumerable<Models.SurveySummary> List() =>
+            _mapper.Map<IEnumerable<Models.SurveySummary>>(
+                _db.GetCollection<Survey>("Surveys")
                 .FindAll());
 
         /// <summary>
@@ -46,10 +45,37 @@ namespace Decsys.Services
         /// <param name="name">The name to give the new Survey.</param>
         /// <returns>The ID of the newly created Survey.</returns>
         public int Create(string name = null)
-            => _db.GetCollection<SurveyEntity>("Surveys")
-                .Insert(name is null ? new SurveyEntity() : new SurveyEntity
+            => _db.GetCollection<Survey>("Surveys")
+                .Insert(name is null ? new Survey() : new Survey
                 {
-                    Name = name
+                    Name = name,
+                    Pages = new List<Page>
+                    {
+                        // TODO: these are temporary until we have the new configurable pages
+                        new Page
+                        {
+                            Order = 1,
+                            Type = "Welcome",
+                            Params = new BsonDocument
+                            {
+                                ["title"] = "Welcome to my Survey",
+                                ["body"] = "Please read this interesting information.",
+                                ["requireAcceptance"] = false,
+                                ["active"] = true
+                            }
+                        },
+                        new Page
+                        {
+                            Order = 2,
+                            Type = "ThankYou",
+                            Params = new BsonDocument
+                            {
+                                ["title"] = "Goodbye to my Survey",
+                                ["body"] = "Thanks for playing!",
+                                ["active"] = true
+                            }
+                        }
+                    }
                 });
 
         /// <summary>
@@ -58,7 +84,7 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to delete.</param>
         /// <returns>True if the deletion was successful, or false if the record was not found.</returns>
         public bool Delete(int id)
-            => _db.GetCollection<SurveyEntity>("Surveys").Delete(id);
+            => _db.GetCollection<Survey>("Surveys").Delete(id);
 
         /// <summary>
         /// Edit the name of a Survey.
@@ -67,7 +93,7 @@ namespace Decsys.Services
         /// <param name="name">The new name for the Survey.</param>
         public void EditName(int id, string name)
         {
-            var surveys = _db.GetCollection<SurveyEntity>("Surveys");
+            var surveys = _db.GetCollection<Survey>("Surveys");
             var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
             survey.Name = name;
             surveys.Update(survey);
