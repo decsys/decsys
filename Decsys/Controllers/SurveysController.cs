@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Decsys.Data.Entities;
 using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -28,11 +27,20 @@ namespace Decsys.Controllers
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
         public IActionResult Get(
             [SwaggerParameter("ID of the Survey to get.")] int id)
-            => Ok(_surveys.Get(id)) ?? (ActionResult)NotFound();
+        {
+            var survey = _surveys.Get(id);
+            return survey is null
+                ? (ActionResult)NotFound()
+                : Ok(survey);
+        }
 
         [HttpPost]
+        [SwaggerOperation("Create a new Survey.")]
+        [SwaggerResponse(201, "The Survey was successfully created with the returned ID.")]
         public IActionResult Create(
-            [SwaggerParameter("ID of the Survey to get.")]string name = null)
+            [FromBody]
+            [SwaggerParameter("Optional name of the new survey, otherwise a default name is used.")]
+            string name = null)
         {
             var id = _surveys.Create(name);
             return Created(Url.Action("Get", new { id }), id);

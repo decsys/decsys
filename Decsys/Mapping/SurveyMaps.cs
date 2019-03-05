@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Decsys.Data.Entities;
 using Decsys.Models;
 
 namespace Decsys.Mapping
@@ -8,7 +7,8 @@ namespace Decsys.Mapping
     {
         public SurveyMaps()
         {
-            CreateMap<Survey, SurveySummary>();
+            CreateMap<Data.Entities.Survey, SurveySummary>();
+            CreateMap<Data.Entities.Survey, Survey>();
         }
     }
 }

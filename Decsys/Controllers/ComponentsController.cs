@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
 {
@@ -20,6 +21,10 @@ namespace Decsys.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation("Get a JavaScript component module loader.",
+            description: "Returns a dyamically generated JavaScript file " +
+            "which imports all custom component modules " +
+            "and adds them by name to a global dictionary of available components.")]
         public FileResult GetComponentModules()
         {
             var output = new StringBuilder();
@@ -48,7 +53,7 @@ namespace Decsys.Controllers
                     //.Append(" , version as version").Append(counter) // TODO: work out new versioning
                     .Append(" } from '/static/components/").Append(file.Name)
                     .AppendLine("';");
-                
+
                 // Add the module to our components dictionary
                 output.Append(global).Append(components)
                     .Append("[name").Append(counter)
