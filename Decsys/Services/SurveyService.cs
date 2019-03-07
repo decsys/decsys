@@ -30,7 +30,7 @@ namespace Decsys.Services
             _db.GetCollection<Survey>(Collections.Surveys)
             .FindById(id));
 
-        // TODO: PAGINATE
+        // TODO: PAGINATE?
         /// <summary>
         /// List summary data for all Surveys.
         /// </summary>
@@ -78,19 +78,25 @@ namespace Decsys.Services
                   .Insert(name is null
                       ? new Survey { Pages = pages }
                       : new Survey
-                          {
-                              Name = name,
-                              Pages = pages
-                          });
+                      {
+                          Name = name,
+                          Pages = pages
+                      });
         }
 
         /// <summary>
         /// Attempt to delete a Survey by ID.
         /// </summary>
         /// <param name="id">The ID of the Survey to delete.</param>
-        /// <returns>True if the deletion was successful, or false if the record was not found.</returns>
-        public bool Delete(int id)
-            => _db.GetCollection<Survey>(Collections.Surveys).Delete(id);
+        public void Delete(int id)
+        {
+            // TODO: more to delete than just the survey
+            // sessions, results data etc...
+            _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
+                .Delete(x => x.Survey.Id == id);
+
+            _db.GetCollection<Survey>(Collections.Surveys).Delete(id);
+        }
 
         /// <summary>
         /// Edit the name of a Survey.

@@ -45,14 +45,13 @@ namespace Decsys.Controllers
 
         [HttpDelete("{id}")]
         [SwaggerOperation("Delete a single Survey by ID.")]
-        [SwaggerResponse(204, "The Survey was succesfully deleted.")]
-        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        [SwaggerResponse(204, "The Survey, with its associated data, was succesfully deleted.")]
         public IActionResult Delete(
-            [SwaggerParameter("ID of the Survey to delete.")] int id)
+            [SwaggerParameter("ID of the Survey to delete.")]
+            int id)
         {
-            // TODO: more to delete than just the survey
-            // sessions, results data etc...
-            return _surveys.Delete(id) ? (ActionResult)NoContent() : NotFound();
+            _surveys.Delete(id);
+            return NoContent();
         }
 
         [HttpPut("{id}/name")]
