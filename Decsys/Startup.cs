@@ -44,6 +44,7 @@ namespace Decsys
 
             services.AddTransient<SurveyService>();
             services.AddTransient<PageService>();
+            services.AddTransient<SurveyInstanceService>();
 
             services.AddSwaggerGen(c =>
             {

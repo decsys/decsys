@@ -4,6 +4,6 @@
     {
         public const string Surveys = "Surveys";
 
-        public const string SurveyInstances = "SurveyIsntances";
+        public const string SurveyInstances = "SurveyInstances";
     }
 }
