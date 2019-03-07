@@ -17,10 +17,10 @@ namespace Decsys.Mapping
                 .ForMember(dest => dest.Params,
                     opt => opt.MapFrom(
                         src => JObject.Parse(JsonSerializer.Serialize(src.Params, false, false)))); // TODO: make this less dumb?
-            CreateMap<NewPage, Data.Entities.Page>()
+            CreateMap<NewPage, Data.Entities.Page>();
+            CreateMap<Page, Data.Entities.Page>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new JObjectBsonConverter()));
-            CreateMap<Page, Data.Entities.Page>();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
@@ -48,7 +49,11 @@ namespace Decsys.Controllers
         [SwaggerResponse(204, "The Page was deleted successfully.")]
         [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
         [SwaggerResponse(400, "The Page requested to delete is a Welcome or ThankYou page.")]
-        public IActionResult Delete(int id, Guid pageId)
+        public IActionResult Delete(
+            [SwaggerParameter("ID of the Survey to delete a Page from.")]
+            int id,
+            [SwaggerParameter("ID of the Page to delete.")]
+            Guid pageId)
         {
             try
             {
@@ -69,7 +74,14 @@ namespace Decsys.Controllers
         [SwaggerResponse(400,
             "The Page requested to move is a Welcome or ThankYou page, " +
             "or the requested new Order is unsuitable (i.e. First or Last).")]
-        public IActionResult Move(int id, Guid pageId, [FromBody]int targetPosition)
+        public IActionResult Move(
+            [SwaggerParameter("ID of the Survey to change the Page in.")]
+            int id,
+            [SwaggerParameter("ID of the Page to change the order of.")]
+            Guid pageId,
+            [FromBody]
+            [SwaggerParameter("The new order value for the Page.")]
+            int targetPosition)
         {
             try
             {
@@ -87,6 +99,29 @@ namespace Decsys.Controllers
         }
 
         [HttpPatch("{pageId}/params")]
-        public IActionResult EditParams(int id, Guid pageId) => throw new NotImplementedException();
+        [SwaggerOperation("Edit parameter values for the Page.")]
+        [SwaggerResponse(204, "The Page params were updated were updated successfully.")]
+        [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
+        public IActionResult EditParams(
+            [SwaggerParameter("ID of the Survey to change the Page in.")]
+            int id,
+            [SwaggerParameter("ID of the Page to change the order of.")]
+            Guid pageId,
+            [FromBody]
+            [SwaggerParameter(
+                "A dictionary of parameter keys and values " +
+                "to merge into the Page's currently stored parameters.")]
+            JObject pageParams)
+        {
+            try
+            {
+                _pages.MergeParams(id, pageId, pageParams);
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
     }
 }
