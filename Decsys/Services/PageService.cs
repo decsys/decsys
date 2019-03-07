@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Decsys.Data;
 using Decsys.Data.Entities;
 using LiteDB;
 using Newtonsoft.Json.Linq;
@@ -40,7 +41,7 @@ namespace Decsys.Services
                    "Page Order must be greater than 1.");
             }
 
-            var surveys = _db.GetCollection<Survey>("Surveys");
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
             var survey = surveys.FindById(id)
                 ?? throw new KeyNotFoundException();
 
@@ -86,7 +87,7 @@ namespace Decsys.Services
                    "New Page Order must be greater than 1.");
             }
 
-            var surveys = _db.GetCollection<Survey>("Surveys");
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
             var survey = surveys.FindById(id);
             if (survey is null) throw new KeyNotFoundException("Survey could not be found.");
 
@@ -142,7 +143,7 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
         internal void ClearParam(int id, Guid pageId, string paramKey)
         {
-            var surveys = _db.GetCollection<Survey>("Surveys");
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
             var survey = surveys.FindById(id)
                 ?? throw new KeyNotFoundException("Survey could not be found.");
 
@@ -168,7 +169,7 @@ namespace Decsys.Services
         /// <exception cref="ArgumentException">If the page requested to delete is a Welcome or ThankYou page.</exception>
         public bool Delete(int id, Guid pageId)
         {
-            var surveys = _db.GetCollection<Survey>("Surveys");
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
             var survey = surveys.FindById(id);
             if (survey is null) return false;
 
@@ -198,7 +199,7 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
         public void MergeParams(int id, Guid pageId, JObject pageParams)
         {
-            var surveys = _db.GetCollection<Survey>("Surveys");
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
             var survey = surveys.FindById(id)
                 ?? throw new KeyNotFoundException("Survey could not be found.");
 

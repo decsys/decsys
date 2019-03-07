@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
+using Decsys.Data;
 using Decsys.Data.Entities;
 using LiteDB;
 
@@ -26,7 +27,7 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to get.</param>
         /// <returns>The requested Survey, or null if not found.</returns>
         public Models.Survey Get(int id) => _mapper.Map<Models.Survey>(
-            _db.GetCollection<Survey>("Surveys")
+            _db.GetCollection<Survey>(Collections.Surveys)
             .FindById(id));
 
         // TODO: PAGINATE
@@ -36,7 +37,7 @@ namespace Decsys.Services
         /// <returns>All surveys summarised.</returns>
         public IEnumerable<Models.SurveySummary> List() =>
             _mapper.Map<IEnumerable<Models.SurveySummary>>(
-                _db.GetCollection<Survey>("Surveys")
+                _db.GetCollection<Survey>(Collections.Surveys)
                 .FindAll());
 
         /// <summary>
@@ -73,7 +74,7 @@ namespace Decsys.Services
                         }
                     }
                 };
-            return _db.GetCollection<Survey>("Surveys")
+            return _db.GetCollection<Survey>(Collections.Surveys)
                   .Insert(name is null
                       ? new Survey { Pages = pages }
                       : new Survey
@@ -89,7 +90,7 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to delete.</param>
         /// <returns>True if the deletion was successful, or false if the record was not found.</returns>
         public bool Delete(int id)
-            => _db.GetCollection<Survey>("Surveys").Delete(id);
+            => _db.GetCollection<Survey>(Collections.Surveys).Delete(id);
 
         /// <summary>
         /// Edit the name of a Survey.
@@ -99,7 +100,7 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
         public void EditName(int id, string name)
         {
-            var surveys = _db.GetCollection<Survey>("Surveys");
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
             var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
             survey.Name = name;
             surveys.Update(survey);
