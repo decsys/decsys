@@ -45,38 +45,43 @@ namespace Decsys.Services
         /// <param name="name">The name to give the new Survey.</param>
         /// <returns>The ID of the newly created Survey.</returns>
         public int Create(string name = null)
-            => _db.GetCollection<Survey>("Surveys")
-                .Insert(name is null ? new Survey() : new Survey
+        {
+            var pages = new List<Page>
                 {
-                    Name = name,
-                    Pages = new List<Page>
+                    // TODO: these are temporary until we have the new configurable pages
+                    new Page
                     {
-                        // TODO: these are temporary until we have the new configurable pages
-                        new Page
+                        Order = 1,
+                        Type = "Welcome",
+                        Params = new BsonDocument
                         {
-                            Order = 1,
-                            Type = "Welcome",
-                            Params = new BsonDocument
-                            {
-                                ["title"] = "Welcome to my Survey",
-                                ["body"] = "Please read this interesting information.",
-                                ["requireAcceptance"] = false,
-                                ["active"] = true
-                            }
-                        },
-                        new Page
+                            ["title"] = "Welcome to my Survey",
+                            ["body"] = "Please read this interesting information.",
+                            ["requireAcceptance"] = false,
+                            ["active"] = true
+                        }
+                    },
+                    new Page
+                    {
+                        Order = 2,
+                        Type = "ThankYou",
+                        Params = new BsonDocument
                         {
-                            Order = 2,
-                            Type = "ThankYou",
-                            Params = new BsonDocument
-                            {
-                                ["title"] = "Goodbye to my Survey",
-                                ["body"] = "Thanks for playing!",
-                                ["active"] = true
-                            }
+                            ["title"] = "Goodbye to my Survey",
+                            ["body"] = "Thanks for playing!",
+                            ["active"] = true
                         }
                     }
-                });
+                };
+            return _db.GetCollection<Survey>("Surveys")
+                  .Insert(name is null
+                      ? new Survey { Pages = pages }
+                      : new Survey
+                          {
+                              Name = name,
+                              Pages = pages
+                          });
+        }
 
         /// <summary>
         /// Attempt to delete a Survey by ID.
@@ -91,6 +96,7 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="id">The ID of the Survey to edit.</param>
         /// <param name="name">The new name for the Survey.</param>
+        /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
         public void EditName(int id, string name)
         {
             var surveys = _db.GetCollection<Survey>("Surveys");

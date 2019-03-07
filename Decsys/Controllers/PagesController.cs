@@ -44,8 +44,23 @@ namespace Decsys.Controllers
         }
 
         [HttpDelete("{pageId}")]
-        public IActionResult Delete(int id, Guid pageId) =>
-            _pages.Delete(id, pageId) ? (ActionResult)NoContent() : NotFound();
+        [SwaggerOperation("Delete a Page from a Survey.")]
+        [SwaggerResponse(204, "The Page was deleted successfully.")]
+        [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
+        [SwaggerResponse(400, "The Page requested to delete is a Welcome or ThankYou page.")]
+        public IActionResult Delete(int id, Guid pageId)
+        {
+            try
+            {
+                return _pages.Delete(id, pageId)
+                    ? (ActionResult)NoContent()
+                    : NotFound();
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e);
+            }
+        }
 
         [HttpPut("{pageId}/order")]
         public IActionResult Move(int id, int pageId, [FromBody]int targetPosition) => throw new NotImplementedException();

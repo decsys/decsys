@@ -35,14 +35,11 @@ namespace Decsys.Controllers
         }
 
         [HttpPost]
-        [SwaggerOperation("Create a new Survey.")]
+        [SwaggerOperation("Create a new Survey with a default name.")]
         [SwaggerResponse(201, "The Survey was successfully created with the returned ID.")]
-        public IActionResult Create(
-            [FromBody]
-            [SwaggerParameter("Optional name of the new survey, otherwise a default name is used.")]
-            string name = null)
+        public IActionResult Create()
         {
-            var id = _surveys.Create(name);
+            var id = _surveys.Create();
             return Created(Url.Action("Get", new { id }), id);
         }
 
