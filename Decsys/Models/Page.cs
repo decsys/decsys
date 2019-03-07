@@ -1,13 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
 
 namespace Decsys.Models
 {
-    public class Page
+    public class Page : NewPage
     {
-        public int Order { get; set; }
-
-        public string Type { get; set; }
-
-        public JObject Params { get; set; }
+        public Guid Id { get; set; }
     }
 }
