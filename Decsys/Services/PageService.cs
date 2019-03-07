@@ -58,11 +58,78 @@ namespace Decsys.Services
 
             pages.Insert(page.Order - 1, entity);
 
-            survey.Pages = pages.Select((x, i) => { x.Order = i+1; return x; });
+            survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
 
             surveys.Update(survey);
 
             return _mapper.Map<Models.Page>(entity);
+        }
+
+        /// <summary>
+        /// Move a Page to a new position in the Page Order of a Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to move a Page in.</param>
+        /// <param name="pageId">The ID of the Page to move.</param>
+        /// <param name="targetPosition">The new position in the order to put the Page at.</param>
+        /// <exception cref="ArgumentOutOfRangeException">If the new requested Page Order is not suitable (i.e. First or Last).</exception>
+        /// <exception cref="ArgumentException">If the Page requested to move is a Welcome or ThankYou page (i.e. First or Last).</exception>
+        /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
+        internal void Move(int id, Guid pageId, int targetPosition)
+        {
+            // TODO: temporary restriction
+            // check we're not inserting a page before Welcome
+            if (targetPosition <= 1)
+            {
+                throw new ArgumentOutOfRangeException(
+                   nameof(targetPosition),
+                   "New Page Order must be greater than 1.");
+            }
+
+            var surveys = _db.GetCollection<Survey>("Surveys");
+            var survey = surveys.FindById(id);
+            if (survey is null) throw new KeyNotFoundException("Survey could not be found.");
+
+            var pages = survey.Pages.OrderBy(x => x.Order).ToList();
+
+            // TODO: temporary restriction
+            // check we're not inserting a page after ThankYou
+            if (targetPosition >= pages.Count)
+            {
+                throw new ArgumentOutOfRangeException(
+                   nameof(targetPosition),
+                   $"New Page Order must be less than the number of pages ({pages.Count}).");
+            }
+
+            var page = pages.SingleOrDefault(x => x.Id == pageId);
+            if (page is null) throw new KeyNotFoundException("Page could not be found.");
+
+            if (new[] { "Welcome", "ThankYou" }.Contains(page.Type))
+                throw new ArgumentException(
+                    $"The page with {pageId} is a Welcome or ThankYou page and connot be moved.",
+                    nameof(pageId));
+
+            if (targetPosition == page.Order) return; // job done ;)
+
+            if (targetPosition > page.Order)
+            {
+                // moving upwards:
+                // 1. Insert the page later
+                // 2. Delete the old page
+                var iPage = pages.IndexOf(page);
+                pages.Insert(targetPosition, page);
+                pages.RemoveAt(iPage);
+            }
+            else
+            {
+                // moving downwards:
+                // 1. Delete the old page
+                // 2. Insert the page at the new position
+                pages.Remove(page);
+                pages.Insert(targetPosition - 1, page);
+            }
+
+            survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
+            surveys.Update(survey);
         }
 
         /// <summary>
@@ -82,6 +149,7 @@ namespace Decsys.Services
             var page = pages.SingleOrDefault(x => x.Id == pageId);
             if (page is null) return false;
 
+            // TODO: Temporary, protect Welcome and ThankYou pages
             if (new[] { "Welcome", "ThankYou" }.Contains(page.Type))
                 throw new ArgumentException(
                     $"The page with {pageId} is a Welcome or ThankYou page and connot be deleted.",

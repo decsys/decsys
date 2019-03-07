@@ -63,9 +63,30 @@ namespace Decsys.Controllers
         }
 
         [HttpPut("{pageId}/order")]
-        public IActionResult Move(int id, int pageId, [FromBody]int targetPosition) => throw new NotImplementedException();
+        [SwaggerOperation("Set the Order of a Page in a Survey.")]
+        [SwaggerResponse(204, "The Page was moved successfully.")]
+        [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
+        [SwaggerResponse(400,
+            "The Page requested to move is a Welcome or ThankYou page, " +
+            "or the requested new Order is unsuitable (i.e. First or Last).")]
+        public IActionResult Move(int id, Guid pageId, [FromBody]int targetPosition)
+        {
+            try
+            {
+                _pages.Move(id, pageId, targetPosition);
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e) when (e is ArgumentException || e is ArgumentOutOfRangeException)
+            {
+                return BadRequest(e);
+            }
+        }
 
         [HttpPatch("{pageId}/params")]
-        public IActionResult EditParams() => throw new NotImplementedException();
+        public IActionResult EditParams(int id, Guid pageId) => throw new NotImplementedException();
     }
 }

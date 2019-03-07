@@ -67,7 +67,8 @@ namespace Decsys.Controllers
 
             try
             {
-                _surveys.EditName(id, name); return Ok(name);
+                _surveys.EditName(id, name);
+                return Ok(name);
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }
