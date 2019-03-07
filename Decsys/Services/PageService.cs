@@ -134,6 +134,32 @@ namespace Decsys.Services
         }
 
         /// <summary>
+        /// Clear a Parameter of a Page.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to edit the Page in.</param>
+        /// <param name="pageId">The ID of the Page to edit.</param>
+        /// <param name="paramKey">The Key of the Parameter value to clear.</param>
+        /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
+        internal void ClearParam(int id, Guid pageId, string paramKey)
+        {
+            var surveys = _db.GetCollection<Survey>("Surveys");
+            var survey = surveys.FindById(id)
+                ?? throw new KeyNotFoundException("Survey could not be found.");
+
+            var pages = survey.Pages.OrderBy(x => x.Order).ToList();
+            var entity = pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException("Page could not be found.");
+
+            var page = _mapper.Map<Models.Page>(entity);
+            page.Params.Remove(paramKey);
+
+            pages[pages.IndexOf(entity)] = _mapper.Map<Page>(page);
+
+            survey.Pages = pages;
+            surveys.Update(survey);
+        }
+
+        /// <summary>
         /// Delete a Page from a Survey.
         /// </summary>
         /// <param name="id">The ID of the Survey to remove the Page from.</param>
