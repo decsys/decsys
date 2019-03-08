@@ -50,5 +50,16 @@ namespace Decsys.Controllers
             catch (KeyNotFoundException) { return NotFound(); }
             catch (ArgumentException e) { return BadRequest(e); }
         }
+
+        [HttpPost("{instanceId}/close")]
+        public IActionResult Close(int id, int instanceId)
+        {
+            try
+            {
+                _instances.Close(id, instanceId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+        }
     }
 }
