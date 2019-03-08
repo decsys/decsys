@@ -13,6 +13,6 @@
 
         public int RunCount { get; set; }
 
-        public int? ActiveSessionId { get; set; }
+        public int? ActiveInstanceId { get; set; }
     }
 }
