@@ -21,7 +21,7 @@ namespace Decsys.Mapping
                 .ConstructUsing(src => new SurveySummary(string.Empty))
                 .ForMember(dest => dest.RunCount,
                     opt => opt.MapFrom(src => src.Count()))
-                .ForMember(dest => dest.ActiveSessionId,
+                .ForMember(dest => dest.ActiveInstanceId,
                     opt => opt.MapFrom(src => MapActiveInstanceToId(
                         src.SingleOrDefault(x => x.Closed == null))))
                 .ForAllOtherMembers(opt => opt.Ignore());

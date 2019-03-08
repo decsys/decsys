@@ -5,8 +5,16 @@ namespace Decsys.Data.Entities
 {
     public class SurveyInstance
     {
+        /// <summary>
+        /// DO NOT USE. Only provided for ORM use.
+        /// </summary>
+        [Obsolete]
         public SurveyInstance() { }
 
+        /// <summary>
+        /// Create a SurveyInstance belong to a given Survey.
+        /// </summary>
+        /// <param name="surveyId">ID of the owning Survey.</param>
         public SurveyInstance(int surveyId)
         {
             Survey = new Survey { Id = surveyId };

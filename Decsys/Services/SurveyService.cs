@@ -59,9 +59,8 @@ namespace Decsys.Services
             var pages = new List<Page>
                 {
                     // TODO: these are temporary until we have the new configurable pages
-                    new Page
+                    new Page("Welcome")
                     {
-                        Type = "Welcome",
                         Order = 1,
                         Params = new BsonDocument
                         {
@@ -71,9 +70,8 @@ namespace Decsys.Services
                             ["active"] = true
                         }
                     },
-                    new Page
+                    new Page("ThankYou")
                     {
-                        Type = "ThankYou",
                         Order = 2,
                         Params = new BsonDocument
                         {
