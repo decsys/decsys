@@ -55,4 +55,5 @@ const ManageSurveyButtonContainer = connect(
   })
 )(ManageSurveyButton);
 
+export { ManageSurveyButton };
 export default ManageSurveyButtonContainer;

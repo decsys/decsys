@@ -4,7 +4,7 @@ import { ToggleSurveyActiveButton } from "../../app/admin/surveys/ToggleSurveyAc
 import { action } from "@storybook/addon-actions";
 
 storiesOf("ToggleSurveyActiveButton", module)
-  .add("Inactive", () => (
+  .add("Default (inactive)", () => (
     <ToggleSurveyActiveButton onClick={action("Launch Survey clicked")} />
   ))
   .add("Active", () => (

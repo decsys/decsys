@@ -20,7 +20,7 @@ storiesOf("SortButtonsPanel", module)
       {story()}
     </Provider>
   ))
-  .add("Empty", () => <SortButtonsPanel />)
+  .add("Default (empty)", () => <SortButtonsPanel />)
   .add("One Field", () => <SortButtonsPanel keys={["Name"]} />)
   .add("Two Fields", () => <SortButtonsPanel keys={["Name", "Thing"]} />)
   .add("Complex Display Labels", () => (
