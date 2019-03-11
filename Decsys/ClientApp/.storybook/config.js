@@ -6,10 +6,6 @@ function loadStories() {
   require("../src/stories");
 }
 
-addDecorator(
-  withThemes({
-    Default: theme
-  })
-);
+addDecorator(withThemes({ Default: theme }));
 
 configure(loadStories, module);
