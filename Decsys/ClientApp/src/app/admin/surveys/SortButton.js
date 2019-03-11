@@ -4,8 +4,9 @@ import { Button } from "@smooth-ui/core-sc";
 import { CaretDown, CaretUp } from "styled-icons/fa-solid";
 import { sortSurveyList } from "./_ops";
 
-let SortButton = ({ sortby, current, children, dispatch }) => {
+const SortButton = ({ sortby, current, children, dispatch, ...rest }) => {
   const active = current.key === sortby;
+  const { onClick: _, ...keep } = rest;
   return (
     <Button
       variant="white"
@@ -15,6 +16,7 @@ let SortButton = ({ sortby, current, children, dispatch }) => {
           sortSurveyList(sortby, active ? !current[sortby] : current[sortby])
         )
       }
+      {...keep}
     >
       {children}{" "}
       {current[sortby] ? <CaretUp size="1em" /> : <CaretDown size="1em" />}
@@ -22,8 +24,9 @@ let SortButton = ({ sortby, current, children, dispatch }) => {
   );
 };
 
-SortButton = connect(state => ({
+const SortButtonContainer = connect(state => ({
   current: state.admin.surveys.sort
 }))(SortButton);
 
-export default SortButton;
+export { SortButton };
+export default SortButtonContainer;
