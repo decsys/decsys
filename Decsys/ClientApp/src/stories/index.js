@@ -7,3 +7,4 @@ import "./surveys/SortButton";
 import "./surveys/SortButtonsPanel";
 import "./surveys/ToggleSurveyActiveButton";
 import "./surveys/ManageSurveyButton";
+import "./surveys/Survey";
