@@ -37,7 +37,7 @@ const Survey = ({ name, active, runCount, id, allowLaunch, theme }) => (
 
         {(allowLaunch || active) && (
           <Cell middle>
-            <ToggleSurveyActiveButton isActive={active} id={id} />
+            <ToggleSurveyActiveButton active={active} id={id} />
           </Cell>
         )}
 

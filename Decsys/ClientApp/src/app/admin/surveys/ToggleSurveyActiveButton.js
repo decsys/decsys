@@ -4,23 +4,24 @@ import { Button, Box } from "@smooth-ui/core-sc";
 import { TimesCircle, Rocket } from "styled-icons/fa-solid";
 import { LaunchSession, CloseSession } from "./_actions";
 
-let ToggleSurveyActiveButton = ({ onClick, isActive }) => (
+const ToggleSurveyActiveButton = ({ onClick, active }) => (
   <Button
     display="inline-flex"
     alignItems="center"
-    variant={isActive ? "danger" : "success"}
+    variant={active ? "danger" : "success"}
     onClick={onClick}
   >
-    {isActive ? <TimesCircle size="1em" /> : <Rocket size="1em" />}
-    <Box width="100%">{isActive ? "Close" : "Launch"}</Box>
+    {active ? <TimesCircle size="1em" /> : <Rocket size="1em" />}
+    <Box width="100%">{active ? "Close" : "Launch"}</Box>
   </Button>
 );
 
-ToggleSurveyActiveButton = connect(
+const ToggleSurveyActiveButtonContainer = connect(
   null,
-  (dispatch, { isActive, id }) => ({
-    onClick: () => dispatch(isActive ? CloseSession(id) : LaunchSession(id))
+  (dispatch, { active, id }) => ({
+    onClick: () => dispatch(active ? CloseSession(id) : LaunchSession(id))
   })
 )(ToggleSurveyActiveButton);
 
-export default ToggleSurveyActiveButton;
+export { ToggleSurveyActiveButton };
+export default ToggleSurveyActiveButtonContainer;
