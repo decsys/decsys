@@ -16,7 +16,7 @@ class SurveyList extends Component {
   }
 
   render() {
-    const { filtered, sort, surveys, allowLaunch } = this.props;
+    const { filtered, surveys, allowLaunch } = this.props;
     return (
       <>
         <FlexBox alignItems="center" mb="1em">
@@ -25,7 +25,6 @@ class SurveyList extends Component {
           </Typography>
           <SortButtonsPanel
             keys={["Active", ["Run Count", "runCount"], "Name"]}
-            sort={sort}
           />
 
           <SurveyListFilterInput size="sm" ml="auto" />
