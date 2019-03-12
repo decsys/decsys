@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@smooth-ui/core-sc": "^8.1.0",
+    "@smooth-ui/core-sc": "^9.1.0",
     "connected-react-router": "^6.3.2",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",

@@ -1,7 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import ActiveIndicator from "../../app/common/ActiveIndicator";
+import ActiveIndicator from "./ActiveIndicator";
 
 storiesOf("ActiveIndicator", module)
   .add("Default (inactive)", () => <ActiveIndicator />)
-  .add("Active", () => <ActiveIndicator isActive={true} />);
+  .add("Active", () => <ActiveIndicator active />);

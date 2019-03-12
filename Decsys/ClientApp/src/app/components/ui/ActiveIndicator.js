@@ -1,4 +1,6 @@
 import React from "react";
+import { withTheme } from "styled-components";
+import { th } from "@smooth-ui/core-sc";
 import PropTypes from "prop-types";
 import { Check, Times } from "styled-icons/fa-solid";
 import FlexBox from "./FlexBox";
@@ -10,30 +12,26 @@ import FlexBox from "./FlexBox";
  * All props other than `isActive` are passed on
  * to the underlying `FlexBox` which composes the layout of this component.
  */
-const ActiveIndicator = props => {
-  const { isActive, ...rest } = props;
+const ActiveIndicator = ({ active, ...rest }) => {
+  const Icon = active ? Check : Times;
   return (
     <FlexBox
       alignItems="center"
       p={1}
-      backgroundColor={isActive ? "success" : "gray700"}
-      title={isActive ? "Active" : "Inactive"}
+      backgroundColor={active ? "success" : "gray700"}
+      title={active ? "Active" : "Inactive"}
       {...rest}
     >
-      {isActive ? (
-        <Check size="1em" color="white" />
-      ) : (
-        <Times size="1em" color="white" />
-      )}
+      <Icon size="1em" color="white" />
     </FlexBox>
   );
 };
 
 ActiveIndicator.propTypes = {
-  isActive: PropTypes.bool
+  active: PropTypes.bool
 };
 ActiveIndicator.defaultProps = {
-  isActive: false
+  active: false
 };
 
 export default ActiveIndicator;

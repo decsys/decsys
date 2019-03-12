@@ -1,7 +1,7 @@
-import { theme } from "@smooth-ui/core-sc";
+import { theme, th } from "@smooth-ui/core-sc";
 
 export default {
   ...theme,
   name: "decsys",
-  primary: "#007bff"
+  primary: th("blue")
 };

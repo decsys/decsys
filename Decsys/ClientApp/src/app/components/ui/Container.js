@@ -7,6 +7,6 @@ import { Grid } from "@smooth-ui/core-sc";
  *
  * There's no expectation or need to continue using Smooth's Grid layout inside.
  */
-const Container = props => <Grid gutter={0}>{props.children}</Grid>;
+const Container = ({ children }) => <Grid gutter={0}>{children}</Grid>;
 
 export default Container;
