@@ -11,20 +11,24 @@ const AppBar = ({ theme, brand, children }) => (
     <Container>
       <FlexBox alignItems="center" justifyContent="space-between">
         <AppBarBrand>{brand}</AppBarBrand>
-        <Grid
-          columns={Array(children.length)
-            .fill("auto")
-            .join(" ")}
-        >
-          {children}
-        </Grid>
+        {children != null && (
+          <Grid
+            columns={Array(children.length)
+              .fill("auto")
+              .join(" ")}
+          >
+            {children}
+          </Grid>
+        )}
       </FlexBox>
     </Container>
   </FlexBox>
 );
 
 AppBar.propTypes = {
-  theme: PropTypes.shape({})
+  theme: PropTypes.shape({}),
+  brand: PropTypes.string,
+  children: PropTypes.arrayOf(PropTypes.node)
 };
 
 export default withTheme(AppBar);
