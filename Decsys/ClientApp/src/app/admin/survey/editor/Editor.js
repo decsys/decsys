@@ -4,8 +4,14 @@ import { connect } from "react-redux";
 import SurveyEditorBar from "./SurveyEditorBar";
 import { Grid, Cell } from "styled-css-grid";
 import FlexBox from "../../../common/FlexBox";
-import { Typography, Switch } from "@smooth-ui/core-sc";
-import { AlignLeft, CircleNotch } from "styled-icons/fa-solid";
+import { Typography, Switch, Button } from "@smooth-ui/core-sc";
+import {
+  AlignLeft,
+  CircleNotch,
+  Copy,
+  TrashAlt,
+  EllipsisV
+} from "styled-icons/fa-solid";
 import { DotCircle } from "styled-icons/fa-regular";
 
 const ComponentTool = withTheme(({ icon, name, theme }) => (
@@ -35,34 +41,52 @@ const Page = withTheme(({ fixedPage, n, icon, random, title, type, theme }) => (
   <FlexBox
     flexDirection="column"
     border={1}
-    borderColor={theme.gray200}
+    borderColor={theme.gray500}
     backgroundColor={theme.white}
   >
-    <FlexBox>
+    <FlexBox justifyContent="space-between">
       {!fixedPage && (
         <Grid
           style={{
+            width: "200px",
             padding: ".5em",
-            borderRight: `.5em solid ${theme.gray200}`
+            borderRight: `4px solid ${theme.gray200}`
           }}
-          columns="1fr 1fr"
-          rows="1fr 1fr"
-          areas={["number icon", "random random"]}
+          columns="10px 1fr 1fr"
+          rows="auto auto"
+          areas={["handle number icon", "handle random random"]}
         >
-          <Cell>Q{n}</Cell>
-          <Cell>{icon}</Cell>
-          <Cell area="random">
+          <Cell area="handle" middle>
+            <EllipsisV size="1em" />
+          </Cell>
+          <Cell center>Q{n}</Cell>
+          <Cell center>{icon}</Cell>
+          <Cell area="random" center>
             <FlexBox flexDirection="column" alignItems="center">
-              <Switch labeled />
+              <Switch />
               Random
             </FlexBox>
           </Cell>
         </Grid>
       )}
+
       <FlexBox flexDirection="column" p={1}>
         <Typography color="gray600">{type}</Typography>
         <Typography>{title}</Typography>
       </FlexBox>
+
+      <Grid columns="auto" rows="1fr 1fr" rowGap="0">
+        <Cell>
+          <Button height={1} borderRadius={0} variant="light" title="Duplicate">
+            <Copy size="1em" />
+          </Button>
+        </Cell>
+        <Cell>
+          <Button height={1} borderRadius={0} variant="danger" title="Delete">
+            <TrashAlt size="1em" />
+          </Button>
+        </Cell>
+      </Grid>
     </FlexBox>
   </FlexBox>
 ));
@@ -93,7 +117,7 @@ const PageList = () => (
 
 let Editor = withTheme(({ survey, components, theme }) => (
   <Grid
-    columns="240px 1fr 2fr"
+    columns="240px 2fr 3fr"
     rows="auto 1fr"
     rowGap="0px"
     columnGap="0px"
@@ -110,7 +134,11 @@ let Editor = withTheme(({ survey, components, theme }) => (
       <PageList />
     </Cell>
     <Cell area="config">
-      <div>Hello</div>
+      <FlexBox>
+        <Typography p={1} width={1} textAlign="center">
+          Hello
+        </Typography>
+      </FlexBox>
     </Cell>
   </Grid>
 ));
