@@ -3,14 +3,14 @@ import { withTheme } from "styled-components";
 import PropTypes from "prop-types";
 import FlexBox from "../ui/FlexBox";
 import Container from "../ui/Container";
-import AppBarBrand from "./AppBarBrand";
+import Brand from "./Brand";
 import { Grid } from "styled-css-grid";
 
 const AppBar = ({ theme, brand, children }) => (
   <FlexBox backgroundColor={theme.gray900} alignItems="center">
     <Container>
       <FlexBox alignItems="center" justifyContent="space-between">
-        <AppBarBrand>{brand}</AppBarBrand>
+        <Brand>{brand}</Brand>
         {children != null && (
           <Grid
             columns={Array(children.length)
