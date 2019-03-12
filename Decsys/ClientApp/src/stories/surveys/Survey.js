@@ -4,6 +4,7 @@ import Survey from "../../app/admin/surveys/Survey";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "redux-starter-kit";
+import Container from "../../app/common/Container";
 
 storiesOf("Survey", module)
   .addDecorator(story => (
@@ -18,7 +19,9 @@ storiesOf("Survey", module)
         })
       })}
     >
-      <BrowserRouter>{story()}</BrowserRouter>
+      <BrowserRouter>
+        <Container>{story()}</Container>
+      </BrowserRouter>
     </Provider>
   ))
   .add("Default", () => <Survey />)
