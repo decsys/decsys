@@ -12,4 +12,6 @@ addDecorator(story => (
 ));
 addDecorator(withThemes({ Default: theme }));
 
-configure(() => require("../src/stories"), module);
+const req = require.context("../src", true, /.stories.js$/);
+
+configure(() => req.keys().forEach(filename => req(filename)), module);

@@ -5,7 +5,7 @@ import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import { Provider } from "react-redux";
 import { configureStore } from "redux-starter-kit";
 import theme from "./themes";
-import App from "./app/App";
+import App from "./App";
 import rootReducer from "./reducers";
 
 import * as serviceWorker from "./serviceWorker";
