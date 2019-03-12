@@ -21,7 +21,8 @@ class App extends Component {
     return <div>Hello World</div>;
     // return (
     //   <>
-    //     <AppBar />
+    //     <AppBar brand="DECSYS" />
+    // <AppBarLink to="/about">About</AppBarLink>
 
     //     <Switch>
     //       <Route path="/" exact component={IndexRouter} />

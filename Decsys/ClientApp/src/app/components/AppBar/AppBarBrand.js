@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import AppBarLink from "./AppBarLink";
 
 const AppBarBrand = styled(AppBarLink).attrs({
@@ -7,5 +8,9 @@ const AppBarBrand = styled(AppBarLink).attrs({
   mb: ".1rem",
   to: "/"
 })``;
+
+AppBarBrand.propTypes = {
+  theme: PropTypes.shape({})
+};
 
 export default AppBarBrand;
