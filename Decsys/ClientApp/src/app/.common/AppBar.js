@@ -2,7 +2,7 @@ import React from "react";
 import styled, { withTheme } from "styled-components";
 import { Link } from "react-router-dom";
 import { Typography } from "@smooth-ui/core-sc";
-import FlexBox from "./components/ui/FlexBox";
+import FlexBox from "../FlexBox";
 import Container from "./common/Container";
 
 const AppBarLink = styled(Typography).attrs({
