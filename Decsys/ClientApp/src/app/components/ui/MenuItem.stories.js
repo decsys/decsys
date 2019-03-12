@@ -1,8 +1,10 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
+import StoryRouter from "storybook-react-router";
+import { AngleRight, GlobeAmericas } from "styled-icons/fa-solid";
 import MenuItem from "./MenuItem";
-import { AngleRight } from "styled-icons/fa-solid";
+import MenuRouterLink from "./MenuRouterLink";
 
 storiesOf("MenuItem", module)
   .add("Text", () => (
@@ -13,4 +15,10 @@ storiesOf("MenuItem", module)
       <AngleRight size="1em" />
       Hello
     </MenuItem>
+  ))
+  .addDecorator(StoryRouter())
+  .add("MenuRouterLink", () => (
+    <MenuRouterLink to="/somewhere">
+      <GlobeAmericas size="1em" /> Go /somewhere
+    </MenuRouterLink>
   ));

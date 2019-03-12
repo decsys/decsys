@@ -26,7 +26,10 @@ const AppBar = ({ brand, children }) => (
 
 AppBar.propTypes = {
   brand: PropTypes.string,
-  children: PropTypes.oneOf([PropTypes.node, PropTypes.arrayOf(PropTypes.node)])
+  children: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.arrayOf(PropTypes.node)
+  ])
 };
 
 export default AppBar;
