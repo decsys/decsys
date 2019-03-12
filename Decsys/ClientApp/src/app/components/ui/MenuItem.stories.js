@@ -1,12 +1,15 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import MenuItem from "../../app/common/MenuItem";
+import { action } from "@storybook/addon-actions";
+import MenuItem from "./MenuItem";
 import { AngleRight } from "styled-icons/fa-solid";
 
 storiesOf("MenuItem", module)
-  .add("Text", () => <MenuItem>Hello</MenuItem>)
+  .add("Text", () => (
+    <MenuItem onClick={action("Button clicked")}>Hello</MenuItem>
+  ))
   .add("Icon and Text", () => (
-    <MenuItem>
+    <MenuItem onClick={action("Button clicked")}>
       <AngleRight size="1em" />
       Hello
     </MenuItem>

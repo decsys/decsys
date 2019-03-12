@@ -9,7 +9,7 @@ import { Button } from "@smooth-ui/core-sc";
 const MenuItem = props => (
   <Button
     display="block"
-    variant="light"
+    variant="menuItem"
     borderRadius={0}
     textAlign="left"
     {...props}

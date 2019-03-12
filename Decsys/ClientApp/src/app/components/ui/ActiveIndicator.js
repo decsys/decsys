@@ -1,6 +1,5 @@
 import React from "react";
-import { withTheme } from "styled-components";
-import { th } from "@smooth-ui/core-sc";
+import { styled, system } from "@smooth-ui/core-sc";
 import PropTypes from "prop-types";
 import { Check, Times } from "styled-icons/fa-solid";
 import FlexBox from "./FlexBox";
@@ -13,16 +12,18 @@ import FlexBox from "./FlexBox";
  * to the underlying `FlexBox` which composes the layout of this component.
  */
 const ActiveIndicator = ({ active, ...rest }) => {
-  const Icon = active ? Check : Times;
+  const Icon = styled(active ? Check : Times)`
+    ${system.props}
+  `;
   return (
     <FlexBox
       alignItems="center"
       p={1}
-      backgroundColor={active ? "success" : "gray700"}
+      backgroundColor={active ? "success" : "gray"}
       title={active ? "Active" : "Inactive"}
       {...rest}
     >
-      <Icon size="1em" color="white" />
+      <Icon size="1em" color="light" />
     </FlexBox>
   );
 };
