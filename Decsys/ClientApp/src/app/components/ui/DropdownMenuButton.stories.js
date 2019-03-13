@@ -1,8 +1,8 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import DropdownMenuButton from "../../app/common/DropdownMenuButton";
-import MenuItem from "../../app/common/MenuItem";
+import DropdownMenuButton from "./DropdownMenuButton";
+import MenuItem from "./MenuItem";
 import { AngleRight, EllipsisV } from "styled-icons/fa-solid";
 
 const items = (

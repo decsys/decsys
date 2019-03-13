@@ -9,10 +9,10 @@ import MenuRouterLink from "./MenuRouterLink";
 storiesOf("MenuItem", module)
   .addDecorator(StoryRouter())
   .add("Text", () => (
-    <MenuItem onClick={action("Button clicked")}>Hello</MenuItem>
+    <MenuItem onClick={action("Hello clicked")}>Hello</MenuItem>
   ))
   .add("Icon and Text", () => (
-    <MenuItem onClick={action("Button clicked")}>
+    <MenuItem onClick={action("Hello clicked")}>
       <AngleRight size="1em" />
       Hello
     </MenuItem>
