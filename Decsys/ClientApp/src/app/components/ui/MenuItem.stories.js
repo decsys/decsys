@@ -7,6 +7,7 @@ import MenuItem from "./MenuItem";
 import MenuRouterLink from "./MenuRouterLink";
 
 storiesOf("MenuItem", module)
+  .addDecorator(StoryRouter())
   .add("Text", () => (
     <MenuItem onClick={action("Button clicked")}>Hello</MenuItem>
   ))
@@ -16,7 +17,6 @@ storiesOf("MenuItem", module)
       Hello
     </MenuItem>
   ))
-  .addDecorator(StoryRouter())
   .add("MenuRouterLink", () => (
     <MenuRouterLink to="/somewhere">
       <GlobeAmericas size="1em" /> Go /somewhere
