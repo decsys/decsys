@@ -4,7 +4,7 @@ import { action } from "@storybook/addon-actions";
 import DropdownButton from "./DropdownButton";
 import { AngleRight, EllipsisV } from "styled-icons/fa-solid";
 
-storiesOf("DropdownButton", module)
+storiesOf("Common UI/DropdownButton", module)
   .add("Default", () => <DropdownButton onClick={action("Button clicked")} />)
   .add("Text", () => (
     <DropdownButton button="Click me" onClick={action("Button clicked")} />

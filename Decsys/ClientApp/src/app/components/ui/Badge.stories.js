@@ -5,7 +5,7 @@ import theme from "../../themes";
 import Badge from "./Badge";
 import { AlignCenter } from "styled-icons/fa-solid";
 
-storiesOf("Badge", module)
+storiesOf("Common UI/Badge", module)
   .add("Default", () => <Badge />)
   .add("Variants", () => (
     <Badge

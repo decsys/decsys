@@ -7,7 +7,7 @@ import MenuItem from "./MenuItem";
 import MenuRouterLink from "./MenuRouterLink";
 import DropdownMenu from "./Menu";
 
-storiesOf("Menu", module)
+storiesOf("Common UI/Menu", module)
   .addDecorator(StoryRouter())
   .add("Empty", () => <DropdownMenu />)
   .add("1 item", () => (

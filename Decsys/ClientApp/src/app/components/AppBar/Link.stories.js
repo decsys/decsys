@@ -3,7 +3,7 @@ import { storiesOf } from "@storybook/react";
 import StoryRouter from "storybook-react-router";
 import Link from "./Link";
 
-storiesOf("AppBarLink", module)
+storiesOf("AppBar/Link", module)
   .addDecorator(StoryRouter())
   .add("Dark background", () => (
     <Link to="/nowhere" variant="dark">

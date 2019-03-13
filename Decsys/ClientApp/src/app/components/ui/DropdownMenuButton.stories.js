@@ -5,7 +5,7 @@ import DropdownMenuButton from "./DropdownMenuButton";
 import MenuItem from "./MenuItem";
 import { AngleRight } from "styled-icons/fa-solid";
 
-storiesOf("DropdownMenuButton", module).add("Default", () => (
+storiesOf("Common UI/DropdownMenuButton", module).add("Default", () => (
   <DropdownMenuButton>
     <MenuItem onClick={action("Hello clicked")}>Hello</MenuItem>
     <MenuItem onClick={action("Goodbye clicked")}>

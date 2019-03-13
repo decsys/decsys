@@ -4,6 +4,6 @@ import { number, optionsKnob } from "@storybook/addon-knobs";
 import RunCountBadge from "./RunCountBadge";
 import theme from "../../themes";
 
-storiesOf("RunCountBadge", module)
+storiesOf("Admin/SurveyCard/RunCountBadge", module)
   .add("Default", () => <RunCountBadge />)
   .add("n runs", () => <RunCountBadge count={number("count", 5)} />);

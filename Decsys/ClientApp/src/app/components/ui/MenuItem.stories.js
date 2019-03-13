@@ -6,7 +6,7 @@ import { AngleRight, GlobeAmericas } from "styled-icons/fa-solid";
 import MenuItem from "./MenuItem";
 import MenuRouterLink from "./MenuRouterLink";
 
-storiesOf("MenuItem", module)
+storiesOf("Common UI/MenuItem", module)
   .addDecorator(StoryRouter())
   .add("Text", () => (
     <MenuItem onClick={action("Hello clicked")}>Hello</MenuItem>
