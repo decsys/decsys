@@ -12,7 +12,8 @@ import PropTypes from "prop-types";
 const Link = styled(Typography).attrs(p => ({
   as: RouterLink,
   p: "0.5em",
-  colors: GetColors(p)
+  colors: GetColors(p),
+  variant: "light"
 }))`
   color: ${({ colors }) => colors.default};
   text-decoration: none;
@@ -35,7 +36,7 @@ const GetColors = p => {
 
 Link.propTypes = {
   to: PropTypes.string.isRequired,
-  variant: PropTypes.string.isRequired
+  variant: PropTypes.string
 };
 
 export default Link;

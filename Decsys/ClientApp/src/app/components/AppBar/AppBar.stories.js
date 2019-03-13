@@ -8,7 +8,7 @@ import { action } from "@storybook/addon-actions";
 
 storiesOf("AppBar", module)
   .addDecorator(StoryRouter())
-  .add("default", () => <AppBar />)
+  .add("Default", () => <AppBar />)
   .add("Brand", () => <AppBar variant="danger" brand="My Brand" />)
   .add("Children", () => (
     <AppBar variant="#ffdddd">
