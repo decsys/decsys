@@ -5,4 +5,5 @@ import Brand from "./Brand";
 
 storiesOf("AppBarBrand", module)
   .addDecorator(StoryRouter())
-  .add("default", () => <Brand>Hello</Brand>);
+  .add("Dark background", () => <Brand variant="dark">Hello</Brand>)
+  .add("Light background", () => <Brand variant="light">Hello</Brand>);

@@ -5,4 +5,13 @@ import Link from "./Link";
 
 storiesOf("AppBarLink", module)
   .addDecorator(StoryRouter())
-  .add("default", () => <Link to="/nowhere">Hello</Link>);
+  .add("Dark background", () => (
+    <Link to="/nowhere" variant="dark">
+      Hello
+    </Link>
+  ))
+  .add("Light background", () => (
+    <Link to="/nowhere" variant="light">
+      Hello
+    </Link>
+  ));
