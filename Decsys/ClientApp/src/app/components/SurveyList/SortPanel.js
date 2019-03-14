@@ -39,4 +39,6 @@ const SortPanelContainer = connect(
   })
 )(SortPanel);
 
-export default SortPanel;
+export { SortPanel };
+
+export default SortPanelContainer;
