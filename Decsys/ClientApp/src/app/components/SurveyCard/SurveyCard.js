@@ -79,7 +79,7 @@ const SurveyCardContainer = connect(
     onLaunchClick: () => dispatch({ type: "REPLACE_ME" }),
     onCloseClick: () => dispatch({ type: "REPLACE_ME" })
   })
-);
+)(SurveyCard);
 
 export { SurveyCard };
 
