@@ -76,8 +76,8 @@ SurveyCard.propTypes = {
 const SurveyCardContainer = connect(
   null,
   (dispatch, { id }) => ({
-    onLaunchClick: () => dispatch({ type: "REPLACE_ME" }),
-    onCloseClick: () => dispatch({ type: "REPLACE_ME" })
+    onLaunchClick: () => dispatch({ type: "REPLACE_ME" }), // TODO: action
+    onCloseClick: () => dispatch({ type: "REPLACE_ME" }) // TODO: action
   })
 )(SurveyCard);
 
