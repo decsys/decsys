@@ -1,14 +1,25 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import DropdownMenuButton from "../../common/DropdownMenuButton";
-import MenuItem from "../../common/MenuItem";
-import MenuRouterLink from "../../common/MenuRouterLink";
-import { DeleteSurvey } from "./_actions";
-import { duplicateSurvey } from "./_ops";
+import DropdownMenuButton from "../ui/DropdownMenuButton";
+import MenuItem from "../ui/MenuItem";
+import MenuRouterLink from "../ui/MenuRouterLink";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { EllipsisV } from "styled-icons/fa-solid";
 
 class ManageSurveyButton extends Component {
+  static propTypes = {
+    id: PropTypes.number.isRequired,
+    editable: PropTypes.bool,
+    name: PropTypes.string.isRequired,
+    onDuplicateClick: PropTypes.func.isRequired,
+    onDeleteClick: PropTypes.func.isRequired
+  };
+
+  static defaultProps = {
+    editable: false
+  };
+
   constructor(props) {
     super(props);
     this.state = { showDeleteModal: false };
@@ -18,7 +29,7 @@ class ManageSurveyButton extends Component {
     this.setState(prev => ({ showDeleteModal: !prev.showDeleteModal }));
 
   render() {
-    const { name, runCount, id, onDuplicateClick, onDeleteClick } = this.props;
+    const { name, editable, id, onDuplicateClick, onDeleteClick } = this.props;
     return (
       <>
         <DropdownMenuButton
@@ -28,7 +39,7 @@ class ManageSurveyButton extends Component {
           button={<EllipsisV size="1em" />}
           caret={false}
         >
-          {runCount <= 0 && (
+          {editable && (
             <MenuRouterLink to={`survey/${id}`}>Edit</MenuRouterLink>
           )}
           <MenuRouterLink to={`survey/${id}/preview`}>Preview</MenuRouterLink>
@@ -50,8 +61,8 @@ class ManageSurveyButton extends Component {
 const ManageSurveyButtonContainer = connect(
   null,
   (dispatch, { id }) => ({
-    onDuplicateClick: () => dispatch(duplicateSurvey(id)),
-    onDeleteClick: () => dispatch(DeleteSurvey(id))
+    onDuplicateClick: () => dispatch({ type: "REPLACE_ME" }), // duplicateSurvey(id)),
+    onDeleteClick: () => dispatch({ type: "REPLACE_ME" }) //DeleteSurvey(id))
   })
 )(ManageSurveyButton);
 
