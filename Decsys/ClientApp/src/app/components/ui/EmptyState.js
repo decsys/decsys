@@ -4,11 +4,10 @@ import { Box, Typography, Button } from "@smooth-ui/core-sc";
 import { Question } from "styled-icons/fa-solid";
 import FlexBox from "./FlexBox";
 
-const EmptyState = ({ splash, message, callToAction }) => (
+const EmptyState = ({ splash, message, callToAction, ...p }) => (
   <FlexBox
     flexDirection="column"
     width={1}
-    height="100vh"
     alignItems="center"
     justifyContent="center"
   >

@@ -8,7 +8,7 @@ import StoryRouter from "storybook-react-router";
 const s = id => ({ id, name: "" });
 const sorted = [s(1), s(3), s(2)];
 
-const p = {
+export const surveyListProps = {
   sortState: { key: "name" },
   surveys: {
     1: { id: 1, name: "A Survey 1", active: false, runCount: 7 },
@@ -24,15 +24,7 @@ storiesOf("Admin/SurveyList", module)
   .addDecorator(withBasicStore())
   .add("Default", () => (
     <PureSurveyList
-      sortState={p.sortState}
-      onEmptyActionClick={action("Create clicked")}
-      onFilterChange={() => 0}
-    />
-  ))
-  .add("Surveys", () => (
-    <PureSurveyList
-      {...p}
-      onEmptyActionClick={() => 0}
+      {...surveyListProps}
       onFilterChange={decorate([([e]) => [e.target.value, e]]).action(
         "Filter changed"
       )}
