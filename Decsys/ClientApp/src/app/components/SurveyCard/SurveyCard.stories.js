@@ -8,7 +8,7 @@ import { withBasicStore } from "../../utils/story-redux";
 
 storiesOf("Admin/SurveyCard", module)
   .addDecorator(StoryRouter())
-  .addDecorator(withBasicStore)
+  .addDecorator(withBasicStore())
   .add("Default", () => (
     <SurveyCard
       id={0}

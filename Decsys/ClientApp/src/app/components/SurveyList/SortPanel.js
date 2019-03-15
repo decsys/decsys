@@ -32,7 +32,7 @@ SortPanel.propTypes = {
 
 const SortPanelContainer = connect(
   state => ({
-    sortState: state.fixMe // TODO: state
+    sortState: state.surveyList.sortState // TODO: state
   }),
   dispatch => ({
     onSortButtonClick: key => asc => dispatch({ type: "REPLACE_ME" }) // TODO: action
