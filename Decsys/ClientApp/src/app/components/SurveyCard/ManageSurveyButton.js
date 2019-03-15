@@ -7,7 +7,7 @@ import MenuRouterLink from "../ui/MenuRouterLink";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { EllipsisV } from "styled-icons/fa-solid";
 
-class ManageSurveyButton extends Component {
+class PureManageSurveyButton extends Component {
   static propTypes = {
     id: PropTypes.number.isRequired,
     editable: PropTypes.bool,
@@ -58,13 +58,13 @@ class ManageSurveyButton extends Component {
   }
 }
 
-const ManageSurveyButtonContainer = connect(
+const ManageSurveyButton = connect(
   null,
   (dispatch, { id }) => ({
     onDuplicateClick: () => dispatch({ type: "REPLACE_ME" }), // duplicateSurvey(id)), // TODO: action
     onDeleteClick: () => dispatch({ type: "REPLACE_ME" }) //DeleteSurvey(id)) // TODO: action
   })
-)(ManageSurveyButton);
+)(PureManageSurveyButton);
 
-export { ManageSurveyButton };
-export default ManageSurveyButtonContainer;
+export { PureManageSurveyButton };
+export default ManageSurveyButton;

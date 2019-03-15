@@ -9,7 +9,7 @@ import { Grid, Cell } from "styled-css-grid";
 import * as Buttons from "./SurveyCardButton";
 import ManageSurveyButton from "./ManageSurveyButton";
 
-const SurveyCard = ({
+const PureSurveyCard = ({
   id,
   name,
   active = false,
@@ -67,7 +67,7 @@ const SurveyCard = ({
   );
 };
 
-SurveyCard.propTypes = {
+PureSurveyCard.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   active: PropTypes.bool,
@@ -75,14 +75,14 @@ SurveyCard.propTypes = {
   allowLaunch: PropTypes.bool
 };
 
-const SurveyCardContainer = connect(
+const SurveyCard = connect(
   null,
   (dispatch, { id }) => ({
     onLaunchClick: () => dispatch({ type: "REPLACE_ME" }), // TODO: action
     onCloseClick: () => dispatch({ type: "REPLACE_ME" }) // TODO: action
   })
-)(SurveyCard);
+)(PureSurveyCard);
 
-export { SurveyCard };
+export { PureSurveyCard };
 
-export default SurveyCardContainer;
+export default SurveyCard;
