@@ -79,14 +79,14 @@ class PureSurveyList extends Component {
 }
 
 const SurveyList = connect(
-  ({ surveyList: { surveys, ordered, filtered, filter, sortState } }) => ({
-    ordered,
+  ({ surveyList: { sorted, filtered, filter, sortState } }) => ({
+    sorted,
     filtered,
     filter,
     sortState
   }),
   dispatch => ({
-    onFilterChange: dispatch({ type: "FILTER_CHANGE" }) // TODO: action
+    onFilterChange: () => dispatch({ type: "FILTER_CHANGE" }) // TODO: action
   })
 )(PureSurveyList);
 

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Container, FlexBox, EmptyState } from "../../components/ui/";
 import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
 import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
+import SurveyList from "../../components/SurveyList";
 
 const SurveysScreen = ({ onCreateClick, surveys }) => (
   <Container>
@@ -23,10 +24,14 @@ const SurveysScreen = ({ onCreateClick, surveys }) => (
         />
       </Box>
     ) : (
-      <Alert variant="info">
-        <InfoCircle size="1em" /> Please don't forget to backup your surveys and
-        results to an external source.
-      </Alert>
+      <>
+        <Alert variant="info">
+          <InfoCircle size="1em" /> Please don't forget to backup your surveys
+          and results to an external source.
+        </Alert>
+
+        <SurveyList surveys={surveys} />
+      </>
     )}
   </Container>
 );
