@@ -1,6 +1,6 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import SurveyList from "./SurveyList";
+import { PureSurveyList } from "./SurveyList";
 import { withBasicStore } from "../../utils/story-redux";
 import { decorate, action } from "@storybook/addon-actions";
 import StoryRouter from "storybook-react-router";
@@ -23,14 +23,14 @@ storiesOf("Admin/SurveyList", module)
   .addDecorator(StoryRouter())
   .addDecorator(withBasicStore())
   .add("Default", () => (
-    <SurveyList
+    <PureSurveyList
       sortState={p.sortState}
       onEmptyActionClick={action("Create clicked")}
       onFilterChange={() => 0}
     />
   ))
   .add("Surveys", () => (
-    <SurveyList
+    <PureSurveyList
       {...p}
       onEmptyActionClick={() => 0}
       onFilterChange={decorate([([e]) => [e.target.value, e]]).action(

@@ -61,8 +61,8 @@ class PureManageSurveyButton extends Component {
 const ManageSurveyButton = connect(
   null,
   (dispatch, { id }) => ({
-    onDuplicateClick: () => dispatch({ type: "REPLACE_ME" }), // duplicateSurvey(id)), // TODO: action
-    onDeleteClick: () => dispatch({ type: "REPLACE_ME" }) //DeleteSurvey(id)) // TODO: action
+    onDuplicateClick: () => dispatch({ type: "DUPLICATE_SURVEY" }), // duplicateSurvey(id)), // TODO: action
+    onDeleteClick: () => dispatch({ type: "DELETE_SURVEY" }) //DeleteSurvey(id)) // TODO: action
   })
 )(PureManageSurveyButton);
 

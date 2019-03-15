@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Typography, Input } from "@smooth-ui/core-sc";
 import FlexBox from "../ui/FlexBox";
 import SortPanel, { PureSortPanel } from "./SortPanel";
@@ -7,7 +8,7 @@ import EmptyState from "../ui/EmptyState";
 import { List } from "styled-icons/fa-solid";
 import SurveyCard from "../SurveyCard";
 
-class SurveyList extends Component {
+class PureSurveyList extends Component {
   static propTypes = {
     surveys: PropTypes.shape({}),
     sorted: PropTypes.arrayOf(
@@ -39,7 +40,7 @@ class SurveyList extends Component {
     const { surveys, sorted, sortState, dispatch } = this.props;
     // TODO: action //sortSurveyList(sort.key, sort[sort.key]));
     if (Object.keys(surveys).length && !sorted.length)
-      dispatch({ type: "REPLACE_ME" });
+      dispatch({ type: "SORT_SURVEYS" });
   }
 
   render() {
@@ -88,5 +89,22 @@ class SurveyList extends Component {
     );
   }
 }
+
+const SurveyList = connect(
+  ({ surveyList: { surveys, ordered, filtered, filter, sortState } }) => ({
+    surveys,
+    ordered,
+    filtered,
+    filter,
+    sortState,
+    allowLaunch: false // todo isSurveyActive(surveys)
+  }),
+  dispatch => ({
+    onFilterChange: dispatch({ type: "FILTER_CHANGE" }), // TODO: action
+    onEmptyActionClick: dispatch({ type: "CREATE_SURVEY" }) // TODO: action
+  })
+)(PureSurveyList);
+
+export { PureSurveyList };
 
 export default SurveyList;

@@ -78,8 +78,8 @@ PureSurveyCard.propTypes = {
 const SurveyCard = connect(
   null,
   (dispatch, { id }) => ({
-    onLaunchClick: () => dispatch({ type: "REPLACE_ME" }), // TODO: action
-    onCloseClick: () => dispatch({ type: "REPLACE_ME" }) // TODO: action
+    onLaunchClick: () => dispatch({ type: "LAUNCH_SURVEY" }), // TODO: action
+    onCloseClick: () => dispatch({ type: "CLOSE_SURVEY" }) // TODO: action
   })
 )(PureSurveyCard);
 

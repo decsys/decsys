@@ -33,7 +33,7 @@ PureSortPanel.propTypes = {
 const SortPanel = connect(
   null,
   dispatch => ({
-    onSortButtonClick: key => asc => dispatch({ type: "REPLACE_ME" }) // TODO: action
+    onSortButtonClick: key => asc => dispatch({ type: "SORT_SURVEYS" }) // TODO: action
   })
 )(PureSortPanel);
 
