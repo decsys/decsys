@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Container, FlexBox, EmptyState } from "../../components/ui/";
 import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
 import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
@@ -50,6 +51,15 @@ PureSurveysScreen.defaultProps = {
   surveys: {}
 };
 
+const SurveysScreen = connect(
+  ({ surveyList: { surveys } }) => ({
+    surveys
+  }),
+  dispatch => ({
+    onCreateClick: dispatch({ type: "CREATE_SURVEY" }) // TODO: action
+  })
+);
+
 export { PureSurveysScreen };
 
-export default PureSurveysScreen;
+export default SurveysScreen;

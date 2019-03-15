@@ -2,7 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { PureSurveyList } from "./SurveyList";
 import { withBasicStore } from "../../utils/story-redux";
-import { decorate, action } from "@storybook/addon-actions";
+import { decorate } from "@storybook/addon-actions";
 import StoryRouter from "storybook-react-router";
 
 const s = id => ({ id, name: "" });

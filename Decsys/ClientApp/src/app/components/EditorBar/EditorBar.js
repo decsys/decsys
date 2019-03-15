@@ -1,28 +1,31 @@
 import React from "react";
-import { Input, Button } from "@smooth-ui/core-sc";
+import { Input } from "@smooth-ui/core-sc";
 import { Eye, Copy, FileExport, Trash } from "styled-icons/fa-solid";
 import { Grid } from "styled-css-grid";
+import EditorBarButton from "./Button";
 
-const EditorBarButton = props => (
-  <Button borderRadius={0} width="120px" variant="secondary" {...props} />
-);
-
-const SurveyEditorBar = ({ name }) => (
+const EditorBar = ({
+  name,
+  onPreviewClick,
+  onDuplicateClick,
+  onExportClick,
+  onDeleteClick
+}) => (
   <Grid columnGap="0px" columns="1fr auto auto auto auto">
     <Input size="lg" defaultValue={name} borderRadius={0} />
-    <EditorBarButton>
+    <EditorBarButton onClick={onPreviewClick}>
       <Eye size="1em" /> Preview
     </EditorBarButton>
-    <EditorBarButton>
+    <EditorBarButton onClick={onDuplicateClick}>
       <Copy size="1em" /> Duplicate
     </EditorBarButton>
-    <EditorBarButton>
+    <EditorBarButton onClick={onExportClick}>
       <FileExport size="1em" /> Export
     </EditorBarButton>
-    <EditorBarButton variant="danger">
+    <EditorBarButton variant="danger" onClick={onDeleteClick}>
       <Trash size="1em" /> Delete
     </EditorBarButton>
   </Grid>
 );
 
-export default SurveyEditorBar;
+export default EditorBar;
