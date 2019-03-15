@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import FlexBox from "../ui/FlexBox";
-import Container from "../ui/Container";
+import { FlexBox, Container } from "../ui";
 import Brand from "./Brand";
 import { Grid } from "styled-css-grid";
 

@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Typography, Input } from "@smooth-ui/core-sc";
-import FlexBox from "../ui/FlexBox";
+import { FlexBox, EmptyState } from "../ui";
 import SortPanel, { PureSortPanel } from "./SortPanel";
-import EmptyState from "../ui/EmptyState";
 import { List } from "styled-icons/fa-solid";
 import SurveyCard from "../SurveyCard";
 

@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import FlexBox from "../ui/FlexBox";
+import { FlexBox, ActiveIndicator } from "../ui";
 import { connect } from "react-redux";
-import ActiveIndicator from "../ui/ActiveIndicator";
 import { Typography, Box } from "@smooth-ui/core-sc";
 import RunCountBadge from "./RunCountBadge";
 import { Grid, Cell } from "styled-css-grid";

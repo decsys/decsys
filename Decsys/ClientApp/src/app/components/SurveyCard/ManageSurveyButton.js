@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import DropdownMenuButton from "../ui/DropdownMenuButton";
-import MenuItem from "../ui/MenuItem";
-import MenuRouterLink from "../ui/MenuRouterLink";
+import { MenuItem, MenuRouterLink, DropdownMenuButton } from "../ui";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { EllipsisV } from "styled-icons/fa-solid";
 
