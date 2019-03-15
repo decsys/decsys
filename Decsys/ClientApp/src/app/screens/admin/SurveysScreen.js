@@ -5,7 +5,7 @@ import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
 import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
 import SurveyList from "../../components/SurveyList";
 
-const SurveysScreen = ({ onCreateClick, surveys }) => (
+const PureSurveysScreen = ({ onCreateClick, surveys }) => (
   <Container>
     <FlexBox my={3} alignItems="center" justifyContent="space-between">
       <Typography variant="h1">My Surveys</Typography>
@@ -30,19 +30,26 @@ const SurveysScreen = ({ onCreateClick, surveys }) => (
           and results to an external source.
         </Alert>
 
-        <SurveyList surveys={surveys} />
+        <SurveyList
+          surveys={surveys}
+          allowLaunch={
+            !Object.keys(surveys).filter(id => surveys[id].active).length
+          }
+        />
       </>
     )}
   </Container>
 );
 
-SurveysScreen.propTypes = {
+PureSurveysScreen.propTypes = {
   onCreateClick: PropTypes.func.isRequired,
   surveys: PropTypes.shape({})
 };
 
-SurveysScreen.defaultProps = {
+PureSurveysScreen.defaultProps = {
   surveys: {}
 };
 
-export default SurveysScreen;
+export { PureSurveysScreen };
+
+export default PureSurveysScreen;

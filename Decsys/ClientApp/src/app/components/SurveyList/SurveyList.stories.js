@@ -29,4 +29,19 @@ storiesOf("Admin/SurveyList", module)
         "Filter changed"
       )}
     />
+  ))
+  .add("No Active Survey", () => (
+    <PureSurveyList
+      {...{
+        ...surveyListProps,
+        allowLaunch: true,
+        surveys: {
+          ...surveyListProps.surveys,
+          3: { ...surveyListProps.surveys[3], active: false }
+        }
+      }}
+      onFilterChange={decorate([([e]) => [e.target.value, e]]).action(
+        "Filter changed"
+      )}
+    />
   ));
