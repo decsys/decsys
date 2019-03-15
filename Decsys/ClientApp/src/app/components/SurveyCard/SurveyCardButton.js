@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Box } from "@smooth-ui/core-sc";
-import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { TimesCircle, Rocket } from "styled-icons/fa-solid";
 
 // General stuff we only use internally here, for now...
@@ -9,10 +9,13 @@ const IconButton = p => (
     {p.children}
   </Button>
 );
-const LinkButton = p => (
-  <Button textAlign="center" as={Link} {...p}>
-    {p.children}
-  </Button>
+
+const LinkButton = withRouter(
+  ({ to, history, onClick, staticContext, ...p }) => (
+    <Button textAlign="center" {...p} onClick={e => history.push(to)}>
+      {p.children}
+    </Button>
+  )
 );
 
 export const Launch = ({ onClick }) => (

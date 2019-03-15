@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import SortButton from "./SortButton";
 
-const SortPanel = ({ keys, sortState, onSortButtonClick }) =>
+const PureSortPanel = ({ keys, sortState, onSortButtonClick }) =>
   (keys || []).map(sortKey => {
     const button = (label, key) => {
       return (
@@ -22,7 +22,7 @@ const SortPanel = ({ keys, sortState, onSortButtonClick }) =>
       : button(sortKey[0], sortKey[1]);
   });
 
-SortPanel.propTypes = {
+PureSortPanel.propTypes = {
   keys: PropTypes.arrayOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])
   ).isRequired,
@@ -30,15 +30,13 @@ SortPanel.propTypes = {
   onSortButtonClick: PropTypes.func.isRequired
 };
 
-const SortPanelContainer = connect(
-  state => ({
-    sortState: state.surveyList.sortState // TODO: state
-  }),
+const SortPanel = connect(
+  null,
   dispatch => ({
     onSortButtonClick: key => asc => dispatch({ type: "REPLACE_ME" }) // TODO: action
   })
-)(SortPanel);
+)(PureSortPanel);
 
-export { SortPanel };
+export { PureSortPanel };
 
-export default SortPanelContainer;
+export default SortPanel;

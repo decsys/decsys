@@ -21,12 +21,12 @@ const SurveyCard = ({
   // conditionally prep buttons beforehand
   const buttons = [];
   if (active) {
-    buttons.push(<Buttons.Close key="Close" onClick={onCloseClick} />);
-    buttons.push(<Buttons.Dashboard id={id} key="Dashboard" />);
+    buttons.push(<Buttons.Close onClick={onCloseClick} />);
+    buttons.push(<Buttons.Dashboard id={id} />);
   }
   if (allowLaunch && !active)
-    buttons.push(<Buttons.Launch key="Launch" onClick={onLaunchClick} />);
-  if (runCount > 0) buttons.push(<Buttons.Results id={id} key="Results" />);
+    buttons.push(<Buttons.Launch onClick={onLaunchClick} />);
+  if (runCount > 0) buttons.push(<Buttons.Results id={id} />);
 
   return (
     <FlexBox
@@ -52,8 +52,10 @@ const SurveyCard = ({
             </Typography>
           </Cell>
 
-          {buttons.map(x => (
-            <Cell middle>{x}</Cell>
+          {buttons.map((x, i) => (
+            <Cell middle key={i}>
+              {x}
+            </Cell>
           ))}
 
           <Cell middle>
