@@ -5,7 +5,7 @@ import { Typography, Input } from "@smooth-ui/core-sc";
 import FlexBox from "../ui/FlexBox";
 import SortPanel, { PureSortPanel } from "./SortPanel";
 import SurveyCard from "../SurveyCard";
-import { sortSurveyList } from "../../state/ducks/surveys";
+import { sortSurveyList, filterSurveyList } from "../../state/ducks/surveys";
 
 class PureSurveyList extends Component {
   static propTypes = {
@@ -65,7 +65,7 @@ class PureSurveyList extends Component {
             value={filter}
             size="sm"
             ml="auto"
-            onChange={onFilterChange}
+            onChange={({ target }) => onFilterChange(target.value)}
           />
         </FlexBox>
 
@@ -90,7 +90,7 @@ const SurveyList = connect(
   dispatch => ({
     onSortSurveyList: sortState =>
       dispatch(sortSurveyList(sortState.key, sortState[sortState.key])),
-    onFilterChange: () => dispatch({ type: "FILTER_CHANGE" }) // TODO: action
+    onFilterChange: filter => dispatch(filterSurveyList(filter))
   })
 )(PureSurveyList);
 

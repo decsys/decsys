@@ -21,5 +21,17 @@ export const fetchSurveys = () => dispatch =>
     .get("/api/surveys")
     .then(response => dispatch(actions.fetchSurveys(response.data)));
 
+/**
+ * Sort the Survey List by the provided Sort key and direction
+ * @param {*} key
+ * @param {*} asc
+ */
 export const sortSurveyList = (key, asc) => dispatch =>
   dispatch(actions.sortSurveyList(key, asc));
+
+/**
+ * Filter the Survey List by the provided name filter
+ * @param {*} filter
+ */
+export const filterSurveyList = filter => dispatch =>
+  dispatch(actions.filterSurveyList(filter));

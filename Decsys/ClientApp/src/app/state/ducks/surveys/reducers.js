@@ -34,6 +34,12 @@ const surveyListReducer = (
         sorted,
         filtered: getFilteredLookup(sorted, state.filter)
       };
+    case types.FILTER_SURVEY_LIST:
+      return {
+        ...state,
+        filtered: getFilteredLookup(state.sorted, action.payload.filter),
+        filter: action.payload.filter
+      };
     default:
       return state;
   }
