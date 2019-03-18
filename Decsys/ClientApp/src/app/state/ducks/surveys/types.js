@@ -1,3 +1,4 @@
+export const FETCH_SURVEYS = "decsys/surveys/FETCH_SURVEYS";
 export const SORT_SURVEY_LIST = "decsys/surveys/SORT_SURVEY_LIST";
 export const FILTER_SURVEY_LIST = "decsys/surveys/FILTER_SURVEY_LIST";
 export const LAUNCH_SESSION = "decsys/surveys/LAUNCH_SESSION";

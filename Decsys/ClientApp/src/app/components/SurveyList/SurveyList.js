@@ -5,6 +5,7 @@ import { Typography, Input } from "@smooth-ui/core-sc";
 import FlexBox from "../ui/FlexBox";
 import SortPanel, { PureSortPanel } from "./SortPanel";
 import SurveyCard from "../SurveyCard";
+import { sortSurveyList } from "../../state/ducks/surveys";
 
 class PureSurveyList extends Component {
   static propTypes = {
@@ -24,18 +25,19 @@ class PureSurveyList extends Component {
     sortState: PureSortPanel.propTypes.sortState,
     filter: PropTypes.string,
     allowLaunch: PropTypes.bool,
-    onFilterChange: PropTypes.func.isRequired
+    onFilterChange: PropTypes.func.isRequired,
+    onSortSurveyList: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    sorted: []
+    sorted: [],
+    filtered: []
   };
 
-  componentDidMount() {
+  componentWillMount() {
     // initialise the sorted list on load if necessary
-    const { sorted, sortState, dispatch } = this.props;
-    // TODO: action //sortSurveyList(sort.key, sort[sort.key]));
-    if (!sorted.length) dispatch({ type: "SORT_SURVEYS" });
+    const { surveys, sorted, sortState, onSortSurveyList } = this.props;
+    if (!sorted.length) onSortSurveyList(surveys, sortState);
   }
 
   render() {
@@ -79,13 +81,17 @@ class PureSurveyList extends Component {
 }
 
 const SurveyList = connect(
-  ({ surveyList: { sorted, filtered, filter, sortState } }) => ({
+  ({ surveys: { sorted, filtered, filter, sortState } }) => ({
     sorted,
     filtered,
     filter,
     sortState
   }),
   dispatch => ({
+    onSortSurveyList: (surveys, sortState) =>
+      dispatch(
+        sortSurveyList(surveys, sortState.key, sortState[sortState.key])
+      ),
     onFilterChange: () => dispatch({ type: "FILTER_CHANGE" }) // TODO: action
   })
 )(PureSurveyList);

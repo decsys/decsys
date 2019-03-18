@@ -1,5 +1,10 @@
 import * as types from "./types";
 
+export const fetchSurveys = surveys => ({
+  type: types.FETCH_SURVEYS,
+  payload: { surveys }
+});
+
 export const launchSession = id => ({
   type: types.LAUNCH_SESSION,
   payload: { id }

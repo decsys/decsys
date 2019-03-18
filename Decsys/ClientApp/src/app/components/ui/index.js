@@ -8,3 +8,4 @@ export { default as FlexBox } from "./FlexBox";
 export { default as Menu } from "./Menu";
 export { default as MenuItem } from "./MenuItem";
 export { default as MenuRouterLink } from "./MenuRouterLink";
+export { default as LoadingIndicator } from "./LoadingIndicator";
