@@ -7,7 +7,7 @@ import RunCountBadge from "./RunCountBadge";
 import { Grid, Cell } from "styled-css-grid";
 import * as Buttons from "./SurveyCardButton";
 import ManageSurveyButton from "./ManageSurveyButton";
-import { closeInstance } from "../../state/ducks/surveys";
+import { closeInstance, launchInstance } from "../../state/ducks/surveys";
 
 const PureSurveyCard = ({
   id,
@@ -27,7 +27,7 @@ const PureSurveyCard = ({
     buttons.push(<Buttons.Dashboard id={id} />);
   }
   if (allowLaunch && !activeInstanceId)
-    buttons.push(<Buttons.Launch onClick={onLaunchClick} />);
+    buttons.push(<Buttons.Launch onClick={() => onLaunchClick(id)} />);
   if (runCount > 0) buttons.push(<Buttons.Results id={id} />);
 
   return (
@@ -80,7 +80,7 @@ PureSurveyCard.propTypes = {
 const SurveyCard = connect(
   null,
   (dispatch, { id }) => ({
-    onLaunchClick: () => dispatch({ type: "LAUNCH_SURVEY" }), // TODO: action
+    onLaunchClick: id => dispatch(launchInstance(id)), // TODO: action
     onCloseClick: (surveyId, instanceId) =>
       dispatch(closeInstance(surveyId, instanceId))
   })

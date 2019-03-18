@@ -39,7 +39,7 @@ export const filterSurveyList = filter => dispatch =>
   dispatch(actions.filterSurveyList(filter));
 
 /**
- * Close an active Survey Instance
+ * Close a Survey Instance
  */
 export const closeInstance = (surveyId, instanceId) => dispatch =>
   axios
@@ -47,3 +47,8 @@ export const closeInstance = (surveyId, instanceId) => dispatch =>
     .then(response => {
       dispatch(actions.closeSurvey(surveyId));
     });
+
+export const launchInstance = id => dispatch =>
+  axios
+    .post(`/api/surveys/${id}/instances`)
+    .then(response => dispatch(actions.launchInstance(id, response.data)));

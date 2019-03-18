@@ -5,9 +5,9 @@ export const fetchSurveys = surveys => ({
   payload: { surveys }
 });
 
-export const launchInstance = id => ({
+export const launchInstance = (surveyId, instanceId) => ({
   type: types.LAUNCH_INSTANCE,
-  payload: { id }
+  payload: { surveyId, instanceId }
 });
 
 export const closeSurvey = id => ({

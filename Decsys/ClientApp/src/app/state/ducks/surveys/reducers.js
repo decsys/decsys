@@ -52,6 +52,19 @@ const surveyListReducer = (
           }
         }
       };
+    case types.LAUNCH_INSTANCE:
+      const { surveyId, instanceId } = action.payload;
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [surveyId]: {
+            ...state.list[surveyId],
+            runCount: ++state.list[surveyId].runCount,
+            activeInstanceId: instanceId
+          }
+        }
+      };
     default:
       return state;
   }
