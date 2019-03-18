@@ -56,9 +56,9 @@ const SurveysScreen = connect(
     surveys
   }),
   dispatch => ({
-    onCreateClick: dispatch({ type: "CREATE_SURVEY" }) // TODO: action
+    onCreateClick: () => dispatch({ type: "CREATE_SURVEY" }) // TODO: action
   })
-);
+)(PureSurveysScreen);
 
 export { PureSurveysScreen };
 

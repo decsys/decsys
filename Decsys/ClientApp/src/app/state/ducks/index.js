@@ -1,1 +1,3 @@
-export const Nothing = (state = {}) => state; // empty reducer
+import surveyList from "./survey-list/reducers";
+
+export { surveyList };

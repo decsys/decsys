@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-// import { Route, Redirect, Switch } from "react-router-dom";
+import AppBar from "./components/AppBar";
+import { Route, Redirect, Switch } from "react-router-dom";
+import SurveysScreen from "./screens/admin/SurveysScreen";
+import { Container, EmptyState, FlexBox } from "./components/ui";
 // import AppBar from "./app/AppBar";
 // import Admin from "./app/admin/Admin";
 // import Survey from "./app/survey/Survey";
@@ -18,21 +21,41 @@ import React, { Component } from "react";
 
 class App extends Component {
   render() {
-    return <div>Hello World</div>;
-    // return (
-    //   <>
-    //     <AppBar brand="DECSYS" />
-    // <AppBarLink to="/about">About</AppBarLink>
+    return (
+      <>
+        <AppBar brand="DECSYS" />
+        <Switch>
+          <Route path="/" exact render={() => <Redirect to="/admin" />} />
 
-    //     <Switch>
-    //       <Route path="/" exact component={IndexRouter} />
-    //       <Route path="/admin" component={Admin} />
+          <Route path="/admin" component={SurveysScreen} />
 
-    //       <Route render={() => <h1>404</h1>} />
-    //     </Switch>
-    //   </>
-    // );
+          <Route
+            render={() => (
+              // Any unrecognised frontend route = 404
+              <Container>
+                <FlexBox mt={5}>
+                  <EmptyState message="404: Not Found" />
+                </FlexBox>
+              </Container>
+            )}
+          />
+        </Switch>
+      </>
+    );
   }
 }
+// return (
+//   <>
+//     <AppBar brand="DECSYS" />
+// <AppBarLink to="/about">About</AppBarLink>
+
+//     <Switch>
+//       <Route path="/" exact component={IndexRouter} />
+//       <Route path="/admin" component={Admin} />
+
+//       <Route render={() => <h1>404</h1>} />
+//     </Switch>
+//   </>
+// );
 
 export default App;
