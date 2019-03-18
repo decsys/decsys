@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -97,15 +98,15 @@ namespace Decsys
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "DECSYS API v1");
             });
 
-            //app.UseSpa(spa =>
-            //{
-            //    spa.Options.SourcePath = "ClientApp";
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
 
-            //    if (env.IsDevelopment())
-            //    {
-            //        spa.UseReactDevelopmentServer(npmScript: "start");
-            //    }
-            //});
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
         }
 
         private IDictionary<string, string> GetValidMappings()

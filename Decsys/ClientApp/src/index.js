@@ -1,16 +1,13 @@
+import * as serviceWorker from "./serviceWorker";
 import React from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
 import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import { Provider } from "react-redux";
-import { configureStore } from "redux-starter-kit";
-import theme from "./themes";
+import { ConnectedRouter } from "connected-react-router";
+import theme from "./app/themes";
 import App from "./app/App";
-import rootReducer from "./reducers";
-
-import * as serviceWorker from "./serviceWorker";
-import { routerMiddleware, ConnectedRouter } from "connected-react-router";
-import thunk from "redux-thunk";
+import configureStore from "./app/state/store";
 
 const history = createBrowserHistory();
 
@@ -19,12 +16,7 @@ ReactDOM.render(
     <Normalize />
 
     <ThemeProvider theme={theme}>
-      <Provider
-        store={configureStore({
-          reducer: rootReducer(history),
-          middleware: [routerMiddleware(history), thunk]
-        })}
-      >
+      <Provider store={configureStore(history)}>
         <ConnectedRouter history={history}>
           <App />
         </ConnectedRouter>
