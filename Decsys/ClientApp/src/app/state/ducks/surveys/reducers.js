@@ -13,20 +13,20 @@ const fetchSurveys = (state, { surveys }) => {
 };
 
 const surveyListReducer = (
-  state = { sortState: { key: "name" }, filter: "" },
+  state = { list: {}, sortState: { key: "name" }, filter: "" },
   action
 ) => {
   switch (action.type) {
     case types.FETCH_SURVEYS:
       return fetchSurveys(state, action.payload);
     case types.SORT_SURVEY_LIST:
-      const { surveys, key, asc } = action.payload;
+      const { key, asc } = action.payload;
       const sortState = {
         ...state.sortState,
         key,
-        [action.key]: asc
+        [key]: asc
       };
-      const sorted = getSortedLookup(surveys, key, asc);
+      const sorted = getSortedLookup(state.list, key, asc);
 
       return {
         ...state,

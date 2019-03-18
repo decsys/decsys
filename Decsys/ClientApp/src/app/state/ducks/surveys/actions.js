@@ -15,10 +15,9 @@ export const closeSession = id => ({
   payload: { id }
 });
 
-export const sortSurveyList = (surveys, key, asc) => ({
+export const sortSurveyList = (key, asc) => ({
   type: types.SORT_SURVEY_LIST,
   payload: {
-    surveys,
     key,
     asc
   }

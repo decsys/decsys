@@ -8,7 +8,7 @@ const SortButton = ({ active, asc, children, onClick, ...rest }) => (
     borderRadius={0}
     variant="light"
     fontWeight={active ? "bold" : "normal"}
-    onClick={() => onClick(asc)}
+    onClick={() => onClick(active ? !asc : asc)}
     {...rest}
   >
     {children} {asc ? <CaretUp size="1em" /> : <CaretDown size="1em" />}

@@ -37,7 +37,7 @@ class PureSurveyList extends Component {
   componentWillMount() {
     // initialise the sorted list on load if necessary
     const { surveys, sorted, sortState, onSortSurveyList } = this.props;
-    if (!sorted.length) onSortSurveyList(surveys, sortState);
+    if (!sorted.length) onSortSurveyList(sortState);
   }
 
   render() {
@@ -88,10 +88,8 @@ const SurveyList = connect(
     sortState
   }),
   dispatch => ({
-    onSortSurveyList: (surveys, sortState) =>
-      dispatch(
-        sortSurveyList(surveys, sortState.key, sortState[sortState.key])
-      ),
+    onSortSurveyList: sortState =>
+      dispatch(sortSurveyList(sortState.key, sortState[sortState.key])),
     onFilterChange: () => dispatch({ type: "FILTER_CHANGE" }) // TODO: action
   })
 )(PureSurveyList);

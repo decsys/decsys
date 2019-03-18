@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import SortButton from "./SortButton";
+import { sortSurveyList } from "../../state/ducks/surveys";
 
 const PureSortPanel = ({ keys, sortState, onSortButtonClick }) =>
   (keys || []).map(sortKey => {
@@ -33,7 +34,7 @@ PureSortPanel.propTypes = {
 const SortPanel = connect(
   null,
   dispatch => ({
-    onSortButtonClick: key => asc => dispatch({ type: "SORT_SURVEYS" }) // TODO: action
+    onSortButtonClick: key => asc => dispatch(sortSurveyList(key, asc))
   })
 )(PureSortPanel);
 

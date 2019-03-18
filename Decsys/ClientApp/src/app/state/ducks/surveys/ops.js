@@ -21,5 +21,5 @@ export const fetchSurveys = () => dispatch =>
     .get("/api/surveys")
     .then(response => dispatch(actions.fetchSurveys(response.data)));
 
-export const sortSurveyList = (surveys, key, asc) => dispatch =>
-  dispatch(actions.sortSurveyList(surveys, key, asc));
+export const sortSurveyList = (key, asc) => dispatch =>
+  dispatch(actions.sortSurveyList(key, asc));
