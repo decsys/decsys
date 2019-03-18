@@ -33,7 +33,7 @@ storiesOf("Admin/SurveysScreen", module)
       surveys={Object.keys(surveys).reduce((acc, id) => {
         acc[id] = {
           ...surveys[id],
-          active: false
+          activeInstanceId: null
         };
         return acc;
       }, {})}

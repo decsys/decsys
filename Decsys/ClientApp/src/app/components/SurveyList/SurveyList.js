@@ -36,7 +36,7 @@ class PureSurveyList extends Component {
 
   componentWillMount() {
     // initialise the sorted list on load if necessary
-    const { surveys, sorted, sortState, onSortSurveyList } = this.props;
+    const { sorted, sortState, onSortSurveyList } = this.props;
     if (!sorted.length) onSortSurveyList(sortState);
   }
 
