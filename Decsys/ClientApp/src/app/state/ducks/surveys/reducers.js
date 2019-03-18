@@ -40,6 +40,18 @@ const surveyListReducer = (
         filtered: getFilteredLookup(state.sorted, action.payload.filter),
         filter: action.payload.filter
       };
+    case types.CLOSE_SURVEY:
+      const { id } = action.payload;
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [id]: {
+            ...state.list[id],
+            activeInstanceId: null
+          }
+        }
+      };
     default:
       return state;
   }

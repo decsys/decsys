@@ -2,6 +2,8 @@ import axios from "axios";
 import * as actions from "./actions";
 import { push } from "connected-react-router";
 
+// TODO: AJAX error handling?
+
 /**
  * Create a new Survey with the default name,
  * and take the user to the Survey Editor
@@ -35,3 +37,13 @@ export const sortSurveyList = (key, asc) => dispatch =>
  */
 export const filterSurveyList = filter => dispatch =>
   dispatch(actions.filterSurveyList(filter));
+
+/**
+ * Close an active Survey Instance
+ */
+export const closeInstance = (surveyId, instanceId) => dispatch =>
+  axios
+    .post(`/api/surveys/${surveyId}/instances/${instanceId}/close`)
+    .then(response => {
+      dispatch(actions.closeSurvey(surveyId));
+    });

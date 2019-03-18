@@ -5,13 +5,13 @@ export const fetchSurveys = surveys => ({
   payload: { surveys }
 });
 
-export const launchSession = id => ({
-  type: types.LAUNCH_SESSION,
+export const launchInstance = id => ({
+  type: types.LAUNCH_INSTANCE,
   payload: { id }
 });
 
-export const closeSession = id => ({
-  type: types.CLOSE_SESSION,
+export const closeSurvey = id => ({
+  type: types.CLOSE_SURVEY,
   payload: { id }
 });
 

@@ -37,7 +37,7 @@ storiesOf("Admin/SurveyList", module)
         allowLaunch: true,
         surveys: {
           ...surveyListProps.surveys,
-          3: { ...surveyListProps.surveys[3], active: false }
+          3: { ...surveyListProps.surveys[3], activeInstanceId: null }
         }
       }}
       onFilterChange={decorate([([e]) => [e.target.value, e]]).action(
