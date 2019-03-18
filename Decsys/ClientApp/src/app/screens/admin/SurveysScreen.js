@@ -5,6 +5,7 @@ import { Container, FlexBox, EmptyState } from "../../components/ui/";
 import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
 import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
 import SurveyList from "../../components/SurveyList";
+import { createSurvey } from "../../state/ducks/surveys";
 
 const PureSurveysScreen = ({ onCreateClick, surveys }) => (
   <Container>
@@ -52,11 +53,11 @@ PureSurveysScreen.defaultProps = {
 };
 
 const SurveysScreen = connect(
-  ({ surveyList: { surveys } }) => ({
-    surveys
+  ({ surveys: { list } }) => ({
+    surveys: list
   }),
   dispatch => ({
-    onCreateClick: () => dispatch({ type: "CREATE_SURVEY" }) // TODO: action
+    onCreateClick: () => dispatch(createSurvey())
   })
 )(PureSurveysScreen);
 

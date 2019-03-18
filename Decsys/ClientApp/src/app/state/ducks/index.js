@@ -1,3 +1,1 @@
-import surveyList from "./survey-list/reducers";
-
-export { surveyList };
+export { default as surveys } from "./surveys/reducers";
