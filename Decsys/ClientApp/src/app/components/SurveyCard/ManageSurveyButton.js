@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { MenuItem, MenuRouterLink, DropdownMenuButton } from "../ui";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { EllipsisV } from "styled-icons/fa-solid";
+import { deleteSurvey } from "../../state/ducks/surveys";
 
 class PureManageSurveyButton extends Component {
   static propTypes = {
@@ -47,7 +48,7 @@ class PureManageSurveyButton extends Component {
         </DropdownMenuButton>
         <DeleteSurveyModal
           surveyName={name}
-          deleteSurvey={onDeleteClick}
+          deleteSurvey={() => onDeleteClick(id)}
           closeModal={this.toggleDeleteModal}
           modalOpened={this.state.showDeleteModal}
         />
@@ -60,7 +61,7 @@ const ManageSurveyButton = connect(
   null,
   (dispatch, { id }) => ({
     onDuplicateClick: () => dispatch({ type: "DUPLICATE_SURVEY" }), // duplicateSurvey(id)), // TODO: action
-    onDeleteClick: () => dispatch({ type: "DELETE_SURVEY" }) //DeleteSurvey(id)) // TODO: action
+    onDeleteClick: id => dispatch(deleteSurvey(id)) //DeleteSurvey(id)) // TODO: action
   })
 )(PureManageSurveyButton);
 

@@ -44,11 +44,22 @@ export const filterSurveyList = filter => dispatch =>
 export const closeInstance = (surveyId, instanceId) => dispatch =>
   axios
     .post(`/api/surveys/${surveyId}/instances/${instanceId}/close`)
-    .then(response => {
+    .then(() => {
       dispatch(actions.closeSurvey(surveyId));
     });
 
+/**
+ * Launch a new Instance of a Survey
+ */
 export const launchInstance = id => dispatch =>
   axios
     .post(`/api/surveys/${id}/instances`)
     .then(response => dispatch(actions.launchInstance(id, response.data)));
+
+/**
+ * Delete a Survey
+ */
+export const deleteSurvey = id => dispatch =>
+  axios
+    .delete(`/api/surveys/${id}`)
+    .then(() => dispatch(actions.deleteSurvey(id)));

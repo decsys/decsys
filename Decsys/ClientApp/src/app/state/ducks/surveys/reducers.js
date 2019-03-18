@@ -65,6 +65,14 @@ const surveyListReducer = (
           }
         }
       };
+    case types.DELETE_SURVEY:
+      // Bleh, use spread to isolate nested keys we want to remove
+      const { list, ...rest } = state;
+      const { [action.payload.id]: _, ...keep } = list;
+      return {
+        ...rest,
+        list: keep
+      };
     default:
       return state;
   }
