@@ -65,7 +65,9 @@ class PureSurveysScreen extends Component {
             <SurveyList
               surveys={surveys}
               allowLaunch={
-                !Object.keys(surveys).filter(id => surveys[id].active).length
+                Object.keys(surveys).filter(
+                  id => surveys[id].activeInstanceId != null
+                ).length === 0
               }
             />
           </>

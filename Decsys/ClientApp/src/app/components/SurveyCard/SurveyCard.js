@@ -11,7 +11,7 @@ import ManageSurveyButton from "./ManageSurveyButton";
 const PureSurveyCard = ({
   id,
   name,
-  active = false,
+  activeInstanceId,
   runCount = 0,
   allowLaunch = false,
   onLaunchClick,
@@ -19,11 +19,11 @@ const PureSurveyCard = ({
 }) => {
   // conditionally prep buttons beforehand
   const buttons = [];
-  if (active) {
+  if (!!activeInstanceId) {
     buttons.push(<Buttons.Close onClick={onCloseClick} />);
     buttons.push(<Buttons.Dashboard id={id} />);
   }
-  if (allowLaunch && !active)
+  if (allowLaunch && !activeInstanceId)
     buttons.push(<Buttons.Launch onClick={onLaunchClick} />);
   if (runCount > 0) buttons.push(<Buttons.Results id={id} />);
 
@@ -33,7 +33,7 @@ const PureSurveyCard = ({
       borderBottom="thin solid"
       borderColor="cardBorder"
     >
-      <ActiveIndicator active={active} />
+      <ActiveIndicator active={!!activeInstanceId} />
 
       <Box width={1} p={1}>
         <Grid
@@ -69,7 +69,7 @@ const PureSurveyCard = ({
 PureSurveyCard.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  active: PropTypes.bool,
+  activeInstanceId: PropTypes.number,
   runCount: PropTypes.number,
   allowLaunch: PropTypes.bool
 };

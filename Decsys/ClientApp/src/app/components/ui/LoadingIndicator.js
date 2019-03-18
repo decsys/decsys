@@ -4,7 +4,6 @@ import FlexBox from "./FlexBox";
 import { Spinner } from "styled-icons/fa-solid";
 import { Typography } from "@smooth-ui/core-sc";
 
-// Create the keyframes
 const rotate = keyframes`
   from {
     transform: rotate(0deg);
@@ -21,18 +20,17 @@ const RotatingSpinner = styled(Spinner)`
 
 const LoadingIndicator = () => (
   <FlexBox justifyContent="center">
-    <FlexBox
-      width="10em"
-      justifyContent="space-between"
+    <Typography
+      display="flex"
+      justifyContent="space-evenly"
       alignItems="center"
+      width="10em"
       p={3}
-      borderColor="cardBorder"
-      border={1}
-      borderRadius={10}
+      backgroundColor="cardBg"
     >
-      <Typography>Loading...</Typography>
       <RotatingSpinner size="1em" />
-    </FlexBox>
+      Loading...
+    </Typography>
   </FlexBox>
 );
 
