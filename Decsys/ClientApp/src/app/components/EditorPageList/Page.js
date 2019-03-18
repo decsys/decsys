@@ -18,7 +18,7 @@ const Page = ({ fixedPage, n, icon, random, title, type }) => (
             width: "200px",
             padding: ".5em",
             borderRight: `4px solid`,
-            borderColor: "cardBorder" // todo fix
+            borderColor: "cardBorder" // TODO: fix
           }}
           columns="10px 1fr 1fr"
           rows="auto auto"
