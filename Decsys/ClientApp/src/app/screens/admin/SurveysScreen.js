@@ -24,8 +24,12 @@ class PureSurveysScreen extends Component {
     surveys: {}
   };
 
-  componentWillMount() {
-    this.props.onFetchSurveys();
+  componentDidUpdate(old) {
+    this.props.onFetchSurveys(); // TODO: maybe check on react-router props to do this conditionally? e.g. match/history etc
+  }
+
+  componentDidMount() {
+    this.props.onFetchSurveys(); // TODO: may not need this if the above works?
   }
 
   render() {
