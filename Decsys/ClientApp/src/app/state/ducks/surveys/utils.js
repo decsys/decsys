@@ -5,14 +5,25 @@
  * @param {boolean} asc Sort ascending or descending.
  */
 const getPropertySorter = (key, asc) => {
-  const defaultSorter = ({ [key]: a }, { [key]: b }) => (asc ? a - b : b - a);
+  const defaultSorter = (a, b) => (asc ? a - b : b - a);
 
   const sorters = {
-    name: ({ [key]: a }, { [key]: b }) =>
-      asc ? a.localeCompare(b) : b.localeCompare(a)
+    name: (
+      { [key]: a },
+      { [key]: b } // use custom sort logic
+    ) => (asc ? a.localeCompare(b) : b.localeCompare(a)),
+    active: (
+      // use custom property keys
+      { activeInstanceId: a },
+      { activeInstanceId: b }
+    ) => defaultSorter(a, b) // but use default sort logic
   };
 
-  return sorters[key] || defaultSorter;
+  return (
+    sorters[key] ||
+    // if no special case found, plug into the default logic, with the default property key mapping
+    (({ [key]: a }, { [key]: b }) => defaultSorter(a, b))
+  );
 };
 
 /**
