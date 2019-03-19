@@ -46,7 +46,7 @@ namespace Decsys.Services
 
             if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();
 
-            return _mapper.Map<Models.SurveyInstance>(instance); // TODO: Mapping Profiles
+            return _mapper.Map<Models.SurveyInstance>(instance);
         }
 
         public IEnumerable<Models.SurveyInstance> List(int surveyId)
@@ -55,7 +55,7 @@ namespace Decsys.Services
                     .Exists(x => x.Id == surveyId))
                 throw new KeyNotFoundException();
 
-            return _mapper.Map<IEnumerable<Models.SurveyInstance>>( // TODO: Mapping Profiles
+            return _mapper.Map<IEnumerable<Models.SurveyInstance>>(
                 _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
                     .Find(x => x.Survey.Id == surveyId));
         }
