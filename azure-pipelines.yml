@@ -12,6 +12,39 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+jobs:
+- job: ClientApp
+  steps:
+  - script: npm ci
+    displayName: 'npm ci'
+  - script: npm run build
+    displayName: 'Webpack Production Build'
+  # TODO test
+  # TODO publish
+- job: dotnet build
+  steps:
+  - task: DotNetCoreInstaller@0
+    inputs:
+      version: '2.2.201' # replace this value with the version that you need for your project
+  - script: dotnet build -c $(buildConfiguration)
+    displayName: 'dotnet build $(buildConfiguration)'
+    # TODO test
+    # TODO artefact for parallelism
+# - job: dotnet publish
+#   dependsOn:
+#   - ClientApp
+#   - dotnet build
+#   steps:
+#   # fetch artifacts?
+#   - script: dotnet publish -c $(buildConfiguration) --no-build
+#     displayName: 'dotnet publish'
+#   # TODO artifact
+# - job: Win-x64 publish
+#   dependsOn:
+#   - ClientApp
+#   - dotnet build
+#   steps:
+#   # todo fetch client artifact
+#   - script: dotnet publish -c $(buildConfiguration) -r win-x64
+#     displayName: 'dotnet publish win-x64'
+#   # TODO artifact
