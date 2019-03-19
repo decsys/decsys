@@ -46,9 +46,8 @@ namespace Decsys.Mapping
 
             CreateMap<Data.Entities.SurveyInstance, SurveyInstance>()
                 .ConstructUsing(src =>
-                {
-                    // todo: get survey
-                });
+                    // a dummy one at construction, as we map it anyway
+                    new SurveyInstance(new Survey("")));
         }
 
         private int? MapActiveInstanceToId(Data.Entities.SurveyInstance? instance)
