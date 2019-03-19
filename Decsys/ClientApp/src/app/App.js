@@ -43,8 +43,6 @@ const PureApp = ({ dispatch, listLoaded }) => {
   );
 };
 
-const App = withRouter(
-  connect(state => ({ listLoaded: state.surveys.listLoaded }))(PureApp)
-);
+const App = withRouter(connect()(PureApp));
 
 export default App;
