@@ -1,8 +1,10 @@
-import React, { Component } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import AppBar from "./components/AppBar";
 import { Route, Redirect, Switch } from "react-router-dom";
 import SurveysScreen from "./screens/admin/SurveysScreen";
 import { Container, EmptyState, FlexBox } from "./components/ui";
+import { fetchSurveys } from "./state/ducks/surveys";
 // import AppBar from "./app/AppBar";
 // import Admin from "./app/admin/Admin";
 // import Survey from "./app/survey/Survey";
@@ -19,43 +21,46 @@ import { Container, EmptyState, FlexBox } from "./components/ui";
 //   );
 // };
 
-class App extends Component {
-  render() {
-    return (
-      <>
-        <AppBar brand="DECSYS" />
-        <Switch>
-          <Route path="/" exact render={() => <Redirect to="/admin" />} />
+/*<Route exact path="/home" render={() => (
+  isLoggedIn() ? (
+    <Redirect to="/front"/>
+  ) : (
+    <Home />
+  )
+)}/>*/
 
-          <Route path="/admin" component={SurveysScreen} />
+const PureApp = ({ dispatch, listLoaded }) => {
+  return (
+    <>
+      <AppBar brand="DECSYS" />
+      <Switch>
+        <Route path="/" exact render={() => <Redirect to="/admin" />} />
 
-          <Route
-            render={() => (
-              // Any unrecognised frontend route = 404
-              <Container>
-                <FlexBox mt={5}>
-                  <EmptyState message="404: Not Found" />
-                </FlexBox>
-              </Container>
-            )}
-          />
-        </Switch>
-      </>
-    );
-  }
-}
-// return (
-//   <>
-//     <AppBar brand="DECSYS" />
-// <AppBarLink to="/about">About</AppBarLink>
+        <Route
+          path="/admin"
+          render={() => {
+            dispatch(fetchSurveys());
+            return <SurveysScreen />;
+          }}
+        />
 
-//     <Switch>
-//       <Route path="/" exact component={IndexRouter} />
-//       <Route path="/admin" component={Admin} />
+        <Route
+          render={() => (
+            // Any unrecognised frontend route = 404
+            <Container>
+              <FlexBox mt={5}>
+                <EmptyState message="404: Not Found" />
+              </FlexBox>
+            </Container>
+          )}
+        />
+      </Switch>
+    </>
+  );
+};
 
-//       <Route render={() => <h1>404</h1>} />
-//     </Switch>
-//   </>
-// );
+const App = connect(state => ({ listLoaded: state.surveys.listLoaded }))(
+  PureApp
+);
 
 export default App;

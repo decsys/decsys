@@ -2,13 +2,18 @@ import * as types from "./types";
 import { getSortedLookup, getFilteredLookup } from "./utils";
 
 const fetchSurveys = (state, { surveys }) => {
+  const { sortState, filter } = state;
+  const list = surveys.reduce((acc, survey) => {
+    acc[survey.id] = survey;
+    return acc;
+  }, {});
+  const sorted = getSortedLookup(list, sortState.key, sortState[sortState.key]);
   return {
     ...state,
     listLoaded: true,
-    list: surveys.reduce((acc, survey) => {
-      acc[survey.id] = survey;
-      return acc;
-    }, {})
+    list,
+    sorted,
+    filtered: getFilteredLookup(sorted, filter)
   };
 };
 
