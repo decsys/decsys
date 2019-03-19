@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { MenuItem, MenuRouterLink, DropdownMenuButton } from "../ui";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { EllipsisV } from "styled-icons/fa-solid";
-import { deleteSurvey } from "../../state/ducks/surveys";
+import { deleteSurvey, duplicateSurvey } from "../../state/ducks/surveys";
 
 const PureManageSurveyButton = ({
   name,
@@ -33,7 +33,7 @@ const PureManageSurveyButton = ({
       </DropdownMenuButton>
       <DeleteSurveyModal
         surveyName={name}
-        deleteSurvey={() => onDeleteClick(id)}
+        deleteSurvey={onDeleteClick}
         closeModal={toggleDeleteModal}
         modalOpened={showDeleteModal}
       />
@@ -54,8 +54,8 @@ PureManageSurveyButton.defaultProps = { editable: false };
 const ManageSurveyButton = connect(
   null,
   (dispatch, { id }) => ({
-    onDuplicateClick: () => dispatch({ type: "DUPLICATE_SURVEY" }), // duplicateSurvey(id)), // TODO: action
-    onDeleteClick: id => dispatch(deleteSurvey(id)) //DeleteSurvey(id)) // TODO: action
+    onDuplicateClick: () => dispatch(duplicateSurvey(id)),
+    onDeleteClick: () => dispatch(deleteSurvey(id))
   })
 )(PureManageSurveyButton);
 

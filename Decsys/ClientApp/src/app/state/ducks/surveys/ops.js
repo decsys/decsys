@@ -63,3 +63,12 @@ export const deleteSurvey = id => dispatch =>
   axios
     .delete(`/api/surveys/${id}`)
     .then(() => dispatch(actions.deleteSurvey(id)));
+
+/**
+ * Duplicate a Survey
+ * @param {*} id
+ */
+export const duplicateSurvey = id => dispatch =>
+  axios
+    .post(`/api/surveys/${id}/duplicate`)
+    .then(_ => dispatch(fetchSurveys()));
