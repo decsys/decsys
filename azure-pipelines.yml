@@ -15,8 +15,10 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   steps:
   - script: npm ci
+    workingDirectory: Decsys/ClientApp
     displayName: 'npm ci'
   - script: npm run build
+    workingDirectory: Decsys/ClientApp
     displayName: 'Webpack Production Build'
   # TODO test
   # TODO publish
@@ -27,7 +29,7 @@ jobs:
   - task: DotNetCoreInstaller@0
     inputs:
       packageType: 'sdk'
-      version: '2.2.201' # replace this value with the version that you need for your project
+      version: '3.0.100-preview3-010431' # replace this value with the version that you need for your project
   - script: dotnet build -c $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
     # TODO test
