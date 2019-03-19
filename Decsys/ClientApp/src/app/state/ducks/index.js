@@ -1,1 +1,1 @@
-export const Nothing = (state = {}) => state; // empty reducer
+export { default as surveys } from "./surveys/reducers";

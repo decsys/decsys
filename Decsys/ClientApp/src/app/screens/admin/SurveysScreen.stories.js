@@ -7,7 +7,7 @@ import StoryRouter from "storybook-react-router";
 import { withBasicStore } from "../../utils/story-redux";
 
 const store = {
-  surveyList: {
+  surveys: {
     filtered: surveyListProps.filtered,
     sorted: surveyListProps.sorted,
     sortState: surveyListProps.sortState
@@ -16,24 +16,26 @@ const store = {
 
 const { surveys } = surveyListProps;
 
-const onCreateClick = action("Create Survey clicked");
+const actions = {
+  onFetchSurveys: action("Fetched Surveys from API"),
+  onCreateClick: action("Create Survey clicked")
+};
 
 storiesOf("Admin/SurveysScreen", module)
   .addDecorator(StoryRouter())
   .addDecorator(withBasicStore(store))
-  .add("Default", () => <PureSurveysScreen onCreateClick={onCreateClick} />)
-  .add("Surveys", () => (
-    <PureSurveysScreen surveys={surveys} onCreateClick={onCreateClick} />
-  ))
+  .add("Loading", () => <PureSurveysScreen {...actions} />)
+  .add("Empty", () => <PureSurveysScreen {...actions} listLoaded />)
+  .add("Surveys", () => <PureSurveysScreen surveys={surveys} {...actions} />)
   .add("No Active Survey", () => (
     <PureSurveysScreen
+      {...actions}
       surveys={Object.keys(surveys).reduce((acc, id) => {
         acc[id] = {
           ...surveys[id],
-          active: false
+          activeInstanceId: null
         };
         return acc;
       }, {})}
-      onCreateClick={onCreateClick}
     />
   ));

@@ -7,11 +7,12 @@ import RunCountBadge from "./RunCountBadge";
 import { Grid, Cell } from "styled-css-grid";
 import * as Buttons from "./SurveyCardButton";
 import ManageSurveyButton from "./ManageSurveyButton";
+import { closeInstance, launchInstance } from "../../state/ducks/surveys";
 
 const PureSurveyCard = ({
   id,
   name,
-  active = false,
+  activeInstanceId,
   runCount = 0,
   allowLaunch = false,
   onLaunchClick,
@@ -19,12 +20,14 @@ const PureSurveyCard = ({
 }) => {
   // conditionally prep buttons beforehand
   const buttons = [];
-  if (active) {
-    buttons.push(<Buttons.Close onClick={onCloseClick} />);
+  if (!!activeInstanceId) {
+    buttons.push(
+      <Buttons.Close onClick={() => onCloseClick(id, activeInstanceId)} />
+    );
     buttons.push(<Buttons.Dashboard id={id} />);
   }
-  if (allowLaunch && !active)
-    buttons.push(<Buttons.Launch onClick={onLaunchClick} />);
+  if (allowLaunch && !activeInstanceId)
+    buttons.push(<Buttons.Launch onClick={() => onLaunchClick(id)} />);
   if (runCount > 0) buttons.push(<Buttons.Results id={id} />);
 
   return (
@@ -33,7 +36,7 @@ const PureSurveyCard = ({
       borderBottom="thin solid"
       borderColor="cardBorder"
     >
-      <ActiveIndicator active={active} />
+      <ActiveIndicator active={!!activeInstanceId} />
 
       <Box width={1} p={1}>
         <Grid
@@ -69,7 +72,7 @@ const PureSurveyCard = ({
 PureSurveyCard.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  active: PropTypes.bool,
+  activeInstanceId: PropTypes.number,
   runCount: PropTypes.number,
   allowLaunch: PropTypes.bool
 };
@@ -77,8 +80,9 @@ PureSurveyCard.propTypes = {
 const SurveyCard = connect(
   null,
   (dispatch, { id }) => ({
-    onLaunchClick: () => dispatch({ type: "LAUNCH_SURVEY" }), // TODO: action
-    onCloseClick: () => dispatch({ type: "CLOSE_SURVEY" }) // TODO: action
+    onLaunchClick: id => dispatch(launchInstance(id)), // TODO: action
+    onCloseClick: (surveyId, instanceId) =>
+      dispatch(closeInstance(surveyId, instanceId))
   })
 )(PureSurveyCard);
 

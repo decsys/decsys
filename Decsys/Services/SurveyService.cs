@@ -92,6 +92,24 @@ namespace Decsys.Services
         }
 
         /// <summary>
+        /// Duplicate a Survey, but not any of its Instance data.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to use a source.</param>
+        /// <returns>The ID of the newly created duplicate Survey.</returns>
+        /// <exception cref="KeyNotFoundException">Thrown if a Survey could not be found with the specified ID.</exception>
+        public int Duplicate(int id)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+
+            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+
+            survey.Id = 0;
+            survey.Name = $"{survey.Name} (Copy)";
+
+            return surveys.Insert(survey);
+        }
+
+        /// <summary>
         /// Attempt to delete a Survey by ID.
         /// </summary>
         /// <param name="id">The ID of the Survey to delete.</param>

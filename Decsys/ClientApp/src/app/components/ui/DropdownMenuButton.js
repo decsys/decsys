@@ -9,44 +9,19 @@ import DropdownMenu from "./Menu";
  * All non specified props are passed onto the underlying `Button`.
  */
 class DropdownMenuButton extends Component {
-  constructor() {
-    super();
-    this.state = { open: false }; // literally we only store menu open state?
+  // This needs to be a class for onClickOutside :(
+  constructor(props) {
+    super(props);
+    this.state = { open: false };
   }
 
-  handleClickOutside = () => {
-    this.setState({
-      open: false
-    });
-  };
-
-  toggleMenu = () =>
-    this.setState(prev => ({
-      open: !prev.open
-    }));
-
-  /** Modify all menu items onClick to close the mneu before taking their action */
-  renderChildren() {
-    return Children.map(
-      this.props.children,
-      child =>
-        !!child &&
-        cloneElement(child, {
-          onClick: e => {
-            this.toggleMenu();
-            if (typeof child.props.onClick === "function")
-              child.props.onClick(e);
-          }
-        })
-    );
-  }
+  toggleMenu = () => this.setState(prev => ({ open: !prev.open }));
+  handleClickOutside = () => this.setState(prev => ({ open: false }));
 
   render() {
-    // remove props our top level component cares about
-    // or stuff we mustn't pass down to the DOM
     const {
       onClick: _, //we don't want to allow an override of this
-
+      children,
       // used by onClickOutside HOC
       enableOnClickOutside,
       disableOnClickOutside,
@@ -57,12 +32,25 @@ class DropdownMenuButton extends Component {
 
       ...rest
     } = this.props;
-
     return (
       <div>
         <DropdownButton onClick={this.toggleMenu} {...rest} />
         {this.state.open && (
-          <DropdownMenu>{this.renderChildren()}</DropdownMenu>
+          <DropdownMenu>
+            {/** Modify all menu items onClick to close the mneu before taking their action */
+            Children.map(
+              children,
+              child =>
+                !!child &&
+                cloneElement(child, {
+                  onClick: e => {
+                    this.toggleMenu();
+                    if (typeof child.props.onClick === "function")
+                      child.props.onClick(e);
+                  }
+                })
+            )}
+          </DropdownMenu>
         )}
       </div>
     );

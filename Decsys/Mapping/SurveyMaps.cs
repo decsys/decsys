@@ -43,6 +43,11 @@ namespace Decsys.Mapping
             CreateMap<Page, Data.Entities.Page>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new JObjectBsonConverter()));
+
+            CreateMap<Data.Entities.SurveyInstance, SurveyInstance>()
+                .ConstructUsing(src =>
+                    // a dummy one at construction, as we map it anyway
+                    new SurveyInstance(new Survey("")));
         }
 
         private int? MapActiveInstanceToId(Data.Entities.SurveyInstance? instance)

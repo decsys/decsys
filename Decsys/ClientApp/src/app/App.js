@@ -1,38 +1,48 @@
-import React, { Component } from "react";
-// import { Route, Redirect, Switch } from "react-router-dom";
-// import AppBar from "./app/AppBar";
-// import Admin from "./app/admin/Admin";
-// import Survey from "./app/survey/Survey";
+import React from "react";
+import { connect } from "react-redux";
+import AppBar from "./components/AppBar";
+import { Route, Redirect, Switch, withRouter } from "react-router-dom";
+import SurveysScreen from "./screens/admin/SurveysScreen";
+import { Container, EmptyState, FlexBox } from "./components/ui";
+import { fetchSurveys } from "./state/ducks/surveys";
 
-// const IndexRouter = props => {
-//   // TODO: Add first time check for creating an admin account?
+const PureApp = ({ dispatch, listLoaded }) => {
+  return (
+    <>
+      <AppBar brand="DECSYS" />
+      <Switch>
+        <Route
+          path="/"
+          exact
+          render={() => (
+            // TODO: conditional logic for admin
+            <Redirect to="/admin" />
+          )}
+        />
 
-//   // TODO: One day there will be a dashboard at `/`
+        <Route
+          path="/admin"
+          render={() => {
+            dispatch(fetchSurveys());
+            return <SurveysScreen />;
+          }}
+        />
 
-//   return window.location.hostname === "localhost" ? (
-//     <Redirect to="/admin" />
-//   ) : (
-//     <Survey />
-//   );
-// };
+        <Route
+          render={() => (
+            // Any unrecognised frontend route = 404
+            <Container>
+              <FlexBox mt={5}>
+                <EmptyState message="404: Not Found" />
+              </FlexBox>
+            </Container>
+          )}
+        />
+      </Switch>
+    </>
+  );
+};
 
-class App extends Component {
-  render() {
-    return <div>Hello World</div>;
-    // return (
-    //   <>
-    //     <AppBar brand="DECSYS" />
-    // <AppBarLink to="/about">About</AppBarLink>
-
-    //     <Switch>
-    //       <Route path="/" exact component={IndexRouter} />
-    //       <Route path="/admin" component={Admin} />
-
-    //       <Route render={() => <h1>404</h1>} />
-    //     </Switch>
-    //   </>
-    // );
-  }
-}
+const App = withRouter(connect()(PureApp));
 
 export default App;

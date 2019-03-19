@@ -1,5 +1,3 @@
-import * as types from "./_types";
-
 /**
  * Gets the appropriate sort function for a given survey property.
  *
@@ -7,14 +5,25 @@ import * as types from "./_types";
  * @param {boolean} asc Sort ascending or descending.
  */
 const getPropertySorter = (key, asc) => {
-  const defaultSorter = ({ [key]: a }, { [key]: b }) => (asc ? a - b : b - a);
+  const defaultSorter = (a, b) => (asc ? a - b : b - a);
 
   const sorters = {
-    name: ({ [key]: a }, { [key]: b }) =>
-      asc ? a.localeCompare(b) : b.localeCompare(a)
+    name: (
+      { [key]: a },
+      { [key]: b } // use custom sort logic
+    ) => (asc ? a.localeCompare(b) : b.localeCompare(a)),
+    active: (
+      // use custom property keys
+      { activeInstanceId: a },
+      { activeInstanceId: b }
+    ) => defaultSorter(a, b) // but use default sort logic
   };
 
-  return sorters[key] || defaultSorter;
+  return (
+    sorters[key] ||
+    // if no special case found, plug into the default logic, with the default property key mapping
+    (({ [key]: a }, { [key]: b }) => defaultSorter(a, b))
+  );
 };
 
 /**
@@ -26,7 +35,7 @@ const getPropertySorter = (key, asc) => {
  * @param {string} key The object property to sort by.
  * @param {boolean} asc Sort ascending or descending.
  */
-const getSortedLookup = (input, key, asc) =>
+export const getSortedLookup = (input, key, asc) =>
   Object.keys(input)
     .map(id => input[id])
     .sort(getPropertySorter(key, asc))
@@ -41,40 +50,7 @@ const getSortedLookup = (input, key, asc) =>
  * @param {object[]} input The source list of objects.
  * @param {string} filter The filter string to match against.
  */
-const getFilteredLookup = (input, filter) =>
+export const getFilteredLookup = (input, filter) =>
   !filter
     ? input
     : input.filter(({ name }) => new RegExp(filter, "i").test(name));
-
-const surveysReducer = (
-  state = {
-    sorted: [],
-    filtered: [],
-    sort: { key: "active", name: true },
-    filter: ""
-  },
-  action
-) => {
-  switch (action.type) {
-    case types.SORT_SURVEY_LIST:
-      const sort = { ...state.sort, key: action.key, [action.key]: action.asc };
-      const sorted = getSortedLookup(action.surveys, action.key, action.asc);
-
-      return {
-        ...state,
-        sort,
-        sorted,
-        filtered: getFilteredLookup(sorted, state.filter)
-      };
-    case types.FILTER_SURVEY_LIST:
-      return {
-        ...state,
-        filtered: getFilteredLookup(state.sorted, action.filter),
-        filter: action.filter
-      };
-    default:
-      return state;
-  }
-};
-
-export default surveysReducer;

@@ -1,92 +1,92 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Typography, Input } from "@smooth-ui/core-sc";
 import FlexBox from "../ui/FlexBox";
 import SortPanel, { PureSortPanel } from "./SortPanel";
 import SurveyCard from "../SurveyCard";
+import { sortSurveyList, filterSurveyList } from "../../state/ducks/surveys";
 
-class PureSurveyList extends Component {
-  static propTypes = {
-    surveys: PropTypes.shape({}),
-    sorted: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    ),
-    filtered: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    ),
-    sortState: PureSortPanel.propTypes.sortState,
-    filter: PropTypes.string,
-    allowLaunch: PropTypes.bool,
-    onFilterChange: PropTypes.func.isRequired
-  };
+const PureSurveyList = ({
+  surveys,
+  sorted,
+  filtered,
+  sortState,
+  filter,
+  allowLaunch,
+  onFilterChange,
+  onSortSurveyList
+}) => {
+  useEffect(() => {
+    if (!sorted.length) onSortSurveyList(sortState); // initial sort only if it hasn't been done
+  });
+  return (
+    <>
+      <FlexBox alignItems="center" mb="1em">
+        <Typography mr=".5em" display={{ xs: "none", md: "inline" }}>
+          Sort by:
+        </Typography>
+        <SortPanel
+          sortState={sortState}
+          keys={["Active", ["Run Count", "runCount"], "Name"]}
+        />
 
-  static defaultProps = {
-    sorted: []
-  };
+        <Input
+          placeholder="Filter"
+          value={filter}
+          size="sm"
+          ml="auto"
+          onChange={({ target }) => onFilterChange(target.value)}
+        />
+      </FlexBox>
 
-  componentDidMount() {
-    // initialise the sorted list on load if necessary
-    const { sorted, sortState, dispatch } = this.props;
-    // TODO: action //sortSurveyList(sort.key, sort[sort.key]));
-    if (!sorted.length) dispatch({ type: "SORT_SURVEYS" });
-  }
+      {filtered.map(
+        ({ id }) =>
+          !!surveys[id] && (
+            <SurveyCard key={id} {...surveys[id]} allowLaunch={allowLaunch} />
+          )
+      )}
+    </>
+  );
+};
 
-  render() {
-    const {
-      surveys,
-      filter,
-      filtered,
-      allowLaunch,
-      onFilterChange,
-      sortState
-    } = this.props;
-    return (
-      <>
-        <FlexBox alignItems="center" mb="1em">
-          <Typography mr=".5em" display={{ xs: "none", md: "inline" }}>
-            Sort by:
-          </Typography>
-          <SortPanel
-            sortState={sortState}
-            keys={["Active", ["Run Count", "runCount"], "Name"]}
-          />
+PureSurveyList.propTypes = {
+  surveys: PropTypes.shape({}),
+  sorted: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ),
+  filtered: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ),
+  sortState: PureSortPanel.propTypes.sortState,
+  filter: PropTypes.string,
+  allowLaunch: PropTypes.bool,
+  onFilterChange: PropTypes.func.isRequired,
+  onSortSurveyList: PropTypes.func.isRequired
+};
 
-          <Input
-            placeholder="Filter"
-            value={filter}
-            size="sm"
-            ml="auto"
-            onChange={onFilterChange}
-          />
-        </FlexBox>
-
-        {filtered.map(
-          ({ id }) =>
-            !!surveys[id] && (
-              <SurveyCard key={id} {...surveys[id]} allowLaunch={allowLaunch} />
-            )
-        )}
-      </>
-    );
-  }
-}
+PureSurveyList.defaultProps = {
+  sorted: [],
+  filtered: []
+};
 
 const SurveyList = connect(
-  ({ surveyList: { sorted, filtered, filter, sortState } }) => ({
+  ({ surveys: { sorted, filtered, filter, sortState } }) => ({
     sorted,
     filtered,
     filter,
     sortState
   }),
   dispatch => ({
-    onFilterChange: () => dispatch({ type: "FILTER_CHANGE" }) // TODO: action
+    onSortSurveyList: sortState =>
+      dispatch(sortSurveyList(sortState.key, sortState[sortState.key])),
+    onFilterChange: filter => dispatch(filterSurveyList(filter))
   })
 )(PureSurveyList);
 
