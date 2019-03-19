@@ -12,7 +12,7 @@ export const createSurvey = () => dispatch =>
   // create the survey
   axios.post("/api/surveys").then(
     // redirect to the editor with this survey
-    response => dispatch(push(`survey/${response.data}`))
+    response => dispatch(push(`admin/survey/${response.data}`))
   );
 
 /**
