@@ -71,5 +71,18 @@ namespace Decsys.Controllers
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }
+
+        [HttpPost("{id}/duplicate")]
+        [SwaggerOperation("Duplicate a single Survey with the provided ID.")]
+        [SwaggerResponse(200, "The Survey was duplicated successfully and the new copy has the returned ID.")]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        public IActionResult Duplicate(int id)
+        {
+            try
+            {
+                return Ok(_surveys.Duplicate(id));
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+        }
     }
 }

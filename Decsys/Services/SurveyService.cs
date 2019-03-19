@@ -91,6 +91,20 @@ namespace Decsys.Services
                       });
         }
 
+        // TODO: Docs
+        public int Duplicate(int id)
+        {
+            // get the current one
+
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+
+            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+
+            survey.Id = 0; //TODO:  Does this just work™?
+
+            return surveys.Insert(survey);
+        }
+
         /// <summary>
         /// Attempt to delete a Survey by ID.
         /// </summary>
