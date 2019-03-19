@@ -6,14 +6,13 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'Ubuntu-16.04'
-
 variables:
   buildConfiguration: 'Release'
 
 jobs:
 - job: ClientApp
+  pool:
+    vmImage: 'Ubuntu-16.04'
   steps:
   - script: npm ci
     displayName: 'npm ci'
@@ -21,10 +20,13 @@ jobs:
     displayName: 'Webpack Production Build'
   # TODO test
   # TODO publish
-- job: dotnet build
+- job: DotnetBuild
+  pool:
+    vmImage: 'Ubuntu-16.04'
   steps:
   - task: DotNetCoreInstaller@0
     inputs:
+      packageType: 'sdk'
       version: '2.2.201' # replace this value with the version that you need for your project
   - script: dotnet build -c $(buildConfiguration)
     displayName: 'dotnet build $(buildConfiguration)'
