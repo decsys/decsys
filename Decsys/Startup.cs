@@ -15,6 +15,11 @@ using System;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using ClacksMiddleware.Extensions;
+using UoN.AspNetCore.VersionMiddleware;
+using UoN.VersionInformation;
+using UoN.VersionInformation.DependencyInjection;
+using UoN.VersionInformation.Providers;
+using Newtonsoft.Json;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -32,7 +37,7 @@ namespace Decsys
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
+
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -43,6 +48,13 @@ namespace Decsys
                 Configuration.GetConnectionString("DocumentStore")));
 
             services.AddAutoMapper();
+
+            services.AddVersionInformation(opts =>
+                opts.KeyHandlers.Add("file",
+                    new KeyValueFileProvider
+                    {
+                        FileOptional = true
+                    }));
 
             services.AddTransient<SurveyService>();
             services.AddTransient<PageService>();
@@ -56,7 +68,7 @@ namespace Decsys
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VersionInformationService version)
         {
             app.GnuTerryPratchett(); // KEep at the top to add to all requests
 
@@ -73,9 +85,9 @@ namespace Decsys
 
             // We want to be able to turn this off for some local scenarios
             // where getting/signing/accepting certs isn't really feasible
-            if(Configuration.GetValue<bool>("RequireHttps")) app.UseHttpsRedirection();
+            if (Configuration.GetValue<bool>("RequireHttps")) app.UseHttpsRedirection();
 
-
+            app.UseVersion(GetVersionInfo(version));
 
             app.UseStaticFiles();
 
@@ -115,6 +127,19 @@ namespace Decsys
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+        }
+
+        private object GetVersionInfo(IVersionInformationService version)
+        {
+            // start with the keys from the file, cast back to the original dictionary
+            var versionInfo = (Dictionary<string, string>)
+                (version.ByKey("file", "version.txt")
+                    ?? new Dictionary<string, string>());
+
+            // Add further keys, so everything's at the top level
+            versionInfo["API App"] = (string)version.EntryAssembly();
+
+            return versionInfo;
         }
 
         private IDictionary<string, string> GetValidMappings()
