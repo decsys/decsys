@@ -11,7 +11,7 @@ namespace Decsys.Mapping
         public BsonDocument Convert(JObject sourceMember, ResolutionContext context)
         {
             var ms = new MemoryStream();
-            using (BsonWriter writer = new BsonWriter(ms))
+            using (BsonDataWriter writer = new BsonDataWriter(ms))
             {
                 sourceMember.WriteTo(writer);
             }
