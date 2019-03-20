@@ -83,9 +83,7 @@ namespace Decsys
                 // app.UseHsts(); TODO: Add HSTS when ready, or make it configurable. Only applies to hosted versions anyway.
             }
 
-            // We want to be able to turn this off for some local scenarios
-            // where getting/signing/accepting certs isn't really feasible
-            if (Configuration.GetValue<bool>("RequireHttps")) app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseVersion(GetVersionInfo(version));
 
