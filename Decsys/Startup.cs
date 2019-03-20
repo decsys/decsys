@@ -14,6 +14,7 @@ using System.Linq;
 using System;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using ClacksMiddleware.Extensions;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -57,6 +58,8 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.GnuTerryPratchett(); // KEep at the top to add to all requests
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -71,6 +74,8 @@ namespace Decsys
             // We want to be able to turn this off for some local scenarios
             // where getting/signing/accepting certs isn't really feasible
             if(Configuration.GetValue<bool>("RequireHttps")) app.UseHttpsRedirection();
+
+
 
             app.UseStaticFiles();
 
