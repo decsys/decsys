@@ -13,7 +13,7 @@ storiesOf("Admin/SurveyCard", module)
     <PureSurveyCard
       id={0}
       name={text("Name", "My Survey")}
-      active={boolean("Active", false)}
+      activeInstanceId={boolean("Active", false) ? 5 : null}
       runCount={number("Run Count", 0)}
       allowLaunch={boolean("Allow Launch", true)}
       onCloseClick={action("Close clicked")}

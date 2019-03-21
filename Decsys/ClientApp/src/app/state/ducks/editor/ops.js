@@ -1,11 +1,21 @@
 import * as actions from "./actions";
+import { push } from "connected-react-router";
 import axios from "axios";
 
+/**
+ * Get a Survey and add it to the state as the current Editor Survey
+ * @param {*} id
+ */
 export const getSurvey = id => dispatch =>
   axios
     .get(`/api/surveys/${id}`)
     .then(({ data }) => dispatch(actions.getSurvey(data)));
 
+/**
+ * Edit the name of a Survey
+ * @param {*} id
+ * @param {*} name
+ */
 export const editName = (id, name) => dispatch => {
   dispatch(actions.savingName());
   axios
@@ -15,4 +25,22 @@ export const editName = (id, name) => dispatch => {
       }
     })
     .then(() => dispatch(actions.saveName(name)));
+};
+
+/**
+ * Delete a Survey
+ * @param {*} id
+ */
+export const deleteSurvey = id => dispatch => {
+  axios.delete(`/api/surveys/${id}`).then(() => dispatch(push("/admin")));
+};
+
+/**
+ * Duplicate a Survey, and open the new Survey in the Editor
+ * @param {*} id
+ */
+export const duplicateSurvey = id => dispatch => {
+  axios
+    .post(`/api/surveys/${id}/duplicate`)
+    .then(({ data }) => dispatch(push(`/admin/survey/${data}`)));
 };

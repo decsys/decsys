@@ -13,8 +13,8 @@ export const createSurvey = () => dispatch =>
   // create the survey
   axios.post("/api/surveys").then(
     // redirect to the editor with this survey
-    ({ data }) => {
-      dispatch(setSurveyPlaceholder("Untitled Survey"));
+    async ({ data }) => {
+      await dispatch(setSurveyPlaceholder("Untitled Survey"));
       dispatch(push(`admin/survey/${data}`));
     }
   );
@@ -24,8 +24,8 @@ export const createSurvey = () => dispatch =>
  * @param {*} id
  * @param {*} name
  */
-export const editSurvey = (id, name) => dispatch => {
-  dispatch(setSurveyPlaceholder(name));
+export const editSurvey = (id, name) => async dispatch => {
+  await dispatch(setSurveyPlaceholder(name));
   dispatch(push(`admin/survey/${id}`));
 };
 
