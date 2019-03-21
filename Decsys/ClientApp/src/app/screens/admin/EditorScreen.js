@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EditorBar from "../../components/EditorBar";
@@ -9,7 +10,11 @@ import { DotCircle } from "styled-icons/fa-regular";
 import EditorToolbox from "../../components/EditorToolbox";
 import EditorPageList from "../../components/EditorPageList";
 import { LoadingIndicator, FlexBox } from "../../components/ui";
-import { editName, deleteSurvey } from "../../state/ducks/editor";
+import {
+  editName,
+  deleteSurvey,
+  duplicateSurvey
+} from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
   survey,
@@ -75,6 +80,20 @@ const PureEditorScreen = ({
   );
 };
 
+PureEditorScreen.propTypes = {
+  survey: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired
+  }),
+  surveyLoaded: PropTypes.bool,
+  updateStates: PropTypes.shape({
+    name: EditorBar.propTypes.nameUpdateState
+  }),
+  onNameChange: PropTypes.func.isRequired,
+  onDuplicateClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired
+};
+
 const EditorScreen = withRouter(
   connect(
     ({ editor: { survey, surveyLoaded, updateStates } }) => ({
@@ -89,7 +108,7 @@ const EditorScreen = withRouter(
     }),
     (dispatch, { id }) => ({
       onNameChange: ({ target: { value } }) => dispatch(editName(id, value)),
-      onDuplicateClick: () => {},
+      onDuplicateClick: () => dispatch(duplicateSurvey(id)),
       onDeleteClick: () => dispatch(deleteSurvey(id))
     })
   )(PureEditorScreen)

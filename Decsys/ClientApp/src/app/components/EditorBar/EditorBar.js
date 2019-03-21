@@ -13,7 +13,6 @@ const EditorBar = ({
   onNameChange,
   disabled,
   onDuplicateClick,
-  onExportClick,
   onDeleteClick
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -58,10 +57,8 @@ EditorBar.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   nameUpdateState: PropTypes.shape({
-    name: PropTypes.shape({
-      saving: PropTypes.bool,
-      saved: PropTypes.bool
-    })
+    saving: PropTypes.bool,
+    saved: PropTypes.bool
   }),
   onNameChange: PropTypes.func.isRequired,
   onDuplicateClick: PropTypes.func.isRequired,

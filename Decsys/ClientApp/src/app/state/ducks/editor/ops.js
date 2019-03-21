@@ -1,5 +1,4 @@
 import * as actions from "./actions";
-import { deleteSurvey as surveysDeleteSurvey } from "../surveys/ops";
 import { push } from "connected-react-router";
 import axios from "axios";
 
@@ -32,7 +31,16 @@ export const editName = (id, name) => dispatch => {
  * Delete a Survey
  * @param {*} id
  */
-export const deleteSurvey = id => async dispatch => {
-  await dispatch(surveysDeleteSurvey(id));
-  dispatch(push("/admin"));
+export const deleteSurvey = id => dispatch => {
+  axios.delete(`/api/surveys/${id}`).then(() => dispatch(push("/admin")));
+};
+
+/**
+ * Duplicate a Survey, and open the new Survey in the Editor
+ * @param {*} id
+ */
+export const duplicateSurvey = id => dispatch => {
+  axios
+    .post(`/api/surveys/${id}/duplicate`)
+    .then(({ data }) => dispatch(push(`/admin/survey/${data}`)));
 };
