@@ -5,6 +5,8 @@ import { Route, Redirect, Switch, withRouter } from "react-router-dom";
 import SurveysScreen from "./screens/admin/SurveysScreen";
 import { Container, EmptyState, FlexBox } from "./components/ui";
 import { fetchSurveys } from "./state/ducks/surveys";
+import { getSurvey } from "./state/ducks/surveyEditor/ops";
+import EditorScreen from "./screens/admin/EditorScreen";
 
 const PureApp = ({ dispatch, listLoaded }) => {
   return (
@@ -29,7 +31,13 @@ const PureApp = ({ dispatch, listLoaded }) => {
           }}
         />
 
-        <Route path="/admin/survey/:id" render={() => {}} />
+        <Route
+          path="/admin/survey/:id"
+          render={({ match }) => {
+            dispatch(getSurvey(match.params.id));
+            return <EditorScreen />;
+          }}
+        />
 
         <Route
           render={() => (

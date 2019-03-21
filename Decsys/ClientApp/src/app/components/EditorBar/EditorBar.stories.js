@@ -1,22 +1,16 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import { action, decorate } from "@storybook/addon-actions";
 import EditorBar from "./EditorBar";
-import { withBasicStore } from "../../utils/story-redux";
 
 const actions = {
   onPreviewClick: action("Preview clicked"),
   onDuplicateClick: action("Duplicate clicked"),
   onExportClick: action("Export clicked"),
-  onDeleteClick: action("Delete clicked")
+  onDeleteClick: action("Delete clicked"),
+  onNameChange: decorate([([e]) => [e.target.value, e]]).action("Name changed")
 };
 
-const state = {
-  surveyEditor: {
-    survey: { name: "Untitled Survey" }
-  }
-};
-
-storiesOf("Admin/EditorBar", module)
-  .addDecorator(withBasicStore(state))
-  .add("Default", () => <EditorBar {...actions} name="My Survey" />);
+storiesOf("Admin/EditorBar", module).add("Default", () => (
+  <EditorBar {...actions} name="My Survey" />
+));

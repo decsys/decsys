@@ -8,11 +8,23 @@ import { DotCircle } from "styled-icons/fa-regular";
 import EditorToolbox from "../../components/EditorToolbox";
 import EditorPageList from "../../components/EditorPageList";
 import { LoadingIndicator, FlexBox } from "../../components/ui";
+import { editSurveyName } from "../../state/ducks/editor";
 
-const PureEditorScreen = ({ survey, surveyLoaded, components }) =>
+const PureEditorScreen = ({
+  survey,
+  surveyLoaded,
+  updateStates,
+  components,
+  onNameChange
+}) =>
   !surveyLoaded ? (
     <FlexBox flexDirection="column">
-      <SurveyEditorBar disabled />
+      <SurveyEditorBar
+        name={survey.name}
+        nameUpdateState={updateStates.name}
+        onNameChange={onNameChange}
+        disabled
+      />
       <LoadingIndicator />
     </FlexBox>
   ) : (
@@ -25,7 +37,11 @@ const PureEditorScreen = ({ survey, surveyLoaded, components }) =>
       style={{ height: "100vh" }}
     >
       <Cell area="bar">
-        <SurveyEditorBar />
+        <SurveyEditorBar
+          name={survey.name}
+          onNameChange={onNameChange}
+          nameUpdateState={updateStates.name}
+        />
       </Cell>
       <Cell
         area="toolbox"
@@ -53,15 +69,21 @@ const PureEditorScreen = ({ survey, surveyLoaded, components }) =>
     </Grid>
   );
 
-const EditorScreen = connect(({ surveyEditor: { survey, surveyLoaded } }) => ({
-  survey,
-  surveyLoaded,
-  components: [
-    { type: "Ellipse", icon: <CircleNotch size="1em" /> },
-    { type: "Likert", icon: <DotCircle size="1em" /> },
-    { type: "FreeText", icon: <AlignLeft size="1em" /> }
-  ]
-}))(PureEditorScreen);
+const EditorScreen = connect(
+  ({ editor: { survey, surveyLoaded, updateStates } }) => ({
+    survey,
+    surveyLoaded,
+    updateStates,
+    components: [
+      { type: "Ellipse", icon: <CircleNotch size="1em" /> },
+      { type: "Likert", icon: <DotCircle size="1em" /> },
+      { type: "FreeText", icon: <AlignLeft size="1em" /> }
+    ]
+  }),
+  (dispatch, { id }) => ({
+    onNameChange: ({ target: { value } }) => dispatch(editSurveyName(id, value))
+  })
+)(PureEditorScreen);
 
 export { PureEditorScreen };
 

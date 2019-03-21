@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as actions from "./actions";
-import { setSurveyPlaceholder } from "../surveyEditor/actions";
+import { setSurveyPlaceholder } from "../editor/actions";
 import { push } from "connected-react-router";
 
 // TODO: AJAX error handling?

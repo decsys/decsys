@@ -5,6 +5,9 @@ import EditorBarButton from "./Button";
 import NameInput from "./NameInput";
 
 const EditorBar = ({
+  name,
+  nameUpdateState,
+  onNameChange,
   disabled,
   onPreviewClick,
   onDuplicateClick,
@@ -12,7 +15,12 @@ const EditorBar = ({
   onDeleteClick
 }) => (
   <Grid columnGap="0px" columns="1fr auto auto auto auto">
-    <NameInput disabled={disabled} />
+    <NameInput
+      name={name}
+      {...nameUpdateState}
+      onChange={onNameChange}
+      disabled={disabled}
+    />
     <EditorBarButton onClick={onPreviewClick} disabled={disabled}>
       <Eye size="1em" /> Preview
     </EditorBarButton>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import { Input } from "@smooth-ui/core-sc";
 import { FlexBox, RotatingSpinner } from "../ui";
 import { Check } from "styled-icons/fa-solid";
@@ -20,7 +19,7 @@ const StyledCheck = styled(Check)`
   animation: ${fadeOut} 2s 2s linear forwards;
 `;
 
-const PureNameInput = ({ name, working, done, onChange, disabled }) => {
+const NameInput = ({ name, saving, saved, onChange, disabled }) => {
   const [timer, setTimer] = useState();
   const handleChange = e => {
     e.persist(); // tell React we want the event to have a longer lifetime than this scope
@@ -40,10 +39,10 @@ const PureNameInput = ({ name, working, done, onChange, disabled }) => {
           onChange={handleChange}
           disabled={disabled}
         />
-        {(working || done) && (
+        {(saving || saved) && (
           <IconDiv>
-            {working && <RotatingSpinner size="1em" />}
-            {done && <StyledCheck size="1em" />}
+            {saving && <RotatingSpinner size="1em" />}
+            {saved && <StyledCheck size="1em" />}
           </IconDiv>
         )}
       </FlexBox>
@@ -51,30 +50,11 @@ const PureNameInput = ({ name, working, done, onChange, disabled }) => {
   );
 };
 
-PureNameInput.propTypes = {
+NameInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
-  working: PropTypes.bool,
-  done: PropTypes.bool
+  saving: PropTypes.bool,
+  saved: PropTypes.bool
 };
-
-const NameInput = connect(
-  ({
-    surveyEditor: {
-      survey: { name },
-      nameSaving,
-      nameSaved
-    }
-  }) => ({
-    name,
-    working: nameSaving,
-    done: nameSaved
-  }),
-  dispatch => ({
-    onChange: () => dispatch({ type: "CHANGE_SURVEY_NAME" }) // TODO:  action
-  })
-)(PureNameInput);
-
-export { PureNameInput };
 
 export default NameInput;

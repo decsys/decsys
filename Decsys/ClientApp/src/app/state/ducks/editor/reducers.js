@@ -1,6 +1,9 @@
 import * as types from "./types";
 
-const surveyEditorReducer = (state = { survey: {} }, action) => {
+const surveyEditorReducer = (
+  state = { survey: {}, updateStates: { name: {} } },
+  action
+) => {
   switch (action.type) {
     case types.SET_SURVEY_PLACEHOLDER:
       return {
@@ -13,8 +16,10 @@ const surveyEditorReducer = (state = { survey: {} }, action) => {
         ...state,
         survey: action.payload.survey,
         surveyLoaded: true,
-        nameSaving: false,
-        nameSaved: false
+        updateStates: {
+          ...state.updateStates,
+          name: { saving: false, saved: false }
+        }
       };
 
     default:

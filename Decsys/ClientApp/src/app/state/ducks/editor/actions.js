@@ -9,3 +9,8 @@ export const setSurveyPlaceholder = name => ({
   type: types.SET_SURVEY_PLACEHOLDER,
   payload: { name }
 });
+
+export const editSurveyName = name => ({
+  type: types.EDIT_SURVEY_NAME,
+  payload: { name }
+});

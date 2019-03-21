@@ -2,20 +2,27 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { PureEditorScreen } from "./EditorScreen";
 import { withBasicStore } from "../../utils/story-redux";
+import { decorate } from "@storybook/addon-actions";
 
 const state = {
-  surveyEditor: {
-    survey: { name: "Hello" }
+  editor: {
+    survey: { name: "My Survey" },
+    updateStates: { name: {} }
   }
+};
+
+const actions = {
+  onNameChange: decorate([([e]) => [e.target.value, e]]).action("Name changed")
 };
 
 storiesOf("Admin/EditorScreen", module)
   .addDecorator(withBasicStore(state))
-  .add("Loading", () => <PureEditorScreen survey={state.surveyEditor.survey} />)
+  .add("Loading", () => <PureEditorScreen {...state.editor} {...actions} />)
   .add("Default", () => (
     <PureEditorScreen
-      surveyLoaded={true}
-      survey={{ name: "Hello" }}
+      {...state.editor}
       components={[]}
+      surveyLoaded={true}
+      {...actions}
     />
   ));
