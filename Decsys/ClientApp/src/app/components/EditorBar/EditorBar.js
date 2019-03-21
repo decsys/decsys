@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Eye, Copy, FileExport, Trash } from "styled-icons/fa-solid";
 import { Grid } from "styled-css-grid";
 import EditorBarButton from "./Button";
@@ -51,6 +52,22 @@ const EditorBar = ({
       />
     </>
   );
+};
+
+EditorBar.propTypes = {
+  name: PropTypes.string.isRequired,
+  nameUpdateState: PropTypes.shape({
+    name: PropTypes.shape({
+      saving: PropTypes.bool,
+      saved: PropTypes.bool
+    })
+  }),
+  onNameChange: PropTypes.func.isRequired,
+  onPreviewClick: PropTypes.func.isRequired,
+  onDuplicateClick: PropTypes.func.isRequired,
+  onExportClick: PropTypes.func.isRequired,
+  onDeleteClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 };
 
 export default EditorBar;

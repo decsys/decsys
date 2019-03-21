@@ -34,5 +34,5 @@ export const editName = (id, name) => dispatch => {
  */
 export const deleteSurvey = id => dispatch => {
   dispatch(surveysDeleteSurvey(id));
-  dispatch(push("/admin/surveys"));
+  dispatch(push("/admin"));
 };
