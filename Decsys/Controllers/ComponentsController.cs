@@ -53,16 +53,15 @@ namespace Decsys.Controllers
 
                 // Import the component module, and some metadata
                 output.Append(
-                    "import Module").Append(++counter)
-                    .Append(", { name as name").Append(counter)
-                    //.Append(" , version as version").Append(counter) // TODO: work out new versioning
-                    .Append(" } from '/static/components/").Append(file.Name)
+                    "import {name as name").Append(++counter)
+                    .Append(", component as component").Append(counter)
+                    .Append("} from '/static/components/").Append(file.Name)
                     .AppendLine("';");
 
                 // Add the module to our components dictionary
                 output.Append(global).Append(components)
                     .Append("[name").Append(counter)
-                    .Append("] = Module").Append(counter)
+                    .Append("] = component").Append(counter)
                     .AppendLine(";");
             }
 

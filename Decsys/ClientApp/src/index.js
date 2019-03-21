@@ -2,7 +2,6 @@ import * as serviceWorker from "./serviceWorker";
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import * as icons from "styled-icons";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from "history";
 import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
@@ -17,12 +16,10 @@ import configureStore from "./app/state/store";
  */
 
 window.__DECSYS__ = {}; // Register our global namespace at bootstrap time
-// Currently weneed to make a bunch of stuff global to support components
-// TODO: we should be able to reduce this as we get a handle on compiling component module bundles
-// React and styled probably need to stay as single instances?
+// React and styled need to stay as single instances,so we make them global for modules
+// also PropTypes for now because I don't understand rollup well enough
 window.React = React;
 window.styled = styled;
-window.styledIcons = icons;
 window.PropTypes = PropTypes;
 
 // fetch DECSYS Component modules from the API and chuck them on the page

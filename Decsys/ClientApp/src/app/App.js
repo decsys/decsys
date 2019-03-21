@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import AppBar from "./components/AppBar";
 import { Route, Redirect, Switch, withRouter } from "react-router-dom";
