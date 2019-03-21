@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import SurveyEditorBar from "../../components/EditorBar";
+import EditorBar from "../../components/EditorBar";
 import { Grid, Cell } from "styled-css-grid";
 import { Typography } from "@smooth-ui/core-sc";
 import { AlignLeft, CircleNotch } from "styled-icons/fa-solid";
@@ -8,23 +8,28 @@ import { DotCircle } from "styled-icons/fa-regular";
 import EditorToolbox from "../../components/EditorToolbox";
 import EditorPageList from "../../components/EditorPageList";
 import { LoadingIndicator, FlexBox } from "../../components/ui";
-import { editName } from "../../state/ducks/editor";
+import { editName, deleteSurvey } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
   survey,
   surveyLoaded,
   updateStates,
   components,
-  onNameChange
-}) =>
-  !surveyLoaded ? (
+  onNameChange,
+  onDeleteClick
+}) => {
+  const SurveyEditorBar = ({ disabled }) => (
+    <EditorBar
+      name={survey.name || ""}
+      nameUpdateState={updateStates.name}
+      onNameChange={onNameChange}
+      onDeleteClick={onDeleteClick}
+      disabled={disabled}
+    />
+  );
+  return !surveyLoaded ? (
     <FlexBox flexDirection="column">
-      <SurveyEditorBar
-        name={survey.name || ""}
-        nameUpdateState={updateStates.name}
-        onNameChange={onNameChange}
-        disabled
-      />
+      <SurveyEditorBar disabled />
       <LoadingIndicator />
     </FlexBox>
   ) : (
@@ -37,11 +42,7 @@ const PureEditorScreen = ({
       style={{ height: "100vh" }}
     >
       <Cell area="bar">
-        <SurveyEditorBar
-          name={survey.name}
-          onNameChange={onNameChange}
-          nameUpdateState={updateStates.name}
-        />
+        <SurveyEditorBar />
       </Cell>
       <Cell
         area="toolbox"
@@ -68,6 +69,7 @@ const PureEditorScreen = ({
       </Cell>
     </Grid>
   );
+};
 
 const EditorScreen = connect(
   ({ editor: { survey, surveyLoaded, updateStates } }) => ({
@@ -81,7 +83,11 @@ const EditorScreen = connect(
     ]
   }),
   (dispatch, { id }) => ({
-    onNameChange: ({ target: { value } }) => dispatch(editName(id, value))
+    onNameChange: ({ target: { value } }) => dispatch(editName(id, value)),
+    onPreviewClick: () => {},
+    onDuplicateClick: () => {},
+    onExportClick: () => {},
+    onDeleteClick: () => dispatch(deleteSurvey(id))
   })
 )(PureEditorScreen);
 
