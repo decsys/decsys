@@ -34,24 +34,22 @@ const NameInput = ({ name, saving, saved, onChange, disabled }) => {
   };
 
   return (
-    <>
-      <FlexBox style={{ position: "relative" }}>
-        <Input
-          size="lg"
-          width={1}
-          value={value}
-          borderRadius={0}
-          onChange={handleChange}
-          disabled={disabled}
-        />
-        {(saving || saved) && (
-          <IconDiv>
-            {saving && <RotatingSpinner size="1em" />}
-            {saved && <StyledCheck size="1em" />}
-          </IconDiv>
-        )}
-      </FlexBox>
-    </>
+    <FlexBox style={{ position: "relative" }}>
+      <Input
+        size="lg"
+        width={1}
+        value={value}
+        borderRadius={0}
+        onChange={handleChange}
+        disabled={disabled}
+      />
+      {(saving || saved) && (
+        <IconDiv>
+          {saving && <RotatingSpinner size="1em" />}
+          {saved && <StyledCheck size="1em" />}
+        </IconDiv>
+      )}
+    </FlexBox>
   );
 };
 
