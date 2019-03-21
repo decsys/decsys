@@ -32,7 +32,7 @@ export const editName = (id, name) => dispatch => {
  * Delete a Survey
  * @param {*} id
  */
-export const deleteSurvey = id => dispatch => {
-  dispatch(surveysDeleteSurvey(id));
+export const deleteSurvey = id => async dispatch => {
+  await dispatch(surveysDeleteSurvey(id));
   dispatch(push("/admin"));
 };

@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Eye, Copy, FileExport, Trash } from "styled-icons/fa-solid";
 import { Grid } from "styled-css-grid";
-import EditorBarButton from "./Button";
+import EditorBarButton, { LinkButton as EditorBarLink } from "./Button";
 import NameInput from "./NameInput";
 import DeleteSurveyModal from "../SurveyCard/DeleteSurveyModal";
 
 const EditorBar = ({
+  id,
   name,
   nameUpdateState,
   onNameChange,
   disabled,
-  onPreviewClick,
   onDuplicateClick,
   onExportClick,
   onDeleteClick
@@ -27,15 +27,15 @@ const EditorBar = ({
           onChange={onNameChange}
           disabled={disabled}
         />
-        <EditorBarButton onClick={onPreviewClick} disabled={disabled}>
+        <EditorBarLink to={`/admin/survey/${id}/preview`} disabled={disabled}>
           <Eye size="1em" /> Preview
-        </EditorBarButton>
+        </EditorBarLink>
         <EditorBarButton onClick={onDuplicateClick} disabled={disabled}>
           <Copy size="1em" /> Duplicate
         </EditorBarButton>
-        <EditorBarButton onClick={onExportClick} disabled={disabled}>
+        <EditorBarLink to={`/admin/survey/${id}/export`} disabled={disabled}>
           <FileExport size="1em" /> Export
-        </EditorBarButton>
+        </EditorBarLink>
         <EditorBarButton
           variant="danger"
           onClick={() => setShowDeleteModal(true)}
@@ -55,6 +55,7 @@ const EditorBar = ({
 };
 
 EditorBar.propTypes = {
+  id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   nameUpdateState: PropTypes.shape({
     name: PropTypes.shape({
@@ -63,9 +64,7 @@ EditorBar.propTypes = {
     })
   }),
   onNameChange: PropTypes.func.isRequired,
-  onPreviewClick: PropTypes.func.isRequired,
   onDuplicateClick: PropTypes.func.isRequired,
-  onExportClick: PropTypes.func.isRequired,
   onDeleteClick: PropTypes.func.isRequired,
   disabled: PropTypes.bool
 };

@@ -33,6 +33,7 @@ const PureApp = ({ dispatch, listLoaded }) => {
 
         <Route
           path="/admin/survey/:id"
+          exact
           render={({ match }) => {
             dispatch(getSurvey(match.params.id));
             return <EditorScreen id={match.params.id} />;

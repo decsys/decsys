@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import EditorBar from "../../components/EditorBar";
 import { Grid, Cell } from "styled-css-grid";
 import { Typography } from "@smooth-ui/core-sc";
@@ -16,14 +17,17 @@ const PureEditorScreen = ({
   updateStates,
   components,
   onNameChange,
-  onDeleteClick
+  onDeleteClick,
+  onDuplicateClick
 }) => {
   const SurveyEditorBar = ({ disabled }) => (
     <EditorBar
+      id={survey.id || 0}
       name={survey.name || ""}
       nameUpdateState={updateStates.name}
       onNameChange={onNameChange}
       onDeleteClick={onDeleteClick}
+      onDuplicateClick={onDuplicateClick}
       disabled={disabled}
     />
   );
@@ -71,25 +75,25 @@ const PureEditorScreen = ({
   );
 };
 
-const EditorScreen = connect(
-  ({ editor: { survey, surveyLoaded, updateStates } }) => ({
-    survey,
-    surveyLoaded,
-    updateStates,
-    components: [
-      { type: "Ellipse", icon: <CircleNotch size="1em" /> },
-      { type: "Likert", icon: <DotCircle size="1em" /> },
-      { type: "FreeText", icon: <AlignLeft size="1em" /> }
-    ]
-  }),
-  (dispatch, { id }) => ({
-    onNameChange: ({ target: { value } }) => dispatch(editName(id, value)),
-    onPreviewClick: () => {},
-    onDuplicateClick: () => {},
-    onExportClick: () => {},
-    onDeleteClick: () => dispatch(deleteSurvey(id))
-  })
-)(PureEditorScreen);
+const EditorScreen = withRouter(
+  connect(
+    ({ editor: { survey, surveyLoaded, updateStates } }) => ({
+      survey,
+      surveyLoaded,
+      updateStates,
+      components: [
+        { type: "Ellipse", icon: <CircleNotch size="1em" /> },
+        { type: "Likert", icon: <DotCircle size="1em" /> },
+        { type: "FreeText", icon: <AlignLeft size="1em" /> }
+      ]
+    }),
+    (dispatch, { id }) => ({
+      onNameChange: ({ target: { value } }) => dispatch(editName(id, value)),
+      onDuplicateClick: () => {},
+      onDeleteClick: () => dispatch(deleteSurvey(id))
+    })
+  )(PureEditorScreen)
+);
 
 export { PureEditorScreen };
 
