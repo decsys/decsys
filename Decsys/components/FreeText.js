@@ -1,4 +1,4 @@
-// global React, ReactDOM
+// global React, ReactDOM, styledIcons, PropTypes
 
 // Component Metadata
 const name = "FreeText";
@@ -6,15 +6,15 @@ const version = "0.1.0";
 // TODO: Schema?
 
 // Build a React component for our FreeText question type
-const FreeText = props => {
-  const threshold = props.maxLength / 10; // right now we fix this at 10% MaxLength
+const FreeText = ({ maxLength, initialText }) => {
+  const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
 
   // these become references to elements when the component is rendered
   let message, counter, ta;
 
   // Input handler to update the shiny character limit counter
   const handleInput = e => {
-    const count = props.maxLength - ta.value.length;
+    const count = maxLength - ta.value.length;
     counter.innerHTML = count;
     if (count === 0) {
       message.classList.remove("badge-warning");
@@ -44,7 +44,7 @@ const FreeText = props => {
         }
       },
       React.createElement("span", { className: "fas fa-fw fa-info-circle" }),
-      React.createElement(InfoCircle, { size: "1em" }),
+      React.createElement(styledIcons.faSolid.InfoCircle, { size: "1em" }),
       "Characters remaining\xA0",
       React.createElement(
         "span",
@@ -53,16 +53,16 @@ const FreeText = props => {
             return (counter = e);
           }
         },
-        props.maxLength - props.initialText.length
+        maxLength - initialText.length
       ),
       "/",
-      props.maxLength
+      maxLength
     ),
     React.createElement("textarea", {
       className: "form-control",
       name: "FreeText",
-      maxLength: props.maxLength,
-      defaultValue: props.initialText,
+      maxLength: maxLength,
+      defaultValue: initialText,
       ref: function ref(e) {
         return (ta = e);
       },
@@ -71,18 +71,15 @@ const FreeText = props => {
   );
 };
 
+FreeText.propTypes = {
+  initialText: PropTypes.string,
+  maxLength: PropTypes.number
+};
+
+FreeText.defaultProps = {
+  maxLength: 10,
+  initialText: ""
+};
+
 export { name };
 export default FreeText;
-
-//// FreeText enables submit immediately
-//// since empty text is a valid input, for now...
-//templateViewModel.enableSubmit();
-
-// Render our React component!
-//ReactDOM.render(
-//    React.createElement(decsys.Components.FreeText, {
-//        maxLength: templateViewModel.Params.MaxLength,
-//        initialText: templateViewModel.Results.FreeText || ""
-//    }),
-//    templateViewModel.componentContainer
-//);
