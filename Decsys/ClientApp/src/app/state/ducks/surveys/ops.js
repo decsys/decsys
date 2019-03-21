@@ -20,6 +20,16 @@ export const createSurvey = () => dispatch =>
   );
 
 /**
+ * Load a Survey in the Editor
+ * @param {*} id
+ * @param {*} name
+ */
+export const editSurvey = (id, name) => dispatch => {
+  dispatch(setSurveyPlaceholder(name));
+  dispatch(push(`admin/survey/${id}`));
+};
+
+/**
  * Fetch Surveys from the API and update the state with them
  */
 export const fetchSurveys = () => dispatch =>

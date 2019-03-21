@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Input } from "@smooth-ui/core-sc";
@@ -21,7 +21,9 @@ const StyledCheck = styled(Check)`
 
 const NameInput = ({ name, saving, saved, onChange, disabled }) => {
   const [timer, setTimer] = useState();
-  const [value, setValue] = useState(name); // we use local state so updates work, but still use redux props
+
+  const [value, setValue] = useState(name); // we use local state so updates work without delay
+  useEffect(() => setValue(name), [name]); // but still ensure update when new name props come in
 
   const handleChange = e => {
     setValue(e.target.value); //update local state
