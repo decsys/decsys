@@ -1,8 +1,8 @@
 import React from "react";
-import { Input } from "@smooth-ui/core-sc";
 import { Eye, Copy, FileExport, Trash } from "styled-icons/fa-solid";
 import { Grid } from "styled-css-grid";
 import EditorBarButton from "./Button";
+import NameInput from "./NameInput";
 
 const EditorBar = ({
   name,
@@ -12,7 +12,7 @@ const EditorBar = ({
   onDeleteClick
 }) => (
   <Grid columnGap="0px" columns="1fr auto auto auto auto">
-    <Input size="lg" defaultValue={name} borderRadius={0} />
+    <NameInput />
     <EditorBarButton onClick={onPreviewClick}>
       <Eye size="1em" /> Preview
     </EditorBarButton>
