@@ -8,7 +8,7 @@ import { DotCircle } from "styled-icons/fa-regular";
 import EditorToolbox from "../../components/EditorToolbox";
 import EditorPageList from "../../components/EditorPageList";
 import { LoadingIndicator, FlexBox } from "../../components/ui";
-import { editSurveyName } from "../../state/ducks/editor";
+import { editName } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
   survey,
@@ -20,7 +20,7 @@ const PureEditorScreen = ({
   !surveyLoaded ? (
     <FlexBox flexDirection="column">
       <SurveyEditorBar
-        name={survey.name}
+        name={survey.name || ""}
         nameUpdateState={updateStates.name}
         onNameChange={onNameChange}
         disabled
@@ -81,7 +81,7 @@ const EditorScreen = connect(
     ]
   }),
   (dispatch, { id }) => ({
-    onNameChange: ({ target: { value } }) => dispatch(editSurveyName(id, value))
+    onNameChange: ({ target: { value } }) => dispatch(editName(id, value))
   })
 )(PureEditorScreen);
 

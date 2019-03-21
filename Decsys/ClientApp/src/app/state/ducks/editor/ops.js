@@ -6,7 +6,13 @@ export const getSurvey = id => dispatch =>
     .get(`/api/surveys/${id}`)
     .then(({ data }) => dispatch(actions.getSurvey(data)));
 
-export const editSurveyName = (id, name) => dispatch =>
+export const editName = (id, name) => dispatch => {
+  dispatch(actions.savingName());
   axios
-    .put(`/api/surveys/${id}/name`, name)
-    .then(() => dispatch(actions.editSurveyName(name)));
+    .put(`/api/surveys/${id}/name`, JSON.stringify(name), {
+      headers: {
+        "Content-Type": "application/json" // because we send a string not a JSON object as body data
+      }
+    })
+    .then(() => dispatch(actions.saveName(name)));
+};

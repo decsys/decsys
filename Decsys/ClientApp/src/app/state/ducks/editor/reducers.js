@@ -18,7 +18,27 @@ const surveyEditorReducer = (
         surveyLoaded: true,
         updateStates: {
           ...state.updateStates,
-          name: { saving: false, saved: false }
+          name: {}
+        }
+      };
+    case types.SAVING_NAME:
+      return {
+        ...state,
+        updateStates: {
+          ...state.updateStates,
+          name: { saving: true }
+        }
+      };
+    case types.EDIT_NAME:
+      return {
+        ...state,
+        survey: {
+          ...state.survey,
+          name: action.payload.name
+        },
+        updateStates: {
+          ...state.updateStates,
+          name: { saving: false, saved: true }
         }
       };
 

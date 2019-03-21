@@ -21,11 +21,14 @@ const StyledCheck = styled(Check)`
 
 const NameInput = ({ name, saving, saved, onChange, disabled }) => {
   const [timer, setTimer] = useState();
+  const [value, setValue] = useState(name); // we use local state so updates work, but still use redux props
+
   const handleChange = e => {
+    setValue(e.target.value); //update local state
     e.persist(); // tell React we want the event to have a longer lifetime than this scope
     //delay, then fire the onChange passed in
     clearTimeout(timer); // reset the delay timer every change
-    setTimer(setTimeout(() => onChange(e), 2000));
+    setTimer(setTimeout(() => onChange(e), 1000));
   };
 
   return (
@@ -34,7 +37,7 @@ const NameInput = ({ name, saving, saved, onChange, disabled }) => {
         <Input
           size="lg"
           width={1}
-          value={name}
+          value={value}
           borderRadius={0}
           onChange={handleChange}
           disabled={disabled}
