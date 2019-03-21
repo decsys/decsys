@@ -21,9 +21,12 @@ const actions = {
 storiesOf("Admin/EditorScreen", module)
   .addDecorator(StoryRouter())
   .addDecorator(withBasicStore(state))
-  .add("Loading", () => <PureEditorScreen {...state.editor} {...actions} />)
+  .add("Loading", () => (
+    <PureEditorScreen id={0} {...state.editor} {...actions} />
+  ))
   .add("Default", () => (
     <PureEditorScreen
+      id={0}
       {...state.editor}
       components={[]}
       surveyLoaded={true}

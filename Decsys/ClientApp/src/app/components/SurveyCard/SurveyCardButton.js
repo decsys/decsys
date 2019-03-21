@@ -33,13 +33,13 @@ export const Close = ({ onClick }) => (
 );
 
 export const Dashboard = ({ id }) => (
-  <LinkButton variant="success" to={`survey/${id}/dashboard`}>
+  <LinkButton variant="success" to={`/admin/survey/${id}/dashboard`}>
     Dashboard
   </LinkButton>
 );
 
 export const Results = ({ id }) => (
-  <LinkButton variant="secondary" to={`survey/${id}/results`}>
+  <LinkButton variant="secondary" to={`/admin/survey/${id}/results`}>
     Results
   </LinkButton>
 );

@@ -17,6 +17,7 @@ import {
 } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
+  id,
   survey,
   surveyLoaded,
   updateStates,
@@ -27,7 +28,7 @@ const PureEditorScreen = ({
 }) => {
   const SurveyEditorBar = ({ disabled }) => (
     <EditorBar
-      id={survey.id || 0}
+      id={id}
       name={survey.name || ""}
       nameUpdateState={updateStates.name}
       onNameChange={onNameChange}
@@ -81,8 +82,8 @@ const PureEditorScreen = ({
 };
 
 PureEditorScreen.propTypes = {
+  id: PropTypes.number.isRequired,
   survey: PropTypes.shape({
-    id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired
   }),
   surveyLoaded: PropTypes.bool,
