@@ -13,6 +13,6 @@ const knobs = {
 };
 
 storiesOf("Admin/EditorBar/NameInput", module)
-  .add("Default", () => <NameInput {...actions} />)
+  .add("Default", () => <NameInput {...knobs} {...actions} />)
   .add("Saving", () => <NameInput {...knobs} {...actions} saving />)
   .add("Saved", () => <NameInput {...knobs} {...actions} saved />);
