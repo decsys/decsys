@@ -1,22 +1,7 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
 import FlexBox from "./FlexBox";
-import { Spinner } from "styled-icons/fa-solid";
 import { Typography } from "@smooth-ui/core-sc";
-
-const rotate = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
-const RotatingSpinner = styled(Spinner)`
-  animation: ${rotate} 2s linear infinite;
-`;
+import RotatingSpinner from "./RotatingSpinner";
 
 const LoadingIndicator = () => (
   <FlexBox justifyContent="center">

@@ -4,14 +4,19 @@ import { connect } from "react-redux";
 import { MenuItem, MenuRouterLink, DropdownMenuButton } from "../ui";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { EllipsisV } from "styled-icons/fa-solid";
-import { deleteSurvey, duplicateSurvey } from "../../state/ducks/surveys";
+import {
+  deleteSurvey,
+  duplicateSurvey,
+  editSurvey
+} from "../../state/ducks/surveys";
 
 const PureManageSurveyButton = ({
   name,
   editable,
   id,
   onDuplicateClick,
-  onDeleteClick
+  onDeleteClick,
+  onEditClick
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const toggleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
@@ -25,9 +30,11 @@ const PureManageSurveyButton = ({
         button={<EllipsisV size="1em" />}
         caret={false}
       >
-        {editable && <MenuRouterLink to={`survey/${id}`}>Edit</MenuRouterLink>}
-        <MenuRouterLink to={`survey/${id}/preview`}>Preview</MenuRouterLink>
-        <MenuRouterLink to={`survey/${id}/export`}>Export</MenuRouterLink>
+        {editable && <MenuItem onClick={onEditClick}>Edit</MenuItem>}
+        <MenuRouterLink to={`admin/survey/${id}/preview`}>
+          Preview
+        </MenuRouterLink>
+        <MenuRouterLink to={`admin/survey/${id}/export`}>Export</MenuRouterLink>
         <MenuItem onClick={onDuplicateClick}>Duplicate</MenuItem>
         <MenuItem onClick={toggleDeleteModal}>Delete</MenuItem>
       </DropdownMenuButton>
@@ -46,16 +53,18 @@ PureManageSurveyButton.propTypes = {
   editable: PropTypes.bool,
   name: PropTypes.string.isRequired,
   onDuplicateClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired
+  onDeleteClick: PropTypes.func.isRequired,
+  onEditClick: PropTypes.func.isRequired
 };
 
 PureManageSurveyButton.defaultProps = { editable: false };
 
 const ManageSurveyButton = connect(
   null,
-  (dispatch, { id }) => ({
+  (dispatch, { id, name }) => ({
     onDuplicateClick: () => dispatch(duplicateSurvey(id)),
-    onDeleteClick: () => dispatch(deleteSurvey(id))
+    onDeleteClick: () => dispatch(deleteSurvey(id)),
+    onEditClick: () => dispatch(editSurvey(id, name))
   })
 )(PureManageSurveyButton);
 

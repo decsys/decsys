@@ -5,8 +5,8 @@ import { Route, Redirect, Switch, withRouter } from "react-router-dom";
 import SurveysScreen from "./screens/admin/SurveysScreen";
 import { Container, EmptyState, FlexBox } from "./components/ui";
 import { fetchSurveys } from "./state/ducks/surveys";
-import { push } from "connected-react-router";
-import { CheckCircle } from "styled-icons/fa-solid";
+import { getSurvey } from "./state/ducks/editor/ops";
+import EditorScreen from "./screens/admin/EditorScreen";
 
 const PureApp = ({ dispatch, listLoaded }) => {
   return (
@@ -33,21 +33,10 @@ const PureApp = ({ dispatch, listLoaded }) => {
 
         <Route
           path="/admin/survey/:id"
-          render={() => (
-            // TODO: temporary content before editor is ready
-            <Container>
-              <FlexBox mt={5}>
-                <EmptyState
-                  splash={<CheckCircle />}
-                  message="Your Survey was created! The Editor is not ready yet."
-                  callToAction={{
-                    label: "Back to Survey List",
-                    onClick: () => dispatch(push("/admin"))
-                  }}
-                />
-              </FlexBox>
-            </Container>
-          )}
+          render={({ match }) => {
+            dispatch(getSurvey(match.params.id));
+            return <EditorScreen id={match.params.id} />;
+          }}
         />
 
         <Route

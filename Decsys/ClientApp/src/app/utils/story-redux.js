@@ -2,7 +2,8 @@ import React from "react";
 import { Provider } from "react-redux";
 import { decorate } from "@storybook/addon-actions";
 
-export const dispatchAction = decorate([args => [args[0].type, args[0]]]);
+// TODO: there should be a way to make this nice, one day
+export const dispatchAction = decorate([args => [args[0].name, args[0]]]);
 
 // mock the simplest redux store so connect() works for children that need it
 export const basicStore = state => ({
