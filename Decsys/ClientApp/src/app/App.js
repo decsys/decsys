@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import AppBar from "./components/AppBar";
 import { Route, Redirect, Switch, withRouter } from "react-router-dom";
@@ -8,7 +8,7 @@ import { fetchSurveys } from "./state/ducks/surveys";
 import { getSurvey } from "./state/ducks/editor/ops";
 import EditorScreen from "./screens/admin/EditorScreen";
 
-const PureApp = ({ dispatch, listLoaded }) => {
+const PureApp = ({ dispatch }) => {
   return (
     <>
       <AppBar brand="DECSYS" />
@@ -28,6 +28,15 @@ const PureApp = ({ dispatch, listLoaded }) => {
           render={() => {
             dispatch(fetchSurveys());
             return <SurveysScreen />;
+          }}
+        />
+
+        <Route
+          path="/component-test"
+          exact
+          render={() => {
+            const Component = window.__DECSYS__.Components.FreeText;
+            return <Component />;
           }}
         />
 
