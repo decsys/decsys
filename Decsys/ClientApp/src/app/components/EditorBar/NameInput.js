@@ -20,7 +20,7 @@ const StyledCheck = styled(Check)`
   animation: ${fadeOut} 2s 2s linear forwards;
 `;
 
-const PureNameInput = ({ name, working, done, onChange }) => {
+const PureNameInput = ({ name, working, done, onChange, disabled }) => {
   const [timer, setTimer] = useState();
   const handleChange = e => {
     e.persist(); // tell React we want the event to have a longer lifetime than this scope
@@ -38,6 +38,7 @@ const PureNameInput = ({ name, working, done, onChange }) => {
           value={name}
           borderRadius={0}
           onChange={handleChange}
+          disabled={disabled}
         />
         {(working || done) && (
           <IconDiv>

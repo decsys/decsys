@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as actions from "./actions";
+import { setSurveyPlaceholder } from "../surveyEditor/actions";
 import { push } from "connected-react-router";
 
 // TODO: AJAX error handling?
@@ -12,7 +13,10 @@ export const createSurvey = () => dispatch =>
   // create the survey
   axios.post("/api/surveys").then(
     // redirect to the editor with this survey
-    response => dispatch(push(`admin/survey/${response.data}`))
+    ({ data }) => {
+      dispatch(setSurveyPlaceholder("Untitled Survey"));
+      dispatch(push(`admin/survey/${data}`));
+    }
   );
 
 /**
@@ -21,7 +25,7 @@ export const createSurvey = () => dispatch =>
 export const fetchSurveys = () => dispatch =>
   axios
     .get("/api/surveys")
-    .then(response => dispatch(actions.fetchSurveys(response.data)));
+    .then(({ data }) => dispatch(actions.fetchSurveys(data)));
 
 /**
  * Sort the Survey List by the provided Sort key and direction
@@ -54,7 +58,7 @@ export const closeInstance = (surveyId, instanceId) => dispatch =>
 export const launchInstance = id => dispatch =>
   axios
     .post(`/api/surveys/${id}/instances`)
-    .then(response => dispatch(actions.launchInstance(id, response.data)));
+    .then(({ data }) => dispatch(actions.launchInstance(id, data)));
 
 /**
  * Delete a Survey
