@@ -67,16 +67,6 @@ The bundle process needs to obey the following rules:
 - The build script `build/esm-export.js` changes the IIFE to a locally scoped variable, instead of a global
 - The build script `build/esm-export.js` adds ESM exports to export the relevant bits of the IIFE module.
 
-## Gotchas
-
-### Named imports
-
-The Survey Platform provides global instances of React, Styled Components and PropTypes.
-
-As such, in your component code can't use named exports from those packages:
-
-- Don't use `import {useState} from "react"` - instead use `React.useState()` when you call.
-
 # Licensing
 
 At this time, this software has no license, and therefore all rights are reserved as per author copyright, with the exception of rights waived under the GitHub Terms of Service.
