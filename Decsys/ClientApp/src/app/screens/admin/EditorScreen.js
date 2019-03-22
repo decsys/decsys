@@ -101,9 +101,9 @@ const EditorScreen = withRouter(
       survey,
       surveyLoaded,
       updateStates,
-      components: Object.keys(window.__DECSYS__.Components).map(name => ({
-        type: name,
-        icon: <AlignLeft size="1em" />
+      components: Object.keys(window.__DECSYS__.Components).map(type => ({
+        type,
+        icon: window.__DECSYS__.Components[type].icon
       }))
     }),
     (dispatch, { id }) => ({
