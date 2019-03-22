@@ -1,23 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { InfoCircle } from "styled-icons/fa-solid/InfoCircle";
 import { AlignLeft } from "styled-icons/fa-solid/AlignLeft";
+import {
+  Box,
+  Typography,
+  Textarea,
+  colorYik,
+  colorVariant
+} from "@smooth-ui/core-sc";
 
 // Build a React component for our FreeText question type
 const FreeText = ({ maxLength, initialText }) => {
   const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
 
-  const [badgeVariant, setBadgeVariant] = React.useState("info");
-  const [value, setValue] = React.useState(initialText);
-  React.useEffect(() => setValue(initialText), [initialText]);
-
-  // these become references to elements when the component is rendered
-  let message, counter, ta;
+  const [badgeVariant, setBadgeVariant] = useState("info");
+  const [value, setValue] = useState(initialText);
+  useEffect(() => setValue(initialText), [initialText]);
 
   // Input handler to update the shiny character limit counter
-  const handleInput = e => {
-    const count = maxLength - value.length;
-    setValue(e.target.value);
+  const handleInput = ({ target: { value: v } }) => {
+    setValue(v);
+    const count = maxLength - v.length;
     if (count === 0) {
       setBadgeVariant("danger");
     } else if (count <= threshold) {
@@ -27,20 +32,33 @@ const FreeText = ({ maxLength, initialText }) => {
     }
   };
 
+  // TODO: take this re-usably from the Survey Platform's UI, one day...
+  const Badge = styled(Typography).attrs(
+    ({ backgroundColor = "info", ...p }) => ({
+      display: "inline",
+      px: 1,
+      borderRadius: 8,
+      textAlign: "center",
+      backgroundColor: backgroundColor,
+      color: colorYik(colorVariant(backgroundColor)(p))(p)
+    })
+  )``;
+
   return (
-    <>
-      <div>
-        {/* update to a smooth ui or decsys badge */}
-        <InfoCircle size="1em" /> Characters remaining:{" "}
-        {maxLength - value.length}/{maxLength}
-      </div>
-      <textarea
+    <Box display="flex" flexDirection="column">
+      <Box display="flex" p=".1em">
+        <Badge p=".2em" backgroundColor={badgeVariant}>
+          <InfoCircle size="1em" /> Characters remaining:{" "}
+          {maxLength - value.length}/{maxLength}
+        </Badge>
+      </Box>
+      <Textarea
         value={value}
         maxLength={maxLength}
         name="FreeText"
         onInput={handleInput}
       />
-    </>
+    </Box>
   );
 };
 

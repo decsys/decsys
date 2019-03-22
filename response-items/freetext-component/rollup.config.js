@@ -1,5 +1,6 @@
 import resolve from "rollup-plugin-node-resolve";
 import cjs from "rollup-plugin-commonjs";
+import replace from "rollup-plugin-replace";
 import babel from "rollup-plugin-babel";
 
 const pkg = require("./package.json");
@@ -14,11 +15,15 @@ export default {
     globals: {
       react: "React",
       "styled-components": "styled",
+      "react-dom": "ReactDOM",
       "prop-types": "PropTypes"
     }
   },
-  external: ["react", "styled-components", "prop-types"],
+  external: ["react", "styled-components", "react-dom", "prop-types"],
   plugins: [
+    replace({
+      "process.env.NODE_ENV": JSON.stringify("production")
+    }),
     babel({
       exclude: "node_modules/**",
       presets: [

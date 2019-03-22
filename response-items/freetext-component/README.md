@@ -52,7 +52,7 @@ The bundle process needs to obey the following rules:
   - leave ES Modules intact
 - Treat the following npm packages as globals (as the Survey Platform provides a single instance of them for component use):
   - React
-  - PropTypes
+  - ReactDOM
   - Styled Components
 - Bundle into a single file including npm dependencies (except the globals)
 - The final file must export as per the rules in `1. Exports` above
