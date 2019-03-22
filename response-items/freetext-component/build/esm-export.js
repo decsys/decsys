@@ -13,6 +13,7 @@ fs.readFile(filePath, "utf-8", (err, data) => {
   data += `
     
     export const name = DecsysComponent.name;
+    export const icon = DecsysComponent.icon;
     export default DecsysComponent.default;
     `;
 

@@ -22,9 +22,10 @@ DECSYS Components are just React Components + metadata. There are two important 
 The Component entrypoint (`src/index.js` in this repository) must export the following:
 
 - The React Component as a default export, e.g. `export default FreeText` in this repo
-    - The React Component **MUST** have `propTypes` and `defaultProps`
+  - The React Component **MUST** have `propTypes` and `defaultProps`
 - Named exports of the following metadata:
   - `name`: The name of the Component, e.g. `FreeText` in this repo
+  - `icon`: An SVG icon for the component (e.g. a component from `styled-icons`) which will be rendered at `1em` to represent the component type
 
 ## 2. Bundling
 

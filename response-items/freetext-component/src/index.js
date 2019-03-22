@@ -1,10 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { InfoCircle } from "styled-icons/fa-solid/InfoCircle";
+import { AlignLeft } from "styled-icons/fa-solid/AlignLeft";
 
 // Component Metadata
 const name = "FreeText";
 const version = "0.1.0";
+const icon = React.createElement(AlignLeft)
 // TODO: Schema?
 
 // Build a React component for our FreeText question type
