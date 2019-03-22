@@ -8,7 +8,7 @@ import { fetchSurveys } from "./state/ducks/surveys";
 import { getSurvey } from "./state/ducks/editor/ops";
 import EditorScreen from "./screens/admin/EditorScreen";
 
-const PureApp = ({ dispatch, listLoaded }) => {
+const PureApp = ({ dispatch }) => {
   return (
     <>
       <AppBar brand="DECSYS" />

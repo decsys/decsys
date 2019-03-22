@@ -1,4 +1,4 @@
-import React from "react";
+import React, { cloneElement } from "react";
 import { Typography } from "@smooth-ui/core-sc";
 
 // TODO: PropTypes
@@ -11,7 +11,7 @@ const Component = ({ name, icon }) => (
     borderColor="cardBorder"
     backgroundColor="cardBg"
   >
-    {icon} {name}
+    {cloneElement(icon, { size: "1em" })} {name}
   </Typography>
 );
 

@@ -47,21 +47,25 @@ namespace Decsys.Controllers
 
                 // TODO: maybe check some of the code? hmm... would need a js linter/parser/something for that
                 // maybe we can run some js unit tests for this?
+                // might be able to use node tools for this, but we'll need node on the server
+                // which is a bit rubbish for running outside docker...
+                // particularly in a "local" install
 
                 // Import the component module, and some metadata
                 output.Append(
-                    "import Module").Append(++counter)
+                    "import Decsys").Append(++counter)
                     .Append(", { name as name").Append(counter)
-                    //.Append(" , version as version").Append(counter) // TODO: work out new versioning
-                    .Append(" } from '/static/components/").Append(file.Name)
+                    .Append("} from '/static/components/").Append(file.Name)
                     .AppendLine("';");
 
                 // Add the module to our components dictionary
                 output.Append(global).Append(components)
                     .Append("[name").Append(counter)
-                    .Append("] = Module").Append(counter)
+                    .Append("] = Decsys").Append(counter)
                     .AppendLine(";");
             }
+
+            output.Append("document.dispatchEvent(new Event('__DECSYS__ComponentsLoaded'));");
 
             return File(Encoding.UTF8.GetBytes(output.ToString()), "application/javascript");
         }

@@ -101,11 +101,10 @@ const EditorScreen = withRouter(
       survey,
       surveyLoaded,
       updateStates,
-      components: [
-        { type: "Ellipse", icon: <CircleNotch size="1em" /> },
-        { type: "Likert", icon: <DotCircle size="1em" /> },
-        { type: "FreeText", icon: <AlignLeft size="1em" /> }
-      ]
+      components: Object.keys(window.__DECSYS__.Components).map(type => ({
+        type,
+        icon: window.__DECSYS__.Components[type].icon
+      }))
     }),
     (dispatch, { id }) => ({
       onNameChange: ({ target: { value } }) => dispatch(editName(id, value)),
