@@ -174,9 +174,30 @@ const DecsysComponent = (function(exports, React, PropTypes, styled) {
   });
   InfoCircle.displayName = "InfoCircle";
 
-  // Component Metadata
-  const name = "FreeText";
-  // TODO: Schema?
+  var AlignLeft = React.forwardRef(function(props, ref) {
+    var attrs = {
+      fill: "currentColor"
+    };
+    return React.createElement(
+      StyledIconBase,
+      __assign(
+        {
+          iconAttrs: attrs,
+          iconVerticalAlign: "-.125em",
+          iconViewBox: "0 0 448 512"
+        },
+        props,
+        { ref: ref }
+      ),
+      React.createElement("path", {
+        fill: "currentColor",
+        d:
+          "M288 44v40c0 8.837-7.163 16-16 16H16c-8.837 0-16-7.163-16-16V44c0-8.837 7.163-16 16-16h256c8.837 0 16 7.163 16 16zM0 172v40c0 8.837 7.163 16 16 16h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16zm16 312h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm256-200H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16h256c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16z",
+        key: "k0"
+      })
+    );
+  });
+  AlignLeft.displayName = "AlignLeft";
 
   // Build a React component for our FreeText question type
   const FreeText = ({ maxLength, initialText }) => {
@@ -256,11 +277,14 @@ const DecsysComponent = (function(exports, React, PropTypes, styled) {
     initialText: ""
   };
 
+  // Metadata properties
+  FreeText.version = "0.1.0";
+  FreeText.icon = React__default.createElement(AlignLeft);
+
   exports.default = FreeText;
-  exports.name = name;
 
   return exports;
 })({}, React, PropTypes, styled);
 
-export const name = DecsysComponent.name;
+export const name = DecsysComponent.default.name;
 export default DecsysComponent.default;
