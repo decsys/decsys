@@ -42,45 +42,6 @@ const FreeText = ({ maxLength, initialText }) => {
       />
     </>
   );
-
-  // sadly we don't use JSX in here as this file doesn't go through babel :(
-  return React.createElement(
-    "div",
-    { className: "form-group" },
-    React.createElement(
-      "div",
-      {
-        className: "badge badge-info mb-1",
-        ref: function ref(e) {
-          return (message = e);
-        }
-      },
-      React.createElement("span", { className: "fas fa-fw fa-info-circle" }),
-      React.createElement(InfoCircle, { size: "1em" }),
-      "Characters remaining\xA0",
-      React.createElement(
-        "span",
-        {
-          ref: function ref(e) {
-            return (counter = e);
-          }
-        },
-        maxLength - initialText.length
-      ),
-      "/",
-      maxLength
-    ),
-    React.createElement("textarea", {
-      className: "form-control",
-      name: "FreeText",
-      maxLength: maxLength,
-      defaultValue: initialText,
-      ref: function ref(e) {
-        return (ta = e);
-      },
-      onInput: handleInput
-    })
-  );
 };
 
 FreeText.propTypes = {
