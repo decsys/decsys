@@ -32,6 +32,15 @@ const PureApp = ({ dispatch }) => {
         />
 
         <Route
+          path="/component-test"
+          exact
+          render={() => {
+            const Component = window.__DECSYS__.Components.FreeText;
+            return <Component />;
+          }}
+        />
+
+        <Route
           path="/admin/survey/:id"
           exact
           render={({ match }) => {
