@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
