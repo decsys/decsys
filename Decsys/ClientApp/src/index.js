@@ -16,7 +16,7 @@ import configureStore from "./app/state/store";
  */
 
 window.__DECSYS__ = {}; // Register our global namespace at bootstrap time
-// React and styled need to stay as single instances,so we make them global for modules
+// React and styled need to stay as single instances, so we make them global for modules
 // also PropTypes for now because I don't understand rollup well enough
 window.React = React;
 window.styled = styled;
