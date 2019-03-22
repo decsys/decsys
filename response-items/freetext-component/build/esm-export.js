@@ -12,9 +12,8 @@ fs.readFile(filePath, "utf-8", (err, data) => {
   // append our esm exports
   data += `
     
-    export const name = DecsysComponent.name;
-    export const icon = DecsysComponent.icon;
-    export default DecsysComponent.default;
+export const name = DecsysComponent.default.name;
+export default DecsysComponent.default;
     `;
 
   fs.writeFile(filePath, data, "utf-8", err => {

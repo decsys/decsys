@@ -14,30 +14,37 @@ This is a very simple DECSYS Component, it also contains information on developi
 
 DECSYS Components are just React Components + metadata. There are two important things about preparing a component for loading into the DECSYS Survey Platform:
 
-1. The Component module must export certain metadata, as well as its React Component
-2. The module must be bundled correctly into a single file for the Survey Platform to dynamically load
+1. The Component Module must provide the correct exports
+2. The module must be bundled correctly into a single self contained file for the Survey Platform to dynamically load
 
-## 1. Exports
+## 1. Metadata and Exports
 
-The Component entrypoint (`src/index.js` in this repository) must export the following:
+The Component entrypoint **must** export:
 
-- The React Component as a default export, e.g. `export default FreeText` in this repo
-  - The React Component **MUST** have `propTypes` and `defaultProps`
-- Named exports of the following metadata:
-  - `name`: The name of the Component, e.g. `FreeText` in this repo
-  - `icon`: An SVG icon for the component (e.g. a component from `styled-icons`) which will be rendered at `1em` to represent the component type
+- a React Component as a default export, e.g. `export default FreeText`
+- `name`: The name of the Component, e.g. `FreeText`
+
+The React Component **must** also feature the following metadata properties:
+
+- `propTypes` and `defaultProps` as usual React Prop Types
+- `icon`: An SVG icon for the component (e.g. a component from `styled-icons`) which will be rendered at `1em` to represent the component type
+
+In this repo we use the bundling process to provide the correct exports in the final bundle, so the source entrypoint (`src/index.js`) doesn't export exactly as above.
 
 ## 2. Bundling
 
 This repo contains the appropriate dependencies and configuration for bundling a DECSYS Component correctly.
 
-All you need to do is ensure `package.json` contains the right information:
+Make sure:
 
-- `bundle` should be set to the filename, without extension, you want to use for the single file bundle output.
+- The React component is named, as the bundling process uses the component's name as the `name` export.
+- The React component has the required metadata properties.
+- `package.json` contains necessary information:
+  - `bundle` should be set to the filename, without extension, you want to use for the single file bundle output.
 
-If you are interested in the bundling process, below are detailed the rules for creating a bundle the Survey Platform will load, and a decscription of how this repo meets those requirements.
+For more detail on the bundling requirements and how this repo meets them, read on.
 
-### Rules
+### Requirements
 
 The bundle process needs to obey the following rules:
 

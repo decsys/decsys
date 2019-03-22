@@ -3,12 +3,6 @@ import PropTypes from "prop-types";
 import { InfoCircle } from "styled-icons/fa-solid/InfoCircle";
 import { AlignLeft } from "styled-icons/fa-solid/AlignLeft";
 
-// Component Metadata
-const name = "FreeText";
-const version = "0.1.0";
-const icon = React.createElement(AlignLeft)
-// TODO: Schema?
-
 // Build a React component for our FreeText question type
 const FreeText = ({ maxLength, initialText }) => {
   const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
@@ -85,5 +79,8 @@ FreeText.defaultProps = {
   initialText: ""
 };
 
-export { name };
+// Metadata properties
+FreeText.version = "0.1.0";
+FreeText.icon = React.createElement(AlignLeft);
+
 export default FreeText;
