@@ -7,27 +7,41 @@ import { AlignLeft } from "styled-icons/fa-solid/AlignLeft";
 const FreeText = ({ maxLength, initialText }) => {
   const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
 
+  const [badgeVariant, setBadgeVariant] = React.useState("info");
+  const [value, setValue] = React.useState(initialText);
+  React.useEffect(() => setValue(initialText), [initialText]);
+
   // these become references to elements when the component is rendered
   let message, counter, ta;
 
   // Input handler to update the shiny character limit counter
   const handleInput = e => {
-    const count = maxLength - ta.value.length;
-    counter.innerHTML = count;
+    const count = maxLength - value.length;
+    setValue(e.target.value);
     if (count === 0) {
-      message.classList.remove("badge-warning");
-      message.classList.remove("badge-info");
-      message.classList.add("badge-danger");
+      setBadgeVariant("danger");
     } else if (count <= threshold) {
-      message.classList.remove("badge-info");
-      message.classList.remove("badge-danger");
-      message.classList.add("badge-warning");
+      setBadgeVariant("warning");
     } else {
-      message.classList.remove("badge-danger");
-      message.classList.remove("badge-warning");
-      message.classList.add("badge-info");
+      setBadgeVariant("info");
     }
   };
+
+  return (
+    <>
+      <div>
+        {/* update to a smooth ui or decsys badge */}
+        <InfoCircle size="1em" /> Characters remaining:{" "}
+        {maxLength - value.length}/{maxLength}
+      </div>
+      <textarea
+        value={value}
+        maxLength={maxLength}
+        name="FreeText"
+        onInput={handleInput}
+      />
+    </>
+  );
 
   // sadly we don't use JSX in here as this file doesn't go through babel :(
   return React.createElement(
