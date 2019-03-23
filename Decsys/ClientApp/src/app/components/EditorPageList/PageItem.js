@@ -15,7 +15,9 @@ const capitalise = ([first, ...rest]) => first.toUpperCase() + rest.join("");
 
 const PageItem = ({ type, text, onDuplicateClick, onDeleteClick }) => (
   <Box backgroundColor="cardBg" width={1}>
-    <Grid columns="30px 30px 1fr 40px 40px" columnGap="0">
+    <Grid columns="30px 30px 30px 1fr 40px 40px" columnGap="0">
+      <Cell />
+
       <Cell middle>
         <Box textAlign="center">
           <EllipsisV size="1em" />

@@ -3,60 +3,33 @@ import { Grid, Cell } from "styled-css-grid";
 import FlexBox from "../ui/FlexBox";
 import { Typography, Switch, Button } from "@smooth-ui/core-sc";
 import { Copy, TrashAlt, EllipsisV } from "styled-icons/fa-solid";
+import PageHeader from "./PageHeader";
+import PageComponent from "./PageComponent";
+import PageItem from "./PageItem";
 
-const Page = ({ fixedPage, n, icon, random, title, type }) => (
-  <FlexBox
-    flexDirection="column"
-    border={1}
-    borderColor="cardBorder"
-    backgroundColor="cardBg"
-  >
-    <FlexBox justifyContent="space-between">
-      {!fixedPage && (
-        <Grid
-          style={{
-            width: "200px",
-            padding: ".5em",
-            borderRight: `4px solid`,
-            borderColor: "cardBorder" // TODO: fix
-          }}
-          columns="10px 1fr 1fr"
-          rows="auto auto"
-          areas={["handle number icon", "handle random random"]}
-        >
-          <Cell area="handle" middle>
-            <EllipsisV size="1em" />
-          </Cell>
-          <Cell center>Q{n}</Cell>
-          <Cell center>{icon}</Cell>
-          <Cell area="random" center>
-            <FlexBox flexDirection="column" alignItems="center">
-              <Switch />
-              Random
-            </FlexBox>
-          </Cell>
-        </Grid>
+const Page = ({ components, componentList, n }) => {
+  const isResponse = type => !["heading", "paragraph", "image"].includes(type);
+  return (
+    <FlexBox
+      flexDirection="column"
+      border={1}
+      borderColor="cardBorder"
+      backgroundColor="cardBg"
+    >
+      <PageHeader n={n} />
+
+      {components.map(x =>
+        isResponse(x.type) ? (
+          <PageComponent components={componentList} currentType={x.type} />
+        ) : (
+          <PageItem type={x.type} text={x.text} />
+        )
       )}
-
-      <FlexBox flexDirection="column" p={1}>
-        <Typography color="gray600">{type}</Typography>
-        <Typography>{title}</Typography>
-      </FlexBox>
-
-      <Grid columns="auto" rows="1fr 1fr" rowGap="0">
-        <Cell>
-          <Button height={1} borderRadius={0} variant="light" title="Duplicate">
-            <Copy size="1em" />
-          </Button>
-        </Cell>
-        <Cell>
-          <Button height={1} borderRadius={0} variant="danger" title="Delete">
-            <TrashAlt size="1em" />
-          </Button>
-        </Cell>
-      </Grid>
+      {components.every(x => !isResponse(x.type)) && (
+        <PageComponent components={componentList} />
+      )}
     </FlexBox>
-  </FlexBox>
-);
+  );
+};
 
 export default Page;

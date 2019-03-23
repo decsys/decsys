@@ -13,11 +13,14 @@ const PageComponent = ({ components, currentType, onComponentSelect }) => {
   );
   return (
     <Box backgroundColor="cardBg" width={1} pr={1} py={1}>
-      <Grid columns="30px 30px auto 1fr" columnGap="0">
+      <Grid columns="30px 30px 30px auto 1fr" columnGap="0">
+        <Cell />
         <Cell middle>
-          <Box textAlign="center">
-            <EllipsisV size="1em" />
-          </Box>
+          {currentType && (
+            <Box textAlign="center">
+              <EllipsisV size="1em" />
+            </Box>
+          )}
         </Cell>
         {
           //TODO: drag handle
@@ -38,7 +41,11 @@ const PageComponent = ({ components, currentType, onComponentSelect }) => {
           <Select size="sm" control onChange={onComponentSelect}>
             <option value="">None</option>
             {components.map(x => (
-              <option key={x.type} value={x.type}>
+              <option
+                key={x.type}
+                value={x.type}
+                selected={currentType === x.type}
+              >
                 {x.type}
               </option>
             ))}
