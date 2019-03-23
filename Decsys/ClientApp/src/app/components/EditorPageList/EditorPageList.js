@@ -11,7 +11,6 @@ const EditorPageList = ({ actions, components, pages }) => {
     if (!result.destination) return;
     if (result.source.droppableId !== result.destination.droppableId) return;
     if (result.destination.index === result.source.index) return;
-    // TODO different ops for different lists
     if (result.destination.droppableId === "pageList")
       actions.onPageDragEnd(result.draggableId, result.destination.index);
     else
@@ -23,9 +22,13 @@ const EditorPageList = ({ actions, components, pages }) => {
   };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="pageList">
+      <Droppable droppableId="pageList" type="PAGE">
         {provided => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            style={{ overflow: "auto" }}
+          >
             <FlexBox flexDirection="column" px={2}>
               <FlexBox justifyContent="space-between" alignItems="center">
                 <Typography textAlign="center" p={1}>
@@ -43,7 +46,12 @@ const EditorPageList = ({ actions, components, pages }) => {
                 .sort(({ order: a }, { order: b }) => a - b)
                 .map((x, i) => {
                   return (
-                    <Draggable key={i} draggableId={x.id} index={x.order - 1}>
+                    <Draggable
+                      type="PAGE"
+                      key={i}
+                      draggableId={x.id}
+                      index={x.order - 1}
+                    >
                       {provided => (
                         <div
                           ref={provided.innerRef}

@@ -17,7 +17,7 @@ const Page = ({
 }) => {
   const isResponse = type => !["heading", "paragraph", "image"].includes(type);
   return (
-    <Droppable droppableId={page.id}>
+    <Droppable type={page.id} droppableId={page.id}>
       {provided => (
         <div ref={provided.innerRef} {...provided.droppableProps}>
           <FlexBox
@@ -36,7 +36,12 @@ const Page = ({
             {page.components
               .sort(({ order: a }, { order: b }) => a - b)
               .map(x => (
-                <Draggable key={x.id} draggableId={x.id} index={x.order - 1}>
+                <Draggable
+                  type={page.id}
+                  key={x.id}
+                  draggableId={x.id}
+                  index={x.order - 1}
+                >
                   {provided => (
                     <div ref={provided.innerRef} {...provided.draggableProps}>
                       {isResponse(x.type) ? (
