@@ -13,7 +13,14 @@ import { Grid, Cell } from "styled-css-grid";
 
 const capitalise = ([first, ...rest]) => first.toUpperCase() + rest.join("");
 
-const PageItem = ({ type, text, onDuplicateClick, onDeleteClick }) => (
+const PageItem = ({
+  id,
+  pageId,
+  type,
+  text,
+  onDuplicateClick,
+  onDeleteClick
+}) => (
   <Box backgroundColor="cardBg" width={1} py=".2em" pr={1}>
     <Grid columns="30px 30px 30px 1fr 30px 30px" columnGap=".1em">
       <Cell />
@@ -45,7 +52,11 @@ const PageItem = ({ type, text, onDuplicateClick, onDeleteClick }) => (
       <Button size="sm" variant="light" onClick={onDuplicateClick}>
         <Copy size="1em" />
       </Button>
-      <Button size="sm" variant="danger" onClick={onDeleteClick}>
+      <Button
+        size="sm"
+        variant="danger"
+        onClick={() => onDeleteClick(pageId, id)}
+      >
         <Times size="1em" />
       </Button>
     </Grid>
@@ -53,6 +64,8 @@ const PageItem = ({ type, text, onDuplicateClick, onDeleteClick }) => (
 );
 
 PageItem.propTypes = {
+  id: PropTypes.string.isRequired,
+  pageId: PropTypes.string.isRequired,
   type: PropTypes.oneOf(["heading", "paragraph", "image"]).isRequired,
   text: PropTypes.string,
   onDeleteClick: PropTypes.func.isRequired,

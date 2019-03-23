@@ -25,17 +25,19 @@ const Page = ({
 
       {page.components
         .sort(({ order: a }, { order: b }) => a - b)
-        .map((x, i) =>
+        .map(x =>
           isResponse(x.type) ? (
             <PageComponent
-              key={i}
+              key={x.id}
               components={componentList}
               currentType={x.type}
               onComponentSelect={onComponentSelect}
             />
           ) : (
             <PageItem
-              key={i}
+              id={x.id}
+              pageId={page.id}
+              key={x.id}
               type={x.type}
               text={x.params.text}
               {...itemActions}

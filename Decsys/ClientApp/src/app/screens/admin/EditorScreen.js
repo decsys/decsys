@@ -13,7 +13,8 @@ import {
   duplicateSurvey,
   addPage,
   deletePage,
-  addPageItem
+  addPageItem,
+  deletePageItem
 } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
@@ -119,7 +120,8 @@ const EditorScreen = withRouter(
         },
         itemActions: {
           onDuplicateClick: () => dispatch({ type: "DUPLICATE_PAGE_ITEM" }),
-          onDeleteClick: () => dispatch({ type: "DELETE_PAGE_ITEM" })
+          onDeleteClick: (pageId, componentId) =>
+            dispatch(deletePageItem(id, pageId, componentId))
         },
         onComponentSelect: () => dispatch({ type: "SELECT_PAGE_COMPONENT" }),
         onAddClick: () => dispatch(addPage(id))

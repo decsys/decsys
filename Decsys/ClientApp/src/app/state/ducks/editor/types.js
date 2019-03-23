@@ -6,6 +6,5 @@ export const SET_PAGE_RANDOM_STATE = "decsys/editor/SET_PAGE_RANDOM_STATE";
 export const DUPLICATE_PAGE = "decsys/editor/DUPLICATE_PAGE";
 export const ADD_PAGE_ITEM = "decsys/editor/ADD_PAGE_ITEM";
 export const DUPLICATE_PAGE_ITEM = "decsys/editor/DUPLICATE_PAGE_ITEM";
-export const DELETE_PAGE_ITEM = "decsys/editor/DELETE_PAGE_ITEM";
 export const SELECT_PAGE_COMPONENT = "decsys/editor/SELECT_PAGE_COMPONENT";
 export const ADD_PAGE = "decsys/editor/ADD_PAGE";

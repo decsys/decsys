@@ -85,3 +85,17 @@ export const addPageItem = (surveyId, pageId, type) => dispatch => {
     )
     .then(({ data }) => dispatch(actions.addPageItem(pageId, data)));
 };
+
+/**
+ * Delete a built-in Page Item component from a Page
+ * @param {*} surveyId
+ * @param {*} pageId
+ * @param {*} componentId
+ */
+export const deletePageItem = (surveyId, pageId, componentId) => dispatch => {
+  axios
+    .delete(
+      `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}`
+    )
+    .then(() => dispatch(getSurvey(surveyId)));
+};
