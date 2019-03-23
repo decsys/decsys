@@ -16,9 +16,7 @@ const PageHeader = ({
   id,
   actions: {
     onRandomToggle,
-    onHeadingClick,
-    onParagraphClick,
-    onImageClick,
+    onAddPageItemClick,
     onDuplicateClick,
     onDeleteClick
   }
@@ -49,7 +47,7 @@ const PageHeader = ({
           <Button
             size="sm"
             variant="success"
-            onClick={onHeadingClick}
+            onClick={() => onAddPageItemClick(id, "heading")}
             title="Add a Heading to this Page"
           >
             <Heading size="1em" />
@@ -59,7 +57,7 @@ const PageHeader = ({
           <Button
             size="sm"
             variant="success"
-            onClick={onParagraphClick}
+            onClick={() => onAddPageItemClick(id, "paragraph")}
             title="Add a Paragraph to this Page"
           >
             <Paragraph size="1em" />
@@ -69,7 +67,7 @@ const PageHeader = ({
           <Button
             size="sm"
             variant="success"
-            onClick={onImageClick}
+            onClick={() => onAddPageItemClick(id, "image")}
             title="Add an Image to this Page"
           >
             <Image size="1em" />
@@ -106,9 +104,7 @@ PageHeader.propTypes = {
   n: PropTypes.number.isRequired,
   actions: PropTypes.shape({
     onRandomToggle: PropTypes.func.isRequired,
-    onHeadingClick: PropTypes.func.isRequired,
-    onParagraphClick: PropTypes.func.isRequired,
-    onImageClick: PropTypes.func.isRequired,
+    onAddPageItemClick: PropTypes.func.isRequired,
     onDuplicateClick: PropTypes.func.isRequired,
     onDeleteClick: PropTypes.func.isRequired
   }).isRequired

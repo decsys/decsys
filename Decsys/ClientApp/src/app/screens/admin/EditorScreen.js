@@ -12,7 +12,8 @@ import {
   deleteSurvey,
   duplicateSurvey,
   addPage,
-  deletePage
+  deletePage,
+  addPageItem
 } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
@@ -113,9 +114,8 @@ const EditorScreen = withRouter(
           onRandomToggle: () => dispatch({ type: "SET_PAGE_RANDOM_STATE" }),
           onDuplicateClick: () => dispatch({ type: "DUPLICATE_PAGE" }),
           onDeleteClick: pageId => dispatch(deletePage(id, pageId)),
-          onHeadingClick: () => dispatch({ type: "ADD_PAGE_HEADING" }),
-          onParagraphClick: () => dispatch({ type: "ADD_PAGE_PARAGRAPH" }),
-          onImageClick: () => dispatch({ type: "ADD_PAGE_IMAGE" })
+          onAddPageItemClick: (pageId, type) =>
+            dispatch(addPageItem(id, pageId, type))
         },
         itemActions: {
           onDuplicateClick: () => dispatch({ type: "DUPLICATE_PAGE_ITEM" }),

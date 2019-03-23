@@ -24,7 +24,7 @@ export const addPage = page => ({
   payload: { ...page }
 });
 
-// export const deletePage = pageId => ({
-//   type: types.DELETE_PAGE,
-//   payload: pageId
-// });
+export const addPageItem = (pageId, component) => ({
+  type: types.ADD_PAGE_ITEM,
+  payload: { pageId, component }
+});

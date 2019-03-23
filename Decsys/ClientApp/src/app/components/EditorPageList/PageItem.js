@@ -54,7 +54,7 @@ const PageItem = ({ type, text, onDuplicateClick, onDeleteClick }) => (
 
 PageItem.propTypes = {
   type: PropTypes.oneOf(["heading", "paragraph", "image"]).isRequired,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
   onDeleteClick: PropTypes.func.isRequired,
   onDuplicateClick: PropTypes.func.isRequired
 };

@@ -55,8 +55,33 @@ export const addPage = id => dispatch => {
     .then(({ data }) => dispatch(actions.addPage(data)));
 };
 
+/**
+ * Delete a Page from a Survey
+ * @param {*} surveyId
+ * @param {*} pageId
+ */
 export const deletePage = (surveyId, pageId) => dispatch => {
   axios
     .delete(`/api/surveys/${surveyId}/pages/${pageId}`)
     .then(() => dispatch(getSurvey(surveyId)));
+};
+
+/**
+ * Add a built-in Page Item component to a Page
+ * @param {*} surveyId
+ * @param {*} pageId
+ * @param {*} type
+ */
+export const addPageItem = (surveyId, pageId, type) => dispatch => {
+  axios
+    .post(
+      `/api/surveys/${surveyId}/pages/${pageId}/components`,
+      JSON.stringify(type),
+      {
+        headers: {
+          "Content-Type": "application/json" // because we send a string not a JSON object as body data
+        }
+      }
+    )
+    .then(({ data }) => dispatch(actions.addPageItem(pageId, data)));
 };
