@@ -5,9 +5,6 @@ import { withRouter } from "react-router-dom";
 import EditorBar from "../../components/EditorBar";
 import { Grid, Cell } from "styled-css-grid";
 import { Typography } from "@smooth-ui/core-sc";
-import { AlignLeft, CircleNotch } from "styled-icons/fa-solid";
-import { DotCircle } from "styled-icons/fa-regular";
-import EditorToolbox from "../../components/EditorToolbox";
 import EditorPageList from "../../components/EditorPageList";
 import { LoadingIndicator, FlexBox } from "../../components/ui";
 import {
@@ -48,19 +45,11 @@ const PureEditorScreen = ({
       rows="auto 1fr"
       rowGap="0px"
       columnGap="0px"
-      areas={["bar bar bar", "toolbox pages config"]}
+      areas={["bar bar bar", "pages config"]}
       style={{ height: "100vh" }}
     >
       <Cell area="bar">
         <SurveyEditorBar />
-      </Cell>
-      <Cell
-        area="toolbox"
-        style={{
-          background: "gray500" // TODO:
-        }}
-      >
-        <EditorToolbox components={components} />
       </Cell>
       <Cell
         area="pages"
