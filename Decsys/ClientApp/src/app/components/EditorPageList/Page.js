@@ -31,7 +31,9 @@ const Page = ({
               key={x.id}
               components={componentList}
               currentType={x.type}
-              onComponentSelect={onComponentSelect}
+              onComponentSelect={type =>
+                onComponentSelect(page.id, type, x.id, x.order)
+              }
             />
           ) : (
             <PageItem
@@ -47,7 +49,7 @@ const Page = ({
       {page.components.every(x => !isResponse(x.type)) && (
         <PageComponent
           components={componentList}
-          onComponentSelect={onComponentSelect}
+          onComponentSelect={type => onComponentSelect(page.id, type)}
         />
       )}
     </FlexBox>

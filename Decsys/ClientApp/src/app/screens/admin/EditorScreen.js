@@ -16,7 +16,8 @@ import {
   addPageItem,
   deletePageItem,
   duplicatePage,
-  duplicatePageItem
+  duplicatePageItem,
+  selectPageComponent
 } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
@@ -126,7 +127,8 @@ const EditorScreen = withRouter(
           onDeleteClick: (pageId, componentId) =>
             dispatch(deletePageItem(id, pageId, componentId))
         },
-        onComponentSelect: () => dispatch({ type: "SELECT_PAGE_COMPONENT" }),
+        onComponentSelect: (pageId, type, componentId, order) =>
+          dispatch(selectPageComponent(id, pageId, type, componentId, order)),
         onAddClick: () => dispatch(addPage(id))
       }
     })

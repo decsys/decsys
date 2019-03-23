@@ -2,6 +2,13 @@ import * as actions from "./actions";
 import { push } from "connected-react-router";
 import axios from "axios";
 
+// because we send a string not a JSON object as body data
+const appJsonHeaderOptions = {
+  headers: {
+    "Content-Type": "application/json" // because we send a string not a JSON object as body data
+  }
+};
+
 /**
  * Get a Survey and add it to the state as the current Editor Survey
  * @param {*} id
@@ -19,11 +26,7 @@ export const getSurvey = id => dispatch =>
 export const editName = (id, name) => dispatch => {
   dispatch(actions.savingName());
   axios
-    .put(`/api/surveys/${id}/name`, JSON.stringify(name), {
-      headers: {
-        "Content-Type": "application/json" // because we send a string not a JSON object as body data
-      }
-    })
+    .put(`/api/surveys/${id}/name`, JSON.stringify(name), appJsonHeaderOptions)
     .then(() => dispatch(actions.saveName(name)));
 };
 
@@ -77,11 +80,7 @@ export const addPageItem = (surveyId, pageId, type) => dispatch => {
     .post(
       `/api/surveys/${surveyId}/pages/${pageId}/components`,
       JSON.stringify(type),
-      {
-        headers: {
-          "Content-Type": "application/json" // because we send a string not a JSON object as body data
-        }
-      }
+      appJsonHeaderOptions
     )
     .then(({ data }) => dispatch(actions.addPageItem(pageId, data)));
 };
@@ -127,4 +126,35 @@ export const duplicatePageItem = (
       `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/duplicate`
     )
     .then(() => dispatch(getSurvey(surveyId)));
+};
+
+export const selectPageComponent = (
+  surveyId,
+  pageId,
+  type,
+  componentId,
+  order
+) => dispatch => {
+  // we do quite a few API calls here
+  const baseUrl = `/api/surveys/${surveyId}/pages/${pageId}/components`;
+
+  // ugh, conditionals means declaring stuff out of order
+  const get = () => dispatch(getSurvey(surveyId));
+  const create = () => {
+    // actually only create if we have a type - empty means remove
+    if (!type) return get();
+    axios.post(baseUrl, JSON.stringify(type), appJsonHeaderOptions).then(() => {
+      // move the new one to the old one's order, if there was an old one
+      if (componentId)
+        axios
+          .put(`${baseUrl}/${componentId}/order`, order, appJsonHeaderOptions)
+          .then(get());
+      else get();
+    });
+  };
+
+  // delete the existing one, if any
+  if (componentId)
+    axios.delete(`${baseUrl}/${componentId}`).then(() => create());
+  else create();
 };

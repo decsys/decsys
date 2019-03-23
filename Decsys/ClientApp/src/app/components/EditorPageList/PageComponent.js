@@ -41,7 +41,7 @@ const PageComponent = ({ components, currentType, onComponentSelect }) => {
           <Select
             size="sm"
             control
-            onChange={onComponentSelect}
+            onChange={e => onComponentSelect(e.target.value)}
             value={currentType}
           >
             <option value="">None</option>
