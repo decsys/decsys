@@ -9,8 +9,17 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 const EditorPageList = ({ actions, components, pages }) => {
   const onDragEnd = result => {
     if (!result.destination) return;
+    if (result.source.droppableId !== result.destination.droppableId) return;
     if (result.destination.index === result.source.index) return;
-    actions.onDragEnd(result.draggableId, result.destination.index);
+    // TODO different ops for different lists
+    if (result.destination.droppableId === "pageList")
+      actions.onPageDragEnd(result.draggableId, result.destination.index);
+    else
+      actions.onComponentDragEnd(
+        result.destination.droppableId,
+        result.draggableId,
+        result.destination.index
+      );
   };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -42,7 +51,7 @@ const EditorPageList = ({ actions, components, pages }) => {
                         >
                           <Box mb={1}>
                             <Page
-                              provided={provided}
+                              pageListProvided={provided}
                               n={x.order}
                               page={x}
                               componentList={components}

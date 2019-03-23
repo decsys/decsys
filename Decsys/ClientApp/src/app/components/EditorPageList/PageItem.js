@@ -19,20 +19,20 @@ const PageItem = ({
   type,
   text,
   onDuplicateClick,
-  onDeleteClick
+  onDeleteClick,
+  provided
 }) => (
   <Box backgroundColor="cardBg" width={1} py=".2em" pr={1}>
     <Grid columns="30px 30px 30px 1fr 30px 30px" columnGap=".1em">
       <Cell />
 
       <Cell middle>
-        <Box textAlign="center">
-          <EllipsisV size="1em" />
-        </Box>
+        <div {...provided.dragHandleProps}>
+          <Box textAlign="center">
+            <EllipsisV size="1em" />
+          </Box>
+        </div>
       </Cell>
-      {
-        //TODO: drag handle
-      }
       <Cell middle>
         <Box textAlign="center">
           {type === "heading" && <Heading size="1em" />}

@@ -18,7 +18,8 @@ import {
   duplicatePage,
   duplicatePageItem,
   selectPageComponent,
-  reorderPage
+  reorderPage,
+  reorderComponent
 } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
@@ -130,8 +131,10 @@ const EditorScreen = withRouter(
         onComponentSelect: (pageId, type, componentId, order) =>
           dispatch(selectPageComponent(id, pageId, type, componentId, order)),
         onAddClick: () => dispatch(addPage(id)),
-        onDragEnd: (pageId, newOrder) =>
-          dispatch(reorderPage(id, pageId, newOrder))
+        onPageDragEnd: (pageId, newOrder) =>
+          dispatch(reorderPage(id, pageId, newOrder)),
+        onComponentDragEnd: (pageId, componentId, newOrder) =>
+          dispatch(reorderComponent(id, pageId, componentId, newOrder))
       }
     })
   )(PureEditorScreen)

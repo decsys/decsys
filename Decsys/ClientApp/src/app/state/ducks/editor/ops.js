@@ -145,6 +145,28 @@ export const reorderPage = (surveyId, pageId, newOrder) => dispatch => {
 };
 
 /**
+ * Move a Component in the Page Components order
+ * @param {*} surveyId
+ * @param {*} pageId
+ * @param {*} componentId
+ * @param {*} newOrder
+ */
+export const reorderComponent = (
+  surveyId,
+  pageId,
+  componentId,
+  newOrder
+) => dispatch => {
+  axios
+    .put(
+      `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/order`,
+      ++newOrder, // our draggable list is 0-indexed, but order on the server is 1-indexed
+      appJsonHeaderOptions
+    )
+    .then(() => dispatch(getSurvey(surveyId)));
+};
+
+/**
  * Change the Page Component associated with a Page
  * @param {*} surveyId
  * @param {*} pageId

@@ -4,7 +4,12 @@ import { Typography, Box, Select } from "@smooth-ui/core-sc";
 import { Question, EllipsisV } from "styled-icons/fa-solid";
 import { Grid, Cell } from "styled-css-grid";
 
-const PageComponent = ({ components, currentType, onComponentSelect }) => {
+const PageComponent = ({
+  components,
+  currentType,
+  onComponentSelect,
+  provided
+}) => {
   const component = components.find(x => x.type === currentType);
   const Icon = component ? (
     cloneElement(component.icon, { size: "1em" })
@@ -17,14 +22,13 @@ const PageComponent = ({ components, currentType, onComponentSelect }) => {
         <Cell />
         <Cell middle>
           {currentType && (
-            <Box textAlign="center">
-              <EllipsisV size="1em" />
-            </Box>
+            <div {...provided.dragHandleProps}>
+              <Box textAlign="center">
+                <EllipsisV size="1em" />
+              </Box>
+            </div>
           )}
         </Cell>
-        {
-          //TODO: drag handle
-        }
         <Cell middle>
           <Box textAlign="center">{Icon}</Box>
         </Cell>
