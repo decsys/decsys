@@ -33,14 +33,17 @@ namespace Decsys.Mapping
 
 
             // Page
-            CreateMap<Data.Entities.Page, Page>()
+            CreateMap<Data.Entities.Page, Page>();
+
+            CreateMap<Page, Data.Entities.Page>();
+
+            // Component
+            CreateMap<Data.Entities.Component, Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.MapFrom(
                         src => JObject.Parse(JsonSerializer.Serialize(src.Params, false, false)))); // TODO: make this less dumb?
 
-            CreateMap<NewPage, Data.Entities.Page>();
-
-            CreateMap<Page, Data.Entities.Page>()
+            CreateMap<Component, Data.Entities.Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new JObjectBsonConverter()));
 

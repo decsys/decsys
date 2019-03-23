@@ -1,0 +1,202 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
+using Decsys.Data;
+using Decsys.Data.Entities;
+using LiteDB;
+using Newtonsoft.Json.Linq;
+
+namespace Decsys.Services
+{
+    /// <summary>
+    /// Survey Page functionality
+    /// </summary>
+    public class ComponentService
+    {
+        private readonly LiteDatabase _db;
+        private readonly IMapper _mapper;
+
+        public ComponentService(LiteDatabase db, IMapper mapper)
+        {
+            _db = db;
+            _mapper = mapper;
+        }
+
+        /// <summary>
+        /// Create a new Component in a given Survey Page.
+        /// </summary>
+        /// <param name="id">The ID of the Survey the Page belongs to.</param>
+        /// <param name="pageId">The ID of the Page to create the new Component in.</param>
+        /// <param name="type">The type of the new Component.</param>
+        /// <exception cref="KeyNotFoundException">If the Survey or Page cannot be found.</exception>
+        public Models.Component Create(int id, Guid pageId, string type)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id)
+                ?? throw new KeyNotFoundException();
+
+            var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException(); ;
+
+            var entity = new Component(type);
+
+            var components = page.Components.OrderBy(x => x.Order).ToList();
+
+            components.Add(entity);
+
+            page.Components = components.Select((x, i) => { x.Order = i + 1; return x; });
+
+            survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
+
+            surveys.Update(survey);
+
+            return _mapper.Map<Models.Component>(entity);
+        }
+
+        /// <summary>
+        /// Move a Component to a new position in the Component Order of a Page.
+        /// </summary>
+        /// <param name="id">The ID of the Survey the Page belongs to.</param>
+        /// <param name="pageId">The ID of the Page the Component belongs to.</param>
+        /// <param name="componentId">The ID of the Component to move.</param>
+        /// <param name="targetPosition">The new position in the order to put the Component at.</param>
+        /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
+        public void Move(int id, Guid pageId, Guid componentId, int targetPosition)
+        {
+            if (targetPosition <= 0) targetPosition = 1; //silently fix this
+
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id);
+            if (survey is null) throw new KeyNotFoundException("Survey could not be found.");
+
+            var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException("Page could not be found.");
+
+            var components = page.Components.OrderBy(x => x.Order).ToList();
+
+            if (targetPosition > components.Count) targetPosition = components.Count; // silently fix this
+
+            var component = components.SingleOrDefault(x => x.Id == componentId)
+                ?? throw new KeyNotFoundException("Component could not be found.");
+
+            if (targetPosition == component.Order) return; // job done ;)
+
+            if (targetPosition > component.Order)
+            {
+                // moving upwards:
+                // 1. Insert the component later
+                // 2. Delete the old component
+                var iPage = components.IndexOf(component);
+                components.Insert(targetPosition, component);
+                components.RemoveAt(iPage);
+            }
+            else
+            {
+                // moving downwards:
+                // 1. Delete the old component
+                // 2. Insert the page at the new position
+                components.Remove(component);
+                components.Insert(targetPosition - 1, component);
+            }
+
+            page.Components = components.Select((x, i) => { x.Order = i + 1; return x; });
+
+            survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
+            surveys.Update(survey);
+        }
+
+        /// <summary>
+        /// Clear a Parameter of a Component.
+        /// </summary>
+        /// <param name="id">The ID of the Survey the Page belongs to.</param>
+        /// <param name="pageId">The ID of the Page the Component belongs to.</param>
+        /// <param name="componentId">The ID of the Component to edit.</param>
+        /// <param name="paramKey">The Key of the Parameter value to clear.</param>
+        /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
+        internal void ClearParam(int id, Guid pageId, Guid componentId, string paramKey)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id)
+                ?? throw new KeyNotFoundException("Survey could not be found.");
+
+            var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException("Page could not be found.");
+
+            var components = page.Components.ToList();
+            var entity = components.SingleOrDefault(x => x.Id == componentId)
+                ?? throw new KeyNotFoundException("Component could not be found.");
+
+            var component = _mapper.Map<Models.Component>(entity);
+            component.Params.Remove(paramKey);
+
+            components[components.IndexOf(entity)] = _mapper.Map<Component>(component);
+
+            page.Components = components;
+
+            survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
+            surveys.Update(survey);
+        }
+
+        /// <summary>
+        /// Delete a Page from a Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey the Page belongs to.</param>
+        /// <param name="pageId">The ID of the Page to delete the Component from.</param>
+        /// <param name="componentId">The ID of the Component.</param>
+        /// <returns>True if the deletion was successful, false if the Survey, Page or Component could not be found.</returns>
+        public bool Delete(int id, Guid pageId, Guid componentId)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id);
+            if (survey is null) return false;
+
+            var page = survey.Pages.SingleOrDefault(x => x.Id == pageId);
+            if (page is null) return false;
+
+            var component = page.Components.ToList().SingleOrDefault(x => x.Id == componentId);
+            if (component is null) return false;
+
+            var components = page.Components.ToList();
+            components.Remove(component);
+            page.Components = components.Select((x, i) => { x.Order = i + 1; return x; });
+
+            survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
+            surveys.Update(survey);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Merge new Params into the Components's current Params property.
+        /// </summary>
+        /// <param name="id">The ID of the Survey the Page belongs to.</param>
+        /// <param name="pageId">The ID of the Page to edit the Component in.</param>
+        /// <param name="componentId">The ID of the Component to edit.</param>
+        /// <param name="componentParams">The Params object to merge.</param>
+        /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
+        public void MergeParams(int id, Guid pageId, Guid componentId, JObject componentParams)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id)
+                ?? throw new KeyNotFoundException("Survey could not be found.");
+
+            var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException("Page could not be found.");
+
+            var components = page.Components.ToList();
+            var entity = components.SingleOrDefault(x => x.Id == componentId)
+                ?? throw new KeyNotFoundException("Component could not be found.");
+
+            var component = _mapper.Map<Models.Component>(entity);
+            component.Params.Merge(componentParams);
+
+            components[components.IndexOf(entity)] = _mapper.Map<Component>(component);
+
+            page.Components = components;
+
+            survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
+            surveys.Update(survey);
+        }
+    }
+}
