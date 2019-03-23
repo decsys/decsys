@@ -1,8 +1,8 @@
 import * as serviceWorker from "./serviceWorker";
 import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import { createBrowserHistory } from "history";
 import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import { Provider } from "react-redux";
@@ -16,11 +16,18 @@ import configureStore from "./app/state/store";
  */
 
 window.__DECSYS__ = {}; // Register our global namespace at bootstrap time
-// React and styled need to stay as single instances, so we make them global for modules
-// also PropTypes for now because I don't understand rollup well enough
+
+// React, ReactDOM and styled need to stay as single instances, so we make them global for modules
+// Do the same with PropTypes to make components smaller - they'll all be using it and we have it
+// so why make them bundle it everytime?
 window.React = React;
-window.styled = styled;
+window.ReactDOM = ReactDOM;
 window.PropTypes = PropTypes;
+
+// Styled doesn't put all its named exports on the default :(
+// So I guess that job is on us until we have a better way to do this than globals
+styled.css = css;
+window.styled = styled;
 
 // fetch DECSYS Component modules from the API and chuck them on the page
 // We get the App to do this so we can be sure our bundle is already loaded
