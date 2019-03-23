@@ -17,7 +17,8 @@ import {
   deletePageItem,
   duplicatePage,
   duplicatePageItem,
-  selectPageComponent
+  selectPageComponent,
+  reorderPage
 } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
@@ -55,7 +56,6 @@ const PureEditorScreen = ({
       rowGap="0px"
       columnGap="0px"
       areas={["bar bar", "pages config"]}
-      style={{ height: "100vh" }}
     >
       <Cell area="bar">
         <SurveyEditorBar />
@@ -129,7 +129,9 @@ const EditorScreen = withRouter(
         },
         onComponentSelect: (pageId, type, componentId, order) =>
           dispatch(selectPageComponent(id, pageId, type, componentId, order)),
-        onAddClick: () => dispatch(addPage(id))
+        onAddClick: () => dispatch(addPage(id)),
+        onDragEnd: (pageId, newOrder) =>
+          dispatch(reorderPage(id, pageId, newOrder))
       }
     })
   )(PureEditorScreen)

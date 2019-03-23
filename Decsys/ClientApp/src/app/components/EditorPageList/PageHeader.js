@@ -14,6 +14,7 @@ import { Grid, Cell } from "styled-css-grid";
 const PageHeader = ({
   n,
   id,
+  provided,
   actions: {
     onRandomToggle,
     onAddPageItemClick,
@@ -25,13 +26,13 @@ const PageHeader = ({
     <Box pr={1} border="red" borderBottom={1}>
       <Grid columns="30px 1fr 70px 30px 30px 30px 30px 30px" columnGap=".1em">
         <Cell middle>
-          <Box textAlign="center">
-            <EllipsisV size="1em" />
-          </Box>
+          <div {...provided.dragHandleProps}>
+            <Box textAlign="center">
+              <EllipsisV size="1em" />
+            </Box>
+          </div>
         </Cell>
-        {
-          //TODO: drag handle
-        }
+
         <Cell middle>
           <Typography>Page {n}</Typography>
         </Cell>

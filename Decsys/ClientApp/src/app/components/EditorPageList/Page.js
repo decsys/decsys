@@ -11,7 +11,8 @@ const Page = ({
   n,
   itemActions,
   pageActions,
-  onComponentSelect
+  onComponentSelect,
+  provided
 }) => {
   const isResponse = type => !["heading", "paragraph", "image"].includes(type);
   return (
@@ -21,7 +22,12 @@ const Page = ({
       borderColor="cardBorder"
       backgroundColor="cardBg"
     >
-      <PageHeader n={n} actions={pageActions} id={page.id} />
+      <PageHeader
+        provided={provided}
+        n={n}
+        actions={pageActions}
+        id={page.id}
+      />
 
       {page.components
         .sort(({ order: a }, { order: b }) => a - b)

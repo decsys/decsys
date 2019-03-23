@@ -128,6 +128,30 @@ export const duplicatePageItem = (
     .then(() => dispatch(getSurvey(surveyId)));
 };
 
+/**
+ * Move a Page in the Survey Pages order
+ * @param {*} surveyId
+ * @param {*} pageId
+ * @param {*} newOrder
+ */
+export const reorderPage = (surveyId, pageId, newOrder) => dispatch => {
+  axios
+    .put(
+      `/api/surveys/${surveyId}/pages/${pageId}/order`,
+      ++newOrder, // our draggable list is 0-indexed, but order on the server is 1-indexed
+      appJsonHeaderOptions
+    )
+    .then(() => dispatch(getSurvey(surveyId)));
+};
+
+/**
+ * Change the Page Component associated with a Page
+ * @param {*} surveyId
+ * @param {*} pageId
+ * @param {*} type
+ * @param {*} componentId
+ * @param {*} order
+ */
 export const selectPageComponent = (
   surveyId,
   pageId,
