@@ -14,5 +14,5 @@ export const actions = {
 };
 
 storiesOf("Admin/EditorPageList/PageHeader", module).add("Default", () => (
-  <PageHeader n={number("Page Number", 1)} {...actions} />
+  <PageHeader n={number("Page Number", 1)} actions={actions} />
 ));

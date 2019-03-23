@@ -14,8 +14,8 @@ import { Grid, Cell } from "styled-css-grid";
 const capitalise = ([first, ...rest]) => first.toUpperCase() + rest.join("");
 
 const PageItem = ({ type, text, onDuplicateClick, onDeleteClick }) => (
-  <Box backgroundColor="cardBg" width={1}>
-    <Grid columns="30px 30px 30px 1fr 40px 40px" columnGap="0">
+  <Box backgroundColor="cardBg" width={1} py=".2em" pr={1}>
+    <Grid columns="30px 30px 30px 1fr 30px 30px" columnGap=".1em">
       <Cell />
 
       <Cell middle>
@@ -42,10 +42,10 @@ const PageItem = ({ type, text, onDuplicateClick, onDeleteClick }) => (
       >
         <Typography>{text || capitalise(type)}</Typography>
       </Cell>
-      <Button borderRadius={0} variant="light" onClick={onDuplicateClick}>
+      <Button size="sm" variant="light" onClick={onDuplicateClick}>
         <Copy size="1em" />
       </Button>
-      <Button borderRadius={0} variant="danger" onClick={onDeleteClick}>
+      <Button size="sm" variant="danger" onClick={onDeleteClick}>
         <Times size="1em" />
       </Button>
     </Grid>

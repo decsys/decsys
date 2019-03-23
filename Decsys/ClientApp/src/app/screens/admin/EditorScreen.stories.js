@@ -4,10 +4,13 @@ import { storiesOf } from "@storybook/react";
 import { PureEditorScreen } from "./EditorScreen";
 import { withBasicStore } from "../../utils/story-redux";
 import { decorate, action } from "@storybook/addon-actions";
+import { components } from "../../components/EditorPageList/PageComponent.stories";
+import { actions as pageListActions } from "../../components/EditorPageList/EditorPageList.stories";
+import { pages } from "../../components/EditorPageList/Page.stories";
 
 const state = {
   editor: {
-    survey: { name: "My Survey" },
+    survey: { name: "My Survey", pages: pages },
     updateStates: { name: {} }
   }
 };
@@ -15,7 +18,8 @@ const state = {
 const actions = {
   onNameChange: decorate([([e]) => [e.target.value, e]]).action("Name changed"),
   onDeleteClick: action("Delete confirmed"),
-  onDuplicateClick: action("Duplicate clicked")
+  onDuplicateClick: action("Duplicate clicked"),
+  pageListActions
 };
 
 storiesOf("Admin/EditorScreen", module)
@@ -27,8 +31,17 @@ storiesOf("Admin/EditorScreen", module)
   .add("Default", () => (
     <PureEditorScreen
       id={0}
+      {...{ ...state.editor, survey: { ...state.editor.survey, pages: [] } }}
+      components={components}
+      surveyLoaded={true}
+      {...actions}
+    />
+  ))
+  .add("Pages", () => (
+    <PureEditorScreen
+      id={0}
       {...state.editor}
-      components={[]}
+      components={components}
       surveyLoaded={true}
       {...actions}
     />

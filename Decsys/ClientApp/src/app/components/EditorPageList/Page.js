@@ -6,17 +6,11 @@ import PageComponent from "./PageComponent";
 import PageItem from "./PageItem";
 
 const Page = ({
-  components,
+  page,
   componentList,
   n,
-  onRandomToggle,
-  onHeadingClick,
-  onParagraphClick,
-  onImageClick,
-  onDuplicateClick,
-  onDeleteClick,
-  onItemDeleteClick,
-  onItemDuplicateClick,
+  itemActions,
+  pageActions,
   onComponentSelect
 }) => {
   const isResponse = type => !["heading", "paragraph", "image"].includes(type);
@@ -27,33 +21,28 @@ const Page = ({
       borderColor="cardBorder"
       backgroundColor="cardBg"
     >
-      <PageHeader
-        n={n}
-        onRandomToggle={onRandomToggle}
-        onHeadingClick={onHeadingClick}
-        onParagraphClick={onParagraphClick}
-        onImageClick={onImageClick}
-        onDuplicateClick={onDuplicateClick}
-        onDeleteClick={onDeleteClick}
-      />
+      <PageHeader n={n} actions={pageActions} />
 
-      {components.map(x =>
-        isResponse(x.type) ? (
-          <PageComponent
-            components={componentList}
-            currentType={x.type}
-            onComponentSelect={onComponentSelect}
-          />
-        ) : (
-          <PageItem
-            type={x.type}
-            text={x.params.text}
-            onDeleteClick={onItemDeleteClick}
-            onDuplicateClick={onItemDuplicateClick}
-          />
-        )
-      )}
-      {components.every(x => !isResponse(x.type)) && (
+      {page.components
+        .sort(({ order: a }, { order: b }) => a - b)
+        .map((x, i) =>
+          isResponse(x.type) ? (
+            <PageComponent
+              key={i}
+              components={componentList}
+              currentType={x.type}
+              onComponentSelect={onComponentSelect}
+            />
+          ) : (
+            <PageItem
+              key={i}
+              type={x.type}
+              text={x.params.text}
+              {...itemActions}
+            />
+          )
+        )}
+      {page.components.every(x => !isResponse(x.type)) && (
         <PageComponent
           components={componentList}
           onComponentSelect={onComponentSelect}
@@ -64,17 +53,26 @@ const Page = ({
 };
 
 Page.propTypes = {
-  ...PageHeader.propTypes,
-  components: PropTypes.arrayOf(
-    PropTypes.shape({
-      type: PropTypes.string.isRequired,
-      params: PropTypes.shape({}).isRequired
-    })
-  ),
-  componentList: PageComponent.propTypes.components,
-  onItemDeleteClick: PropTypes.func.isRequired,
-  onItemDuplicateClick: PropTypes.func.isRequired,
-  onComponentSelect: PropTypes.func.isRequired
+  n: PageHeader.propTypes.n,
+  pageActions: PageHeader.propTypes.actions,
+  itemActions: PropTypes.shape({
+    onDeleteClick: PropTypes.func.isRequired,
+    onDuplicateClick: PropTypes.func.isRequired
+  }),
+  onComponentSelect: PropTypes.func.isRequired,
+  page: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    order: PropTypes.number.isRequired,
+    components: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        order: PropTypes.number.isRequired,
+        type: PropTypes.string.isRequired,
+        params: PropTypes.shape({}).isRequired
+      })
+    )
+  }),
+  componentList: PageComponent.propTypes.components
 };
 
 export default Page;

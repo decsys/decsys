@@ -8,6 +8,7 @@ export default {
 
   //new theme colors here
   uiPanel1: th("gray900"),
+  uiPanel2: th("gray500"),
   cardBg: th("light"),
   cardBorder: th("gray400"),
   menuBg: th("light"),
@@ -17,6 +18,7 @@ export default {
   colors: {
     ...theme.colors,
     uiPanel1: th("uiPanel1"),
+    uiPanel2: th("uiPanel2"),
     cardBg: th("cardBg"),
     cardBorder: th("cardBorder"),
     menuBg: th("menuBg"),

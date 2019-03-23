@@ -13,16 +13,18 @@ import { Grid, Cell } from "styled-css-grid";
 
 const PageHeader = ({
   n,
-  onRandomToggle,
-  onHeadingClick,
-  onParagraphClick,
-  onImageClick,
-  onDuplicateClick,
-  onDeleteClick
+  actions: {
+    onRandomToggle,
+    onHeadingClick,
+    onParagraphClick,
+    onImageClick,
+    onDuplicateClick,
+    onDeleteClick
+  }
 }) => {
   return (
-    <Box pr={1}>
-      <Grid columns="30px 1fr 60px 30px 30px 30px 30px 30px">
+    <Box pr={1} border="red" borderBottom={1}>
+      <Grid columns="30px 1fr 70px 30px 30px 30px 30px 30px" columnGap=".1em">
         <Cell middle>
           <Box textAlign="center">
             <EllipsisV size="1em" />
@@ -100,12 +102,14 @@ const PageHeader = ({
 
 PageHeader.propTypes = {
   n: PropTypes.number.isRequired,
-  onRandomToggle: PropTypes.func.isRequired,
-  onHeadingClick: PropTypes.func.isRequired,
-  onParagraphClick: PropTypes.func.isRequired,
-  onImageClick: PropTypes.func.isRequired,
-  onDuplicateClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired
+  actions: PropTypes.shape({
+    onRandomToggle: PropTypes.func.isRequired,
+    onHeadingClick: PropTypes.func.isRequired,
+    onParagraphClick: PropTypes.func.isRequired,
+    onImageClick: PropTypes.func.isRequired,
+    onDuplicateClick: PropTypes.func.isRequired,
+    onDeleteClick: PropTypes.func.isRequired
+  }).isRequired
 };
 
 export default PageHeader;

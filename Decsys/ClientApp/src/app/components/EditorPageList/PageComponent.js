@@ -12,8 +12,8 @@ const PageComponent = ({ components, currentType, onComponentSelect }) => {
     <Question size="1em" />
   );
   return (
-    <Box backgroundColor="cardBg" width={1} pr={1} py={1}>
-      <Grid columns="30px 30px 30px auto 1fr" columnGap="0">
+    <Box backgroundColor="cardBg" width={1} pr={1} py=".2em">
+      <Grid columns="30px 30px 30px auto 1fr" columnGap=".1em">
         <Cell />
         <Cell middle>
           {currentType && (
@@ -38,14 +38,15 @@ const PageComponent = ({ components, currentType, onComponentSelect }) => {
           <Typography mr={1}>Component</Typography>
         </Cell>
         <Cell>
-          <Select size="sm" control onChange={onComponentSelect}>
+          <Select
+            size="sm"
+            control
+            onChange={onComponentSelect}
+            value={currentType}
+          >
             <option value="">None</option>
             {components.map(x => (
-              <option
-                key={x.type}
-                value={x.type}
-                selected={currentType === x.type}
-              >
+              <option key={x.type} value={x.type}>
                 {x.type}
               </option>
             ))}
