@@ -4,7 +4,6 @@ export const EDIT_NAME = "decsys/editor/EDIT_NAME";
 export const SAVING_NAME = "decsys/editor/SAVING_NAME";
 export const SET_PAGE_RANDOM_STATE = "decsys/editor/SET_PAGE_RANDOM_STATE";
 export const DUPLICATE_PAGE = "decsys/editor/DUPLICATE_PAGE";
-export const DELETE_PAGE = "decsys/editor/DELETE_PAGE";
 export const ADD_PAGE_HEADING = "decsys/editor/ADD_PAGE_HEADING";
 export const ADD_PAGE_PARAGRAPH = "decsys/editor/ADD_PAGE_PARAGRAPH";
 export const ADD_PAGE_IMAGE = "decsys/editor/ADD_PAGE_IMAGE";

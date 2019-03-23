@@ -13,6 +13,7 @@ import { Grid, Cell } from "styled-css-grid";
 
 const PageHeader = ({
   n,
+  id,
   actions: {
     onRandomToggle,
     onHeadingClick,
@@ -89,7 +90,7 @@ const PageHeader = ({
           <Button
             size="sm"
             variant="danger"
-            onClick={onDeleteClick}
+            onClick={() => onDeleteClick(id)}
             title="Delete this Page"
           >
             <Trash size="1em" />
@@ -101,6 +102,7 @@ const PageHeader = ({
 };
 
 PageHeader.propTypes = {
+  id: PropTypes.string.isRequired,
   n: PropTypes.number.isRequired,
   actions: PropTypes.shape({
     onRandomToggle: PropTypes.func.isRequired,

@@ -23,3 +23,8 @@ export const addPage = page => ({
   type: types.ADD_PAGE,
   payload: { ...page }
 });
+
+// export const deletePage = pageId => ({
+//   type: types.DELETE_PAGE,
+//   payload: pageId
+// });

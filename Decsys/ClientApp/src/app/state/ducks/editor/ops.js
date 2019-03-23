@@ -54,3 +54,9 @@ export const addPage = id => dispatch => {
     .post(`/api/surveys/${id}/pages`)
     .then(({ data }) => dispatch(actions.addPage(data)));
 };
+
+export const deletePage = (surveyId, pageId) => dispatch => {
+  axios
+    .delete(`/api/surveys/${surveyId}/pages/${pageId}`)
+    .then(() => dispatch(getSurvey(surveyId)));
+};

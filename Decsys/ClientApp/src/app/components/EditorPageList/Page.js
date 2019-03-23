@@ -21,7 +21,7 @@ const Page = ({
       borderColor="cardBorder"
       backgroundColor="cardBg"
     >
-      <PageHeader n={n} actions={pageActions} />
+      <PageHeader n={n} actions={pageActions} id={page.id} />
 
       {page.components
         .sort(({ order: a }, { order: b }) => a - b)
