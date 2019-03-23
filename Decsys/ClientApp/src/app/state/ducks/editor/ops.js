@@ -44,3 +44,13 @@ export const duplicateSurvey = id => dispatch => {
     .post(`/api/surveys/${id}/duplicate`)
     .then(({ data }) => dispatch(push(`/admin/survey/${data}`)));
 };
+
+/**
+ * Add a Page to a Survey
+ * @param {*} id
+ */
+export const addPage = id => dispatch => {
+  axios
+    .post(`/api/surveys/${id}/pages`)
+    .then(({ data }) => dispatch(actions.addPage(data)));
+};

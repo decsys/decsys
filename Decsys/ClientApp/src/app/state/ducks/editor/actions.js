@@ -18,3 +18,8 @@ export const saveName = name => ({
 export const savingName = () => ({
   type: types.SAVING_NAME
 });
+
+export const addPage = page => ({
+  type: types.ADD_PAGE,
+  payload: { ...page }
+});

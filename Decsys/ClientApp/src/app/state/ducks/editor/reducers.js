@@ -42,6 +42,16 @@ const surveyEditorReducer = (
         }
       };
 
+    case types.ADD_PAGE:
+      const pages = state.survey.pages;
+      pages.push(action.payload);
+      return {
+        ...state,
+        survey: {
+          ...state.survey,
+          pages
+        }
+      };
     default:
       return state;
   }

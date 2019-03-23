@@ -10,7 +10,8 @@ import { LoadingIndicator, FlexBox } from "../../components/ui";
 import {
   editName,
   deleteSurvey,
-  duplicateSurvey
+  duplicateSurvey,
+  addPage
 } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
@@ -77,7 +78,7 @@ const PureEditorScreen = ({
 };
 
 PureEditorScreen.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   survey: PropTypes.shape({
     name: PropTypes.string.isRequired
   }),
@@ -120,7 +121,7 @@ const EditorScreen = withRouter(
           onDeleteClick: () => dispatch({ type: "DELETE_PAGE_ITEM" })
         },
         onComponentSelect: () => dispatch({ type: "SELECT_PAGE_COMPONENT" }),
-        onAddClick: () => dispatch({ type: "ADD_PAGE" })
+        onAddClick: () => dispatch(addPage(id))
       }
     })
   )(PureEditorScreen)
