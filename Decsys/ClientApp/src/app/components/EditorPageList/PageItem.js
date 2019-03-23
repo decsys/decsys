@@ -49,7 +49,11 @@ const PageItem = ({
       >
         <Typography>{text || capitalise(type)}</Typography>
       </Cell>
-      <Button size="sm" variant="light" onClick={onDuplicateClick}>
+      <Button
+        size="sm"
+        variant="light"
+        onClick={() => onDuplicateClick(pageId, id)}
+      >
         <Copy size="1em" />
       </Button>
       <Button

@@ -14,7 +14,9 @@ import {
   addPage,
   deletePage,
   addPageItem,
-  deletePageItem
+  deletePageItem,
+  duplicatePage,
+  duplicatePageItem
 } from "../../state/ducks/editor";
 
 const PureEditorScreen = ({
@@ -113,13 +115,14 @@ const EditorScreen = withRouter(
       pageListActions: {
         pageActions: {
           onRandomToggle: () => dispatch({ type: "SET_PAGE_RANDOM_STATE" }),
-          onDuplicateClick: () => dispatch({ type: "DUPLICATE_PAGE" }),
+          onDuplicateClick: pageId => dispatch(duplicatePage(id, pageId)),
           onDeleteClick: pageId => dispatch(deletePage(id, pageId)),
           onAddPageItemClick: (pageId, type) =>
             dispatch(addPageItem(id, pageId, type))
         },
         itemActions: {
-          onDuplicateClick: () => dispatch({ type: "DUPLICATE_PAGE_ITEM" }),
+          onDuplicateClick: (pageId, componentId) =>
+            dispatch(duplicatePageItem(id, pageId, componentId)),
           onDeleteClick: (pageId, componentId) =>
             dispatch(deletePageItem(id, pageId, componentId))
         },

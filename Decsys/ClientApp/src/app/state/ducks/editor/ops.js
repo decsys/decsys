@@ -99,3 +99,32 @@ export const deletePageItem = (surveyId, pageId, componentId) => dispatch => {
     )
     .then(() => dispatch(getSurvey(surveyId)));
 };
+
+/**
+ * Duplicate an existing Page
+ * @param {*} surveyId
+ * @param {*} pageId
+ */
+export const duplicatePage = (surveyId, pageId) => dispatch => {
+  axios
+    .post(`/api/surveys/${surveyId}/pages/${pageId}/duplicate`)
+    .then(() => dispatch(getSurvey(surveyId)));
+};
+
+/**
+ * Duplicate an existing built-in Page Item component
+ * @param {*} surveyId
+ * @param {*} pageId
+ * @param {*} componentId
+ */
+export const duplicatePageItem = (
+  surveyId,
+  pageId,
+  componentId
+) => dispatch => {
+  axios
+    .post(
+      `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/duplicate`
+    )
+    .then(() => dispatch(getSurvey(surveyId)));
+};

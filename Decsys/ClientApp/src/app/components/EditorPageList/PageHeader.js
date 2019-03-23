@@ -78,7 +78,7 @@ const PageHeader = ({
           <Button
             size="sm"
             variant="light"
-            onClick={onDuplicateClick}
+            onClick={() => onDuplicateClick(id)}
             title="Duplicate this Page"
           >
             <Copy size="1em" />
