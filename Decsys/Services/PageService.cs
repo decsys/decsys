@@ -114,5 +114,42 @@ namespace Decsys.Services
 
             return true;
         }
+
+        /// <summary>
+        /// Duplicate a Page in a Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to duplicate the Page in.</param>
+        /// <param name="pageId">The ID of the Page.</param>
+        /// <returns>The newly duplicated Page</returns>
+        /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
+        public Models.Page Duplicate(int id, Guid pageId)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id)
+                ?? throw new KeyNotFoundException("Survey could not be found.");
+
+            var pages = survey.Pages.ToList();
+            var page = pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException("Page could not be found.");
+
+            // blah manual deep copy time, i guess
+            var dupe = new Page
+            {
+                Id = Guid.NewGuid(),
+                Order = pages.Count + 1,
+                Components = page.Components.Select(x => new Component(x.Type)
+                {
+                    Id = Guid.NewGuid(),
+                    Order = x.Order,
+                    Params = x.Params
+                })
+            };
+            pages.Add(dupe);
+
+            survey.Pages = pages;
+            surveys.Update(survey);
+
+            return _mapper.Map<Models.Page>(dupe);
+        }
     }
 }

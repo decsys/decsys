@@ -76,5 +76,25 @@ namespace Decsys.Controllers
                 return NotFound(e.Message);
             }
         }
+
+        [HttpPut("{pageId}/duplicate")]
+        [SwaggerOperation("Duplicates a Page in a Survey.")]
+        [SwaggerResponse(200, "The Page was duplicated successfully and the new page is returned.", Type = typeof(Page))]
+        [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
+        public IActionResult Duplicate(
+            [SwaggerParameter("ID of the Survey to duplicate the Page in.")]
+            int id,
+            [SwaggerParameter("ID of the Page to duplicate.")]
+            Guid pageId)
+        {
+            try
+            {
+                return Ok(_pages.Duplicate(id, pageId));
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
     }
 }

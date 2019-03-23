@@ -198,5 +198,42 @@ namespace Decsys.Services
             survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
             surveys.Update(survey);
         }
+
+        /// <summary>
+        /// Duplicate a component in a Page
+        /// </summary>
+        /// <param name="id">The ID of the Survey the Page belongs to.</param>
+        /// <param name="pageId">The ID of the Page to duplicate the Component in.</param>
+        /// <param name="componentId">The ID of the Component to duplicate.</param>
+        /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
+        public Models.Component Duplicate(int id, Guid pageId, Guid componentId)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id)
+                ?? throw new KeyNotFoundException("Survey could not be found.");
+
+            var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException("Page could not be found.");
+
+            var components = page.Components.ToList();
+            var component = components.SingleOrDefault(x => x.Id == componentId)
+                ?? throw new KeyNotFoundException("Component could not be found.");
+
+            // manual deep copy
+            var dupe = new Component(component.Type)
+            {
+                Id = Guid.NewGuid(),
+                Order = components.Count + 1,
+                Params = component.Params
+            };
+            components.Add(dupe);
+
+            page.Components = components;
+
+            survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
+            surveys.Update(survey);
+
+            return _mapper.Map<Models.Component>(dupe);
+        }
     }
 }

@@ -198,5 +198,29 @@ namespace Decsys.Controllers
                 return NotFound(e.Message);
             }
         }
+
+        [HttpPut("{componentId}/duplicate")]
+        [SwaggerOperation("Duplicates a Component in a Page.")]
+        [SwaggerResponse(200,
+            "The Component was duplicated successfully and the new Component is returned.",
+            Type = typeof(Component))]
+        [SwaggerResponse(404, "No Component, Page, or Survey, was found with the provided ID.")]
+        public IActionResult Duplicate(
+            [SwaggerParameter("ID of the Survey to duplicate the Component in.")]
+            int id,
+            [SwaggerParameter("ID of the Page to duplicate the Component in.")]
+            Guid pageId,
+            [SwaggerParameter("ID of the Component to duplicate.")]
+            Guid componentId)
+        {
+            try
+            {
+                return Ok(_components.Duplicate(id, pageId, componentId));
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
     }
 }
