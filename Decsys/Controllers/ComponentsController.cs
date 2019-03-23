@@ -93,7 +93,7 @@ namespace Decsys.Controllers
             [SwaggerParameter("ID of the Page to add a Component to.")]
             Guid pageId,
             [SwaggerParameter("The type of component to add.")]
-            string type)
+            [FromBody] string type)
         {
             try
             {
