@@ -7,6 +7,9 @@ const EditorPageList = () => (
     <Typography textAlign="center" width={1} p={1}>
       Pages
     </Typography>
+    {pages.map(x => {
+      return <Page />;
+    })}
   </FlexBox>
 );
 
