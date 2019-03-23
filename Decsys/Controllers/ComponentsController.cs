@@ -199,7 +199,7 @@ namespace Decsys.Controllers
             }
         }
 
-        [HttpPut("{componentId}/duplicate")]
+        [HttpPost("{componentId}/duplicate")]
         [SwaggerOperation("Duplicates a Component in a Page.")]
         [SwaggerResponse(200,
             "The Component was duplicated successfully and the new Component is returned.",

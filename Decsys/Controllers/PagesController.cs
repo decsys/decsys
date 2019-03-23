@@ -77,7 +77,7 @@ namespace Decsys.Controllers
             }
         }
 
-        [HttpPut("{pageId}/duplicate")]
+        [HttpPost("{pageId}/duplicate")]
         [SwaggerOperation("Duplicates a Page in a Survey.")]
         [SwaggerResponse(200, "The Page was duplicated successfully and the new page is returned.", Type = typeof(Page))]
         [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
