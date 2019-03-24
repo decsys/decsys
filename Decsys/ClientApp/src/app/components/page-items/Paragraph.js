@@ -4,7 +4,7 @@ import paramTypes, { setParams } from "../../../param-types";
 import ReactMarkdown from "react-markdown";
 
 const PageParagraph = ({ text, ...p }) => (
-  <Typography as="p" {...p}>
+  <Typography as="div" {...p}>
     <ReactMarkdown source={text} />
   </Typography>
 );
