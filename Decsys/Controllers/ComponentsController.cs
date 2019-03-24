@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
@@ -18,15 +20,17 @@ namespace Decsys.Controllers
     public class ComponentsController : ControllerBase
     {
         private readonly ComponentService _components;
+        private readonly ImageService _images;
         private readonly IConfiguration _config;
         private readonly IFileProvider _fileProvider;
 
         public ComponentsController(
             IHostingEnvironment env,
             IConfiguration config,
-            ComponentService components)
+            ComponentService components, ImageService images)
         {
             _components = components;
+            _images = images;
             _config = config;
             _fileProvider = env.ContentRootFileProvider;
         }
@@ -221,6 +225,74 @@ namespace Decsys.Controllers
             {
                 return NotFound(e.Message);
             }
+        }
+
+        [HttpPut("{componentId}/image")]
+        [SwaggerOperation("Stores an image for a given Image component.")]
+        [SwaggerResponse(204, "The Image was stored successfully.")]
+        [SwaggerResponse(404, "No Component, Page, or Survey, was found with the provided ID.")]
+        public async Task<IActionResult> UploadImage(
+            [SwaggerParameter("ID of the Survey the Component belongs to.")]
+            int id,
+            [SwaggerParameter("ID of the Page the Component belongs to.")]
+            Guid pageId,
+            [SwaggerParameter("ID of the Component to upload the image for.")]
+            Guid componentId,
+            [SwaggerParameter("The actual image file")]
+            IFormFile file)
+        {
+            (string extension, byte[] bytes) fileData; // convert IFormFile to its extension and data
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+                fileData = (Path.GetExtension(file.FileName), stream.ToArray());
+            }
+
+            await _images.WriteFile(componentId, fileData);
+
+            try
+            {
+                _components.MergeParams(id, pageId, componentId, new JObject(new
+                {
+                    id = componentId,
+                    fileData.extension
+                }));
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{componentId}/image")]
+        [SwaggerOperation("Removes the image for a given Image component.")]
+        [SwaggerResponse(204, "The Image was removed successfully.")]
+        [SwaggerResponse(404, "No Component, Page, or Survey, was found with the provided ID.")]
+        public IActionResult RemoveImage(
+            [SwaggerParameter("ID of the Survey the Component belongs to.")]
+            int id,
+            [SwaggerParameter("ID of the Page the Component belongs to.")]
+            Guid pageId,
+            [SwaggerParameter("ID of the Component to remove the image from.")]
+            Guid componentId)
+        {
+            try
+            {
+                // remove the actual image file
+                _images.RemoveFile(id, pageId, componentId);
+
+                // update the component params
+                _components.ClearParam(id, pageId, componentId, "id");
+                _components.ClearParam(id, pageId, componentId, "extension");
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+
+            return new EmptyResult();
         }
     }
 }
