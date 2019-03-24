@@ -18,3 +18,26 @@ export const saveName = name => ({
 export const savingName = () => ({
   type: types.SAVING_NAME
 });
+
+export const addPage = page => ({
+  type: types.ADD_PAGE,
+  payload: { ...page }
+});
+
+export const addPageItem = (pageId, component) => ({
+  type: types.ADD_PAGE_ITEM,
+  payload: { pageId, component }
+});
+
+export const setComponent = (surveyId, pageId, component) => ({
+  type: types.SET_COMPONENT,
+  payload: {
+    surveyId,
+    pageId,
+    component
+  }
+});
+
+export const clearComponent = () => ({
+  type: types.CLEAR_COMPONENT
+});

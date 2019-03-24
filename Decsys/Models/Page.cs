@@ -1,14 +1,14 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Decsys.Models
 {
-    public class Page : NewPage
+    public class Page
     {
-        public Page(string type) : base(type) { }
-
         public Guid Id { get; set; }
 
-        public JObject Params { get; set; } = new JObject();
+        public int Order { get; set; }
+
+        public IEnumerable<Component> Components { get; set; } = new List<Component>();
     }
 }

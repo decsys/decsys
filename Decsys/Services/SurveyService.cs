@@ -56,39 +56,10 @@ namespace Decsys.Services
         /// <returns>The ID of the newly created Survey.</returns>
         public int Create(string? name = null)
         {
-            var pages = new List<Page>
-                {
-                    // TODO: these are temporary until we have the new configurable pages
-                    new Page("Welcome")
-                    {
-                        Order = 1,
-                        Params = new BsonDocument
-                        {
-                            ["title"] = "Welcome to my Survey",
-                            ["body"] = "Please read this interesting information.",
-                            ["requireAcceptance"] = false,
-                            ["active"] = true
-                        }
-                    },
-                    new Page("ThankYou")
-                    {
-                        Order = 2,
-                        Params = new BsonDocument
-                        {
-                            ["title"] = "Goodbye to my Survey",
-                            ["body"] = "Thanks for playing!",
-                            ["active"] = true
-                        }
-                    }
-                };
             return _db.GetCollection<Survey>(Collections.Surveys)
                   .Insert(name is null
-                      ? new Survey { Pages = pages }
-                      : new Survey
-                      {
-                          Name = name,
-                          Pages = pages
-                      });
+                      ? new Survey()
+                      : new Survey { Name = name });
         }
 
         /// <summary>

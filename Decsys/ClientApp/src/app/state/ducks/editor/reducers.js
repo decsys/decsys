@@ -42,6 +42,45 @@ const surveyEditorReducer = (
         }
       };
 
+    case types.ADD_PAGE: {
+      const pages = state.survey.pages;
+      pages.push(action.payload);
+      return {
+        ...state,
+        survey: {
+          ...state.survey,
+          pages
+        }
+      };
+    }
+    case types.ADD_PAGE_ITEM: {
+      const { pageId, component } = action.payload;
+      const { pages } = state.survey;
+      const iPage = pages.findIndex(x => x.id === pageId);
+      const page = pages[iPage];
+      if (page) {
+        page.components = [...page.components, component];
+      }
+      pages[iPage] = page;
+
+      return {
+        ...state,
+        survey: {
+          ...state.survey,
+          pages
+        }
+      };
+    }
+    case types.SET_COMPONENT:
+      return {
+        ...state,
+        component: action.payload
+      };
+    case types.CLEAR_COMPONENT:
+      return {
+        ...state,
+        component: null
+      };
     default:
       return state;
   }

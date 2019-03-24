@@ -40,7 +40,6 @@
   <ItemGroup>
     <Folder Include="ClientApp\" />
     <Folder Include="wwwroot\" />
-    <Folder Include="components\" />
   </ItemGroup>
 
   <ItemGroup>
