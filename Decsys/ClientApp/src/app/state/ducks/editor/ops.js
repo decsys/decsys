@@ -210,6 +210,61 @@ export const setCurrentComponent = (
   surveyId,
   pageId,
   component
-) => dispatch => {
+) => async dispatch => {
+  await dispatch(getSurvey(surveyId));
   dispatch(actions.setComponent(surveyId, pageId, component));
+};
+
+export const editParam = (
+  surveyId,
+  pageId,
+  componentId,
+  paramKey,
+  value
+) => dispatch => {
+  axios
+    .patch(
+      `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/params`,
+      {
+        [paramKey]: value
+      }
+    )
+    .then(() =>
+      dispatch(actions.setParam(pageId, componentId, paramKey, value))
+    );
+};
+
+export const uploadImage = (
+  surveyId,
+  pageId,
+  componentId,
+  file,
+  extension
+) => dispatch => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  axios
+    .put(
+      `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/image`,
+      formData,
+      {
+        headers: {
+          "content-type": "multipart/form-data"
+        }
+      }
+    )
+    .then(() => {
+      dispatch(actions.setParam(pageId, componentId, "extension", extension));
+    });
+};
+
+export const removeImage = (surveyId, pageId, componentId) => dispatch => {
+  axios
+    .delete(
+      `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/image`
+    )
+    .then(() => {
+      dispatch(actions.setParam(pageId, componentId, "extension"));
+    });
 };

@@ -60,6 +60,12 @@ namespace Decsys
             services.AddTransient<PageService>();
             services.AddTransient<ComponentService>();
             services.AddTransient<SurveyInstanceService>();
+            services.AddTransient(services => new ImageService(
+                Path.Combine(
+                    services.GetRequiredService<IHostingEnvironment>()
+                        .ContentRootPath,
+                    "SurveyImages"),
+                services.GetRequiredService<LiteDatabase>()));
 
             services.AddSwaggerGen(c =>
             {
@@ -98,6 +104,14 @@ namespace Decsys
                     Path.Combine(env.ContentRootPath, Configuration["Paths:Components:Root"])),
                 RequestPath = "/static/components",
                 ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
+            });
+
+            // Survey Images folder 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(env.ContentRootPath, "SurveyImages")),
+                RequestPath = "/surveys/images"
             });
 
             app.UseSpaStaticFiles();

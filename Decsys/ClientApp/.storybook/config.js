@@ -14,7 +14,11 @@ addDecorator(story => (
 
 addDecorator(withThemes({ Default: theme }));
 
-addDecorator(withKnobs);
+addDecorator(
+  withKnobs({
+    escapeHTML: false
+  })
+);
 
 const req = require.context("../src", true, /.stories.js$/);
 

@@ -41,3 +41,13 @@ export const setComponent = (surveyId, pageId, component) => ({
 export const clearComponent = () => ({
   type: types.CLEAR_COMPONENT
 });
+
+export const setParam = (pageId, componentId, paramKey, value) => ({
+  type: types.SET_COMPONENT_PARAM,
+  payload: {
+    pageId,
+    componentId,
+    paramKey,
+    value
+  }
+});

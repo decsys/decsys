@@ -81,6 +81,21 @@ const surveyEditorReducer = (
         ...state,
         component: null
       };
+    case types.SET_COMPONENT_PARAM: {
+      const { pageId, componentId, paramKey, value } = action.payload;
+      const iPage = state.survey.pages.findIndex(x => x.id === pageId);
+      const page = state.survey.pages[iPage];
+      const iCom = page.components.findIndex(x => x.id === componentId);
+      const component = page.components[iCom];
+      component.params[paramKey] = value;
+      return {
+        ...state,
+        component: {
+          ...state.component,
+          component: component
+        }
+      };
+    }
     default:
       return state;
   }

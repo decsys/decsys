@@ -14,12 +14,14 @@ namespace Decsys.Services
     {
         private readonly LiteDatabase _db;
         private readonly IMapper _mapper;
+        private readonly ImageService _images;
 
         /// <summary>DI Constructor</summary>
-        public SurveyService(LiteDatabase db, IMapper mapper)
+        public SurveyService(LiteDatabase db, IMapper mapper, ImageService images)
         {
             _db = db;
             _mapper = mapper;
+            _images = images;
         }
 
         /// <summary>
@@ -73,11 +75,16 @@ namespace Decsys.Services
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
 
             var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            var oldId = survey.Id;
 
             survey.Id = 0;
             survey.Name = $"{survey.Name} (Copy)";
 
-            return surveys.Insert(survey);
+            var newId = surveys.Insert(survey);
+
+            _images.CopyAllSurveyFiles(oldId, newId);
+
+            return newId;
         }
 
         /// <summary>
@@ -91,7 +98,12 @@ namespace Decsys.Services
             _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
                 .Delete(x => x.Survey.Id == id);
 
-            _db.GetCollection<Survey>(Collections.Surveys).Delete(id);
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+
+            // delete images on disk for built-in image Page Items
+            _images.RemoveAllSurveyFiles(id);
+
+            surveys.Delete(id);
         }
 
         /// <summary>
