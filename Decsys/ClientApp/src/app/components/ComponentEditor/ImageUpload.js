@@ -3,7 +3,7 @@ import { Button, Input, Box } from "@smooth-ui/core-sc";
 import { FlexBox } from "../ui";
 
 const ImageUpload = ({ params, onAddClick, onRemoveClick }) => {
-  const hasImage = !!params.id;
+  const hasImage = !!params.extension;
 
   const [image, setImage] = useState();
   const [fileExtension, setFileExtension] = useState();

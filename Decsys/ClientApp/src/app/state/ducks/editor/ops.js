@@ -255,7 +255,6 @@ export const uploadImage = (
       }
     )
     .then(() => {
-      dispatch(actions.setParam(pageId, componentId, "id", componentId));
       dispatch(actions.setParam(pageId, componentId, "extension", extension));
     });
 };
@@ -266,7 +265,6 @@ export const removeImage = (surveyId, pageId, componentId) => dispatch => {
       `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/image`
     )
     .then(() => {
-      dispatch(actions.setParam(pageId, componentId, "id"));
       dispatch(actions.setParam(pageId, componentId, "extension"));
     });
 };
