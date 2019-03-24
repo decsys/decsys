@@ -34,7 +34,7 @@ namespace Decsys
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -60,8 +60,12 @@ namespace Decsys
             services.AddTransient<PageService>();
             services.AddTransient<ComponentService>();
             services.AddTransient<SurveyInstanceService>();
-            services.AddTransient(_ => new ImageService(
-                Path.Combine(env.ContentRootPath, "SurveyImages")));
+            services.AddTransient(services => new ImageService(
+                Path.Combine(
+                    services.GetRequiredService<IHostingEnvironment>()
+                        .ContentRootPath,
+                    "SurveyImages"),
+                services.GetRequiredService<LiteDatabase>()));
 
             services.AddSwaggerGen(c =>
             {

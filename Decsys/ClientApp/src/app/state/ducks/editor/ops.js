@@ -233,3 +233,40 @@ export const editParam = (
       dispatch(actions.setParam(pageId, componentId, paramKey, value))
     );
 };
+
+export const uploadImage = (
+  surveyId,
+  pageId,
+  componentId,
+  file,
+  extension
+) => dispatch => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  axios
+    .put(
+      `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/image`,
+      formData,
+      {
+        headers: {
+          "content-type": "multipart/form-data"
+        }
+      }
+    )
+    .then(() => {
+      dispatch(actions.setParam(pageId, componentId, "id", componentId));
+      dispatch(actions.setParam(pageId, componentId, "extension", extension));
+    });
+};
+
+export const removeImage = (surveyId, pageId, componentId) => dispatch => {
+  axios
+    .delete(
+      `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/image`
+    )
+    .then(() => {
+      dispatch(actions.setParam(pageId, componentId, "id"));
+      dispatch(actions.setParam(pageId, componentId, "extension"));
+    });
+};

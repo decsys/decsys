@@ -15,6 +15,7 @@ import PageHeading from "../../components/page-items/Heading";
 import PageParagraph from "../../components/page-items/Paragraph";
 import PageImage from "../../components/page-items/Image";
 import ParagraphPreview from "../../components/ComponentEditor/ParagraphPreview";
+import ImageUpload from "../../components/ComponentEditor/ImageUpload";
 
 const PureEditorScreen = ({
   id,
@@ -24,6 +25,8 @@ const PureEditorScreen = ({
   components,
   onNameChange,
   onParamChange,
+  onImageAddClick,
+  onImageRemoveClick,
   onDeleteClick,
   onDuplicateClick,
   pageListActions,
@@ -112,24 +115,40 @@ const PureEditorScreen = ({
             )}
           </Cell>
           <Cell style={{ padding: "1em" }}>
-            <ComponentEditor
-              onChange={(paramKey, value) =>
-                onParamChange(
-                  component.pageId,
-                  component.component.id,
-                  paramKey,
-                  value
-                )
-              }
-              component={CurrentComponent}
-              params={(() => {
-                const { text, ...other } = component.component.params;
-                // remove the text param for paragraphs, as they are handled in the special preview
-                return component.component.type === "paragraph"
-                  ? other
-                  : component.component.params;
-              })()}
-            />
+            {component.component.type === "image" ? (
+              <ImageUpload
+                onAddClick={(file, extension) =>
+                  onImageAddClick(
+                    component.pageId,
+                    component.component.id,
+                    file,
+                    extension
+                  )
+                }
+                onRemoveClick={() =>
+                  onImageRemoveClick(component.pageId, component.component.id)
+                }
+              />
+            ) : (
+              <ComponentEditor
+                onChange={(paramKey, value) =>
+                  onParamChange(
+                    component.pageId,
+                    component.component.id,
+                    paramKey,
+                    value
+                  )
+                }
+                component={CurrentComponent}
+                params={(() => {
+                  const { text, ...other } = component.component.params;
+                  // remove the text param for paragraphs, as they are handled in the special preview
+                  return component.component.type === "paragraph"
+                    ? other
+                    : component.component.params;
+                })()}
+              />
+            )}
           </Cell>
         </>
       )) || (
@@ -189,6 +208,10 @@ const EditorScreen = withRouter(
         dispatch(ducks.editName(id, value)),
       onParamChange: (pageId, componentId, paramKey, value) =>
         dispatch(ducks.editParam(id, pageId, componentId, paramKey, value)),
+      onImageAddClick: (pageId, componentId, file, extension) =>
+        dispatch(ducks.uploadImage(id, pageId, componentId, file, extension)),
+      onImageRemoveClick: (pageId, componentId) =>
+        dispatch(ducks.removeImage(id, pageId, componentId)),
       onDuplicateClick: () => dispatch(ducks.duplicateSurvey(id)),
       onDeleteClick: () => dispatch(ducks.deleteSurvey(id)),
       pageListActions: {

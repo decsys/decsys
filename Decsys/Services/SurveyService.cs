@@ -14,12 +14,14 @@ namespace Decsys.Services
     {
         private readonly LiteDatabase _db;
         private readonly IMapper _mapper;
+        private readonly ImageService _images;
 
         /// <summary>DI Constructor</summary>
-        public SurveyService(LiteDatabase db, IMapper mapper)
+        public SurveyService(LiteDatabase db, IMapper mapper, ImageService images)
         {
             _db = db;
             _mapper = mapper;
+            _images = images;
         }
 
         /// <summary>
@@ -91,7 +93,28 @@ namespace Decsys.Services
             _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
                 .Delete(x => x.Survey.Id == id);
 
-            _db.GetCollection<Survey>(Collections.Surveys).Delete(id);
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+
+            var survey = surveys.FindById(id);
+            if (survey is null) return; // guess we're done here
+
+            // delete images on disk for built-in image Page Items
+            survey.Pages.ToList().ForEach(page =>
+            {
+                page.Components.ToList().ForEach(component =>
+                {
+                    if (component.Type == "image")
+                    {
+                        try
+                        {
+                            _images.RemoveFile(survey.Id, page.Id, component.Id);
+                        }
+                        catch (KeyNotFoundException) { } //who cares, we're deleting stuff
+                    }
+                });
+            });
+
+            surveys.Delete(id);
         }
 
         /// <summary>
