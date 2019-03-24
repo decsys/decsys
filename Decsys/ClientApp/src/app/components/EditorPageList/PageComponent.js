@@ -1,4 +1,4 @@
-import React, { cloneElement } from "react";
+import React, { cloneElement, useState } from "react";
 import PropTypes from "prop-types";
 import { Typography, Box, Select } from "@smooth-ui/core-sc";
 import { Question, EllipsisV } from "styled-icons/fa-solid";
@@ -8,8 +8,10 @@ const PageComponent = ({
   components,
   currentType,
   onComponentSelect,
-  provided
+  provided,
+  selected
 }) => {
+  const [hovered, setHovered] = useState(false);
   const component = components.find(x => x.type === currentType);
   const Icon = component ? (
     cloneElement(component.icon, { size: "1em" })
@@ -17,7 +19,14 @@ const PageComponent = ({
     <Question size="1em" />
   );
   return (
-    <Box backgroundColor="cardBg" width={1} pr={1} py=".2em">
+    <Box
+      backgroundColor={
+        hovered ? "cardHoverBg" : selected ? "cardHighlightBg" : "cardBg"
+      }
+      width={1}
+      pr={1}
+      py=".2em"
+    >
       <Grid columns="30px 30px 30px auto 1fr" columnGap=".1em">
         <Cell />
         <Cell middle>
@@ -29,7 +38,11 @@ const PageComponent = ({
             </div>
           )}
         </Cell>
-        <Cell middle>
+        <Cell
+          middle
+          onMouseEnter={() => currentType && setHovered(true)}
+          onMouseLeave={() => currentType && setHovered(false)}
+        >
           <Box textAlign="center">{Icon}</Box>
         </Cell>
         <Cell
@@ -38,6 +51,8 @@ const PageComponent = ({
             overflow: "hidden",
             whiteSpace: "nowrap"
           }}
+          onMouseEnter={() => currentType && setHovered(true)}
+          onMouseLeave={() => currentType && setHovered(false)}
         >
           <Typography mr={1}>Component</Typography>
         </Cell>
