@@ -16,11 +16,13 @@ namespace Decsys.Services
     {
         private readonly LiteDatabase _db;
         private readonly IMapper _mapper;
+        private readonly ImageService _images;
 
-        public ComponentService(LiteDatabase db, IMapper mapper)
+        public ComponentService(LiteDatabase db, IMapper mapper, ImageService images)
         {
             _db = db;
             _mapper = mapper;
+            _images = images;
         }
 
         /// <summary>
@@ -157,6 +159,9 @@ namespace Decsys.Services
             var component = page.Components.ToList().SingleOrDefault(x => x.Id == componentId);
             if (component is null) return false;
 
+            if(component.Type == "image")
+                _images.RemoveFile(id, pageId, componentId);
+
             var components = page.Components.ToList();
             components.Remove(component);
             page.Components = components.Select((x, i) => { x.Order = i + 1; return x; });
@@ -227,6 +232,8 @@ namespace Decsys.Services
                 Params = component.Params
             };
             components.Add(dupe);
+
+            _images.CopyFile(id, pageId, componentId, dupe.Id);
 
             page.Components = components;
 

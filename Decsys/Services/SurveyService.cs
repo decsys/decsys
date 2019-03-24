@@ -75,11 +75,16 @@ namespace Decsys.Services
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
 
             var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            var oldId = survey.Id;
 
             survey.Id = 0;
             survey.Name = $"{survey.Name} (Copy)";
 
-            return surveys.Insert(survey);
+            var newId = surveys.Insert(survey);
+
+            _images.CopyAllSurveyFiles(oldId, newId);
+
+            return newId;
         }
 
         /// <summary>
@@ -95,24 +100,8 @@ namespace Decsys.Services
 
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
 
-            var survey = surveys.FindById(id);
-            if (survey is null) return; // guess we're done here
-
             // delete images on disk for built-in image Page Items
-            survey.Pages.ToList().ForEach(page =>
-            {
-                page.Components.ToList().ForEach(component =>
-                {
-                    if (component.Type == "image")
-                    {
-                        try
-                        {
-                            _images.RemoveFile(survey.Id, page.Id, component.Id);
-                        }
-                        catch (KeyNotFoundException) { } //who cares, we're deleting stuff
-                    }
-                });
-            });
+            _images.RemoveAllSurveyFiles(id);
 
             surveys.Delete(id);
         }

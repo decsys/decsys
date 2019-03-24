@@ -124,6 +124,7 @@ namespace Decsys.Controllers
                 ? (ActionResult)NoContent()
                 : NotFound();
 
+
         [HttpPut("{componentId}/order")]
         [SwaggerOperation("Set the Order of a Component on a Survey Page.")]
         [SwaggerResponse(204, "The Component was moved successfully.")]
@@ -248,16 +249,12 @@ namespace Decsys.Controllers
                 fileData = (Path.GetExtension(file.FileName), stream.ToArray());
             }
 
-            await _images.WriteFile(componentId, fileData);
+            await _images.WriteFile(id, componentId, fileData);
 
             try
             {
                 _components.MergeParams(id, pageId, componentId,
-                    JObject.Parse($@"
-{{
-    ""id"": ""{componentId}"",
-    ""extension"": ""{fileData.extension}""
-}}"));
+                    JObject.Parse($@"{{""extension"": ""{fileData.extension}""}}"));
             }
             catch (KeyNotFoundException e)
             {
@@ -285,7 +282,6 @@ namespace Decsys.Controllers
                 _images.RemoveFile(id, pageId, componentId);
 
                 // update the component params
-                _components.ClearParam(id, pageId, componentId, "id");
                 _components.ClearParam(id, pageId, componentId, "extension");
             }
             catch (KeyNotFoundException e)

@@ -15,11 +15,13 @@ namespace Decsys.Services
     {
         private readonly LiteDatabase _db;
         private readonly IMapper _mapper;
+        private readonly ImageService _images;
 
-        public PageService(LiteDatabase db, IMapper mapper)
+        public PageService(LiteDatabase db, IMapper mapper, ImageService images)
         {
             _db = db;
             _mapper = mapper;
+            _images = images;
         }
 
         /// <summary>
@@ -108,6 +110,12 @@ namespace Decsys.Services
             var page = pages.SingleOrDefault(x => x.Id == pageId);
             if (page is null) return false;
 
+            page.Components.ToList().ForEach(component =>
+            {
+                if (component.Type == "image")
+                    _images.RemoveFile(id, pageId, component.Id);
+            });
+
             pages.Remove(page);
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
             surveys.Update(survey);
@@ -133,21 +141,31 @@ namespace Decsys.Services
                 ?? throw new KeyNotFoundException("Page could not be found.");
 
             // blah manual deep copy time, i guess
+            var components = page.Components.Select(x => new Component(x.Type)
+            {
+                Id = Guid.NewGuid(),
+                Order = x.Order,
+                Params = x.Params
+            }).ToList();
             var dupe = new Page
             {
                 Id = Guid.NewGuid(),
                 Order = pages.Count + 1,
-                Components = page.Components.Select(x => new Component(x.Type)
-                {
-                    Id = Guid.NewGuid(),
-                    Order = x.Order,
-                    Params = x.Params
-                })
+                Components = components
             };
             pages.Add(dupe);
 
             survey.Pages = pages;
             surveys.Update(survey);
+
+            var srcComponents = page.Components.OrderBy(x => x.Order).ToList();
+            var destComponents = dupe.Components.OrderBy(x => x.Order).ToList();
+
+            for (var i = 0; i < srcComponents.Count; i++)
+            {
+                if (srcComponents[i].Type == "image")
+                    _images.CopyFile(id, pageId, srcComponents[i].Id, destComponents[i].Id);
+            }
 
             return _mapper.Map<Models.Page>(dupe);
         }
