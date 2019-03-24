@@ -7,3 +7,4 @@ export const ADD_PAGE_ITEM = "decsys/editor/ADD_PAGE_ITEM";
 export const ADD_PAGE = "decsys/editor/ADD_PAGE";
 export const SET_COMPONENT = "decsys/editor/SET_COMPONENT";
 export const CLEAR_COMPONENT = "decsys/editor/CLEAR_COMPONENT";
+export const SET_COMPONENT_PARAM = "decsys/editor/SET_COMPONENT_PARAM";

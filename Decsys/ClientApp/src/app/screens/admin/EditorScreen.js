@@ -14,6 +14,7 @@ import ComponentEditor from "../../components/ComponentEditor";
 import PageHeading from "../../components/page-items/Heading";
 import PageParagraph from "../../components/page-items/Paragraph";
 import PageImage from "../../components/page-items/Image";
+import ParagraphPreview from "../../components/ComponentEditor/ParagraphPreview";
 
 const PureEditorScreen = ({
   id,
@@ -22,6 +23,7 @@ const PureEditorScreen = ({
   updateStates,
   components,
   onNameChange,
+  onParamChange,
   onDeleteClick,
   onDuplicateClick,
   pageListActions,
@@ -89,15 +91,44 @@ const PureEditorScreen = ({
       {(component && (
         <>
           <Cell style={{ padding: "1em" }}>
-            <ComponentRender
-              component={CurrentComponent}
-              params={component.component.params}
-            />
+            {component.component.type === "paragraph" ? (
+              <ParagraphPreview
+                component={CurrentComponent}
+                params={component.component.params}
+                onChange={e =>
+                  onParamChange(
+                    component.pageId,
+                    component.component.id,
+                    "text",
+                    e.target.value
+                  )
+                }
+              />
+            ) : (
+              <ComponentRender
+                component={CurrentComponent}
+                params={component.component.params}
+              />
+            )}
           </Cell>
           <Cell style={{ padding: "1em" }}>
             <ComponentEditor
+              onChange={(paramKey, value) =>
+                onParamChange(
+                  component.pageId,
+                  component.component.id,
+                  paramKey,
+                  value
+                )
+              }
               component={CurrentComponent}
-              params={component.component.params}
+              params={(() => {
+                const { text, ...other } = component.component.params;
+                // remove the text param for paragraphs, as they are handled in the special preview
+                return component.component.type === "paragraph"
+                  ? other
+                  : component.component.params;
+              })()}
             />
           </Cell>
         </>
@@ -156,6 +187,8 @@ const EditorScreen = withRouter(
     (dispatch, { id }) => ({
       onNameChange: ({ target: { value } }) =>
         dispatch(ducks.editName(id, value)),
+      onParamChange: (pageId, componentId, paramKey, value) =>
+        dispatch(ducks.editParam(id, pageId, componentId, paramKey, value)),
       onDuplicateClick: () => dispatch(ducks.duplicateSurvey(id)),
       onDeleteClick: () => dispatch(ducks.deleteSurvey(id)),
       pageListActions: {

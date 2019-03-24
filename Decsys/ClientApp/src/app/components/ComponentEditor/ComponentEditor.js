@@ -4,7 +4,7 @@ import Param from "./Param";
 import { Grid, Cell } from "styled-css-grid";
 import { Typography } from "@smooth-ui/core-sc";
 
-const ComponentEditor = ({ component, params }) => {
+const ComponentEditor = ({ component, params, onChange }) => {
   const list = [];
   for (const key in component.params) {
     const p = component.params[key];
@@ -18,6 +18,7 @@ const ComponentEditor = ({ component, params }) => {
           type={p.type}
           paramKey={key}
           oneOf={p.oneOf}
+          onChange={onChange}
         />
       </>
     );
