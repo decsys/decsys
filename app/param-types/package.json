@@ -1,0 +1,26 @@
+{
+  "name": "@decsys/param-types",
+  "version": "0.1.0",
+  "description": "The Parameter Types utilities package for DECSYS Components",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "index.js",
+  "module": "index.js",
+  "author": "Jonathan Couldridge <jon@jon.gg>",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/decsys/param-types.git"
+  },
+  "bugs": {
+    "url": "https://github.com/decsys/param-types/issues"
+  },
+  "homepage": "https://github.com/decsys/param-types#readme",
+  "devDependencies": {
+    "prop-types": "^15.7.2"
+  },
+  "peerDependencies": {
+    "prop-types": "~15"
+  }
+}
