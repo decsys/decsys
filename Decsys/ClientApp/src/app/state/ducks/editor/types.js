@@ -5,3 +5,5 @@ export const SAVING_NAME = "decsys/editor/SAVING_NAME";
 export const SET_PAGE_RANDOM_STATE = "decsys/editor/SET_PAGE_RANDOM_STATE";
 export const ADD_PAGE_ITEM = "decsys/editor/ADD_PAGE_ITEM";
 export const ADD_PAGE = "decsys/editor/ADD_PAGE";
+export const SET_COMPONENT = "decsys/editor/SET_COMPONENT";
+export const CLEAR_COMPONENT = "decsys/editor/CLEAR_COMPONENT";

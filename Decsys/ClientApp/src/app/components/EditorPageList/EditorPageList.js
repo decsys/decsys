@@ -6,7 +6,7 @@ import Page from "./Page";
 import { Plus } from "styled-icons/fa-solid";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-const EditorPageList = ({ actions, components, pages }) => {
+const EditorPageList = ({ actions, components, pages, component }) => {
   const onDragEnd = result => {
     if (!result.destination) return;
     if (result.source.droppableId !== result.destination.droppableId) return;
@@ -62,6 +62,7 @@ const EditorPageList = ({ actions, components, pages }) => {
                               pageListProvided={provided}
                               n={x.order}
                               page={x}
+                              currentComponent={component}
                               componentList={components}
                               {...actions}
                             />
@@ -85,7 +86,7 @@ EditorPageList.propTypes = {
   components: Page.propTypes.componentList,
   actions: PropTypes.shape({
     onAddClick: PropTypes.func.isRequired,
-    onComponentSelect: PropTypes.func.isRequired,
+    onComponentChange: PropTypes.func.isRequired,
     pageActions: Page.propTypes.pageActions,
     itemActions: Page.propTypes.itemActions
   })

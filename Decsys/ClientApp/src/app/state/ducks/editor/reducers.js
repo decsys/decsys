@@ -71,6 +71,16 @@ const surveyEditorReducer = (
         }
       };
     }
+    case types.SET_COMPONENT:
+      return {
+        ...state,
+        component: action.payload
+      };
+    case types.CLEAR_COMPONENT:
+      return {
+        ...state,
+        component: null
+      };
     default:
       return state;
   }

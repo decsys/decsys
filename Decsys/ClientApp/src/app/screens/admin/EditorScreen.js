@@ -4,9 +4,8 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EditorBar from "../../components/EditorBar";
 import { Grid, Cell } from "styled-css-grid";
-import { Typography } from "@smooth-ui/core-sc";
 import EditorPageList from "../../components/EditorPageList";
-import { LoadingIndicator, FlexBox } from "../../components/ui";
+import { LoadingIndicator, FlexBox, EmptyState } from "../../components/ui";
 import {
   editName,
   deleteSurvey,
@@ -17,10 +16,13 @@ import {
   deletePageItem,
   duplicatePage,
   duplicatePageItem,
-  selectPageComponent,
+  changePageComponent,
   reorderPage,
-  reorderComponent
+  reorderComponent,
+  setCurrentComponent
 } from "../../state/ducks/editor";
+import { FileAlt } from "styled-icons/fa-solid";
+import { Box } from "@smooth-ui/core-sc";
 
 const PureEditorScreen = ({
   id,
@@ -31,7 +33,8 @@ const PureEditorScreen = ({
   onNameChange,
   onDeleteClick,
   onDuplicateClick,
-  pageListActions
+  pageListActions,
+  component
 }) => {
   const SurveyEditorBar = ({ disabled }) => (
     <EditorBar
@@ -71,14 +74,37 @@ const PureEditorScreen = ({
         <EditorPageList
           pages={survey.pages}
           components={components}
+          component={component}
           actions={pageListActions}
         />
       </Cell>
       <Cell area="config">
-        <FlexBox>
-          <Typography p={1} width={1} textAlign="center">
-            Hello
-          </Typography>
+        <FlexBox flexDirection="column">
+          {(component && (
+            <ul>
+              <li>Survey: {component.surveyId}</li>
+              <li>Page: {component.pageId}</li>
+              <li>ID: {component.component.id}</li>
+              <li>Type: {component.component.type}</li>
+            </ul>
+          )) || (
+            <Box mt={2}>
+              <EmptyState
+                message={
+                  !survey.pages.length
+                    ? "Get your Survey started with a new Page"
+                    : "Select a Page Item to edit"
+                }
+                splash={!survey.pages.length ? <FileAlt /> : undefined}
+                callToAction={
+                  !survey.pages.length && {
+                    label: "Add a Page",
+                    onClick: pageListActions.onAddClick
+                  }
+                }
+              />
+            </Box>
+          )}
         </FlexBox>
       </Cell>
     </Grid>
@@ -102,8 +128,9 @@ PureEditorScreen.propTypes = {
 
 const EditorScreen = withRouter(
   connect(
-    ({ editor: { survey, surveyLoaded, updateStates } }) => ({
+    ({ editor: { survey, surveyLoaded, updateStates, component } }) => ({
       survey,
+      component,
       surveyLoaded,
       updateStates,
       components: Object.keys(window.__DECSYS__.Components).map(type => ({
@@ -127,10 +154,12 @@ const EditorScreen = withRouter(
           onDuplicateClick: (pageId, componentId) =>
             dispatch(duplicatePageItem(id, pageId, componentId)),
           onDeleteClick: (pageId, componentId) =>
-            dispatch(deletePageItem(id, pageId, componentId))
+            dispatch(deletePageItem(id, pageId, componentId)),
+          onClick: (pageId, component) =>
+            dispatch(setCurrentComponent(id, pageId, component))
         },
-        onComponentSelect: (pageId, type, componentId, order) =>
-          dispatch(selectPageComponent(id, pageId, type, componentId, order)),
+        onComponentChange: (pageId, type, componentId, order) =>
+          dispatch(changePageComponent(id, pageId, type, componentId, order)),
         onAddClick: () => dispatch(addPage(id)),
         onPageDragEnd: (pageId, newOrder) =>
           dispatch(reorderPage(id, pageId, newOrder)),

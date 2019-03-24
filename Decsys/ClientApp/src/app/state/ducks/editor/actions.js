@@ -28,3 +28,16 @@ export const addPageItem = (pageId, component) => ({
   type: types.ADD_PAGE_ITEM,
   payload: { pageId, component }
 });
+
+export const setComponent = (surveyId, pageId, component) => ({
+  type: types.SET_COMPONENT,
+  payload: {
+    surveyId,
+    pageId,
+    component
+  }
+});
+
+export const clearComponent = () => ({
+  type: types.CLEAR_COMPONENT
+});

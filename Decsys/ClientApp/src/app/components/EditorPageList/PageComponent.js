@@ -7,7 +7,8 @@ import { Grid, Cell } from "styled-css-grid";
 const PageComponent = ({
   components,
   currentType,
-  onComponentSelect,
+  onComponentChange,
+  onClick,
   provided,
   selected
 }) => {
@@ -21,7 +22,7 @@ const PageComponent = ({
   return (
     <Box
       backgroundColor={
-        hovered ? "cardHoverBg" : selected ? "cardHighlightBg" : "cardBg"
+        selected ? "cardHighlightBg" : hovered ? "cardHoverBg" : "cardBg"
       }
       width={1}
       pr={1}
@@ -42,6 +43,7 @@ const PageComponent = ({
           middle
           onMouseEnter={() => currentType && setHovered(true)}
           onMouseLeave={() => currentType && setHovered(false)}
+          onClick={onClick}
         >
           <Box textAlign="center">{Icon}</Box>
         </Cell>
@@ -53,6 +55,7 @@ const PageComponent = ({
           }}
           onMouseEnter={() => currentType && setHovered(true)}
           onMouseLeave={() => currentType && setHovered(false)}
+          onClick={onClick}
         >
           <Typography mr={1}>Component</Typography>
         </Cell>
@@ -60,7 +63,7 @@ const PageComponent = ({
           <Select
             size="sm"
             control
-            onChange={e => onComponentSelect(e.target.value)}
+            onChange={e => onComponentChange(e.target.value)}
             value={currentType}
           >
             <option value="">None</option>
@@ -84,7 +87,8 @@ PageComponent.propTypes = {
     })
   ),
   currentType: PropTypes.string,
-  onComponentSelect: PropTypes.func.isRequired
+  onComponentChange: PropTypes.func.isRequired,
+  onClick: PropTypes.func
 };
 
 export default PageComponent;

@@ -5,14 +5,16 @@ import PageHeader from "./PageHeader";
 import PageComponent from "./PageComponent";
 import PageItem from "./PageItem";
 import { Droppable, Draggable } from "react-beautiful-dnd";
+import { setCurrentComponent } from "../../state/ducks/editor";
 
 const Page = ({
   page,
+  currentComponent,
   componentList,
   n,
   itemActions,
   pageActions,
-  onComponentSelect,
+  onComponentChange,
   pageListProvided
 }) => {
   const isResponse = type => !["heading", "paragraph", "image"].includes(type);
@@ -48,19 +50,31 @@ const Page = ({
                         <PageComponent
                           provided={provided}
                           components={componentList}
+                          selected={
+                            x.id ===
+                            (currentComponent && currentComponent.component.id)
+                          }
                           currentType={x.type}
-                          onComponentSelect={type =>
-                            onComponentSelect(page.id, type, x.id, x.order)
+                          onClick={() => itemActions.onClick(page.id, x)}
+                          onComponentChange={type =>
+                            onComponentChange(page.id, type, x.id, x.order)
                           }
                         />
                       ) : (
                         <PageItem
                           provided={provided}
+                          selected={
+                            x.id ===
+                            (currentComponent && currentComponent.component.id)
+                          }
                           id={x.id}
                           pageId={page.id}
                           type={x.type}
                           text={x.params.text}
-                          {...itemActions}
+                          {...{
+                            ...itemActions,
+                            onClick: () => itemActions.onClick(page.id, x)
+                          }}
                         />
                       )}
                     </div>
@@ -70,7 +84,7 @@ const Page = ({
             {page.components.every(x => !isResponse(x.type)) && (
               <PageComponent
                 components={componentList}
-                onComponentSelect={type => onComponentSelect(page.id, type)}
+                onComponentChange={type => onComponentChange(page.id, type)}
               />
             )}
           </FlexBox>
@@ -88,7 +102,7 @@ Page.propTypes = {
     onDeleteClick: PropTypes.func.isRequired,
     onDuplicateClick: PropTypes.func.isRequired
   }),
-  onComponentSelect: PropTypes.func.isRequired,
+  onComponentChange: PropTypes.func.isRequired,
   page: PropTypes.shape({
     id: PropTypes.string.isRequired,
     order: PropTypes.number.isRequired,

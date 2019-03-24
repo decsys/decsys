@@ -20,6 +20,7 @@ const PageItem = ({
   text,
   onDuplicateClick,
   onDeleteClick,
+  onClick,
   provided,
   selected
 }) => {
@@ -27,7 +28,7 @@ const PageItem = ({
   return (
     <Box
       backgroundColor={
-        hovered ? "cardHoverBg" : selected ? "cardHighlightBg" : "cardBg"
+        selected ? "cardHighlightBg" : hovered ? "cardHoverBg" : "cardBg"
       }
       width={1}
       py=".2em"
@@ -47,6 +48,7 @@ const PageItem = ({
           middle
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
+          onClick={onClick}
         >
           <Box textAlign="center">
             {type === "heading" && <Heading size="1em" />}
@@ -62,6 +64,7 @@ const PageItem = ({
           }}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
+          onClick={onClick}
         >
           <Typography>{text || capitalise(type)}</Typography>
         </Cell>
@@ -90,7 +93,8 @@ PageItem.propTypes = {
   type: PropTypes.oneOf(["heading", "paragraph", "image"]).isRequired,
   text: PropTypes.string,
   onDeleteClick: PropTypes.func.isRequired,
-  onDuplicateClick: PropTypes.func.isRequired
+  onDuplicateClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 export default PageItem;

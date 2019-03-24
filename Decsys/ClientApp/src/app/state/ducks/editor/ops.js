@@ -14,9 +14,10 @@ const appJsonHeaderOptions = {
  * @param {*} id
  */
 export const getSurvey = id => dispatch =>
-  axios
-    .get(`/api/surveys/${id}`)
-    .then(({ data }) => dispatch(actions.getSurvey(data)));
+  axios.get(`/api/surveys/${id}`).then(({ data }) => {
+    dispatch(actions.getSurvey(data));
+    dispatch(actions.clearComponent());
+  });
 
 /**
  * Edit the name of a Survey
@@ -174,7 +175,7 @@ export const reorderComponent = (
  * @param {*} componentId
  * @param {*} order
  */
-export const selectPageComponent = (
+export const changePageComponent = (
   surveyId,
   pageId,
   type,
@@ -203,4 +204,12 @@ export const selectPageComponent = (
   if (componentId)
     axios.delete(`${baseUrl}/${componentId}`).then(() => create());
   else create();
+};
+
+export const setCurrentComponent = (
+  surveyId,
+  pageId,
+  component
+) => dispatch => {
+  dispatch(actions.setComponent(surveyId, pageId, component));
 };
