@@ -34,7 +34,7 @@ namespace Decsys
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, IHostingEnvironment env)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -60,6 +60,8 @@ namespace Decsys
             services.AddTransient<PageService>();
             services.AddTransient<ComponentService>();
             services.AddTransient<SurveyInstanceService>();
+            services.AddTransient(_ => new ImageService(
+                Path.Combine(env.ContentRootPath, "SurveyImages")));
 
             services.AddSwaggerGen(c =>
             {
@@ -98,6 +100,14 @@ namespace Decsys
                     Path.Combine(env.ContentRootPath, Configuration["Paths:Components:Root"])),
                 RequestPath = "/static/components",
                 ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
+            });
+
+            // Survey Images folder 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(env.ContentRootPath, "SurveyImages")),
+                RequestPath = "/surveys/images"
             });
 
             app.UseSpaStaticFiles();

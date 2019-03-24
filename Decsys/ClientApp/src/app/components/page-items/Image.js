@@ -16,7 +16,7 @@ const PageImage = ({ id }) =>
   null;
 
 setParams(PageImage, {
-  id: paramTypes.string("Image Component ID")
+  id: paramTypes.stringUndefined("Image Component ID")
 });
 
 export default PageImage;
