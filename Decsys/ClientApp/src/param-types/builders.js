@@ -2,6 +2,8 @@
 // Think of it a bit like PropTypes.<type>
 // It also essentially enumerates the subset of PropTypes we support for Component Params.
 
+// TODO: we can support UI tooltips in param specs :)
+
 import * as types from "./types";
 
 const build = (label, type, defaultValue, oneOf) => {
