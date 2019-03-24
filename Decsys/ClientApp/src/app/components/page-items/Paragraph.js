@@ -12,11 +12,7 @@ const PageParagraph = ({ text, ...p }) => (
 setParams(PageParagraph, {
   text: paramTypes.string("Text"),
   color: paramTypes.string("Color", "black"),
-  textAlign: paramTypes.oneOf(
-    "Alignment",
-    ["left", "center", "right"],
-    "center"
-  ),
+  textAlign: paramTypes.oneOf("Alignment", ["left", "center", "right"], "left"),
   fontFamily: paramTypes.stringUndefined("Font Family")
 });
 
