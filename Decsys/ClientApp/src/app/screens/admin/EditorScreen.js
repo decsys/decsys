@@ -23,6 +23,10 @@ import {
 } from "../../state/ducks/editor";
 import { FileAlt } from "styled-icons/fa-solid";
 import { Box } from "@smooth-ui/core-sc";
+import ComponentRender from "../../components/ComponentRender/ComponentRender";
+import PageHeading from "../../components/page-items/Heading";
+import PageParagraph from "../../components/page-items/Paragraph";
+import PageImage from "../../components/page-items/Image";
 
 const PureEditorScreen = ({
   id,
@@ -47,6 +51,22 @@ const PureEditorScreen = ({
       disabled={disabled}
     />
   );
+
+  // try and get the current component from those available
+  let CurrentComponent;
+  if (component) {
+    // check for built-in Page Item types
+    const builtIn = {
+      heading: PageHeading,
+      paragraph: PageParagraph,
+      image: PageImage
+    };
+    if (Object.keys(builtIn).includes(component.component.type))
+      CurrentComponent = builtIn[component.component.type];
+    else
+      CurrentComponent = window.__DECSYS__.Components[component.component.type];
+  }
+
   return !surveyLoaded ? (
     <FlexBox flexDirection="column">
       <SurveyEditorBar disabled />
@@ -81,12 +101,10 @@ const PureEditorScreen = ({
       <Cell area="config">
         <FlexBox flexDirection="column">
           {(component && (
-            <ul>
-              <li>Survey: {component.surveyId}</li>
-              <li>Page: {component.pageId}</li>
-              <li>ID: {component.component.id}</li>
-              <li>Type: {component.component.type}</li>
-            </ul>
+            <ComponentRender
+              component={<CurrentComponent />}
+              params={component.component.params}
+            />
           )) || (
             <Box mt={2}>
               <EmptyState
@@ -97,10 +115,11 @@ const PureEditorScreen = ({
                 }
                 splash={!survey.pages.length ? <FileAlt /> : undefined}
                 callToAction={
-                  !survey.pages.length && {
+                  (!survey.pages.length && {
                     label: "Add a Page",
                     onClick: pageListActions.onAddClick
-                  }
+                  }) ||
+                  undefined
                 }
               />
             </Box>

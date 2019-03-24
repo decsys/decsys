@@ -1,4 +1,5 @@
 import * as types from "./types";
+import PropTypes from "prop-types";
 
 const setParams = (component, params) => {
   // first set params to our nice metadata
