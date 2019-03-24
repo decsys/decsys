@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import paramTypes, { setParams } from "../../../param-types";
 import { FlexBox } from "../ui";
 
@@ -21,10 +22,13 @@ const PageImage = ({ surveyId, id, extension }) =>
   )) ||
   null;
 
+PageImage.propTypes = {
+  surveyId: PropTypes.number,
+  id: PropTypes.string
+};
+
 setParams(PageImage, {
-  extension: paramTypes.stringUndefined("Image File Extension"),
-  surveyId: paramTypes.number("Survey ID"),
-  id: paramTypes.stringUndefined("Image Component ID")
+  extension: paramTypes.stringUndefined("Image File Extension")
 });
 
 export default PageImage;

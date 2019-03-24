@@ -47,8 +47,6 @@ const PureEditorScreen = ({
 
   // try and get the current component from those available
   let CurrentComponent;
-  let renderParams; // also modify params for special
-  let editParams; // built-in cases
   if (component) {
     // check for built-in Page Item types
     const builtIn = {
@@ -58,22 +56,8 @@ const PureEditorScreen = ({
     };
     if (Object.keys(builtIn).includes(component.component.type)) {
       CurrentComponent = builtIn[component.component.type];
-      renderParams =
-        component.component.type === "image"
-          ? {
-              ...component.component.params,
-              surveyId: id,
-              id: component.component.id
-            }
-          : component.component.params;
-      editParams =
-        component.component.type === "paragraph"
-          ? { ...component.component.params, text: undefined }
-          : component.component.params;
     } else {
       CurrentComponent = window.__DECSYS__.Components[component.component.type];
-      renderParams = component.component.params;
-      editParams = component.component.params;
     }
   }
 
@@ -127,7 +111,15 @@ const PureEditorScreen = ({
             ) : (
               <ComponentRender
                 component={CurrentComponent}
-                params={renderParams}
+                params={
+                  component.component.type === "image"
+                    ? {
+                        ...component.component.params,
+                        surveyId: id,
+                        id: component.component.id
+                      }
+                    : component.component.params
+                }
               />
             )}
           </Cell>
@@ -158,7 +150,7 @@ const PureEditorScreen = ({
                   )
                 }
                 component={CurrentComponent}
-                params={editParams}
+                params={component.component.params}
               />
             )}
           </Cell>

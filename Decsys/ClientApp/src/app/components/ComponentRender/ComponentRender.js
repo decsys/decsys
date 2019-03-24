@@ -8,12 +8,12 @@ const ComponentRender = ({ component, params }) => {
   const Component = component;
 
   // merge default Params and set ones
-  const mergedParams = Object.keys(component.params).reduce((agg, x) => {
-    agg[x] = params[x] != null ? params[x] : component.params[x].defaultValue;
+  const defaults = Object.keys(component.params).reduce((agg, x) => {
+    agg[x] = component.params[x].defaultValue;
     return agg;
   }, {});
 
-  return cloneElement(<Component />, mergedParams);
+  return cloneElement(<Component />, { ...defaults, ...params });
 };
 
 export default ComponentRender;

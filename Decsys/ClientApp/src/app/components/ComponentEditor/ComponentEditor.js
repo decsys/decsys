@@ -1,7 +1,6 @@
 import React from "react";
-import { FlexBox } from "../ui";
 import Param from "./Param";
-import { Grid, Cell } from "styled-css-grid";
+import { Grid } from "styled-css-grid";
 import { Typography } from "@smooth-ui/core-sc";
 
 const ComponentEditor = ({ component, params, onChange }) => {
