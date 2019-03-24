@@ -10,7 +10,10 @@ const PageImage = ({ id }) =>
   // but for now just local uploaded images
 
   // atm we do nothing if the param isn't set
-  (id && <img src={`/surveys/images/${id}`} />) || null;
+  (id && (
+    <img alt={`SurveyPageComponent_${id}`} src={`/surveys/images/${id}`} />
+  )) ||
+  null;
 
 setParams(PageImage, {
   id: paramTypes.string("Image Component ID")

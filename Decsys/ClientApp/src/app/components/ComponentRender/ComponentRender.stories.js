@@ -8,15 +8,15 @@ import PageParagraph from "../page-items/Paragraph";
 // try and emulate things in the platform closely
 
 // window.__DECSYS__.Components
-const components = {
+export const components = {
   // obvs these would be response components,
   // but we don't keep those in this repo
   // so we'll use PageItems for now
-  Heading: <PageHeading />,
-  Paragraph: <PageParagraph />
+  Heading: PageHeading,
+  Paragraph: PageParagraph
 };
 
-const paramsLookup = {
+export const paramsLookup = {
   Heading: {
     // from our app state for the current component
     params: {
@@ -32,7 +32,7 @@ const paramsLookup = {
   }
 };
 
-const knob = () =>
+export const knob = () =>
   optionsKnob("Component Type", ["Heading", "Paragraph"], "Heading", {
     display: "inline-radio"
   });

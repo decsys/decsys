@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -23,10 +23,12 @@ import {
 } from "../../state/ducks/editor";
 import { FileAlt } from "styled-icons/fa-solid";
 import { Box } from "@smooth-ui/core-sc";
-import ComponentRender from "../../components/ComponentRender/ComponentRender";
+import ComponentRender from "../../components/ComponentRender";
+import ComponentEditor from "../../components/ComponentEditor";
 import PageHeading from "../../components/page-items/Heading";
 import PageParagraph from "../../components/page-items/Paragraph";
 import PageImage from "../../components/page-items/Image";
+import Split from "react-split";
 
 const PureEditorScreen = ({
   id,
@@ -40,6 +42,7 @@ const PureEditorScreen = ({
   pageListActions,
   component
 }) => {
+  // Configure the base Editor Bar so we don't pass props multiple times
   const SurveyEditorBar = ({ disabled }) => (
     <EditorBar
       id={id}
@@ -66,6 +69,10 @@ const PureEditorScreen = ({
     else
       CurrentComponent = window.__DECSYS__.Components[component.component.type];
   }
+
+  //Configure the Component Editor's Splitter
+  const [splitRows, setSplitRows] = useState("1fr 10px 1fr");
+  const handleDrag = (_, __, style) => setSplitRows(style);
 
   return !surveyLoaded ? (
     <FlexBox flexDirection="column">
@@ -98,33 +105,42 @@ const PureEditorScreen = ({
           actions={pageListActions}
         />
       </Cell>
-      <Cell area="config">
-        <FlexBox flexDirection="column">
-          {(component && (
-            <ComponentRender
-              component={<CurrentComponent />}
-              params={component.component.params}
-            />
-          )) || (
-            <Box mt={2}>
-              <EmptyState
-                message={
-                  !survey.pages.length
-                    ? "Get your Survey started with a new Page"
-                    : "Select a Page Item to edit"
-                }
-                splash={!survey.pages.length ? <FileAlt /> : undefined}
-                callToAction={
-                  (!survey.pages.length && {
-                    label: "Add a Page",
-                    onClick: pageListActions.onAddClick
-                  }) ||
-                  undefined
-                }
+
+      <Cell area="config" style={{ padding: "1em" }}>
+        {(component && (
+          <Grid height="100%" columns="100%" rows="1fr 1fr">
+            <Cell>
+              <ComponentRender
+                component={CurrentComponent}
+                params={component.component.params}
               />
-            </Box>
-          )}
-        </FlexBox>
+            </Cell>
+            <Cell>
+              <ComponentEditor
+                component={CurrentComponent}
+                params={component.component.params}
+              />
+            </Cell>
+          </Grid>
+        )) || (
+          <Box mt={2}>
+            <EmptyState
+              message={
+                !survey.pages.length
+                  ? "Get your Survey started with a new Page"
+                  : "Select a Page Item to edit"
+              }
+              splash={!survey.pages.length ? <FileAlt /> : undefined}
+              callToAction={
+                (!survey.pages.length && {
+                  label: "Add a Page",
+                  onClick: pageListActions.onAddClick
+                }) ||
+                undefined
+              }
+            />
+          </Box>
+        )}
       </Cell>
     </Grid>
   );
