@@ -252,11 +252,12 @@ namespace Decsys.Controllers
 
             try
             {
-                _components.MergeParams(id, pageId, componentId, new JObject(new
-                {
-                    id = componentId,
-                    fileData.extension
-                }));
+                _components.MergeParams(id, pageId, componentId,
+                    JObject.Parse($@"
+{{
+    ""id"": ""{componentId}"",
+    ""extension"": ""{fileData.extension}""
+}}"));
             }
             catch (KeyNotFoundException e)
             {

@@ -1,5 +1,6 @@
 import React from "react";
 import paramTypes, { setParams } from "../../../param-types";
+import { FlexBox } from "../ui";
 
 const PageImage = ({ id, extension }) =>
   // TODO: this probably shouldn't be hard coded,
@@ -11,15 +12,18 @@ const PageImage = ({ id, extension }) =>
 
   // atm we do nothing if the param isn't set
   (id && (
-    <img
-      alt={`SurveyPageComponent_${id}`}
-      src={`/surveys/images/${id}${extension}`}
-    />
+    <FlexBox width={1} justifyContent="center">
+      <img
+        alt={`SurveyPageComponent_${id}`}
+        src={`/surveys/images/${id}${extension}?${new Date().getTime()}`}
+      />
+    </FlexBox>
   )) ||
   null;
 
 setParams(PageImage, {
-  id: paramTypes.stringUndefined("Image Component ID")
+  id: paramTypes.stringUndefined("Image Component ID"),
+  extension: paramTypes.stringUndefined("Image File Extension")
 });
 
 export default PageImage;

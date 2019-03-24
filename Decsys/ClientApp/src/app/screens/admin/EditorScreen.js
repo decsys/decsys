@@ -117,6 +117,7 @@ const PureEditorScreen = ({
           <Cell style={{ padding: "1em" }}>
             {component.component.type === "image" ? (
               <ImageUpload
+                params={component.component.params}
                 onAddClick={(file, extension) =>
                   onImageAddClick(
                     component.pageId,
@@ -140,13 +141,11 @@ const PureEditorScreen = ({
                   )
                 }
                 component={CurrentComponent}
-                params={(() => {
-                  const { text, ...other } = component.component.params;
-                  // remove the text param for paragraphs, as they are handled in the special preview
-                  return component.component.type === "paragraph"
-                    ? other
-                    : component.component.params;
-                })()}
+                params={
+                  component.component.type === "paragraph"
+                    ? { ...component.component.params, text: undefined }
+                    : component.component.params
+                }
               />
             )}
           </Cell>
