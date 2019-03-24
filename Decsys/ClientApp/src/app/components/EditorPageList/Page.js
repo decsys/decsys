@@ -74,6 +74,7 @@ const Page = ({
               />
             )}
           </FlexBox>
+          {provided.placeholder}
         </div>
       )}
     </Droppable>

@@ -7,60 +7,65 @@ import { Container, EmptyState, FlexBox } from "./components/ui";
 import { fetchSurveys } from "./state/ducks/surveys";
 import { getSurvey } from "./state/ducks/editor/ops";
 import EditorScreen from "./screens/admin/EditorScreen";
+import { Grid, Cell } from "styled-css-grid";
 
 const PureApp = ({ dispatch }) => {
   return (
-    <>
-      <AppBar brand="DECSYS" />
-      <Switch>
-        <Route
-          path="/"
-          exact
-          render={() => (
-            // TODO: conditional logic for admin
-            <Redirect to="/admin" />
-          )}
-        />
+    <Grid columns="1fr" rows="auto 1fr" style={{ height: "100vh" }} rowGap="0">
+      <Cell>
+        <AppBar brand="DECSYS" />
+      </Cell>
+      <Cell>
+        <Switch>
+          <Route
+            path="/"
+            exact
+            render={() => (
+              // TODO: conditional logic for admin
+              <Redirect to="/admin" />
+            )}
+          />
 
-        <Route
-          path="/admin"
-          exact
-          render={() => {
-            dispatch(fetchSurveys());
-            return <SurveysScreen />;
-          }}
-        />
+          <Route
+            path="/admin"
+            exact
+            render={() => {
+              dispatch(fetchSurveys());
+              return <SurveysScreen />;
+            }}
+          />
 
-        <Route
-          path="/component-test"
-          exact
-          render={() => {
-            const Component = window.__DECSYS__.Components.FreeText;
-            return <Component />;
-          }}
-        />
+          <Route
+            path="/component-test"
+            exact
+            render={() => {
+              const Component = window.__DECSYS__.Components.FreeText;
+              return <Component />;
+            }}
+          />
 
-        <Route
-          path="/admin/survey/:id"
-          exact
-          render={({ match }) => {
-            dispatch(getSurvey(match.params.id));
-            return <EditorScreen id={match.params.id} />;
-          }}
-        />
+          <Route
+            path="/admin/survey/:id"
+            exact
+            render={({ match }) => {
+              dispatch(getSurvey(match.params.id));
+              return <EditorScreen id={match.params.id} />;
+            }}
+          />
 
-        <Route
-          render={() => (
-            // Any unrecognised frontend route = 404
-            <Container>
-              <FlexBox mt={5}>
-                <EmptyState message="404: Not Found" />
-              </FlexBox>
-            </Container>
-          )}
-        />
-      </Switch>
-    </>
+          <Route
+            render={() => (
+              // Any unrecognised frontend route = 404
+              <Container>
+                <FlexBox mt={5}>
+                  <EmptyState message="404: Not Found" />
+                </FlexBox>
+              </Container>
+            )}
+          />
+        </Switch>
+      </Cell>
+    </Grid>
   );
 };
 

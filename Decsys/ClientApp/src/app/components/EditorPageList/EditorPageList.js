@@ -27,7 +27,7 @@ const EditorPageList = ({ actions, components, pages }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            style={{ overflow: "auto" }}
+            style={{ overflow: "auto", minHeight: "100%F" }}
           >
             <FlexBox flexDirection="column" px={2}>
               <FlexBox justifyContent="space-between" alignItems="center">

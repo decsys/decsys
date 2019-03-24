@@ -31,8 +31,7 @@ const PureEditorScreen = ({
   onNameChange,
   onDeleteClick,
   onDuplicateClick,
-  pageListActions,
-  theme
+  pageListActions
 }) => {
   const SurveyEditorBar = ({ disabled }) => (
     <EditorBar
@@ -55,8 +54,10 @@ const PureEditorScreen = ({
       columns="1fr 2fr"
       rows="auto 1fr"
       rowGap="0px"
+      height="100%"
       columnGap="0px"
       areas={["bar bar", "pages config"]}
+      style={{ maxHeight: "100%" }}
     >
       <Cell area="bar">
         <SurveyEditorBar />

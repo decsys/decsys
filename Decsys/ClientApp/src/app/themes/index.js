@@ -10,6 +10,8 @@ export default {
   uiPanel1: th("gray900"),
   uiPanel2: th("gray500"),
   cardBg: th("light"),
+  cardHighlightBg: th("#d8e4ff"),
+  cardHoverBg: "#d8e4ff",
   cardBorder: th("gray400"),
   menuBg: th("light"),
   menuItem: th("light"),
@@ -20,6 +22,8 @@ export default {
     uiPanel1: th("uiPanel1"),
     uiPanel2: th("uiPanel2"),
     cardBg: th("cardBg"),
+    cardHighlightBg: th("cardHighlightBg"),
+    cardHoverBg: th("cardHoverBg"),
     cardBorder: th("cardBorder"),
     menuBg: th("menuBg"),
     menuItem: th("menuItem")

@@ -1,6 +1,6 @@
 import * as serviceWorker from "./serviceWorker";
 import React from "react";
-import styled, { css } from "styled-components";
+import styled, { css, createGlobalStyle } from "styled-components";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { createBrowserHistory } from "history";
