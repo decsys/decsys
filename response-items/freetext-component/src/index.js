@@ -10,6 +10,7 @@ import {
   colorYik,
   colorVariant
 } from "@smooth-ui/core-sc";
+import paramTypes, { setParams } from "../param-types";
 
 // Build a React component for our FreeText question type
 const FreeText = ({ maxLength, initialText }) => {
@@ -62,13 +63,17 @@ const FreeText = ({ maxLength, initialText }) => {
   );
 };
 
+//set parameter metadata, including propTypes and defaultProps
+paramTypes.setParams(FreeText, {
+  maxLength: paramTypes.number("Character Limit", 50)
+});
+
+// propTypes and defaultProps for non-parameter props (e.g. results)
 FreeText.propTypes = {
-  initialText: PropTypes.string,
-  maxLength: PropTypes.number
+  initialText: PropTypes.string
 };
 
 FreeText.defaultProps = {
-  maxLength: 10,
   initialText: ""
 };
 
