@@ -165,7 +165,7 @@ export default class EllipseScale extends React.Component {
 
   componentDidMount() {
     // store these to avoid selecting them everytime
-    this.mainElement = document.querySelector("body");
+    this.mainElement = this.canvas.parentElement;
     this.heightElements = this.props.heightElements
       ? document.querySelectorAll(this.props.heightElements)
       : [];

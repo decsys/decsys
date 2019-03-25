@@ -9,7 +9,7 @@ export const newDimensions = (main, ...elems) => {
     x instanceof Element ? x.getBoundingClientRect().height : 0
   );
 
-  return { width, height: Math.max(height, innerHeight, ...heights) };
+  return { width, height }; //height: Math.max(height, innerHeight, ...heights) };
 };
 
 export const setDimensions = (canvas, { width, height }) => {
