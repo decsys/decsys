@@ -1,12 +1,11 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import { text, number } from "@storybook/addon-knobs";
-import FreeText from "./index";
+import { text, boolean } from "@storybook/addon-knobs";
+import Confirm from "./index";
 
-storiesOf("FreeText", module)
-.add("Default", () => (
-  <FreeText
-    initialText={text("Text", "Hello")}
-    maxLength={number("Max Length", 50)}
+storiesOf("Confirm", module).add("Default", () => (
+  <Confirm
+    label={text(Confirm.params.label.label, Confirm.params.label.defaultValue)}
+    initialChecked={boolean("Initially Checked", false)}
   />
 ));
