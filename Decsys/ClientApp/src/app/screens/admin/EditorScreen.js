@@ -73,7 +73,7 @@ const PureEditorScreen = ({
       rowGap="0px"
       height="100%"
       columnGap="0px"
-      style={{ maxHeight: "100%" }}
+      style={{ height: "100vh" }}
     >
       <Cell width={2}>
         <SurveyEditorBar />
@@ -81,6 +81,7 @@ const PureEditorScreen = ({
       <Cell
         height={2}
         style={{
+          overflow: "auto",
           background: "gray300" // TODO:
         }}
       >
