@@ -69,7 +69,7 @@ const PureEditorScreen = ({
   ) : (
     <Grid
       columns="1fr 2fr"
-      rows="auto 1fr auto"
+      rows="50px minmax(200px, 2fr) minmax(200px, 1fr)"
       rowGap="0px"
       height="100%"
       columnGap="0px"
