@@ -1,6 +1,6 @@
 {
   "name": "@decsys/rating-scales",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Reusable React Components for Rating Scales as used by the DECSYS Project",
   "main": "lib/index.js",
   "files": [
@@ -109,7 +109,7 @@
   },
   "dependencies": {
     "colornames": "^1.1.1",
-    "pixi.js": "^5.0.0-alpha.3",
+    "pixi.js": "^5.0.0-rc.3",
     "unit-value": "^1.0.1"
   }
 }
