@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Eye, Copy, FileExport, Trash } from "styled-icons/fa-solid";
-import { Grid } from "styled-css-grid";
+import {
+  Eye,
+  Copy,
+  FileExport,
+  Trash,
+  ChevronLeft
+} from "styled-icons/fa-solid";
+import { Grid, Cell } from "styled-css-grid";
 import EditorBarButton, { LinkButton as EditorBarLink } from "./Button";
 import NameInput from "./NameInput";
 import DeleteSurveyModal from "../SurveyCard/DeleteSurveyModal";
@@ -19,7 +25,10 @@ const EditorBar = ({
   const toggleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
   return (
     <>
-      <Grid columnGap="0px" columns="1fr auto auto auto auto">
+      <Grid columnGap="0px" columns="auto 1fr auto auto auto auto">
+        <EditorBarLink variant="uiPanel1" to="/" disabled={disabled}>
+          <ChevronLeft size="1em" /> Survey List
+        </EditorBarLink>
         <NameInput
           name={name}
           {...nameUpdateState}

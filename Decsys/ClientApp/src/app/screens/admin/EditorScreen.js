@@ -69,11 +69,11 @@ const PureEditorScreen = ({
   ) : (
     <Grid
       columns="1fr 2fr"
-      rows="auto 1fr 1fr"
+      rows="50px minmax(200px, 2fr) minmax(200px, 1fr)"
       rowGap="0px"
       height="100%"
       columnGap="0px"
-      style={{ maxHeight: "100%" }}
+      style={{ height: "100vh" }}
     >
       <Cell width={2}>
         <SurveyEditorBar />
@@ -81,6 +81,7 @@ const PureEditorScreen = ({
       <Cell
         height={2}
         style={{
+          overflow: "auto",
           background: "gray300" // TODO:
         }}
       >
@@ -94,7 +95,7 @@ const PureEditorScreen = ({
 
       {(component && (
         <>
-          <Cell style={{ padding: "1em" }}>
+          <Cell style={{ padding: "1em", overflow: "auto" }}>
             {component.component.type === "paragraph" ? (
               <ParagraphPreview
                 component={CurrentComponent}
@@ -123,7 +124,7 @@ const PureEditorScreen = ({
               />
             )}
           </Cell>
-          <Cell style={{ padding: "1em" }}>
+          <Cell style={{ padding: "1em", overflow: "auto" }}>
             {component.component.type === "image" ? (
               <ImageUpload
                 params={component.component.params}
