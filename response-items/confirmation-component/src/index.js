@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { FormCheck, Checkbox, FormCheckLabel } from "@smooth-ui/core-sc";
 import paramTypes, { setParams } from "@decsys/param-types/";
-import Check from "styled-icons/fa-solid/Check";
+import { Check } from "styled-icons/fa-solid/Check";
 
 const Confirm = ({ label, initialChecked }) => {
   const id = new Date().getTime();
