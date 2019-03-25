@@ -5,7 +5,6 @@ import PageHeader from "./PageHeader";
 import PageComponent from "./PageComponent";
 import PageItem from "./PageItem";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { setCurrentComponent } from "../../state/ducks/editor";
 
 const Page = ({
   page,
@@ -26,7 +25,7 @@ const Page = ({
             flexDirection="column"
             border={1}
             borderColor="cardBorder"
-            backgroundColor="cardBg"
+            backgroundColor="lightest"
           >
             <PageHeader
               provided={pageListProvided}

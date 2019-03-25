@@ -77,7 +77,8 @@ const PageItem = ({
         </Button>
         <Button
           size="sm"
-          variant="danger"
+          variant="light"
+          color="danger"
           onClick={() => onDeleteClick(pageId, id)}
         >
           <Times size="1em" />

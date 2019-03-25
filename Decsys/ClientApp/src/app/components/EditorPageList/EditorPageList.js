@@ -30,13 +30,18 @@ const EditorPageList = ({ actions, components, pages, component }) => {
             style={{ overflow: "auto", minHeight: "100%F" }}
           >
             <FlexBox flexDirection="column" px={2}>
-              <FlexBox justifyContent="space-between" alignItems="center">
-                <Typography textAlign="center" p={1}>
+              <FlexBox
+                justifyContent="space-between"
+                alignItems="center"
+                py={1}
+              >
+                <Typography p={1} variant="h4" mb={0.1}>
                   Survey Pages
                 </Typography>
                 <Button
-                  size="sm"
                   variant="success"
+                  border={1}
+                  borderColor="uiPanel1"
                   onClick={actions.onAddClick}
                 >
                   <Plus size="1em" /> Add Page

@@ -23,7 +23,7 @@ const PageHeader = ({
   }
 }) => {
   return (
-    <Box pr={1} border="red" borderBottom={1}>
+    <Box pr={1} borderBottom={1} borderColor="cardBorder">
       <Grid columns="30px 1fr 70px 30px 30px 30px 30px 30px" columnGap=".1em">
         <Cell middle>
           <div {...provided.dragHandleProps}>
@@ -47,7 +47,11 @@ const PageHeader = ({
         <Cell middle>
           <Button
             size="sm"
-            variant="success"
+            variant="light"
+            color="success"
+            border={1}
+            borderColor="success"
+            backgroundColor="lightest"
             onClick={() => onAddPageItemClick(id, "heading")}
             title="Add a Heading to this Page"
           >
@@ -57,7 +61,11 @@ const PageHeader = ({
         <Cell middle>
           <Button
             size="sm"
-            variant="success"
+            variant="light"
+            color="success"
+            border={1}
+            borderColor="success"
+            backgroundColor="lightest"
             onClick={() => onAddPageItemClick(id, "paragraph")}
             title="Add a Paragraph to this Page"
           >
@@ -67,7 +75,11 @@ const PageHeader = ({
         <Cell middle>
           <Button
             size="sm"
-            variant="success"
+            variant="light"
+            color="success"
+            border={1}
+            borderColor="success"
+            backgroundColor="lightest"
             onClick={() => onAddPageItemClick(id, "image")}
             title="Add an Image to this Page"
           >
@@ -79,6 +91,8 @@ const PageHeader = ({
           <Button
             size="sm"
             variant="light"
+            backgroundColor="lightest"
+            color="info"
             onClick={() => onDuplicateClick(id)}
             title="Duplicate this Page"
           >
@@ -88,7 +102,9 @@ const PageHeader = ({
         <Cell middle>
           <Button
             size="sm"
-            variant="danger"
+            variant="light"
+            color="danger"
+            backgroundColor="lightest"
             onClick={() => onDeleteClick(id)}
             title="Delete this Page"
           >
