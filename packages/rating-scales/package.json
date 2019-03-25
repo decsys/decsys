@@ -1,6 +1,6 @@
 {
   "name": "@decsys/rating-scales",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Reusable React Components for Rating Scales as used by the DECSYS Project",
   "main": "lib/index.js",
   "files": [
