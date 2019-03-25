@@ -7,7 +7,7 @@ import {
   FormCheck,
   FormCheckLabel
 } from "@smooth-ui/core-sc";
-import { types } from "../../../param-types";
+import { types } from "@decsys/param-types";
 
 const Param = ({ paramKey, value, type, oneOf, onChange }) => {
   const [timer, setTimer] = useState();
