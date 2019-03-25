@@ -1,7 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import StoryRouter from "storybook-react-router";
-import SurveyScreen from "./SurveyScreen";
+import { PureSurveyScreen } from "./SurveyScreen";
 
 const page = {
   id: 1,
@@ -27,4 +27,4 @@ const page = {
 
 storiesOf("SurveyScreen", module)
   .addDecorator(StoryRouter())
-  .add("Default", () => <SurveyScreen page={page} />);
+  .add("Default", () => <PureSurveyScreen page={page} />);

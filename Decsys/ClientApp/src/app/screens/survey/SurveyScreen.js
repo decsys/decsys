@@ -6,14 +6,21 @@ import { Button } from "@smooth-ui/core-sc";
 import { ChevronRight } from "styled-icons/fa-solid";
 import ComponentRender from "../../components/ComponentRender";
 import { getComponent } from "../../utils/component-utils";
+import Link from "../../components/AppBar/Link";
 
-const SurveyScreen = ({ id, components, page }) => {
+const PureSurveyScreen = ({ id, page, preview, onClick, pageCount, nPage }) => {
   const [nextEnabled, setNextEnabled] = useState(true);
 
   return (
     <Grid columns="1fr" style={{ height: "100vh" }}>
       <Cell>
-        <AppBar brand="DECSYS" />
+        {preview ? (
+          <AppBar brand="DECSYS - Preview" brandLink="#">
+            <Link to={`/admin/survey/${id}`}>Back to Survey Editor</Link>
+          </AppBar>
+        ) : (
+          <AppBar brand="DECSYS" />
+        )}
       </Cell>
       <Cell style={{ overflow: "auto" }}>
         <Container>
@@ -40,8 +47,14 @@ const SurveyScreen = ({ id, components, page }) => {
       <Cell>
         <Container>
           <FlexBox p={2} justifyContent="flex-end">
-            <Button size="lg" disabled={!nextEnabled}>
-              Next <ChevronRight size="1em" />
+            <Button size="lg" disabled={!nextEnabled} onClick={onClick}>
+              {nPage === pageCount - 1 ? (
+                <>Finish</>
+              ) : (
+                <>
+                  Next <ChevronRight size="1em" />
+                </>
+              )}
             </Button>
           </FlexBox>
         </Container>
@@ -50,4 +63,6 @@ const SurveyScreen = ({ id, components, page }) => {
   );
 };
 
-export default SurveyScreen;
+export { PureSurveyScreen };
+
+//export default SurveyScreen;

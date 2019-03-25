@@ -7,7 +7,7 @@ import {
   Trash,
   ChevronLeft
 } from "styled-icons/fa-solid";
-import { Grid, Cell } from "styled-css-grid";
+import { Grid } from "styled-css-grid";
 import EditorBarButton, { LinkButton as EditorBarLink } from "./Button";
 import NameInput from "./NameInput";
 import DeleteSurveyModal from "../SurveyCard/DeleteSurveyModal";

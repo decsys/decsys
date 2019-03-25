@@ -10,6 +10,11 @@ storiesOf("AppBar", module)
   .addDecorator(StoryRouter())
   .add("Default", () => <AppBar />)
   .add("Brand", () => <AppBar variant="danger" brand="My Brand" />)
+  .add("One Child", () => (
+    <AppBar>
+      <AppBarLink to="/somewhere">Clicky time</AppBarLink>
+    </AppBar>
+  ))
   .add("Children", () => (
     <AppBar variant="#ffdddd">
       <AppBarLink to="/link">A link</AppBarLink>

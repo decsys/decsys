@@ -4,6 +4,8 @@ import { Grid } from "styled-css-grid";
 import { Typography } from "@smooth-ui/core-sc";
 
 const ComponentEditor = ({ component, params, onChange }) => {
+  if (!component) return null;
+
   const list = [];
   for (const key in component.params) {
     const p = component.params[key];
@@ -24,7 +26,7 @@ const ComponentEditor = ({ component, params, onChange }) => {
   }
 
   return (
-    <Grid columns="1fr 5fr" rowGap=".2em">
+    <Grid columns="2fr 5fr" rowGap=".2em">
       {list}
     </Grid>
   );

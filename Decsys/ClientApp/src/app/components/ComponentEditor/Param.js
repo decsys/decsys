@@ -74,6 +74,8 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
             onChange={delayedHandleValueChange}
           />
         );
+      default:
+        throw new Error("Unknown Parameter type");
     }
   })(type);
 

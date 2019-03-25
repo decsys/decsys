@@ -38,12 +38,7 @@ const EditorPageList = ({ actions, components, pages, component }) => {
                 <Typography p={1} variant="h4" mb={0.1}>
                   Survey Pages
                 </Typography>
-                <Button
-                  variant="success"
-                  border={1}
-                  borderColor="uiPanel1"
-                  onClick={actions.onAddClick}
-                >
+                <Button variant="success" onClick={actions.onAddClick}>
                   <Plus size="1em" /> Add Page
                 </Button>
               </FlexBox>
