@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createRef } from "react";
 import PropTypes from "prop-types";
 import { Application } from "pixi.js/lib/pixi.es";
 import RangeBar from "./RangeBar";
@@ -21,7 +21,7 @@ const resizeHandler = (app, main, ...elems) => {
   Canvas.setDimensions(app.view, { width, height });
   // also set the canvas position to zero it within the window
   // in case it was initialised inside a `position: relative` container
-  Canvas.setPosition(app.view);
+  // Canvas.setPosition(app.view);
   app.renderer.resize(width, height);
 };
 
@@ -30,6 +30,8 @@ export default class EllipseScale extends React.Component {
   constructor(props) {
     super(props);
     this.outputs = {};
+
+    this.frame = createRef();
   }
 
   static propTypes = {
@@ -208,10 +210,16 @@ export default class EllipseScale extends React.Component {
       const { x, y, width } = this.rangeBar.bounds;
       this.pen.closePath(); // complete the ellipse
 
-      const hits = this.pen.findIntersections(getScrolledY(y));
+      const { top, left } = this.canvas.getBoundingClientRect();
+      let hits = this.pen.findIntersections(
+        getScrolledY(y) - getScrolledY(top)
+      );
 
       // validate the PenLine hits
       if (hits.length !== 1) {
+        // offset hits here so we don't clamp wrong
+        hits = hits.map(x => x + left);
+
         // 1 hit is valid outside the line
         //multiple hits have can't all be the same side
         const allLeft = hits.every(hit => hit < x);
@@ -318,6 +326,7 @@ export default class EllipseScale extends React.Component {
 
     return [
       <Frame key="EllipseFrame" frameHeight={this.props.frameHeight}>
+        <EllipseCanvas key="EllipseCanvas" ref={e => (this.canvas = e)} />
         <Question {...this.props.questionOptions}>
           {this.props.question}
         </Question>
@@ -329,8 +338,7 @@ export default class EllipseScale extends React.Component {
           <RangeMarker {...rangeMarkerProps} ref={e => (this.minMarker = e)} />
           <RangeMarker {...rangeMarkerProps} ref={e => (this.maxMarker = e)} />
         </RangeBar>
-      </Frame>,
-      <EllipseCanvas key="EllipseCanvas" ref={e => (this.canvas = e)} />
+      </Frame>
     ];
   }
 }
