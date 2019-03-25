@@ -4,7 +4,7 @@ The Parameter Types utilities package for DECSYS Components
 
 # Installation
 
-`npm install param-types`
+`npm install @decsys/param-types`
 
 # Use in DECSYS Components
 
@@ -21,7 +21,7 @@ It is possible to configure the `params` property without assistance from `param
 
 ```javascript
 
-import paramTypes, { setParams } from "param-types";
+import paramTypes, { setParams } from "@decsys/param-types";
 
 /**
  * A component which has two configurable parameters,
@@ -58,13 +58,13 @@ It's only a small package but it should support tree shaking if you use named im
 
 ```javascript
 // named imports from specific modules
-import { string as stringParam, oneOf } from "param-types/builders";
+import { string as stringParam, oneOf } from "@decsys/param-types/builders";
 
 // default imports from specific modules
-import setParams from "param-types/setParams";
+import setParams from "@decsys/param-types/setParams";
 
 // default or named imports from the package
-import paramTypes, { setParams } from "param-types";
+import paramTypes, { setParams } from "@decsys/param-types";
 ```
 
 ## ES Modules only?

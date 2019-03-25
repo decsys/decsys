@@ -1,6 +1,6 @@
 {
   "name": "@decsys/param-types",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The Parameter Types utilities package for DECSYS Components",
   "publishConfig": {
     "access": "public"
