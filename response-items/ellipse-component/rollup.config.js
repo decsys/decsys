@@ -2,7 +2,6 @@ import resolve from "rollup-plugin-node-resolve";
 import cjs from "rollup-plugin-commonjs";
 import replace from "rollup-plugin-replace";
 import babel from "rollup-plugin-babel";
-import builtin from "rollup-plugin-node-builtins";
 
 const pkg = require("./package.json");
 
@@ -47,6 +46,5 @@ export default {
         "node_modules/resource-loader/lib/index.js": ["Resource"]
       }
     })
-    //builtin()
   ]
 };
