@@ -17,7 +17,7 @@ const Confirm = ({ label, initialChecked }) => {
 //set parameter metadata, including propTypes and defaultProps
 setParams(Confirm, {
   label: paramTypes.string(
-    "Checbox Label",
+    "Checkbox Label",
     "I confirm that I have read and understood."
   )
 });
