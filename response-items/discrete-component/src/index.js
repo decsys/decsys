@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { DotCircle } from "styled-icons/fa-regular/DotCircle";
 import paramTypes, { setParams } from "@decsys/param-types/";
-import { LikertScale } from "@decsys/rating-scales";
+import LikertScale from "@decsys/rating-scales/lib/likert/Scale";
 
 const Likert = ({
   barLeftMargin,
