@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@smooth-ui/core-sc";
-import paramTypes, { setParams } from "../../../param-types";
+import paramTypes, { setParams } from "@decsys/param-types";
 
 const PageHeading = ({ text, xMargin, ...p }) => (
   <Typography

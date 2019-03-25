@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Typography } from "@smooth-ui/core-sc";
-import paramTypes, { setParams } from "../../../param-types";
+import paramTypes, { setParams } from "@decsys/param-types";
 import ReactMarkdown from "react-markdown";
 
 const PageParagraph = ({ text, ...p }) => (

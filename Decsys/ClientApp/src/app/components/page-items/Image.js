@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import paramTypes, { setParams } from "../../../param-types";
+import paramTypes, { setParams } from "@decsys/param-types";
 import { FlexBox } from "../ui";
 
 const PageImage = ({ surveyId, id, extension }) =>
