@@ -4,11 +4,11 @@ This is a component that allows a Survey Participant to provide a ranged answer 
 
 # Installation
 
-- (TODO: Download a distributable version from Releases or npm)
+- Download a distributable version from Github Releases
 - Build from source:
   - `npm i`
-  - `npm run build`
-- Copy the `.js` file in `dist/` into the Survey Platform's components folder
+  - `npm run build` - outputs to the `dist/` folder
+- Copy the `.js` file in into the Survey Platform's `components/` folder
 
 # Licensing
 
