@@ -6,6 +6,7 @@ import { Grid } from "styled-css-grid";
 
 const AppBar = ({ brand, children, variant, brandLink }) => {
   const childContent = (() => {
+    if (!children) return;
     if (children.length) {
       return children.map(x => ({
         ...x,
