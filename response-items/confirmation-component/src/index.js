@@ -29,6 +29,6 @@ Confirm.propTypes = {
 
 // Metadata properties
 Confirm.version = "0.1.0";
-Confirm.icon = React.createElement(Check);
+Confirm.icon = <Check />;
 
 export default Confirm;
