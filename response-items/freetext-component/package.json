@@ -1,8 +1,8 @@
 {
   "name": "freetext",
   "bundle": "FreeText",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "The FreeText Question Component that ships with the DECSYS Survey Platform",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,8 +12,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
-  "keywords": [],
-  "author": "",
+  "author": "Jonathan Couldridge <jon@jon.gg>",
   "license": "UNLICENSED",
   "devDependencies": {
     "@babel/core": "^7.4.0",
