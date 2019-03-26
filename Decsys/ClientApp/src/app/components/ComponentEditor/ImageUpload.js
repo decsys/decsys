@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button, Input, Box } from "@smooth-ui/core-sc";
-import { FlexBox } from "../ui";
 
 const ImageUpload = ({ params, onAddClick, onRemoveClick }) => {
   const hasImage = !!params.extension;

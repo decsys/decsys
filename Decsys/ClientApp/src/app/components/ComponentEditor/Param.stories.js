@@ -1,7 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import Param from "./Param";
-import { types } from "../../../param-types";
+import { types } from "@decsys/param-types";
 import { text, boolean, optionsKnob } from "@storybook/addon-knobs";
 
 const oneOf = ["Hello", "Goodbye", "Something else"];

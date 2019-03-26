@@ -15,6 +15,8 @@ export default {
   cardBorder: th("gray400"),
   menuBg: th("light"),
   menuItem: th("light"),
+  lightest: th("white"), //swap light and dark for dark themes... so it's relatively inverted?
+  darkest: "#111",
 
   // also need to add new colors here for variants to work
   colors: {
@@ -26,6 +28,8 @@ export default {
     cardHoverBg: th("cardHoverBg"),
     cardBorder: th("cardBorder"),
     menuBg: th("menuBg"),
-    menuItem: th("menuItem")
+    menuItem: th("menuItem"),
+    lightest: th("lightest"),
+    darkest: th("darkest")
   }
 };

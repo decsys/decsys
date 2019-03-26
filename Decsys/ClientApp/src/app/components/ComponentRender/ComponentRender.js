@@ -1,6 +1,6 @@
 import React, { cloneElement } from "react";
 
-const ComponentRender = ({ component, params }) => {
+const ComponentRender = ({ component, params, actions }) => {
   // short circuit
   if (!component) return null;
 
@@ -13,7 +13,7 @@ const ComponentRender = ({ component, params }) => {
     return agg;
   }, {});
 
-  return cloneElement(<Component />, { ...defaults, ...params });
+  return cloneElement(<Component />, { ...defaults, ...params, ...actions });
 };
 
 export default ComponentRender;

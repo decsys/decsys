@@ -7,7 +7,7 @@ import { Container, EmptyState, FlexBox } from "./components/ui";
 import { fetchSurveys } from "./state/ducks/surveys";
 import { getSurvey } from "./state/ducks/editor/ops";
 import EditorScreen from "./screens/admin/EditorScreen";
-import { Grid, Cell } from "styled-css-grid";
+import PreviewScreen from "./screens/admin/PreviewScreen";
 
 const PureApp = ({ dispatch }) => {
   return (
@@ -31,25 +31,20 @@ const PureApp = ({ dispatch }) => {
       />
 
       <Route
-        path="/component-test"
-        exact
-        render={() => {
-          const Component = window.__DECSYS__.Components.FreeText;
-          return (
-            <>
-              <AppBar brand="DECSYS" />
-              <Component />
-            </>
-          );
-        }}
-      />
-
-      <Route
         path="/admin/survey/:id"
         exact
         render={({ match }) => {
           dispatch(getSurvey(match.params.id));
           return <EditorScreen id={match.params.id} />;
+        }}
+      />
+
+      <Route
+        path="/admin/survey/:id/preview"
+        exact
+        render={({ match }) => {
+          dispatch(getSurvey(match.params.id));
+          return <PreviewScreen id={match.params.id} />;
         }}
       />
 

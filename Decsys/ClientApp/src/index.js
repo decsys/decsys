@@ -1,6 +1,6 @@
 import * as serviceWorker from "./serviceWorker";
 import React from "react";
-import styled, { css, createGlobalStyle } from "styled-components";
+import styled, { css } from "styled-components";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { createBrowserHistory } from "history";
@@ -23,6 +23,7 @@ window.__DECSYS__ = {}; // Register our global namespace at bootstrap time
 window.React = React;
 window.ReactDOM = ReactDOM;
 window.PropTypes = PropTypes;
+// TODO: we should put param-types here - all DECSYS components will use it, save them all bundling it
 
 // Styled doesn't put all its named exports on the default :(
 // So I guess that job is on us until we have a better way to do this than globals

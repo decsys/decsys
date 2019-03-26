@@ -8,14 +8,12 @@ import EditorPageList from "../../components/EditorPageList";
 import { LoadingIndicator, FlexBox, EmptyState } from "../../components/ui";
 import * as ducks from "../../state/ducks/editor";
 import { FileAlt } from "styled-icons/fa-solid";
-import { Box } from "@smooth-ui/core-sc";
+import { Box, colorVariant } from "@smooth-ui/core-sc";
 import ComponentRender from "../../components/ComponentRender";
 import ComponentEditor from "../../components/ComponentEditor";
-import PageHeading from "../../components/page-items/Heading";
-import PageParagraph from "../../components/page-items/Paragraph";
-import PageImage from "../../components/page-items/Image";
 import ParagraphPreview from "../../components/ComponentEditor/ParagraphPreview";
 import ImageUpload from "../../components/ComponentEditor/ImageUpload";
+import { getComponent } from "../../utils/component-utils";
 
 const PureEditorScreen = ({
   id,
@@ -45,21 +43,9 @@ const PureEditorScreen = ({
     />
   );
 
-  // try and get the current component from those available
-  let CurrentComponent;
-  if (component) {
-    // check for built-in Page Item types
-    const builtIn = {
-      heading: PageHeading,
-      paragraph: PageParagraph,
-      image: PageImage
-    };
-    if (Object.keys(builtIn).includes(component.component.type)) {
-      CurrentComponent = builtIn[component.component.type];
-    } else {
-      CurrentComponent = window.__DECSYS__.Components[component.component.type];
-    }
-  }
+  const CurrentComponent = component
+    ? getComponent(component.component.type)
+    : null;
 
   return !surveyLoaded ? (
     <FlexBox flexDirection="column">
@@ -69,7 +55,7 @@ const PureEditorScreen = ({
   ) : (
     <Grid
       columns="1fr 2fr"
-      rows="50px minmax(200px, 2fr) minmax(200px, 1fr)"
+      rows="auto minmax(200px, 2fr) minmax(200px, 1fr)"
       rowGap="0px"
       height="100%"
       columnGap="0px"
@@ -82,7 +68,7 @@ const PureEditorScreen = ({
         height={2}
         style={{
           overflow: "auto",
-          background: "gray300" // TODO:
+          backgroundColor: colorVariant("gray500")({})
         }}
       >
         <EditorPageList
@@ -124,7 +110,13 @@ const PureEditorScreen = ({
               />
             )}
           </Cell>
-          <Cell style={{ padding: "1em", overflow: "auto" }}>
+          <Cell
+            style={{
+              padding: "1em",
+              overflow: "auto",
+              backgroundColor: colorVariant("gray300")({})
+            }}
+          >
             {component.component.type === "image" ? (
               <ImageUpload
                 params={component.component.params}
