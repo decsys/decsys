@@ -5,6 +5,19 @@ import Brand from "./Brand";
 import { Grid } from "styled-css-grid";
 
 const AppBar = ({ brand, children, variant, brandLink }) => {
+  const childContent = (() => {
+    if (children.length) {
+      return children.map(x => ({
+        ...x,
+        props: { ...x.props, variant: x.props.variant || variant }
+      }));
+    } else {
+      return cloneElement(children, {
+        variant: children.props.variant || variant
+      });
+    }
+  })();
+
   return (
     <FlexBox backgroundColor={variant} alignItems="center">
       <Container>
@@ -18,14 +31,7 @@ const AppBar = ({ brand, children, variant, brandLink }) => {
                 .fill("auto")
                 .join(" ")}
             >
-              {children.length
-                ? children.map(x => ({
-                    ...x,
-                    props: { ...x.props, variant: x.props.variant || variant }
-                  }))
-                : cloneElement(children, {
-                    variant: children.props.variant || variant
-                  })}
+              {childContent}
             </Grid>
           )}
         </FlexBox>
