@@ -27,4 +27,5 @@ const page = {
 
 storiesOf("SurveyScreen", module)
   .addDecorator(StoryRouter())
-  .add("Default", () => <PureSurveyScreen page={page} />);
+  .add("Empty", () => <PureSurveyScreen page={{ id: 1, components: [] }} />)
+  .add("Content", () => <PureSurveyScreen page={page} />);
