@@ -2,6 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import StoryRouter from "storybook-react-router";
 import { PureSurveyScreen } from "./SurveyScreen";
+import { action } from "@storybook/addon-actions";
 
 const page = {
   id: 1,
@@ -25,7 +26,14 @@ const page = {
   ]
 };
 
+const actions = {
+  logEvent: action("Event logged"),
+  onClick: action("Next Button clicked")
+};
+
 storiesOf("SurveyScreen", module)
   .addDecorator(StoryRouter())
-  .add("Empty", () => <PureSurveyScreen page={{ id: 1, components: [] }} />)
-  .add("Content", () => <PureSurveyScreen page={page} />);
+  .add("Empty", () => (
+    <PureSurveyScreen page={{ id: 1, components: [] }} {...actions} />
+  ))
+  .add("Content", () => <PureSurveyScreen page={page} {...actions} />);

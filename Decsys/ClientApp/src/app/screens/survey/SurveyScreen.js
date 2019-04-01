@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Cell } from "styled-css-grid";
 import AppBar from "../../components/AppBar";
 import { FlexBox, Container } from "../../components/ui";
@@ -7,6 +7,9 @@ import { ChevronRight } from "styled-icons/fa-solid";
 import ComponentRender from "../../components/ComponentRender";
 import { getComponent } from "../../utils/component-utils";
 import Link from "../../components/AppBar/Link";
+import { COMPONENT_RESULTS, PAGE_LOAD } from "../../utils/event-types";
+
+// TODO: Prop Types!
 
 const PureSurveyScreen = ({
   id,
@@ -15,10 +18,13 @@ const PureSurveyScreen = ({
   onClick,
   pageCount,
   nPage,
-  log,
-  logResults
+  logEvent
 }) => {
   const [nextEnabled, setNextEnabled] = useState(true);
+
+  useEffect(() => {
+    logEvent(page.id, PAGE_LOAD, {});
+  }, []);
 
   return (
     <Grid
@@ -42,7 +48,12 @@ const PureSurveyScreen = ({
               <ComponentRender
                 key={x.id}
                 component={getComponent(x.type)}
-                actions={{ setNextEnabled }}
+                actions={{
+                  setNextEnabled,
+                  logEvent: (type, payload) => logEvent(x.id, type, payload),
+                  logResults: payload =>
+                    logEvent(x.id, COMPONENT_RESULTS, payload)
+                }}
                 params={
                   x.type === "image"
                     ? {
