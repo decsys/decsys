@@ -8,11 +8,24 @@ import ComponentRender from "../../components/ComponentRender";
 import { getComponent } from "../../utils/component-utils";
 import Link from "../../components/AppBar/Link";
 
-const PureSurveyScreen = ({ id, page, preview, onClick, pageCount, nPage }) => {
+const PureSurveyScreen = ({
+  id,
+  page,
+  preview,
+  onClick,
+  pageCount,
+  nPage,
+  log,
+  logResults
+}) => {
   const [nextEnabled, setNextEnabled] = useState(true);
 
   return (
-    <Grid columns="1fr" style={{ height: "100vh" }}>
+    <Grid
+      columns="1fr"
+      rows="54px minmax(20px, 1fr) 80px"
+      style={{ height: "100vh" }}
+    >
       <Cell>
         {preview ? (
           <AppBar brand="DECSYS - Preview" brandLink="#">
