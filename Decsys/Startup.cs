@@ -60,12 +60,13 @@ namespace Decsys
             services.AddTransient<PageService>();
             services.AddTransient<ComponentService>();
             services.AddTransient<SurveyInstanceService>();
-            services.AddTransient(services => new ImageService(
+            services.AddTransient<ParticipantEventService>();
+            services.AddTransient(svc => new ImageService(
                 Path.Combine(
-                    services.GetRequiredService<IHostingEnvironment>()
+                    svc.GetRequiredService<IHostingEnvironment>()
                         .ContentRootPath,
                     "SurveyImages"),
-                services.GetRequiredService<LiteDatabase>()));
+                svc.GetRequiredService<LiteDatabase>()));
 
             services.AddSwaggerGen(c =>
             {
