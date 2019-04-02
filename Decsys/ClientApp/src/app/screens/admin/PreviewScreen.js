@@ -1,29 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import { PureSurveyScreen } from "../survey/SurveyScreen";
-import { useNavigation, useCurrentRoute } from "react-navi";
+import { LoadingIndicator } from "../../components/ui";
 
-const PreviewScreen = () => {
-  const { survey } = useCurrentRoute().data;
-
+const PurePreviewScreen = ({ id, survey, surveyLoaded, history }) => {
   const [page, setPage] = useState(0);
-  const navigation = useNavigation();
+  const [lastPage, setLastPage] = useState(false);
+
+  useEffect(() => setLastPage(page === survey.pages.length - 1), [page]);
 
   const handleClick = () => {
-    if (page === survey.pages.length - 1)
-      return navigation.navigate(`/admin/survey/${survey.id}`);
+    if (lastPage) history.push(`/admin/survey/${id}`);
     setPage(page + 1);
   };
 
-  return (
+  return surveyLoaded ? (
     <PureSurveyScreen
-      id={survey.id}
-      nPage={page}
+      id={id}
       page={survey.pages[page]}
       preview
       onClick={handleClick}
-      pageCount={survey.pages.length}
+      logEvent={() => {}}
+      lastPage={lastPage}
     />
+  ) : (
+    <LoadingIndicator />
   );
 };
+
+const PreviewScreen = withRouter(
+  connect(({ editor: { survey, surveyLoaded } }) => ({
+    survey,
+    surveyLoaded
+  }))(PurePreviewScreen)
+);
+
+export { PurePreviewScreen };
 
 export default PreviewScreen;

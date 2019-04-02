@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Cell } from "styled-css-grid";
+import { connect } from "react-redux";
 import AppBar from "../../components/AppBar";
 import { FlexBox, Container } from "../../components/ui";
 import { Button } from "@smooth-ui/core-sc";
@@ -15,9 +16,8 @@ const PureSurveyScreen = ({
   id,
   page,
   preview,
-  onClick,
-  pageCount,
-  nPage,
+  onNextPage,
+  lastPage,
   logEvent
 }) => {
   const [nextEnabled, setNextEnabled] = useState(true);
@@ -71,8 +71,8 @@ const PureSurveyScreen = ({
       <Cell>
         <Container>
           <FlexBox p={2} justifyContent="flex-end">
-            <Button size="lg" disabled={!nextEnabled} onClick={onClick}>
-              {nPage === pageCount - 1 ? (
+            <Button size="lg" disabled={!nextEnabled} onClick={onNextPage}>
+              {lastPage ? (
                 <>Finish</>
               ) : (
                 <>
@@ -86,6 +86,34 @@ const PureSurveyScreen = ({
     </Grid>
   );
 };
+
+const SurveyScreen = connect(
+  ({ user, survey: { id, pages, currentPage, instanceId } }) => ({
+    id,
+    page: pages[currentPage],
+    lastPage: currentPage === pages.length - 1,
+    instanceId,
+    userId: user.id
+  }),
+  dispatch => ({
+    onNextPage: () => dispatch({ type: "NEXT_CLICK" }),
+    logEvent: (instanceId, participantId, source, type, payload) =>
+      dispatch({ type: "LOG_EVENT" })
+  }),
+  (stateProps, dispatchProps, ownProps) => ({
+    ...ownProps,
+    ...stateProps,
+    ...dispatchProps,
+    logEvent: (source, type, payload) =>
+      dispatchProps.logEvent(
+        stateProps.instanceId,
+        stateProps.userId,
+        source,
+        type,
+        payload
+      )
+  })
+)(PureSurveyScreen);
 
 export { PureSurveyScreen };
 
