@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { PureSurveyScreen } from "../survey/SurveyScreen";
@@ -6,20 +6,23 @@ import { LoadingIndicator } from "../../components/ui";
 
 const PurePreviewScreen = ({ id, survey, surveyLoaded, history }) => {
   const [page, setPage] = useState(0);
+  const [lastPage, setLastPage] = useState(false);
+
+  useEffect(() => setLastPage(page === survey.pages.length - 1), [page]);
 
   const handleClick = () => {
-    if (page === survey.pages.length - 1) history.push(`/admin/survey/${id}`);
+    if (lastPage) history.push(`/admin/survey/${id}`);
     setPage(page + 1);
   };
 
   return surveyLoaded ? (
     <PureSurveyScreen
       id={id}
-      nPage={page}
       page={survey.pages[page]}
       preview
       onClick={handleClick}
-      pageCount={survey.pages.length}
+      logEvent={() => {}}
+      lastPage={lastPage}
     />
   ) : (
     <LoadingIndicator />
