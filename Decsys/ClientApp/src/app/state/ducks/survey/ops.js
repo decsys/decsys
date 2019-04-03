@@ -2,10 +2,10 @@ import axios from "axios";
 import * as actions from "./actions";
 
 /**
- * Get a Survey and add it to the state as the current Editor Survey
+ * TODO: Get the current active Survey Instance and add to state as the current Participant Survey
  * @param {*} id
  */
-export const getSurvey = id => dispatch =>
-  axios.get(`/api/surveys/${id}`).then(({ data }) => {
+export const getSurveyInstance = () => dispatch =>
+  axios.get(`/api/surveys`).then(({ data }) => {
     dispatch(actions.getSurvey(data));
   });

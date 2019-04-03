@@ -117,4 +117,4 @@ const SurveyScreen = connect(
 
 export { PureSurveyScreen };
 
-//export default SurveyScreen;
+export default SurveyScreen;

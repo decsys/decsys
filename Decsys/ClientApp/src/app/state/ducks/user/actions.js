@@ -1,6 +1,6 @@
 import * as types from "./types";
 
-export const getUserId = (publicIp, privateIp) => ({
+export const getUserId = id => ({
   type: types.GET_USER_ID,
-  payload: { ip: { public: publicIp, private: privateIp } }
+  payload: { id }
 });

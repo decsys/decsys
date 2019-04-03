@@ -8,6 +8,9 @@ import { fetchSurveys } from "./state/ducks/surveys";
 import { getSurvey } from "./state/ducks/editor/ops";
 import EditorScreen from "./screens/admin/EditorScreen";
 import PreviewScreen from "./screens/admin/PreviewScreen";
+import { getUserId } from "./state/ducks/user/ops";
+import { getSurveyInstance } from "./state/ducks/survey";
+import SurveyScreen from "./screens/survey/SurveyScreen";
 
 const PureApp = ({ dispatch }) => {
   return (
@@ -19,6 +22,17 @@ const PureApp = ({ dispatch }) => {
           // TODO: conditional logic for admin
           <Redirect to="/admin" />
         )}
+      />
+
+      <Route
+        path="/survey"
+        exact
+        render={() => {
+          // need instanceId first, which is fine as in future we will need to check access type and such too
+          dispatch(getSurveyInstance());
+          dispatch(getUserId());
+          return <div>Hello World</div>;
+        }}
       />
 
       <Route

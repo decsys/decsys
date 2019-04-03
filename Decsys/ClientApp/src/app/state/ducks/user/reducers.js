@@ -1,13 +1,16 @@
 import * as types from "./types";
-import getClientIp from "../../../utils/get-client-ip";
 
-const surveyEditorReducer = (state = {}, action) => {
+const userReducer = (state = {}, action) => {
   switch (action.type) {
     case types.GET_USER_ID:
+      const { id } = action.payload;
       return {
-        ...state
+        ...state,
+        id
       };
     default:
       return state;
   }
 };
+
+export default userReducer;
