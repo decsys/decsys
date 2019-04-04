@@ -66,7 +66,7 @@ const PureApp = ({ dispatch }) => {
         exact
         render={({ match }) => {
           dispatch(getSurvey(match.params.id));
-          return <PreviewScreen id={match.params.id} />;
+          return <PreviewScreen />;
         }}
       />
 

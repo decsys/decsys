@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Cell } from "styled-css-grid";
-import AppBar from "../../components/AppBar";
 import { FlexBox, Container } from "../../components/ui";
 import { Button } from "@smooth-ui/core-sc";
 import { ChevronRight } from "styled-icons/fa-solid";
 import ComponentRender from "../../components/ComponentRender";
 import { getComponent } from "../../utils/component-utils";
-import Link from "../../components/AppBar/Link";
 import { COMPONENT_RESULTS, PAGE_LOAD } from "../../utils/event-types";
 
 // TODO: Prop Types!
 
-const SurveyPage = ({ id, page, preview, onNextPage, lastPage, logEvent }) => {
+const SurveyPage = ({ appBar, id, page, onNextPage, lastPage, logEvent }) => {
   const [nextEnabled, setNextEnabled] = useState(true);
 
   useEffect(() => {
@@ -24,15 +22,7 @@ const SurveyPage = ({ id, page, preview, onNextPage, lastPage, logEvent }) => {
       rows="54px minmax(20px, 1fr) 80px"
       style={{ height: "100vh" }}
     >
-      <Cell>
-        {preview ? (
-          <AppBar brand="DECSYS - Preview" brandLink="#">
-            <Link to={`/admin/survey/${id}`}>Back to Survey Editor</Link>
-          </AppBar>
-        ) : (
-          <AppBar brand="DECSYS" />
-        )}
-      </Cell>
+      <Cell>{appBar}</Cell>
       <Cell style={{ overflow: "auto" }}>
         <Container>
           <FlexBox p={1} flexDirection="column">

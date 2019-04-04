@@ -15,7 +15,7 @@ const page = {
       }
     },
     {
-      id: 1,
+      id: 2,
       type: "paragraph",
       params: {
         text: `Let's have some information text here for you to read...
@@ -28,7 +28,7 @@ const page = {
 
 const actions = {
   logEvent: action("Event logged"),
-  onClick: action("Next Button clicked")
+  onNextPage: action("Next Button clicked")
 };
 
 storiesOf("Survey/SurveyPage", module)
