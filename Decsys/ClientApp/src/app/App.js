@@ -25,13 +25,21 @@ const PureApp = ({ dispatch }) => {
       />
 
       <Route
-        path="/survey"
+        path="/survey/:id"
         exact
         render={() => {
           // need instanceId first, which is fine as in future we will need to check access type and such too
           dispatch(getSurveyInstance());
           dispatch(getUserId());
           return <div>Hello World</div>;
+        }}
+      />
+
+      <Route
+        path="/survey"
+        exact
+        render={() => {
+          return;
         }}
       />
 

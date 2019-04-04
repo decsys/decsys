@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { PureSurveyScreen } from "../survey/SurveyScreen";
+import { SurveyPage } from "../../components/SurveyPage";
 import { LoadingIndicator } from "../../components/ui";
 
 const PurePreviewScreen = ({ id, survey, surveyLoaded, history }) => {
@@ -16,7 +16,7 @@ const PurePreviewScreen = ({ id, survey, surveyLoaded, history }) => {
   };
 
   return surveyLoaded ? (
-    <PureSurveyScreen
+    <SurveyPage
       id={id}
       page={survey.pages[page]}
       preview
