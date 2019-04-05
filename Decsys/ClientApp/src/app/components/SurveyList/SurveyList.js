@@ -4,7 +4,10 @@ import { Typography, Input } from "@smooth-ui/core-sc";
 import FlexBox from "../ui/FlexBox";
 import SortPanel from "./SortPanel";
 import SurveyCard from "../SurveyCard";
-// import { sortSurveyList, filterSurveyList } from "../../state/ducks/surveys";
+import {
+  getSortedLookup,
+  getFilteredLookup
+} from "../../state/ducks/surveys/utils";
 
 const useAllowLaunch = surveys => {
   const [allowLaunch, setAllowLaunch] = useState(false);
@@ -16,22 +19,55 @@ const useAllowLaunch = surveys => {
       ),
     [surveys]
   );
+  return allowLaunch;
 };
 
-const SurveyList = ({
-  surveys,
-  sorted,
-  filtered,
-  filter,
-  onFilterChange,
-  onSortSurveyList
-}) => {
+const useSortingAndFiltering = surveys => {
+  const [sorting, setSorting] = useState({ key: "name" });
+  const [sortedSurveys, setSortedSurveys] = useState([]);
+  const [filter, setFilter] = useState("");
+  const [filteredSurveys, setFilteredSurveys] = useState([]);
+
+  // update the sorted list appropriately
+  useEffect(() => {
+    setSortedSurveys(
+      getSortedLookup(surveys, sorting.key, sorting[sorting.key])
+    );
+  }, [surveys, sorting]);
+
+  // update the filtered list appropriately
+  useEffect(() => {
+    setFilteredSurveys(getFilteredLookup(sortedSurveys, filter));
+  }, [filter, sortedSurveys]);
+
+  return {
+    sorting,
+    setSorting,
+    filter,
+    setFilter,
+    surveyList: filteredSurveys
+  };
+};
+
+const SurveyList = ({ surveys }) => {
   const allowLaunch = useAllowLaunch(surveys);
 
-  // TODO: lift up state?
-  useEffect(() => {
-    if (!sorted.length) onSortSurveyList(sortState); // initial sort only if it hasn't been done
-  });
+  const {
+    sorting,
+    setSorting,
+    filter,
+    setFilter,
+    surveyList
+  } = useSortingAndFiltering(surveys);
+
+  const handleSortButtonClick = key => {
+    setSorting({
+      ...sorting,
+      key,
+      [key]: sorting.key === key ? !sorting[key] : sorting[key]
+    });
+  };
+
   return (
     <>
       <FlexBox alignItems="center" mb="1em">
@@ -39,7 +75,8 @@ const SurveyList = ({
           Sort by:
         </Typography>
         <SortPanel
-          sortState={sortState}
+          state={sorting}
+          onSortButtonClick={handleSortButtonClick}
           keys={["Active", ["Run Count", "runCount"], "Name"]}
         />
 
@@ -48,11 +85,11 @@ const SurveyList = ({
           value={filter}
           size="sm"
           ml="auto"
-          onChange={({ target }) => onFilterChange(target.value)}
+          onChange={({ target }) => setFilter(target.value)}
         />
       </FlexBox>
 
-      {filtered.map(
+      {surveyList.map(
         ({ id }) =>
           !!surveys[id] && (
             <SurveyCard key={id} {...surveys[id]} allowLaunch={allowLaunch} />
@@ -63,45 +100,7 @@ const SurveyList = ({
 };
 
 SurveyList.propTypes = {
-  surveys: PropTypes.shape({}),
-  sorted: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
-  filtered: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
-  sortState: SortPanel.propTypes.sortState,
-  filter: PropTypes.string,
-  allowLaunch: PropTypes.bool,
-  onFilterChange: PropTypes.func.isRequired,
-  onSortSurveyList: PropTypes.func.isRequired
+  surveys: PropTypes.shape({})
 };
-
-SurveyList.defaultProps = {
-  sorted: [],
-  filtered: []
-};
-
-// const SurveyList = connect(
-//   ({ surveys: { sorted, filtered, filter, sortState } }) => ({
-//     sorted,
-//     filtered,
-//     filter,
-//     sortState
-//   }),
-//   dispatch => ({
-//     onSortSurveyList: sortState =>
-//       dispatch(sortSurveyList(sortState.key, sortState[sortState.key])),
-//     onFilterChange: filter => dispatch(filterSurveyList(filter))
-//   })
-// )(PureSurveyList);
-
-// export { PureSurveyList };
 
 export default SurveyList;

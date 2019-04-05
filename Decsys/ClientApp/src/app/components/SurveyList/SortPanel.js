@@ -1,30 +1,15 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import SortButton from "./SortButton";
-import SurveyListContext from "./SurveyListContext";
 
-const SortPanel = ({ keys = [] }) => {
-  const [state, setState] = useState({ key: "name" });
-
-  const { sortSurveyList } = useContext(SurveyListContext);
-
-  const handleSortButtonClick = key => {
-    const asc = state.key === key ? !state[key] : state[key];
-    sortSurveyList(key, asc);
-    setState({
-      ...state,
-      key,
-      [key]: asc
-    });
-  };
-
+const SortPanel = ({ keys = [], state, onSortButtonClick }) => {
   const createSortButton = (label, key) => {
     return (
       <SortButton
         key={key}
         active={state.key === key}
         asc={state[key]}
-        onClick={() => handleSortButtonClick(key)}
+        onClick={key => onSortButtonClick(key)}
       >
         {label}
       </SortButton>
@@ -41,7 +26,8 @@ const SortPanel = ({ keys = [] }) => {
 SortPanel.propTypes = {
   keys: PropTypes.arrayOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)])
-  ).isRequired
+  ).isRequired,
+  onSortButtonClick: PropTypes.func.isRequired
 };
 
 export default SortPanel;
