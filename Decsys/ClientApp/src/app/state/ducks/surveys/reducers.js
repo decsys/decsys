@@ -1,5 +1,8 @@
 import * as types from "./types";
-import { getSortedLookup, getFilteredLookup } from "./utils";
+import {
+  getSortedLookup,
+  getFilteredLookup
+} from "../../../components/SurveyList/utils";
 
 const fetchSurveys = (state, { surveys }) => {
   const { sortState, filter } = state;

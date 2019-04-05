@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Box } from "@smooth-ui/core-sc";
-import { withRouter } from "react-router-dom";
+import { useNavigation } from "react-navi";
 import { TimesCircle, Rocket } from "styled-icons/fa-solid";
 
 // General stuff we only use internally here, for now...
@@ -10,13 +10,14 @@ const IconButton = p => (
   </Button>
 );
 
-const LinkButton = withRouter(
-  ({ to, history, onClick, staticContext, ...p }) => (
-    <Button textAlign="center" {...p} onClick={e => history.push(to)}>
+const LinkButton = ({ onClick, href, ...p }) => {
+  const navigation = useNavigation();
+  return (
+    <Button textAlign="center" {...p} onClick={() => navigation.navigate(href)}>
       {p.children}
     </Button>
-  )
-);
+  );
+};
 
 export const Launch = ({ onClick }) => (
   <IconButton variant="success" onClick={onClick}>
@@ -33,13 +34,13 @@ export const Close = ({ onClick }) => (
 );
 
 export const Dashboard = ({ id }) => (
-  <LinkButton variant="success" to={`/admin/survey/${id}/dashboard`}>
+  <LinkButton variant="success" href={`/admin/survey/${id}/dashboard`}>
     Dashboard
   </LinkButton>
 );
 
 export const Results = ({ id }) => (
-  <LinkButton variant="secondary" to={`/admin/survey/${id}/results`}>
+  <LinkButton variant="secondary" href={`/admin/survey/${id}/results`}>
     Results
   </LinkButton>
 );

@@ -1,25 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { MenuItem, MenuRouterLink, DropdownMenuButton } from "../ui";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { EllipsisV } from "styled-icons/fa-solid";
-import {
-  deleteSurvey,
-  duplicateSurvey,
-  editSurvey
-} from "../../state/ducks/surveys";
+import SurveyCardContext from "./Context";
 
-const PureManageSurveyButton = ({
-  name,
-  editable,
-  id,
-  onDuplicateClick,
-  onDeleteClick,
-  onEditClick
-}) => {
+const ManageSurveyButton = ({ name, editable, id }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const toggleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
+
+  const {
+    handleEditClick,
+    handleDuplicateClick,
+    handleDeleteClick
+  } = useContext(SurveyCardContext);
 
   return (
     <>
@@ -30,17 +24,19 @@ const PureManageSurveyButton = ({
         button={<EllipsisV size="1em" />}
         caret={false}
       >
-        {editable && <MenuItem onClick={onEditClick}>Edit</MenuItem>}
-        <MenuRouterLink to={`admin/survey/${id}/preview`}>
+        {editable && <MenuItem onClick={handleEditClick}>Edit</MenuItem>}
+        <MenuRouterLink href={`admin/survey/${id}/preview`}>
           Preview
         </MenuRouterLink>
-        <MenuRouterLink to={`admin/survey/${id}/export`}>Export</MenuRouterLink>
-        <MenuItem onClick={onDuplicateClick}>Duplicate</MenuItem>
+        <MenuRouterLink href={`admin/survey/${id}/export`}>
+          Export
+        </MenuRouterLink>
+        <MenuItem onClick={handleDuplicateClick}>Duplicate</MenuItem>
         <MenuItem onClick={toggleDeleteModal}>Delete</MenuItem>
       </DropdownMenuButton>
       <DeleteSurveyModal
         surveyName={name}
-        deleteSurvey={onDeleteClick}
+        deleteSurvey={handleDeleteClick}
         closeModal={toggleDeleteModal}
         modalOpened={showDeleteModal}
       />
@@ -48,25 +44,12 @@ const PureManageSurveyButton = ({
   );
 };
 
-PureManageSurveyButton.propTypes = {
+ManageSurveyButton.propTypes = {
   id: PropTypes.number.isRequired,
   editable: PropTypes.bool,
-  name: PropTypes.string.isRequired,
-  onDuplicateClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
-  onEditClick: PropTypes.func.isRequired
+  name: PropTypes.string.isRequired
 };
 
-PureManageSurveyButton.defaultProps = { editable: false };
+ManageSurveyButton.defaultProps = { editable: false };
 
-const ManageSurveyButton = connect(
-  null,
-  (dispatch, { id, name }) => ({
-    onDuplicateClick: () => dispatch(duplicateSurvey(id)),
-    onDeleteClick: () => dispatch(deleteSurvey(id)),
-    onEditClick: () => dispatch(editSurvey(id, name))
-  })
-)(PureManageSurveyButton);
-
-export { PureManageSurveyButton };
 export default ManageSurveyButton;
