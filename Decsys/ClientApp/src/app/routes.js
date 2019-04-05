@@ -1,17 +1,18 @@
 import React from "react";
-import { mount, lazy, route, redirect } from "navi";
+import { mount, route, redirect } from "navi";
+import Axios from "axios";
+import SurveysScreen from "./screens/admin/SurveysScreen";
 
 const routes = mount({
   "/": redirect("/admin"),
 
   // Admin
   "/admin": mount({
-    "/": route(() => {
-      // dispatch(fetchSurveys());
-      // return <SurveysScreen />;
+    "/": route(async () => {
+      const { data: surveys } = await Axios.get("/api/surveys");
 
       return {
-        view: <div>Surveys List</div>
+        view: <SurveysScreen surveys={surveys} />
       };
     }),
 
