@@ -1,9 +1,7 @@
 import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
-// import { connect } from "react-redux";
 import SortButton from "./SortButton";
 import SurveyListContext from "./SurveyListContext";
-// import { sortSurveyList } from "../../state/ducks/surveys";
 
 const SortPanel = ({ keys = [] }) => {
   const [state, setState] = useState({ key: "name" });
