@@ -8,19 +8,23 @@ import SurveyCardContext from "./Context";
 import {
   context as ManageSurveyButtonContext,
   basePath,
-  naviPaths
+  naviPaths as ManageSurveyButtonNaviPaths
 } from "./ManageSurveyButton.stories";
 
-const context = {
+export const context = {
   ...ManageSurveyButtonContext,
   handleCloseClick: action("Close clicked"),
   handleLaunchClick: action("Launch clicked")
 };
 
+export const naviPaths = [
+  ...ManageSurveyButtonNaviPaths,
+  `${basePath}/results`,
+  `${basePath}/dashboard`
+];
+
 storiesOf("Admin/SurveyCard", module)
-  .addDecorator(
-    withNavi([...naviPaths, `${basePath}/results`, `${basePath}/dashboard`])
-  )
+  .addDecorator(withNavi(naviPaths))
   .addDecorator(s => (
     <SurveyCardContext.Provider value={context}>
       {s()}
