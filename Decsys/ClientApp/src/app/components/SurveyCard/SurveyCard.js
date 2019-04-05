@@ -1,33 +1,32 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { FlexBox, ActiveIndicator } from "../ui";
-import { connect } from "react-redux";
 import { Typography, Box } from "@smooth-ui/core-sc";
 import RunCountBadge from "./RunCountBadge";
 import { Grid, Cell } from "styled-css-grid";
 import * as Buttons from "./SurveyCardButton";
 import ManageSurveyButton from "./ManageSurveyButton";
-import { closeInstance, launchInstance } from "../../state/ducks/surveys";
+import SurveyCardContext from "./Context";
 
-const PureSurveyCard = ({
+const SurveyCard = ({
   id,
   name,
   activeInstanceId,
   runCount = 0,
-  allowLaunch = false,
-  onLaunchClick,
-  onCloseClick
+  allowLaunch = false
 }) => {
+  const { handleCloseClick, handleLaunchClick } = useContext(SurveyCardContext);
+
   // conditionally prep buttons beforehand
   const buttons = [];
   if (!!activeInstanceId) {
     buttons.push(
-      <Buttons.Close onClick={() => onCloseClick(id, activeInstanceId)} />
+      <Buttons.Close onClick={() => handleCloseClick(id, activeInstanceId)} />
     );
     buttons.push(<Buttons.Dashboard id={id} />);
   }
   if (allowLaunch && !activeInstanceId)
-    buttons.push(<Buttons.Launch onClick={() => onLaunchClick(id)} />);
+    buttons.push(<Buttons.Launch onClick={() => handleLaunchClick(id)} />);
   if (runCount > 0) buttons.push(<Buttons.Results id={id} />);
 
   return (
@@ -69,23 +68,12 @@ const PureSurveyCard = ({
   );
 };
 
-PureSurveyCard.propTypes = {
+SurveyCard.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   activeInstanceId: PropTypes.number,
   runCount: PropTypes.number,
   allowLaunch: PropTypes.bool
 };
-
-const SurveyCard = connect(
-  null,
-  (dispatch, { id }) => ({
-    onLaunchClick: id => dispatch(launchInstance(id)), // TODO: action
-    onCloseClick: (surveyId, instanceId) =>
-      dispatch(closeInstance(surveyId, instanceId))
-  })
-)(PureSurveyCard);
-
-export { PureSurveyCard };
 
 export default SurveyCard;

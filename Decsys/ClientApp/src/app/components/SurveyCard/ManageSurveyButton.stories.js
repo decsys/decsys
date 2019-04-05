@@ -6,15 +6,17 @@ import { action } from "@storybook/addon-actions";
 import withNavi from "../../utils/story-navi";
 import SurveyCardContext from "./Context";
 
-const context = {
+export const context = {
+  handleEditClick: action("Edit clicked"),
   handleDuplicateClick: action("Duplicate clicked"),
   handleDeleteClick: action("Delete clicked")
 };
 
+export const basePath = "/admin/survey/:id";
+export const naviPaths = [`${basePath}/preview`, `${basePath}/export`];
+
 storiesOf("Admin/SurveyCard/ManageSurveyButton", module)
-  .addDecorator(
-    withNavi(["/admin/survey/:id/preview", "/admin/survey/:id/export"])
-  )
+  .addDecorator(withNavi(naviPaths))
   .addDecorator(s => (
     <SurveyCardContext.Provider value={context}>
       {s()}
