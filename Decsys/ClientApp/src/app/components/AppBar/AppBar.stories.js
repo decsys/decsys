@@ -4,8 +4,10 @@ import AppBar from "./AppBar";
 import AppBarLink from "./Link";
 import { Button } from "@smooth-ui/core-sc";
 import { action } from "@storybook/addon-actions";
+import withNavi from "../../utils/story-navi";
 
 storiesOf("AppBar", module)
+  .addDecorator(withNavi(["/somewhere", "/link", "/anotherLink"]))
   .add("Default", () => <AppBar />)
   .add("Brand", () => <AppBar variant="danger" brand="My Brand" />)
   .add("One Child", () => (

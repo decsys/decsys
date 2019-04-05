@@ -1,13 +1,69 @@
 import React, { useState, useEffect } from "react";
+import Axios from "axios";
 import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
 import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
+import { useNavigation } from "react-navi";
 import { Container, FlexBox, EmptyState } from "../../components/ui";
 import SurveyList from "../../components/SurveyList";
+import SurveyCardContext from "../../components/SurveyCard/Context";
+
+const surveyMapReduce = surveys =>
+  surveys.reduce((acc, survey) => {
+    acc[survey.id] = survey;
+    return acc;
+  }, {});
 
 const SurveyScreen = ({ surveys: surveyList }) => {
-  const [surveys, setSurveys] = useState(surveyList);
+  const [surveys, setSurveys] = useState(surveyMapReduce(surveyList));
 
-  const handleCreateClick = () => {};
+  const navigation = useNavigation();
+
+  const handleCreateClick = async () => {
+    // create the survey
+    const { data: id } = await Axios.post("/api/surveys");
+    // redirect to the editor with this survey
+    //await dispatch(setSurveyPlaceholder("Untitled Survey")); // TODO: Routing state?
+    navigation.navigate(`admin/survey/${id}`);
+  };
+
+  const context = {
+    handleEditClick: id => navigation.navigate(`admin/survey/${id}`), // TODO: Routing state for placeholder?
+    handleDeleteClick: async id => {
+      await Axios.delete(`/api/surveys/${id}`);
+      const { [id]: _, ...keep } = surveys;
+      setSurveys(keep);
+    },
+    handleDuplicateClick: async id => {
+      await Axios.post(`/api/surveys/${id}/duplicate`);
+      const { data: surveyList } = await Axios.get("/api/surveys");
+      setSurveys(surveyMapReduce(surveyList));
+    },
+    handleLaunchClick: async id => {
+      const { data: instanceId } = await Axios.post(
+        `/api/surveys/${id}/instances`
+      );
+      setSurveys({
+        ...surveys,
+        [id]: {
+          ...surveys[id],
+          runCount: surveys[id].runCount + 1,
+          activeInstanceId: instanceId
+        }
+      });
+    },
+    handleCloseClick: async (surveyId, instanceId) => {
+      await Axios.post(
+        `/api/surveys/${surveyId}/instances/${instanceId}/close`
+      );
+      setSurveys({
+        ...surveys,
+        [surveyId]: {
+          ...surveys[surveyId],
+          activeInstanceId: null
+        }
+      });
+    }
+  };
 
   return (
     <Container>
@@ -36,7 +92,9 @@ const SurveyScreen = ({ surveys: surveyList }) => {
             and results to an external source.
           </Alert>
 
-          <SurveyList surveys={surveys} />
+          <SurveyCardContext.Provider value={context}>
+            <SurveyList surveys={surveys} />
+          </SurveyCardContext.Provider>
         </>
       )}
     </Container>
@@ -44,85 +102,3 @@ const SurveyScreen = ({ surveys: surveyList }) => {
 };
 
 export default SurveyScreen;
-
-// import PropTypes from "prop-types";
-// import { connect } from "react-redux";
-// import {
-//   Container,
-//   FlexBox,
-//   EmptyState,
-//   LoadingIndicator
-// } from "../../components/ui/";
-// import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
-// import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
-// import SurveyList from "../../components/SurveyList";
-// import { createSurvey } from "../../state/ducks/surveys";
-
-// const PureSurveysScreen = ({ onCreateClick, listLoaded, surveys }) => {
-//   return (
-//     <Container>
-//       <FlexBox my={3} alignItems="center" justifyContent="space-between">
-//         <Typography variant="h1">My Surveys</Typography>
-
-//         <Button variant="secondary" onClick={onCreateClick}>
-//           <PlusCircle size="1em" /> Create new Survey
-//         </Button>
-//       </FlexBox>
-
-//       {!Object.keys(surveys).length ? (
-//         listLoaded ? (
-//           <Box mt={9}>
-//             <EmptyState
-//               splash={<List />}
-//               message="You don't have any surveys yet."
-//               callToAction={{
-//                 label: "Create a survey",
-//                 onClick: onCreateClick
-//               }}
-//             />
-//           </Box>
-//         ) : (
-//           <LoadingIndicator />
-//         )
-//       ) : (
-//         <>
-//           <Alert variant="info">
-//             <InfoCircle size="1em" /> Please don't forget to backup your surveys
-//             and results to an external source.
-//           </Alert>
-
-//           <SurveyList
-//             surveys={surveys}
-//             allowLaunch={
-//               Object.keys(surveys).filter(
-//                 id => surveys[id].activeInstanceId != null
-//               ).length === 0
-//             }
-//           />
-//         </>
-//       )}
-//     </Container>
-//   );
-// };
-
-// PureSurveysScreen.propTypes = {
-//   onCreateClick: PropTypes.func.isRequired,
-//   listLoaded: PropTypes.bool,
-//   surveys: PropTypes.shape({})
-// };
-
-// PureSurveysScreen.defaultProps = { surveys: {} };
-
-// const SurveysScreen = connect(
-//   ({ surveys: { list, listLoaded } }) => ({
-//     surveys: list,
-//     listLoaded
-//   }),
-//   dispatch => ({
-//     onCreateClick: () => dispatch(createSurvey())
-//   })
-// )(PureSurveysScreen);
-
-// export { PureSurveysScreen };
-
-// export default SurveysScreen;

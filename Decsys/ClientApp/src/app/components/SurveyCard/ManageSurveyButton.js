@@ -24,19 +24,21 @@ const ManageSurveyButton = ({ name, editable, id }) => {
         button={<EllipsisV size="1em" />}
         caret={false}
       >
-        {editable && <MenuItem onClick={handleEditClick}>Edit</MenuItem>}
+        {editable && (
+          <MenuItem onClick={() => handleEditClick(id)}>Edit</MenuItem>
+        )}
         <MenuRouterLink href={`admin/survey/${id}/preview`}>
           Preview
         </MenuRouterLink>
         <MenuRouterLink href={`admin/survey/${id}/export`}>
           Export
         </MenuRouterLink>
-        <MenuItem onClick={handleDuplicateClick}>Duplicate</MenuItem>
+        <MenuItem onClick={() => handleDuplicateClick(id)}>Duplicate</MenuItem>
         <MenuItem onClick={toggleDeleteModal}>Delete</MenuItem>
       </DropdownMenuButton>
       <DeleteSurveyModal
         surveyName={name}
-        deleteSurvey={handleDeleteClick}
+        deleteSurvey={() => handleDeleteClick(id)}
         closeModal={toggleDeleteModal}
         modalOpened={showDeleteModal}
       />
