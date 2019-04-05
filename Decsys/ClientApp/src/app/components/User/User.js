@@ -1,40 +1,36 @@
-import React, { useState } from "react";
-import { UserProvider } from "../../contexts/user";
+import React, { useState, useEffect } from "react";
+import UserContext from "../../contexts/user";
 
-const User = ({ children, location }) => {
+const User = ({ children }) => {
   const [user, setUser] = useState({
     localhost: false,
     user: { roles: {} },
     instances: {}
   });
 
-  const actions = {
-    checkLocalAdmin: () => {
-      if (window.location.hostname === "localhost") {
-        setUser({
-          ...user,
-          localhost: true,
-          user: {
-            ...user.user,
-            roles: { ...user.user.roles, admin: true }
-          }
-        });
-      } else {
-        setUser({
-          ...user,
-          localhost: false,
-          user: {
-            ...user.user,
-            roles: { ...user.user.roles, admin: false }
-          }
-        });
-      }
+  useEffect(() => {
+    if (window.location.hostname === "localhost") {
+      setUser({
+        ...user,
+        localhost: true,
+        user: {
+          ...user.user,
+          roles: { ...user.user.roles, admin: true }
+        }
+      });
+    } else {
+      setUser({
+        ...user,
+        localhost: false,
+        user: {
+          ...user.user,
+          roles: { ...user.user.roles, admin: false }
+        }
+      });
     }
-  };
+  }, []);
 
-  return (
-    <UserProvider value={{ ...user, ...actions }}>{children}</UserProvider>
-  );
+  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 };
 
 export default User;

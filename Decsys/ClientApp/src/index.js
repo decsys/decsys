@@ -9,7 +9,6 @@ import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import theme from "./app/themes";
 import App from "./app/App";
-import User from "./app/components/User";
 import configureStore from "./app/state/store";
 
 /**
@@ -53,11 +52,9 @@ document.addEventListener("__DECSYS__ComponentsLoaded", () =>
 
       <ThemeProvider theme={theme}>
         <Provider store={configureStore(history)}>
-          <User>
-            <ConnectedRouter history={history}>
-              <App />
-            </ConnectedRouter>
-          </User>
+          <ConnectedRouter history={history}>
+            <App />
+          </ConnectedRouter>
         </Provider>
       </ThemeProvider>
     </>,

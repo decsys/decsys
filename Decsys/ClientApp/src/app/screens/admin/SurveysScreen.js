@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
@@ -11,8 +11,24 @@ import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
 import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
 import SurveyList from "../../components/SurveyList";
 import { createSurvey } from "../../state/ducks/surveys";
+import UserContext from "../../contexts/user";
+import AppBar from "../../components/AppBar";
 
 const PureSurveysScreen = ({ onCreateClick, listLoaded, surveys }) => {
+  const { user } = useContext(UserContext);
+
+  if (!user.roles.admin)
+    return (
+      <>
+        <AppBar brand="DECSYS" />
+        <Container>
+          <FlexBox mt={5}>
+            <EmptyState message="401: Not Authorised" />
+          </FlexBox>
+        </Container>
+      </>
+    );
+
   return (
     <Container>
       <FlexBox my={3} alignItems="center" justifyContent="space-between">
