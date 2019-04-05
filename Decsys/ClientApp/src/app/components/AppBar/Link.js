@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-navi";
 import {
   Typography,
   colorYik,
@@ -35,7 +35,7 @@ const GetColors = p => {
 };
 
 Link.propTypes = {
-  to: PropTypes.string.isRequired,
+  href: PropTypes.string.isRequired,
   variant: PropTypes.string
 };
 
