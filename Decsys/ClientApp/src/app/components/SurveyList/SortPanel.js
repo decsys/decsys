@@ -9,7 +9,7 @@ const SortPanel = ({ keys = [], state, onSortButtonClick }) => {
         key={key}
         active={state.key === key}
         asc={state[key]}
-        onClick={key => onSortButtonClick(key)}
+        onClick={() => onSortButtonClick(key)}
       >
         {label}
       </SortButton>

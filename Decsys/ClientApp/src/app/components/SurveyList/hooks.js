@@ -15,7 +15,7 @@ export const useAllowLaunch = surveys => {
 };
 
 export const useSortingAndFiltering = surveys => {
-  const [sorting, setSorting] = useState({ key: "name" });
+  const [sorting, setSorting] = useState({ key: "name", name: true });
   const [sortedSurveys, setSortedSurveys] = useState([]);
   const [filter, setFilter] = useState("");
   const [filteredSurveys, setFilteredSurveys] = useState([]);
