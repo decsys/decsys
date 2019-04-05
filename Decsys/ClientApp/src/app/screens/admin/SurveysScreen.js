@@ -36,14 +36,7 @@ const SurveyScreen = ({ surveys: surveyList }) => {
             and results to an external source.
           </Alert>
 
-          <SurveyList
-            surveys={surveys}
-            allowLaunch={
-              Object.keys(surveys).filter(
-                id => surveys[id].activeInstanceId != null
-              ).length === 0
-            }
-          />
+          <SurveyList surveys={surveys} />
         </>
       )}
     </Container>
