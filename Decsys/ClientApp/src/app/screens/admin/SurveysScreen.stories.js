@@ -1,41 +1,30 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import { PureSurveysScreen } from "./SurveysScreen";
-import { surveyListProps } from "../../components/SurveyList/SurveyList.stories";
-import { action } from "@storybook/addon-actions";
-import StoryRouter from "storybook-react-router";
-import { withBasicStore } from "../../utils/story-redux";
+import withNavi from "../../utils/story-navi";
+import SurveyCardContext from "../../components/SurveyCard/Context";
+import { surveys } from "../../components/SurveyList/SurveyList.stories";
+import {
+  naviPaths,
+  context
+} from "../../components/SurveyCard/SurveyCard.stories";
+import SurveysScreen from "./SurveysScreen";
 
-const store = {
-  surveys: {
-    filtered: surveyListProps.filtered,
-    sorted: surveyListProps.sorted,
-    sortState: surveyListProps.sortState
-  }
-};
-
-const { surveys } = surveyListProps;
-
-const actions = {
-  onFetchSurveys: action("Fetched Surveys from API"),
-  onCreateClick: action("Create Survey clicked")
-};
+// flatten this, since that's how we get it from the api
+const surveyList = Object.keys(surveys).map(id => surveys[id]);
+const inactiveSurveyList = surveyList.map(x => ({
+  ...x,
+  activeInstanceId: null
+}));
 
 storiesOf("Admin/SurveysScreen", module)
-  .addDecorator(StoryRouter())
-  .addDecorator(withBasicStore(store))
-  .add("Loading", () => <PureSurveysScreen {...actions} />)
-  .add("Empty", () => <PureSurveysScreen {...actions} listLoaded />)
-  .add("Surveys", () => <PureSurveysScreen surveys={surveys} {...actions} />)
+  .addDecorator(withNavi(naviPaths))
+  .addDecorator(s => (
+    <SurveyCardContext.Provider value={context}>
+      {s()}
+    </SurveyCardContext.Provider>
+  ))
+  .add("Empty", () => <SurveysScreen />)
+  .add("Surveys", () => <SurveysScreen surveys={surveyList} />)
   .add("No Active Survey", () => (
-    <PureSurveysScreen
-      {...actions}
-      surveys={Object.keys(surveys).reduce((acc, id) => {
-        acc[id] = {
-          ...surveys[id],
-          activeInstanceId: null
-        };
-        return acc;
-      }, {})}
-    />
+    <SurveysScreen surveys={inactiveSurveyList} />
   ));

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import Axios from "axios";
 import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
 import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
@@ -13,7 +14,9 @@ const surveyMapReduce = surveys =>
     return acc;
   }, {});
 
-const SurveyScreen = ({ surveys: surveyList }) => {
+// TODO: possibly context should be passed in, but don't want a container component
+
+const SurveysScreen = ({ surveys: surveyList }) => {
   const [surveys, setSurveys] = useState(surveyMapReduce(surveyList));
 
   const navigation = useNavigation();
@@ -101,4 +104,12 @@ const SurveyScreen = ({ surveys: surveyList }) => {
   );
 };
 
-export default SurveyScreen;
+SurveysScreen.propTypes = {
+  surveys: PropTypes.shape({})
+};
+
+SurveysScreen.defaultProps = {
+  surveys: []
+};
+
+export default SurveysScreen;
