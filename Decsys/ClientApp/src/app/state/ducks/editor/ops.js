@@ -2,13 +2,6 @@ import * as actions from "./actions";
 import { push } from "connected-react-router";
 import axios from "axios";
 
-// because we send a string not a JSON object as body data
-const appJsonHeaderOptions = {
-  headers: {
-    "Content-Type": "application/json" // because we send a string not a JSON object as body data
-  }
-};
-
 /**
  * Get a Survey and add it to the state as the current Editor Survey
  * @param {*} id
