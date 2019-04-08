@@ -1,27 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import EditorBar from "../../components/EditorBar";
+import EditorBar from "../../../components/EditorBar";
 import { Grid, Cell } from "styled-css-grid";
-import EditorPageList from "../../components/EditorPageList";
-import { LoadingIndicator, FlexBox, EmptyState } from "../../components/ui";
-import * as ducks from "../../state/ducks/editor";
+import EditorPageList from "../../../components/EditorPageList";
+import { LoadingIndicator, FlexBox, EmptyState } from "../../../components/ui";
 import { FileAlt } from "styled-icons/fa-solid";
 import { Box, colorVariant } from "@smooth-ui/core-sc";
-import ComponentRender from "../../components/ComponentRender";
-import ComponentEditor from "../../components/ComponentEditor";
-import ParagraphPreview from "../../components/ComponentEditor/ParagraphPreview";
-import ImageUpload from "../../components/ComponentEditor/ImageUpload";
-import { getComponent } from "../../utils/component-utils";
+import ComponentRender from "../../../components/ComponentRender";
+import ComponentEditor from "../../../components/ComponentEditor";
+import ParagraphPreview from "../../../components/ComponentEditor/ParagraphPreview";
+import ImageUpload from "../../../components/ComponentEditor/ImageUpload";
+import { getComponent } from "../../../utils/component-utils";
 
 const PureEditorScreen = ({
   id,
   survey,
-  surveyLoaded,
-  updateStates,
   components,
-  onNameChange,
   onParamChange,
   onImageAddClick,
   onImageRemoveClick,
@@ -30,25 +24,14 @@ const PureEditorScreen = ({
 }) => {
   // Configure the base Editor Bar so we don't pass props multiple times
   const SurveyEditorBar = ({ disabled }) => (
-    <EditorBar
-      id={id}
-      name={survey.name || ""}
-      nameUpdateState={updateStates.name}
-      onNameChange={onNameChange}
-      disabled={disabled}
-    />
+    <EditorBar id={id} name={survey.name || ""} disabled={disabled} />
   );
 
   const CurrentComponent = component
     ? getComponent(component.component.type)
     : null;
 
-  return !surveyLoaded ? (
-    <FlexBox flexDirection="column">
-      <SurveyEditorBar disabled />
-      <LoadingIndicator />
-    </FlexBox>
-  ) : (
+  return (
     <Grid
       columns="1fr 2fr"
       rows="auto minmax(200px, 2fr) minmax(200px, 1fr)"
@@ -174,14 +157,7 @@ PureEditorScreen.propTypes = {
   survey: PropTypes.shape({
     name: PropTypes.string.isRequired
   }),
-  surveyLoaded: PropTypes.bool,
-  updateStates: PropTypes.shape({
-    name: EditorBar.propTypes.nameUpdateState
-  }),
-  onNameChange: PropTypes.func.isRequired,
-  onDuplicateClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
   pageListActions: EditorPageList.propTypes.actions
 };
 
-export default EditorScreen;
+export default PureEditorScreen;

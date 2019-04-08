@@ -18,16 +18,12 @@ export const SurveyEditorContext = createContext({});
 //     ({ editor: { survey, surveyLoaded, updateStates, component } }) => ({
 //       survey,
 //       component,
-//       surveyLoaded,
-//       updateStates,
 //       components: Object.keys(window.__DECSYS__.Components).map(type => ({
 //         type,
 //         icon: window.__DECSYS__.Components[type].icon
 //       }))
 //     }),
 //     (dispatch, { id }) => ({
-//       onNameChange: ({ target: { value } }) =>
-//         dispatch(ducks.editName(id, value)),
 //       onParamChange: (pageId, componentId, paramKey, value) =>
 //         dispatch(ducks.editParam(id, pageId, componentId, paramKey, value)),
 //       onImageAddClick: (pageId, componentId, file, extension) =>
