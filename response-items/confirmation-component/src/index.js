@@ -12,7 +12,7 @@ const Confirm = ({ label, initialChecked, setNextEnabled, logResults }) => {
   const id = new Date().getTime();
 
   const handleChange = e => {
-    logResults(e.target.checked);
+    logResults({ confirmed: e.target.checked });
     setChecked(e.target.checked);
     setNextEnabled(e.target.checked);
   };
