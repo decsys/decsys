@@ -10,6 +10,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^10.1.1",
+    "react-busy-indicator": "^1.0.0",
     "react-dom": "^16.8.6",
     "react-markdown": "^4.0.6",
     "react-navi": "^0.12.4",
