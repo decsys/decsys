@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
 import SurveyPage from "../../components/SurveyPage";
 import { LoadingIndicator } from "../../components/ui";
 import AppBar, { AppBarLink } from "../../components/AppBar";
@@ -40,13 +38,13 @@ const PurePreviewScreen = ({
   );
 };
 
-const PreviewScreen = withRouter(
-  connect(({ editor: { survey, surveyLoaded } }) => ({
-    survey,
-    surveyLoaded
-  }))(PurePreviewScreen)
-);
+// const PreviewScreen = withRouter(
+//   connect(({ editor: { survey, surveyLoaded } }) => ({
+//     survey,
+//     surveyLoaded
+//   }))(PurePreviewScreen)
+// );
 
 export { PurePreviewScreen };
 
-export default PreviewScreen;
+export default PurePreviewScreen;
