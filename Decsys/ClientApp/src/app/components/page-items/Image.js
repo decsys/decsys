@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import paramTypes, { setParams } from "@decsys/param-types";
 import { FlexBox } from "../ui";
 
-const PageImage = ({ surveyId, id, extension }) =>
+const PageImage = ({ surveyId, id, extension }) => {
   // TODO: this probably shouldn't be hard coded,
   // but it also doesn't need implementation exposing elsewhere
   // this is clean, but we should probably move the path to a config or something
@@ -12,15 +12,26 @@ const PageImage = ({ surveyId, id, extension }) =>
   // but for now just local uploaded images
 
   // atm we do nothing if the param isn't set
-  (extension && (
-    <FlexBox width={1} justifyContent="center">
-      <img
-        alt={`SurveyPageComponent_${surveyId}_${id}`}
-        src={`/surveys/images/${surveyId}/${id}${extension}?${new Date().getTime()}`}
-      />
-    </FlexBox>
-  )) ||
-  null;
+  const src = `/surveys/images/${surveyId}/${id}${extension}?${new Date().getTime()}`;
+  return (
+    (extension && (
+      <FlexBox width={1} justifyContent="center">
+        <img
+          alt={`SurveyPageComponent_${surveyId}_${id}`}
+          src={src}
+          onError={e => {
+            // TODO: Improve this
+            e.persist();
+            setTimeout(() => {
+              e.target.src = src;
+            }, 100);
+          }}
+        />
+      </FlexBox>
+    )) ||
+    null
+  );
+};
 
 PageImage.propTypes = {
   surveyId: PropTypes.number,

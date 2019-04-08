@@ -1,25 +1,30 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { Typography, Input } from "@smooth-ui/core-sc";
 import FlexBox from "../ui/FlexBox";
-import SortPanel, { PureSortPanel } from "./SortPanel";
+import SortPanel from "./SortPanel";
 import SurveyCard from "../SurveyCard";
-import { sortSurveyList, filterSurveyList } from "../../state/ducks/surveys";
+import { useAllowLaunch, useSortingAndFiltering } from "./hooks";
 
-const PureSurveyList = ({
-  surveys,
-  sorted,
-  filtered,
-  sortState,
-  filter,
-  allowLaunch,
-  onFilterChange,
-  onSortSurveyList
-}) => {
-  useEffect(() => {
-    if (!sorted.length) onSortSurveyList(sortState); // initial sort only if it hasn't been done
-  });
+const SurveyList = ({ surveys }) => {
+  const allowLaunch = useAllowLaunch(surveys);
+
+  const {
+    sorting,
+    setSorting,
+    filter,
+    setFilter,
+    surveyList
+  } = useSortingAndFiltering(surveys);
+
+  const handleSortButtonClick = key => {
+    setSorting({
+      ...sorting,
+      key,
+      [key]: sorting.key === key ? !sorting[key] : sorting[key]
+    });
+  };
+
   return (
     <>
       <FlexBox alignItems="center" mb="1em">
@@ -27,7 +32,8 @@ const PureSurveyList = ({
           Sort by:
         </Typography>
         <SortPanel
-          sortState={sortState}
+          state={sorting}
+          onSortButtonClick={handleSortButtonClick}
           keys={["Active", ["Run Count", "runCount"], "Name"]}
         />
 
@@ -36,11 +42,11 @@ const PureSurveyList = ({
           value={filter}
           size="sm"
           ml="auto"
-          onChange={({ target }) => onFilterChange(target.value)}
+          onChange={({ target }) => setFilter(target.value)}
         />
       </FlexBox>
 
-      {filtered.map(
+      {surveyList.map(
         ({ id }) =>
           !!surveys[id] && (
             <SurveyCard key={id} {...surveys[id]} allowLaunch={allowLaunch} />
@@ -50,46 +56,8 @@ const PureSurveyList = ({
   );
 };
 
-PureSurveyList.propTypes = {
-  surveys: PropTypes.shape({}),
-  sorted: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
-  filtered: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
-    })
-  ),
-  sortState: PureSortPanel.propTypes.sortState,
-  filter: PropTypes.string,
-  allowLaunch: PropTypes.bool,
-  onFilterChange: PropTypes.func.isRequired,
-  onSortSurveyList: PropTypes.func.isRequired
+SurveyList.propTypes = {
+  surveys: PropTypes.shape({})
 };
-
-PureSurveyList.defaultProps = {
-  sorted: [],
-  filtered: []
-};
-
-const SurveyList = connect(
-  ({ surveys: { sorted, filtered, filter, sortState } }) => ({
-    sorted,
-    filtered,
-    filter,
-    sortState
-  }),
-  dispatch => ({
-    onSortSurveyList: sortState =>
-      dispatch(sortSurveyList(sortState.key, sortState[sortState.key])),
-    onFilterChange: filter => dispatch(filterSurveyList(filter))
-  })
-)(PureSurveyList);
-
-export { PureSurveyList };
 
 export default SurveyList;

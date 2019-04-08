@@ -23,7 +23,7 @@ const AppBar = ({ brand, children, variant, brandLink }) => {
     <FlexBox backgroundColor={variant} alignItems="center">
       <Container>
         <FlexBox alignItems="center" justifyContent="space-between">
-          <Brand variant={variant} to={brandLink}>
+          <Brand variant={variant} href={brandLink}>
             {brand}
           </Brand>
           {children != null && (

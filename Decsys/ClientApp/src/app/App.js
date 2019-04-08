@@ -1,70 +1,19 @@
-import React from "react";
-import { connect } from "react-redux";
-import AppBar from "./components/AppBar";
-import { Route, Redirect, Switch, withRouter } from "react-router-dom";
-import SurveysScreen from "./screens/admin/SurveysScreen";
-import { Container, EmptyState, FlexBox } from "./components/ui";
-import { fetchSurveys } from "./state/ducks/surveys";
-import { getSurvey } from "./state/ducks/editor/ops";
-import EditorScreen from "./screens/admin/EditorScreen";
-import PreviewScreen from "./screens/admin/PreviewScreen";
+import React, { Suspense } from "react";
+import { Router, View, NotFoundBoundary } from "react-navi";
+import routes from "./routes";
+import ErrorScreen from "./screens/ErrorScreen";
+import { LoadingIndicator } from "./components/ui";
 
-const PureApp = ({ dispatch }) => {
+const App = () => {
   return (
-    <Switch>
-      <Route
-        path="/"
-        exact
-        render={() => (
-          // TODO: conditional logic for admin
-          <Redirect to="/admin" />
-        )}
-      />
-
-      <Route
-        path="/admin"
-        exact
-        render={() => {
-          dispatch(fetchSurveys());
-          return <SurveysScreen />;
-        }}
-      />
-
-      <Route
-        path="/admin/survey/:id"
-        exact
-        render={({ match }) => {
-          dispatch(getSurvey(match.params.id));
-          return <EditorScreen id={match.params.id} />;
-        }}
-      />
-
-      <Route
-        path="/admin/survey/:id/preview"
-        exact
-        render={({ match }) => {
-          dispatch(getSurvey(match.params.id));
-          return <PreviewScreen id={match.params.id} />;
-        }}
-      />
-
-      <Route
-        render={() => (
-          // Any unrecognised frontend route = 404
-          <>
-            <AppBar brand="DECSYS" />
-            <Container>
-              <FlexBox mt={5}>
-                <EmptyState message="404: Not Found" />
-              </FlexBox>
-            </Container>
-          </>
-        )}
-      />
-    </Switch>
+    <Router routes={routes}>
+      <NotFoundBoundary render={() => <ErrorScreen message="404: Not Found" />}>
+        <Suspense fallback={<LoadingIndicator />}>
+          <View /> {/* We don't have any real common layout to speak of */}
+        </Suspense>
+      </NotFoundBoundary>
+    </Router>
   );
 };
-
-const App = withRouter(connect()(PureApp));
 
 export default App;

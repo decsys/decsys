@@ -9,20 +9,19 @@ const ComponentEditor = ({ component, params, onChange }) => {
   const list = [];
   for (const key in component.params) {
     const p = component.params[key];
-    list.push(
-      <>
-        <Typography textAlign="right" fontWeight="bold">
-          {p.label}
-        </Typography>
-        <Param
-          value={params[key] || p.defaultValue}
-          type={p.type}
-          paramKey={key}
-          oneOf={p.oneOf}
-          onChange={onChange}
-        />
-      </>
-    );
+    list.push([
+      <Typography key={`${key}-label`} textAlign="right" fontWeight="bold">
+        {p.label}
+      </Typography>,
+      <Param
+        key={`${key}-value`}
+        value={params[key] || p.defaultValue}
+        type={p.type}
+        paramKey={key}
+        oneOf={p.oneOf}
+        onChange={onChange}
+      />
+    ]);
   }
 
   return (

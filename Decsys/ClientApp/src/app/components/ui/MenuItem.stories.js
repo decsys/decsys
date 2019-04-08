@@ -1,13 +1,13 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import StoryRouter from "storybook-react-router";
 import { AngleRight, GlobeAmericas } from "styled-icons/fa-solid";
 import MenuItem from "./MenuItem";
 import MenuRouterLink from "./MenuRouterLink";
+import withNavi from "../../utils/story-navi";
 
 storiesOf("Common UI/MenuItem", module)
-  .addDecorator(StoryRouter())
+  .addDecorator(withNavi(["/somewhere"]))
   .add("Text", () => (
     <MenuItem onClick={action("Hello clicked")}>Hello</MenuItem>
   ))
@@ -18,7 +18,7 @@ storiesOf("Common UI/MenuItem", module)
     </MenuItem>
   ))
   .add("MenuRouterLink", () => (
-    <MenuRouterLink to="/somewhere">
+    <MenuRouterLink href="/somewhere">
       <GlobeAmericas size="1em" /> Go /somewhere
     </MenuRouterLink>
   ));

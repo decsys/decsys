@@ -1,18 +1,19 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
 import { Button as SmoothButton } from "@smooth-ui/core-sc";
+import { useNavigation } from "react-navi";
 
 const Button = props => (
   <SmoothButton borderRadius={0} width="120px" variant="secondary" {...props} />
 );
 
-const LinkButton = withRouter(
-  ({ to, history, onClick, staticContext, ...p }) => (
-    <Button {...p} onClick={() => history.push(to)}>
+const LinkButton = ({ onClick, href, ...p }) => {
+  const navigation = useNavigation();
+  return (
+    <Button textAlign="center" {...p} onClick={() => navigation.navigate(href)}>
       {p.children}
     </Button>
-  )
-);
+  );
+};
 
 export { LinkButton };
 

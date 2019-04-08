@@ -5,13 +5,13 @@ export const getSurvey = survey => ({
   payload: { survey }
 });
 
-export const setSurveyPlaceholder = name => ({
-  type: types.SET_SURVEY_PLACEHOLDER,
-  payload: { name }
-});
+// export const setSurveyPlaceholder = name => ({
+//   type: types.SET_SURVEY_PLACEHOLDER,
+//   payload: { name }
+// });
 
-export const saveName = name => ({
-  type: types.EDIT_NAME,
+export const setName = name => ({
+  type: types.SET_NAME,
   payload: { name }
 });
 
@@ -21,7 +21,7 @@ export const savingName = () => ({
 
 export const addPage = page => ({
   type: types.ADD_PAGE,
-  payload: { ...page }
+  payload: page
 });
 
 export const addPageItem = (pageId, component) => ({

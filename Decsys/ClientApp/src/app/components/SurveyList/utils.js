@@ -14,8 +14,8 @@ const getPropertySorter = (key, asc) => {
     ) => (asc ? a.localeCompare(b) : b.localeCompare(a)),
     active: (
       // use custom property keys
-      { activeInstanceId: a },
-      { activeInstanceId: b }
+      { activeInstanceId: a = 0 },
+      { activeInstanceId: b = 0 }
     ) => defaultSorter(a, b) // but use default sort logic
   };
 

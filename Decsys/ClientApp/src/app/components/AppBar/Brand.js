@@ -6,7 +6,7 @@ const Brand = styled(Link).attrs(() => ({
   variant: "h4",
   display: "inline",
   mb: ".1rem",
-  to: `${({ to }) => to || "/"}`
+  href: `${({ href }) => href || "/"}`
 }))``;
 
 Brand.propTypes = {

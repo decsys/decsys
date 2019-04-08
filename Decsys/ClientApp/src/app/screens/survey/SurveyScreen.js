@@ -16,7 +16,7 @@ const PureSurveyScreen = ({ id, page, preview, onClick, pageCount, nPage }) => {
       <Cell>
         {preview ? (
           <AppBar brand="DECSYS - Preview" brandLink="#">
-            <Link to={`/admin/survey/${id}`}>Back to Survey Editor</Link>
+            <Link href={`/admin/survey/${id}`}>Back to Survey Editor</Link>
           </AppBar>
         ) : (
           <AppBar brand="DECSYS" />
