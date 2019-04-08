@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { DotCircle } from "styled-icons/fa-regular/DotCircle";
 import paramTypes, { setParams } from "@decsys/param-types/";
@@ -16,8 +16,22 @@ const Likert = ({
   labelAlignment,
   initialIndex,
   initialValue,
+  logResults,
+  setNextEnabled,
   ...radioParams
 }) => {
+  const handleLikertSelected = e => {
+    logResults(e.detail);
+    setNextEnabled(true);
+  };
+
+  useEffect(() => {
+    setNextEnabled(false);
+    document.addEventListener("LikertSelected", handleLikertSelected);
+    return () =>
+      document.removeEventListener("LikertSelected", handleLikertSelected);
+  }, []);
+
   // prepare radio button values
   const radios = [];
   for (let i = 0; i < 7; i++) {

@@ -1,6 +1,12 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
+import { action } from "@storybook/addon-actions";
 import Likert from "./index";
+
+const actions = {
+  setNextEnabled: action("Next button toggled"),
+  logResults: action("Results logged")
+};
 
 storiesOf("Likert", module).add("Default", () => (
   <Likert
@@ -13,5 +19,6 @@ storiesOf("Likert", module).add("Default", () => (
     barTopMargin={50}
     barRightMargin={10}
     barThickness={8}
+    {...actions}
   />
 ));

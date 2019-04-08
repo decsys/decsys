@@ -1,7 +1,7 @@
 {
   "name": "@decsys/likert-component",
   "bundle": "LikertScale",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "description": "The Likert Scale component for the DECSYS Survey Platform",
   "main": "index.js",
   "scripts": {
