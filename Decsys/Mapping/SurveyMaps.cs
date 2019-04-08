@@ -41,7 +41,11 @@ namespace Decsys.Mapping
             CreateMap<Data.Entities.Component, Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.MapFrom(
-                        src => JObject.Parse(JsonSerializer.Serialize(src.Params, false, false)))); // TODO: make this less dumb?
+                        src => JObject.Parse(
+                            JsonSerializer.Serialize(
+                                src.Params,
+                                false,
+                                false)))); // TODO: make this less dumb?
 
             CreateMap<Component, Data.Entities.Component>()
                 .ForMember(dest => dest.Params,

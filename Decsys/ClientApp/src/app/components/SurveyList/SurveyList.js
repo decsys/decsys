@@ -4,11 +4,9 @@ import { Typography, Input } from "@smooth-ui/core-sc";
 import FlexBox from "../ui/FlexBox";
 import SortPanel from "./SortPanel";
 import SurveyCard from "../SurveyCard";
-import { useAllowLaunch, useSortingAndFiltering } from "./hooks";
+import { useSortingAndFiltering } from "./hooks";
 
 const SurveyList = ({ surveys }) => {
-  const allowLaunch = useAllowLaunch(surveys);
-
   const {
     sorting,
     setSorting,
@@ -49,7 +47,11 @@ const SurveyList = ({ surveys }) => {
       {surveyList.map(
         ({ id }) =>
           !!surveys[id] && (
-            <SurveyCard key={id} {...surveys[id]} allowLaunch={allowLaunch} />
+            <SurveyCard
+              key={id}
+              {...surveys[id]}
+              allowLaunch={!surveys[id].activeInstanceId}
+            />
           )
       )}
     </>
