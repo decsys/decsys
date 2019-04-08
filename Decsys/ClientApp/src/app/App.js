@@ -1,12 +1,19 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import { Router, View, NotFoundBoundary } from "react-navi";
 import routes from "./routes";
 import ErrorScreen from "./screens/ErrorScreen";
 import { LoadingIndicator } from "./components/ui";
+import users from "./services/user";
+
+users.init();
 
 const App = () => {
+  let [user, setUser] = useState(() => users.get());
+
+  useEffect(() => users.subscribe(setUser), []);
+
   return (
-    <Router routes={routes}>
+    <Router routes={routes} context={{ users, user }}>
       <NotFoundBoundary render={() => <ErrorScreen message="404: Not Found" />}>
         <Suspense fallback={<LoadingIndicator />}>
           <View /> {/* We don't have any real common layout to speak of */}
