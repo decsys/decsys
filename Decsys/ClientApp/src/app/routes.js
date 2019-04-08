@@ -17,11 +17,12 @@ const routes = mount({
     "/": route({
       view: <SurveyIdScreen />
     }),
-    "/survey/:id": route(({ params }) => {
+    "/:id": route(({ params }) => {
       // validate the survey instance
       // get the survey itself
       // do we have a user id, if so use it and go
-      //
+      // if not is the user required to enter an id, or do we generate one?
+      return { view: <div>Survey {params.id}</div> };
     })
   }),
 
