@@ -110,4 +110,17 @@ export const setSurveyPageItemOrder = (
 export const getSurveyInstance = (surveyId, instanceId) =>
   Axios.get(`/api/surveys/${surveyId}/instances/${instanceId}`);
 
-export const getAnonymousParticipantId = () => Axios.get("/identity/anonymous");
+export const getAnonymousParticipantId = () =>
+  Axios.post("/api/identity/anonymous");
+
+export const logParticipantEvent = (
+  instanceId,
+  participantId,
+  source,
+  type,
+  payload
+) =>
+  Axios.post(
+    `/api/log/${instanceId}/${participantId}/${source}/${type}`,
+    payload
+  );

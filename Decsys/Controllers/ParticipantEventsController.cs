@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
 {
-    [Route("log/{instanceId}/{participantId}")]
+    [Route("api/log/{instanceId}/{participantId}")]
     public class ParticipantEventsController : ControllerBase
     {
         private readonly ParticipantEventService _participantEvents;

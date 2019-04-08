@@ -4,7 +4,7 @@ import { Typography, Input } from "@smooth-ui/core-sc";
 import FlexBox from "../ui/FlexBox";
 import SortPanel from "./SortPanel";
 import SurveyCard from "../SurveyCard";
-import { useAllowLaunch, useSortingAndFiltering } from "./hooks";
+import { useSortingAndFiltering } from "./hooks";
 
 const SurveyList = ({ surveys }) => {
   const {
