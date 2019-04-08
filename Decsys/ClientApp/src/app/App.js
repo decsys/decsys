@@ -8,7 +8,7 @@ const App = () => {
   return (
     <Router routes={routes}>
       <NotFoundBoundary render={() => <ErrorScreen message="404: Not Found" />}>
-        <Suspense fallback={() => <LoadingIndicator />}>
+        <Suspense fallback={<LoadingIndicator />}>
           <View /> {/* We don't have any real common layout to speak of */}
         </Suspense>
       </NotFoundBoundary>

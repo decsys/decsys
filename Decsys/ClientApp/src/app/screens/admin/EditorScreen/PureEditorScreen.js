@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import EditorBar from "../../../components/EditorBar";
 import { Grid, Cell } from "styled-css-grid";
 import EditorPageList from "../../../components/EditorPageList";
-import { LoadingIndicator, FlexBox, EmptyState } from "../../../components/ui";
+import { EmptyState } from "../../../components/ui";
 import { FileAlt } from "styled-icons/fa-solid";
 import { Box, colorVariant } from "@smooth-ui/core-sc";
 import ComponentRender from "../../../components/ComponentRender";
@@ -13,7 +13,6 @@ import ImageUpload from "../../../components/ComponentEditor/ImageUpload";
 import { getComponent } from "../../../utils/component-utils";
 
 const PureEditorScreen = ({
-  id,
   survey,
   components,
   onParamChange,
@@ -24,7 +23,7 @@ const PureEditorScreen = ({
 }) => {
   // Configure the base Editor Bar so we don't pass props multiple times
   const SurveyEditorBar = ({ disabled }) => (
-    <EditorBar id={id} name={survey.name || ""} disabled={disabled} />
+    <EditorBar id={survey.id} name={survey.name || ""} disabled={disabled} />
   );
 
   const CurrentComponent = component
@@ -81,7 +80,7 @@ const PureEditorScreen = ({
                   component.component.type === "image"
                     ? {
                         ...component.component.params,
-                        surveyId: id,
+                        surveyId: survey.id,
                         id: component.component.id
                       }
                     : component.component.params
@@ -153,7 +152,6 @@ const PureEditorScreen = ({
 };
 
 PureEditorScreen.propTypes = {
-  id: PropTypes.string.isRequired,
   survey: PropTypes.shape({
     name: PropTypes.string.isRequired
   }),

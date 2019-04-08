@@ -49,7 +49,7 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
         return (
           <FlexBox>
             {oneOf.map(x => (
-              <FormCheck mr={2}>
+              <FormCheck key={`${paramKey}_radio_${x}`} mr={2}>
                 <Radio
                   size="sm"
                   name={`${paramKey}_radio`}

@@ -1,7 +1,8 @@
 import React from "react";
-import { mount, route, redirect, withContext } from "navi";
-import Axios from "axios";
+import { mount, route, redirect, withData } from "navi";
+import * as api from "./api";
 import SurveysScreen from "./screens/admin/SurveysScreen";
+import EditorScreen from "./screens/admin/EditorScreen";
 
 const routes = mount({
   "/": redirect("/admin"),
@@ -9,7 +10,7 @@ const routes = mount({
   // Admin
   "/admin": mount({
     "/": route(async () => {
-      const { data: surveys } = await Axios.get("/api/surveys");
+      const { data: surveys } = await api.listSurveys();
 
       return {
         view: <SurveysScreen surveys={surveys} />
@@ -18,20 +19,15 @@ const routes = mount({
 
     // Survey Editor
     "/survey": mount({
-      "/:id": withContext(
-        () => ({
-          test: "Hello there"
-        }),
+      "/:id": withData(
+        async ({ params }) => {
+          const { data: survey } = await api.getSurvey(params.id);
+          return { survey };
+        },
         mount({
-          "/": route(({ params }, { test }) => {
-            // dispatch(getSurvey(match.params.id));
-            // return <EditorScreen id={match.params.id} />;
+          "/": route(async () => {
             return {
-              view: (
-                <div>
-                  Survey Editor for: {params.id}. {test}
-                </div>
-              )
+              view: <EditorScreen />
             };
           }),
           "/preview": route(({ params }, { test }) => {

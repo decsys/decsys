@@ -66,11 +66,6 @@ const EditorBar = ({ id, name, disabled }) => {
 EditorBar.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
-  nameUpdateState: PropTypes.shape({
-    saving: PropTypes.bool,
-    saved: PropTypes.bool
-  }),
-  onNameChange: PropTypes.func.isRequired,
   disabled: PropTypes.bool
 };
 
