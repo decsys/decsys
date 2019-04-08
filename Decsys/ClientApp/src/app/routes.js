@@ -3,6 +3,7 @@ import { mount, route, redirect, withData } from "navi";
 import * as api from "./api";
 import SurveysScreen from "./screens/admin/SurveysScreen";
 import EditorScreen from "./screens/admin/EditorScreen";
+import PreviewScreen from "./screens/admin/PreviewScreen";
 
 const routes = mount({
   "/": redirect("/admin"),
@@ -25,22 +26,12 @@ const routes = mount({
           return { survey };
         },
         mount({
-          "/": route(async () => {
-            return {
-              view: <EditorScreen />
-            };
-          }),
-          "/preview": route(({ params }, { test }) => {
-            // dispatch(getSurvey(match.params.id));
-            // return <PreviewScreen id={match.params.id} />;
-            return {
-              view: (
-                <div>
-                  Survey Editor Preview for: {params.id}. {test}
-                </div>
-              )
-            };
-          })
+          "/": route(async () => ({
+            view: <EditorScreen />
+          })),
+          "/preview": route(({ params }, { test }) => ({
+            view: <PreviewScreen />
+          }))
         })
       ),
       "/:id/dashboard": route(({ params }) => ({

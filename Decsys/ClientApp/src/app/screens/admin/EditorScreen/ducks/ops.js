@@ -50,6 +50,7 @@ export const uploadImage = (
   extension
 ) => async dispatch => {
   await api.uploadComponentImage(surveyId, pageId, componentId, file);
+
   dispatch(actions.setParam(pageId, componentId, "extension", extension));
 };
 
