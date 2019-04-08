@@ -1,12 +1,14 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { FlexBox, ActiveIndicator } from "../ui";
+import { FlexBox, ActiveIndicator, Badge } from "../ui";
 import { Typography, Box } from "@smooth-ui/core-sc";
 import RunCountBadge from "./RunCountBadge";
 import { Grid, Cell } from "styled-css-grid";
 import * as Buttons from "./SurveyCardButton";
 import ManageSurveyButton from "./ManageSurveyButton";
 import SurveyCardContext from "./Context";
+import { encode } from "../../services/instance-id";
+import { InfoCircle } from "styled-icons/fa-solid";
 
 const SurveyCard = ({
   id,
@@ -29,6 +31,8 @@ const SurveyCard = ({
     buttons.push(<Buttons.Launch onClick={() => handleLaunchClick(id)} />);
   if (runCount > 0) buttons.push(<Buttons.Results id={id} />);
 
+  const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : false;
+
   return (
     <FlexBox
       backgroundColor="cardBg"
@@ -37,33 +41,56 @@ const SurveyCard = ({
     >
       <ActiveIndicator active={!!activeInstanceId} />
 
-      <Box width={1} p={1}>
-        <Grid
-          columns={`80px 1fr ${Array(buttons.length)
-            .fill("100px")
-            .join(" ")} auto`}
+      <FlexBox flexDirection="column" width={1}>
+        <Box
+          p={1}
+          borderBottom={!!activeInstanceId ? 1 : 0}
+          borderColor="cardBorder"
         >
-          <Cell middle>
-            <RunCountBadge count={runCount} />
-          </Cell>
-
-          <Cell middle>
-            <Typography variant="h5" title={name} ml={1} mb={0.5}>
-              {name}
-            </Typography>
-          </Cell>
-
-          {buttons.map((x, i) => (
-            <Cell middle key={i}>
-              {x}
+          <Grid
+            columns={`80px 1fr ${Array(buttons.length)
+              .fill("100px")
+              .join(" ")} auto`}
+          >
+            <Cell middle>
+              <RunCountBadge count={runCount} />
             </Cell>
-          ))}
 
-          <Cell middle>
-            <ManageSurveyButton id={id} name={name} editable={!runCount} />
-          </Cell>
-        </Grid>
-      </Box>
+            <Cell middle>
+              <Typography variant="h5" title={name} ml={1} mb={0.5}>
+                {name}
+              </Typography>
+            </Cell>
+
+            {buttons.map((x, i) => (
+              <Cell middle key={i}>
+                {x}
+              </Cell>
+            ))}
+
+            <Cell middle>
+              <ManageSurveyButton id={id} name={name} editable={!runCount} />
+            </Cell>
+          </Grid>
+        </Box>
+
+        {!!activeInstanceId && (
+          <FlexBox p={1} alignItems="center">
+            <Typography fontWeight="bold" mx={1}>
+              Survey ID:
+            </Typography>
+            <Typography mr={3}>{friendlyId}</Typography>
+            <Typography fontWeight="bold" mr={1}>
+              Share Link:
+            </Typography>
+            <Typography mr={2}>/survey/{friendlyId}</Typography>
+            <Typography color="info">
+              <InfoCircle size="1em" /> Remember to include your DECSYS server's
+              address
+            </Typography>
+          </FlexBox>
+        )}
+      </FlexBox>
     </FlexBox>
   );
 };
