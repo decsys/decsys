@@ -13,17 +13,16 @@ import {
 import paramTypes, { setParams } from "@decsys/param-types/";
 
 // Build a React component for our FreeText question type
-const FreeText = ({ maxLength, initialText }) => {
+const FreeText = ({ maxLength, initialText, logResults }) => {
   const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
 
   const [badgeVariant, setBadgeVariant] = useState("info");
   const [value, setValue] = useState(initialText);
   useEffect(() => setValue(initialText), [initialText]);
 
-  // Input handler to update the shiny character limit counter
-  const handleInput = ({ target: { value: v } }) => {
-    setValue(v);
-    const count = maxLength - v.length;
+  const handleInput = ({ target }) => {
+    setValue(target.value);
+    const count = maxLength - target.value.length;
     if (count === 0) {
       setBadgeVariant("danger");
     } else if (count <= threshold) {
@@ -31,6 +30,11 @@ const FreeText = ({ maxLength, initialText }) => {
     } else {
       setBadgeVariant("info");
     }
+  };
+
+  const handleBlur = e => {
+    e.persist();
+    logResults({ text: e.target.value });
   };
 
   // TODO: take this re-usably from the Survey Platform's UI, one day...
@@ -57,7 +61,8 @@ const FreeText = ({ maxLength, initialText }) => {
         value={value}
         maxLength={maxLength}
         name="FreeText"
-        onInput={handleInput}
+        onChange={handleInput}
+        onBlur={handleBlur}
       />
     </Box>
   );
