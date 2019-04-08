@@ -12,7 +12,8 @@ const SurveyIdScreen = () => {
     setId(e.target.value);
   };
 
-  const handleSubmitClick = () => {
+  const handleSubmitClick = e => {
+    e.preventDefault();
     nav.navigate(`/survey/${id}`);
   };
 
@@ -25,15 +26,17 @@ const SurveyIdScreen = () => {
         Please enter a Survey ID to participate
       </Typography>
       <FlexBox>
-        <Input
-          size="lg"
-          placeholder="Survey ID"
-          onChange={handleInputChange}
-          mr={2}
-        />
-        <Button size="lg" onClick={handleSubmitClick}>
-          Submit
-        </Button>
+        <form>
+          <Input
+            size="lg"
+            placeholder="Survey ID"
+            onChange={handleInputChange}
+            mr={2}
+          />
+          <Button size="lg" onClick={handleSubmitClick}>
+            Submit
+          </Button>
+        </form>
       </FlexBox>
     </FlexBox>
   );

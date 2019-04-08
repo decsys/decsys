@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { FlexBox, ActiveIndicator, Badge } from "../ui";
+import { FlexBox, ActiveIndicator } from "../ui";
 import { Typography, Box } from "@smooth-ui/core-sc";
 import RunCountBadge from "./RunCountBadge";
 import { Grid, Cell } from "styled-css-grid";

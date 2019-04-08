@@ -3,9 +3,7 @@ import { Router, View, NotFoundBoundary } from "react-navi";
 import routes from "./routes";
 import ErrorScreen from "./screens/ErrorScreen";
 import { LoadingIndicator } from "./components/ui";
-import users from "./services/user";
-
-users.init();
+import * as users from "./services/user";
 
 const App = () => {
   let [user, setUser] = useState(() => users.get());
