@@ -21,9 +21,9 @@ const EditorScreen = () => {
 
   const editorBarActions = {
     handleNameChange: ({ target: { value } }) =>
-      ducks.editName(survey.id, value),
-    handleDeleteClick: () => ducks.deleteSurvey(survey.id),
-    handleDuplicateClick: () => ducks.duplicateSurvey(survey.id)
+      dispatch(ducks.editName(survey.id, value)),
+    handleDeleteClick: () => dispatch(ducks.deleteSurvey(survey.id)),
+    handleDuplicateClick: () => dispatch(ducks.duplicateSurvey(survey.id))
   };
 
   const paramActions = {
@@ -71,7 +71,7 @@ const EditorScreen = () => {
 
   return (
     <EditorBarContext.Provider
-      value={{ ...editorBarActions, ...state.nameUpdateState }}
+      value={{ ...editorBarActions, nameUpdateState: state.nameUpdateState }}
     >
       <PureEditorScreen
         survey={state.survey}

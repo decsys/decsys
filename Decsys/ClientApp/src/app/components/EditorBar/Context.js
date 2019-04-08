@@ -1,6 +1,7 @@
 import { createContext } from "react";
 
 const EditorBarContext = createContext({
+  nameUpdateState: {},
   handleNameChange: () => {},
   handleDeleteClick: () => {},
   handleDuplicateClick: () => {}

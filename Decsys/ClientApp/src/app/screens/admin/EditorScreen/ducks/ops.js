@@ -25,8 +25,9 @@ export const deleteSurvey = id => async (_, nav) => {
  * Duplicate a Survey, and open the new Survey in the Editor
  * @param {*} id
  */
-export const duplicateSurvey = id => async (_, nav) => {
+export const duplicateSurvey = id => async (dispatch, nav) => {
   const { data: newId } = await api.duplicateSurvey(id);
+  dispatch(getSurvey(newId));
   nav.navigate(`/admin/survey/${newId}`);
 };
 
