@@ -32,4 +32,4 @@ export const encode = (surveyId, instanceId) =>
  * @param {*} id An ID previously encoded by `encode()`
  * @returns The Survey ID and Instance ID which generated the input ID.
  */
-export const decode = id => id.split("z").map(x => decode(x));
+export const decode = id => id.split("z").map(x => decodeId(x));

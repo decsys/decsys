@@ -106,3 +106,6 @@ export const setSurveyPageItemOrder = (
     newOrder,
     appJsonHeaderOptions
   );
+
+export const getSurveyInstance = (surveyId, instanceId) =>
+  Axios.get(`/api/surveys/${surveyId}/instances/${instanceId}`);
