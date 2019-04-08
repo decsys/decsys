@@ -1,29 +1,52 @@
-import React, { useState } from "react";
-import { PureSurveyScreen } from "../survey/SurveyScreen";
-import { useNavigation, useCurrentRoute } from "react-navi";
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import SurveyPage from "../../components/SurveyPage";
+import { LoadingIndicator } from "../../components/ui";
+import AppBar, { AppBarLink } from "../../components/AppBar";
 
-const PreviewScreen = () => {
-  const { survey } = useCurrentRoute().data;
-
+const PurePreviewScreen = ({
+  survey: { id, pages },
+  surveyLoaded,
+  history
+}) => {
   const [page, setPage] = useState(0);
-  const navigation = useNavigation();
+  const [lastPage, setLastPage] = useState(false);
+
+  useEffect(() => setLastPage(page === pages.length - 1), [page]);
 
   const handleClick = () => {
-    if (page === survey.pages.length - 1)
-      return navigation.navigate(`/admin/survey/${survey.id}`);
+    if (lastPage) history.push(`/admin/survey/${id}`);
     setPage(page + 1);
   };
 
-  return (
-    <PureSurveyScreen
-      id={survey.id}
-      nPage={page}
-      page={survey.pages[page]}
-      preview
-      onClick={handleClick}
-      pageCount={survey.pages.length}
+  return surveyLoaded ? (
+    <SurveyPage
+      id={id}
+      page={pages[page]}
+      appBar={
+        <AppBar brand="DECSYS - Preview" brandLink="#">
+          <AppBarLink to={`/admin/survey/${id}`}>
+            Back to Survey Editor
+          </AppBarLink>
+        </AppBar>
+      }
+      onNextPage={handleClick}
+      logEvent={() => {}}
+      lastPage={lastPage}
     />
+  ) : (
+    <LoadingIndicator />
   );
 };
+
+const PreviewScreen = withRouter(
+  connect(({ editor: { survey, surveyLoaded } }) => ({
+    survey,
+    surveyLoaded
+  }))(PurePreviewScreen)
+);
+
+export { PurePreviewScreen };
 
 export default PreviewScreen;

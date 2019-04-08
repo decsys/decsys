@@ -1,68 +1,99 @@
-import React, { useState } from "react";
-import { Grid, Cell } from "styled-css-grid";
+import React, { useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import SurveyPage from "../../components/SurveyPage";
+import { LoadingIndicator, EmptyState } from "../../components/ui";
 import AppBar from "../../components/AppBar";
-import { FlexBox, Container } from "../../components/ui";
-import { Button } from "@smooth-ui/core-sc";
-import { ChevronRight } from "styled-icons/fa-solid";
-import ComponentRender from "../../components/ComponentRender";
-import { getComponent } from "../../utils/component-utils";
-import Link from "../../components/AppBar/Link";
+import Axios from "axios";
+import { ExclamationTriangle } from "styled-icons/fa-solid";
+import useSurveyInstance from "./useSurveyInstance";
 
-const PureSurveyScreen = ({ id, page, preview, onClick, pageCount, nPage }) => {
-  const [nextEnabled, setNextEnabled] = useState(true);
+// TODO: PropTypes
+const PureSurveyScreen = ({ instanceId, page = 1, history }) => {
+  const survey = useSurveyInstance(instanceId);
+  const lastPage = page === survey.pages.length;
+
+  const handleClick = () => {
+    if (lastPage) history.push(`/survey/${instanceId}/complete`);
+    else history.push(`/survey/${instanceId}/page/${++page}`);
+  };
+
+  const logEvent = async (source, type, payload) => {
+    await Axios.post(
+      //`/api/log/${instanceId}/${user.id}/${source}/${type}`,
+      payload
+    );
+    // TODO: error handling?
+  };
+
+  // ----
+  // Render
+  // ----
+  if (!survey) return <LoadingIndicator />;
+
+  if (survey.invalid)
+    return (
+      <EmptyState
+        splash={<ExclamationTriangle />}
+        message="We couldn't find that survey. If it exists, it may have been closed."
+      />
+    );
 
   return (
-    <Grid columns="1fr" style={{ height: "100vh" }}>
-      <Cell>
-        {preview ? (
-          <AppBar brand="DECSYS - Preview" brandLink="#">
-            <Link href={`/admin/survey/${id}`}>Back to Survey Editor</Link>
-          </AppBar>
-        ) : (
-          <AppBar brand="DECSYS" />
-        )}
-      </Cell>
-      <Cell style={{ overflow: "auto" }}>
-        <Container>
-          <FlexBox p={1} flexDirection="column">
-            {page.components.map(x => (
-              <ComponentRender
-                key={x.id}
-                component={getComponent(x.type)}
-                actions={{ setNextEnabled }}
-                params={
-                  x.type === "image"
-                    ? {
-                        ...x.params,
-                        surveyId: id,
-                        id: x.id
-                      }
-                    : x.params
-                }
-              />
-            ))}
-          </FlexBox>
-        </Container>
-      </Cell>
-      <Cell>
-        <Container>
-          <FlexBox p={2} justifyContent="flex-end">
-            <Button size="lg" disabled={!nextEnabled} onClick={onClick}>
-              {nPage === pageCount - 1 ? (
-                <>Finish</>
-              ) : (
-                <>
-                  Next <ChevronRight size="1em" />
-                </>
-              )}
-            </Button>
-          </FlexBox>
-        </Container>
-      </Cell>
-    </Grid>
+    <>
+      <SurveyPage
+        id={survey.surveyId}
+        page={survey.pages[page]}
+        appBar={<AppBar brand="DECSYS" brandLink="#" />}
+        onClick={handleClick}
+        logEvent={logEvent}
+        lastPage={lastPage}
+      />
+    </>
   );
 };
 
 export { PureSurveyScreen };
+export default withRouter(PureSurveyScreen);
 
-//export default SurveyScreen;
+// const SurveyScreen = withRouter(
+//   connect(
+//     ({
+//       user: { id: userId, surveyState },
+//       survey: {
+//         instance: { id: instanceId, closed },
+//         survey,
+//         surveyLoaded
+//       }
+//     }) => ({
+//       survey,
+//       surveyLoaded,
+//       surveyState,
+//       userId,
+//       instanceId,
+//       closed
+//     }),
+//     dispatch => ({
+//       onNextPage: () => dispatch({ type: "NEXT_CLICK" }),
+//       logEvent: (instanceId, participantId, source, type, payload) =>
+//         dispatch({ type: "LOG_EVENT" })
+//     }),
+//     (stateProps, dispatchProps, ownProps) => ({
+//       ...ownProps,
+//       ...stateProps,
+//       ...dispatchProps,
+//       logEvent: (source, type, payload) =>
+//         dispatchProps.logEvent(
+//           stateProps.instanceId,
+//           stateProps.userId,
+//           source,
+//           type,
+//           payload
+//         )
+//     })
+//   )(PureSurveyScreen)
+// );
+
+// export { PureSurveyScreen };
+
+// export default SurveyScreen;

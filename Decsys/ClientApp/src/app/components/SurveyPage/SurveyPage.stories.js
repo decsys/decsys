@@ -1,7 +1,8 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import StoryRouter from "storybook-react-router";
-import { PureSurveyScreen } from "./SurveyScreen";
+import SurveyPage from "./SurveyPage";
+import { action } from "@storybook/addon-actions";
 
 const page = {
   id: 1,
@@ -14,7 +15,7 @@ const page = {
       }
     },
     {
-      id: 1,
+      id: 2,
       type: "paragraph",
       params: {
         text: `Let's have some information text here for you to read...
@@ -25,6 +26,14 @@ const page = {
   ]
 };
 
-storiesOf("SurveyScreen", module)
+const actions = {
+  logEvent: action("Event logged"),
+  onNextPage: action("Next Button clicked")
+};
+
+storiesOf("Survey/SurveyPage", module)
   .addDecorator(StoryRouter())
-  .add("Default", () => <PureSurveyScreen page={page} />);
+  .add("Empty", () => (
+    <SurveyPage page={{ id: 1, components: [] }} {...actions} />
+  ))
+  .add("Content", () => <SurveyPage page={page} {...actions} />);

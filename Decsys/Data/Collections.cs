@@ -5,5 +5,7 @@
         public const string Surveys = "Surveys";
 
         public const string SurveyInstances = "SurveyInstances";
+
+        public const string EventLog = "Events_";
     }
 }
