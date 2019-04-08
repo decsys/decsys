@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import {
   Eye,
@@ -11,37 +11,38 @@ import { Grid } from "styled-css-grid";
 import EditorBarButton, { LinkButton as EditorBarLink } from "./Button";
 import NameInput from "./NameInput";
 import DeleteSurveyModal from "../SurveyCard/DeleteSurveyModal";
+import EditorBarContext from "./Context";
 
-const EditorBar = ({
-  id,
-  name,
-  nameUpdateState,
-  onNameChange,
-  disabled,
-  onDuplicateClick,
-  onDeleteClick
-}) => {
+const EditorBar = ({ id, name, disabled }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const toggleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
+
+  const {
+    nameUpdateState,
+    handleNameChange,
+    handleDuplicateClick,
+    handleDeleteClick
+  } = useContext(EditorBarContext);
+
   return (
     <>
       <Grid columnGap="0px" columns="auto 1fr auto auto auto auto">
-        <EditorBarLink variant="uiPanel1" to="/" disabled={disabled}>
+        <EditorBarLink variant="uiPanel1" href="/" disabled={disabled}>
           <ChevronLeft size="1em" /> Survey List
         </EditorBarLink>
         <NameInput
           name={name}
           {...nameUpdateState}
-          onChange={onNameChange}
+          onChange={handleNameChange}
           disabled={disabled}
         />
-        <EditorBarLink to={`/admin/survey/${id}/preview`} disabled={disabled}>
+        <EditorBarLink href={`/admin/survey/${id}/preview`} disabled={disabled}>
           <Eye size="1em" /> Preview
         </EditorBarLink>
-        <EditorBarButton onClick={onDuplicateClick} disabled={disabled}>
+        <EditorBarButton onClick={handleDuplicateClick} disabled={disabled}>
           <Copy size="1em" /> Duplicate
         </EditorBarButton>
-        <EditorBarLink to={`/admin/survey/${id}/export`} disabled={disabled}>
+        <EditorBarLink href={`/admin/survey/${id}/export`} disabled={disabled}>
           <FileExport size="1em" /> Export
         </EditorBarLink>
         <EditorBarButton
@@ -54,7 +55,7 @@ const EditorBar = ({
       </Grid>
       <DeleteSurveyModal
         surveyName={name}
-        deleteSurvey={onDeleteClick}
+        deleteSurvey={handleDeleteClick}
         closeModal={toggleDeleteModal}
         modalOpened={showDeleteModal}
       />
@@ -70,8 +71,6 @@ EditorBar.propTypes = {
     saved: PropTypes.bool
   }),
   onNameChange: PropTypes.func.isRequired,
-  onDuplicateClick: PropTypes.func.isRequired,
-  onDeleteClick: PropTypes.func.isRequired,
   disabled: PropTypes.bool
 };
 

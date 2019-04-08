@@ -1,4 +1,5 @@
 import React, { useReducer } from "react";
+import { useNavigation } from "react-navi";
 import PureSurveysScreen from "./PureSurveysScreen";
 import SurveyCardContext from "../../../components/SurveyCard/Context";
 import * as api from "../../../api";
@@ -60,6 +61,8 @@ const surveysReducer = (state = {}, action) => {
         }
       };
     }
+    default:
+      return state;
   }
 };
 
