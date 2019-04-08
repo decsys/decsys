@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import paramTypes, { setParams } from "@decsys/param-types/";
 import EllipseScale from "@decsys/rating-scales/lib/ellipse/Scale";
@@ -33,8 +33,22 @@ const Ellipse = ({
   scaleSubdivisionThickness,
   scaleSubdivisionLength,
   scaleMarkers,
-  scaleSubdivisions
+  scaleSubdivisions,
+  setNextEnabled,
+  logResults
 }) => {
+  const handleEllipseCompleted = e => {
+    logResults(e.detail);
+    setNextEnabled(true);
+  };
+
+  useEffect(() => {
+    setNextEnabled(false);
+    document.addEventListener("EllipseCompleted", handleEllipseCompleted);
+    return () =>
+      document.removeEventListener("EllipseCompleted", handleEllipseCompleted);
+  }, []);
+
   return (
     <EllipseScale
       barOptions={{

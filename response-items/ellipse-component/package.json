@@ -1,7 +1,7 @@
 {
   "name": "@decsys/ellipse-component",
   "bundle": "EllipseScale",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "description": "The Ellipse Scale component for the DECSYS Survey Platform",
   "main": "index.js",
   "scripts": {
