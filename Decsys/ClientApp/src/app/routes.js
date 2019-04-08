@@ -5,11 +5,25 @@ import SurveysScreen from "./screens/admin/SurveysScreen";
 import EditorScreen from "./screens/admin/EditorScreen";
 import PreviewScreen from "./screens/admin/PreviewScreen";
 import ErrorScreen from "./screens/ErrorScreen";
+import SurveyIdScreen from "./screens/survey/SurveyIdScreen";
 
 const routes = mount({
   "/": map((_, context) =>
     context.user.roles.admin ? redirect("/admin") : redirect("/survey")
   ),
+
+  // Participants
+  "/survey": mount({
+    "/": route({
+      view: <SurveyIdScreen />
+    }),
+    "/survey/:id": route(({ params }) => {
+      // validate the survey instance
+      // get the survey itself
+      // do we have a user id, if so use it and go
+      //
+    })
+  }),
 
   // Admin
   "/admin": map((_, context) =>
