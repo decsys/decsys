@@ -9,47 +9,44 @@ import ErrorScreen from "./screens/ErrorScreen";
 const routes = mount({
   "/": redirect("/admin"),
 
-  "/401": route({ view: <ErrorScreen message="401: Not Authorized" /> }),
-
   // Admin
   "/admin": withContext(
     () => {
       return { localAdmin: window.location.hostname === "localhost" };
     },
-    map(
-      (_, context) =>
-        context.localAdmin
-          ? mount({
-              "/": route(async () => {
-                const { data: surveys } = await api.listSurveys();
+    map((_, context) =>
+      context.localAdmin
+        ? mount({
+            "/": route(async () => {
+              const { data: surveys } = await api.listSurveys();
 
-                return {
-                  view: <SurveysScreen surveys={surveys} />
-                };
-              }),
+              return {
+                view: <SurveysScreen surveys={surveys} />
+              };
+            }),
 
-              // Survey Editor
-              "/survey": mount({
-                "/:id": withData(
-                  async ({ params }) => {
-                    const { data: survey } = await api.getSurvey(params.id);
-                    return { survey };
-                  },
-                  mount({
-                    "/": route(async () => ({
-                      view: <EditorScreen />
-                    })),
-                    "/preview": route(() => ({
-                      view: <PreviewScreen />
-                    }))
-                  })
-                ),
-                "/:id/dashboard": route(({ params }) => ({
-                  view: <div>Dashboard for {params.id}</div>
-                }))
-              })
+            // Survey Editor
+            "/survey": mount({
+              "/:id": withData(
+                async ({ params }) => {
+                  const { data: survey } = await api.getSurvey(params.id);
+                  return { survey };
+                },
+                mount({
+                  "/": route(async () => ({
+                    view: <EditorScreen />
+                  })),
+                  "/preview": route(() => ({
+                    view: <PreviewScreen />
+                  }))
+                })
+              ),
+              "/:id/dashboard": route(({ params }) => ({
+                view: <div>Dashboard for {params.id}</div>
+              }))
             })
-          : redirect("/401") // TODO: 401 route?
+          })
+        : route({ view: <ErrorScreen message="401: Not Authorized" /> })
     )
   )
 });
