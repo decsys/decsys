@@ -122,5 +122,6 @@ export const logParticipantEvent = (
 ) =>
   Axios.post(
     `/api/log/${instanceId}/${participantId}/${source}/${type}`,
-    payload
+    payload,
+    appJsonHeaderOptions
   );

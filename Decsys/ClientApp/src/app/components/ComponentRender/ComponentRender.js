@@ -1,6 +1,14 @@
 import React, { cloneElement } from "react";
 
-const ComponentRender = ({ component, params, actions }) => {
+const ComponentRender = ({
+  component,
+  params,
+  actions = {
+    setNextEnabled: () => {},
+    logResults: () => {},
+    logEvent: () => {}
+  }
+}) => {
   // short circuit
   if (!component) return null;
 

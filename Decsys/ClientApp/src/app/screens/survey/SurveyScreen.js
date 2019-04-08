@@ -22,6 +22,7 @@ const SurveyScreen = ({
   };
 
   const logEvent = async (source, type, payload) => {
+    // TODO: Promise?
     await api.logParticipantEvent(
       instanceId,
       participantId,
