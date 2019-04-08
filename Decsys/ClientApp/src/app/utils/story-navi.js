@@ -3,6 +3,8 @@ import { Router } from "react-navi";
 import { mount, route, redirect } from "navi";
 import { action } from "@storybook/addon-actions";
 
+// TODO: use in memory navigation instead of default browser
+
 const generateRoutes = paths => {
   const blankRoute = paths.includes("/") ? "/__story-navi-blank-route__" : "/";
   const routes = {

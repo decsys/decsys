@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "@smooth-ui/core-sc";
 import SurveyPage from "../../components/SurveyPage";
-import { LoadingIndicator } from "../../components/ui";
+import ErrorScreen from "../ErrorScreen";
+import { useNavigation, useCurrentRoute } from "react-navi";
 import AppBar, { AppBarLink } from "../../components/AppBar";
 
-const PurePreviewScreen = ({
-  survey: { id, pages },
-  surveyLoaded,
-  history
-}) => {
+const PreviewScreen = () => {
+  const nav = useNavigation();
+  const { id, pages } = useCurrentRoute().data.survey;
   const [page, setPage] = useState(0);
   const [lastPage, setLastPage] = useState(false);
-
   useEffect(() => setLastPage(page === pages.length - 1), [page]);
 
   const handleClick = () => {
-    if (lastPage) history.push(`/admin/survey/${id}`);
+    if (lastPage) return nav.goBack();
     setPage(page + 1);
   };
 
-  return surveyLoaded ? (
+  return pages.length ? (
     <SurveyPage
       id={id}
       page={pages[page]}
       appBar={
         <AppBar brand="DECSYS - Preview" brandLink="#">
-          <AppBarLink to={`/admin/survey/${id}`}>
-            Back to Survey Editor
+          <AppBarLink as={Button} onClick={() => nav.goBack()}>
+            Go back
           </AppBarLink>
         </AppBar>
       }
@@ -34,17 +33,14 @@ const PurePreviewScreen = ({
       lastPage={lastPage}
     />
   ) : (
-    <LoadingIndicator />
+    <ErrorScreen
+      message="This Survey has no pages!"
+      callToAction={{
+        label: "Go back",
+        onClick: () => nav.goBack()
+      }}
+    />
   );
 };
 
-// const PreviewScreen = withRouter(
-//   connect(({ editor: { survey, surveyLoaded } }) => ({
-//     survey,
-//     surveyLoaded
-//   }))(PurePreviewScreen)
-// );
-
-export { PurePreviewScreen };
-
-export default PurePreviewScreen;
+export default PreviewScreen;

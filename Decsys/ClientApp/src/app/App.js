@@ -14,7 +14,7 @@ const App = () => {
     <Router routes={routes} context={{ users, user }}>
       <NotFoundBoundary render={() => <ErrorScreen message="404: Not Found" />}>
         <Suspense fallback={<LoadingIndicator />}>
-          <View /> {/* We don't have any real common layout to speak of */}
+          <View />
         </Suspense>
       </NotFoundBoundary>
     </Router>
