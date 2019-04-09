@@ -1,7 +1,38 @@
 import React from "react";
 import { Container } from "../../components/ui";
 
-const ResultsScreen = () => <Container>Results</Container>;
+const ResultsScreen = ({ instances, survey }) => {
+  const [instances, setInstances] = useState(instances);
+  const [instanceList, setInstanceList] = useState([]);
+  useEffect(() => {
+    // update the list
+  }, [instances]);
+
+  const [selectedInstance, setSelectedInstance] = useState();
+
+  const [results, setResults] = useState();
+
+  const handleExportClick = () => {
+    // export results to file
+  };
+
+  return (
+    <>
+      <AppBar brand="DECSYS" />
+      <Container>
+        <Typography variant="h2">{survey.name}</Typography>
+        <Typography variant="h3">Results</Typography>
+        <FlexBox mt={5}>
+          <EmptyState
+            message={message}
+            splash={splash}
+            callToAction={callToAction}
+          />
+        </FlexBox>
+      </Container>
+    </>
+  );
+};
 
 /**
  * So here's the plan.
