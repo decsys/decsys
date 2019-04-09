@@ -56,7 +56,9 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     const a = document.createElement("a"),
       url = URL.createObjectURL(file);
     a.href = url;
-    a.download = "export"; // TODO: proper filename
+    a.download = `Instance-${formatDate(
+      Date.parse(currentInstance.published)
+    )}_${formatDate(Date.parse(results.generated))}`;
     document.body.appendChild(a);
     a.click();
     setTimeout(function() {
