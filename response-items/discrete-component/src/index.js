@@ -107,7 +107,7 @@ setParams(Likert, {
 });
 
 // Metadata properties
-Likert.version = "0.1.0";
+Likert.version = "0.5.1";
 Likert.icon = <DotCircle />;
 
 export default Likert;
