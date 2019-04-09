@@ -45,7 +45,7 @@ Confirm.propTypes = {
 };
 
 // Metadata properties
-Confirm.version = "0.1.0";
+Confirm.version = "0.2.0";
 Confirm.icon = <Check />;
 
 export default Confirm;
