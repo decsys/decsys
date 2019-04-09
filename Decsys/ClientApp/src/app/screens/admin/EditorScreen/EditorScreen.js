@@ -43,7 +43,8 @@ const EditorScreen = () => {
 
   const pageListActions = {
     pageActions: {
-      onRandomToggle: () => {}, // TODO: FIX dispatch({ type: "SET_PAGE_RANDOM_STATE" }),
+      onRandomToggle: (pageId, randomize) =>
+        dispatch(ducks.setPageRandomize(survey.id, pageId, randomize)),
       onDuplicateClick: pageId =>
         dispatch(ducks.duplicatePage(survey.id, pageId)),
       onDeleteClick: pageId => dispatch(ducks.deletePage(survey.id, pageId)),

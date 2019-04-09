@@ -125,3 +125,10 @@ export const logParticipantEvent = (
     payload,
     appJsonHeaderOptions
   );
+
+export const setPageRandomize = (surveyId, pageId, randomize) =>
+  Axios.put(
+    `/api/surveys/${surveyId}/pages/${pageId}/randomize`,
+    randomize,
+    appJsonHeaderOptions
+  );

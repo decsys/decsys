@@ -31,7 +31,7 @@ const Page = ({
               provided={pageListProvided}
               n={n}
               actions={pageActions}
-              id={page.id}
+              page={page}
             />
 
             {page.components

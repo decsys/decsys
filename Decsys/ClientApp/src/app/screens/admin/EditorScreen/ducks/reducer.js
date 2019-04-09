@@ -72,6 +72,23 @@ export default (state, action) => {
         ...state,
         component: null
       };
+    case types.SET_PAGE_RANDOMIZE: {
+      const { pageId, randomize } = action.payload;
+      const { pages } = state.survey;
+      const iPage = pages.findIndex(x => x.id === pageId);
+      const page = pages[iPage];
+      if (page) {
+        page.randomize = randomize;
+      }
+      pages[iPage] = page;
+      return {
+        ...state,
+        survey: {
+          ...state.survey,
+          pages
+        }
+      };
+    }
     default:
       return state;
   }

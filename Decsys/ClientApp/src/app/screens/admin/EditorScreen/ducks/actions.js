@@ -5,11 +5,6 @@ export const getSurvey = survey => ({
   payload: { survey }
 });
 
-// export const setSurveyPlaceholder = name => ({
-//   type: types.SET_SURVEY_PLACEHOLDER,
-//   payload: { name }
-// });
-
 export const setName = name => ({
   type: types.SET_NAME,
   payload: { name }
@@ -49,5 +44,13 @@ export const setParam = (pageId, componentId, paramKey, value) => ({
     componentId,
     paramKey,
     value
+  }
+});
+
+export const setPageRandomize = (pageId, randomize) => ({
+  type: types.SET_PAGE_RANDOMIZE,
+  payload: {
+    pageId,
+    randomize
   }
 });

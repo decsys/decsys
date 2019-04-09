@@ -201,11 +201,20 @@ export const changePageComponent = (
 
   // if we have a type, go on to create the new type
   if (type) {
-    await api.addSurveyPageItem(surveyId, pageId, type);
+    const { data: newComponent } = await api.addSurveyPageItem(
+      surveyId,
+      pageId,
+      type
+    );
 
     // move the new one to the old one's order, if there was an old one
     if (componentId)
-      await api.setSurveyPageItemOrder(surveyId, pageId, componentId, order);
+      await api.setSurveyPageItemOrder(
+        surveyId,
+        pageId,
+        newComponent.id,
+        order
+      );
   }
   dispatch(getSurvey(surveyId));
 };
@@ -215,6 +224,15 @@ export const setCurrentComponent = (
   pageId,
   component
 ) => async dispatch => {
-  // dispatch(getSurvey(surveyId));
+  //dispatch(getSurvey(surveyId));
   dispatch(actions.setComponent(surveyId, pageId, component));
+};
+
+export const setPageRandomize = (
+  surveyId,
+  pageId,
+  randomize
+) => async dispatch => {
+  await api.setPageRandomize(surveyId, pageId, randomize);
+  dispatch(actions.setPageRandomize(pageId, randomize));
 };
