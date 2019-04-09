@@ -10,5 +10,7 @@ namespace Decsys.Data.Entities
         public int Order { get; set; }
 
         public IEnumerable<Component> Components { get; set; } = new List<Component>();
+
+        public bool Randomize { get; set; }
     }
 }

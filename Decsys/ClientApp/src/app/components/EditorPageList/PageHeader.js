@@ -13,7 +13,7 @@ import { Grid, Cell } from "styled-css-grid";
 
 const PageHeader = ({
   n,
-  id,
+  page,
   provided,
   actions: {
     onRandomToggle,
@@ -40,7 +40,11 @@ const PageHeader = ({
         <Cell middle>
           <Box textAlign="center">
             Random
-            <Switch size="sm" onClick={onRandomToggle} />
+            <Switch
+              size="sm"
+              checked={page.randomize}
+              onClick={e => onRandomToggle(page.id, e.target.checked)}
+            />
           </Box>
         </Cell>
 
@@ -52,7 +56,7 @@ const PageHeader = ({
             border={1}
             borderColor="success"
             backgroundColor="lightest"
-            onClick={() => onAddPageItemClick(id, "heading")}
+            onClick={() => onAddPageItemClick(page.id, "heading")}
             title="Add a Heading to this Page"
           >
             <Heading size="1em" />
@@ -66,7 +70,7 @@ const PageHeader = ({
             border={1}
             borderColor="success"
             backgroundColor="lightest"
-            onClick={() => onAddPageItemClick(id, "paragraph")}
+            onClick={() => onAddPageItemClick(page.id, "paragraph")}
             title="Add a Paragraph to this Page"
           >
             <Paragraph size="1em" />
@@ -80,7 +84,7 @@ const PageHeader = ({
             border={1}
             borderColor="success"
             backgroundColor="lightest"
-            onClick={() => onAddPageItemClick(id, "image")}
+            onClick={() => onAddPageItemClick(page.id, "image")}
             title="Add an Image to this Page"
           >
             <Image size="1em" />
@@ -93,7 +97,7 @@ const PageHeader = ({
             variant="light"
             backgroundColor="lightest"
             color="info"
-            onClick={() => onDuplicateClick(id)}
+            onClick={() => onDuplicateClick(page.id)}
             title="Duplicate this Page"
           >
             <Copy size="1em" />
@@ -105,7 +109,7 @@ const PageHeader = ({
             variant="light"
             color="danger"
             backgroundColor="lightest"
-            onClick={() => onDeleteClick(id)}
+            onClick={() => onDeleteClick(page.id)}
             title="Delete this Page"
           >
             <Trash size="1em" />
@@ -117,7 +121,7 @@ const PageHeader = ({
 };
 
 PageHeader.propTypes = {
-  id: PropTypes.string.isRequired,
+  page: PropTypes.shape({}).isRequired,
   n: PropTypes.number.isRequired,
   actions: PropTypes.shape({
     onRandomToggle: PropTypes.func.isRequired,

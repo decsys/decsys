@@ -169,5 +169,30 @@ namespace Decsys.Services
 
             return _mapper.Map<Models.Page>(dupe);
         }
+
+        /// <summary>
+        /// Set whether or not a Survey Page should have its order
+        /// randomised with other randomisble siblings, per Participant.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to duplicate the Page in.</param>
+        /// <param name="pageId">The ID of the Page.</param>
+        /// <param name="randomize">True or false</param>
+        /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
+        public void SetRandomized(int id, Guid pageId, bool randomize)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id)
+                ?? throw new KeyNotFoundException("Survey could not be found.");
+
+            var pages = survey.Pages.ToList();
+            var page = pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException("Page could not be found.");
+
+            page.Randomize = randomize;
+            pages = pages.Select(x => x.Id == page.Id ? page : x).ToList();
+
+            survey.Pages = pages;
+            surveys.Update(survey);
+        }
     }
 }

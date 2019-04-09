@@ -9,6 +9,8 @@ import SurveyIdScreen from "./screens/survey/SurveyIdScreen";
 import SurveyScreen from "./screens/survey/SurveyScreen";
 import { decode } from "./services/instance-id";
 import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
+import { PAGE_RANDOMIZE } from "./utils/event-types";
+import { randomize } from "./services/randomizer";
 
 // Note: Some routes here have a lot of data fetching logic,
 // because Navi does a great job of delaying component loads while waiting on data.
@@ -40,11 +42,33 @@ const routes = mount({
 
         // also figure out a User ID
         let userId;
+        let order;
         if (!user.instances[params.id]) {
           userId = (await api.getAnonymousParticipantId()).data;
+          // we're not resuming: randomize questions
+          order = randomize(
+            survey.pages.reduce((a, page) => {
+              a[page.id] = page.randomize;
+              return a;
+            }, {})
+          );
+          api.logParticipantEvent(
+            instanceId,
+            userId,
+            surveyId,
+            PAGE_RANDOMIZE,
+            { order }
+          );
           users.storeInstanceParticipantId(params.id, userId);
         } else {
           userId = user.instances[params.id];
+          // resume
+          order = (await api.getLastLogEntry(
+            instanceId,
+            userId,
+            surveyId,
+            PAGE_RANDOMIZE
+          )).data.payload.order;
         }
 
         view = (
@@ -53,6 +77,7 @@ const routes = mount({
             survey={survey}
             instanceId={instanceId}
             participantId={userId}
+            order={order}
           />
         );
       } catch (err) {
