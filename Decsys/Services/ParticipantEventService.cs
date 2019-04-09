@@ -151,8 +151,11 @@ namespace Decsys.Services
                         && x.Type == EventTypes.PAGE_LOAD)
                     .OrderByDescending(x => x.Timestamp)
                     .FirstOrDefault().Timestamp,
-                    ResponseRecorded = finalResponse.Timestamp,
-                    Response = JObject.Parse(
+                    ResponseRecorded = finalResponse?.Timestamp
+                        ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
+                    Response = finalResponse is null
+                        ? new JObject()
+                        : JObject.Parse(
                             LiteDB.JsonSerializer.Serialize(
                                 finalResponse.Payload,
                                 false,
