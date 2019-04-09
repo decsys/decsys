@@ -71,7 +71,7 @@ namespace Decsys.Services
         }
 
         // TODO: Participant state? Flat Participant Results? Other...?
-        public SurveyInstanceResultsSummary ResultsSummary(int instanceId)
+        public Models.SurveyInstanceResultsSummary ResultsSummary(int instanceId)
         {
             var instance = _db.GetCollection<SurveyInstance>(
                 Collections.SurveyInstances)
@@ -85,14 +85,14 @@ namespace Decsys.Services
                 .ToList();
 
             // summarize each one
-            var participants = new List<ParticipantResultsSummaryModel>();
+            var participants = new List<Models.ParticipantResultsSummary>();
             foreach (var collectionName in logs)
             {
                 var participantId = collectionName.Split("_").Last();
                 participants.Add(ParticipantResultsSummary(instance, participantId));
             }
 
-            return new SurveyInstanceResultsSummary
+            return new Models.SurveyInstanceResultsSummary
             {
                 Generated = DateTimeOffset.UtcNow,
                 Instance = instance.Published,
@@ -101,7 +101,7 @@ namespace Decsys.Services
             };
         }
 
-        public ParticipantResultsSummaryModel ResultsSummary(int instanceId, string participantId)
+        public Models.ParticipantResultsSummary ResultsSummary(int instanceId, string participantId)
         {
             var instance = _db.GetCollection<SurveyInstance>(
                 Collections.SurveyInstances)
@@ -112,7 +112,7 @@ namespace Decsys.Services
             return ParticipantResultsSummary(instance, participantId);
         }
 
-        private ParticipantResultsSummaryModel ParticipantResultsSummary(SurveyInstance instance, string participantId)
+        private Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
         {
             var log = _db.GetCollection<ParticipantEvent>(GetCollectionName(instance.Id, participantId));
 
@@ -130,7 +130,7 @@ namespace Decsys.Services
                     .order)
                 .ToObject<IList<string>>();
 
-            var responses = new List<PageResponseSummaryModel>();
+            var responses = new List<Models.PageResponseSummary>();
 
             foreach (var page in instance.Survey.Pages.OrderBy(x => x.Order))
             {
@@ -142,7 +142,7 @@ namespace Decsys.Services
                     .OrderByDescending(x => x.Timestamp)
                     .FirstOrDefault();
 
-                responses.Add(new PageResponseSummaryModel
+                responses.Add(new Models.PageResponseSummary
                 {
                     Page = page.Order,
                     ResponseType = responseComponent.Type,
@@ -164,99 +164,11 @@ namespace Decsys.Services
                 });
             }
 
-            return new ParticipantResultsSummaryModel
+            return new Models.ParticipantResultsSummary
             {
                 Id = participantId,
                 Responses = responses
             };
         }
-    }
-
-    // TODO: Move these to their own files, you heathen!
-
-    public static class EventTypes
-    {
-        public const string COMPONENT_RESULTS = "decsys.platform.COMPONENT_RESULTS";
-        public const string PAGE_LOAD = "decsys.platform.PAGE_LOAD";
-        public const string PAGE_RANDOMIZE = "decsys.platform.PAGE_RANDOMIZE";
-    }
-
-    /// <summary>
-    /// An export model for the results data of a survey instance
-    /// </summary>
-    public class SurveyInstanceResultsSummary
-    {
-        /// <summary>
-        /// A timestamp for when the summary was produced
-        /// </summary>
-        public DateTimeOffset Generated { get; set; }
-
-        /// <summary>
-        /// The timestamp which identifies the Survey Instance
-        /// </summary>
-        public DateTimeOffset Instance { get; set; }
-
-        /// <summary>
-        /// The name of the survey the instance (and therefore these results) belong to
-        /// </summary>
-        public string Survey { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The instance participants and their survey responses
-        /// </summary>
-        public List<ParticipantResultsSummaryModel> Participants { get; set; } = new List<ParticipantResultsSummaryModel>();
-    }
-
-    /// <summary>
-    /// An export model for a participant's response data in a survey instance.
-    /// </summary>
-    public class ParticipantResultsSummaryModel
-    {
-        /// <summary>
-        /// The participant's identifier
-        /// </summary>
-        public string Id { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The participant's reponse to each survey question
-        /// </summary>
-        public List<PageResponseSummaryModel> Responses { get; set; } = new List<PageResponseSummaryModel>();
-    }
-
-    /// <summary>
-    /// An export model for a participant's response to a given question
-    /// </summary>
-    public class PageResponseSummaryModel
-    {
-        /// <summary>
-        /// The canonical Page number from the survey configuration
-        /// i.e. as the Admin sees it
-        /// </summary>
-        public int Page { get; set; }
-
-        /// <summary>
-        /// The question component type
-        /// </summary>
-        public string ResponseType { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The question number the participant saw the question as
-        /// </summary>
-        public int Order { get; set; }
-
-        /// <summary>
-        /// The participant's response data
-        /// </summary>
-        public JObject Response { get; set; } = new JObject();
-
-        /// <summary>
-        /// A timestamp of when the question page fully loaded
-        /// </summary>
-        public DateTimeOffset PageLoad { get; set; }
-
-        /// <summary>
-        /// A timestamp of when the participant submitted their response
-        /// </summary>
-        public DateTimeOffset ResponseRecorded { get; set; }
     }
 }
