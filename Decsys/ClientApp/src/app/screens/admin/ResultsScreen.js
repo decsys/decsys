@@ -34,22 +34,19 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     initialInstances.sort((a, b) => a.published - b.published)
   );
 
-  const [currentInstance, setCurrentInstance] = useState();
-  useEffect(() => {
-    setCurrentInstance(instances[0]);
-  }, []);
+  const [currentInstance, setCurrentInstance] = useState(instances[0]);
 
   const [results, setResults] = useState();
   useEffect(() => {
-    if (!currentInstance) return;
     // TODO: check if main list needs a refresh, or if the results do...
-    (async () => {
+    const fetch = async () => {
       const { data } = await api.getInstanceResultsSummary(
         currentInstance.survey.id,
         currentInstance.id
       );
       setResults(data);
-    })();
+    };
+    fetch();
   }, [currentInstance]);
 
   const handleExportClick = () => {
@@ -69,7 +66,7 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
   };
 
   const handleInstanceChange = e => {
-    setCurrentInstance(instances.find(x => x.id === e.target.value.id));
+    setCurrentInstance(instances.find(x => x.id.toString() === e.target.value));
   };
 
   return (
@@ -89,7 +86,7 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
           <Select
             mr={1}
             onChange={handleInstanceChange}
-            value={currentInstance}
+            value={currentInstance.id}
           >
             {instances.map(x => (
               <option key={x.id} value={x.id}>
