@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Container, FlexBox, EmptyState } from "../../components/ui";
+import { Container, FlexBox } from "../../components/ui";
 import AppBar from "../../components/AppBar";
-import { Typography, Select, Alert, Button } from "@smooth-ui/core-sc";
+import { Typography, Select, Alert, Button, Box } from "@smooth-ui/core-sc";
 import { InfoCircle, Download } from "styled-icons/fa-solid";
 import * as api from "../../api";
+import ReactTable from "react-table";
+import { Grid } from "styled-css-grid";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {
@@ -12,6 +14,20 @@ function isEmpty(obj) {
   }
   return true;
 }
+
+const formatDate = date =>
+  new Intl.DateTimeFormat("en-GB", {
+    // TODO: better locale?
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    timeZone: "UTC",
+    timeZoneName: "short",
+    hour12: false
+  }).format(date);
 
 const ResultsScreen = ({ instances: initialInstances, survey }) => {
   const [instances, setInstances] = useState(
@@ -52,8 +68,8 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     }, 0);
   };
 
-  const handleInstanceChange = id => {
-    setCurrentInstance(instances.find(x => x.id === id));
+  const handleInstanceChange = e => {
+    setCurrentInstance(instances.find(x => x.id === e.target.value.id));
   };
 
   return (
@@ -66,26 +82,22 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
         <Typography mb={2} variant="h3">
           Results
         </Typography>
-        <Alert variant="info">
-          <InfoCircle size="1em" /> Please note that the time format of all
-          timestamps are aligned to the time settings on the server device.
-        </Alert>
         <Typography as="div" mb={1}>
           Select an instance of this Survey to view the results for
         </Typography>
         <FlexBox justifyContent="space-between">
           <Select
             mr={1}
-            onChange={e => handleInstanceChange(e.target.value)}
+            onChange={handleInstanceChange}
             value={currentInstance}
           >
             {instances.map(x => (
               <option key={x.id} value={x.id}>
-                {x.published}
+                {formatDate(Date.parse(x.published))}
               </option>
             ))}
           </Select>
-          <Button onClick={handleExportClick}>
+          <Button variant="secondary" onClick={handleExportClick}>
             <Download size="1em" /> Export to file...
           </Button>
         </FlexBox>
@@ -96,46 +108,64 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
 };
 
 const Results = ({ results }) => {
+  const columns = [
+    {
+      Header: "Page",
+      accessor: "page" // String-based value accessors!
+    },
+    {
+      Header: "Order",
+      accessor: "order"
+      //Cell: props => <span className="number">{props.value}</span> // Custom cell components!
+    },
+    {
+      Header: "Page Loaded",
+      accessor: "pageLoad",
+      Cell: ({ value }) => <span>{formatDate(Date.parse(value))}</span> // Custom cell components!
+    },
+    {
+      id: "nullableResponse", // Required because our accessor is not a string
+      Header: "Response",
+      Cell: ({ value }) =>
+        typeof value === "string" ? (
+          <Box textAlign="center">{value}</Box>
+        ) : (
+          <Grid columns="1fr 1fr">
+            {Object.keys(value).map(key => [
+              <Typography
+                key={`${key}_key`}
+                textAlign="right"
+                fontWeight="bold"
+              >
+                {key}:
+              </Typography>,
+              <Typography key={`${key}_val`}>{value[key]}</Typography>
+            ])}
+          </Grid>
+        ),
+      accessor: d => (isEmpty(d.response) ? "- not recorded -" : d.response) //d => d.friend.name // Custom value accessors!
+    },
+    {
+      id: "nullableResponseRecorded",
+      Header: "Recorded",
+      accessor: d =>
+        isEmpty(d.response)
+          ? "- not recorded -"
+          : formatDate(Date.parse(d.responseRecorded)) //d => d.friend.name // Custom value accessors!
+    }
+  ];
+
   return (
-    <div>
+    <>
       {results.participants.map(x => (
         <div key={x.id}>
           <Typography mt={2} variant="h5">
             Participant: {x.id}
           </Typography>
-          <table>
-            <thead>
-              <tr>
-                <th>Page</th>
-                <th>Order</th>
-                <th>Loaded</th>
-                <th>Response</th>
-                <th>Recorded</th>
-              </tr>
-            </thead>
-            <tbody>
-              {x.responses.map(r => (
-                <tr>
-                  <td>{r.page}</td>
-                  <td>{r.order}</td>
-                  <td>{r.pageLoad}</td>
-                  <td>
-                    {isEmpty(r.response)
-                      ? "<not recorded>"
-                      : JSON.stringify(r.response)}
-                  </td>
-                  <td>
-                    {isEmpty(r.response)
-                      ? "<not recorded>"
-                      : r.responseRecorded}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ReactTable minRows={1} data={x.responses} columns={columns} />
         </div>
       ))}
-    </div>
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import theme from "./app/themes";
 import App from "./app/App";
 import { loadComponentsModule } from "./global-init";
+import "react-table/react-table.css"; // sad now
 
 loadComponentsModule();
 
