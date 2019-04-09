@@ -9,6 +9,7 @@ import SurveyIdScreen from "./screens/survey/SurveyIdScreen";
 import SurveyScreen from "./screens/survey/SurveyScreen";
 import { decode } from "./services/instance-id";
 import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
+import ResultsScreen from "./screens/admin/ResultsScreen";
 import { PAGE_RANDOMIZE } from "./utils/event-types";
 import { randomize } from "./services/randomizer";
 
