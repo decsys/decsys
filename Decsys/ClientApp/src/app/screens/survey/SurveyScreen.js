@@ -9,12 +9,17 @@ const SurveyScreen = ({
   combinedId,
   survey: { id: surveyId, pages },
   instanceId,
-  participantId
+  participantId,
+  order
 }) => {
   const nav = useNavigation();
   const [page, setPage] = useState(0);
   const [lastPage, setLastPage] = useState(false);
   useEffect(() => setLastPage(page === pages.length - 1), [page]);
+
+  pages
+    .map(x => ({ ...x, order: order.indexOf(x.id) + 1 }))
+    .sort((a, b) => a.order - b.order);
 
   const handleClick = () => {
     if (lastPage) return nav.navigate(`/survey/${combinedId}/complete`);
