@@ -12,10 +12,22 @@ namespace Decsys.Controllers
     public class InstancesController : ControllerBase
     {
         private readonly SurveyInstanceService _instances;
+        private readonly ParticipantEventService _participantEvents;
 
-        public InstancesController(SurveyInstanceService instances)
+        public InstancesController(SurveyInstanceService instances, ParticipantEventService participantEvents)
         {
             _instances = instances;
+            _participantEvents = participantEvents;
+        }
+
+        [HttpGet("{instanceId}/results")]
+        public IActionResult ResultsSummary(int id, int instanceId)
+        {
+            try
+            {
+                return Ok(_participantEvents.ResultsSummary(instanceId));
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
         }
 
         [HttpGet]

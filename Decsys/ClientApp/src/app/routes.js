@@ -9,6 +9,7 @@ import SurveyIdScreen from "./screens/survey/SurveyIdScreen";
 import SurveyScreen from "./screens/survey/SurveyScreen";
 import { decode } from "./services/instance-id";
 import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
+import ResultsScreen from "./screens/admin/ResultsScreen";
 import { PAGE_RANDOMIZE } from "./utils/event-types";
 import { randomize } from "./services/randomizer";
 
@@ -131,9 +132,21 @@ const routes = mount({
                 }))
               })
             ),
-            "/:id/dashboard": route(({ params }) => ({
-              view: <div>Dashboard for {params.id}</div>
-            }))
+            "/:id/dashboard": route(({ params }) => {
+              //TODO: fetch active instance for survey id, if any
+              return { view: <div>Dashboard for {params.id}</div> };
+            }),
+            "/:id/results": route(async ({ params }) => {
+              const { data: instances } = await api.listSurveyInstances(
+                params.id
+              );
+
+              const { data: survey } = await api.getSurvey(params.id); // TODO: could be smaller payload
+
+              return {
+                view: <ResultsScreen instances={instances} survey={survey} />
+              };
+            })
           })
         })
       : route({ view: <ErrorScreen message="401: Not Authorized" /> })

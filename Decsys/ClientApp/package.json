@@ -1,6 +1,6 @@
 {
   "name": "client-app",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "dependencies": {
     "@decsys/param-types": "^0.2.0",
@@ -16,6 +16,7 @@
     "react-navi": "^0.12.4",
     "react-onclickoutside": "^6.8.0",
     "react-scripts": "^2.1.8",
+    "react-table": "^6.9.2",
     "styled-components": "^4.2.0",
     "styled-css-grid": "^1.2.1",
     "styled-icons": "^7.9.0"

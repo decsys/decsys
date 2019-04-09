@@ -23,7 +23,7 @@ const PreviewScreen = () => {
       page={pages[page]}
       appBar={
         <AppBar brand="DECSYS - Preview" brandLink="#">
-          <AppBarLink as={Button} onClick={() => nav.goBack()}>
+          <AppBarLink as={Button} href="#" onClick={() => nav.goBack()}>
             Go back
           </AppBarLink>
         </AppBar>

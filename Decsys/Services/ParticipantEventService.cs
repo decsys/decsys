@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using AutoMapper;
 using Decsys.Data;
 using Decsys.Data.Entities;
 using LiteDB;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Decsys.Services
 {
@@ -34,7 +38,7 @@ namespace Decsys.Services
                     Collections.SurveyInstances)
                 .Exists(x => x.Id == instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
-            
+
             var log = _db.GetCollection<ParticipantEvent>(
                 GetCollectionName(instanceId, participantId));
 
@@ -67,5 +71,104 @@ namespace Decsys.Services
         }
 
         // TODO: Participant state? Flat Participant Results? Other...?
+        public Models.SurveyInstanceResultsSummary ResultsSummary(int instanceId)
+        {
+            var instance = _db.GetCollection<SurveyInstance>(
+                Collections.SurveyInstances)
+                    .Include(x => x.Survey)
+                    .FindById(instanceId) ??
+                throw new KeyNotFoundException("Survey Instance could not be found.");
+
+            // Get all participant collections for this instance
+            var logs = _db.GetCollectionNames()
+                .Where(x => x.StartsWith($"{Collections.EventLog}{instanceId}_"))
+                .ToList();
+
+            // summarize each one
+            var participants = new List<Models.ParticipantResultsSummary>();
+            foreach (var collectionName in logs)
+            {
+                var participantId = collectionName.Split("_").Last();
+                participants.Add(ParticipantResultsSummary(instance, participantId));
+            }
+
+            return new Models.SurveyInstanceResultsSummary
+            {
+                Generated = DateTimeOffset.UtcNow,
+                Instance = instance.Published,
+                Survey = instance.Survey.Name,
+                Participants = participants
+            };
+        }
+
+        public Models.ParticipantResultsSummary ResultsSummary(int instanceId, string participantId)
+        {
+            var instance = _db.GetCollection<SurveyInstance>(
+                Collections.SurveyInstances)
+                    .Include(x => x.Survey)
+                    .FindById(instanceId) ??
+                throw new KeyNotFoundException("Survey Instance could not be found.");
+
+            return ParticipantResultsSummary(instance, participantId);
+        }
+
+        private Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
+        {
+            var log = _db.GetCollection<ParticipantEvent>(GetCollectionName(instance.Id, participantId));
+
+            var orderLog = log.Find(x =>
+                        x.Source == instance.Survey.Id.ToString()
+                        && x.Type == EventTypes.PAGE_RANDOMIZE)
+                    .OrderByDescending(x => x.Timestamp)
+                    .FirstOrDefault();
+
+            var order = ((JArray)JsonConvert.DeserializeObject<dynamic>(
+                    LiteDB.JsonSerializer.Serialize(
+                        orderLog.Payload,
+                        false,
+                        false))
+                    .order)
+                .ToObject<IList<string>>();
+
+            var responses = new List<Models.PageResponseSummary>();
+
+            foreach (var page in instance.Survey.Pages.OrderBy(x => x.Order))
+            {
+                var responseComponent = page.Components.Single( // find the one with the Capitalised Type.
+                        x => x.Type != x.Type.ToLower(CultureInfo.InvariantCulture));
+                var finalResponse = log.Find(x =>
+                        x.Source == responseComponent.Id.ToString()
+                        && x.Type == EventTypes.COMPONENT_RESULTS)
+                    .OrderByDescending(x => x.Timestamp)
+                    .FirstOrDefault();
+
+                responses.Add(new Models.PageResponseSummary
+                {
+                    Page = page.Order,
+                    ResponseType = responseComponent.Type,
+                    PageLoad = log.Find(x =>
+                        x.Source == page.Id.ToString()
+                        && x.Type == EventTypes.PAGE_LOAD)
+                    .OrderByDescending(x => x.Timestamp)
+                    .FirstOrDefault().Timestamp,
+                    ResponseRecorded = finalResponse?.Timestamp
+                        ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
+                    Response = finalResponse is null
+                        ? new JObject()
+                        : JObject.Parse(
+                            LiteDB.JsonSerializer.Serialize(
+                                finalResponse.Payload,
+                                false,
+                                false)),
+                    Order = order.IndexOf(page.Id.ToString()) + 1
+                });
+            }
+
+            return new Models.ParticipantResultsSummary
+            {
+                Id = participantId,
+                Responses = responses
+            };
+        }
     }
 }
