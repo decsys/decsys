@@ -132,3 +132,6 @@ export const setPageRandomize = (surveyId, pageId, randomize) =>
     randomize,
     appJsonHeaderOptions
   );
+
+export const getLastLogEntry = (instanceId, participantId, source, type) =>
+  Axios.get(`/api/log/${instanceId}/${participantId}/${source}/${type}`);

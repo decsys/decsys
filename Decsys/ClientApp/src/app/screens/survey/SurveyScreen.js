@@ -17,7 +17,7 @@ const SurveyScreen = ({
   const [lastPage, setLastPage] = useState(false);
   useEffect(() => setLastPage(page === pages.length - 1), [page]);
 
-  pages
+  const sortedPages = pages
     .map(x => ({ ...x, order: order.indexOf(x.id) + 1 }))
     .sort((a, b) => a.order - b.order);
 
@@ -41,7 +41,7 @@ const SurveyScreen = ({
     <>
       <SurveyPage
         id={surveyId}
-        page={pages[page]}
+        page={sortedPages[page]}
         appBar={<AppBar brand="DECSYS" brandLink="#" />}
         onNextPage={handleClick}
         logEvent={logEvent}

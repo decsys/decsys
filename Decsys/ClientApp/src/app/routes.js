@@ -62,6 +62,13 @@ const routes = mount({
           users.storeInstanceParticipantId(params.id, userId);
         } else {
           userId = user.instances[params.id];
+          // resume
+          order = (await api.getLastLogEntry(
+            instanceId,
+            userId,
+            surveyId,
+            PAGE_RANDOMIZE
+          )).data.payload.order;
         }
 
         view = (
