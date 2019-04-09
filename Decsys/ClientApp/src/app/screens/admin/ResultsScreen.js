@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, FlexBox } from "../../components/ui";
 import AppBar from "../../components/AppBar";
-import { Typography, Select, Alert, Button, Box } from "@smooth-ui/core-sc";
-import { InfoCircle, Download } from "styled-icons/fa-solid";
+import { Typography, Select, Button, Box } from "@smooth-ui/core-sc";
+import { Download } from "styled-icons/fa-solid";
 import * as api from "../../api";
 import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
@@ -30,7 +30,7 @@ const formatDate = date =>
   }).format(date);
 
 const ResultsScreen = ({ instances: initialInstances, survey }) => {
-  const [instances, setInstances] = useState(
+  const [instances] = useState(
     initialInstances.sort((a, b) => a.published - b.published)
   );
 
@@ -138,7 +138,9 @@ const Results = ({ results }) => {
               >
                 {key}:
               </Typography>,
-              <Typography key={`${key}_val`}>{value[key]}</Typography>
+              <Typography key={`${key}_val`}>
+                {JSON.stringify(value[key])}
+              </Typography>
             ])}
           </Grid>
         ),
