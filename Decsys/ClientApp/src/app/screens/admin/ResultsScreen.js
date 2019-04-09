@@ -110,20 +110,19 @@ const Results = ({ results }) => {
   const columns = [
     {
       Header: "Page",
-      accessor: "page" // String-based value accessors!
+      accessor: "page"
     },
     {
       Header: "Order",
       accessor: "order"
-      //Cell: props => <span className="number">{props.value}</span> // Custom cell components!
     },
     {
       Header: "Page Loaded",
       accessor: "pageLoad",
-      Cell: ({ value }) => <span>{formatDate(Date.parse(value))}</span> // Custom cell components!
+      Cell: ({ value }) => <span>{formatDate(Date.parse(value))}</span>
     },
     {
-      id: "nullableResponse", // Required because our accessor is not a string
+      id: "nullableResponse",
       Header: "Response",
       Cell: ({ value }) =>
         typeof value === "string" ? (
@@ -144,7 +143,7 @@ const Results = ({ results }) => {
             ])}
           </Grid>
         ),
-      accessor: d => (isEmpty(d.response) ? "- not recorded -" : d.response) //d => d.friend.name // Custom value accessors!
+      accessor: d => (isEmpty(d.response) ? "- not recorded -" : d.response)
     },
     {
       id: "nullableResponseRecorded",
@@ -152,7 +151,7 @@ const Results = ({ results }) => {
       accessor: d =>
         isEmpty(d.response)
           ? "- not recorded -"
-          : formatDate(Date.parse(d.responseRecorded)) //d => d.friend.name // Custom value accessors!
+          : formatDate(Date.parse(d.responseRecorded))
     }
   ];
 
@@ -169,19 +168,5 @@ const Results = ({ results }) => {
     </>
   );
 };
-
-/**
- * So here's the plan.
- *
- * - Navi route can pull the Instances for a single Survey
- * - Results Screen keeps the instances in state
- * - Results Screen has a dropdown for instances, ordered and displayed by published date
- * - Selecting an instance from the dropdown causes a loading state managed by the screen
- *   not by Navi
- * - loads instance results summary
- * - renders it in a basic table
- * - enables export button which simply stringifies the results data as returned from the API
- *   and writes it to a file where the user wants.
- */
 
 export default ResultsScreen;
