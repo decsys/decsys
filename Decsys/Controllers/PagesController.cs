@@ -77,6 +77,30 @@ namespace Decsys.Controllers
             }
         }
 
+        [HttpPut("{pageId}/randomize")]
+        [SwaggerOperation("Set a Page in a Survey as Randomized.")]
+        [SwaggerResponse(204, "The Page's Randomization was set successfully.")]
+        [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
+        public IActionResult Randomize(
+            [SwaggerParameter("ID of the Survey to change the Page in.")]
+            int id,
+            [SwaggerParameter("ID of the Page to change the Randomization of.")]
+            Guid pageId,
+            [FromBody]
+            [SwaggerParameter("The new Randomization value for the Page.")]
+            bool randomize)
+        {
+            try
+            {
+                _pages.SetRandomized(id, pageId, randomize);
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
         [HttpPost("{pageId}/duplicate")]
         [SwaggerOperation("Duplicates a Page in a Survey.")]
         [SwaggerResponse(200, "The Page was duplicated successfully and the new page is returned.", Type = typeof(Page))]
