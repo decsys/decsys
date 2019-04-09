@@ -1,7 +1,7 @@
 {
   "name": "freetext",
   "bundle": "FreeText",
-  "version": "1.0.0",
+  "version": "0.8.0",
   "description": "The FreeText Question Component that ships with the DECSYS Survey Platform",
   "main": "index.js",
   "scripts": {

@@ -83,7 +83,7 @@ FreeText.defaultProps = {
 };
 
 // Metadata properties
-FreeText.version = "0.1.0";
+FreeText.version = "0.8.0";
 FreeText.icon = React.createElement(AlignLeft);
 
 export default FreeText;
