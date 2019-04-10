@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Version>1.0.0-alpha.3</Version>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
@@ -35,11 +35,6 @@
     <Content Remove="$(SpaRoot)**" />
     <None Remove="$(SpaRoot)**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ClientApp\" />
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
