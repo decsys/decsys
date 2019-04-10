@@ -107,11 +107,12 @@ namespace Decsys
                 ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
             });
 
-            // Survey Images folder 
+            // Survey Images folder
+            var imagePath = Path.Combine(env.ContentRootPath, "SurveyImages");
+            Directory.CreateDirectory(imagePath);
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, "SurveyImages")),
+                FileProvider = new PhysicalFileProvider(imagePath),
                 RequestPath = "/surveys/images"
             });
 
