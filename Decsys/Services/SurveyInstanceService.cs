@@ -21,8 +21,8 @@ namespace Decsys.Services
 
         public int Create(int surveyId)
         {
-            if (!_db.GetCollection<Survey>(Collections.Surveys)
-                    .Exists(x => x.Id == surveyId))
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            if (!surveys.Exists(x => x.Id == surveyId))
                 throw new KeyNotFoundException();
 
             var instances = _db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
@@ -32,7 +32,16 @@ namespace Decsys.Services
                     $"The Survey with the id '{surveyId}' currently has an active Survey Instance.",
                     nameof(surveyId));
 
-            return instances.Insert(new SurveyInstance(surveyId));
+            var survey = surveys.FindById(surveyId); // finally get the surey, now we definitely care
+
+            var instance = new SurveyInstance(surveyId)
+            {
+                // Preserve the Survey Config at the time of this Instance launch
+                OneTimeParticipants = survey.OneTimeParticipants,
+                ValidIdentifiers = survey.ValidIdentifiers
+            };
+
+            return instances.Insert(instance);
         }
 
         public Models.SurveyInstance Get(int surveyId, int instanceId)
