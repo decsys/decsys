@@ -1,13 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { MenuItem, MenuRouterLink, DropdownMenuButton } from "../ui";
 import DeleteSurveyModal from "./DeleteSurveyModal";
+import { useModal } from "../ui/ConfirmModal";
 import { EllipsisV } from "styled-icons/fa-solid";
 import SurveyCardContext from "./Context";
 
 const ManageSurveyButton = ({ name, editable, id }) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const toggleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
+  const modalState = useModal();
 
   const {
     handleEditClick,
@@ -34,13 +34,12 @@ const ManageSurveyButton = ({ name, editable, id }) => {
           Export
         </MenuRouterLink>
         <MenuItem onClick={() => handleDuplicateClick(id)}>Duplicate</MenuItem>
-        <MenuItem onClick={toggleDeleteModal}>Delete</MenuItem>
+        <MenuItem onClick={modalState.toggleModal}>Delete</MenuItem>
       </DropdownMenuButton>
       <DeleteSurveyModal
         surveyName={name}
         deleteSurvey={() => handleDeleteClick(id)}
-        closeModal={toggleDeleteModal}
-        modalOpened={showDeleteModal}
+        modalState={modalState}
       />
     </>
   );

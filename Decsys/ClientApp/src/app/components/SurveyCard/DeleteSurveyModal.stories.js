@@ -7,8 +7,10 @@ import DeleteSurveyModal from "./DeleteSurveyModal";
 storiesOf("Admin/SurveyCard/DeleteSurveyModal", module).add("Default", () => (
   <DeleteSurveyModal
     surveyName={text("Survey name", "My First Survey")}
-    modalOpened={true}
+    modalState={{
+      modalOpened: true,
+      toggleModal: action("Modal closed")
+    }}
     deleteSurvey={action("Delete clicked")}
-    closeModal={action("Modal closed")}
   />
 ));

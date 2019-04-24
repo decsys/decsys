@@ -1,6 +1,5 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import StoryRouter from "storybook-react-router";
 import SurveyPage from "./SurveyPage";
 import { action } from "@storybook/addon-actions";
 
@@ -32,7 +31,6 @@ const actions = {
 };
 
 storiesOf("Survey/SurveyPage", module)
-  .addDecorator(StoryRouter())
   .add("Empty", () => (
     <SurveyPage page={{ id: 1, components: [] }} {...actions} />
   ))
