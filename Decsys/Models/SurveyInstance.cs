@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Decsys.Models
 {
@@ -20,5 +21,9 @@ namespace Decsys.Models
         public DateTimeOffset Published { get; set; } = DateTimeOffset.UtcNow;
 
         public DateTimeOffset? Closed { get; set; }
+
+        public bool OneTimeParticipants { get; set; }
+
+        public IEnumerable<string> ValidIdentifiers { get; set; } = new List<string>();
     }
 }
