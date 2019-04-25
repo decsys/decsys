@@ -24,7 +24,7 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
       const data = await fetchSurveyConfig(surveyId);
       setOneTimeParticipants(data.oneTimeParticipants);
       setUseParticipantIdentifiers(data.useParticipantIdentifiers);
-      setValidIdentifiers(data.validIdentifiers);
+      setValidIdentifiers(data.validIdentifiers || []);
       setCurrentConfigLoaded(true);
     };
     getData();
