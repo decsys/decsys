@@ -5,9 +5,11 @@ import DeleteSurveyModal from "./DeleteSurveyModal";
 import { useModal } from "../ui/ConfirmModal";
 import { EllipsisV } from "styled-icons/fa-solid";
 import SurveyCardContext from "./Context";
+import SurveyConfigModal from "./SurveyConfigModal";
 
 const ManageSurveyButton = ({ name, editable, id }) => {
-  const modalState = useModal();
+  const deleteModal = useModal();
+  const configModal = useModal();
 
   const {
     handleEditClick,
@@ -27,6 +29,7 @@ const ManageSurveyButton = ({ name, editable, id }) => {
         {editable && (
           <MenuItem onClick={() => handleEditClick(id)}>Edit</MenuItem>
         )}
+        <MenuItem onClick={configModal.toggleModal}>Configure</MenuItem>
         <MenuRouterLink href={`admin/survey/${id}/preview`}>
           Preview
         </MenuRouterLink>
@@ -34,12 +37,17 @@ const ManageSurveyButton = ({ name, editable, id }) => {
           Export
         </MenuRouterLink>
         <MenuItem onClick={() => handleDuplicateClick(id)}>Duplicate</MenuItem>
-        <MenuItem onClick={modalState.toggleModal}>Delete</MenuItem>
+        <MenuItem onClick={deleteModal.toggleModal}>Delete</MenuItem>
       </DropdownMenuButton>
       <DeleteSurveyModal
         surveyName={name}
         deleteSurvey={() => handleDeleteClick(id)}
-        modalState={modalState}
+        modalState={deleteModal}
+      />
+      <SurveyConfigModal
+        surveyId={id}
+        surveyName={name}
+        modalState={configModal}
       />
     </>
   );
