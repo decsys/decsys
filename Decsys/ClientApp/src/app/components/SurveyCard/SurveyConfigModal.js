@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import { ConfirmModal, FlexBox, LoadingIndicator } from "../ui";
-import { Switch, Typography, Textarea } from "@smooth-ui/core-sc";
+import {
+  Switch,
+  Typography,
+  Textarea,
+  Input,
+  Button
+} from "@smooth-ui/core-sc";
 import { InfoCircle } from "styled-icons/fa-solid";
 import SurveyCardContext from "./Context";
+import { generateCombination } from "gfycat-style-urls";
 
 const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
   const InfoIcon = styled(InfoCircle)`
@@ -18,6 +25,7 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
   const [useParticipantIdentifiers, setUseParticipantIdentifiers] = useState();
   const [validIdentifiers, setValidIdentifiers] = useState([]);
   const [currentConfigLoaded, setCurrentConfigLoaded] = useState();
+  const [idGenCount, setIdGenCount] = useState(10);
 
   useEffect(() => {
     const getData = async () => {
@@ -38,6 +46,17 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
     });
     modalState.toggleModal();
   };
+
+  const handleGenCountChange = ({ target: { value } }) =>
+    setIdGenCount(parseInt(value));
+
+  const handleIdGenClick = () =>
+    setValidIdentifiers([
+      ...validIdentifiers,
+      ...Array(idGenCount)
+        .fill(() => generateCombination(1, "", true))
+        .map(x => x())
+    ]);
 
   return (
     <ConfirmModal
@@ -94,7 +113,25 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
                   </Typography>
                 </FlexBox>
               </FlexBox>
+
+              <FlexBox mb={1}>
+                <Input
+                  size="sm"
+                  type="number"
+                  value={idGenCount}
+                  onChange={handleGenCountChange}
+                />
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={handleIdGenClick}
+                >
+                  Generate Random IDs
+                </Button>
+              </FlexBox>
+
               <Textarea
+                rows={6}
                 value={validIdentifiers.join("\n")}
                 onChange={({ target: { value } }) =>
                   setValidIdentifiers(value.split("\n"))
