@@ -141,3 +141,9 @@ export const getLastLogEntry = (instanceId, participantId, source, type) =>
 
 export const getInstanceResultsSummary = (surveyId, instanceId) =>
   Axios.get(`/api/surveys/${surveyId}/instances/${instanceId}/results`);
+
+export const setSurveyConfig = (surveyId, config) =>
+  Axios.put(`/api/surveys/${surveyId}/config`, config);
+
+export const getSurveyConfig = surveyId =>
+  Axios.get(`/api/surveys/${surveyId}/config`);

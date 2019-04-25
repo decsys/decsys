@@ -85,7 +85,7 @@ namespace Decsys.Controllers
             catch (KeyNotFoundException) { return NotFound(); }
         }
 
-        [HttpPut("{id}/configure")]
+        [HttpPut("{id}/config")]
         [SwaggerOperation("Configure the Survey with the provided ID.")]
         [SwaggerResponse(204, "The Survey was configured successfully.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
@@ -97,6 +97,22 @@ namespace Decsys.Controllers
                 return NoContent();
             }
             catch (KeyNotFoundException) { return NotFound(); }
+        }
+
+        [HttpGet("{id}/config")]
+        [SwaggerOperation("Get the current Config for the Survey with the provided ID.")]
+        [SwaggerResponse(200, "The Survey configuration as requested.", typeof(ConfigureSurveyModel))]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        public ActionResult<ConfigureSurveyModel> GetConfig(int id)
+        {
+            var survey = _surveys.Get(id);
+            if (survey is null) return NotFound();
+            return new ConfigureSurveyModel
+            {
+                UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
+                ValidIdentifiers = survey.ValidIdentifiers,
+                OneTimeParticipants = survey.OneTimeParticipants
+            };
         }
     }
 }

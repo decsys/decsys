@@ -32,6 +32,8 @@ namespace Decsys.Data.Entities
 
         public bool OneTimeParticipants { get; set; }
 
+        public bool UseParticipantIdentifiers { get; set; }
+
         public IEnumerable<string> ValidIdentifiers { get; set; } = new List<string>();
     }
 }

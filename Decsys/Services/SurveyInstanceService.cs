@@ -38,6 +38,7 @@ namespace Decsys.Services
             {
                 // Preserve the Survey Config at the time of this Instance launch
                 OneTimeParticipants = survey.OneTimeParticipants,
+                UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
                 ValidIdentifiers = survey.ValidIdentifiers
             };
 

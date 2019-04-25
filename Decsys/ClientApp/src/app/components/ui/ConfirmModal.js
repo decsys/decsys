@@ -20,7 +20,7 @@ export const useModal = () => {
 
 const ConfirmModal = ({
   header,
-  body,
+  children,
   modalOpened,
   toggleModal,
   onConfirmClick,
@@ -39,7 +39,7 @@ const ConfirmModal = ({
           </ModalHeader>
           <ModalBody>
             <FlexBox alignItems="center" p={1}>
-              {body}
+              {children}
             </FlexBox>
           </ModalBody>
           <ModalFooter>

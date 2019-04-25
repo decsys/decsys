@@ -130,6 +130,7 @@ namespace Decsys.Services
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
             var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
             survey.OneTimeParticipants = config.OneTimeParticipants;
+            survey.UseParticipantIdentifiers = config.UseParticipantIdentifiers;
             survey.ValidIdentifiers = config.ValidIdentifiers;
             surveys.Update(survey);
         }

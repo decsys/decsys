@@ -9,7 +9,16 @@ import SurveyCardContext from "./Context";
 export const context = {
   handleEditClick: action("Edit clicked"),
   handleDuplicateClick: action("Duplicate clicked"),
-  handleDeleteClick: action("Delete clicked")
+  handleDeleteClick: action("Delete clicked"),
+  handleSurveyConfigSaveClick: action("Save clicked"),
+  fetchSurveyConfig: () =>
+    new Promise(resolve =>
+      resolve({
+        oneTimeParticipants: false,
+        useParticipantIdentifiers: true,
+        validIdentifiers: ["hello", "there"]
+      })
+    )
 };
 
 export const basePath = "/admin/survey/:id";
