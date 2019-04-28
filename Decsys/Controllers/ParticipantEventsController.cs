@@ -44,6 +44,31 @@ namespace Decsys.Controllers
             }
         }
 
+        [HttpGet("{type}")]
+        [SwaggerOperation("Get the most recent Log entry for given criteria.")]
+        [SwaggerResponse(200, "The requested most recent Log entry.", typeof(ParticipantEvent))]
+        [SwaggerResponse(404,
+            "No Survey Instance was found with the provided ID, " +
+            "or no Events were found matching the criteria")]
+        public IActionResult Last(
+            [SwaggerParameter("ID of the Survey Instance.")]
+            int instanceId,
+            [SwaggerParameter("Identifier for a Survey Instance Participant.")]
+            string participantId,
+            [SwaggerParameter("The Type of the Event.")]
+            string type)
+        {
+            try
+            {
+                var e = _participantEvents.Last(instanceId, participantId, type);
+                return e is null ? (ActionResult)NotFound() : Ok(e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
         [HttpPost("{source}/{type}")]
         [SwaggerOperation("Log a Participant event.")]
         [SwaggerResponse(204, "The event was logged successfully.")]

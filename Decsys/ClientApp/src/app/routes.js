@@ -10,7 +10,11 @@ import SurveyScreen from "./screens/survey/SurveyScreen";
 import { decode } from "./services/instance-id";
 import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
 import ResultsScreen from "./screens/admin/ResultsScreen";
-import { PAGE_RANDOMIZE } from "./utils/event-types";
+import {
+  PAGE_RANDOMIZE,
+  SURVEY_COMPLETE,
+  PAGE_LOAD
+} from "./utils/event-types";
 import { randomize } from "./services/randomizer";
 
 // Note: Some routes here have a lot of data fetching logic,
@@ -36,7 +40,8 @@ const routes = mount({
 
       const [surveyId, instanceId] = decode(params.id);
       try {
-        await api.getSurveyInstance(surveyId, instanceId);
+        const instance = (await api.getSurveyInstance(surveyId, instanceId))
+          .data;
 
         // get the actual survey data
         const { data: survey } = await api.getSurvey(surveyId);
@@ -44,7 +49,9 @@ const routes = mount({
         // also figure out a User ID
         let userId;
         let order;
+
         if (!user.instances[params.id]) {
+          // TODO: do we enter id's for this instance?
           userId = (await api.getAnonymousParticipantId()).data;
           // we're not resuming: randomize questions
           order = randomize(
@@ -63,7 +70,6 @@ const routes = mount({
           users.storeInstanceParticipantId(params.id, userId);
         } else {
           userId = user.instances[params.id];
-          // resume
           order = (await api.getLastLogEntry(
             instanceId,
             userId,
@@ -72,13 +78,41 @@ const routes = mount({
           )).data.payload.order;
         }
 
-        view = (
+        // check logs to set currentPage
+        const complete = (await api.getLastLogEntry(
+          instanceId,
+          userId,
+          surveyId,
+          SURVEY_COMPLETE
+        )).data;
+        const lastPageLoad = (await api.getLastLogEntryByTypeOnly(
+          instanceId,
+          userId,
+          PAGE_LOAD
+        )).data;
+
+        let currentPage;
+        // first timers
+        if (!lastPageLoad) currentPage = null;
+        // resume in progress first timers
+        else if (!complete) currentPage = lastPageLoad.source;
+        // disallow one time completists
+        else if (instance.oneTimeParticipants)
+          currentPage = survey.pages.length;
+        // resume repeatable completists in progress
+        else if (complete.timeStamp < lastPageLoad.timestamp)
+          currentPage = lastPageLoad.source;
+        // reset repeatable completists
+        else currentPage = null;
+
+        currentPage = view = (
           <SurveyScreen
             combinedId={params.id}
             survey={survey}
             instanceId={instanceId}
             participantId={userId}
             order={order}
+            currentPage={currentPage}
           />
         );
       } catch (err) {

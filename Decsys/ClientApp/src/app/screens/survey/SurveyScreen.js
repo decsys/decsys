@@ -3,6 +3,7 @@ import { useNavigation } from "react-navi";
 import * as api from "../../api";
 import SurveyPage from "../../components/SurveyPage";
 import AppBar from "../../components/AppBar";
+import { SURVEY_COMPLETE } from "../../utils/event-types";
 
 // TODO: PropTypes
 const SurveyScreen = ({
@@ -10,22 +11,9 @@ const SurveyScreen = ({
   survey: { id: surveyId, pages },
   instanceId,
   participantId,
-  order
+  order,
+  currentPage
 }) => {
-  const nav = useNavigation();
-  const [page, setPage] = useState(0);
-  const [lastPage, setLastPage] = useState(false);
-  useEffect(() => setLastPage(page === pages.length - 1), [page]);
-
-  const sortedPages = pages
-    .map(x => ({ ...x, order: order.indexOf(x.id) + 1 }))
-    .sort((a, b) => a.order - b.order);
-
-  const handleClick = () => {
-    if (lastPage) return nav.navigate(`/survey/${combinedId}/complete`);
-    setPage(page + 1);
-  };
-
   const logEvent = async (source, type, payload) => {
     // TODO: Promise?
     await api.logParticipantEvent(
@@ -35,6 +23,44 @@ const SurveyScreen = ({
       type,
       payload
     );
+  };
+
+  const nav = useNavigation();
+
+  const sortedPages = pages
+    .map(x => ({ ...x, order: order.indexOf(x.id) + 1 }))
+    .sort((a, b) => a.order - b.order);
+
+  /**
+   * currentPage is set by the routing at the moment as follows:
+   * new userId : null
+   * existing userId, incomplete Survey : resume last loaded
+   * existing userId, complete Survey, repeatable : null
+   * existing userId, complete Survey, one time : pages.length
+   */
+  let initialPage;
+  if (currentPage == null) initialPage = 0;
+  else initialPage = sortedPages.indexOf(currentPage);
+
+  const [page, setPage] = useState(initialPage);
+  const [lastPage, setLastPage] = useState(false);
+  useEffect(() => {
+    // check if we are beyond lastPage
+    // (e.g. resuming an already completed one time survey)
+    if (page >= pages.length) {
+      logEvent(surveyId, SURVEY_COMPLETE, {});
+      nav.navigate(`/survey/${combinedId}/complete`);
+      return;
+    }
+
+    // if no reason to navigate to the completion page,
+    // then do an ordinary lastPage check
+    setLastPage(page >= pages.length - 1);
+  }, [page]);
+
+  const handleClick = () => {
+    // TODO confirm modal? if (lastPage)
+    setPage(page + 1);
   };
 
   return (

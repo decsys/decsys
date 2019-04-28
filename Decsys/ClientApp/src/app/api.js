@@ -139,6 +139,9 @@ export const setPageRandomize = (surveyId, pageId, randomize) =>
 export const getLastLogEntry = (instanceId, participantId, source, type) =>
   Axios.get(`/api/log/${instanceId}/${participantId}/${source}/${type}`);
 
+export const getLastLogEntryByTypeOnly = (instanceId, participantId, type) =>
+  Axios.get(`/api/log/${instanceId}/${participantId}/${type}`);
+
 export const getInstanceResultsSummary = (surveyId, instanceId) =>
   Axios.get(`/api/surveys/${surveyId}/instances/${instanceId}/results`);
 
