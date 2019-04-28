@@ -37,7 +37,7 @@ const SurveyScreen = ({
   let initialPage;
   if (progressStatus.completed && progressStatus.oneTimeParticipants)
     initialPage = pages.length;
-  if (progressStatus.inProgress)
+  else if (progressStatus.inProgress)
     initialPage = sortedPages.findIndex(
       x => x.id == progressStatus.lastPageLoaded
     );
