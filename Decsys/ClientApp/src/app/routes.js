@@ -9,6 +9,7 @@ import SurveyIdScreen from "./screens/survey/SurveyIdScreen";
 import SurveyScreen from "./screens/survey/SurveyScreen";
 import { decode } from "./services/instance-id";
 import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
+import ParticipantIdScreen from "./screens/survey/ParticipantIdScreen";
 import ResultsScreen from "./screens/admin/ResultsScreen";
 import {
   PAGE_RANDOMIZE,
@@ -51,10 +52,18 @@ const routes = mount({
         if (!user.instances[params.id]) {
           if (instance.useParticipantIdentifiers)
             return {
-              view: <div>Hello</div>
+              view: (
+                <ParticipantIdScreen
+                  users={users}
+                  combinedId={params.id}
+                  validIdentifiers={instance.validIdentifiers}
+                />
+              )
             };
-          else userId = (await api.getAnonymousParticipantId()).data;
-          users.storeInstanceParticipantId(params.id, userId);
+          else {
+            userId = (await api.getAnonymousParticipantId()).data;
+            users.storeInstanceParticipantId(params.id, userId);
+          }
         } else {
           userId = user.instances[params.id];
         }

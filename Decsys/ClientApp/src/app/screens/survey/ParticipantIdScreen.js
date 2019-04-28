@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { FlexBox } from "../../components/ui";
-import { Input, Button, Typography, Box } from "@smooth-ui/core-sc";
+import { Input, Button, Typography, Box, Alert } from "@smooth-ui/core-sc";
 import { useNavigation } from "react-navi";
 import { List } from "styled-icons/fa-solid";
 
-const SurveyIdScreen = () => {
+const ParticipantIdScreen = ({ combinedId, users, validIdentifiers }) => {
   const [id, setId] = useState("");
+  const [validationError, setValidationError] = useState("");
   const nav = useNavigation();
 
   const handleInputChange = e => {
@@ -14,22 +15,35 @@ const SurveyIdScreen = () => {
 
   const handleSubmitClick = e => {
     e.preventDefault();
-    nav.navigate(`/survey/${id}`);
+    if (validIdentifiers.length > 0 && !validIdentifiers.includes(id)) {
+      setValidationError(
+        "The Participant ID entered was not accepted for accessing this Survey."
+      );
+      return;
+    }
+    users.storeInstanceParticipantId(combinedId, id);
+    nav.navigate(`/survey/${combinedId}`);
   };
 
   return (
     <FlexBox flexDirection="column" alignItems="center" pt={100}>
+      {validationError ? (
+        <Alert variant="danger">{validationError}</Alert>
+      ) : null}
+
       <Box mb={5}>
         <List size="250" />
       </Box>
+
       <Typography mb={3} variant="h2">
         Please enter a Participant ID to participate
       </Typography>
+
       <FlexBox>
         <form>
           <Input
             size="lg"
-            placeholder="Survey ID"
+            placeholder="Participant ID"
             onChange={handleInputChange}
             mr={2}
           />
@@ -42,4 +56,4 @@ const SurveyIdScreen = () => {
   );
 };
 
-export default SurveyIdScreen;
+export default ParticipantIdScreen;
