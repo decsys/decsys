@@ -78,41 +78,50 @@ const routes = mount({
           )).data.payload.order;
         }
 
-        // check logs to set currentPage
-        const complete = (await api.getLastLogEntry(
-          instanceId,
-          userId,
-          surveyId,
-          SURVEY_COMPLETE
-        )).data;
-        const lastPageLoad = (await api.getLastLogEntryByTypeOnly(
-          instanceId,
-          userId,
-          PAGE_LOAD
-        )).data;
+        // check logs to set progressStatus
+        let complete;
+        let lastPageLoad;
+        try {
+          complete = (await api.getLastLogEntry(
+            instanceId,
+            userId,
+            surveyId,
+            SURVEY_COMPLETE
+          )).data;
+        } catch (err) {
+          if (err.response && err.response.status === 404) complete = null;
+          else throw err;
+        }
+        try {
+          lastPageLoad = (await api.getLastLogEntryByTypeOnly(
+            instanceId,
+            userId,
+            PAGE_LOAD
+          )).data;
+        } catch (err) {
+          if (err.response && err.response.status === 404) lastPageLoad = null;
+          else throw err;
+        }
 
-        let currentPage;
-        // first timers
-        if (!lastPageLoad) currentPage = null;
-        // resume in progress first timers
-        else if (!complete) currentPage = lastPageLoad.source;
-        // disallow one time completists
-        else if (instance.oneTimeParticipants)
-          currentPage = survey.pages.length;
-        // resume repeatable completists in progress
-        else if (complete.timeStamp < lastPageLoad.timestamp)
-          currentPage = lastPageLoad.source;
-        // reset repeatable completists
-        else currentPage = null;
+        let progressStatus = {
+          completed: complete != null,
+          lastPageLoaded: lastPageLoad && lastPageLoad.source,
+          oneTimeParticipants: instance.oneTimeParticipants,
+          inProgress: !(
+            complete &&
+            lastPageLoad &&
+            complete.timestamp >= lastPageLoad.timestamp
+          )
+        };
 
-        currentPage = view = (
+        view = (
           <SurveyScreen
             combinedId={params.id}
             survey={survey}
             instanceId={instanceId}
             participantId={userId}
             order={order}
-            currentPage={currentPage}
+            progressStatus={progressStatus}
           />
         );
       } catch (err) {

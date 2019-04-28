@@ -12,7 +12,7 @@ const SurveyScreen = ({
   instanceId,
   participantId,
   order,
-  currentPage
+  progressStatus
 }) => {
   const logEvent = async (source, type, payload) => {
     // TODO: Promise?
@@ -31,18 +31,19 @@ const SurveyScreen = ({
     .map(x => ({ ...x, order: order.indexOf(x.id) + 1 }))
     .sort((a, b) => a.order - b.order);
 
-  /**
-   * currentPage is set by the routing at the moment as follows:
-   * new userId : null
-   * existing userId, incomplete Survey : resume last loaded
-   * existing userId, complete Survey, repeatable : null
-   * existing userId, complete Survey, one time : pages.length
-   */
+  // we set an initialPage value
+  // based on progressStatus provided to us
+  // about the current Participant ID
   let initialPage;
-  if (currentPage == null) initialPage = 0;
-  else initialPage = sortedPages.indexOf(currentPage);
+  if (progressStatus.completed && progressStatus.oneTimeParticipants)
+    initialPage = pages.length;
+  if (progressStatus.inProgress)
+    initialPage = sortedPages.findIndex(
+      x => x.id == progressStatus.lastPageLoaded
+    );
+  else initialPage = 0;
 
-  const [page, setPage] = useState(initialPage);
+  const [page, setPage] = useState(initialPage < 0 ? 0 : initialPage);
   const [lastPage, setLastPage] = useState(false);
   useEffect(() => {
     // check if we are beyond lastPage
@@ -63,18 +64,16 @@ const SurveyScreen = ({
     setPage(page + 1);
   };
 
-  return (
-    <>
-      <SurveyPage
-        id={surveyId}
-        page={sortedPages[page]}
-        appBar={<AppBar brand="DECSYS" brandLink="#" />}
-        onNextPage={handleClick}
-        logEvent={logEvent}
-        lastPage={lastPage}
-      />
-    </>
-  );
+  return sortedPages[page] ? (
+    <SurveyPage
+      id={surveyId}
+      page={sortedPages[page]}
+      appBar={<AppBar brand="DECSYS" brandLink="#" />}
+      onNextPage={handleClick}
+      logEvent={logEvent}
+      lastPage={lastPage}
+    />
+  ) : null;
 };
 
 export default SurveyScreen;
