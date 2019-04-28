@@ -48,37 +48,18 @@ const routes = mount({
 
         // also figure out a User ID
         let userId;
-        let order;
-
         if (!user.instances[params.id]) {
-          // TODO: do we enter id's for this instance?
-          userId = (await api.getAnonymousParticipantId()).data;
-          // we're not resuming: randomize questions
-          order = randomize(
-            survey.pages.reduce((a, page) => {
-              a[page.id] = page.randomize;
-              return a;
-            }, {})
-          );
-          api.logParticipantEvent(
-            instanceId,
-            userId,
-            surveyId,
-            PAGE_RANDOMIZE,
-            { order }
-          );
+          if (instance.useParticipantIdentifiers)
+            return {
+              view: <div>Hello</div>
+            };
+          else userId = (await api.getAnonymousParticipantId()).data;
           users.storeInstanceParticipantId(params.id, userId);
         } else {
           userId = user.instances[params.id];
-          order = (await api.getLastLogEntry(
-            instanceId,
-            userId,
-            surveyId,
-            PAGE_RANDOMIZE
-          )).data.payload.order;
         }
 
-        // check logs to set progressStatus
+        // check logs to set progressStatus and randomisation
         let complete;
         let lastPageLoad;
         try {
@@ -113,6 +94,47 @@ const routes = mount({
             complete.timestamp >= lastPageLoad.timestamp
           )
         };
+
+        let random;
+        let order;
+        try {
+          random = (await api.getLastLogEntry(
+            instanceId,
+            userId,
+            surveyId,
+            PAGE_RANDOMIZE
+          )).data;
+        } catch (err) {
+          if (err.response && err.response.status === 404) random = null;
+          else throw err;
+        }
+
+        const randomizeOrder = () => {
+          const order = randomize(
+            survey.pages.reduce((a, page) => {
+              a[page.id] = page.randomize;
+              return a;
+            }, {})
+          );
+          api.logParticipantEvent(
+            instanceId,
+            userId,
+            surveyId,
+            PAGE_RANDOMIZE,
+            { order }
+          );
+          return order;
+        };
+
+        if (random != null) {
+          // check the random log is newer than SURVEY_COMPLETE, if there is one
+          if (!complete) order = random.payload.order;
+          else if (complete.timestamp < random.timestamp)
+            order = random.payload.order;
+          else order = randomizeOrder(); // otherwise, new randomisation
+        } else {
+          order = randomizeOrder(); // new randomisation
+        }
 
         view = (
           <SurveyScreen

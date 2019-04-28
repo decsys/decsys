@@ -28,14 +28,12 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
   const [idGenCount, setIdGenCount] = useState(10);
 
   useEffect(() => {
-    const getData = async () => {
-      const data = await fetchSurveyConfig(surveyId);
+    fetchSurveyConfig(surveyId).then(({ data }) => {
       setOneTimeParticipants(data.oneTimeParticipants);
       setUseParticipantIdentifiers(data.useParticipantIdentifiers);
       setValidIdentifiers(data.validIdentifiers || []);
       setCurrentConfigLoaded(true);
-    };
-    getData();
+    });
   }, []);
 
   const handleConfirmClick = async () => {
