@@ -9,8 +9,13 @@ import SurveyIdScreen from "./screens/survey/SurveyIdScreen";
 import SurveyScreen from "./screens/survey/SurveyScreen";
 import { decode } from "./services/instance-id";
 import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
+import ParticipantIdScreen from "./screens/survey/ParticipantIdScreen";
 import ResultsScreen from "./screens/admin/ResultsScreen";
-import { PAGE_RANDOMIZE } from "./utils/event-types";
+import {
+  PAGE_RANDOMIZE,
+  SURVEY_COMPLETE,
+  PAGE_LOAD
+} from "./utils/event-types";
 import { randomize } from "./services/randomizer";
 
 // Note: Some routes here have a lot of data fetching logic,
@@ -36,18 +41,85 @@ const routes = mount({
 
       const [surveyId, instanceId] = decode(params.id);
       try {
-        await api.getSurveyInstance(surveyId, instanceId);
+        const instance = (await api.getSurveyInstance(surveyId, instanceId))
+          .data;
 
         // get the actual survey data
         const { data: survey } = await api.getSurvey(surveyId);
 
         // also figure out a User ID
         let userId;
-        let order;
         if (!user.instances[params.id]) {
-          userId = (await api.getAnonymousParticipantId()).data;
-          // we're not resuming: randomize questions
-          order = randomize(
+          if (instance.useParticipantIdentifiers)
+            return {
+              view: (
+                <ParticipantIdScreen
+                  users={users}
+                  combinedId={params.id}
+                  validIdentifiers={instance.validIdentifiers}
+                />
+              )
+            };
+          else {
+            userId = (await api.getAnonymousParticipantId()).data;
+            users.storeInstanceParticipantId(params.id, userId);
+          }
+        } else {
+          userId = user.instances[params.id];
+        }
+
+        // check logs to set progressStatus and randomisation
+        let complete;
+        let lastPageLoad;
+        try {
+          complete = (await api.getLastLogEntry(
+            instanceId,
+            userId,
+            surveyId,
+            SURVEY_COMPLETE
+          )).data;
+        } catch (err) {
+          if (err.response && err.response.status === 404) complete = null;
+          else throw err;
+        }
+        try {
+          lastPageLoad = (await api.getLastLogEntryByTypeOnly(
+            instanceId,
+            userId,
+            PAGE_LOAD
+          )).data;
+        } catch (err) {
+          if (err.response && err.response.status === 404) lastPageLoad = null;
+          else throw err;
+        }
+
+        let progressStatus = {
+          completed: complete != null,
+          lastPageLoaded: lastPageLoad && lastPageLoad.source,
+          oneTimeParticipants: instance.oneTimeParticipants,
+          inProgress: !(
+            complete &&
+            lastPageLoad &&
+            complete.timestamp >= lastPageLoad.timestamp
+          )
+        };
+
+        let random;
+        let order;
+        try {
+          random = (await api.getLastLogEntry(
+            instanceId,
+            userId,
+            surveyId,
+            PAGE_RANDOMIZE
+          )).data;
+        } catch (err) {
+          if (err.response && err.response.status === 404) random = null;
+          else throw err;
+        }
+
+        const randomizeOrder = () => {
+          const order = randomize(
             survey.pages.reduce((a, page) => {
               a[page.id] = page.randomize;
               return a;
@@ -60,16 +132,17 @@ const routes = mount({
             PAGE_RANDOMIZE,
             { order }
           );
-          users.storeInstanceParticipantId(params.id, userId);
+          return order;
+        };
+
+        if (random != null) {
+          // check the random log is newer than SURVEY_COMPLETE, if there is one
+          if (!complete) order = random.payload.order;
+          else if (complete.timestamp < random.timestamp)
+            order = random.payload.order;
+          else order = randomizeOrder(); // otherwise, new randomisation
         } else {
-          userId = user.instances[params.id];
-          // resume
-          order = (await api.getLastLogEntry(
-            instanceId,
-            userId,
-            surveyId,
-            PAGE_RANDOMIZE
-          )).data.payload.order;
+          order = randomizeOrder(); // new randomisation
         }
 
         view = (
@@ -79,6 +152,7 @@ const routes = mount({
             instanceId={instanceId}
             participantId={userId}
             order={order}
+            progressStatus={progressStatus}
           />
         );
       } catch (err) {

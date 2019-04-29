@@ -70,6 +70,30 @@ namespace Decsys.Services
                     .FirstOrDefault());
         }
 
+        /// <summary>
+        /// Get the most recent log entry for the given parameters
+        /// </summary>
+        /// <param name="instanceId">ID of a Survey Instance</param>
+        /// <param name="participantId">Identifier for a Survey Instance Participant</param>
+        /// <param name="type">Type of the event (e.g. Results)</param>
+        /// <returns>The Event Log entry, or null if there isn't one matching the criteria.</returns>
+        /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
+        public Models.ParticipantEvent Last(int instanceId, string participantId, string type)
+        {
+            if (!_db.GetCollection<SurveyInstance>(
+                    Collections.SurveyInstances)
+                .Exists(x => x.Id == instanceId))
+                throw new KeyNotFoundException("Survey Instance could not be found.");
+
+            var log = _db.GetCollection<ParticipantEvent>(
+                GetCollectionName(instanceId, participantId));
+
+            return _mapper.Map<Models.ParticipantEvent>(
+                log.Find(x => x.Type == type)
+                    .OrderByDescending(x => x.Timestamp)
+                    .FirstOrDefault());
+        }
+
         // TODO: Participant state? Flat Participant Results? Other...?
         public Models.SurveyInstanceResultsSummary ResultsSummary(int instanceId)
         {

@@ -1,14 +1,12 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import StoryRouter from "storybook-react-router";
 import { AngleRight, GlobeAmericas } from "styled-icons/fa-solid";
 import MenuItem from "./MenuItem";
 import MenuRouterLink from "./MenuRouterLink";
 import DropdownMenu from "./Menu";
 
 storiesOf("Common UI/Menu", module)
-  .addDecorator(StoryRouter())
   .add("Empty", () => <DropdownMenu />)
   .add("1 item", () => (
     <DropdownMenu>

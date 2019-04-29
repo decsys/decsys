@@ -59,7 +59,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(200, "The Survey Name was updated successfully.")]
         [SwaggerResponse(400, "No valid name was provided.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
-        public IActionResult EditName(int id, [FromBody] string name)
+        public ActionResult<string> EditName(int id, [FromBody] string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest($"{nameof(name)} must not be empty.");
@@ -67,7 +67,7 @@ namespace Decsys.Controllers
             try
             {
                 _surveys.EditName(id, name);
-                return Ok(name);
+                return name;
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }
@@ -76,15 +76,43 @@ namespace Decsys.Controllers
         [SwaggerOperation("Duplicate a single Survey with the provided ID.")]
         [SwaggerResponse(200, "The Survey was duplicated successfully and the new copy has the returned ID.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
-        public IActionResult Duplicate(int id)
+        public ActionResult<int> Duplicate(int id)
         {
             try
             {
-                return Ok(_surveys.Duplicate(id));
+                return _surveys.Duplicate(id);
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }
 
-        
+        [HttpPut("{id}/config")]
+        [SwaggerOperation("Configure the Survey with the provided ID.")]
+        [SwaggerResponse(204, "The Survey was configured successfully.")]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        public IActionResult Configure(int id, ConfigureSurveyModel config)
+        {
+            try
+            {
+                _surveys.Configure(id, config);
+                return NoContent();
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+        }
+
+        [HttpGet("{id}/config")]
+        [SwaggerOperation("Get the current Config for the Survey with the provided ID.")]
+        [SwaggerResponse(200, "The Survey configuration as requested.", typeof(ConfigureSurveyModel))]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        public ActionResult<ConfigureSurveyModel> GetConfig(int id)
+        {
+            var survey = _surveys.Get(id);
+            if (survey is null) return NotFound();
+            return new ConfigureSurveyModel
+            {
+                UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
+                ValidIdentifiers = survey.ValidIdentifiers,
+                OneTimeParticipants = survey.OneTimeParticipants
+            };
+        }
     }
 }

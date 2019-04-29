@@ -5,8 +5,10 @@ import ManageSurveyButton from "./ManageSurveyButton";
 import { action } from "@storybook/addon-actions";
 import withNavi from "../../utils/story-navi";
 import SurveyCardContext from "./Context";
+import { context as configModalContext } from "./SurveyConfigModal.stories";
 
 export const context = {
+  ...configModalContext,
   handleEditClick: action("Edit clicked"),
   handleDuplicateClick: action("Duplicate clicked"),
   handleDeleteClick: action("Delete clicked")

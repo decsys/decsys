@@ -119,5 +119,20 @@ namespace Decsys.Services
             survey.Name = name;
             surveys.Update(survey);
         }
+
+        /// <summary>
+        /// Configure a Survey for the next Instance run
+        /// </summary>
+        /// <param name="id">The ID of the Survey to Configure.</param>
+        /// <param name="config">A model of configuration values</param>
+        public void Configure(int id, Models.ConfigureSurveyModel config)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            survey.OneTimeParticipants = config.OneTimeParticipants;
+            survey.UseParticipantIdentifiers = config.UseParticipantIdentifiers;
+            survey.ValidIdentifiers = config.ValidIdentifiers;
+            surveys.Update(survey);
+        }
     }
 }

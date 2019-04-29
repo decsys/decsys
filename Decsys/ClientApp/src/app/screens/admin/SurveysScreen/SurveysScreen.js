@@ -4,6 +4,7 @@ import { useNaviReducer } from "../../../utils/hooks";
 import PureSurveysScreen from "./PureSurveysScreen";
 import SurveyCardContext from "../../../components/SurveyCard/Context";
 import reducer, * as ducks from "./ducks";
+import * as api from "../../../api";
 
 const SurveysScreen = ({ surveys }) => {
   const [state, dispatch] = useNaviReducer(
@@ -22,7 +23,10 @@ const SurveysScreen = ({ surveys }) => {
     handleDuplicateClick: id => dispatch(ducks.duplicateSurvey(id)),
     handleLaunchClick: id => dispatch(ducks.launchSurvey(id)),
     handleCloseClick: (surveyId, instanceId) =>
-      dispatch(ducks.closeSurvey(surveyId, instanceId))
+      dispatch(ducks.closeSurvey(surveyId, instanceId)),
+    fetchSurveyConfig: async id => await api.getSurveyConfig(id),
+    handleSurveyConfigSaveClick: async (id, config) =>
+      await api.setSurveyConfig(id, config)
   };
 
   return (

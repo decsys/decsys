@@ -5,7 +5,9 @@ const SurveyCardContext = createContext({
   handleDeleteClick: () => {},
   handleEditClick: () => {},
   handleLaunchClick: () => {},
-  handleCloseClick: () => {}
+  handleCloseClick: () => {},
+  fetchSurveyConfig: () => {},
+  handleSurveyConfigSaveClick: () => {}
 });
 
 export default SurveyCardContext;
