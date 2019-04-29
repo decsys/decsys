@@ -10,7 +10,7 @@ const PreviewScreen = () => {
   const { id, pages } = useCurrentRoute().data.survey;
   const [page, setPage] = useState(0);
   const [lastPage, setLastPage] = useState(false);
-  useEffect(() => setLastPage(page === pages.length - 1), [page]);
+  useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
 
   const handleClick = () => {
     if (lastPage) return nav.goBack();

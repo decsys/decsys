@@ -34,7 +34,7 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
       setValidIdentifiers(data.validIdentifiers || []);
       setCurrentConfigLoaded(true);
     });
-  }, []);
+  }, [fetchSurveyConfig, surveyId]);
 
   const handleConfirmClick = async () => {
     await handleSurveyConfigSaveClick(surveyId, {

@@ -14,7 +14,7 @@ const SurveyPage = ({ appBar, id, page, onNextPage, lastPage, logEvent }) => {
 
   useEffect(() => {
     logEvent(page.id, PAGE_LOAD, {});
-  }, [page]);
+  }, [page, logEvent]);
 
   return (
     <Grid
