@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "react-navi";
 import * as api from "../../api";
 import SurveyPage from "../../components/SurveyPage";
@@ -14,16 +14,19 @@ const SurveyScreen = ({
   order,
   progressStatus
 }) => {
-  const logEvent = async (source, type, payload) => {
-    // TODO: Promise?
-    await api.logParticipantEvent(
-      instanceId,
-      participantId,
-      source,
-      type,
-      payload
-    );
-  };
+  const logEvent = useCallback(
+    async (source, type, payload) => {
+      // TODO: Promise?
+      await api.logParticipantEvent(
+        instanceId,
+        participantId,
+        source,
+        type,
+        payload
+      );
+    },
+    [instanceId, participantId]
+  );
 
   const nav = useNavigation();
 
@@ -39,7 +42,7 @@ const SurveyScreen = ({
     initialPage = pages.length;
   else if (progressStatus.inProgress)
     initialPage = sortedPages.findIndex(
-      x => x.id == progressStatus.lastPageLoaded
+      x => x.id === progressStatus.lastPageLoaded
     );
   else initialPage = 0;
 
@@ -57,7 +60,7 @@ const SurveyScreen = ({
     // if no reason to navigate to the completion page,
     // then do an ordinary lastPage check
     setLastPage(page >= pages.length - 1);
-  }, [page]);
+  }, [page, combinedId, logEvent, nav, pages.length, surveyId]);
 
   const handleClick = () => {
     // TODO confirm modal? if (lastPage)
