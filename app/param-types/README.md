@@ -12,16 +12,18 @@ Component Authors should use `param-types` when writing components to provide th
 
 It is possible to configure the `params` property without assistance from `param-types` but it's not recommended.
 
-`param-types` provides helper functions and type constants to make specifying `params` easy. It also sets `propTypes` and `defaultProps` for the parameter props at the same time.
+`param-types` provides helper functions and type constants to make specifying `params` easy.
 
-1. Use the type builders `string`, `stringUndefined`, `number`, `bool` and `oneOf` to specfy individual parameters easily
-2. Use `setParams` to build a `params` spec on the component from the above, and also set `propTypes` and `defaultProps`.
+It also provides a helper for generating `propTypes` and `defaultProps` for the parameter props as well.
+
+1. Use the type builders `string`, `stringUndefined`, `number`, `bool` and `oneOf` to specify individual parameters easily
+2. Use `buildPropTypes()` to build `propTypes` and `defaultProps` objects based on the above, as well as any additional `propTypes` and `defaultProps` passed to it.
 
 ## Example
 
 ```javascript
 
-import paramTypes, { setParams } from "@decsys/param-types";
+import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 
 /**
  * A component which has two configurable parameters,
@@ -31,23 +33,32 @@ const MyComponent = ({ param1, param2, results }) => {
     //...
 }
 
-// Still configure propTypes for props which aren't configurable parameters
-MyComponent.propTypes = {
-    results: // ...
-};
-MyComponent.defaultProps = {
-    results: // ...
-};
-
-// Use setParams for specifying data about configurable parameters, so the Platform Editor knows how to configure your component
-setParams(MyComponent, {
+// Configure Component params using the type builders,
+// so the Platform Editor knows how to configure your component
+MyComponent.params = {
     param1: paramTypes.string("Friendly Label", "Default Value"),
     param2: paramTypes.oneOf(
         "Friendly Label",
         ["valid", "values", "not", "default"],
         "default")
-});
+}
 
+// use `buildPropTypes()` to generate `propTypes` and `defaultProps`
+// for the params, as well as those defined manually for other props
+const { propTypes, defaultProps } = buildPropTypes(
+    MyComponent.params,
+    // propTypes
+    {
+        results: // ...
+    },
+    // defaultProps
+    {
+        results: // ...
+    });
+
+// Set `propTypes` and `defaultProps` on the Component
+MyComponent.propTypes = propTypes;
+MyComponent.defaultProps = defaultProps;
 ```
 
 ## Imports
@@ -61,21 +72,21 @@ It's only a small package but it should support tree shaking if you use named im
 import { string as stringParam, oneOf } from "@decsys/param-types/builders";
 
 // default imports from specific modules
-import setParams from "@decsys/param-types/setParams";
+import buildPropTypes from "@decsys/param-types/buildPropTypes";
 
 // default or named imports from the package
-import paramTypes, { setParams } from "@decsys/param-types";
+import paramTypes, { buildPropTypes } from "@decsys/param-types";
 ```
 
 ## ES Modules only?
 
-`param-types` is only provided as ES Modules.
+`param-types` is only provided as untranspiled ES Modules.
 
 It only depends on `prop-types` but that should be fulfilled as a peer dependency by the package using it (ultimately the Survey Platform).
 
 DECSYS Components are expected to be written and exported as ES Modules (though bundled with their dependencies).
 
-Due to the scope of use of `param-types`, other module formats, or direct browser use support do not seem necessay.
+Due to the scope of use of `param-types`, other module formats, or direct browser use support do not seem necessary.
 
 # Use in the DECSYS Survey Platform
 
