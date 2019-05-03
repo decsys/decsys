@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import paramTypes, { setParams } from "@decsys/param-types/";
+import paramTypes, { buildPropTypes } from "@decsys/param-types/";
 import EllipseScale from "@decsys/rating-scales/lib/ellipse/Scale";
 import { CircleNotch } from "styled-icons/fa-solid";
+import { version } from "../package.json";
 
 const Ellipse = ({
   barLeftMargin,
@@ -97,14 +98,7 @@ const Ellipse = ({
   );
 };
 
-// propTypes and defaultProps for non-parameter props (e.g. results)
-Ellipse.propTypes = {
-  minRangeValue: PropTypes.number,
-  maxRangeValue: PropTypes.number
-};
-
-//set parameter metadata, including propTypes and defaultProps
-setParams(Ellipse, {
+Ellipse.params = {
   barLeftMargin: paramTypes.number("Bar Left Margin (%)", 10),
   barRightMargin: paramTypes.number("Bar Right Margin (%)", 10),
   barTopMargin: paramTypes.number("Bar Top Margin (%)", 50),
@@ -139,10 +133,17 @@ setParams(Ellipse, {
   scaleSubdivisionLength: paramTypes.number("Scale Subdivision Length", 20),
   scaleMarkers: paramTypes.number("Scale Markers", 2),
   scaleSubdivisions: paramTypes.number("Scale Subdivisions", 10)
+};
+
+const { propTypes, defaultProps } = buildPropTypes(Ellipse.params, {
+  minRangeValue: PropTypes.number,
+  maxRangeValue: PropTypes.number
 });
+Ellipse.propTypes = propTypes;
+Ellipse.defaultProps = defaultProps;
 
 // Metadata properties
-Ellipse.version = "0.5.1";
+Ellipse.version = version;
 Ellipse.icon = <CircleNotch />;
 
 export default Ellipse;

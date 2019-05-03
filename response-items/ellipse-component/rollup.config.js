@@ -2,6 +2,7 @@ import resolve from "rollup-plugin-node-resolve";
 import cjs from "rollup-plugin-commonjs";
 import replace from "rollup-plugin-replace";
 import babel from "rollup-plugin-babel";
+import json from "rollup-plugin-json";
 
 const pkg = require("./package.json");
 
@@ -45,6 +46,7 @@ export default {
         // of a module in node_modules
         "node_modules/resource-loader/lib/index.js": ["Resource"]
       }
-    })
+    }),
+    json()
   ]
 };
