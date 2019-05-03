@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { FormCheck, Checkbox, FormCheckLabel } from "@smooth-ui/core-sc";
-import paramTypes, { setParams } from "@decsys/param-types/";
+import ParamTypes, { buildPropTypes } from "@decsys/param-types/";
 import { Check } from "styled-icons/fa-solid/Check";
+import { version } from "../package.json";
 
 const Confirm = ({ label, initialChecked, setNextEnabled, logResults }) => {
   useEffect(() => setNextEnabled(false), []);
@@ -31,21 +32,21 @@ const Confirm = ({ label, initialChecked, setNextEnabled, logResults }) => {
   );
 };
 
-//set parameter metadata, including propTypes and defaultProps
-setParams(Confirm, {
-  label: paramTypes.string(
+Confirm.params = {
+  label: ParamTypes.string(
     "Checkbox Label",
     "I confirm that I have read and understood."
   )
-});
-
-// propTypes and defaultProps for non-parameter props (e.g. results)
-Confirm.propTypes = {
-  initialChecked: PropTypes.bool
 };
 
+const { propTypes, defaultProps } = buildPropTypes(Confirm.params, {
+  initialChecked: PropTypes.bool
+});
+Confirm.propTypes = propTypes;
+Confirm.defaultProps = defaultProps;
+
 // Metadata properties
-Confirm.version = "0.2.0";
+Confirm.version = version;
 Confirm.icon = <Check />;
 
 export default Confirm;

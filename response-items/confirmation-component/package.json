@@ -1,7 +1,7 @@
 {
   "name": "@decsys/confirm-component",
   "bundle": "Confirm",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -16,11 +16,11 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "@babel/core": "^7.4.0",
-    "@storybook/addon-actions": "^5.0.3",
-    "@storybook/addon-knobs": "^5.0.3",
+    "@storybook/addon-actions": "^5.0.11",
+    "@storybook/addon-knobs": "^5.0.11",
     "@storybook/addon-links": "^5.0.3",
     "@storybook/addons": "^5.0.3",
-    "@storybook/react": "^5.0.3",
+    "@storybook/react": "^5.0.11",
     "babel-loader": "^8.0.5",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
@@ -35,8 +35,9 @@
     "styled-components": "^4.1.3"
   },
   "dependencies": {
-    "@decsys/param-types": "^0.2.0",
+    "@decsys/param-types": "^0.3.0",
     "@smooth-ui/core-sc": "^10.0.2",
+    "rollup-plugin-json": "^4.0.0",
     "styled-icons": "^7.6.0"
   },
   "peerDependencies": {
