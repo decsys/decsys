@@ -2,6 +2,7 @@ import resolve from "rollup-plugin-node-resolve";
 import cjs from "rollup-plugin-commonjs";
 import replace from "rollup-plugin-replace";
 import babel from "rollup-plugin-babel";
+import json from "rollup-plugin-json";
 
 const pkg = require("./package.json");
 
@@ -38,6 +39,7 @@ export default {
       ]
     }),
     resolve(),
-    cjs()
+    cjs(),
+    json()
   ]
 };

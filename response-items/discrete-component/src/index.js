@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { DotCircle } from "styled-icons/fa-regular/DotCircle";
-import paramTypes, { setParams } from "@decsys/param-types/";
+import paramTypes, { buildPropTypes } from "@decsys/param-types/";
 import LikertScale from "@decsys/rating-scales/lib/likert/Scale";
+import { version } from "../package.json";
 
 const Likert = ({
   barLeftMargin,
@@ -69,14 +70,7 @@ const Likert = ({
   );
 };
 
-// propTypes and defaultProps for non-parameter props (e.g. results)
-Likert.propTypes = {
-  initialIndex: PropTypes.number,
-  initialValue: PropTypes.string
-};
-
-//set parameter metadata, including propTypes and defaultProps
-setParams(Likert, {
+Likert.params = {
   radio1: paramTypes.string("Option 1", "1"),
   radio1Secondary: paramTypes.string("Secondary Label 1", "Low"),
   radio2: paramTypes.string("Option 2", "2"),
@@ -104,10 +98,17 @@ setParams(Likert, {
     ["above", "below"],
     "below"
   )
+};
+
+const { propTypes, defaultProps } = buildPropTypes(Likert.params, {
+  initialIndex: PropTypes.number,
+  initialValue: PropTypes.string
 });
+Likert.propTypes = propTypes;
+Likert.defaultProps = defaultProps;
 
 // Metadata properties
-Likert.version = "0.5.1";
+Likert.version = version;
 Likert.icon = <DotCircle />;
 
 export default Likert;
