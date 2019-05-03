@@ -3,7 +3,7 @@
 // so we can't query information about the types after the fact
 // We can use the declarations here to inform PropTypes though,
 // to avoid repetition, which is what buildPropTypes does
-import { string, stringUndefined, bool, number, bool, oneOf } from "./builders";
+import { string, stringUndefined, bool, number, oneOf } from "./builders";
 import * as types from "./types";
 import buildPropTypes from "./buildPropTypes";
 

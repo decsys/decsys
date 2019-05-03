@@ -26,24 +26,6 @@ export const string = (label, defaultValue = "") =>
 export const stringUndefined = label => new ParamType(label, types.string);
 
 /**
- * Spec this Parameter as a string,
- * with the default value specfied, or an empty string.
- *
- * Use `stringUndefined()` if you don't want an empty string by default.
- * @param {*} label
- * @param {*} defaultValue
- */
-export const string = (label, defaultValue = "") =>
-  new ParamType(label, types.string, defaultValue);
-
-/**
- * Spec this Parameter as a string,
- * with NO default value.
- * @param {*} label
- */
-export const stringUndefined = label => new ParamType(label, types.string);
-
-/**
  * Spec this Parameter as an enum,
  * accepting only the valid values provided.
  *

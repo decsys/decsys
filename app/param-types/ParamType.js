@@ -16,7 +16,7 @@ class ParamType {
       throw Error(
         "Param is of type `oneOf`, but the default value is invalid."
       );
-    if (!Object.keys(type).includes(type)) throw Error("Param Type is invalid");
+    if (!Object.keys(types).includes(type)) throw Error("Param Type is invalid");
 
     this._label = label;
     this._type = type;

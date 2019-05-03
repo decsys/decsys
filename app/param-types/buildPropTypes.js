@@ -2,11 +2,11 @@ import * as types from "./types";
 import PropTypes from "prop-types";
 
 /**
- * Builds React `propTypes` and `defaultProps` objects for your component
- * based on your component's ParamTypes.
- * @param {*} params - your component's ParamTypes spec
- * @param {*} propTypes - any non ParamTypes based PropTypes you want included
- * @param {*} defaultProps - any non ParamTypes based defaultProps you want included
+ * Builds React `propTypes` and `defaultProps` objects for a Component
+ * based on the Component's ParamTypes.
+ * @param {*} params - The Component's ParamTypes spec
+ * @param {*} propTypes - any non ParamTypes based `propTypes` to include
+ * @param {*} defaultProps - any non ParamTypes based `defaultProps` to include
  */
 const buildPropTypes = (params, propTypes, defaultProps) => {
   const x = {
