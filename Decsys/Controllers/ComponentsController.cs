@@ -82,7 +82,7 @@ namespace Decsys.Controllers
                     .AppendLine(";");
             }
 
-            output.Append("document.dispatchEvent(new Event('__DECSYS__ComponentsLoaded'));");
+            output.AppendLine("document.dispatchEvent(new Event('__DECSYS__ComponentsLoaded'));");
 
             return File(Encoding.UTF8.GetBytes(output.ToString()), "application/javascript");
         }
