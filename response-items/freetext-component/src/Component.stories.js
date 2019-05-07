@@ -2,14 +2,14 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { text, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
-import FreeText from "./index";
+import Component from "./Component";
 
 const actions = {
   logResults: action("Results logged")
 };
 
-storiesOf("FreeText", module).add("Default", () => (
-  <FreeText
+storiesOf("Component", module).add("Default", () => (
+  <Component
     initialText={text("Text", "Hello")}
     maxLength={number("Max Length", 50)}
     {...actions}
