@@ -2,7 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { text } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
-import Confirm from "./index";
+import Component from "./Component";
 
 const actions = {
   setNextEnabled: action("Next Button toggled"),
@@ -10,22 +10,22 @@ const actions = {
   logResults: action("Component Results logged")
 };
 
-storiesOf("Confirm", module)
+storiesOf("Component", module)
   .add("Default", () => (
-    <Confirm
+    <Component
       label={text(
-        Confirm.params.label.label,
-        Confirm.params.label.defaultValue
+        Component.params.label.label,
+        Component.params.label.defaultValue
       )}
       initialChecked={false}
       {...actions}
     />
   ))
   .add("Initially Checked", () => (
-    <Confirm
+    <Component
       label={text(
-        Confirm.params.label.label,
-        Confirm.params.label.defaultValue
+        Component.params.label.label,
+        Component.params.label.defaultValue
       )}
       initialChecked={true}
       {...actions}
