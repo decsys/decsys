@@ -43,7 +43,7 @@ e.g. the basic `Frame` component
 
 The components can be used directly in the browser, as per the examples in `samples/`.
 
-Refer to the `dist/` file, and you can access each Scale component under the namespace `DECSYS`.
+You can access each Scale component under the namespace `DECSYS`.
 
 The sub-components are not directly available in the browser.
 

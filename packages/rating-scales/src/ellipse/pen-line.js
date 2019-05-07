@@ -1,4 +1,4 @@
-import { Graphics } from "./pixi";
+import { Graphics } from "@pixi/graphics";
 import nameToHexString from "colornames";
 
 // Namespaced helpers used internally in this module
