@@ -3,16 +3,26 @@ import cjs from "rollup-plugin-commonjs";
 import replace from "rollup-plugin-replace";
 import babel from "rollup-plugin-babel";
 import json from "rollup-plugin-json";
+import { terser } from "rollup-plugin-terser";
 
 const pkg = require("./package.json");
+
+// the actual module exports from the bundled IIFE
+const footer = `
+export const name = DecsysComponent.displayName;
+export default DecsysComponent;
+`;
 
 export default {
   input: "src/index.js",
   output: {
     format: "iife",
     name: "DecsysComponent",
-    file: `dist/${pkg.bundle}.js`,
-    exports: "named", // explicitly set default export as a `<name>.default` named export
+    file: `dist/${pkg.componentName}.js`,
+    sourcemap: true,
+    preferConst: true,
+    compact: true,
+    footer: footer,
     globals: {
       react: "React",
       "styled-components": "styled",
@@ -39,14 +49,8 @@ export default {
       ]
     }),
     resolve({ preferBuiltins: false }),
-    cjs({
-      namedExports: {
-        // left-hand side can be an absolute path, a path
-        // relative to the current directory, or the name
-        // of a module in node_modules
-        "node_modules/resource-loader/lib/index.js": ["Resource"]
-      }
-    }),
-    json()
+    cjs(),
+    json(),
+    terser()
   ]
 };

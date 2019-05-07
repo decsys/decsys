@@ -1,15 +1,15 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import Ellipse from "./index";
+import Component from "./Component";
 
 const actions = {
   setNextEnabled: action("Next button toggled"),
   logResults: action("Results logged")
 };
 
-storiesOf("Ellipse", module).add("Default", () => (
-  <Ellipse
+storiesOf("Component", module).add("Default", () => (
+  <Component
     barLeftMargin={10}
     barTopMargin={50}
     barRightMargin={10}
