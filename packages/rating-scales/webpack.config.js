@@ -7,12 +7,24 @@ module.exports = env => {
   return {
     mode: prod ? "production" : "development",
     entry: "./src/index.js",
+    optimization: {
+      usedExports: true
+    },
     module: {
       rules: [
         {
           test: /\.(js|jsx)$/,
           exclude: /node_modules/,
-          use: ["babel-loader"]
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                ["@babel/preset-env", { modules: false }],
+                "@babel/preset-react"
+              ],
+              plugins: ["@babel/plugin-proposal-class-properties"]
+            }
+          }
         }
       ]
     },

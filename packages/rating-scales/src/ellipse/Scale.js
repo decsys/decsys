@@ -1,6 +1,6 @@
 import React, { createRef } from "react";
 import PropTypes from "prop-types";
-import { Application } from "pixi.js/lib/pixi.es";
+import { Application } from "./pixi";
 import RangeBar from "./RangeBar";
 import ScaleLabel from "./ScaleLabel";
 import RangeMarker from "./RangeMarker";
@@ -19,9 +19,6 @@ const getScrolledY = y => y + window.pageYOffset;
 const resizeHandler = (app, main, ...elems) => {
   const { width, height } = Canvas.newDimensions(main, ...elems);
   Canvas.setDimensions(app.view, { width, height });
-  // also set the canvas position to zero it within the window
-  // in case it was initialised inside a `position: relative` container
-  // Canvas.setPosition(app.view);
   app.renderer.resize(width, height);
 };
 
