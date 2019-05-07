@@ -1,6 +1,6 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import { text, number, optionsKnob } from "@storybook/addon-knobs";
+import { text, optionsKnob } from "@storybook/addon-knobs";
 import Paragraph from "./Paragraph";
 
 const getLabel = param => Paragraph.params[param].label;
