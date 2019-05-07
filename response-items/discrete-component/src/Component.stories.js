@@ -1,15 +1,15 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import Likert from "./index";
+import Component from "./Component";
 
 const actions = {
   setNextEnabled: action("Next button toggled"),
   logResults: action("Results logged")
 };
 
-storiesOf("Likert", module).add("Default", () => (
-  <Likert
+storiesOf("Component", module).add("Default", () => (
+  <Component
     radio1="1"
     radio2="2"
     radio3="3"
