@@ -5,18 +5,8 @@ module.exports = {
   styleguideDir: "docs",
   title: "Decsys Rating Scales",
 
-  // TODO fix final import pathing
-  getComponentPathLine(componentPath) {
-    const name = path.basename(componentPath, ".js");
-
-    const dir = componentPath
-      .replace(/src/, `${pkg.name}`)
-      .replace(/\\/g, "/")
-      .replace(".js", "");
-    return `import ${name} from '${dir}';`;
-  },
   // very few non-component js files in this repo, so we ignore them this way
-  ignore: ["**/pen-line.js"],
+  ignore: ["**/pen-line.js", "**/pixi.js"],
 
   pagePerSection: true,
   sections: [
@@ -39,5 +29,28 @@ module.exports = {
       content: "src/ellipse/overview.md",
       components: ["src/ellipse/*.js"]
     }
-  ]
+  ],
+
+  webpackConfig: {
+    module: {
+      rules: [
+        {
+          test: /\.jsx?$/,
+          exclude: /node_modules/,
+          loader: "babel-loader"
+        }
+      ]
+    }
+  },
+
+  // TODO fix final import pathing
+  getComponentPathLine(componentPath) {
+    const name = path.basename(componentPath, ".js");
+
+    const dir = componentPath
+      .replace(/src/, `${pkg.name}`)
+      .replace(/\\/g, "/")
+      .replace(".js", "");
+    return `import ${name} from '${dir}';`;
+  }
 };

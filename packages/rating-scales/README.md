@@ -36,8 +36,8 @@ e.g. for just the Likert Scale
 
 e.g. the basic `Frame` component
 
-- `import Frame from "@decsys/rating-scales/lib/core/Frame";`
-- `const Frame = require("@decsys/rating-scales/lib/core/Frame");`
+- `import Frame from "@decsys/rating-scales/core/Frame";`
+- `const Frame = require("@decsys/rating-scales/core/Frame");`
 
 ## Browser
 
@@ -52,9 +52,15 @@ The sub-components are not directly available in the browser.
 The following complete ratings scale components are available:
 
 - Likert Scale
+
   - `import { LikertScale } from "@decsys/rating-scales";`
   - `const LikertScale = require("@decsys/rating-scales").LikertScale;`
   - `DECSYS.LikertScale` when using the browser build.
+
+- Ellipse Scale
+  - `import { EllipseScale } from "@decsys/rating-scales";`
+  - `const EllipseScale = require("@decsys/rating-scales").EllipseScale;`
+  - `DECSYS.EllipseScale` when using the browser build.
 
 # Documentation
 
@@ -67,11 +73,9 @@ The build workflow consists of several npm scripts.
 There are a number of sub-tasks composed into higher-level tasks you're more likely to want to run:
 
 - `npm run lint` will run eslint against the source.
-- `npm run lib` will lint and, if it passes, clear the `lib/` directory and build the node.js library version.
-  - This just transpiles the ES2018+ source into something node can run today.
-- `npm run dist` will lint and, if it passes, clear the `dist/` directory and build a development version for the browser.
-- `npm run prod` is used in CI to lint and, if it passes, build both the `lib` and `dist` outputs for production.
-- `npm run watch [lib|dist]` will run either the `lib` or `dist` script described above and then watch for changes in the `src/` directory.
+- `npm run rollup` will build transpiled, minified bundles (with external source maps) for Browser, CommonJS and ES Modules.
+- `npm run build` will lint and, if it passes, clear the `dist/` directory and build the bundles as above. This is used in CI.
+- `npm run watch [build]` will run `build` script described above and then watch for changes in the `src/` directory.
 
 # Licensing
 

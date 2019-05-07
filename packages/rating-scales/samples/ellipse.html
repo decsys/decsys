@@ -13,7 +13,7 @@
     <script src="../node_modules/styled-components/dist/styled-components.js"></script>
     <script src="../node_modules/@babel/standalone/babel.min.js"></script>
 
-    <script src="../dist/decsys.rating-scales.js"></script>
+    <script src="../dist/decsys.rating-scales.umd.js"></script>
 
     <script type="text/babel">
       ReactDOM.render(
@@ -64,10 +64,10 @@
     <script>
       document.addEventListener("EllipseCompleted", e => {
         document.querySelector("#results").innerHTML = `
-                <dl>
-                  <dt>Min</dt><dd>${e.detail.minRangeValue}</dd>
-                  <dt>Max</dt><dd>${e.detail.maxRangeValue}</dd>
-                </dl>`;
+          <dl>
+            <dt>Min</dt><dd>${e.detail.minRangeValue}</dd>
+            <dt>Max</dt><dd>${e.detail.maxRangeValue}</dd>
+          </dl>`;
       });
     </script>
   </body>
