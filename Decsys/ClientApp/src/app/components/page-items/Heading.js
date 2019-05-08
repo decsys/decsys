@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@smooth-ui/core-sc";
-import paramTypes, { setParams } from "@decsys/param-types";
+import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 
 const PageHeading = ({ text, xMargin, ...p }) => (
   <Typography
@@ -13,21 +13,24 @@ const PageHeading = ({ text, xMargin, ...p }) => (
   </Typography>
 );
 
-setParams(PageHeading, {
-  text: paramTypes.string("Text"),
-  variant: paramTypes.oneOf(
+PageHeading.params = {
+  text: ParamTypes.string("Text"),
+  variant: ParamTypes.oneOf(
     "Heading Style",
     ["h1", "h2", "h3", "h4", "h5"],
     "h2"
   ),
-  color: paramTypes.string("Color", "black"),
-  textAlign: paramTypes.oneOf(
+  color: ParamTypes.string("Color", "black"),
+  textAlign: ParamTypes.oneOf(
     "Alignment",
     ["left", "center", "right"],
     "center"
   ),
-  xMargin: paramTypes.number("Horizontal Margin", 5),
-  fontFamily: paramTypes.stringUndefined("Font Family")
-});
+  xMargin: ParamTypes.number("Horizontal Margin", 5),
+  fontFamily: ParamTypes.stringUndefined("Font Family")
+};
+const { pt, defaultProps } = buildPropTypes(PageHeading.params);
+PageHeading.propTypes = pt;
+PageHeading.defaultProps = defaultProps;
 
 export default PageHeading;

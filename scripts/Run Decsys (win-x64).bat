@@ -1,2 +1,2 @@
 cd decsys
-decsys.exe --server.urls http://localhost:80
+decsys.exe --server.urls http://0.0.0.0:80
