@@ -72,14 +72,6 @@ jobs:
       command: 'custom'
       workingDir: './Decsys/ClientApp'
       customCommand: 'run build'
-  
-  # Build the dotnet app
-  - task: DotNetCoreCLI@2
-    displayName: 'dotnet build'
-    inputs:
-      command: 'build'
-      projects: '**/*.csproj'
-      arguments: '-c $(buildConfiguration)'
 
   # Publish the dotnet app for different targets
   - task: DotNetCoreCLI@2
@@ -89,7 +81,6 @@ jobs:
       publishWebProjects: false
       projects: '**/*.csproj'
       arguments: >
-        --no-build 
         -c $(buildConfiguration) 
         -o $(Build.ArtifactStagingDirectory)/dotnet
   - task: DotNetCoreCLI@2
@@ -99,7 +90,6 @@ jobs:
       publishWebProjects: false
       projects: '**/*.csproj'
       arguments: >
-        --no-build 
         -c $(buildConfiguration) 
         -o $(Build.ArtifactStagingDirectory)/win-x64 
         -r win-x64
