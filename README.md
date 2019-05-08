@@ -1,3 +1,5 @@
+![GitHub release](https://img.shields.io/github/release/decsys/decsys.svg?label=stable)
+![GitHub release](https://img.shields.io/github/release-pre/decsys/decsys.svg?label=latest)
 [![Build Status](https://dev.azure.com/UniversityOfNottingham/DECSYS/_apis/build/status/decsys.decsys?branchName=master)](https://dev.azure.com/UniversityOfNottingham/DECSYS/_build/latest?definitionId=155&branchName=master)
 
 # DECSYS Survey Platform
