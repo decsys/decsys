@@ -70,4 +70,13 @@ stages:
 Client App=$(pkg_version)'
 
   - job: fetch_components
+    pool:
+      vmImage: 'Ubuntu-16.04'
     
+    steps:
+    - task: DownloadGitHubRelease@0
+      inputs:
+        connection: 'decsys'
+        userRepository: 'ellipse-component'
+        defaultVersionType: 'latest'
+        downloadPath: './Decsys/components/'
