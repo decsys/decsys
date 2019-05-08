@@ -69,13 +69,51 @@ stages:
         filecontent: 'Build=$(Build.BuildNumber)
 Client App=$(pkg_version)'
 
-  - job: fetch_components
+  - job: fetch_ellipse_component
     pool:
       vmImage: 'Ubuntu-16.04'
     
     steps:
     - task: DownloadGitHubRelease@0
+      displayName: 'Fetch Latest Ellipse'
       inputs:
         connection: 'decsys-pipelines'
         userRepository: 'decsys/ellipse-component'
         downloadPath: './Decsys/components/'
+  
+  - job: fetch_likert_component
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    
+    steps:
+    - task: DownloadGitHubRelease@0
+      displayName: 'Fetch Latest Likert'
+      inputs:
+        connection: 'decsys-pipelines'
+        userRepository: 'decsys/likert-component'
+        downloadPath: './Decsys/components/'
+  
+  - job: fetch_confirmation_component
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    
+    steps:
+    - task: DownloadGitHubRelease@0
+      displayName: 'Fetch Latest Confirmation'
+      inputs:
+        connection: 'decsys-pipelines'
+        userRepository: 'decsys/confirmation-component'
+        downloadPath: './Decsys/components/'
+
+  - job: fetch_freetext_component
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    
+    steps:
+    - task: DownloadGitHubRelease@0
+      displayName: 'Fetch Latest FreeText'
+      inputs:
+        connection: 'decsys-pipelines'
+        userRepository: 'decsys/freetext-component'
+        downloadPath: './Decsys/components/'
+    
