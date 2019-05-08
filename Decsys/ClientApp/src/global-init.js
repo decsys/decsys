@@ -42,6 +42,5 @@ export const loadComponentsModule = () => {
   const script = document.createElement("script");
   script.src = "/api/components";
   script.type = "module";
-  script.async = true;
   document.body.appendChild(script);
 };

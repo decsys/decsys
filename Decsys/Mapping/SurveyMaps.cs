@@ -57,7 +57,7 @@ namespace Decsys.Mapping
                     new SurveyInstance(new Survey("")));
         }
 
-        private int? MapActiveInstanceToId(Data.Entities.SurveyInstance? instance)
+        private int? MapActiveInstanceToId(Data.Entities.SurveyInstance instance) // TODO: nullable
             => instance?.Id; // Necessary because Expression Trees are limited
     }
 }

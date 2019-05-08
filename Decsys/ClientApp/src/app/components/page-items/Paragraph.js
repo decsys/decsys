@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Typography } from "@smooth-ui/core-sc";
 import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 import ReactMarkdown from "react-markdown";
@@ -10,13 +11,14 @@ const PageParagraph = ({ text, ...p }) => (
 );
 
 PageParagraph.params = {
-  text: ParamTypes.string("Text"),
   color: ParamTypes.string("Color", "black"),
   textAlign: ParamTypes.oneOf("Alignment", ["left", "center", "right"], "left"),
   fontFamily: ParamTypes.stringUndefined("Font Family")
 };
 
-const { pt, defaultProps } = buildPropTypes(PageParagraph.params);
+const { pt, defaultProps } = buildPropTypes(PageParagraph.params, {
+  text: PropTypes.string
+});
 PageParagraph.propTypes = pt;
 PageParagraph.defaultProps = defaultProps;
 
