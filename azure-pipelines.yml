@@ -106,10 +106,7 @@ Client App=$(pkg_version)'
     - dotnet_build
     - client_build
     - version_file
-    - fetch_confirmation_component
-    - fetch_ellipse_component
-    - fetch_freetext_component
-    - fetch_likert_component
+    - fetch_shipping_components
 
     variables:
       buildConfiguration: 'Release'
