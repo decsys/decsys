@@ -95,3 +95,23 @@ jobs:
         -r win-x64
 
   # Package the releases
+
+  # dotnet
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: './scripts/dotnet'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/dotnet'
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: 'dotnet'
+      targetPath: '$(Build.ArtifactStagingDirectory)/dotnet'
+
+  # win-x64
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: './scripts/dotnet'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/win-x64'
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: 'dotnet'
+      targetPath: '$(Build.ArtifactStagingDirectory)/win-x64'
