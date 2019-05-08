@@ -69,51 +69,53 @@ stages:
         filecontent: 'Build=$(Build.BuildNumber)
 Client App=$(pkg_version)'
 
-  - job: fetch_ellipse_component
+# Fetch all the shipping Response Components from GitHub
+  - job: fetch_shipping_components
     pool:
       vmImage: 'Ubuntu-16.04'
+
+    strategy:
+      maxParallel: 4
+      matrix:
+        Ellipse:
+          repo: 'ellipse-component'
+        Likert:
+          repo: 'likert-component'
+        Confirmation:
+          repo: 'confirmation-component'
+        FreeText:
+          repo: 'freetext-component'
     
     steps:
     - task: DownloadGitHubRelease@0
       displayName: 'Fetch Latest Ellipse'
       inputs:
         connection: 'decsys-pipelines'
-        userRepository: 'decsys/ellipse-component'
-        downloadPath: './Decsys/components/'
-  
-  - job: fetch_likert_component
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    
-    steps:
-    - task: DownloadGitHubRelease@0
-      displayName: 'Fetch Latest Likert'
-      inputs:
-        connection: 'decsys-pipelines'
-        userRepository: 'decsys/likert-component'
-        downloadPath: './Decsys/components/'
-  
-  - job: fetch_confirmation_component
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    
-    steps:
-    - task: DownloadGitHubRelease@0
-      displayName: 'Fetch Latest Confirmation'
-      inputs:
-        connection: 'decsys-pipelines'
-        userRepository: 'decsys/confirmation-component'
+        userRepository: 'decsys/$(repo)'
         downloadPath: './Decsys/components/'
 
-  - job: fetch_freetext_component
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    
-    steps:
-    - task: DownloadGitHubRelease@0
-      displayName: 'Fetch Latest FreeText'
-      inputs:
-        connection: 'decsys-pipelines'
-        userRepository: 'decsys/freetext-component'
-        downloadPath: './Decsys/components/'
-    
+# Now all the building is done, publish the various release outputs
+# This could be another stage but there's not much point publishing
+# earlier artifacts just to download them again.
+# These jobs create the real build artifacts.
+  # - job: publish_dotnet
+  #   dependsOn:
+  #   - dotnet_build
+  #   - client_build
+  #   - version_file
+  #   - fetch_confirmation_component
+  #   - fetch_ellipse_component
+  #   - fetch_freetext_component
+  #   - fetch_likert_component
+  #   pool:
+  #     vmImage: 'Ubuntu-16.04'
+
+  #   variables:
+  #     buildConfiguration: 'Release'
+
+  #   steps:
+  #   - task: DotNetCoreCLI@2
+  #     displayName: 'dotnet publish'
+  #     inputs:
+  #       command: 'publish'
+  #       arguments: '--no-build -c $(buildConfiguration)'
