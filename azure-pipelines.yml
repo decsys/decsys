@@ -170,8 +170,8 @@ jobs:
         # Publish Draft GitHub Release
         - task: GitHubRelease@0
           inputs:
-            connection: 'decsys-pipelines'
-            userRepository: 'decsys/ellipse-component'
+            gitHubConnection: 'decsys-pipelines'
+            repositoryName: 'decsys/ellipse-component'
             action: 'create'
             tagSource: 'manual'
             tag: '$(buildVersion)'
