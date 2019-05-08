@@ -127,6 +127,9 @@ jobs:
 - deployment: release
   pool:
     vmImage: 'Ubuntu-16.04'
+
+  dependsOn: 'build'
+
   environment: github
 
   variables:
