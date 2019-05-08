@@ -123,4 +123,6 @@ Client App=$(pkg_version)'
       displayName: 'dotnet publish'
       inputs:
         command: 'publish'
+        publishWebProjects: false
+        projects: '**/*.csproj'
         arguments: '--no-build -c $(buildConfiguration) $(runtime)'
