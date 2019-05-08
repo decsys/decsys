@@ -163,7 +163,7 @@ jobs:
         - task: ArchiveFiles@2
           displayName: 'Zip win-x64 artifact'
           inputs:
-            rootFolderOrFile: $(System.ArtifactsDirectory)/win-x64'
+            rootFolderOrFile: '$(System.ArtifactsDirectory)/win-x64'
             includeRootFolder: false
             archiveFile: '$(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip'
 
