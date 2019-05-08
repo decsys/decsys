@@ -151,6 +151,7 @@ jobs:
           inputs:
             artifactName: 'win-x64'
             downloadPath: '$(System.ArtifactsDirectory)/win-x64'
+        
 
         # artifact archiving
         - task: ArchiveFiles@2
@@ -158,13 +159,13 @@ jobs:
           inputs:
             rootFolderOrFile: '$(System.ArtifactsDirectory)/dotnet'
             includeRootFolder: false
-            archiveFile: '$(Build.ArtifactStagingDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip'
+            archiveFile: '$(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip'
         - task: ArchiveFiles@2
           displayName: 'Zip win-x64 artifact'
           inputs:
             rootFolderOrFile: $(System.ArtifactsDirectory)/win-x64'
             includeRootFolder: false
-            archiveFile: '$(Build.ArtifactStagingDirectory)/Decsys_$(buildVersion)_win-x64.zip'
+            archiveFile: '$(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip'
 
         # Publish Draft GitHub Release
         - task: GitHubRelease@0
@@ -177,3 +178,4 @@ jobs:
             releaseNotesSource: 'input'
             releaseNotes: '`// TODO`'
             isDraft: true
+            assets: '$(Build.BinariesDirectory)/*.zip'
