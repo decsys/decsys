@@ -10,17 +10,6 @@ stages:
 - stage: Build
   jobs:
 
-  - job: dotnet_build
-    pool:
-      vmImage: 'Ubuntu-16.04'
-
-    variables:
-      buildConfiguration: 'Release'
-
-    steps:
-    - script: dotnet build -c $(buildConfiguration)
-      displayName: 'dotnet build $(buildConfiguration)'
-
   - job: client_build
     pool:
       vmImage: 'Ubuntu-16.04'
@@ -38,6 +27,10 @@ stages:
         command: 'custom'
         workingDir: './Decsys/ClientApp'
         customCommand: 'run build'
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: 'client_build'
+        targetPath: './Decsys/ClientApp/build'
   
   - job: load_project_metadata
     pool:
@@ -69,6 +62,10 @@ stages:
         filepath: './Decsys/version.txt'
         filecontent: 'Build=$(Build.BuildNumber)
 Client App=$(pkg_version)'
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: 'version'
+        targetPath: './Decsys/version.txt'
 
 # Fetch all the shipping Response Components from GitHub
   - job: fetch_shipping_components
@@ -93,6 +90,10 @@ Client App=$(pkg_version)'
         connection: 'decsys-pipelines'
         userRepository: 'decsys/$(repo)'
         downloadPath: './Decsys/components/'
+    - task: PublishPipelineArtifact@0
+      inputs:
+        artifactName: '$(repo)'
+        targetPath: './Decsys/components'
 
 # Now all the building is done, publish the various release outputs
 # This could be another stage but there's not much point publishing
@@ -103,7 +104,6 @@ Client App=$(pkg_version)'
       vmImage: 'Ubuntu-16.04'
 
     dependsOn:
-    - dotnet_build
     - client_build
     - version_file
     - fetch_shipping_components
@@ -125,4 +125,4 @@ Client App=$(pkg_version)'
         command: 'publish'
         publishWebProjects: false
         projects: '**/*.csproj'
-        arguments: '--no-build -c $(buildConfiguration) $(runtime)'
+        arguments: '-c $(buildConfiguration) $(runtime)'
