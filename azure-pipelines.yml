@@ -38,6 +38,7 @@ stages:
     
     steps:
     - task: LoadJsonVariables@1
+      name: package_json
       displayName: 'Load package.json data'
       inputs:
         JsonSource: './Decsys/ClientApp/package.json'
@@ -53,6 +54,9 @@ stages:
       vmImage: 'Ubuntu-16.04'
     
     dependsOn: load_project_metadata
+
+    variables:
+      pkg_version: $[ dependencies.load_project_metadata.outputs['package_json.pkg_version'] ]
 
     steps:
     - task: file-creator@5
@@ -114,9 +118,9 @@ Client App=$(pkg_version)'
     strategy:
       matrix:
         dotnet:
-          runtime: "" # no runtime argument
+          runtime: '' # no runtime argument
         win_x64:
-          runtime: "-r win-x64" # have to include the -r so dotnet above works
+          runtime: '-r win-x64' # have to include the -r so dotnet above works
 
     steps:
     - task: DotNetCoreCLI@2
