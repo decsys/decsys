@@ -68,3 +68,6 @@ stages:
         filepath: './Decsys/version.txt'
         filecontent: 'Build=$(Build.BuildNumber)
 Client App=$(pkg_version)'
+
+  - job: fetch_components
+    
