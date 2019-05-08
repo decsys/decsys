@@ -78,4 +78,5 @@ Client App=$(pkg_version)'
       inputs:
         connection: 'decsys-pipelines'
         userRepository: 'ellipse-component'
+        version: false
         downloadPath: './Decsys/components/'
