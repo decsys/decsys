@@ -77,6 +77,5 @@ Client App=$(pkg_version)'
     - task: DownloadGitHubRelease@0
       inputs:
         connection: 'decsys-pipelines'
-        userRepository: 'ellipse-component'
-        version: ""
+        userRepository: 'decsys/ellipse-component'
         downloadPath: './Decsys/components/'
