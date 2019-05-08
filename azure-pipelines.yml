@@ -1,132 +1,107 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
 trigger:
 - master
 
-stages:
-- stage: Build
-  jobs:
+variables:
+  buildConfiguration: 'Release'
 
-  - job: client_build
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    
-    steps:
-    - task: Npm@1
-      displayName: 'npm ci'
-      inputs:
-        command: 'custom'
-        workingDir: './Decsys/ClientApp'
-        customCommand: 'ci'
-    - task: Npm@1
-      displayName: 'npm run build'
-      inputs:
-        command: 'custom'
-        workingDir: './Decsys/ClientApp'
-        customCommand: 'run build'
-    - task: PublishPipelineArtifact@0
-      inputs:
-        artifactName: 'client_build'
-        targetPath: './Decsys/ClientApp/build'
+jobs:
+
+- job: build
+  pool:
+    vmImage: 'Ubuntu-16.04'
   
-  - job: load_project_metadata
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    
-    steps:
-    - task: LoadJsonVariables@1
-      name: package_json
-      displayName: 'Load package.json data'
-      inputs:
-        JsonSource: './Decsys/ClientApp/package.json'
-        VariablePrefix: 'pkg'
-    - task: LoadXmlVariables@1
-      displayName: 'Load .csproj data'
-      inputs:
-        XmlSource: './Decsys/Decsys.csproj'
-        VariablePrefix: 'csproj'
-        
-  - job: version_file
-    pool:
-      vmImage: 'Ubuntu-16.04'
-    
-    dependsOn: load_project_metadata
+  steps:
+  # Load project metadata
+  - task: LoadJsonVariables@1
+    displayName: 'Load package.json data'
+    inputs:
+      JsonSource: './Decsys/ClientApp/package.json'
+      VariablePrefix: 'pkg'
+  - task: LoadXmlVariables@1
+    displayName: 'Load .csproj data'
+    inputs:
+      XmlSource: './Decsys/Decsys.csproj'
+      VariablePrefix: 'csproj'
 
-    variables:
-      pkg_version: $[ dependencies.load_project_metadata.outputs['package_json.pkg_version'] ]
+  # create version.txt
+  - task: file-creator@5
+    inputs:
+      fileoverwrite: true
+      skipempty: true
+      filepath: './Decsys/version.txt'
+      filecontent: |-
+        Build=$(Build.BuildNumber)
+        Client App=$(pkg_version)
 
-    steps:
-    - task: file-creator@5
-      inputs:
-        fileoverwrite: true
-        skipempty: true
-        filepath: './Decsys/version.txt'
-        filecontent: 'Build=$(Build.BuildNumber)
-Client App=$(pkg_version)'
-    - task: PublishPipelineArtifact@0
-      inputs:
-        artifactName: 'version'
-        targetPath: './Decsys/version.txt'
+  # fetch shipping Response Components
+  - task: DownloadGitHubRelease@0
+    displayName: 'Fetch Latest Ellipse'
+    inputs:
+      connection: 'decsys-pipelines'
+      userRepository: 'decsys/ellipse-component'
+      downloadPath: './Decsys/components/'
+  - task: DownloadGitHubRelease@0
+    displayName: 'Fetch Latest Likert'
+    inputs:
+      connection: 'decsys-pipelines'
+      userRepository: 'decsys/likert-component'
+      downloadPath: './Decsys/components/'
+  - task: DownloadGitHubRelease@0
+    displayName: 'Fetch Latest FreeText'
+    inputs:
+      connection: 'decsys-pipelines'
+      userRepository: 'decsys/freetext-component'
+      downloadPath: './Decsys/components/'
+  - task: DownloadGitHubRelease@0
+    displayName: 'Fetch Latest Confirmation'
+    inputs:
+      connection: 'decsys-pipelines'
+      userRepository: 'decsys/confirmation-component'
+      downloadPath: './Decsys/components/'
 
-# Fetch all the shipping Response Components from GitHub
-  - job: fetch_shipping_components
-    pool:
-      vmImage: 'Ubuntu-16.04'
+  # Build the ClientApp
+  - task: Npm@1
+    displayName: 'npm ci'
+    inputs:
+      command: 'custom'
+      workingDir: './Decsys/ClientApp'
+      customCommand: 'ci'
+  - task: Npm@1
+    displayName: 'npm run build'
+    inputs:
+      command: 'custom'
+      workingDir: './Decsys/ClientApp'
+      customCommand: 'run build'
+  
+  # Build the dotnet app
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet build'
+    inputs:
+      command: 'build'
+      projects: '**/*.csproj'
+      arguments: '-c $(buildConfiguration)'
 
-    strategy:
-      matrix:
-        Ellipse:
-          repo: 'ellipse-component'
-        Likert:
-          repo: 'likert-component'
-        Confirmation:
-          repo: 'confirmation-component'
-        FreeText:
-          repo: 'freetext-component'
-    
-    steps:
-    - task: DownloadGitHubRelease@0
-      displayName: 'Fetch Latest Release'
-      inputs:
-        connection: 'decsys-pipelines'
-        userRepository: 'decsys/$(repo)'
-        downloadPath: './Decsys/components/'
-    - task: PublishPipelineArtifact@0
-      inputs:
-        artifactName: '$(repo)'
-        targetPath: './Decsys/components'
+  # Publish the dotnet app for different targets
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet publish'
+    inputs:
+      command: 'publish'
+      publishWebProjects: false
+      projects: '**/*.csproj'
+      arguments: >
+        --no-build 
+        -c $(buildConfiguration) 
+        -o $(Build.ArtifactStagingDirectory)/dotnet
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet publish win-x64'
+    inputs:
+      command: 'publish'
+      publishWebProjects: false
+      projects: '**/*.csproj'
+      arguments: >
+        --no-build 
+        -c $(buildConfiguration) 
+        -o $(Build.ArtifactStagingDirectory)/win-x64 
+        -r win-x64
 
-# Now all the building is done, publish the various release outputs
-# This could be another stage but there's not much point publishing
-# earlier artifacts just to download them again.
-# These jobs create the real build artifacts.
-  - job: publish
-    pool:
-      vmImage: 'Ubuntu-16.04'
-
-    dependsOn:
-    - client_build
-    - version_file
-    - fetch_shipping_components
-
-    variables:
-      buildConfiguration: 'Release'
-
-    strategy:
-      matrix:
-        dotnet:
-          runtime: '' # no runtime argument
-        win_x64:
-          runtime: '-r win-x64' # have to include the -r so dotnet above works
-
-    steps:
-    - task: DotNetCoreCLI@2
-      displayName: 'dotnet publish'
-      inputs:
-        command: 'publish'
-        publishWebProjects: false
-        projects: '**/*.csproj'
-        arguments: '-c $(buildConfiguration) $(runtime)'
+  # Package the releases
