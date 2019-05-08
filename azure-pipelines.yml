@@ -56,10 +56,11 @@ stages:
         VariablePrefix: 'csproj'
         
   - job: version_file
-    dependsOn: load_project_metadata
     pool:
       vmImage: 'Ubuntu-16.04'
     
+    dependsOn: load_project_metadata
+
     steps:
     - task: file-creator@5
       inputs:
@@ -75,7 +76,6 @@ Client App=$(pkg_version)'
       vmImage: 'Ubuntu-16.04'
 
     strategy:
-      maxParallel: 4
       matrix:
         Ellipse:
           repo: 'ellipse-component'
@@ -88,7 +88,7 @@ Client App=$(pkg_version)'
     
     steps:
     - task: DownloadGitHubRelease@0
-      displayName: 'Fetch Latest Ellipse'
+      displayName: 'Fetch Latest Release'
       inputs:
         connection: 'decsys-pipelines'
         userRepository: 'decsys/$(repo)'
@@ -98,24 +98,31 @@ Client App=$(pkg_version)'
 # This could be another stage but there's not much point publishing
 # earlier artifacts just to download them again.
 # These jobs create the real build artifacts.
-  # - job: publish_dotnet
-  #   dependsOn:
-  #   - dotnet_build
-  #   - client_build
-  #   - version_file
-  #   - fetch_confirmation_component
-  #   - fetch_ellipse_component
-  #   - fetch_freetext_component
-  #   - fetch_likert_component
-  #   pool:
-  #     vmImage: 'Ubuntu-16.04'
+  - job: publish
+    pool:
+      vmImage: 'Ubuntu-16.04'
 
-  #   variables:
-  #     buildConfiguration: 'Release'
+    dependsOn:
+    - dotnet_build
+    - client_build
+    - version_file
+    - fetch_confirmation_component
+    - fetch_ellipse_component
+    - fetch_freetext_component
+    - fetch_likert_component
 
-  #   steps:
-  #   - task: DotNetCoreCLI@2
-  #     displayName: 'dotnet publish'
-  #     inputs:
-  #       command: 'publish'
-  #       arguments: '--no-build -c $(buildConfiguration)'
+    variables:
+      buildConfiguration: 'Release'
+
+    matrix:
+      dotnet:
+        runtime: "" # no runtime argument
+      win_x64:
+        runtime: "-r win-x64" # have to include the -r so dotnet above works
+
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'dotnet publish'
+      inputs:
+        command: 'publish'
+        arguments: '--no-build -c $(buildConfiguration) $(runtime)'
