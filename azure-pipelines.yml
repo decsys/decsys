@@ -27,11 +27,44 @@ stages:
     
     steps:
     - task: Npm@1
+      displayName: 'npm ci'
       inputs:
-        command: 'install'
+        command: 'custom'
         workingDir: './Decsys/ClientApp'
+        customCommand: 'ci'
     - task: Npm@1
+      displayName: 'npm run build'
       inputs:
         command: 'custom'
         workingDir: './Decsys/ClientApp'
         customCommand: 'run build'
+  
+  - job: load_project_metadata
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    
+    steps:
+    - task: LoadJsonVariables@1
+      displayName: 'Load package.json data'
+      inputs:
+        JsonSource: './Decsys/ClientApp/package.json'
+        VariablePrefix: 'pkg'
+    - task: LoadXmlVariables@1
+      displayName: 'Load .csproj data'
+      inputs:
+        XmlSource: './Decsys/Decsys.csproj'
+        VariablePrefix: 'csproj'
+        
+  - job: version_file
+    dependsOn: load_project_metadata
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    
+    steps:
+    - task: file-creator@5
+      inputs:
+        fileoverwrite: true
+        skipempty: true
+        filepath: './Decsys/version.txt'
+        filecontent: 'Build=$(Build.BuildNumber)
+Client App=$(pkg_version)'
