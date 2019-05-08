@@ -83,6 +83,7 @@ jobs:
       arguments: >
         -c $(buildConfiguration) 
         -o $(Build.ArtifactStagingDirectory)/dotnet
+      zipAfterPublish: false
   - task: DotNetCoreCLI@2
     displayName: 'dotnet publish win-x64'
     inputs:
@@ -93,25 +94,30 @@ jobs:
         -c $(buildConfiguration) 
         -o $(Build.ArtifactStagingDirectory)/win-x64 
         -r win-x64
+      zipAfterPublish: false
 
   # Package the releases
 
   # dotnet
   - task: CopyFiles@2
+    displayName: 'Copy dotnet bootstrap scripts'
     inputs:
       SourceFolder: './scripts/dotnet'
       TargetFolder: '$(Build.ArtifactStagingDirectory)/dotnet'
   - task: PublishPipelineArtifact@0
+    displayName: 'Publish dotnet artifact'
     inputs:
       artifactName: 'dotnet'
       targetPath: '$(Build.ArtifactStagingDirectory)/dotnet'
 
   # win-x64
   - task: CopyFiles@2
+    displayName: 'Copy win-x64 bootstrap scripts'
     inputs:
-      SourceFolder: './scripts/dotnet'
+      SourceFolder: './scripts/win-x64'
       TargetFolder: '$(Build.ArtifactStagingDirectory)/win-x64'
   - task: PublishPipelineArtifact@0
+    displayName: 'Publish win-x64 artifact'
     inputs:
-      artifactName: 'dotnet'
+      artifactName: 'win-x64'
       targetPath: '$(Build.ArtifactStagingDirectory)/win-x64'
