@@ -114,11 +114,12 @@ Client App=$(pkg_version)'
     variables:
       buildConfiguration: 'Release'
 
-    matrix:
-      dotnet:
-        runtime: "" # no runtime argument
-      win_x64:
-        runtime: "-r win-x64" # have to include the -r so dotnet above works
+    strategy:
+      matrix:
+        dotnet:
+          runtime: "" # no runtime argument
+        win_x64:
+          runtime: "-r win-x64" # have to include the -r so dotnet above works
 
     steps:
     - task: DotNetCoreCLI@2
