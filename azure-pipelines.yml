@@ -22,6 +22,8 @@ jobs:
     inputs:
       XmlSource: './Decsys/Decsys.csproj'
       VariablePrefix: 'csproj'
+  - script: echo '##vso[task.setvariable variable=buildVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
+    name: setBuildVersion
 
   # create version.txt
   - task: file-creator@5
@@ -121,3 +123,53 @@ jobs:
     inputs:
       artifactName: 'win-x64'
       targetPath: '$(Build.ArtifactStagingDirectory)/win-x64'
+
+- deployment: release
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  environment: github
+
+  variables:
+    buildVersion: $[ dependencies.build.outputs['setBuildVersion.buildVersion'] ]
+
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        # artifact acquisition
+        - task: DownloadPipelineArtifact@1
+          displayName: 'Fetch dotnet artifact'
+          inputs:
+            artifactName: 'dotnet'
+            downloadPath: '$(System.ArtifactsDirectory)/dotnet'
+        - task: DownloadPipelineArtifact@1
+          displayName: 'Fetch win-x64 artifact'
+          inputs:
+            artifactName: 'win-x64'
+            downloadPath: '$(System.ArtifactsDirectory)/win-x64'
+
+        # artifact archiving
+        - task: ArchiveFiles@2
+          displayName: 'Zip dotnet artifact'
+          inputs:
+            rootFolderOrFile: '$(System.ArtifactsDirectory)/dotnet'
+            includeRootFolder: false
+            archiveFile: '$(Build.ArtifactStagingDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip'
+        - task: ArchiveFiles@2
+          displayName: 'Zip win-x64 artifact'
+          inputs:
+            rootFolderOrFile: $(System.ArtifactsDirectory)/win-x64'
+            includeRootFolder: false
+            archiveFile: '$(Build.ArtifactStagingDirectory)/Decsys_$(buildVersion)_win-x64.zip'
+
+        # Publish Draft GitHub Release
+        - task: GitHubRelease@0
+          inputs:
+            connection: 'decsys-pipelines'
+            userRepository: 'decsys/ellipse-component'
+            action: 'create'
+            tagSource: 'manual'
+            tag: '$(buildVersion)'
+            releaseNotesSource: 'input'
+            releaseNotes: '`// TODO`'
+            isDraft: true
