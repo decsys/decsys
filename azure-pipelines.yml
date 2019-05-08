@@ -6,12 +6,32 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'Ubuntu-16.04'
+stages:
+- stage: Build
+  jobs:
 
-variables:
-  buildConfiguration: 'Release'
+  - job: dotnet_build
+    pool:
+      vmImage: 'Ubuntu-16.04'
 
-steps:
-- script: dotnet build -c $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+    variables:
+      buildConfiguration: 'Release'
+
+    steps:
+    - script: dotnet build -c $(buildConfiguration)
+      displayName: 'dotnet build $(buildConfiguration)'
+
+  - job: client_build
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    
+    steps:
+    - task: Npm@1
+      inputs:
+        command: 'install'
+        workingDir: './Decsys/ClientApp'
+    - task: Npm@1
+      inputs:
+        command: 'custom'
+        workingDir: './Decsys/ClientApp'
+        customCommand: 'run build'
