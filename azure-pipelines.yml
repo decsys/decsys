@@ -171,7 +171,7 @@ jobs:
         - task: GitHubRelease@0
           inputs:
             gitHubConnection: 'decsys-pipelines'
-            repositoryName: 'decsys/ellipse-component'
+            repositoryName: 'decsys/decsys'
             action: 'create'
             tagSource: 'manual'
             tag: '$(buildVersion)'
@@ -179,3 +179,4 @@ jobs:
             releaseNotes: '`// TODO`'
             isDraft: true
             assets: '$(Build.BinariesDirectory)/*.zip'
+            addChangeLog: false
