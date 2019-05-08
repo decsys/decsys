@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import paramTypes, { buildPropTypes } from "@decsys/param-types";
+import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 import { FlexBox } from "../ui";
 
 const PageImage = ({ surveyId, id, extension }) => {
@@ -34,7 +34,7 @@ const PageImage = ({ surveyId, id, extension }) => {
 };
 
 PageImage.params = {
-  extension: paramTypes.stringUndefined("Image File Extension")
+  extension: ParamTypes.stringUndefined("Image File Extension")
 };
 
 const { pt, defaultProps } = buildPropTypes(PageImage.params, {
