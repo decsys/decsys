@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Typography, Button, Box, Switch } from "@smooth-ui/core-sc";
+import { Typography, Button, Box } from "@smooth-ui/core-sc";
 import {
   EllipsisV,
   Heading,
