@@ -1,7 +1,7 @@
 {
   "name": "@decsys/likert-component",
   "componentName": "Likert",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "The Likert Scale component for the DECSYS Survey Platform",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -33,7 +33,7 @@ const Component = ({
   // prepare radio button values
   const radios = [];
   for (let i = 0; i < 7; i++) {
-    const key = `radio${i}`;
+    const key = `radio${i + 1}`;
     if (radioParams[key]) {
       const r = [radioParams[key]];
 
