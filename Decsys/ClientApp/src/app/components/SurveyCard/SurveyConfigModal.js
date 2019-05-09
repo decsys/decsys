@@ -40,7 +40,7 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
     await handleSurveyConfigSaveClick(surveyId, {
       oneTimeParticipants,
       useParticipantIdentifiers,
-      validIdentifiers
+      validIdentifiers: validIdentifiers.filter(x => !!x)
     });
     modalState.toggleModal();
   };
