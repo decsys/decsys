@@ -1,15 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Typography, Button, Box, Switch } from "@smooth-ui/core-sc";
+import { Typography, Button, Box } from "@smooth-ui/core-sc";
 import {
   EllipsisV,
   Heading,
   Copy,
   Trash,
   Paragraph,
-  Image
+  Image,
+  Random
 } from "styled-icons/fa-solid";
 import { Grid, Cell } from "styled-css-grid";
+import ToggleButton from "../ui/ToggleButton";
 
 const PageHeader = ({
   n,
@@ -22,9 +24,11 @@ const PageHeader = ({
     onDeleteClick
   }
 }) => {
+  const handleRandomToggle = e => onRandomToggle(page.id, e.target.checked);
+
   return (
     <Box pr={1} borderBottom={1} borderColor="cardBorder">
-      <Grid columns="30px 1fr 70px 30px 30px 30px 30px 30px" columnGap=".1em">
+      <Grid columns="30px 1fr 40px 30px 30px 30px 30px 30px" columnGap=".1em">
         <Cell middle>
           <div {...provided.dragHandleProps}>
             <Box textAlign="center">
@@ -37,15 +41,18 @@ const PageHeader = ({
           <Typography>Page {n}</Typography>
         </Cell>
 
-        <Cell middle>
-          <Box textAlign="center">
-            Random
-            <Switch
-              size="sm"
-              checked={page.randomize}
-              onClick={e => onRandomToggle(page.id, e.target.checked)}
-            />
-          </Box>
+        <Cell>
+          <ToggleButton
+            size="sm"
+            variant="info"
+            onClick={handleRandomToggle}
+            title={`Random is ${
+              page.randomize ? "ON" : "OFF"
+            } for this Page. Careful: Random Pages are only randomised *between* Fixed Pages.`}
+            checked={page.randomize}
+          >
+            <Random size="1em" />
+          </ToggleButton>
         </Cell>
 
         <Cell middle>
