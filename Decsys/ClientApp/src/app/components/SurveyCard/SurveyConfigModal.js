@@ -61,9 +61,11 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
       forceUpdate={useParticipantIdentifiers}
       {...modalState}
       header={`Configure ${surveyName}`}
-      confirmButtonLabel="Save"
-      confirmButtonVariant="primary"
-      onConfirmClick={handleConfirmClick}
+      confirmButton={{
+        content: "Save",
+        variant: "primary",
+        onClick: handleConfirmClick
+      }}
     >
       {(!currentConfigLoaded && <LoadingIndicator />) || (
         <FlexBox flexDirection="column">
