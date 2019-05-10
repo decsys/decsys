@@ -107,7 +107,8 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
                     • One Identifier per line
                   </Typography>
                   <Typography color="info">
-                    • Leave empty to allow anyone to take part
+                    • Leave empty to require participants to enter a unique
+                    identifier
                   </Typography>
                 </FlexBox>
               </FlexBox>
