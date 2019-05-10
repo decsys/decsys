@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import {
   Eye,
@@ -11,11 +11,13 @@ import { Grid } from "styled-css-grid";
 import EditorBarButton, { LinkButton as EditorBarLink } from "./Button";
 import NameInput from "./NameInput";
 import DeleteSurveyModal from "../SurveyCard/DeleteSurveyModal";
+import { useModal } from "../ui/ConfirmModal";
 import EditorBarContext from "./Context";
+import { useSurveyExport } from "../../utils/hooks";
 
 const EditorBar = ({ id, name, disabled }) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const toggleDeleteModal = () => setShowDeleteModal(!showDeleteModal);
+  const deleteModal = useModal();
+  const exportSurvey = useSurveyExport(id);
 
   const {
     nameUpdateState,
@@ -42,12 +44,16 @@ const EditorBar = ({ id, name, disabled }) => {
         <EditorBarButton onClick={handleDuplicateClick} disabled={disabled}>
           <Copy size="1em" /> Duplicate
         </EditorBarButton>
+        {/* TODO: this will be a link again once more export modes are added
         <EditorBarLink href={`/admin/survey/${id}/export`} disabled={disabled}>
           <FileExport size="1em" /> Export
-        </EditorBarLink>
+        </EditorBarLink> */}
+        <EditorBarButton onClick={exportSurvey}>
+          <FileExport size="1em" /> Export
+        </EditorBarButton>
         <EditorBarButton
           variant="danger"
-          onClick={() => setShowDeleteModal(true)}
+          onClick={deleteModal.toggleModal}
           disabled={disabled}
         >
           <Trash size="1em" /> Delete
@@ -55,9 +61,8 @@ const EditorBar = ({ id, name, disabled }) => {
       </Grid>
       <DeleteSurveyModal
         surveyName={name}
-        deleteSurvey={handleDeleteClick}
-        closeModal={toggleDeleteModal}
-        modalOpened={showDeleteModal}
+        deleteSurvey={() => handleDeleteClick(id)}
+        modalState={deleteModal}
       />
     </>
   );

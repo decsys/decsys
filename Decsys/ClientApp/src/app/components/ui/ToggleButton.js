@@ -32,7 +32,10 @@ const ToggleButton = ({
     calculateToggleStyle(checked, variant)
   );
 
-  useEffect(() => setToggleStyle(calculateToggleStyle(on, variant)), [on]);
+  useEffect(() => setToggleStyle(calculateToggleStyle(on, variant)), [
+    on,
+    variant
+  ]);
 
   const handleClick = e => {
     e.target.checked = !on;

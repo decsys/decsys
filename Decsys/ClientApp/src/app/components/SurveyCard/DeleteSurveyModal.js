@@ -12,9 +12,11 @@ const DeleteSurveyModal = ({ surveyName, modalState, deleteSurvey }) => {
     <ConfirmModal
       {...modalState}
       header="Delete survey"
-      confirmButtonLabel="Delete survey"
-      confirmButtonVariant="danger"
-      onConfirmClick={deleteSurvey}
+      confirmButton={{
+        content: "Delete survey",
+        variant: "danger",
+        onClick: deleteSurvey
+      }}
     >
       <DangerIcon size="5em" />
       <FlexBox flexDirection="column" ml={2}>

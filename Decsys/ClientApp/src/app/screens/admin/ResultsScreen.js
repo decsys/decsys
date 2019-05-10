@@ -6,6 +6,7 @@ import { Download } from "styled-icons/fa-solid";
 import * as api from "../../api";
 import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
+import { exportDateFormat as formatDate } from "../../utils/date-formats";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {
@@ -14,20 +15,6 @@ function isEmpty(obj) {
   }
   return true;
 }
-
-const formatDate = date =>
-  new Intl.DateTimeFormat("en-GB", {
-    // TODO: better locale?
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZone: "UTC",
-    timeZoneName: "short",
-    hour12: false
-  }).format(date);
 
 const ResultsScreen = ({ instances: initialInstances, survey }) => {
   const [instances] = useState(
@@ -56,7 +43,7 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     const a = document.createElement("a"),
       url = URL.createObjectURL(file);
     a.href = url;
-    a.download = `Instance-${formatDate(
+    a.download = `${currentInstance.survey.name}_Instance-${formatDate(
       Date.parse(currentInstance.published)
     )}_${formatDate(Date.parse(results.generated))}`;
     document.body.appendChild(a);
