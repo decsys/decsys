@@ -23,15 +23,15 @@ const ConfirmModal = ({
   children,
   modalOpened,
   toggleModal,
-  onConfirmClick,
-  confirmButtonLabel,
-  confirmButtonVariant
+  showCloseButton = true,
+  cancelButton = true,
+  confirmButton
 }) => {
   return (
     <Modal opened={modalOpened} onClose={toggleModal}>
       <ModalDialog>
         <ModalContent>
-          <ModalCloseButton />
+          {showCloseButton && <ModalCloseButton />}
           <ModalHeader>
             <Typography variant="h5" m={0}>
               {header}
@@ -42,14 +42,26 @@ const ConfirmModal = ({
               {children}
             </FlexBox>
           </ModalBody>
-          <ModalFooter>
-            <Button variant="secondary" onClick={toggleModal}>
-              Cancel
-            </Button>
-            <Button variant={confirmButtonVariant} onClick={onConfirmClick}>
-              {confirmButtonLabel}
-            </Button>
-          </ModalFooter>
+          {(cancelButton || confirmButton) && (
+            <ModalFooter>
+              {cancelButton && (
+                <Button
+                  variant={cancelButton.variant || "secondary"}
+                  onClick={toggleModal}
+                >
+                  {cancelButton.content || "Cancel"}
+                </Button>
+              )}
+              {confirmButton && (
+                <Button
+                  variant={confirmButton.variant}
+                  onClick={confirmButton.onClick}
+                >
+                  {confirmButton.content}
+                </Button>
+              )}
+            </ModalFooter>
+          )}
         </ModalContent>
       </ModalDialog>
     </Modal>
