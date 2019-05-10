@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { FlexBox, ActiveIndicator } from "../ui";
-import { Typography, Box, Button } from "@smooth-ui/core-sc";
+import { Typography, Box, Button, Alert, Textarea } from "@smooth-ui/core-sc";
 import RunCountBadge from "./RunCountBadge";
 import { Grid, Cell } from "styled-css-grid";
 import * as Buttons from "./SurveyCardButton";
@@ -9,7 +9,8 @@ import ManageSurveyButton from "./ManageSurveyButton";
 import SurveyCardContext from "./Context";
 import { encode } from "../../services/instance-id";
 import { InfoCircle } from "styled-icons/fa-solid";
-import { useModal } from "../ui/ConfirmModal";
+import ConfirmModal, { useModal } from "../ui/ConfirmModal";
+import * as api from "../../api";
 
 const SurveyCard = ({
   id,
@@ -19,7 +20,7 @@ const SurveyCard = ({
   allowLaunch = false
 }) => {
   const { handleCloseClick, handleLaunchClick } = useContext(SurveyCardContext);
-  const participantIdModal = useModal();
+  const instanceValidIdModal = useModal();
 
   // conditionally prep buttons beforehand
   const buttons = [];
@@ -34,6 +35,15 @@ const SurveyCard = ({
   if (runCount > 0) buttons.push(<Buttons.Results id={id} />);
 
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : false;
+
+  const [instanceValidIds, setInstanceValidIds] = useState([]);
+  const handleViewParticipantIdsClick = async () => {
+    const { data } = await api.getSurveyInstance(id, activeInstanceId);
+    setInstanceValidIds(
+      data.useParticipantIdentifiers ? data.validIdentifiers : []
+    );
+    instanceValidIdModal.toggleModal();
+  };
 
   return (
     <>
@@ -99,6 +109,7 @@ const SurveyCard = ({
                 borderColor="info"
                 color="info"
                 backgroundColor="lightest"
+                onClick={handleViewParticipantIdsClick}
               >
                 View Valid Participant Identifiers
               </Button>
@@ -106,87 +117,28 @@ const SurveyCard = ({
           )}
         </FlexBox>
       </FlexBox>
-      {/* <ConfirmModal
-        forceUpdate={useParticipantIdentifiers}
-        {...participantIdModal}
-        header={`${friendlyId} valid participant identifiers`}
+      <ConfirmModal
+        {...instanceValidIdModal}
+        header="Valid Participant Identifiers"
+        cancelButton={false}
       >
-        {(!currentConfigLoaded && <LoadingIndicator />) || (
-          <FlexBox flexDirection="column">
-            <FlexBox>
-              <Switch
-                checked={oneTimeParticipants}
-                onChange={({ target: { checked } }) =>
-                  setOneTimeParticipants(checked)
-                }
-              />
-              <Typography ml={1}>
-                Restrict Participants to only taking the Survey once
-              </Typography>
-            </FlexBox>
-
-            <FlexBox mt={2}>
-              <Switch
-                checked={useParticipantIdentifiers}
-                onChange={({ target: { checked } }) =>
-                  setUseParticipantIdentifiers(checked)
-                }
-              />
-              <Typography ml={1}>
-                Require Participants to enter an identifier
-              </Typography>
-            </FlexBox>
-
-            {useParticipantIdentifiers && (
-              <>
-                <Typography fontWeight="bold" mt={1}>
-                  Valid Participant Identifiers
-                </Typography>
-
-                <FlexBox alignItems="center" my={1} ml={2}>
-                  <InfoIcon size="2em" />
-                  <FlexBox flexDirection="column" ml={2}>
-                    <Typography color="info">
-                      • Restrict Survey access to only these Identifiers
-                    </Typography>
-                    <Typography color="info">
-                      • One Identifier per line
-                    </Typography>
-                    <Typography color="info">
-                      • Leave empty to require participants to enter a unique
-                      identifier
-                    </Typography>
-                  </FlexBox>
-                </FlexBox>
-
-                <FlexBox mb={1}>
-                  <Input
-                    size="sm"
-                    type="number"
-                    value={idGenCount}
-                    onChange={handleGenCountChange}
-                  />
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={handleIdGenClick}
-                  >
-                    Generate Random IDs
-                  </Button>
-                </FlexBox>
-
-                <Textarea
-                  rows={6}
-                  value={validIdentifiers.join("\n")}
-                  onChange={({ target: { value } }) =>
-                    setValidIdentifiers(value.split("\n"))
-                  }
-                />
-              </>
-            )}
+        {instanceValidIds && instanceValidIds.length ? (
+          <FlexBox flexDirection="column" width={1}>
+            <Typography variant="h6">
+              Valid Participant Identifiers for Survey{" "}
+              <Typography fontWeight="bold">{friendlyId}</Typography>
+            </Typography>
+            <Textarea style={{ resize: "vertical" }} rows={10} readOnly>
+              {instanceValidIds.join("\n")}
+            </Textarea>
           </FlexBox>
+        ) : (
+          <Alert variant="info" width={1}>
+            <InfoCircle size="1em" /> No specific Participant Identifiers for
+            Survey <Typography fontWeight="bold">{friendlyId}</Typography>
+          </Alert>
         )}
-      </ConfirmModal> */}
+      </ConfirmModal>
     </>
   );
 };

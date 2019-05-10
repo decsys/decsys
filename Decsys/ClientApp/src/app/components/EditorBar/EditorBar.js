@@ -48,7 +48,9 @@ const EditorBar = ({ id, name, disabled }) => {
         <EditorBarLink href={`/admin/survey/${id}/export`} disabled={disabled}>
           <FileExport size="1em" /> Export
         </EditorBarLink> */}
-        <EditorBarButton onClick={exportSurvey}>Export</EditorBarButton>
+        <EditorBarButton onClick={exportSurvey}>
+          <FileExport size="1em" /> Export
+        </EditorBarButton>
         <EditorBarButton
           variant="danger"
           onClick={deleteModal.toggleModal}
