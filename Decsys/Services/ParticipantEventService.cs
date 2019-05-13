@@ -31,7 +31,7 @@ namespace Decsys.Services
                 GetCollectionName(instanceId, participantId));
 
             return _mapper.Map<IEnumerable<Models.ParticipantEvent>>(
-                log.FindAll().OrderByDescending(x => x.Timestamp));
+                log.FindAll().OrderBy(x => x.Timestamp));
         }
 
         public IEnumerable<Models.ParticipantEvent> List(int instanceId, string participantId)
@@ -45,7 +45,7 @@ namespace Decsys.Services
         }
 
         // TODO: refactor export types and their inheritance / genericness
-        public Models.SurveyInstanceResults<(string Id, IEnumerable<Models.ParticipantEvent> Events)> Results(int instanceId)
+        public Models.SurveyInstanceResults<Models.ParticipantEvents> Results(int instanceId)
         {
             var instance = _db.GetCollection<SurveyInstance>(
                 Collections.SurveyInstances)
@@ -57,14 +57,18 @@ namespace Decsys.Services
             var logs = GetAllParticipantLogs(instanceId);
 
             // summarize each one
-            var participants = new List<(string Id, IEnumerable<Models.ParticipantEvent> Events)>();
+            var participants = new List<Models.ParticipantEvents>();
             foreach (var collectionName in logs)
             {
                 var participantId = collectionName.Split("_").Last();
-                participants.Add((Id: participantId, Events: _List(instanceId, participantId)));
+                participants.Add(new Models.ParticipantEvents
+                {
+                    Id = participantId,
+                    Events = _List(instanceId, participantId).ToList()
+                });
             }
 
-            return new Models.SurveyInstanceResults<(string Id, IEnumerable<Models.ParticipantEvent> Events)>
+            return new Models.SurveyInstanceResults<Models.ParticipantEvents>
             {
                 Generated = DateTimeOffset.UtcNow,
                 Instance = instance.Published,
