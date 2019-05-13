@@ -21,7 +21,32 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{instanceId}/results")]
-        public IActionResult ResultsSummary(int id, int instanceId)
+        public IActionResult Results(int id, int instanceId, string type = "summary")
+        {
+            switch (type)
+            {
+                case "summary": return ResultsSummary(id, instanceId);
+                case "full": return ResultsFull(id, instanceId);
+                case "csv": return ResultsCsv(id, instanceId);
+                default: return BadRequest($"The specified results type '{type}' requested was invalid. Please specify one of: summary, full, csv");
+            }
+        }
+
+        private IActionResult ResultsFull(int id, int instanceId)
+        {
+            try
+            {
+                return Ok(_participantEvents.Results(instanceId));
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+        }
+
+        private IActionResult ResultsCsv(int id, int instanceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IActionResult ResultsSummary(int id, int instanceId)
         {
             try
             {

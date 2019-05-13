@@ -2,17 +2,11 @@
 
 namespace Decsys.Models
 {
-
     /// <summary>
     /// An export model for a participant's response data in a survey instance.
     /// </summary>
-    public class ParticipantResultsSummary
+    public class ParticipantResultsSummary : IdStub<string>
     {
-        /// <summary>
-        /// The participant's identifier
-        /// </summary>
-        public string Id { get; set; } = string.Empty;
-
         /// <summary>
         /// The participant's reponse to each survey question
         /// </summary>
