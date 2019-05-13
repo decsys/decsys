@@ -36,16 +36,14 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     fetch();
   }, [currentInstance]);
 
-  const handleExportClick = () => {
-    const file = new Blob([JSON.stringify(results)], {
+  const downloadFile = (data, filename) => {
+    const file = new Blob(data, {
       type: "application/json"
     });
     const a = document.createElement("a"),
       url = URL.createObjectURL(file);
     a.href = url;
-    a.download = `${survey.name}_Instance-${formatDate(
-      Date.parse(currentInstance.published)
-    )}_${formatDate(Date.parse(results.generated))}`;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     setTimeout(function() {
@@ -53,6 +51,14 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
       window.URL.revokeObjectURL(url);
     }, 0);
   };
+
+  const handleExportSummaryClick = () =>
+    downloadFile(
+      [JSON.stringify(results)],
+      `${survey.name}_Instance-${formatDate(
+        Date.parse(currentInstance.published)
+      )}_${formatDate(Date.parse(results.generated))}`
+    );
 
   const handleInstanceChange = e => {
     setCurrentInstance(instances.find(x => x.id.toString() === e.target.value));
@@ -83,7 +89,7 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
               </option>
             ))}
           </Select>
-          <Button variant="secondary" onClick={handleExportClick}>
+          <Button variant="secondary" onClick={handleExportSummaryClick}>
             <Download size="1em" /> Export to file...
           </Button>
         </FlexBox>
