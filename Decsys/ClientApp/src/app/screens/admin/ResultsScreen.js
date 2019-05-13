@@ -43,7 +43,7 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     const a = document.createElement("a"),
       url = URL.createObjectURL(file);
     a.href = url;
-    a.download = `${currentInstance.survey.name}_Instance-${formatDate(
+    a.download = `${survey.name}_Instance-${formatDate(
       Date.parse(currentInstance.published)
     )}_${formatDate(Date.parse(results.generated))}`;
     document.body.appendChild(a);
