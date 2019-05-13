@@ -17,6 +17,7 @@ import {
   PAGE_LOAD
 } from "./utils/event-types";
 import { randomize } from "./services/randomizer";
+import ExportScreen from "./screens/admin/ExportScreen";
 
 // Note: Some routes here have a lot of data fetching logic,
 // because Navi does a great job of delaying component loads while waiting on data.
@@ -210,6 +211,15 @@ const routes = mount({
               //TODO: fetch active instance for survey id, if any
               return { view: <div>Dashboard for {params.id}</div> };
             }),
+            "/:id/export": withData(
+              async ({ params }) => {
+                const { data: survey } = await api.getSurvey(params.id);
+                return { survey };
+              },
+              route(({ params }) => {
+                return { view: <ExportScreen id={params.id} /> };
+              })
+            ),
             "/:id/results": route(async ({ params }) => {
               const { data: instances } = await api.listSurveyInstances(
                 params.id

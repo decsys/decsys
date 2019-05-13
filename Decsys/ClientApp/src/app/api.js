@@ -155,3 +155,6 @@ export const setSurveyConfig = (surveyId, config) =>
 
 export const getSurveyConfig = surveyId =>
   Axios.get(`/api/surveys/${surveyId}/config`);
+
+export const getSurveyExport = (surveyId, type) =>
+  Axios.get(`/api/surveys/${surveyId}/export?type=${type}`);
