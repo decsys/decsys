@@ -24,7 +24,7 @@ namespace Decsys.Services
 
         public byte[] Structure(int surveyId)
             => ExportStructure(surveyId).AsByteArray();
-        
+
 
         private ZipBuilder ExportStructure(int surveyId)
         {
@@ -55,7 +55,7 @@ namespace Decsys.Services
             {
                 zip.AddTextContent(
                       JsonConvert.SerializeObject(_events.Results(instance.Id)),
-                      $"Instance-{instance.Published}");
+                      $"Instance-{instance.Published.UtcDateTime.ToString("s").Replace(":", "_")}.json");
             }
 
             // return the zip data

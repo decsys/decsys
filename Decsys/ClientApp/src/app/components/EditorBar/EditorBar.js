@@ -13,9 +13,11 @@ import NameInput from "./NameInput";
 import DeleteSurveyModal from "../SurveyCard/DeleteSurveyModal";
 import { useModal } from "../ui/ConfirmModal";
 import EditorBarContext from "./Context";
+import ExportModal from "../ExportModal";
 
 const EditorBar = ({ id, name, disabled }) => {
   const deleteModal = useModal();
+  const exportModal = useModal();
 
   const {
     nameUpdateState,
@@ -42,9 +44,9 @@ const EditorBar = ({ id, name, disabled }) => {
         <EditorBarButton onClick={handleDuplicateClick} disabled={disabled}>
           <Copy size="1em" /> Duplicate
         </EditorBarButton>
-        <EditorBarLink href={`/admin/survey/${id}/export`} disabled={disabled}>
+        <EditorBarButton onClick={exportModal.toggleModal} disabled={disabled}>
           <FileExport size="1em" /> Export
-        </EditorBarLink>
+        </EditorBarButton>
         <EditorBarButton
           variant="danger"
           onClick={deleteModal.toggleModal}
@@ -58,6 +60,7 @@ const EditorBar = ({ id, name, disabled }) => {
         deleteSurvey={() => handleDeleteClick(id)}
         modalState={deleteModal}
       />
+      <ExportModal survey={{ id, name }} modalState={exportModal} />
     </>
   );
 };
