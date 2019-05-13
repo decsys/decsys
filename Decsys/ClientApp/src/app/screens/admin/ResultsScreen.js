@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Container, FlexBox } from "../../components/ui";
+import {
+  Container,
+  FlexBox,
+  DropdownMenuButton,
+  MenuItem
+} from "../../components/ui";
 import AppBar from "../../components/AppBar";
 import { Typography, Select, Button, Box } from "@smooth-ui/core-sc";
 import { Download } from "styled-icons/fa-solid";
@@ -7,6 +12,7 @@ import * as api from "../../api";
 import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
 import { exportDateFormat as formatDate } from "../../utils/date-formats";
+import { Data } from "styled-icons/boxicons-regular";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {
@@ -60,6 +66,20 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
       )}_${formatDate(Date.parse(results.generated))}`
     );
 
+  const handleExportFullClick = async () => {
+    const { data } = await api.getInstanceResultsFull(
+      survey.id,
+      currentInstance.id
+    );
+
+    downloadFile(
+      [JSON.stringify(data)],
+      `${survey.name}_Instance-${formatDate(
+        Date.parse(currentInstance.published)
+      )}_${formatDate(Date.parse(results.generated))}`
+    );
+  };
+
   const handleInstanceChange = e => {
     setCurrentInstance(instances.find(x => x.id.toString() === e.target.value));
   };
@@ -89,9 +109,14 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
               </option>
             ))}
           </Select>
-          <Button variant="secondary" onClick={handleExportSummaryClick}>
-            <Download size="1em" /> Export to file...
-          </Button>
+          <DropdownMenuButton variant="secondary" button="Export to file...">
+            <MenuItem onClick={handleExportSummaryClick}>
+              Response Summary (JSON)
+            </MenuItem>
+            <MenuItem onClick={handleExportFullClick}>
+              Full Event Log (JSON)
+            </MenuItem>
+          </DropdownMenuButton>
         </FlexBox>
         {results && <Results results={results} />}
       </Container>

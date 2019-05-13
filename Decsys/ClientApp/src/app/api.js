@@ -145,6 +145,11 @@ export const getLastLogEntryByTypeOnly = (instanceId, participantId, type) =>
 export const getInstanceResultsSummary = (surveyId, instanceId) =>
   Axios.get(`/api/surveys/${surveyId}/instances/${instanceId}/results`);
 
+export const getInstanceResultsFull = (surveyId, instanceId) =>
+  Axios.get(
+    `/api/surveys/${surveyId}/instances/${instanceId}/results?type=full`
+  );
+
 export const setSurveyConfig = (surveyId, config) =>
   Axios.put(`/api/surveys/${surveyId}/config`, config);
 
