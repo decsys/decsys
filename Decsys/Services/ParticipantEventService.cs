@@ -25,6 +25,54 @@ namespace Decsys.Services
         private string GetCollectionName(int instanceId, string participantId)
             => $"{Collections.EventLog}{instanceId}_{participantId}";
 
+        private IEnumerable<Models.ParticipantEvent> _List(int instanceId, string participantId)
+        {
+            var log = _db.GetCollection<ParticipantEvent>(
+                GetCollectionName(instanceId, participantId));
+
+            return _mapper.Map<IEnumerable<Models.ParticipantEvent>>(
+                log.FindAll().OrderByDescending(x => x.Timestamp));
+        }
+
+        public IEnumerable<Models.ParticipantEvent> List(int instanceId, string participantId)
+        {
+            if (!_db.GetCollection<SurveyInstance>(
+                    Collections.SurveyInstances)
+                .Exists(x => x.Id == instanceId))
+                throw new KeyNotFoundException("Survey Instance could not be found.");
+
+            return _List(instanceId, participantId);
+        }
+
+        // TODO: refactor export types and their inheritance / genericness
+        public Models.SurveyInstanceResults<(string Id, IEnumerable<Models.ParticipantEvent> Events)> Results(int instanceId)
+        {
+            var instance = _db.GetCollection<SurveyInstance>(
+                Collections.SurveyInstances)
+                    .Include(x => x.Survey)
+                    .FindById(instanceId) ??
+                throw new KeyNotFoundException("Survey Instance could not be found.");
+
+            // Get all participant collections for this instance
+            var logs = GetAllParticipantLogs(instanceId);
+
+            // summarize each one
+            var participants = new List<(string Id, IEnumerable<Models.ParticipantEvent> Events)>();
+            foreach (var collectionName in logs)
+            {
+                var participantId = collectionName.Split("_").Last();
+                participants.Add((Id: participantId, Events: _List(instanceId, participantId)));
+            }
+
+            return new Models.SurveyInstanceResults<(string Id, IEnumerable<Models.ParticipantEvent> Events)>
+            {
+                Generated = DateTimeOffset.UtcNow,
+                Instance = instance.Published,
+                Survey = instance.Survey.Name,
+                Participants = participants
+            };
+        }
+
         /// <summary>
         /// Log a new event
         /// </summary>
@@ -94,8 +142,7 @@ namespace Decsys.Services
                     .FirstOrDefault());
         }
 
-        // TODO: Participant state? Flat Participant Results? Other...?
-        public Models.SurveyInstanceResultsSummary ResultsSummary(int instanceId)
+        public Models.SurveyInstanceResults<Models.ParticipantResultsSummary> ResultsSummary(int instanceId)
         {
             var instance = _db.GetCollection<SurveyInstance>(
                 Collections.SurveyInstances)
@@ -104,9 +151,7 @@ namespace Decsys.Services
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
             // Get all participant collections for this instance
-            var logs = _db.GetCollectionNames()
-                .Where(x => x.StartsWith($"{Collections.EventLog}{instanceId}_"))
-                .ToList();
+            var logs = GetAllParticipantLogs(instanceId);
 
             // summarize each one
             var participants = new List<Models.ParticipantResultsSummary>();
@@ -116,13 +161,25 @@ namespace Decsys.Services
                 participants.Add(ParticipantResultsSummary(instance, participantId));
             }
 
-            return new Models.SurveyInstanceResultsSummary
+            return new Models.SurveyInstanceResults<Models.ParticipantResultsSummary>
             {
                 Generated = DateTimeOffset.UtcNow,
                 Instance = instance.Published,
                 Survey = instance.Survey.Name,
                 Participants = participants
             };
+        }
+
+        /// <summary>
+        /// Get all participant collections for this instance
+        /// </summary>
+        /// <param name="instanceId"></param>
+        /// <returns></returns>
+        private List<string> GetAllParticipantLogs(int instanceId)
+        {
+            return _db.GetCollectionNames()
+                .Where(x => x.StartsWith($"{Collections.EventLog}{instanceId}_"))
+                .ToList();
         }
 
         public Models.ParticipantResultsSummary ResultsSummary(int instanceId, string participantId)

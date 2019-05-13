@@ -7,7 +7,7 @@ namespace Decsys.Models
     /// <summary>
     /// An export model for the results data of a survey instance
     /// </summary>
-    public class SurveyInstanceResultsSummary
+    public class SurveyInstanceResults<T>
     {
         /// <summary>
         /// A timestamp for when the summary was produced
@@ -25,8 +25,8 @@ namespace Decsys.Models
         public string Survey { get; set; } = string.Empty;
 
         /// <summary>
-        /// The instance participants and their survey responses
+        /// The instance participants and their export data
         /// </summary>
-        public List<ParticipantResultsSummary> Participants { get; set; } = new List<ParticipantResultsSummary>();
+        public List<T> Participants { get; set; } = new List<T>();
     }
 }
