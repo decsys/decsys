@@ -63,7 +63,7 @@ jobs:
       # build the docs
       # - script: pip install -U setuptools
       #   displayName: "Update pip"
-      - script: pip install setuptools mkdocs mkdocs-material pygments pymdown-extensions
+      - script: pip3 install setuptools mkdocs mkdocs-material pygments pymdown-extensions
         displayName: "Install mkdocs"
       - script: mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
         displayName: "Build docs"
