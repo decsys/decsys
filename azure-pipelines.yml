@@ -154,6 +154,17 @@ stages:
           artifactName: "clientapp"
           targetPath: "$(baseDir)/build"
 
+- stage: prepare_publish
+  displayName: "Prepare for Publish"
+  jobs:
+    - job: collate
+      displayName: "Collate publish dependencies"
+      pool:
+        vmImage: "Ubuntu-16.04"
+      
+      steps: # todo see if we download artifacts
+      - script: echo "Hello"
+
     # ---
     # Publish the dotnet app for different targets
     # ---
