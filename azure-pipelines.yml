@@ -9,9 +9,9 @@ stages:
   displayName: Build
   jobs:
     
-    ###
+    # ---
     # Load Metadata
-    ###
+    # ---
     - job: load_metadata
       displayName: "Load Metadata"
       pool:
@@ -36,9 +36,9 @@ stages:
       - script: echo '##vso[task.setvariable variable=clientVersion;isOutput=true]$(pkg_version)'
         name: setClientVersion
 
-    ###
+    # ---
     # Create Version file
-    ###
+    # ---
     - job: version_file
       displayName: "Create Version file"
       pool:
@@ -63,9 +63,9 @@ stages:
           artifactName: "version"
           targetPath: "$(Build.ArtifactStagingDirectory)"
     
-    ###
+    # ---
     # Build Docs
-    ###
+    # ---
     - job: docs
       displayName: "Docs"
       pool:
@@ -84,9 +84,9 @@ stages:
           artifactName: "docs"
           targetPath: "$(Build.ArtifactStagingDirectory)"
     
-    ###
+    # ---
     # Fetch Shipping Response Components
-    ###
+    # ---
     - job: fetch_components
       displayName: Fetch Shipping components
       pool:
@@ -123,6 +123,36 @@ stages:
         inputs:
           artifactName: "components"
           targetPath: "$(Build.ArtifactStagingDirectory)"
+
+    # ---
+    # Build the ClientApp
+    # ---
+    - job: clientapp
+      displayName: "Client App"
+      pool:
+        vmImage: "Ubuntu-16.04"
+
+      variables:
+        baseDir: "./Decsys/ClientApp"
+
+      steps:
+      - task: Npm@1
+        displayName: "npm ci"
+        inputs:
+          command: "custom"
+          workingDir: "$(baseDir)"
+          customCommand: "ci"
+      - task: Npm@1
+        displayName: "npm run build"
+        inputs:
+          command: "custom"
+          workingDir: "$(baseDir)"
+          customCommand: "run build"
+      - task: PublishPipelineArtifact@0
+        displayName: "Publish components"
+        inputs:
+          artifactName: "components"
+          targetPath: "$(baseDir)/build"
 
 # - stage: release_github
 #   displayName: Draft Github Release
