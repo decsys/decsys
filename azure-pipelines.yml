@@ -83,6 +83,46 @@ stages:
         inputs:
           artifactName: "docs"
           targetPath: "$(Build.ArtifactStagingDirectory)"
+    
+    ###
+    # Fetch Shipping Response Components
+    ###
+    - job: fetch_components
+      displayName: Fetch Shipping components
+      pool:
+        vmImage: "Ubuntu-16.04"
+
+      steps:
+      - checkout: none
+      - task: DownloadGitHubRelease@0
+        displayName: "Fetch Latest Ellipse"
+        inputs:
+          connection: "decsys-pipelines"
+          userRepository: "decsys/ellipse-component"
+          downloadPath: "$(Build.ArtifactStagingDirectory)"
+      - task: DownloadGitHubRelease@0
+        displayName: "Fetch Latest Likert"
+        inputs:
+          connection: "decsys-pipelines"
+          userRepository: "decsys/likert-component"
+          downloadPath: "Build.ArtifactStagingDirectory"
+      - task: DownloadGitHubRelease@0
+        displayName: "Fetch Latest FreeText"
+        inputs:
+          connection: "decsys-pipelines"
+          userRepository: "decsys/freetext-component"
+          downloadPath: "Build.ArtifactStagingDirectory"
+      - task: DownloadGitHubRelease@0
+        displayName: "Fetch Latest Confirmation"
+        inputs:
+          connection: "decsys-pipelines"
+          userRepository: "decsys/confirmation-component"
+          downloadPath: "Build.ArtifactStagingDirectory"
+      - task: PublishPipelineArtifact@0
+        displayName: "Publish components"
+        inputs:
+          artifactName: "components"
+          targetPath: "$(Build.ArtifactStagingDirectory)"
 
 # - stage: release_github
 #   displayName: Draft Github Release
@@ -147,30 +187,6 @@ stages:
   #   pool:
   #     vmImage: "Ubuntu-16.04"
 
-  #   steps:
-  #     # Load project metadata
-  #     - task: LoadJsonVariables@1
-  #       displayName: "Load package.json data"
-  #       inputs:
-  #         JsonSource: "./Decsys/ClientApp/package.json"
-  #         VariablePrefix: "pkg"
-  #     - task: LoadXmlVariables@1
-  #       displayName: "Load .csproj data"
-  #       inputs:
-  #         XmlSource: "./Decsys/Decsys.csproj"
-  #         VariablePrefix: "csproj"
-  #     - script: echo '##vso[task.setvariable variable=buildVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
-  #       name: setBuildVersion
-
-  #     # create version.txt
-  #     - task: file-creator@5
-  #       inputs:
-  #         fileoverwrite: true
-  #         skipempty: true
-  #         filepath: "./Decsys/version.txt"
-  #         filecontent: |-
-  #           Build=$(Build.BuildNumber)
-  #           Client App=$(pkg_version)
 
   #     # fetch shipping Response Components
   #     - task: DownloadGitHubRelease@0
