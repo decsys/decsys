@@ -270,7 +270,7 @@ stages:
           projects: "**/*.csproj"
           arguments: >
             -c $(buildConfiguration) 
-            -o $(Build.ArtifactStagingDirectory)/Decsys
+            -o $(Build.ArtifactStagingDirectory)
             $(argTargetRuntime)
           zipAfterPublish: false
       - task: CopyFiles@2
