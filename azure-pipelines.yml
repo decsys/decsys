@@ -61,11 +61,10 @@ jobs:
           downloadPath: "./Decsys/components/"
 
       # build the docs
-      - script: pip3 install -U setuptools
-        displayName: "Update pip"
-      - script: pip3 install mkdocs mkdocs-material pygments pymdown-extensions
-        displayName: "Install mkdocs"
-      - script: python -m mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
+      - script: |
+          pip3 install -U setuptools
+          pip3 install mkdocs mkdocs-material pygments pymdown-extensions
+          mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
         displayName: "Build docs"
 
       # Build the ClientApp
