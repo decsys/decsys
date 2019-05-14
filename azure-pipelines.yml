@@ -5,6 +5,9 @@ variables:
   buildConfiguration: "Release"
 
 stages:
+# ---
+# Build as much as we can in parallel first
+# ---
 - stage: build
   displayName: Build
   jobs:
@@ -154,6 +157,32 @@ stages:
           artifactName: "clientapp"
           targetPath: "$(baseDir)/build"
 
+    # ---
+    # Build the dotnet app as a gate only
+    # 
+    # We don't use the output from this build
+    # but it may as well happen in parallel so we fail fast
+    # ---
+    - job: dotnet
+      displayName: "Build the dotnet app"
+      pool:
+        vmImage: "Ubuntu-16.04"
+      
+      steps:
+      - task: DotNetCoreCLI@2
+        displayName: "dotnet build"
+        inputs:
+          command: "build"
+          projects: "**/*.csproj"
+          arguments: -c $(buildConfiguration)
+
+# ---
+# Prepare the source for publishing actual distributable binaries
+#
+# This consists of bringing down the build artifact
+# and collating them correctly in the working directory
+# so we only have to do this once regardless of publish targets.
+# ---
 - stage: prepare_publish
   displayName: "Prepare for Publish"
   jobs:
@@ -162,8 +191,33 @@ stages:
       pool:
         vmImage: "Ubuntu-16.04"
       
-      steps: # todo see if we download artifacts
-      - script: echo "Hello"
+      steps:
+      - task: DownloadPipelineArtifact@1
+        displayName: "Fetch components"
+        inputs:
+          artifactName: "components"
+          downloadPath: "./Decsys/components"
+      - task: DownloadPipelineArtifact@1
+        displayName: "Fetch version file"
+        inputs:
+          artifactName: "version"
+          downloadPath: "./Decsys"
+      - task: DownloadPipelineArtifact@1
+        displayName: "Fetch Client App"
+        inputs:
+          artifactName: "clientapp"
+          downloadPath: "./Decsys/ClientApp/build"
+      - task: DownloadPipelineArtifact@1
+        displayName: "Fetch docs"
+        inputs:
+          artifactName: "docs"
+          downloadPath: "./Decsys/wwwroot/docs"
+      - task: PublishPipelineArtifact@0
+        displayName: "Publish collated parts"
+        inputs:
+          artifactName: "prepublish"
+          targetPath: "./Decsys"
+      
 
     # ---
     # Publish the dotnet app for different targets
