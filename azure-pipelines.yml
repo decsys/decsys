@@ -13,11 +13,10 @@ jobs:
 
     container:
       image: squidfunk/mkdocs-material
-      options: --entrypoint "sh"
 
     steps:
     - script: mkdocs build
-    
+
   - job: build
     pool:
       vmImage: "Ubuntu-16.04"
