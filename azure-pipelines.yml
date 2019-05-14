@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - script: >
-        docker run --rm -it
+        docker run --rm
         -v .:/docs
         -v $(Build.ArtifactStagingDirectory):/docs-out
         squidfunk/mkdocs-material
