@@ -191,27 +191,30 @@ stages:
       pool:
         vmImage: "Ubuntu-16.04"
       
+      variables:
+        appRoot: $(System.DefaultWorkingDirectory)/Decsys
+
       steps:
       - task: DownloadPipelineArtifact@1
         displayName: "Fetch components"
         inputs:
           artifactName: "components"
-          downloadPath: "./Decsys/components"
+          downloadPath: "$(appRoot)/components"
       - task: DownloadPipelineArtifact@1
         displayName: "Fetch version file"
         inputs:
           artifactName: "version"
-          downloadPath: "./Decsys"
+          downloadPath: "$(appRoot)"
       - task: DownloadPipelineArtifact@1
         displayName: "Fetch Client App"
         inputs:
           artifactName: "clientapp"
-          downloadPath: "./Decsys/ClientApp/build"
+          downloadPath: "$(appRoot)/ClientApp/build"
       - task: DownloadPipelineArtifact@1
         displayName: "Fetch docs"
         inputs:
           artifactName: "docs"
-          downloadPath: "./Decsys/wwwroot/docs"
+          downloadPath: "$(appRoot)/wwwroot/docs"
       - task: PublishPipelineArtifact@0
         displayName: "Publish collated parts"
         inputs:
