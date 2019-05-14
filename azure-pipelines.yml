@@ -149,9 +149,9 @@ stages:
           workingDir: "$(baseDir)"
           customCommand: "run build"
       - task: PublishPipelineArtifact@0
-        displayName: "Publish components"
+        displayName: "Publish Client App"
         inputs:
-          artifactName: "components"
+          artifactName: "clientapp"
           targetPath: "$(baseDir)/build"
 
     # ---
