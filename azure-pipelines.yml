@@ -74,6 +74,12 @@ jobs:
           workingDir: "./Decsys/ClientApp"
           customCommand: "run build"
 
+      # build the docs
+      - script: pip install mkdocs mkdocs-material pygments pymdown-extensions
+        displayName: "Install mkdocs"
+      - script: mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
+        displayName: "Build docs"
+
       # Publish the dotnet app for different targets
       - task: DotNetCoreCLI@2
         displayName: "dotnet publish"
