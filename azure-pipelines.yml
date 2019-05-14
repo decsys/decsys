@@ -105,19 +105,19 @@ stages:
         inputs:
           connection: "decsys-pipelines"
           userRepository: "decsys/likert-component"
-          downloadPath: "Build.ArtifactStagingDirectory"
+          downloadPath: "$(Build.ArtifactStagingDirectory)"
       - task: DownloadGitHubRelease@0
         displayName: "Fetch Latest FreeText"
         inputs:
           connection: "decsys-pipelines"
           userRepository: "decsys/freetext-component"
-          downloadPath: "Build.ArtifactStagingDirectory"
+          downloadPath: "$(Build.ArtifactStagingDirectory)"
       - task: DownloadGitHubRelease@0
         displayName: "Fetch Latest Confirmation"
         inputs:
           connection: "decsys-pipelines"
           userRepository: "decsys/confirmation-component"
-          downloadPath: "Build.ArtifactStagingDirectory"
+          downloadPath: "$(Build.ArtifactStagingDirectory)"
       - task: PublishPipelineArtifact@0
         displayName: "Publish components"
         inputs:
