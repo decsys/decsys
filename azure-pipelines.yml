@@ -65,7 +65,7 @@ jobs:
         displayName: "Update pip"
       - script: pip3 install mkdocs mkdocs-material pygments pymdown-extensions
         displayName: "Install mkdocs"
-      - script: mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
+      - script: python -m mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
         displayName: "Build docs"
 
       # Build the ClientApp
