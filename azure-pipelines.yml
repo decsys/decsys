@@ -27,15 +27,7 @@ stages:
         inputs:
           JsonSource: ./Decsys/ClientApp/package.json
           VariablePrefix: pkg
-      - task: LoadXmlVariables@1
-        displayName: Load .csproj data
-        inputs:
-          XmlSource: ./Decsys/Decsys.csproj
-          VariablePrefix: csproj
-      
       # set variables for use elsewhere
-      - script: echo '##vso[task.setvariable variable=apiVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
-        name: setApiVersion
       - script: echo '##vso[task.setvariable variable=clientVersion;isOutput=true]$(pkg_version)'
         name: setClientVersion
 
@@ -284,60 +276,82 @@ stages:
           artifactName: $(name)
           targetPath: $(Build.ArtifactStagingDirectory)
 
-# - stage: release_github
-#   displayName: Draft Github Release
-#   jobs:
-#     - deployment: github
-#       pool:
-#         vmImage: "Ubuntu-16.04"
+# ---
+# Release to GitHub
+# ---
+- stage: release_github
+  displayName: Draft Github Release
+  jobs:
+    # ---
+    # Load Metadata
+    # ---
+    - job: load_metadata
+      displayName: Load Metadata
+      pool:
+        vmImage: Ubuntu-16.04
 
-#       dependsOn: build
-#       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      steps:
+      # load metadata from project files
+      - task: LoadXmlVariables@1
+        displayName: Load .csproj data
+        inputs:
+          XmlSource: ./Decsys/Decsys.csproj
+          VariablePrefix: csproj
+      # set variables for use elsewhere
+      - script: echo '##vso[task.setvariable variable=apiVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
+        name: setApiVersion
 
-#       environment: github
+    - deployment: github
+      pool:
+        vmImage: "Ubuntu-16.04"
 
-#       # variables:
-#       #   buildVersion: $[ dependencies.build.outputs['setBuildVersion.buildVersion'] ]
+      dependsOn: load_metadata
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
-#       strategy:
-#         runOnce:
-#           deploy:
-#             steps:
-#               # artifact acquisition
-#               - task: DownloadPipelineArtifact@1
-#                 displayName: "Fetch dotnet artifact"
-#                 inputs:
-#                   artifactName: "dotnet"
-#                   downloadPath: "$(System.ArtifactsDirectory)/dotnet"
-#               - task: DownloadPipelineArtifact@1
-#                 displayName: "Fetch win-x64 artifact"
-#                 inputs:
-#                   artifactName: "win-x64"
-#                   downloadPath: "$(System.ArtifactsDirectory)/win-x64"
+      environment: github
 
-#               # artifact archiving
-#               - task: ArchiveFiles@2
-#                 displayName: "Zip dotnet artifact"
-#                 inputs:
-#                   rootFolderOrFile: "$(System.ArtifactsDirectory)/dotnet"
-#                   includeRootFolder: false
-#                   archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip"
-#               - task: ArchiveFiles@2
-#                 displayName: "Zip win-x64 artifact"
-#                 inputs:
-#                   rootFolderOrFile: "$(System.ArtifactsDirectory)/win-x64"
-#                   includeRootFolder: false
-#                   archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip"
+      variables:
+        buildVersion: $[ dependencies.load_metadata.outputs['setApiVersion.apiVersion'] ]
 
-#               # Publish Draft GitHub Release
-#               - task: GitHubRelease@0
-#                 inputs:
-#                   gitHubConnection: "decsys-pipelines"
-#                   repositoryName: "decsys/decsys"
-#                   action: "create"
-#                   tagSource: "manual"
-#                   tag: "$(buildVersion)"
-#                   releaseNotesSource: "input"
-#                   releaseNotes: "`// TODO`"
-#                   isDraft: true
-#                   assets: "$(Build.BinariesDirectory)/*.zip"
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              # artifact acquisition
+              - task: DownloadPipelineArtifact@1
+                displayName: "Fetch dotnet artifact"
+                inputs:
+                  artifactName: "dotnet"
+                  downloadPath: "$(System.ArtifactsDirectory)/dotnet"
+              - task: DownloadPipelineArtifact@1
+                displayName: "Fetch win-x64 artifact"
+                inputs:
+                  artifactName: "win-x64"
+                  downloadPath: "$(System.ArtifactsDirectory)/win-x64"
+
+              # artifact archiving
+              - task: ArchiveFiles@2
+                displayName: "Zip dotnet artifact"
+                inputs:
+                  rootFolderOrFile: "$(System.ArtifactsDirectory)/dotnet"
+                  includeRootFolder: false
+                  archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip"
+              - task: ArchiveFiles@2
+                displayName: "Zip win-x64 artifact"
+                inputs:
+                  rootFolderOrFile: "$(System.ArtifactsDirectory)/win-x64"
+                  includeRootFolder: false
+                  archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip"
+
+              # Publish Draft GitHub Release
+              - task: GitHubRelease@0
+                inputs:
+                  gitHubConnection: "decsys-pipelines"
+                  repositoryName: "decsys/decsys"
+                  action: "create"
+                  tagSource: "manual"
+                  tag: "$(buildVersion)"
+                  releaseNotesSource: "input"
+                  releaseNotes: "`// TODO`"
+                  isDraft: true
+                  assets: "$(Build.BinariesDirectory)/*.zip"
