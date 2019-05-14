@@ -183,14 +183,14 @@ stages:
 # and collating them correctly in the working directory
 # so we only have to do this once regardless of publish targets.
 # ---
-- stage: prepare_publish
-  displayName: "Prepare for Publish"
+- stage: prepare_release
+  displayName: "Prepare for Release"
   jobs:
     - job: collate
       displayName: "Collate publish dependencies"
       pool:
         vmImage: "Ubuntu-16.04"
-      
+
       variables:
         appRoot: $(System.DefaultWorkingDirectory)/Decsys
 
