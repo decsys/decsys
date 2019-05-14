@@ -4,25 +4,146 @@ trigger:
 variables:
   buildConfiguration: "Release"
 
-jobs:
-  - job: build_the_docs
-    displayName: "Build the docs"
+stages:
+- stage: build
+  displayName: Build
+  jobs:
+    
+    ###
+    # Load Metadata
+    ###
+    - job: load_metadata
+      displayName: "Load Metadata"
 
-    pool:
-      vmImage: "Ubuntu-16.04"
+      pool:
+        vmImage: "Ubuntu-16.04"
 
-    steps:
-    - script: >
-        docker run --rm
-        -v $(System.DefaultWorkingDirectory):/docs
-        -v $(Build.ArtifactStagingDirectory):/docs-out
-        squidfunk/mkdocs-material
-        build -c -s -v -d /docs-out
-    - task: PublishPipelineArtifact@0
-      displayName: "Publish docs artifact"
-      inputs:
-        artifactName: "docs"
-        targetPath: "$(Build.ArtifactStagingDirectory)"
+      steps:
+      # load metadata from project files
+      - task: LoadJsonVariables@1
+        displayName: "Load package.json data"
+        inputs:
+          JsonSource: "./Decsys/ClientApp/package.json"
+          VariablePrefix: "pkg"
+      - task: LoadXmlVariables@1
+        displayName: "Load .csproj data"
+        inputs:
+          XmlSource: "./Decsys/Decsys.csproj"
+          VariablePrefix: "csproj"
+      
+      # set variables for use elsewhere
+      - script: echo '##vso[task.setvariable variable=apiVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
+        name: setApiVersion
+      - script: echo '##vso[task.setvariable variable=clientVersion;isOutput=true]$(pkg_version)'
+        name: setClientVersion
+
+    ###
+    # Create Version file
+    ###
+    - job: version_file
+      displayName: "Create Version file"
+
+      pool:
+        vmImage: "Ubuntu-16.04"
+
+      variables:
+        clientVersion: $[ dependencies.build.outputs['setClientVersion.clientVersion'] ]
+
+      steps:
+      - task: file-creator@5
+        inputs:
+          fileoverwrite: true
+          skipempty: true
+          filepath: "$(Build.ArtifactStagingDirectory)/version.txt"
+          filecontent: |-
+            Build=$(Build.BuildNumber)
+            Client App=$(clientVersion)
+      - task: PublishPipelineArtifact@0
+        displayName: "Publish version file"
+        inputs:
+          artifactName: "version"
+          targetPath: "$(Build.ArtifactStagingDirectory)"
+    
+    ###
+    # Build Docs
+    ###
+    - job: docs
+      displayName: "Docs"
+
+      pool:
+        vmImage: "Ubuntu-16.04"
+
+      steps:
+      - script: >
+          docker run --rm
+          -v $(System.DefaultWorkingDirectory):/docs
+          -v $(Build.ArtifactStagingDirectory):/docs-out
+          squidfunk/mkdocs-material
+          build -c -s -v -d /docs-out
+      - task: PublishPipelineArtifact@0
+        displayName: "Publish docs"
+        inputs:
+          artifactName: "docs"
+          targetPath: "$(Build.ArtifactStagingDirectory)"
+
+# - stage: release_github
+#   displayName: Draft Github Release
+#   jobs:
+#     - deployment: github
+#       pool:
+#         vmImage: "Ubuntu-16.04"
+
+#       dependsOn: build
+#       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+#       environment: github
+
+#       # variables:
+#       #   buildVersion: $[ dependencies.build.outputs['setBuildVersion.buildVersion'] ]
+
+#       strategy:
+#         runOnce:
+#           deploy:
+#             steps:
+#               # artifact acquisition
+#               - task: DownloadPipelineArtifact@1
+#                 displayName: "Fetch dotnet artifact"
+#                 inputs:
+#                   artifactName: "dotnet"
+#                   downloadPath: "$(System.ArtifactsDirectory)/dotnet"
+#               - task: DownloadPipelineArtifact@1
+#                 displayName: "Fetch win-x64 artifact"
+#                 inputs:
+#                   artifactName: "win-x64"
+#                   downloadPath: "$(System.ArtifactsDirectory)/win-x64"
+
+#               # artifact archiving
+#               - task: ArchiveFiles@2
+#                 displayName: "Zip dotnet artifact"
+#                 inputs:
+#                   rootFolderOrFile: "$(System.ArtifactsDirectory)/dotnet"
+#                   includeRootFolder: false
+#                   archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip"
+#               - task: ArchiveFiles@2
+#                 displayName: "Zip win-x64 artifact"
+#                 inputs:
+#                   rootFolderOrFile: "$(System.ArtifactsDirectory)/win-x64"
+#                   includeRootFolder: false
+#                   archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip"
+
+#               # Publish Draft GitHub Release
+#               - task: GitHubRelease@0
+#                 inputs:
+#                   gitHubConnection: "decsys-pipelines"
+#                   repositoryName: "decsys/decsys"
+#                   action: "create"
+#                   tagSource: "manual"
+#                   tag: "$(buildVersion)"
+#                   releaseNotesSource: "input"
+#                   releaseNotes: "`// TODO`"
+#                   isDraft: true
+#                   assets: "$(Build.BinariesDirectory)/*.zip"
+
 
   # - job: build
   #   pool:
@@ -141,58 +262,3 @@ jobs:
   #       inputs:
   #         artifactName: "win-x64"
   #         targetPath: "$(Build.ArtifactStagingDirectory)/win-x64"
-
-  # - deployment: release
-  #   pool:
-  #     vmImage: "Ubuntu-16.04"
-
-  #   dependsOn: "build"
-  #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-
-  #   environment: github
-
-  #   variables:
-  #     buildVersion: $[ dependencies.build.outputs['setBuildVersion.buildVersion'] ]
-
-  #   strategy:
-  #     runOnce:
-  #       deploy:
-  #         steps:
-  #           # artifact acquisition
-  #           - task: DownloadPipelineArtifact@1
-  #             displayName: "Fetch dotnet artifact"
-  #             inputs:
-  #               artifactName: "dotnet"
-  #               downloadPath: "$(System.ArtifactsDirectory)/dotnet"
-  #           - task: DownloadPipelineArtifact@1
-  #             displayName: "Fetch win-x64 artifact"
-  #             inputs:
-  #               artifactName: "win-x64"
-  #               downloadPath: "$(System.ArtifactsDirectory)/win-x64"
-
-  #           # artifact archiving
-  #           - task: ArchiveFiles@2
-  #             displayName: "Zip dotnet artifact"
-  #             inputs:
-  #               rootFolderOrFile: "$(System.ArtifactsDirectory)/dotnet"
-  #               includeRootFolder: false
-  #               archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip"
-  #           - task: ArchiveFiles@2
-  #             displayName: "Zip win-x64 artifact"
-  #             inputs:
-  #               rootFolderOrFile: "$(System.ArtifactsDirectory)/win-x64"
-  #               includeRootFolder: false
-  #               archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip"
-
-  #           # Publish Draft GitHub Release
-  #           - task: GitHubRelease@0
-  #             inputs:
-  #               gitHubConnection: "decsys-pipelines"
-  #               repositoryName: "decsys/decsys"
-  #               action: "create"
-  #               tagSource: "manual"
-  #               tag: "$(buildVersion)"
-  #               releaseNotesSource: "input"
-  #               releaseNotes: "`// TODO`"
-  #               isDraft: true
-  #               assets: "$(Build.BinariesDirectory)/*.zip"
