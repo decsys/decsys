@@ -14,7 +14,6 @@ stages:
     ###
     - job: load_metadata
       displayName: "Load Metadata"
-
       pool:
         vmImage: "Ubuntu-16.04"
 
@@ -42,9 +41,9 @@ stages:
     ###
     - job: version_file
       displayName: "Create Version file"
-
       pool:
         vmImage: "Ubuntu-16.04"
+      dependsOn: load_metadata
 
       variables:
         clientVersion: $[ dependencies.build.outputs['setClientVersion.clientVersion'] ]
@@ -69,7 +68,6 @@ stages:
     ###
     - job: docs
       displayName: "Docs"
-
       pool:
         vmImage: "Ubuntu-16.04"
 
