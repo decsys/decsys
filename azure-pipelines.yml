@@ -70,7 +70,7 @@ stages:
     # Build Docs
     # ---
     - job: docs
-      displayName: Docs
+      displayName: Build the Docs
       pool:
         vmImage: Ubuntu-16.04
 
@@ -131,7 +131,7 @@ stages:
     # Build the Client App
     # ---
     - job: clientapp
-      displayName: Client App
+      displayName: Build the Client App
       pool:
         vmImage: Ubuntu-16.04
 
@@ -225,6 +225,11 @@ stages:
         inputs:
           artifactName: prepublish
           targetPath: ./Decsys
+      - task: PublishPipelineArtifact@0
+        displayName: Publish bootstrap scripts
+        inputs:
+          artifactName: scripts
+          targetPath: ./scripts
 
     # ---
     # Publish the dotnet app for multiple targets
@@ -251,7 +256,12 @@ stages:
         displayName: Fetch Prepublish Artifact
         inputs:
           artifactName: prepublish
-          downloadPath: $(System.DefaultWorkingDirectory)
+          downloadPath: $(System.DefaultWorkingDirectory)/Decsys
+      - task: DownloadPipelineArtifact@1
+        displayName: Fetch Scripts
+        inputs:
+          artifactName: scripts
+          downloadPath: $(System.DefaultWorkingDirectory)/scripts
       - task: DotNetCoreCLI@2
         displayName: "dotnet publish (target: $(name))"
         inputs:
@@ -266,7 +276,7 @@ stages:
       - task: CopyFiles@2
         displayName: Copy dotnet bootstrap scripts
         inputs:
-          SourceFolder: ./scripts/$(name)
+          SourceFolder: $(System.DefaultWorkingDirectory)/scripts/$(name)
           TargetFolder: $(Build.ArtifactStagingDirectory)
       - task: PublishPipelineArtifact@0
         displayName: Publish $(name) artifact
