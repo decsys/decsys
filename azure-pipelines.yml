@@ -12,8 +12,7 @@ jobs:
       vmImage: "Ubuntu-16.04"
 
     container:
-      image: squidfunk/mkdocs-material
-      options: --entrypoint "sh"
+      image: beforan/mkdocs-material-az-pipelines
 
     steps:
     - script: mkdocs build
