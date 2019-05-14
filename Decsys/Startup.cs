@@ -60,6 +60,7 @@ namespace Decsys
             services.AddTransient<PageService>();
             services.AddTransient<ComponentService>();
             services.AddTransient<SurveyInstanceService>();
+            services.AddTransient<ExportService>();
             services.AddTransient<ParticipantEventService>();
             services.AddTransient(svc => new ImageService(
                 Path.Combine(

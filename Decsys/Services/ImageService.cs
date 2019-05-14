@@ -11,20 +11,24 @@ namespace Decsys.Services
 {
     public class ImageService
     {
-        private readonly string _imagesPath;
         private readonly LiteDatabase _db;
+
+        public string ImagesPath { get; }
 
         public ImageService(string imagesPath, LiteDatabase db)
         {
-            _imagesPath = imagesPath;
+            ImagesPath = imagesPath;
             _db = db;
         }
+
+        public string SurveyImagesPath(int id) =>
+            Path.Combine(ImagesPath, id.ToString());
 
         public async Task WriteFile(int surveyId, Guid componentId, (string extension, byte[] bytes) file)
         {
             var filename = $"{componentId}{file.extension}";
 
-            var dir = Path.Combine(_imagesPath, surveyId.ToString());
+            var dir = SurveyImagesPath(surveyId);
 
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
@@ -42,7 +46,7 @@ namespace Decsys.Services
             if (extension is null) return; // no image currently stored; job done
 
             var path = Path.Combine(
-                _imagesPath, surveyId.ToString(),
+                SurveyImagesPath(surveyId),
                 componentId.ToString() + extension);
 
             if (File.Exists(path)) File.Delete(path);
@@ -50,7 +54,7 @@ namespace Decsys.Services
 
         public void RemoveAllSurveyFiles(int id)
         {
-            var path = Path.Combine(_imagesPath, id.ToString());
+            var path = SurveyImagesPath(id);
 
             if (!Directory.Exists(path)) return;
 
@@ -63,23 +67,31 @@ namespace Decsys.Services
             if (extension is null) return; // For whatever reason, an image item with no image has been duplicated
 
             var path = Path.Combine(
-                _imagesPath, surveyId.ToString(), srcId.ToString() + extension);
+                SurveyImagesPath(surveyId), srcId.ToString() + extension);
 
             if (File.Exists(path)) File.Copy(path, Path.Combine(
-                _imagesPath, surveyId.ToString(), destId.ToString() + extension));
+                SurveyImagesPath(surveyId), destId.ToString() + extension));
         }
 
         public void CopyAllSurveyFiles(int oldId, int newId)
         {
-            var src = Path.Combine(_imagesPath, oldId.ToString());
-            var dest = Path.Combine(_imagesPath, newId.ToString());
-
-            if (!Directory.Exists(src)) return;
+            var dest = SurveyImagesPath(newId); ;
 
             Directory.CreateDirectory(dest);
-            foreach (var f in Directory.EnumerateFiles(src))
+            foreach (var f in Enumerate(oldId))
                 File.Copy(f, Path.Combine(dest, Path.GetFileName(f)));
         }
+
+        public IEnumerable<string> Enumerate(int surveyId)
+        {
+            var dir = SurveyImagesPath(surveyId);
+            return Directory.Exists(dir)
+                ? Directory.EnumerateFiles(dir)
+                : new List<string>();
+        }
+
+        public bool HasImages(int surveyId)
+            => Enumerate(surveyId).Any();
 
         private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId)
         {

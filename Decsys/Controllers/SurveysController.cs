@@ -11,10 +11,12 @@ namespace Decsys.Controllers
     public class SurveysController : ControllerBase
     {
         private readonly SurveyService _surveys;
+        private readonly ExportService _export;
 
-        public SurveysController(SurveyService surveys)
+        public SurveysController(SurveyService surveys, ExportService export)
         {
             _surveys = surveys;
+            _export = export;
         }
 
         [HttpGet]
@@ -113,6 +115,18 @@ namespace Decsys.Controllers
                 ValidIdentifiers = survey.ValidIdentifiers,
                 OneTimeParticipants = survey.OneTimeParticipants
             };
+        }
+
+        [HttpGet("{id}/export")]
+        public ActionResult<byte[]> Export(int id, string type = "structure")
+        {
+            switch(type)
+            {
+                case "structure": return _export.Structure(id);
+                case "full": return _export.Full(id);
+                default: return BadRequest(
+                    $"Unexpected type '{type}'. Expected one of: full, structure");
+            }
         }
     }
 }

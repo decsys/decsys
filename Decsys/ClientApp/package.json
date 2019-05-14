@@ -1,6 +1,6 @@
 {
   "name": "client-app",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "dependencies": {
     "@decsys/param-types": "^0.3.1",

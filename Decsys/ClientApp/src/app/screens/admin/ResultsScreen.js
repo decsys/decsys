@@ -6,13 +6,12 @@ import {
   MenuItem
 } from "../../components/ui";
 import AppBar from "../../components/AppBar";
-import { Typography, Select, Button, Box } from "@smooth-ui/core-sc";
-import { Download } from "styled-icons/fa-solid";
+import { Typography, Select, Box } from "@smooth-ui/core-sc";
 import * as api from "../../api";
 import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
 import { exportDateFormat as formatDate } from "../../utils/date-formats";
-import { Data } from "styled-icons/boxicons-regular";
+import { downloadFile } from "../../services/export";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {
@@ -41,22 +40,6 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     };
     fetch();
   }, [currentInstance]);
-
-  const downloadFile = (data, filename) => {
-    const file = new Blob(data, {
-      type: "application/json"
-    });
-    const a = document.createElement("a"),
-      url = URL.createObjectURL(file);
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function() {
-      document.body.removeChild(a);
-      window.URL.revokeObjectURL(url);
-    }, 0);
-  };
 
   const handleExportSummaryClick = () =>
     downloadFile(
