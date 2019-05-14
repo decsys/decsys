@@ -11,11 +11,16 @@ jobs:
     pool:
       vmImage: "Ubuntu-16.04"
 
-    container:
-      image: beforan/mkdocs-material-az-pipelines
+    # container:
+    #   image: beforan/mkdocs-material-az-pipelines
 
     steps:
-    - script: mkdocs build
+    - script: >
+        docker run --rm -it
+        -v .:/docs
+        -v $(Build.ArtifactStagingDirectory):/docs-out
+        squidfunk/mkdocs-material
+        build -c -s -v -d /docs-out
 
   # - job: build
   #   pool:
