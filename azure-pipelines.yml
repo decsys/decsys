@@ -5,6 +5,17 @@ variables:
   buildConfiguration: "Release"
 
 jobs:
+  - job: build_the_docs
+    displayName: "Build the docs"
+
+    pool:
+      vmImage: "Ubuntu-16.04"
+
+    steps:
+    - script: |
+        pip3 install -U setuptools
+        pip3 install mkdocs mkdocs-material pygments pymdown-extensions
+        mkdocs build --verbose --clean --strict -d $(Build.ArtifactStagingDirectory)
   - job: build
     pool:
       vmImage: "Ubuntu-16.04"
@@ -59,13 +70,6 @@ jobs:
           connection: "decsys-pipelines"
           userRepository: "decsys/confirmation-component"
           downloadPath: "./Decsys/components/"
-
-      # build the docs
-      - script: |
-          pip3 install -U setuptools
-          pip3 install mkdocs mkdocs-material pygments pymdown-extensions
-          mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
-        displayName: "Build docs"
 
       # Build the ClientApp
       - task: Npm@1
