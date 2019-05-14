@@ -46,7 +46,7 @@ stages:
       dependsOn: load_metadata
 
       variables:
-        clientVersion: $[ dependencies.build.outputs['setClientVersion.clientVersion'] ]
+        clientVersion: $[ dependencies.load_metadata.outputs['setClientVersion.clientVersion'] ]
 
       steps:
       - task: file-creator@5
