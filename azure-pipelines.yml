@@ -125,7 +125,7 @@ stages:
           targetPath: "$(Build.ArtifactStagingDirectory)"
 
     # ---
-    # Build the ClientApp
+    # Build the Client App
     # ---
     - job: clientapp
       displayName: "Client App"
@@ -154,6 +154,20 @@ stages:
           artifactName: "components"
           targetPath: "$(baseDir)/build"
 
+    # ---
+    # Publish the dotnet app for different targets
+    # ---
+    # - job: publish
+    #   displayName: "Publish Dotnet Binaries"
+    #   pool:
+    #     vmImage: "Ubuntu-16.04"
+    #   dependsOn: # literally everything else in this stage
+    #   - load_metadata
+    #   - version_file
+    #   - docs
+    #   - fetch_components
+    #   - clientapp
+
 # - job: build
   #   pool:
   #     vmImage: "Ubuntu-16.04"
@@ -180,6 +194,7 @@ stages:
   #           -o $(Build.ArtifactStagingDirectory)/win-x64 
   #           -r win-x64
   #         zipAfterPublish: false
+
 
   #     # Package the releases
 
