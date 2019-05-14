@@ -11,6 +11,10 @@ jobs:
     pool:
       vmImage: "Ubuntu-16.04"
 
+    container:
+      image: squidfunk/mkdocs-material
+      options: --entrypoint "mkdocs build"
+
     steps:
     - script: |
         pip3 install -U setuptools
