@@ -11,9 +11,6 @@ jobs:
     pool:
       vmImage: "Ubuntu-16.04"
 
-    # container:
-    #   image: beforan/mkdocs-material-az-pipelines
-
     steps:
     - script: >
         docker run --rm
@@ -21,6 +18,11 @@ jobs:
         -v $(Build.ArtifactStagingDirectory):/docs-out
         squidfunk/mkdocs-material
         build -c -s -v -d /docs-out
+    - task: PublishPipelineArtifact@0
+      displayName: "Publish docs artifact"
+      inputs:
+        artifactName: "docs"
+        targetPath: "$(Build.ArtifactStagingDirectory)"
 
   # - job: build
   #   pool:
