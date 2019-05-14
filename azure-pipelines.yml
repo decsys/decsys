@@ -60,6 +60,14 @@ jobs:
           userRepository: "decsys/confirmation-component"
           downloadPath: "./Decsys/components/"
 
+      # build the docs
+      - script: pip install -U pip setuptools
+        displayName: "Update pip"
+      - script: pip install mkdocs mkdocs-material pygments pymdown-extensions
+        displayName: "Install mkdocs"
+      - script: mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
+        displayName: "Build docs"
+
       # Build the ClientApp
       - task: Npm@1
         displayName: "npm ci"
@@ -73,12 +81,6 @@ jobs:
           command: "custom"
           workingDir: "./Decsys/ClientApp"
           customCommand: "run build"
-
-      # build the docs
-      - script: pip install mkdocs mkdocs-material pygments pymdown-extensions
-        displayName: "Install mkdocs"
-      - script: mkdocs build --verbose --clean --strict -d Decsys/wwwroot/docs
-        displayName: "Build docs"
 
       # Publish the dotnet app for different targets
       - task: DotNetCoreCLI@2
