@@ -1,6 +1,8 @@
+![GitHub](https://img.shields.io/github/license/decsys/decsys.svg)
+[![Build Status](https://dev.azure.com/UniversityOfNottingham/DECSYS/_apis/build/status/decsys.decsys?branchName=master)](https://dev.azure.com/UniversityOfNottingham/DECSYS/_build/latest?definitionId=155&branchName=master)
+
 ![GitHub release](https://img.shields.io/github/release/decsys/decsys.svg?label=stable)
 ![GitHub release](https://img.shields.io/github/release-pre/decsys/decsys.svg?label=latest)
-[![Build Status](https://dev.azure.com/UniversityOfNottingham/DECSYS/_apis/build/status/decsys.decsys?branchName=master)](https://dev.azure.com/UniversityOfNottingham/DECSYS/_build/latest?definitionId=155&branchName=master)
 
 # DECSYS Survey Platform
 
@@ -51,6 +53,22 @@ It is used to showcase the DECSYS Ellipse Rating Scale.
 
 # Licensing
 
-At this time, this software has no license, and therefore all rights are reserved as per author copyright, with the exception of rights waived under the GitHub Terms of Service.
+This software is primarily licensed under the **GNU Affero General Public License v3.0 only** (`AGPL-3.0-only`)
 
-Please don't modify, distribute or use this software until a license is in place.
+    DECSYS Survey Platform
+    Copyright (C) 2019
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+Other license arrangements may be made as appropriate on request.

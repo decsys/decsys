@@ -20,6 +20,7 @@ using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
 using UoN.VersionInformation.Providers;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Rewrite;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -118,6 +119,9 @@ namespace Decsys
             });
 
             app.UseSpaStaticFiles();
+
+            app.UseRewriter(new RewriteOptions()
+                .AddRedirect("docs", "docs/index.html"));
 
             app.UseMvc(routes =>
             {

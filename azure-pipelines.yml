@@ -4,176 +4,354 @@ trigger:
 variables:
   buildConfiguration: "Release"
 
-jobs:
-  - job: build
-    pool:
-      vmImage: "Ubuntu-16.04"
+stages:
+# ---
+# Build as much as we can in parallel first
+# ---
+- stage: build
+  displayName: Build
+  jobs:
+    
+    # ---
+    # Load Metadata
+    # ---
+    - job: load_metadata
+      displayName: Load Metadata
+      pool:
+        vmImage: Ubuntu-16.04
 
-    steps:
-      # Load project metadata
+      steps:
+      # load metadata from project files
       - task: LoadJsonVariables@1
-        displayName: "Load package.json data"
+        displayName: Load package.json data
         inputs:
-          JsonSource: "./Decsys/ClientApp/package.json"
-          VariablePrefix: "pkg"
-      - task: LoadXmlVariables@1
-        displayName: "Load .csproj data"
-        inputs:
-          XmlSource: "./Decsys/Decsys.csproj"
-          VariablePrefix: "csproj"
-      - script: echo '##vso[task.setvariable variable=buildVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
-        name: setBuildVersion
+          JsonSource: ./Decsys/ClientApp/package.json
+          VariablePrefix: pkg
+      # set variables for use elsewhere
+      - script: echo '##vso[task.setvariable variable=clientVersion;isOutput=true]$(pkg_version)'
+        name: setClientVersion
 
-      # create version.txt
+    # ---
+    # Create Version file
+    # ---
+    - job: version_file
+      displayName: Create Version file
+      pool:
+        vmImage: Ubuntu-16.04
+      dependsOn: load_metadata
+
+      variables:
+        clientVersion: $[ dependencies.load_metadata.outputs['setClientVersion.clientVersion'] ]
+
+      steps:
       - task: file-creator@5
         inputs:
           fileoverwrite: true
           skipempty: true
-          filepath: "./Decsys/version.txt"
+          filepath: $(Build.ArtifactStagingDirectory)/version.txt
           filecontent: |-
             Build=$(Build.BuildNumber)
-            Client App=$(pkg_version)
+            Client App=$(clientVersion)
+      - task: PublishPipelineArtifact@0
+        displayName: Publish version file
+        inputs:
+          artifactName: version
+          targetPath: $(Build.ArtifactStagingDirectory)
+    
+    # ---
+    # Build Docs
+    # ---
+    - job: docs
+      displayName: Build the Docs
+      pool:
+        vmImage: Ubuntu-16.04
 
-      # fetch shipping Response Components
-      - task: DownloadGitHubRelease@0
-        displayName: "Fetch Latest Ellipse"
+      steps:
+      - script: >
+          docker run --rm
+          -v $(System.DefaultWorkingDirectory):/docs
+          -v $(Build.ArtifactStagingDirectory):/docs-out
+          squidfunk/mkdocs-material
+          build -c -s -v -d /docs-out
+      - task: PublishPipelineArtifact@0
+        displayName: Publish docs
         inputs:
-          connection: "decsys-pipelines"
-          userRepository: "decsys/ellipse-component"
-          downloadPath: "./Decsys/components/"
-      - task: DownloadGitHubRelease@0
-        displayName: "Fetch Latest Likert"
-        inputs:
-          connection: "decsys-pipelines"
-          userRepository: "decsys/likert-component"
-          downloadPath: "./Decsys/components/"
-      - task: DownloadGitHubRelease@0
-        displayName: "Fetch Latest FreeText"
-        inputs:
-          connection: "decsys-pipelines"
-          userRepository: "decsys/freetext-component"
-          downloadPath: "./Decsys/components/"
-      - task: DownloadGitHubRelease@0
-        displayName: "Fetch Latest Confirmation"
-        inputs:
-          connection: "decsys-pipelines"
-          userRepository: "decsys/confirmation-component"
-          downloadPath: "./Decsys/components/"
+          artifactName: docs
+          targetPath: $(Build.ArtifactStagingDirectory)
+    
+    # ---
+    # Fetch Shipping Response Components
+    # ---
+    - job: fetch_components
+      displayName: Fetch Shipping components
+      pool:
+        vmImage: Ubuntu-16.04
 
-      # Build the ClientApp
+      steps:
+      - checkout: none
+      - task: DownloadGitHubRelease@0
+        displayName: Fetch Latest Ellipse
+        inputs:
+          connection: decsys-pipelines
+          userRepository: decsys/ellipse-component
+          downloadPath: $(Build.ArtifactStagingDirectory)
+      - task: DownloadGitHubRelease@0
+        displayName: Fetch Latest Likert
+        inputs:
+          connection: decsys-pipelines
+          userRepository: decsys/likert-component
+          downloadPath: $(Build.ArtifactStagingDirectory)
+      - task: DownloadGitHubRelease@0
+        displayName: Fetch Latest FreeText
+        inputs:
+          connection: decsys-pipelines
+          userRepository: decsys/freetext-component
+          downloadPath: $(Build.ArtifactStagingDirectory)
+      - task: DownloadGitHubRelease@0
+        displayName: Fetch Latest Confirmation
+        inputs:
+          connection: decsys-pipelines
+          userRepository: decsys/confirmation-component
+          downloadPath: $(Build.ArtifactStagingDirectory)
+      - task: PublishPipelineArtifact@0
+        displayName: Publish components
+        inputs:
+          artifactName: components
+          targetPath: $(Build.ArtifactStagingDirectory)
+
+    # ---
+    # Build the Client App
+    # ---
+    - job: clientapp
+      displayName: Build the Client App
+      pool:
+        vmImage: Ubuntu-16.04
+
+      variables:
+        baseDir: ./Decsys/ClientApp
+
+      steps:
       - task: Npm@1
-        displayName: "npm ci"
+        displayName: npm ci
         inputs:
-          command: "custom"
-          workingDir: "./Decsys/ClientApp"
-          customCommand: "ci"
+          command: custom
+          workingDir: $(baseDir)
+          customCommand: ci
       - task: Npm@1
-        displayName: "npm run build"
+        displayName: npm run build
         inputs:
-          command: "custom"
-          workingDir: "./Decsys/ClientApp"
-          customCommand: "run build"
+          command: custom
+          workingDir: $(baseDir)
+          customCommand: run build
+      - task: PublishPipelineArtifact@0
+        displayName: Publish Client App
+        inputs:
+          artifactName: clientapp
+          targetPath: $(baseDir)/build
 
-      # Publish the dotnet app for different targets
+    # ---
+    # Build the dotnet app as a gate only
+    # 
+    # We don't use the output from this build
+    # but it may as well happen in parallel so we fail fast
+    # ---
+    - job: dotnet
+      displayName: Build the dotnet app
+      pool:
+        vmImage: Ubuntu-16.04
+      
+      steps:
       - task: DotNetCoreCLI@2
-        displayName: "dotnet publish"
+        displayName: dotnet build
         inputs:
-          command: "publish"
+          command: build
+          projects: "**/*.csproj"
+          arguments: -c $(buildConfiguration)
+
+# ---
+# Prepare for a release by collating all the previous artifacts
+# and then publishing the project for all targets
+# ---
+- stage: prepare_release
+  displayName: Prepare for Release
+  jobs:
+
+    # ---
+    # Prepare the source for publishing actual distributable binaries
+    #
+    # This consists of bringing down the build artifact
+    # and collating them correctly in the working directory
+    # so we only have to do this once regardless of publish targets.
+    # ---
+    - job: collate
+      displayName: Collate build artifacts
+      pool:
+        vmImage: Ubuntu-16.04
+
+      variables:
+        appRoot: $(System.DefaultWorkingDirectory)/Decsys
+
+      steps:
+      - task: DownloadPipelineArtifact@1
+        displayName: Fetch components
+        inputs:
+          artifactName: components
+          downloadPath: $(appRoot)/components
+      - task: DownloadPipelineArtifact@1
+        displayName: Fetch version file
+        inputs:
+          artifactName: version
+          downloadPath: $(appRoot)
+      - task: DownloadPipelineArtifact@1
+        displayName: Fetch Client App
+        inputs:
+          artifactName: clientapp
+          downloadPath: $(appRoot)/ClientApp/build
+      - task: DownloadPipelineArtifact@1
+        displayName: Fetch docs
+        inputs:
+          artifactName: docs
+          downloadPath: $(appRoot)/wwwroot/docs
+      - task: PublishPipelineArtifact@0
+        displayName: Publish collated parts
+        inputs:
+          artifactName: prepublish
+          targetPath: ./Decsys
+      - task: PublishPipelineArtifact@0
+        displayName: Publish bootstrap scripts
+        inputs:
+          artifactName: scripts
+          targetPath: ./scripts
+
+    # ---
+    # Publish the dotnet app for multiple targets
+    # ---
+    - job: publish_dotnet
+      displayName: Publish Dotnet Binaries
+      pool:
+        vmImage: Ubuntu-16.04
+      dependsOn: collate
+
+      strategy:
+        maxParallel: 2
+        matrix:
+          dotnet:
+            name: dotnet
+            argTargetRuntime: ""
+          win64:
+            name: win-x64
+            argTargetRuntime: -r win-x64
+
+      steps:
+      - checkout: none
+      - task: DownloadPipelineArtifact@1
+        displayName: Fetch Prepublish Artifact
+        inputs:
+          artifactName: prepublish
+          downloadPath: $(System.DefaultWorkingDirectory)/Decsys
+      - task: DownloadPipelineArtifact@1
+        displayName: Fetch Scripts
+        inputs:
+          artifactName: scripts
+          downloadPath: $(System.DefaultWorkingDirectory)/scripts
+      - task: DotNetCoreCLI@2
+        displayName: "dotnet publish (target: $(name))"
+        inputs:
+          command: publish
           publishWebProjects: false
           projects: "**/*.csproj"
           arguments: >
             -c $(buildConfiguration) 
-            -o $(Build.ArtifactStagingDirectory)/dotnet
+            -o $(Build.ArtifactStagingDirectory)
+            $(argTargetRuntime)
           zipAfterPublish: false
-      - task: DotNetCoreCLI@2
-        displayName: "dotnet publish win-x64"
-        inputs:
-          command: "publish"
-          publishWebProjects: false
-          projects: "**/*.csproj"
-          arguments: >
-            -c $(buildConfiguration) 
-            -o $(Build.ArtifactStagingDirectory)/win-x64 
-            -r win-x64
-          zipAfterPublish: false
-
-      # Package the releases
-
-      # dotnet
       - task: CopyFiles@2
-        displayName: "Copy dotnet bootstrap scripts"
+        displayName: Copy dotnet bootstrap scripts
         inputs:
-          SourceFolder: "./scripts/dotnet"
-          TargetFolder: "$(Build.ArtifactStagingDirectory)/dotnet"
+          SourceFolder: $(System.DefaultWorkingDirectory)/scripts/$(name)
+          TargetFolder: $(Build.ArtifactStagingDirectory)
       - task: PublishPipelineArtifact@0
-        displayName: "Publish dotnet artifact"
+        displayName: Publish $(name) artifact
         inputs:
-          artifactName: "dotnet"
-          targetPath: "$(Build.ArtifactStagingDirectory)/dotnet"
+          artifactName: $(name)
+          targetPath: $(Build.ArtifactStagingDirectory)
 
-      # win-x64
-      - task: CopyFiles@2
-        displayName: "Copy win-x64 bootstrap scripts"
+# ---
+# Release to GitHub
+# ---
+- stage: release_github
+  displayName: Draft Github Release
+  jobs:
+    # ---
+    # Load Metadata
+    # ---
+    - job: load_metadata
+      displayName: Load Metadata
+      pool:
+        vmImage: Ubuntu-16.04
+
+      steps:
+      # load metadata from project files
+      - task: LoadXmlVariables@1
+        displayName: Load .csproj data
         inputs:
-          SourceFolder: "./scripts/win-x64"
-          TargetFolder: "$(Build.ArtifactStagingDirectory)/win-x64"
-      - task: PublishPipelineArtifact@0
-        displayName: "Publish win-x64 artifact"
-        inputs:
-          artifactName: "win-x64"
-          targetPath: "$(Build.ArtifactStagingDirectory)/win-x64"
+          XmlSource: ./Decsys/Decsys.csproj
+          VariablePrefix: csproj
+      # set variables for use elsewhere
+      - script: echo '##vso[task.setvariable variable=apiVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
+        name: setApiVersion
 
-  - deployment: release
-    pool:
-      vmImage: "Ubuntu-16.04"
+    - deployment: github
+      pool:
+        vmImage: "Ubuntu-16.04"
 
-    dependsOn: "build"
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      dependsOn: load_metadata
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
-    environment: github
+      environment: github
 
-    variables:
-      buildVersion: $[ dependencies.build.outputs['setBuildVersion.buildVersion'] ]
+      variables:
+        buildVersion: $[ dependencies.load_metadata.outputs['setApiVersion.apiVersion'] ]
 
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            # artifact acquisition
-            - task: DownloadPipelineArtifact@1
-              displayName: "Fetch dotnet artifact"
-              inputs:
-                artifactName: "dotnet"
-                downloadPath: "$(System.ArtifactsDirectory)/dotnet"
-            - task: DownloadPipelineArtifact@1
-              displayName: "Fetch win-x64 artifact"
-              inputs:
-                artifactName: "win-x64"
-                downloadPath: "$(System.ArtifactsDirectory)/win-x64"
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              # artifact acquisition
+              - task: DownloadPipelineArtifact@1
+                displayName: "Fetch dotnet artifact"
+                inputs:
+                  artifactName: "dotnet"
+                  downloadPath: "$(System.ArtifactsDirectory)/dotnet"
+              - task: DownloadPipelineArtifact@1
+                displayName: "Fetch win-x64 artifact"
+                inputs:
+                  artifactName: "win-x64"
+                  downloadPath: "$(System.ArtifactsDirectory)/win-x64"
 
-            # artifact archiving
-            - task: ArchiveFiles@2
-              displayName: "Zip dotnet artifact"
-              inputs:
-                rootFolderOrFile: "$(System.ArtifactsDirectory)/dotnet"
-                includeRootFolder: false
-                archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip"
-            - task: ArchiveFiles@2
-              displayName: "Zip win-x64 artifact"
-              inputs:
-                rootFolderOrFile: "$(System.ArtifactsDirectory)/win-x64"
-                includeRootFolder: false
-                archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip"
+              # artifact archiving
+              - task: ArchiveFiles@2
+                displayName: "Zip dotnet artifact"
+                inputs:
+                  rootFolderOrFile: "$(System.ArtifactsDirectory)/dotnet"
+                  includeRootFolder: false
+                  archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip"
+              - task: ArchiveFiles@2
+                displayName: "Zip win-x64 artifact"
+                inputs:
+                  rootFolderOrFile: "$(System.ArtifactsDirectory)/win-x64"
+                  includeRootFolder: false
+                  archiveFile: "$(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip"
 
-            # Publish Draft GitHub Release
-            - task: GitHubRelease@0
-              inputs:
-                gitHubConnection: "decsys-pipelines"
-                repositoryName: "decsys/decsys"
-                action: "create"
-                tagSource: "manual"
-                tag: "$(buildVersion)"
-                releaseNotesSource: "input"
-                releaseNotes: "`// TODO`"
-                isDraft: true
-                assets: "$(Build.BinariesDirectory)/*.zip"
+              # Publish Draft GitHub Release
+              - task: GitHubRelease@0
+                inputs:
+                  gitHubConnection: "decsys-pipelines"
+                  repositoryName: "decsys/decsys"
+                  action: "create"
+                  tagSource: "manual"
+                  tag: "$(buildVersion)"
+                  releaseNotesSource: "input"
+                  releaseNotes: "`// TODO`"
+                  isDraft: true
+                  assets: "$(Build.BinariesDirectory)/*.zip"
