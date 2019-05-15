@@ -281,6 +281,7 @@ stages:
 # ---
 - stage: release_github
   displayName: Draft Github Release
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   jobs:
     # ---
     # Load Metadata
@@ -306,7 +307,6 @@ stages:
         vmImage: "Ubuntu-16.04"
 
       dependsOn: load_metadata
-      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
       environment: github
 
