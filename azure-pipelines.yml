@@ -222,6 +222,11 @@ stages:
         inputs:
           artifactName: scripts
           targetPath: ./scripts
+      - task: PublishPipelineArtifact@0
+        displayName: Publish licence file
+        inputs:
+          artifactName: licence
+          targetPath: ./LICENSE.md
 
     # ---
     # Publish the dotnet app for multiple targets
@@ -254,6 +259,11 @@ stages:
         inputs:
           artifactName: scripts
           downloadPath: $(System.DefaultWorkingDirectory)/scripts
+      - task: DownloadPipelineArtifact@1
+        displayName: Fetch Licence file
+        inputs:
+          artifactName: licence
+          downloadPath: $(Build.ArtifactStagingDirectory)
       - task: DotNetCoreCLI@2
         displayName: "dotnet publish (target: $(name))"
         inputs:
