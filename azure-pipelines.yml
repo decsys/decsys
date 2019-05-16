@@ -345,7 +345,7 @@ stages:
               inputs:
                 knownHostsEntry: $(githubKnownHosts)
                 sshPublicKey: $(githubPublicKey)
-                sshKeySecureFile: $(githubPrivateKey)
+                sshKeySecureFile: decsys_gh-pages
             # force push what we have to gh-pages
             - script: |
                 git remote add origin git@github.com:decsys/decsys.git
