@@ -2,7 +2,7 @@
 
 ![GitHub](https://img.shields.io/github/license/decsys/param-types.svg)
 
-# param-types
+# Param Types
 
 The DECSYS Parameter Types utilities package, used for authoring DECSYS Response Components.
 
@@ -102,7 +102,7 @@ The Platform's Component Editor uses the `param-types` type constants to avoid m
 
 This software is primarily licensed under the **GNU Affero General Public License v3.0 only** (`AGPL-3.0-only`)
 
-    DECSYS Survey Platform
+    DECSYS Param Types
     Copyright (C) 2019
 
     This program is free software: you can redistribute it and/or modify
