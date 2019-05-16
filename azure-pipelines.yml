@@ -102,35 +102,32 @@ stages:
       variables:
         appRoot: $(System.DefaultWorkingDirectory)/Decsys
       steps:
-      - download: current
-        artifact: components
-        path: $(appRoot)/components
-      - download: current
-        artifact: version
-        path: $(appRoot)
-      - download: current
-        artifact: clientapp
-        path: $(appRoot)/ClientApp/build
-      - download: current
-        artifact: docs
-        path: $(appRoot)/wwwroot/docs
-      - download: current
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          artifactName: components
+          downloadPath: $(appRoot)/components
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          artifactName: version
+          downloadPath: $(appRoot)
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          artifactName: clientapp
+          downloadPath: $(appRoot)/ClientApp/build
+      - task: DownloadPipelineArtifact@1
+        inputs:
+          artifactName: docs
+          downloadPath: $(appRoot)/wwwroot/docs
+      - upload: ./Decsys
         artifact: prepublish
-        path: ./Decsys
       - upload: ./scripts
         artifact: scripts
       - upload: ./LICENSE.md
         artifact: licence
-
-    # ---
-    # Publish the dotnet app for multiple targets
-    # ---
-    - job: publish_dotnet
-      displayName: Publish Dotnet Binaries
+    - job: Publish_Binaries
       pool:
-        vmImage: Ubuntu-16.04
-      dependsOn: collate
-
+        vmImage: ubuntu-latest
+      dependsOn: Collate_Artifacts
       strategy:
         maxParallel: 2
         matrix:
@@ -140,45 +137,29 @@ stages:
           win64:
             name: win-x64
             argTargetRuntime: -r win-x64
-
       steps:
       - checkout: none
       - task: DownloadPipelineArtifact@1
-        displayName: Fetch Prepublish Artifact
         inputs:
           artifactName: prepublish
           downloadPath: $(System.DefaultWorkingDirectory)/Decsys
       - task: DownloadPipelineArtifact@1
-        displayName: Fetch Scripts
         inputs:
           artifactName: scripts
           downloadPath: $(System.DefaultWorkingDirectory)/scripts
       - task: DownloadPipelineArtifact@1
-        displayName: Fetch Licence file
         inputs:
           artifactName: licence
           downloadPath: $(Build.ArtifactStagingDirectory)
-      - task: DotNetCoreCLI@2
-        displayName: "dotnet publish (target: $(name))"
-        inputs:
-          command: publish
-          publishWebProjects: false
-          projects: "**/*.csproj"
-          arguments: >
-            -c $(buildConfiguration) 
-            -o $(Build.ArtifactStagingDirectory)
-            $(argTargetRuntime)
-          zipAfterPublish: false
-      - task: CopyFiles@2
-        displayName: Copy dotnet bootstrap scripts
-        inputs:
-          SourceFolder: $(System.DefaultWorkingDirectory)/scripts/$(name)
-          TargetFolder: $(Build.ArtifactStagingDirectory)
-      - task: PublishPipelineArtifact@0
-        displayName: Publish $(name) artifact
-        inputs:
-          artifactName: $(name)
-          targetPath: $(Build.ArtifactStagingDirectory)
+      - script: >
+          dotnet publish
+          -c $(buildConfiguration)
+          -o $(Build.ArtifactStagingDirectory)
+          $(argTargetRuntime)
+        workingDirectory: ./Decsys
+      - script: cp $(System.DefaultWorkingDirectory)/scripts/$(name) $(Build.ArtifactStagingDirectory)
+      - upload: $(Build.ArtifactStagingDirectory)
+        artifact: $(name)
 
 # ---
 # Release to GitHub
