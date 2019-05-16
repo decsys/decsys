@@ -349,7 +349,7 @@ stages:
             # force push what we have to gh-pages
             - script: |
                 git remote add origin git@github.com:decsys/decsys.git
-                git push HEAD:gh-pages -f
+                git push origin HEAD:gh-pages -f
     # ---
     # Create a Draft GitHub Release, with assets
     # ---
