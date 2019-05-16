@@ -157,7 +157,7 @@ stages:
           -o $(Build.ArtifactStagingDirectory)
           $(argTargetRuntime)
         workingDirectory: ./Decsys
-      - script: cp $(System.DefaultWorkingDirectory)/scripts/$(name) $(Build.ArtifactStagingDirectory)
+      - bash: cp $(System.DefaultWorkingDirectory)/scripts/$(name)/* $(Build.ArtifactStagingDirectory)
       - upload: $(Build.ArtifactStagingDirectory)
         artifact: $(name)
 
