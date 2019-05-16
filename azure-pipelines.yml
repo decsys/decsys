@@ -1,234 +1,238 @@
 trigger:
   - master
 variables:
-  buildConfiguration: "Release"
+  buildConfiguration: Release
 stages:
-- stage: Build
-  jobs:
-    - job: Metadata
-      pool:
-        vmImage: ubuntu-latest
-      steps:
-      - task: LoadJsonVariables@1
-        inputs:
-          JsonSource: ./Decsys/ClientApp/package.json
-          VariablePrefix: pkg
-      - script: echo '##vso[task.setvariable variable=clientVersion;isOutput=true]$(pkg_version)'
-        name: setClientVersion
-    - job: Version_File
-      pool:
-        vmImage: ubuntu-latest
-      dependsOn: Metadata
-      variables:
-        clientVersion: $[ dependencies.Metadata.outputs['setClientVersion.clientVersion'] ]
-      steps:
-      - task: file-creator@5
-        inputs:
-          fileoverwrite: true
-          skipempty: true
-          filepath: $(Build.ArtifactStagingDirectory)/version.txt
-          filecontent: |-
-            Build=$(Build.BuildNumber)
-            Client App=$(clientVersion)
-      - upload: $(Build.ArtifactStagingDirectory)
-        artifact: version
-    - job: Docs
-      pool:
-        vmImage: ubuntu-latest
-      steps:
-      - script: >
-          docker run --rm
-          -v $(System.DefaultWorkingDirectory):/docs
-          -v $(Build.ArtifactStagingDirectory):/docs-out
-          squidfunk/mkdocs-material
-          build -c -s -v -d /docs-out
-      - upload: $(Build.ArtifactStagingDirectory)
-        artifact: docs
-    - job: Response_Components
-      pool:
-        vmImage: ubuntu-latest
-      steps:
-      - checkout: none
-      - task: DownloadGitHubRelease@0
-        inputs:
-          connection: decsys-pipelines
-          userRepository: decsys/ellipse-component
-          downloadPath: $(Build.ArtifactStagingDirectory)
-      - task: DownloadGitHubRelease@0
-        inputs:
-          connection: decsys-pipelines
-          userRepository: decsys/likert-component
-          downloadPath: $(Build.ArtifactStagingDirectory)
-      - task: DownloadGitHubRelease@0
-        inputs:
-          connection: decsys-pipelines
-          userRepository: decsys/freetext-component
-          downloadPath: $(Build.ArtifactStagingDirectory)
-      - task: DownloadGitHubRelease@0
-        inputs:
-          connection: decsys-pipelines
-          userRepository: decsys/confirmation-component
-          downloadPath: $(Build.ArtifactStagingDirectory)
-      - upload:  $(Build.ArtifactStagingDirectory)
-        artifact: components
-    - job: ClientApp
-      pool:
-        vmImage: ubuntu-latest
-      variables:
-        baseDir: ./Decsys/ClientApp
-      steps:
-      - script: npm ci
-        workingDirectory: $(baseDir)
-      - script: npm run build
-        workingDirectory: $(baseDir)
-      - upload: $(baseDir)/build
-        artifact: clientapp
-    - job: Dotnet
-      pool:
-        vmImage: ubuntu-latest
-      steps:
-      - script: dotnet build -c $(buildConfiguration)
-        workingDirectory: "Decsys"
-- stage: Prepare_Release
-  jobs:
-    - job: Collate_Artifacts
-      pool:
-        vmImage: ubuntu-latest
-      variables:
-        appRoot: $(System.DefaultWorkingDirectory)/Decsys
-      steps:
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          artifactName: components
-          downloadPath: $(appRoot)/components
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          artifactName: version
-          downloadPath: $(appRoot)
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          artifactName: clientapp
-          downloadPath: $(appRoot)/ClientApp/build
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          artifactName: docs
-          downloadPath: $(appRoot)/wwwroot/docs
-      - upload: ./Decsys
-        artifact: prepublish
-      - upload: ./scripts
-        artifact: scripts
-      - upload: ./LICENSE.md
-        artifact: licence
-    - job: Publish_Binaries
-      pool:
-        vmImage: ubuntu-latest
-      dependsOn: Collate_Artifacts
-      strategy:
-        maxParallel: 2
-        matrix:
-          dotnet:
-            name: dotnet
-            argTargetRuntime: ""
-          win64:
-            name: win-x64
-            argTargetRuntime: -r win-x64
-      steps:
-      - checkout: none
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          artifactName: prepublish
-          downloadPath: $(System.DefaultWorkingDirectory)/Decsys
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          artifactName: scripts
-          downloadPath: $(System.DefaultWorkingDirectory)/scripts
-      - task: DownloadPipelineArtifact@1
-        inputs:
-          artifactName: licence
-          downloadPath: $(Build.ArtifactStagingDirectory)
-      - script: >
-          dotnet publish
-          -c $(buildConfiguration)
-          -o $(Build.ArtifactStagingDirectory)
-          $(argTargetRuntime)
-        workingDirectory: ./Decsys
-      - bash: cp $(System.DefaultWorkingDirectory)/scripts/$(name)/* $(Build.ArtifactStagingDirectory)
-      - upload: $(Build.ArtifactStagingDirectory)
-        artifact: $(name)
-- stage: Release
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  jobs:
-    - job: Metadata
-      pool:
-        vmImage: ubuntu-latest
-      steps:
-      - task: LoadXmlVariables@1
-        inputs:
-          XmlSource: ./Decsys/Decsys.csproj
-          VariablePrefix: csproj
-      - script: echo '##vso[task.setvariable variable=apiVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
-        name: setApiVersion
-    - deployment: GitHub_Pages
-      pool:
-        vmImage: ubuntu-latest
-      environment: GitHub
-      variables:
-        - group: GitHub
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - download: current
-              artifact: docs
-            - script: |
-                git init
-                git config --local user.name "Azure Pipelines"
-                git config --local user.email "azuredevops@microsoft.com"
-                git add .
-                git commit -m "latest docs"
-              workingDirectory: $(Pipeline.Workspace)/docs
-            - task: InstallSSHKey@0
-              inputs:
-                knownHostsEntry: $(githubKnownHosts)
-                sshPublicKey: $(githubPublicKey)
-                sshKeySecureFile: decsys_gh-pages
-            - script: |
-                git remote add origin git@github.com:decsys/decsys.git
-                git push origin HEAD:gh-pages -f
-              workingDirectory: $(Pipeline.Workspace)/docs
-    - deployment: GitHub_Release_Draft
-      pool:
-        vmImage: ubuntu-latest
-      dependsOn: Metadata
-      environment: GitHub
-      variables:
-        buildVersion: $[ dependencies.Metadata.outputs['setApiVersion.apiVersion'] ]
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-            - download: current
-              artifact: dotnet
-            - download: current
-              artifact: win-x64
-            - task: ArchiveFiles@2
-              inputs:
-                rootFolderOrFile: $(Pipeline.Workspace)/dotnet
-                includeRootFolder: false
-                archiveFile: $(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip
-            - task: ArchiveFiles@2
-              inputs:
-                rootFolderOrFile: $(Pipeline.Workspace)/win-x64
-                includeRootFolder: false
-                archiveFile: $(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip
-            - task: GitHubRelease@0
-              inputs:
-                gitHubConnection: decsys-pipelines
-                repositoryName: decsys/decsys
-                action: create
-                tagSource: manual
-                tag: $(buildVersion)
-                releaseNotesSource: input
-                releaseNotes: "`// TODO`"
-                isDraft: true
-                assets: $(Build.BinariesDirectory)/*.zip
+  - stage: Build
+    jobs:
+      - job: Metadata
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: LoadJsonVariables@1
+            inputs:
+              JsonSource: ./Decsys/ClientApp/package.json
+              VariablePrefix: pkg
+          - script: >-
+              echo '##vso[task.setvariable
+              variable=clientVersion;isOutput=true]$(pkg_version)'
+            name: setClientVersion
+      - job: Version_File
+        pool:
+          vmImage: ubuntu-latest
+        dependsOn: Metadata
+        variables:
+          clientVersion: '$[ dependencies.Metadata.outputs[''setClientVersion.clientVersion''] ]'
+        steps:
+          - task: file-creator@5
+            inputs:
+              fileoverwrite: true
+              skipempty: true
+              filepath: $(Build.ArtifactStagingDirectory)/version.txt
+              filecontent: |-
+                Build=$(Build.BuildNumber)
+                Client App=$(clientVersion)
+          - upload: $(Build.ArtifactStagingDirectory)
+            artifact: version
+      - job: Docs
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - script: >
+              docker run --rm -v $(System.DefaultWorkingDirectory):/docs -v
+              $(Build.ArtifactStagingDirectory):/docs-out
+              squidfunk/mkdocs-material build -c -s -v -d /docs-out
+          - upload: $(Build.ArtifactStagingDirectory)
+            artifact: docs
+      - job: Response_Components
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - checkout: none
+          - task: DownloadGitHubRelease@0
+            inputs:
+              connection: decsys-pipelines
+              userRepository: decsys/ellipse-component
+              downloadPath: $(Build.ArtifactStagingDirectory)
+          - task: DownloadGitHubRelease@0
+            inputs:
+              connection: decsys-pipelines
+              userRepository: decsys/likert-component
+              downloadPath: $(Build.ArtifactStagingDirectory)
+          - task: DownloadGitHubRelease@0
+            inputs:
+              connection: decsys-pipelines
+              userRepository: decsys/freetext-component
+              downloadPath: $(Build.ArtifactStagingDirectory)
+          - task: DownloadGitHubRelease@0
+            inputs:
+              connection: decsys-pipelines
+              userRepository: decsys/confirmation-component
+              downloadPath: $(Build.ArtifactStagingDirectory)
+          - upload: $(Build.ArtifactStagingDirectory)
+            artifact: components
+      - job: ClientApp
+        pool:
+          vmImage: ubuntu-latest
+        variables:
+          baseDir: ./Decsys/ClientApp
+        steps:
+          - script: npm ci
+            workingDirectory: $(baseDir)
+          - script: npm run build
+            workingDirectory: $(baseDir)
+          - upload: $(baseDir)/build
+            artifact: clientapp
+      - job: Dotnet
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - script: dotnet build -c $(buildConfiguration)
+            workingDirectory: Decsys
+  - stage: Prepare_Release
+    jobs:
+      - job: Collate_Artifacts
+        pool:
+          vmImage: ubuntu-latest
+        variables:
+          appRoot: $(System.DefaultWorkingDirectory)/Decsys
+        steps:
+          - task: DownloadPipelineArtifact@1
+            inputs:
+              artifactName: components
+              downloadPath: $(appRoot)/components
+          - task: DownloadPipelineArtifact@1
+            inputs:
+              artifactName: version
+              downloadPath: $(appRoot)
+          - task: DownloadPipelineArtifact@1
+            inputs:
+              artifactName: clientapp
+              downloadPath: $(appRoot)/ClientApp/build
+          - task: DownloadPipelineArtifact@1
+            inputs:
+              artifactName: docs
+              downloadPath: $(appRoot)/wwwroot/docs
+          - upload: ./Decsys
+            artifact: prepublish
+          - upload: ./scripts
+            artifact: scripts
+          - upload: ./LICENSE.md
+            artifact: licence
+      - job: Publish_Binaries
+        pool:
+          vmImage: ubuntu-latest
+        dependsOn: Collate_Artifacts
+        strategy:
+          maxParallel: 2
+          matrix:
+            dotnet:
+              name: dotnet
+              argTargetRuntime: ''
+            win64:
+              name: win-x64
+              argTargetRuntime: '-r win-x64'
+        steps:
+          - checkout: none
+          - task: DownloadPipelineArtifact@1
+            inputs:
+              artifactName: prepublish
+              downloadPath: $(System.DefaultWorkingDirectory)/Decsys
+          - task: DownloadPipelineArtifact@1
+            inputs:
+              artifactName: scripts
+              downloadPath: $(System.DefaultWorkingDirectory)/scripts
+          - task: DownloadPipelineArtifact@1
+            inputs:
+              artifactName: licence
+              downloadPath: $(Build.ArtifactStagingDirectory)
+          - script: >
+              dotnet publish -c $(buildConfiguration) -o
+              $(Build.ArtifactStagingDirectory) $(argTargetRuntime)
+            workingDirectory: ./Decsys
+          - bash: >-
+              cp $(System.DefaultWorkingDirectory)/scripts/$(name)/*
+              $(Build.ArtifactStagingDirectory)
+          - upload: $(Build.ArtifactStagingDirectory)
+            artifact: $(name)
+  - stage: Release
+    condition: 'and(succeeded(), eq(variables[''Build.SourceBranch''], ''refs/heads/master''))'
+    jobs:
+      - job: Metadata
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - task: LoadXmlVariables@1
+            inputs:
+              XmlSource: ./Decsys/Decsys.csproj
+              VariablePrefix: csproj
+          - script: >-
+              echo '##vso[task.setvariable
+              variable=apiVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
+            name: setApiVersion
+      - deployment: GitHub_Pages
+        pool:
+          vmImage: ubuntu-latest
+        environment: GitHub
+        variables:
+          - group: GitHub
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: docs
+                - script: |
+                    git init
+                    git config --local user.name "Azure Pipelines"
+                    git config --local user.email "azuredevops@microsoft.com"
+                    git add .
+                    git commit -m "latest docs"
+                  workingDirectory: $(Pipeline.Workspace)/docs
+                - task: InstallSSHKey@0
+                  inputs:
+                    knownHostsEntry: $(githubKnownHosts)
+                    sshPublicKey: $(githubPublicKey)
+                    sshKeySecureFile: decsys_gh-pages
+                - script: |
+                    git remote add origin git@github.com:decsys/decsys.git
+                    git push origin HEAD:gh-pages -f
+                  workingDirectory: $(Pipeline.Workspace)/docs
+      - deployment: GitHub_Release_Draft
+        pool:
+          vmImage: ubuntu-latest
+        dependsOn: Metadata
+        environment: GitHub
+        variables:
+          buildVersion: '$[ dependencies.Metadata.outputs[''setApiVersion.apiVersion''] ]'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: dotnet
+                - download: current
+                  artifact: win-x64
+                - task: ArchiveFiles@2
+                  inputs:
+                    rootFolderOrFile: $(Pipeline.Workspace)/dotnet
+                    includeRootFolder: false
+                    archiveFile: >-
+                      $(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip
+                - task: ArchiveFiles@2
+                  inputs:
+                    rootFolderOrFile: $(Pipeline.Workspace)/win-x64
+                    includeRootFolder: false
+                    archiveFile: >-
+                      $(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip
+                - task: GitHubRelease@0
+                  inputs:
+                    gitHubConnection: decsys-pipelines
+                    repositoryName: decsys/decsys
+                    action: create
+                    tagSource: manual
+                    tag: $(buildVersion)
+                    releaseNotesSource: input
+                    releaseNotes: '`// TODO`'
+                    isDraft: true
+                    assets: $(Build.BinariesDirectory)/*.zip
