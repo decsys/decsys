@@ -333,15 +333,23 @@ stages:
               inputs:
                 artifactName: docs
                 downloadPath: $(System.DefaultWorkingDirectory)
-            - task: GitHubPagesPublish@1
+            # commit the docs to a fresh git repo
+            - script: |
+                git init
+                git config --local user.name "Azure Pipelines"
+                git config --local user.email "azuredevops@microsoft.com"
+                git add .
+                git commit -m "latest docs"
+            # get the ssh key we'll use to push
+            - task: InstallSSHKey@0
               inputs:
-                docPath: $(System.DefaultWorkingDirectory)
-                githubusername: beforan
-                githubaccesstoken: $(githubPat)
-                repositoryname: decsys/decsys
-                branchname: gh-pages
-                commitmessage: Automated Release $(Release.ReleaseId)
-
+                knownHostsEntry: $(githubKnownHosts)
+                sshPublicKey: $(githubPublicKey)
+                sshKeySecureFile: $(githubPrivateKey)
+            # force push what we have to gh-pages
+            - script: |
+                git remote add origin git@github.com:decsys/decsys.git
+                git push HEAD:gh-pages -f
     # ---
     # Create a Draft GitHub Release, with assets
     # ---
