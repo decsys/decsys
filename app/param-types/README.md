@@ -1,6 +1,10 @@
+[![NPM](https://nodeico.herokuapp.com/@types/jquery.svg)](https://npmjs.com/package/@decsys/param-types)
+
+![GitHub](https://img.shields.io/github/license/decsys/param-types.svg)
+
 # param-types
 
-The Parameter Types utilities package for DECSYS Components
+The DECSYS Parameter Types utilities package, used for authoring DECSYS Response Components.
 
 # Installation
 
