@@ -318,7 +318,7 @@ stages:
     - deployment: github_pages
       displayName: Deploy Docs to GitHub Pages
       pool:
-        vmImage: win1803
+        vmImage: Ubuntu-16.04
 
       environment: github
 
