@@ -156,7 +156,7 @@ stages:
       - upload: $(Build.ArtifactStagingDirectory)
         artifact: $(name)
 - stage: Release
-  # condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   jobs:
     - job: Metadata
       pool:
@@ -172,8 +172,6 @@ stages:
       pool:
         vmImage: ubuntu-latest
       environment: GitHub
-      variables:
-        - group: decsys_gh-pages
       strategy:
         runOnce:
           deploy:
