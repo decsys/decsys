@@ -173,7 +173,7 @@ stages:
         vmImage: ubuntu-latest
       environment: GitHub
       variables:
-        - group: decsys_gh-pages
+        - group: GitHub
       strategy:
         runOnce:
           deploy:
