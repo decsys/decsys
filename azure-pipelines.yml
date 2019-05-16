@@ -322,6 +322,9 @@ stages:
 
       environment: github
 
+      variables:
+        - group: decsys_gh-pages
+
       strategy:
         runOnce:
           deploy:
