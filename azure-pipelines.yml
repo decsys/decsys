@@ -172,6 +172,8 @@ stages:
       pool:
         vmImage: ubuntu-latest
       environment: GitHub
+      variables:
+        - group: decsys_gh-pages
       strategy:
         runOnce:
           deploy:
