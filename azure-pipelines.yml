@@ -1,48 +1,27 @@
 trigger:
   - master
-
 variables:
   buildConfiguration: "Release"
-
 stages:
-# ---
-# Build as much as we can in parallel first
-# ---
-- stage: build
-  displayName: Build
+- stage: Build
   jobs:
-    
-    # ---
-    # Load Metadata
-    # ---
-    - job: load_metadata
-      displayName: Load Metadata
+    - job: Load_Metadata
       pool:
-        vmImage: Ubuntu-16.04
-
+        vmImage: ubuntu-latest
       steps:
-      # load metadata from project files
       - task: LoadJsonVariables@1
         displayName: Load package.json data
         inputs:
           JsonSource: ./Decsys/ClientApp/package.json
           VariablePrefix: pkg
-      # set variables for use elsewhere
       - script: echo '##vso[task.setvariable variable=clientVersion;isOutput=true]$(pkg_version)'
         name: setClientVersion
-
-    # ---
-    # Create Version file
-    # ---
-    - job: version_file
-      displayName: Create Version file
+    - job: Version_File
       pool:
-        vmImage: Ubuntu-16.04
-      dependsOn: load_metadata
-
+        vmImage: ubuntu-latest
+      dependsOn: Load_Metadata
       variables:
         clientVersion: $[ dependencies.load_metadata.outputs['setClientVersion.clientVersion'] ]
-
       steps:
       - task: file-creator@5
         inputs:
@@ -52,20 +31,11 @@ stages:
           filecontent: |-
             Build=$(Build.BuildNumber)
             Client App=$(clientVersion)
-      - task: PublishPipelineArtifact@0
-        displayName: Publish version file
-        inputs:
-          artifactName: version
-          targetPath: $(Build.ArtifactStagingDirectory)
-    
-    # ---
-    # Build Docs
-    # ---
-    - job: docs
-      displayName: Build the Docs
+      - upload: $(Build.ArtifactStagingDirectory)
+        artifact: version
+    - job: Docs
       pool:
-        vmImage: Ubuntu-16.04
-
+        vmImage: ubuntu-latest
       steps:
       - script: >
           docker run --rm
@@ -73,20 +43,11 @@ stages:
           -v $(Build.ArtifactStagingDirectory):/docs-out
           squidfunk/mkdocs-material
           build -c -s -v -d /docs-out
-      - task: PublishPipelineArtifact@0
-        displayName: Publish docs
-        inputs:
-          artifactName: docs
-          targetPath: $(Build.ArtifactStagingDirectory)
-    
-    # ---
-    # Fetch Shipping Response Components
-    # ---
-    - job: fetch_components
-      displayName: Fetch Shipping components
+      - upload: $(Build.ArtifactStagingDirectory)
+        artifact: docs
+    - job: Response_Components
       pool:
-        vmImage: Ubuntu-16.04
-
+        vmImage: ubuntu-latest
       steps:
       - checkout: none
       - task: DownloadGitHubRelease@0
@@ -113,60 +74,26 @@ stages:
           connection: decsys-pipelines
           userRepository: decsys/confirmation-component
           downloadPath: $(Build.ArtifactStagingDirectory)
-      - task: PublishPipelineArtifact@0
-        displayName: Publish components
-        inputs:
-          artifactName: components
-          targetPath: $(Build.ArtifactStagingDirectory)
-
-    # ---
-    # Build the Client App
-    # ---
-    - job: clientapp
-      displayName: Build the Client App
+      - upload:  $(Build.ArtifactStagingDirectory)
+        artifact: components
+    - job: ClientApp
       pool:
-        vmImage: Ubuntu-16.04
-
+        vmImage: ubuntu-latest
       variables:
         baseDir: ./Decsys/ClientApp
-
       steps:
-      - task: Npm@1
-        displayName: npm ci
-        inputs:
-          command: custom
-          workingDir: $(baseDir)
-          customCommand: ci
-      - task: Npm@1
-        displayName: npm run build
-        inputs:
-          command: custom
-          workingDir: $(baseDir)
-          customCommand: run build
-      - task: PublishPipelineArtifact@0
-        displayName: Publish Client App
-        inputs:
-          artifactName: clientapp
-          targetPath: $(baseDir)/build
-
-    # ---
-    # Build the dotnet app as a gate only
-    # 
-    # We don't use the output from this build
-    # but it may as well happen in parallel so we fail fast
-    # ---
-    - job: dotnet
-      displayName: Build the dotnet app
+      - script: npm ci
+        workingDirectory: $(baseDir)
+      - script: npm run build
+        workingDirectory: $(baseDir)
+      - upload: $(baseDir)/build
+        artifact: clientapp
+    - job: Dotnet
       pool:
-        vmImage: Ubuntu-16.04
-      
+        vmImage: ubuntu-latest
       steps:
-      - task: DotNetCoreCLI@2
-        displayName: dotnet build
-        inputs:
-          command: build
-          projects: "**/*.csproj"
-          arguments: -c $(buildConfiguration)
+      - script: dotnet build -c $(buildConfiguration)
+        workingDirectory: "Decsys"
 
 # ---
 # Prepare for a release by collating all the previous artifacts
