@@ -1,4 +1,4 @@
-[![NPM](https://nodeico.herokuapp.com/@types/jquery.svg)](https://npmjs.com/package/@decsys/param-types)
+[![NPM](https://nodeico.herokuapp.com/@decsys/param-types.svg)](https://npmjs.com/package/@decsys/param-types)
 
 ![GitHub](https://img.shields.io/github/license/decsys/param-types.svg)
 
