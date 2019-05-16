@@ -1,6 +1,6 @@
 {
   "name": "@decsys/param-types",
-  "version": "0.3.1",
+  "version": "1.0.0-beta.1",
   "description": "The Parameter Types utilities package for DECSYS Components",
   "publishConfig": {
     "access": "public"
@@ -8,7 +8,7 @@
   "main": "index.js",
   "module": "index.js",
   "author": "Jonathan Couldridge <jon@jon.gg>",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/decsys/param-types.git"
