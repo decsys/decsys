@@ -180,13 +180,13 @@ stages:
             steps:
             - download: current
               artifact: docs
-              path: $(System.DefaultWorkingDirectory)
             - script: |
                 git init
                 git config --local user.name "Azure Pipelines"
                 git config --local user.email "azuredevops@microsoft.com"
                 git add .
                 git commit -m "latest docs"
+              workingDirectory: $(Pipeline.Workspace)/docs
             - task: InstallSSHKey@0
               inputs:
                 knownHostsEntry: $(githubKnownHosts)
@@ -195,6 +195,7 @@ stages:
             - script: |
                 git remote add origin git@github.com:decsys/decsys.git
                 git push origin HEAD:gh-pages -f
+              workingDirectory: $(Pipeline.Workspace)/docs
     - deployment: GitHub_Release_Draft
       pool:
         vmImage: ubuntu-latest
@@ -208,18 +209,16 @@ stages:
             steps:
             - download: current
               artifact: dotnet
-              path: $(System.ArtifactsDirectory)/dotnet
             - download: current
               artifact: win-x64
-              path: $(System.ArtifactsDirectory)/win-x64
             - task: ArchiveFiles@2
               inputs:
-                rootFolderOrFile: $(System.ArtifactsDirectory)/dotnet
+                rootFolderOrFile: $(Pipeline.Workspace)/dotnet
                 includeRootFolder: false
                 archiveFile: $(Build.BinariesDirectory)/Decsys_$(buildVersion)_dotnet-2.2.zip
             - task: ArchiveFiles@2
               inputs:
-                rootFolderOrFile: $(System.ArtifactsDirectory)/win-x64
+                rootFolderOrFile: $(Pipeline.Workspace)/win-x64
                 includeRootFolder: false
                 archiveFile: $(Build.BinariesDirectory)/Decsys_$(buildVersion)_win-x64.zip
             - task: GitHubRelease@0
