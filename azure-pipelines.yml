@@ -94,66 +94,33 @@ stages:
       steps:
       - script: dotnet build -c $(buildConfiguration)
         workingDirectory: "Decsys"
-
-# ---
-# Prepare for a release by collating all the previous artifacts
-# and then publishing the project for all targets
-# ---
-- stage: prepare_release
-  displayName: Prepare for Release
+- stage: Prepare_Release
   jobs:
-
-    # ---
-    # Prepare the source for publishing actual distributable binaries
-    #
-    # This consists of bringing down the build artifact
-    # and collating them correctly in the working directory
-    # so we only have to do this once regardless of publish targets.
-    # ---
-    - job: collate
-      displayName: Collate build artifacts
+    - job: Collate_Artifacts
       pool:
-        vmImage: Ubuntu-16.04
-
+        vmImage: ubuntu-latest
       variables:
         appRoot: $(System.DefaultWorkingDirectory)/Decsys
-
       steps:
-      - task: DownloadPipelineArtifact@1
-        displayName: Fetch components
-        inputs:
-          artifactName: components
-          downloadPath: $(appRoot)/components
-      - task: DownloadPipelineArtifact@1
-        displayName: Fetch version file
-        inputs:
-          artifactName: version
-          downloadPath: $(appRoot)
-      - task: DownloadPipelineArtifact@1
-        displayName: Fetch Client App
-        inputs:
-          artifactName: clientapp
-          downloadPath: $(appRoot)/ClientApp/build
-      - task: DownloadPipelineArtifact@1
-        displayName: Fetch docs
-        inputs:
-          artifactName: docs
-          downloadPath: $(appRoot)/wwwroot/docs
-      - task: PublishPipelineArtifact@0
-        displayName: Publish collated parts
-        inputs:
-          artifactName: prepublish
-          targetPath: ./Decsys
-      - task: PublishPipelineArtifact@0
-        displayName: Publish bootstrap scripts
-        inputs:
-          artifactName: scripts
-          targetPath: ./scripts
-      - task: PublishPipelineArtifact@0
-        displayName: Publish licence file
-        inputs:
-          artifactName: licence
-          targetPath: ./LICENSE.md
+      - download: current
+        artifact: components
+        path: $(appRoot)/components
+      - download: current
+        artifact: version
+        path: $(appRoot)
+      - download: current
+        artifact: clientapp
+        path: $(appRoot)/ClientApp/build
+      - download: current
+        artifact: docs
+        path: $(appRoot)/wwwroot/docs
+      - download: current
+        artifact: prepublish
+        path: ./Decsys
+      - upload: ./scripts
+        artifact: scripts
+      - upload: ./LICENSE.md
+        artifact: licence
 
     # ---
     # Publish the dotnet app for multiple targets
