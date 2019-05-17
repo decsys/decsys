@@ -1,0 +1,73 @@
+trigger:
+  - master
+stages:
+  - stage: Build
+    jobs:
+      - job: Source
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - script: npm ci
+          - script: npm run build
+          - upload: dist
+      - job: Docs
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - script: npm ci
+          - script: npm run docs
+          - upload: docs
+            artifact: docs
+  - stage: Deploy
+    condition: 'and(succeeded(), eq(variables[''Build.SourceBranch''], ''refs/heads/master''))'
+    jobs:
+      - deployment: Docs
+        environment: GitHub
+        pool:
+          vmImage: ubuntu-latest
+        variables:
+          - group: GitHub
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: docs
+                - script: |
+                    git init
+                    git config --local user.name "Azure Pipelines"
+                    git config --local user.email "azuredevops@microsoft.com"
+                    git add .
+                    git commit -m "latest docs"
+                  workingDirectory: $(Pipeline.Workspace)/docs
+                - task: InstallSSHKey@0
+                  inputs:
+                    knownHostsEntry: $(githubKnownHosts)
+                    sshPublicKey: $(githubPublicKey)
+                    sshKeySecureFile: rating-scales_gh-pages
+                - script: >
+                    git remote add origin
+                    git@github.com:decsys/rating-scales.git
+
+                    git push origin HEAD:gh-pages -f
+                  workingDirectory: $(Pipeline.Workspace)/docs
+      - deployment: npm
+        environment: GitHub
+        pool:
+          vmImage: ubuntu-latest
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                - download: current
+                  artifact: drop
+                - bash: >
+                    mkdir -p $(System.DefaultWorkingDirectory)/dist &&
+
+                    cp $(Pipeline.Workspace)/drop/*
+                    $(System.DefaultWorkingDirectory)/dist
+                - task: Npm@1
+                  inputs:
+                    command: publish
+                    publishEndpoint: npmjs
