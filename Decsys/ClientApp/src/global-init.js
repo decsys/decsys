@@ -12,6 +12,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
+import * as Victory from "victory";
 
 const setGlobals = () => {
   window.__DECSYS__ = {}; // Register our global namespace
@@ -22,6 +23,7 @@ const setGlobals = () => {
   window.React = React;
   window.ReactDOM = ReactDOM;
   window.PropTypes = PropTypes;
+  window.Victory = Victory;
   // TODO: we should put param-types here - all DECSYS components will use it, save them all bundling it
 
   // Styled doesn't put all its named exports on the default :(

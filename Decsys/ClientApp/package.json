@@ -20,7 +20,8 @@
     "react-table": "^6.9.2",
     "styled-components": "^4.2.0",
     "styled-css-grid": "^1.2.1",
-    "styled-icons": "^7.9.0"
+    "styled-icons": "^7.9.0",
+    "victory": "^32.2.3"
   },
   "scripts": {
     "start": "react-scripts start",
