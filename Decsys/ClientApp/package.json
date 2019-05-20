@@ -6,6 +6,7 @@
     "@decsys/param-types": "^0.3.1",
     "@smooth-ui/core-sc": "^9.1.0",
     "axios": "^0.18.0",
+    "downloadjs": "^1.4.7",
     "gfycat-style-urls": "^1.0.3",
     "navi": "^0.12.4",
     "prop-types": "^15.7.2",

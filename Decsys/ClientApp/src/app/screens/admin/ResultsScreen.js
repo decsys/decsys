@@ -11,7 +11,7 @@ import * as api from "../../api";
 import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
 import { exportDateFormat as formatDate } from "../../utils/date-formats";
-import { downloadFile } from "../../services/export";
+import download from "downloadjs";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {
@@ -25,6 +25,8 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
   const [instances] = useState(
     initialInstances.sort((a, b) => a.published - b.published)
   );
+
+  const exportMime = "application/json";
 
   const [currentInstance, setCurrentInstance] = useState(instances[0]);
 
@@ -41,13 +43,18 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     fetch();
   }, [currentInstance]);
 
-  const handleExportSummaryClick = () =>
-    downloadFile(
-      [JSON.stringify(results)],
+  const handleExportSummaryClick = () => {
+    const file = new Blob([JSON.stringify(results)], {
+      type: exportMime
+    });
+    download(
+      file,
       `${survey.name}_Instance-${formatDate(
         Date.parse(currentInstance.published)
-      )}_${formatDate(Date.parse(results.generated))}`
+      )}_${formatDate(Date.parse(results.generated))}.json`,
+      exportMime
     );
+  };
 
   const handleExportFullClick = async () => {
     const { data } = await api.getInstanceResultsFull(
@@ -55,11 +62,16 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
       currentInstance.id
     );
 
-    downloadFile(
-      [JSON.stringify(data)],
+    const file = new Blob([JSON.stringify(data)], {
+      type: exportMime
+    });
+
+    download(
+      file,
       `${survey.name}_Instance-${formatDate(
         Date.parse(currentInstance.published)
-      )}_${formatDate(Date.parse(results.generated))}`
+      )}_${formatDate(Date.parse(results.generated))}.json`,
+      exportMime
     );
   };
 
