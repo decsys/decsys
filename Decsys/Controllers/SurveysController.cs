@@ -139,17 +139,29 @@ namespace Decsys.Controllers
 
         [HttpPost("import")]
         public async Task<ActionResult<int>> Import(
-            [SwaggerParameter("The actual image file")]
+            [SwaggerParameter("The survey export file")]
             IFormFile file)
         {
             Survey survey = null;
+            var images = new List<(string filename, byte[] data)>();
             using (var stream = new MemoryStream())
             {
-                await file.CopyToAsync(stream);
+                await file.CopyToAsync(stream).ConfigureAwait(false);
                 var zip = new ZipArchive(stream);
                 foreach (var entry in zip.Entries)
                 {
-                    //if (entry.FullName.StartsWith("images/"))
+                    if (entry.FullName.StartsWith("images/"))
+                    {
+                        byte[] bytes;
+                        using (var ms = new MemoryStream())
+                        {
+                            entry.Open().CopyTo(ms);
+                            bytes = ms.ToArray();
+                        }
+                        images.Add((entry.FullName.Replace("images/", string.Empty), bytes));
+                    }
+
+
                     if (entry.FullName == "structure.json")
                     {
                         using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
@@ -161,21 +173,7 @@ namespace Decsys.Controllers
             if (survey is null)
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
-            var id = _surveys.Import(survey);
-
-            //await _images.WriteFile(id, componentId, fileData);
-
-            //try
-            //{
-            //    _components.MergeParams(id, pageId, componentId,
-            //        JObject.Parse($@"{{""extension"": ""{fileData.extension}""}}"));
-            //}
-            //catch (KeyNotFoundException e)
-            //{
-            //    return NotFound(e.Message);
-            //}
-
-            return id;
+            return await _surveys.Import(survey, images);
         }
     }
 }

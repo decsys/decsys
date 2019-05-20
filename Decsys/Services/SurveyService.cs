@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Decsys.Data;
 using Decsys.Data.Entities;
@@ -88,16 +89,17 @@ namespace Decsys.Services
         }
 
 
-        public int Import(Models.Survey survey)
+        public async Task<int> Import(Models.Survey survey, List<(string filename, byte[] data)> images)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
 
             survey.Id = 0;
-            var newId = surveys.Insert(_mapper.Map<Survey>(survey));
+            var id = surveys.Insert(_mapper.Map<Survey>(survey));
 
-            //_images.CopyAllSurveyFiles(oldId, newId);
+            if (images.Count > 0)
+                await _images.Import(id, images).ConfigureAwait(false);
 
-            return newId;
+            return id;
         }
 
         /// <summary>
