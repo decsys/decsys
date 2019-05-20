@@ -197,6 +197,8 @@ namespace Decsys.Services
             return ParticipantResultsSummary(instance, participantId);
         }
 
+
+
         private Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
         {
             var log = _db.GetCollection<ParticipantEvent>(GetCollectionName(instance.Id, participantId));
