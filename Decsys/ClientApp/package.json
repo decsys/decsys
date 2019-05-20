@@ -1,6 +1,6 @@
 {
   "name": "client-app",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "private": true,
   "dependencies": {
     "@decsys/param-types": "^0.3.1",
@@ -8,6 +8,7 @@
     "axios": "^0.18.0",
     "downloadjs": "^1.4.7",
     "gfycat-style-urls": "^1.0.3",
+    "json2csv": "^4.5.1",
     "navi": "^0.12.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",

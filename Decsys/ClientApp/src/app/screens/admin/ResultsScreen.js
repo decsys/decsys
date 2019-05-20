@@ -12,6 +12,7 @@ import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
 import { exportDateFormat as formatDate } from "../../utils/date-formats";
 import download from "downloadjs";
+import { parse } from "json2csv";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {
@@ -43,34 +44,65 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
     fetch();
   }, [currentInstance]);
 
-  const handleExportSummaryClick = () => {
-    const file = new Blob([JSON.stringify(results)], {
-      type: exportMime
+  const resultsFilename = () =>
+    `${survey.name}_Instance-${formatDate(
+      Date.parse(currentInstance.published)
+    )}_${formatDate(Date.parse(results.generated))}`;
+
+  const handleExportCsvClick = async () => {
+    //figure out all the response columns we need
+    const responseColumns = results.participants.reduce(
+      (agg, p) => {
+        const responseColumns = p.responses.map(x =>
+          Object.keys(x.response).map(r => ({
+            label: `${x.responseType}_${r}`,
+            value: `responses.response.${r}`
+          }))
+        );
+
+        responseColumns.forEach(response => {
+          response.forEach(column => {
+            if (!agg.lookup[column.value]) agg.columns.push(column);
+            agg.lookup[column.value] = true;
+          });
+        });
+        return agg;
+      },
+      { lookup: {}, columns: [] }
+    ).columns;
+    const data = parse(results.participants, {
+      fields: [
+        { label: "Participant", value: "id" },
+        { label: "Page", value: "responses.page" },
+        { label: "Order", value: "responses.order" },
+        { label: "Page Loaded", value: "responses.pageLoad" },
+        { label: "Response Type", value: "responses.responseType" },
+        { label: "Response Recorded", value: "responses.responseRecorded" },
+        ...responseColumns
+      ],
+      unwind: "responses"
     });
+    download(data, `${resultsFilename()}_Summary.csv`, exportMime);
+  };
+  const handleExportSummaryClick = () =>
     download(
-      file,
-      `${survey.name}_Instance-${formatDate(
-        Date.parse(currentInstance.published)
-      )}_${formatDate(Date.parse(results.generated))}.json`,
+      new Blob([JSON.stringify(results)], {
+        type: exportMime
+      }),
+      `${resultsFilename()}_Summary.json`,
       exportMime
     );
-  };
 
   const handleExportFullClick = async () => {
     const { data } = await api.getInstanceResultsFull(
       survey.id,
       currentInstance.id
     );
-
-    const file = new Blob([JSON.stringify(data)], {
-      type: exportMime
-    });
-
     download(
-      file,
-      `${survey.name}_Instance-${formatDate(
-        Date.parse(currentInstance.published)
-      )}_${formatDate(Date.parse(results.generated))}.json`,
+      new Blob([JSON.stringify(data)], {
+        type: exportMime
+      }),
+      `${resultsFilename()}_Full.json`,
       exportMime
     );
   };
@@ -105,6 +137,9 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
             ))}
           </Select>
           <DropdownMenuButton variant="secondary" button="Export to file...">
+            <MenuItem onClick={handleExportCsvClick}>
+              Response Summary (CSV)
+            </MenuItem>
             <MenuItem onClick={handleExportSummaryClick}>
               Response Summary (JSON)
             </MenuItem>

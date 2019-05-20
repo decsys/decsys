@@ -10,13 +10,12 @@ namespace Decsys.Mapping
     {
         public BsonDocument Convert(JObject sourceMember, ResolutionContext context)
         {
-            var ms = new MemoryStream();
+            using (var ms = new MemoryStream())
             using (BsonDataWriter writer = new BsonDataWriter(ms))
             {
                 sourceMember.WriteTo(writer);
+                return BsonSerializer.Deserialize(ms.ToArray());
             }
-
-            return BsonSerializer.Deserialize(ms.ToArray());
         }
     }
 }
