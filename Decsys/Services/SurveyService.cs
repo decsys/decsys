@@ -87,6 +87,19 @@ namespace Decsys.Services
             return newId;
         }
 
+
+        public int Import(Models.Survey survey)
+        {
+            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+
+            survey.Id = 0;
+            var newId = surveys.Insert(_mapper.Map<Survey>(survey));
+
+            //_images.CopyAllSurveyFiles(oldId, newId);
+
+            return newId;
+        }
+
         /// <summary>
         /// Attempt to delete a Survey by ID.
         /// </summary>

@@ -1,7 +1,14 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+using System.Threading.Tasks;
 using Decsys.Models;
 using Decsys.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
@@ -120,13 +127,55 @@ namespace Decsys.Controllers
         [HttpGet("{id}/export")]
         public ActionResult<byte[]> Export(int id, string type = "structure")
         {
-            switch(type)
+            switch (type)
             {
                 case "structure": return _export.Structure(id);
                 case "full": return _export.Full(id);
-                default: return BadRequest(
-                    $"Unexpected type '{type}'. Expected one of: full, structure");
+                default:
+                    return BadRequest(
+               $"Unexpected type '{type}'. Expected one of: full, structure");
             }
+        }
+
+        [HttpPost("import")]
+        public async Task<ActionResult<int>> Import(
+            [SwaggerParameter("The actual image file")]
+            IFormFile file)
+        {
+            Survey survey = null;
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+                var zip = new ZipArchive(stream);
+                foreach (var entry in zip.Entries)
+                {
+                    //if (entry.FullName.StartsWith("images/"))
+                    if (entry.FullName == "structure.json")
+                    {
+                        using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
+                            survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+                    }
+                }
+            }
+
+            if (survey is null)
+                return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
+
+            var id = _surveys.Import(survey);
+
+            //await _images.WriteFile(id, componentId, fileData);
+
+            //try
+            //{
+            //    _components.MergeParams(id, pageId, componentId,
+            //        JObject.Parse($@"{{""extension"": ""{fileData.extension}""}}"));
+            //}
+            //catch (KeyNotFoundException e)
+            //{
+            //    return NotFound(e.Message);
+            //}
+
+            return id;
         }
     }
 }
