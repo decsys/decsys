@@ -34,7 +34,7 @@ namespace Decsys.Services
 
             var path = Path.Combine(dir, filename);
 
-            using (var stream = new FileStream(path, System.IO.FileMode.Create))
+            using (var stream = File.Create(path))
             {
                 await stream.WriteAsync(file.bytes, 0, file.bytes.Length);
             }
@@ -69,8 +69,11 @@ namespace Decsys.Services
             var path = Path.Combine(
                 SurveyImagesPath(surveyId), srcId.ToString() + extension);
 
-            if (File.Exists(path)) File.Copy(path, Path.Combine(
+            if (File.Exists(path))
+            {
+                File.Copy(path, Path.Combine(
                 SurveyImagesPath(surveyId), destId.ToString() + extension));
+            }
         }
 
         public void CopyAllSurveyFiles(int oldId, int newId)
@@ -80,6 +83,20 @@ namespace Decsys.Services
             Directory.CreateDirectory(dest);
             foreach (var f in Enumerate(oldId))
                 File.Copy(f, Path.Combine(dest, Path.GetFileName(f)));
+        }
+
+        public async Task Import(int id, List<(string filename, byte[] data)> images)
+        {
+            var dest = SurveyImagesPath(id);
+
+            Directory.CreateDirectory(dest);
+            foreach (var (filename, data) in images)
+            {
+                using (var stream = File.Create(Path.Combine(dest, filename)))
+                {
+                    await stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
+                }
+            }
         }
 
         public IEnumerable<string> Enumerate(int surveyId)
