@@ -9,6 +9,12 @@ export const createSurvey = () => async (_, nav) => {
   nav.navigate(`admin/survey/${id}`);
 };
 
+export const importSurvey = file => async (_, nav) => {
+  await api.uploadSurveyImport(file);
+  // then what?
+  nav.navigate("admin"); //ugh
+};
+
 export const deleteSurvey = id => async dispatch => {
   await api.deleteSurvey(id);
   dispatch(actions.deleteSurvey(id));

@@ -43,25 +43,30 @@ export const setComponentParam = (
     }
   );
 
-export const uploadComponentImage = (surveyId, pageId, componentId, file) => {
+const uploadFile = (url, file, method = "post") => {
   const formData = new FormData();
   formData.append("file", file);
-
-  Axios.put(
-    `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/image`,
-    formData,
-    {
-      headers: {
-        "content-type": "multipart/form-data"
-      }
+  Axios[method](url, formData, {
+    headers: {
+      "content-type": "multipart/form-data"
     }
-  );
+  });
 };
+
+export const uploadComponentImage = (surveyId, pageId, componentId, file) =>
+  uploadFile(
+    `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/image`,
+    file,
+    "put"
+  );
 
 export const deleteComponentImage = (surveyId, pageId, componentId) =>
   Axios.delete(
     `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/image`
   );
+
+export const uploadSurveyImport = file =>
+  uploadFile("api/surveys/import", file);
 
 export const createSurveyPage = id => Axios.post(`/api/surveys/${id}/pages`);
 
