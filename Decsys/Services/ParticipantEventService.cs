@@ -1,13 +1,13 @@
-﻿using System;
+﻿using AutoMapper;
+using Decsys.Data;
+using Decsys.Data.Entities;
+using Decsys.Mapping;
+using LiteDB;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using AutoMapper;
-using Decsys.Data;
-using Decsys.Data.Entities;
-using LiteDB;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Decsys.Services
 {
@@ -207,11 +207,8 @@ namespace Decsys.Services
                     .OrderByDescending(x => x.Timestamp)
                     .FirstOrDefault();
 
-            var order = ((JArray)JsonConvert.DeserializeObject<dynamic>(
-                    LiteDB.JsonSerializer.Serialize(
-                        orderLog.Payload,
-                        false,
-                        false))
+            var order = ((JArray)
+                    ((dynamic)BsonJObjectConverter.Convert(orderLog.Payload))
                     .order)
                 .ToObject<IList<string>>();
 
@@ -240,11 +237,7 @@ namespace Decsys.Services
                         ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
                     Response = finalResponse is null
                         ? new JObject()
-                        : JObject.Parse(
-                            LiteDB.JsonSerializer.Serialize(
-                                finalResponse.Payload,
-                                false,
-                                false)),
+                        : BsonJObjectConverter.Convert(finalResponse.Payload),
                     Order = order.IndexOf(page.Id.ToString()) + 1
                 });
             }

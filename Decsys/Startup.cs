@@ -1,26 +1,25 @@
+using AutoMapper;
+using ClacksMiddleware.Extensions;
+using Decsys.Services;
 using LiteDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
-using Decsys.Services;
 using Microsoft.Extensions.FileProviders;
-using System.IO;
-using Microsoft.AspNetCore.StaticFiles;
-using System.Collections.Generic;
-using System.Linq;
-using System;
 using Swashbuckle.AspNetCore.Swagger;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using ClacksMiddleware.Extensions;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
 using UoN.VersionInformation.Providers;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Rewrite;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -37,7 +36,8 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
