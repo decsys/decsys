@@ -1,7 +1,14 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+using System.Threading.Tasks;
 using Decsys.Models;
 using Decsys.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
@@ -120,13 +127,53 @@ namespace Decsys.Controllers
         [HttpGet("{id}/export")]
         public ActionResult<byte[]> Export(int id, string type = "structure")
         {
-            switch(type)
+            switch (type)
             {
                 case "structure": return _export.Structure(id);
                 case "full": return _export.Full(id);
-                default: return BadRequest(
-                    $"Unexpected type '{type}'. Expected one of: full, structure");
+                default:
+                    return BadRequest(
+               $"Unexpected type '{type}'. Expected one of: full, structure");
             }
+        }
+
+        [HttpPost("import")]
+        public async Task<ActionResult<int>> Import(
+            [SwaggerParameter("The survey export file")]
+            IFormFile file)
+        {
+            Survey survey = null;
+            var images = new List<(string filename, byte[] data)>();
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream).ConfigureAwait(false);
+                var zip = new ZipArchive(stream);
+                foreach (var entry in zip.Entries)
+                {
+                    if (entry.FullName.StartsWith("images/"))
+                    {
+                        byte[] bytes;
+                        using (var ms = new MemoryStream())
+                        {
+                            entry.Open().CopyTo(ms);
+                            bytes = ms.ToArray();
+                        }
+                        images.Add((entry.FullName.Replace("images/", string.Empty), bytes));
+                    }
+
+
+                    if (entry.FullName == "structure.json")
+                    {
+                        using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
+                            survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+                    }
+                }
+            }
+
+            if (survey is null)
+                return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
+
+            return await _surveys.Import(survey, images);
         }
     }
 }

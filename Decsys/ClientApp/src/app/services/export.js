@@ -1,4 +1,5 @@
 import { exportDateFormat } from "../utils/date-formats";
+import download from "downloadjs";
 import * as api from "../api";
 
 /**
@@ -8,16 +9,7 @@ export const downloadFile = (data, filename, type = "application/json") => {
   const file = new Blob(data, {
     type
   });
-  const a = document.createElement("a"),
-    url = URL.createObjectURL(file);
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(function() {
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(url);
-  }, 0);
+  download(file, filename, type);
 };
 
 /**
@@ -65,6 +57,7 @@ export const surveyExport = (survey, type) => {
 
   (async () => {
     const { data } = await api.getSurveyExport(survey.id, type);
-    return downloadFile(b64toByteArrays(data), filename, mime);
+
+    return downloadFile(b64toByteArrays(data), `${filename}.zip`, mime);
   })();
 };

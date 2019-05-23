@@ -16,6 +16,7 @@ const SurveysScreen = ({ surveys }) => {
   const navigation = useNavigation();
 
   const handleCreateClick = () => dispatch(ducks.createSurvey());
+  const handleImportClick = file => dispatch(ducks.importSurvey(file));
 
   const surveyCardActions = {
     handleEditClick: id => navigation.navigate(`admin/survey/${id}`), // TODO: Routing state for placeholder?
@@ -31,7 +32,11 @@ const SurveysScreen = ({ surveys }) => {
 
   return (
     <SurveyCardContext.Provider value={surveyCardActions}>
-      <PureSurveysScreen surveys={state} onCreateClick={handleCreateClick} />
+      <PureSurveysScreen
+        surveys={state}
+        onCreateClick={handleCreateClick}
+        onImportClick={handleImportClick}
+      />
     </SurveyCardContext.Provider>
   );
 };
