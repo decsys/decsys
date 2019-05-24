@@ -13,18 +13,20 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import * as Victory from "victory";
+import * as math from "mathjs";
+import ReactWordCloud from "react-wordcloud";
 
 const setGlobals = () => {
   window.__DECSYS__ = {}; // Register our global namespace
 
   // React, ReactDOM and styled need to stay as single instances, so we make them global for modules
-  // Do the same with PropTypes to make components smaller - they'll all be using it and we have it
-  // so why make them bundle it everytime?
+  // We do the same with some other supporting libraries too
   window.React = React;
   window.ReactDOM = ReactDOM;
   window.PropTypes = PropTypes;
   window.Victory = Victory;
-  // TODO: we should put param-types here - all DECSYS components will use it, save them all bundling it
+  window.math = math;
+  window.reactWordCloud = ReactWordCloud;
 
   // Styled doesn't put all its named exports on the default :(
   // So I guess that job is on us until we have a better way to do this than globals
