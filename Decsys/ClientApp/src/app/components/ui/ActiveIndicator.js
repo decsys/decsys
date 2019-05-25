@@ -11,7 +11,7 @@ import FlexBox from "./FlexBox";
  * All props other than `active` are passed on
  * to the underlying `FlexBox` which composes the layout of this component.
  */
-const ActiveIndicator = ({ active, ...rest }) => {
+const ActiveIndicator = ({ active, tooltips, ...rest }) => {
   const color = active ? "success" : "gray";
 
   const Icon = styled(active ? Check : Times)`
@@ -23,7 +23,7 @@ const ActiveIndicator = ({ active, ...rest }) => {
       alignItems="center"
       p={1}
       backgroundColor={color}
-      title={active ? "Active" : "Inactive"}
+      title={tooltips[active]}
       {...rest}
     >
       <Icon size="1em" />
@@ -32,10 +32,18 @@ const ActiveIndicator = ({ active, ...rest }) => {
 };
 
 ActiveIndicator.propTypes = {
-  active: PropTypes.bool
+  active: PropTypes.bool,
+  tooltips: PropTypes.shape({
+    [true]: PropTypes.string,
+    [false]: PropTypes.string
+  })
 };
 ActiveIndicator.defaultProps = {
-  active: false
+  active: false,
+  tooltips: {
+    [true]: "Active",
+    [false]: "Inactive"
+  }
 };
 
 export default ActiveIndicator;
