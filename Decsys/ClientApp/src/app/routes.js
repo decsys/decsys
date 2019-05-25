@@ -210,12 +210,12 @@ const routes = mount({
             "/dashboard/:id": route(async ({ params }) => {
               const [surveyId, instanceId] = decode(params.id);
               const { data: survey } = await api.getSurvey(surveyId);
-              const { data: instance } = await api.getSurveyInstance(
+              const { data: results } = await api.getInstanceResultsSummary(
                 surveyId,
                 instanceId
               );
               return {
-                view: <DashbooardScreen survey={survey} instance={instance} />
+                view: <DashbooardScreen survey={survey} results={results} />
               };
             }),
             "/:id/results": route(async ({ params }) => {

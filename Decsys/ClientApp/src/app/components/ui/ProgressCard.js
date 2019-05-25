@@ -29,8 +29,8 @@ const ProgressCard = ({
       <FlexBox flexDirection="column">
         {progressHeader && <Typography>{progressHeader}</Typography>}
         <FlexBox alignItems="center" flexWrap="wrap">
-          {progressData.map(x => (
-            <Box m="0.1em">
+          {progressData.map((x, i) => (
+            <Box key={i} m="0.1em">
               <ActiveIndicator
                 active={x.complete}
                 tooltips={{
