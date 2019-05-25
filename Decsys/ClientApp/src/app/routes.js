@@ -207,11 +207,12 @@ const routes = mount({
                 }))
               })
             ),
-            "/:id/dashboard": route(async ({ params }) => {
-              const { data: survey } = await api.getSurvey(params.id);
+            "/dashboard/:id": route(async ({ params }) => {
+              const [surveyId, instanceId] = decode(params.id);
+              const { data: survey } = await api.getSurvey(surveyId);
               const { data: instance } = await api.getSurveyInstance(
-                params.id,
-                survey.activeInstanceId // TODO: this doesn't work like this...
+                surveyId,
+                instanceId
               );
               return {
                 view: <DashbooardScreen survey={survey} instance={instance} />

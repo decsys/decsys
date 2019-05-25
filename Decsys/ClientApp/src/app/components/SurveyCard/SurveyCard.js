@@ -21,6 +21,7 @@ const SurveyCard = ({
 }) => {
   const { handleCloseClick, handleLaunchClick } = useContext(SurveyCardContext);
   const instanceValidIdModal = useModal();
+  const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : false;
 
   // conditionally prep buttons beforehand
   const buttons = [];
@@ -28,13 +29,11 @@ const SurveyCard = ({
     buttons.push(
       <Buttons.Close onClick={() => handleCloseClick(id, activeInstanceId)} />
     );
-    buttons.push(<Buttons.Dashboard id={id} />);
+    buttons.push(<Buttons.Dashboard id={friendlyId} />);
   }
   if (allowLaunch && !activeInstanceId)
     buttons.push(<Buttons.Launch onClick={() => handleLaunchClick(id)} />);
   if (runCount > 0) buttons.push(<Buttons.Results id={id} />);
-
-  const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : false;
 
   const [instanceValidIds, setInstanceValidIds] = useState([]);
   const handleViewParticipantIdsClick = async () => {
