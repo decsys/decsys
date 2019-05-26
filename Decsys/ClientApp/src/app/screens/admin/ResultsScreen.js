@@ -6,13 +6,15 @@ import {
   MenuItem
 } from "../../components/ui";
 import AppBar from "../../components/AppBar";
-import { Typography, Select, Box } from "@smooth-ui/core-sc";
+import { Typography, Select, Box, Button } from "@smooth-ui/core-sc";
 import * as api from "../../api";
 import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
 import { exportDateFormat as formatDate } from "../../utils/date-formats";
 import download from "downloadjs";
 import { parse } from "json2csv";
+import { useNavigation } from "react-navi";
+import { encode } from "../../services/instance-id";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {
@@ -24,10 +26,15 @@ function isEmpty(obj) {
 
 const ResultsScreen = ({ instances: initialInstances, survey }) => {
   const [instances] = useState(
-    initialInstances.sort((a, b) => a.published - b.published)
+    initialInstances.sort(
+      (a, b) =>
+        new Date(b.published).getTime() - new Date(a.published).getTime()
+    )
   );
 
   const exportMime = "application/json";
+
+  const navigation = useNavigation();
 
   const [currentInstance, setCurrentInstance] = useState(instances[0]);
 
@@ -136,17 +143,33 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
               </option>
             ))}
           </Select>
-          <DropdownMenuButton variant="secondary" button="Export to file...">
-            <MenuItem onClick={handleExportCsvClick}>
-              Response Summary (CSV)
-            </MenuItem>
-            <MenuItem onClick={handleExportSummaryClick}>
-              Response Summary (JSON)
-            </MenuItem>
-            <MenuItem onClick={handleExportFullClick}>
-              Full Event Log (JSON)
-            </MenuItem>
-          </DropdownMenuButton>
+          <FlexBox alignItems="center">
+            <Button
+              mr={1}
+              variant="success"
+              onClick={() =>
+                navigation.navigate(
+                  `/admin/survey/dashboard/${encode(
+                    survey.id,
+                    currentInstance.id
+                  )}`
+                )
+              }
+            >
+              Dashboard
+            </Button>
+            <DropdownMenuButton variant="secondary" button="Export to file...">
+              <MenuItem onClick={handleExportCsvClick}>
+                Response Summary (CSV)
+              </MenuItem>
+              <MenuItem onClick={handleExportSummaryClick}>
+                Response Summary (JSON)
+              </MenuItem>
+              <MenuItem onClick={handleExportFullClick}>
+                Full Event Log (JSON)
+              </MenuItem>
+            </DropdownMenuButton>
+          </FlexBox>
         </FlexBox>
         {results && <Results results={results} />}
       </Container>
