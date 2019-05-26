@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   ConfirmModal,
@@ -14,14 +14,55 @@ import {
   getResponseComponent
 } from "../../../utils/component-utils";
 import ReactTable from "react-table";
+import { useInterval } from "../../../utils/hooks";
+import * as api from "../../../api";
 
-const DashboardScreen = ({ survey, results }) => {
+const DashboardScreen = ({ instanceId, survey, results: initialResults }) => {
   const statsModal = useModal();
   const [statsPage, setStatsPage] = useState();
 
+  const getDataByPage = results => {
+    const resultsByPage = results.participants.reduce((a, p) => {
+      p.responses.forEach(r => {
+        a[r.page] = a[r.page] || {};
+        if (r.response) a[r.page][p.id] = r.response;
+      });
+      return a;
+    }, []);
+
+    const completionByPage = survey.pages.map((_, i) =>
+      results.participants.reduce((a, { id }) => {
+        a[id] = !!resultsByPage[i + 1] && !!resultsByPage[i + 1][id];
+        return a;
+      }, {})
+    );
+
+    return {
+      resultsByPage,
+      completionByPage
+    };
+  };
+
+  // refresh data every 10 seconds
+  const [results, setResults] = useState(initialResults);
+  const [{ resultsByPage, completionByPage }, setDataByPage] = useState(
+    getDataByPage(initialResults)
+  );
+  useInterval(async () => {
+    const { data: results } = await api.getInstanceResultsSummary(
+      survey.id,
+      instanceId
+    );
+    setResults(results);
+    setDataByPage(getDataByPage(results));
+  }, 5000);
+
   const getStatsComponent = () => {
     if (!statsPage) return null;
-    if (!resultsByPage[statsPage.order]) {
+    if (
+      !resultsByPage[statsPage.order] ||
+      !Object.keys(resultsByPage[statsPage.order]).length
+    ) {
       return (
         <Alert variant="warning" width={1}>
           <ExclamationTriangle size="1em" /> There is no data for this question
@@ -82,21 +123,6 @@ const DashboardScreen = ({ survey, results }) => {
       </FlexBox>
     );
   };
-
-  const resultsByPage = results.participants.reduce((a, p) => {
-    p.responses.forEach(r => {
-      a[r.page] = a[r.page] || {};
-      if (r.response) a[r.page][p.id] = r.response;
-    });
-    return a;
-  }, []);
-
-  const completionByPage = survey.pages.map((_, i) =>
-    results.participants.reduce((a, { id }) => {
-      a[id] = !!resultsByPage[i + 1][id];
-      return a;
-    }, {})
-  );
 
   const handleCardClick = i => {
     setStatsPage(survey.pages[i]);

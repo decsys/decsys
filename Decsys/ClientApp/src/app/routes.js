@@ -215,7 +215,13 @@ const routes = mount({
                 instanceId
               );
               return {
-                view: <DashbooardScreen survey={survey} results={results} />
+                view: (
+                  <DashbooardScreen
+                    instanceId={instanceId}
+                    survey={survey}
+                    results={results}
+                  />
+                )
               };
             }),
             "/:id/results": route(async ({ params }) => {
