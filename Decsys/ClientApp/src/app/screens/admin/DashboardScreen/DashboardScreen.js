@@ -86,7 +86,7 @@ const DashboardScreen = ({ survey, results }) => {
   const resultsByPage = results.participants.reduce((a, p) => {
     p.responses.forEach(r => {
       a[r.page] = a[r.page] || {};
-      a[r.page][p.id] = r.response;
+      if (r.response) a[r.page][p.id] = r.response;
     });
     return a;
   }, []);
