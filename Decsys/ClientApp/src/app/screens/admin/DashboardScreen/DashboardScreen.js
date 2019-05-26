@@ -14,17 +14,32 @@ const DashboardScreen = ({ survey, results }) => {
   const statsModal = useModal();
   const [statsPage, setStatsPage] = useState();
   const [statsComponent, setStatsComponent] = useState();
-  useEffect(() => {
-    if (!statsPage) return;
+  // useEffect(() => {
+  //   if (!statsPage) return;
+  //   const details = getResponseComponent(statsPage.components);
+  //   const component = getComponent(details.type);
+  //   const stats =
+  //     component.stats || (() => ({ visualizations: [{}], stats: [] }));
+  //   setStatsComponent({
+  //     details,
+  //     stats
+  //   });
+  // }, [statsPage]);
+
+  const getStatsComponent = () => {
+    if (!statsPage) return null;
     const details = getResponseComponent(statsPage.components);
     const component = getComponent(details.type);
     const stats =
       component.stats || (() => ({ visualizations: [{}], stats: [] }));
-    setStatsComponent({
-      details,
-      stats
-    });
-  }, [statsPage]);
+
+    return stats(
+      details.params,
+      Object.keys(resultsByPage[statsPage.order]).map(
+        pid => resultsByPage[statsPage.order][pid]
+      )
+    ).visualizations[0].component;
+  };
 
   const resultsByPage = results.participants.reduce((a, p) => {
     p.responses.forEach(r => {
@@ -79,13 +94,7 @@ const DashboardScreen = ({ survey, results }) => {
       </Container>
       {statsPage && (
         <ConfirmModal header={`Q${statsPage.order} Stats`} {...statsModal}>
-          {statsComponent &&
-            statsComponent.stats(
-              statsComponent.details.params,
-              Object.keys(resultsByPage[statsPage.order]).map(
-                pid => resultsByPage[statsPage.order][pid]
-              )
-            ).visualizations[0].component}
+          {getStatsComponent()}
         </ConfirmModal>
       )}
     </>
