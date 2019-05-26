@@ -25,11 +25,12 @@ const ConfirmModal = ({
   toggleModal,
   showCloseButton = true,
   cancelButton = true,
-  confirmButton
+  confirmButton,
+  ...p
 }) => {
   return (
     <Modal opened={modalOpened} onClose={toggleModal}>
-      <ModalDialog>
+      <ModalDialog {...p}>
         <ModalContent>
           {showCloseButton && <ModalCloseButton />}
           <ModalHeader>
@@ -38,7 +39,7 @@ const ConfirmModal = ({
             </Typography>
           </ModalHeader>
           <ModalBody>
-            <FlexBox alignItems="center" p={1}>
+            <FlexBox width={1} alignItems="center" p={1}>
               {children}
             </FlexBox>
           </ModalBody>

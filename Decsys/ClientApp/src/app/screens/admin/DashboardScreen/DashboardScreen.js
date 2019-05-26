@@ -1,44 +1,86 @@
-import React, { useState, useEffect } from "react";
-import { Container, ConfirmModal } from "../../../components/ui";
+import React, { useState } from "react";
+import {
+  Container,
+  ConfirmModal,
+  FlexBox,
+  ProgressCard,
+  useModal
+} from "../../../components/ui";
 import AppBar from "../../../components/AppBar";
-import { Typography } from "@smooth-ui/core-sc";
-import ProgressCard from "../../../components/ui/ProgressCard";
-import { InfoCircle } from "styled-icons/fa-solid";
-import { useModal } from "../../../components/ui/ConfirmModal";
+import { Typography, Box, Alert } from "@smooth-ui/core-sc";
+import { InfoCircle, ExclamationTriangle } from "styled-icons/fa-solid";
 import {
   getComponent,
   getResponseComponent
 } from "../../../utils/component-utils";
+import ReactTable from "react-table";
 
 const DashboardScreen = ({ survey, results }) => {
   const statsModal = useModal();
   const [statsPage, setStatsPage] = useState();
-  const [statsComponent, setStatsComponent] = useState();
-  // useEffect(() => {
-  //   if (!statsPage) return;
-  //   const details = getResponseComponent(statsPage.components);
-  //   const component = getComponent(details.type);
-  //   const stats =
-  //     component.stats || (() => ({ visualizations: [{}], stats: [] }));
-  //   setStatsComponent({
-  //     details,
-  //     stats
-  //   });
-  // }, [statsPage]);
 
   const getStatsComponent = () => {
     if (!statsPage) return null;
+    if (!resultsByPage[statsPage.order]) {
+      return (
+        <Alert variant="warning" width={1}>
+          <ExclamationTriangle size="1em" /> There is no data for this question
+          yet.
+        </Alert>
+      );
+    }
     const details = getResponseComponent(statsPage.components);
     const component = getComponent(details.type);
-    const stats =
-      component.stats || (() => ({ visualizations: [{}], stats: [] }));
+    const statsFn =
+      component.stats ||
+      (() => ({ visualizations: [{ component: null }], stats: [] }));
 
-    return stats(
-      details.params,
+    const stats = statsFn(
+      { ...component.defaultProps, ...details.params },
       Object.keys(resultsByPage[statsPage.order]).map(
         pid => resultsByPage[statsPage.order][pid]
       )
-    ).visualizations[0].component;
+    );
+
+    const keyStyle = {
+      fontWeight: "bold",
+      textAlign: "right"
+    };
+
+    const columns = [
+      {
+        accessor: "name",
+        Cell: ({ value }) => <span style={keyStyle}>{value}</span>
+      },
+      {
+        accessor: "value"
+      }
+    ];
+
+    const data = [
+      { name: "Response Type", value: details.type },
+      {
+        name: "Participants",
+        value: Object.keys(resultsByPage[statsPage.order]).length
+      },
+      ...Object.keys(stats.stats).map(name => ({
+        name,
+        value: stats.stats[name]
+      }))
+    ];
+    return (
+      <FlexBox width={1} flexDirection="column" alignItems="center">
+        <Box width="50%">{stats.visualizations[0].component}</Box>
+        <Box width={1}>
+          <ReactTable
+            minRows={1}
+            data={data}
+            columns={columns}
+            showPagination={false}
+          />
+        </Box>
+      </FlexBox>
+    );
   };
 
   const resultsByPage = results.participants.reduce((a, p) => {
@@ -93,7 +135,12 @@ const DashboardScreen = ({ survey, results }) => {
         )}
       </Container>
       {statsPage && (
-        <ConfirmModal header={`Q${statsPage.order} Stats`} {...statsModal}>
+        <ConfirmModal
+          maxWidth={900}
+          cancelButton={false}
+          header={`Q${statsPage.order} Stats`}
+          {...statsModal}
+        >
           {getStatsComponent()}
         </ConfirmModal>
       )}
