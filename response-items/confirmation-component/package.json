@@ -1,7 +1,7 @@
 {
   "name": "@decsys/confirmation-component",
   "componentName": "Confirmation",
-  "version": "0.4.0",
+  "version": "1.0.0-beta.1",
   "description": "Participant Confirmation component for the DECSYS Survey Platform",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,7 +11,7 @@
     "build-storybook": "build-storybook"
   },
   "author": "Jonathan Couldridge <jon@jon.gg>",
-  "license": "UNLICENSED",
+  "license": "AGPL-3.0-only",
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@storybook/addon-actions": "^5.0.11",
