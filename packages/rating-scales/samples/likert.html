@@ -1,11 +1,11 @@
 <html>
   <head>
-    <title>React Likert</title>
+    <title>React Discrete</title>
     <meta charset="utf-8" />
   </head>
 
   <body>
-    <div id="likert"></div>
+    <div id="discrete"></div>
     <div id="results"></div>
 
     <script src="../node_modules/react/umd/react.development.js"></script>
@@ -13,11 +13,11 @@
     <script src="../node_modules/styled-components/dist/styled-components.js"></script>
     <script src="../node_modules/@babel/standalone/babel.min.js"></script>
 
-    <script src="../dist/decsys.rating-scales.umd.js"></script>
+    <script src="../umd/decsys.rating-scales.js"></script>
 
     <script type="text/babel">
       ReactDOM.render(
-        <DECSYS.LikertScale
+        <DECSYS.DiscreteScale
           radios={[["1", "Low"], ["2"], ["3"], ["4"], ["5", "High"]]}
           radioOptions={{
             labelAlignment: "above",
@@ -31,12 +31,12 @@
             textColor: "orange"
           }}
         />,
-        document.querySelector("#likert")
+        document.querySelector("#discrete")
       );
     </script>
     <script>
-      document.addEventListener("LikertSelected", e => {
-        console.log("handled LikertSelected");
+      document.addEventListener("DiscreteSelected", e => {
+        console.log("handled DiscreteSelected");
         document.querySelector("#results").innerHTML = `
           <dl>
             <dt>Value</dt><dd>${e.detail.value}</dd>

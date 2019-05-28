@@ -20,9 +20,9 @@ module.exports = {
       components: ["src/core/*.js"]
     },
     {
-      name: "Likert Scale",
-      content: "src/likert/overview.md",
-      components: ["src/likert/*.js"]
+      name: "Discrete Scale",
+      content: "src/discrete/overview.md",
+      components: ["src/discrete/*.js"]
     },
     {
       name: "Ellipse Scale",

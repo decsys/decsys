@@ -9,7 +9,8 @@ stages:
         steps:
           - script: npm ci
           - script: npm run build
-          - upload: dist
+          - bash: cp -r cjs esm umd $(Build.ArtifactStagingDirectory)
+          - upload: $(Build.ArtifactStagingDirectory)
       - job: Docs
         pool:
           vmImage: ubuntu-latest
@@ -60,13 +61,9 @@ stages:
             deploy:
               steps:
                 - checkout: self
-                - download: current
-                  artifact: drop
-                - bash: >
-                    mkdir -p $(System.DefaultWorkingDirectory)/dist &&
-
-                    cp $(Pipeline.Workspace)/drop/*
-                    $(System.DefaultWorkingDirectory)/dist
+                - bash: >-
+                    cp -r $(Pipeline.Workspace)/drop/*
+                    $(System.DefaultWorkingDirectory)
                 - task: Npm@1
                   inputs:
                     command: publish

@@ -6,8 +6,8 @@ import Question from "../core/StyledQuestion";
 import FlexContainer from "../core/StyledBarContainer";
 import Radio from "./Radio";
 
-/** A Likert Scale */
-export default class LikertScale extends React.Component {
+/** A Discrete Scale */
+export default class DiscreteScale extends React.Component {
   static propTypes = {
     /** Options for the scale's radio inputs */
     radioOptions: PropTypes.shape({

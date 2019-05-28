@@ -45,7 +45,7 @@ const SecondaryRadioLabel = styled(RadioLabel)`
  */
 const RadioInput = styled.input.attrs({
   type: "radio",
-  name: "likert"
+  name: "discrete"
 })`
   transform: scale(2);
 `;
@@ -60,7 +60,7 @@ const RadioContainer = styled.div`
 `;
 
 /**
- * A Labelled Radio Button component for use on the Likert Scale
+ * A Labelled Radio Button component for use on the Discrete Scale
  */
 export default class Radio extends React.Component {
   static propTypes = {
@@ -101,7 +101,7 @@ export default class Radio extends React.Component {
 
   radioClickHandler = () => {
     document.dispatchEvent(
-      new CustomEvent("LikertSelected", {
+      new CustomEvent("DiscreteSelected", {
         detail: {
           index: this.props.index,
           value: this.props.value

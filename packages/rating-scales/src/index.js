@@ -1,4 +1,4 @@
-import LikertScale from "./likert/Scale";
+import DiscreteScale from "./discrete/Scale";
 import EllipseScale from "./ellipse/Scale";
 
-export { LikertScale, EllipseScale };
+export { DiscreteScale, EllipseScale };

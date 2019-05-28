@@ -1,7 +1,8 @@
 # Build output
 docs
-dist
-lib
+cjs
+esm
+umd
 
 # Logs
 logs

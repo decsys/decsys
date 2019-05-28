@@ -16,10 +16,19 @@ const plugins = [
   terser()
 ];
 
+const bundleEntryPoint = "src/index.js";
+const input = {
+  [pkg.name.replace("@", "").replace("/", ".")]: bundleEntryPoint,
+  ellipse: "src/ellipse/Scale.js",
+  discrete: "src/discrete/Scale.js"
+};
+
+const entryFileNames = `[name].js`;
+
 export default [
   // browser
   {
-    input: "src/index.js",
+    input: bundleEntryPoint,
     output: {
       name: "DECSYS",
       file: pkg.browser,
@@ -35,10 +44,11 @@ export default [
   },
   // commonjs, esm
   {
-    input: "src/index.js",
+    input,
     output: [
       {
-        file: pkg.main,
+        dir: "cjs",
+        entryFileNames,
         format: "cjs",
         sourcemap: true,
         globals: {
@@ -47,7 +57,8 @@ export default [
         }
       },
       {
-        file: pkg.module,
+        dir: "esm",
+        entryFileNames,
         format: "esm",
         sourcemap: true,
         globals: {

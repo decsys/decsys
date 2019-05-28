@@ -17,30 +17,30 @@ The DECSYS Project uses them for survey question components for its Survey Platf
 
 `npm install @decsys/rating-scales`
 
-## Node
+## ES Modules / CommonJS (Node)
 
 The complete Scale components are accessible from the main package export.
 
-Additionally, all the components are default exports from individual modules, so can be referenced directly.
+Additionally, all the Scale components are default exports from individual modules, so can be referenced directly. This can enable tree shaking and smaller final bundles, so is recommended when in an environment that supports ES Modules.
+
+### Importing a Scale component directly from its module
+
+e.g. just the Discrete Scale
+
+- esm: `import DiscreteScale from "@decsys/rating-scales/esm/discrete";`
+- commonjs (node): `const Frame = require("@decsys/rating-scales/cjs/discrete");`
 
 ### Importing a Scale component from the main package export
 
 e.g. all Scales
 
-- `import * as DECSYS from "@decsys/rating-scales";`
-- `const DECSYS = require("@decsys/rating-scales");`
+- esm: `import * as DECSYS from "@decsys/rating-scales";`
+- commonjs (node): `const DECSYS = require("@decsys/rating-scales");`
 
-e.g. for just the Likert Scale
+e.g. for just the Discrete Scale
 
-- `import { LikertScale } from "@decsys/rating-scales";`
-- `const LikertScale = require("@decsys/rating-scales").LikertScale;`
-
-### Importing a sub-component directly from its module
-
-e.g. the basic `Frame` component
-
-- `import Frame from "@decsys/rating-scales/core/Frame";`
-- `const Frame = require("@decsys/rating-scales/core/Frame");`
+- esm: `import { DiscreteScale } from "@decsys/rating-scales";`
+- commonjs (node): `const DiscreteScale = require("@decsys/rating-scales").DiscreteScale;`
 
 ## Browser
 
@@ -54,16 +54,16 @@ The sub-components are not directly available in the browser.
 
 The following complete ratings scale components are available:
 
-- Likert Scale
+- Discrete Scale
 
-  - `import { LikertScale } from "@decsys/rating-scales";`
-  - `const LikertScale = require("@decsys/rating-scales").LikertScale;`
-  - `DECSYS.LikertScale` when using the browser build.
+  - esm: `import DiscreteScale from "@decsys/rating-scales/esm/discrete";`
+  - commonjs (node): `const DiscreteScale = require("@decsys/rating-scales/cjs/discrete");`
+  - browser (umd): `DECSYS.DiscreteScale`
 
 - Ellipse Scale
-  - `import { EllipseScale } from "@decsys/rating-scales";`
-  - `const EllipseScale = require("@decsys/rating-scales").EllipseScale;`
-  - `DECSYS.EllipseScale` when using the browser build.
+  - esm: `import EllipseScale from "@decsys/rating-scales/esm/ellipse";`
+  - commonjs (node): `const EllipseScale = require("@decsys/rating-scales/cjs/ellipse");`
+  - browser (umd): `DECSYS.EllipseScale`
 
 # Documentation
 
@@ -77,7 +77,7 @@ There are a number of sub-tasks composed into higher-level tasks you're more lik
 
 - `npm run lint` will run eslint against the source.
 - `npm run rollup` will build transpiled, minified bundles (with external source maps) for Browser, CommonJS and ES Modules.
-- `npm run build` will lint and, if it passes, clear the `dist/` directory and build the bundles as above. This is used in CI.
+- `npm run build` will lint and, if it passes, build the bundles as above. This is used in CI.
 - `npm run watch [build]` will run `build` script described above and then watch for changes in the `src/` directory.
 
 # Licensing
