@@ -9,6 +9,7 @@ import {
   colorYik,
   colorVariant
 } from "@smooth-ui/core-sc";
+import stats from "./Component.stats";
 
 // Build a React component for our FreeText question type
 const Component = ({ maxLength, initialText, logResults }) => {
@@ -69,5 +70,6 @@ const Component = ({ maxLength, initialText, logResults }) => {
 Component.params = props.params;
 Component.propTypes = props.propTypes;
 Component.defaultProps = props.defaultProps;
+Component.stats = stats;
 
 export default Component;
