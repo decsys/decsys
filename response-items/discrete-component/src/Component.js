@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import * as props from "./Component.props";
-import { LikertScale } from "@decsys/rating-scales";
+import DiscreteScale from "@decsys/rating-scales/discrete/Scale.js";
+import stats from "./Component.stats";
 
 const Component = ({
   barLeftMargin,
@@ -18,16 +19,16 @@ const Component = ({
   setNextEnabled,
   ...radioParams
 }) => {
-  const handleLikertSelected = e => {
+  const handleDiscreteSelected = e => {
     logResults(e.detail);
     setNextEnabled(true);
   };
 
   useEffect(() => {
     setNextEnabled(false);
-    document.addEventListener("LikertSelected", handleLikertSelected);
+    document.addEventListener("DiscreteSelected", handleDiscreteSelected);
     return () =>
-      document.removeEventListener("LikertSelected", handleLikertSelected);
+      document.removeEventListener("DiscreteSelected", handleDiscreteSelected);
   }, []);
 
   // prepare radio button values
@@ -45,7 +46,7 @@ const Component = ({
   }
 
   return (
-    <LikertScale
+    <DiscreteScale
       barOptions={{
         leftMargin: `${barLeftMargin}%`,
         rightMargin: `${barRightMargin}%`,
@@ -70,5 +71,6 @@ const Component = ({
 Component.params = props.params;
 Component.propTypes = props.propTypes;
 Component.defaultProps = props.defaultProps;
+Component.stats = stats;
 
 export default Component;
