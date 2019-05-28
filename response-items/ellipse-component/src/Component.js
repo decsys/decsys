@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { EllipseScale } from "@decsys/rating-scales";
 import * as props from "./Component.props";
+import stats from "./Component.stats";
 
 const Component = ({
   barLeftMargin,
@@ -98,5 +99,6 @@ const Component = ({
 Component.params = props.params;
 Component.propTypes = props.propTypes;
 Component.defaultProps = props.defaultProps;
+Component.stats = stats;
 
 export default Component;
