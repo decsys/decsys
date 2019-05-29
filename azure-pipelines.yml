@@ -57,7 +57,7 @@ stages:
           - task: DownloadGitHubRelease@0
             inputs:
               connection: decsys-pipelines
-              userRepository: decsys/likert-component
+              userRepository: decsys/discrete-component
               downloadPath: $(Build.ArtifactStagingDirectory)
           - task: DownloadGitHubRelease@0
             inputs:
