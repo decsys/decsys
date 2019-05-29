@@ -57,7 +57,7 @@ stages:
           - task: DownloadGitHubRelease@0
             inputs:
               connection: decsys-pipelines
-              userRepository: decsys/likert-component
+              userRepository: decsys/discrete-component
               downloadPath: $(Build.ArtifactStagingDirectory)
           - task: DownloadGitHubRelease@0
             inputs:
@@ -148,7 +148,7 @@ stages:
               downloadPath: $(Build.ArtifactStagingDirectory)
           - script: >
               dotnet publish -c $(buildConfiguration) -o
-              $(Build.ArtifactStagingDirectory) $(argTargetRuntime)
+              $(Build.ArtifactStagingDirectory)/Decsys $(argTargetRuntime)
             workingDirectory: ./Decsys
           - bash: >-
               cp $(System.DefaultWorkingDirectory)/scripts/$(name)/*

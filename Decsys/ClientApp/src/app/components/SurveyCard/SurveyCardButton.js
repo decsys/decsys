@@ -34,7 +34,7 @@ export const Close = ({ onClick }) => (
 );
 
 export const Dashboard = ({ id }) => (
-  <LinkButton variant="success" href={`/admin/survey/${id}/dashboard`}>
+  <LinkButton variant="success" href={`/admin/survey/dashboard/${id}`}>
     Dashboard
   </LinkButton>
 );

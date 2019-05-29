@@ -1,14 +1,15 @@
 {
   "name": "client-app",
-  "version": "0.14.0",
+  "version": "1.0.0-beta.1",
   "private": true,
   "dependencies": {
-    "@decsys/param-types": "^0.3.1",
+    "@decsys/param-types": "^1.0.0-beta.1",
     "@smooth-ui/core-sc": "^9.1.0",
     "axios": "^0.18.0",
     "downloadjs": "^1.4.7",
     "gfycat-style-urls": "^1.0.3",
     "json2csv": "^4.5.1",
+    "mathjs": "^5.10.3",
     "navi": "^0.12.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
@@ -20,9 +21,11 @@
     "react-onclickoutside": "^6.8.0",
     "react-scripts": "3.0.0",
     "react-table": "^6.9.2",
+    "react-wordcloud": "^1.0.5",
     "styled-components": "^4.2.0",
     "styled-css-grid": "^1.2.1",
-    "styled-icons": "^7.9.0"
+    "styled-icons": "^7.9.0",
+    "victory": "^32.2.3"
   },
   "scripts": {
     "start": "react-scripts start",

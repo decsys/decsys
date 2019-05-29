@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Decsys.Models;
-using LiteDB;
-using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Decsys.Mapping
 {
@@ -40,12 +38,7 @@ namespace Decsys.Mapping
             // Component
             CreateMap<Data.Entities.Component, Component>()
                 .ForMember(dest => dest.Params,
-                    opt => opt.MapFrom(
-                        src => JObject.Parse(
-                            JsonSerializer.Serialize(
-                                src.Params,
-                                false,
-                                false)))); // TODO: make this less dumb?
+                    opt => opt.ConvertUsing(new BsonJObjectConverter()));
 
             CreateMap<Component, Data.Entities.Component>()
                 .ForMember(dest => dest.Params,

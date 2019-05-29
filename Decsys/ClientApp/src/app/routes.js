@@ -11,6 +11,7 @@ import { decode } from "./services/instance-id";
 import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
 import ParticipantIdScreen from "./screens/survey/ParticipantIdScreen";
 import ResultsScreen from "./screens/admin/ResultsScreen";
+import DashbooardScreen from "./screens/admin/DashboardScreen";
 import {
   PAGE_RANDOMIZE,
   SURVEY_COMPLETE,
@@ -206,9 +207,22 @@ const routes = mount({
                 }))
               })
             ),
-            "/:id/dashboard": route(({ params }) => {
-              //TODO: fetch active instance for survey id, if any
-              return { view: <div>Dashboard for {params.id}</div> };
+            "/dashboard/:id": route(async ({ params }) => {
+              const [surveyId, instanceId] = decode(params.id);
+              const { data: survey } = await api.getSurvey(surveyId);
+              const { data: results } = await api.getInstanceResultsSummary(
+                surveyId,
+                instanceId
+              );
+              return {
+                view: (
+                  <DashbooardScreen
+                    instanceId={instanceId}
+                    survey={survey}
+                    results={results}
+                  />
+                )
+              };
             }),
             "/:id/results": route(async ({ params }) => {
               const { data: instances } = await api.listSurveyInstances(

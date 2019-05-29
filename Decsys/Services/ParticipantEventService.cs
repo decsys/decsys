@@ -1,13 +1,13 @@
-﻿using System;
+﻿using AutoMapper;
+using Decsys.Data;
+using Decsys.Data.Entities;
+using Decsys.Mapping;
+using LiteDB;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using AutoMapper;
-using Decsys.Data;
-using Decsys.Data.Entities;
-using LiteDB;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Decsys.Services
 {
@@ -207,11 +207,8 @@ namespace Decsys.Services
                     .OrderByDescending(x => x.Timestamp)
                     .FirstOrDefault();
 
-            var order = ((JArray)JsonConvert.DeserializeObject<dynamic>(
-                    LiteDB.JsonSerializer.Serialize(
-                        orderLog.Payload,
-                        false,
-                        false))
+            var order = ((JArray)
+                    ((dynamic)BsonJObjectConverter.Convert(orderLog.Payload))
                     .order)
                 .ToObject<IList<string>>();
 
@@ -226,25 +223,26 @@ namespace Decsys.Services
                         && x.Type == EventTypes.COMPONENT_RESULTS)
                     .OrderByDescending(x => x.Timestamp)
                     .FirstOrDefault();
+                var pageLoadEvent = log.Find(x =>
+                        x.Source == page.Id.ToString()
+                        && x.Type == EventTypes.PAGE_LOAD)
+                    .OrderByDescending(x => x.Timestamp)
+                    .FirstOrDefault();
+
+                // don't try to add responses for pages we've never visited.
+                // e.g. if the survey is still in progress
+                if (pageLoadEvent is null) continue;
 
                 responses.Add(new Models.PageResponseSummary
                 {
                     Page = page.Order,
                     ResponseType = responseComponent.Type,
-                    PageLoad = log.Find(x =>
-                        x.Source == page.Id.ToString()
-                        && x.Type == EventTypes.PAGE_LOAD)
-                    .OrderByDescending(x => x.Timestamp)
-                    .FirstOrDefault().Timestamp,
+                    PageLoad = pageLoadEvent.Timestamp,
                     ResponseRecorded = finalResponse?.Timestamp
                         ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
                     Response = finalResponse is null
-                        ? new JObject()
-                        : JObject.Parse(
-                            LiteDB.JsonSerializer.Serialize(
-                                finalResponse.Payload,
-                                false,
-                                false)),
+                        ? null
+                        : BsonJObjectConverter.Convert(finalResponse.Payload),
                     Order = order.IndexOf(page.Id.ToString()) + 1
                 });
             }
