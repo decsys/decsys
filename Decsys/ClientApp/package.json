@@ -1,9 +1,9 @@
 {
   "name": "client-app",
-  "version": "0.14.0",
+  "version": "1.0.0-beta.1",
   "private": true,
   "dependencies": {
-    "@decsys/param-types": "^0.3.1",
+    "@decsys/param-types": "^1.0.0-beta.1",
     "@smooth-ui/core-sc": "^9.1.0",
     "axios": "^0.18.0",
     "downloadjs": "^1.4.7",
