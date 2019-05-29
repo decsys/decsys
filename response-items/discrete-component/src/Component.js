@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import * as props from "./Component.props";
-import DiscreteScale from "@decsys/rating-scales/discrete/Scale.js";
+import DiscreteScale from "@decsys/rating-scales/esm/discrete";
 import stats from "./Component.stats";
 
 const Component = ({
