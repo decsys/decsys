@@ -3,7 +3,7 @@ import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 
 // Specify Configurable Parameters
 const params = {
-  maxLength: ParamTypes.number("Character Limit", 50)
+  maxLength: ParamTypes.number("Character Limit", 200)
 };
 
 // Specify PropTypes for non-Configurable Props

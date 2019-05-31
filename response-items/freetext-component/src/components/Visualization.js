@@ -1,38 +1,49 @@
-import React from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import ReactWordCloud from "react-wordcloud";
 
 const Visualization = ({ values }) => {
-  // a value is the whole freetext value submitted
-  const weightedWords = values.reduce((a, { text }) => {
-    // split the text into single words
-    const words = text.split(/\s+/);
+  const previous = useRef(values);
+  const [results, setResults] = useState(values);
+  useEffect(() => {
+    if (JSON.stringify(previous.current) !== JSON.stringify(values)) {
+      previous.current = values;
+      setResults(values);
+    }
+  }, [values]);
 
-    words.forEach(w => {
-      const word = w.toLowerCase();
-      a[word] = (a[word] || 0) + 1;
-    });
+  const wordCloud = useMemo(() => {
+    // a value is the whole freetext value submitted
+    const weightedWords = results.reduce((a, { text }) => {
+      // split the text into single words
+      const words = text.split(/\s+/);
 
-    return a;
-  }, {});
+      words.forEach(w => {
+        const word = w.toLowerCase();
+        a[word] = (a[word] || 0) + 1;
+      });
 
-  const data = Object.keys(weightedWords).map(text => ({
-    text,
-    value: weightedWords[text]
-  }));
+      return a;
+    }, {});
 
-  console.log(data);
+    const data = Object.keys(weightedWords).map(text => ({
+      text,
+      value: weightedWords[text]
+    }));
 
-  return (
-    <ReactWordCloud
-      options={{
-        rotations: 0,
-        fontFamily: "Arial",
-        fontSizes: [10, 60],
-        scale: "sqrt"
-      }}
-      words={data}
-    />
-  );
+    return (
+      <ReactWordCloud
+        options={{
+          rotations: 0,
+          fontFamily: "Arial",
+          fontSizes: [10, 60],
+          scale: "sqrt"
+        }}
+        words={data}
+      />
+    );
+  }, [results]);
+
+  return wordCloud;
 };
 
 export default Visualization;

@@ -2,6 +2,9 @@ import React from "react";
 import * as math from "mathjs";
 import Visualization from "./components/Visualization";
 
+const fixedVal = 3;
+const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
+
 const stats = (_, results) => {
   const wordCounts = results.map(x => x.text.split(/\s+/).length);
   return {
@@ -12,9 +15,11 @@ const stats = (_, results) => {
       }
     ],
     stats: {
-      ["Mean Word Count"]: math.mean(wordCounts),
-      ["Shortest Word Count"]: Math.min(...wordCounts),
-      ["Longest Word Count"]: Math.max(...wordCounts)
+      ["Word Count - Min, Max"]: `${fixed(Math.min, ...wordCounts)}, ${fixed(
+        Math.max,
+        ...wordCounts
+      )}`,
+      ["Word Count - Mean"]: fixed(math.mean, wordCounts)
     }
   };
 };
