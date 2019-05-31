@@ -2,6 +2,9 @@ import React from "react";
 import * as math from "mathjs";
 import Visualization from "./components/Visualization";
 
+const fixedVal = 3;
+const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
+
 const stats = (_, results) => {
   const { values, indices } = results.reduce(
     (data, { value, index }) => {
@@ -19,17 +22,13 @@ const stats = (_, results) => {
       }
     ],
     stats: {
-      // well... mean only works for numeric values
-      // and is also a "false" value for a Discrete scale providing a rank
-      // so we'll do the best we can
-      ["Values Mean"]: values.some(n => isNaN(parseFloat(n)))
+      ["Values - Mean, STD"]: values.some(n => isNaN(parseFloat(n)))
         ? "N/A"
-        : math.mean(values),
-      ["Values Standard Deviation"]: values.some(n => isNaN(parseFloat(n)))
-        ? "N/A"
-        : math.std(values),
-      ["Selected Index Mean"]: math.mean(indices),
-      ["Selected Index Standard Deviation"]: math.std(indices)
+        : `${fixed(math.mean, values)}, ${fixed(math.std, values)}`,
+      ["Index (from 0) - Mean, STD"]: `${fixed(math.mean, indices)}, ${fixed(
+        math.std,
+        indices
+      )}`
     }
   };
 };
