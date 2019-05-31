@@ -16,50 +16,60 @@
     <script src="../umd/decsys.rating-scales.js"></script>
 
     <script type="text/babel">
-      ReactDOM.render(
-        <DECSYS.EllipseScale
-          barOptions={{
-            minValue: 1,
-            maxValue: 10,
-            thickness: "1px"
-          }}
-          labels={{
-            min: "Easy",
-            mid: "Ok",
-            max: "Hard"
-          }}
-          labelOptions={{
-            yAlign: "above"
-          }}
-          question="How?"
-          questionOptions={{
-            xAlign: "center"
-          }}
-          minRangeValue={4.5}
-          maxRangeValue={10}
-          rangeMarkerOptions={{
-            markerColor: "blue",
-            length: "100px",
-            thickness: "1px"
-          }}
-          scaleMarkerOptions={{
-            markerColor: "red",
-            length: "50px",
-            thickness: "1em",
-            subColor: "green",
-            subThickness: "0.2em",
-            subLength: "20px",
-            markers: 5,
-            subdivisions: 10
-          }}
-          frameHeight="300px"
-          penOptions={{
-            color: "red",
-            thickness: 1
-          }}
-        />,
-        document.querySelector("#ellipse")
-      );
+      const App = ({}) => {
+        const [penColor, setPenColor] = React.useState("red");
+        const handlePenColorChange = ({ target }) => {
+          setPenColor(target.value);
+        };
+        return (
+          <>
+            <input value={penColor} onChange={handlePenColorChange} />
+            <DECSYS.EllipseScale
+              barOptions={{
+                minValue: 1,
+                maxValue: 10,
+                thickness: "1px"
+              }}
+              labels={{
+                min: "Easy",
+                mid: "Ok",
+                max: "Hard"
+              }}
+              labelOptions={{
+                yAlign: "above"
+              }}
+              question="How?"
+              questionOptions={{
+                xAlign: "center"
+              }}
+              minRangeValue={4.5}
+              maxRangeValue={10}
+              rangeMarkerOptions={{
+                markerColor: "blue",
+                length: "100px",
+                thickness: "1px"
+              }}
+              scaleMarkerOptions={{
+                markerColor: "red",
+                length: "50px",
+                thickness: "1em",
+                subColor: "green",
+                subThickness: "0.2em",
+                subLength: "20px",
+                markers: 5,
+                subdivisions: 10
+              }}
+              frameHeight="300px"
+              penOptions={{
+                color: penColor,
+                thickness: 1
+              }}
+            />
+          </>
+        );
+      };
+
+      ReactDOM.render(<App />, document.querySelector("#ellipse"));
     </script>
     <script>
       document.addEventListener("EllipseCompleted", e => {

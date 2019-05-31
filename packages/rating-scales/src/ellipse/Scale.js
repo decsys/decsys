@@ -163,6 +163,10 @@ export default class EllipseScale extends React.Component {
     scaleMarkerOptions: {}
   };
 
+  componentDidUpdate() {
+    this.pen.setOptions(this.props.penOptions);
+  }
+
   componentDidMount() {
     // store these to avoid selecting them everytime
     this.mainElement = this.canvas.parentElement;

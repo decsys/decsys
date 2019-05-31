@@ -110,7 +110,7 @@ export default class PenLine extends Graphics {
     this.clear();
   }
 
-  _updateGraphics() {
+  _updateGraphics(closePath) {
     if (this.points.length < 2) return;
 
     const [{ x, y }] = this.points;
@@ -124,6 +124,11 @@ export default class PenLine extends Graphics {
       const { x, y } = this.points[i];
       const { x: cx, y: cy } = Collision.midPoint({ x: ox, y: oy }, { x, y });
       this.quadraticCurveTo(ox, oy, cx, cy);
+
+      if (closePath && i === this.points.length - 1) {
+        const [{ x: sx, y: sy }] = this.points;
+        this.lineTo(sx, sy);
+      }
     }
 
     // optionally draw a 1px red line on the canvas
@@ -137,9 +142,9 @@ export default class PenLine extends Graphics {
 
   closePath() {
     if (this.points.length > 0) {
-      this.addPoint(this.points[0]);
-      // add twice due to our interpolation algorithm for curve drawing :\
-      this.addPoint(this.points[0]);
+      this.addPoint(this.points[0]); // add the first point again
+      this.addPoint(this.points[0]); // twice, due to interpolation
+      this._updateGraphics(true); // redraw with a closed path
     }
   }
 
