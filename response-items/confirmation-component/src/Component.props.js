@@ -5,7 +5,7 @@ import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 const params = {
   label: ParamTypes.string(
     "Checkbox Label",
-    "I confirm that I have read and understood."
+    "I confirm that I have read and understood the instructions, and that I wish to proceed."
   )
 };
 
