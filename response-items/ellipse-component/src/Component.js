@@ -23,14 +23,14 @@ const Component = ({
   minRangeValue,
   maxRangeValue,
   rangeMarkerColor,
-  rangeMarkerLength,
+  rangeMarkerHeight,
   rangeMarkerThickness,
   scaleMarkerColor,
   scaleMarkerThickness,
-  scaleMarkerLength,
+  scaleMarkerHeight,
   scaleSubdivisionColor,
   scaleSubdivisionThickness,
-  scaleSubdivisionLength,
+  scaleSubdivisionHeight,
   scaleMarkers,
   scaleSubdivisions,
   setNextEnabled,
@@ -76,16 +76,16 @@ const Component = ({
       }}
       rangeMarkerOptions={{
         markerColor: rangeMarkerColor,
-        length: `${rangeMarkerLength}px`,
+        length: `${rangeMarkerHeight}px`,
         thickness: `${rangeMarkerThickness}px`
       }}
       scaleMarkerOptions={{
         markerColor: scaleMarkerColor,
         thickness: `${scaleMarkerThickness}px`,
-        length: `${scaleMarkerLength}px`,
+        length: `${scaleMarkerHeight}px`,
         subColor: scaleSubdivisionColor,
         subThickness: `${scaleSubdivisionThickness}px`,
-        subLength: `${scaleSubdivisionLength}px`,
+        subLength: `${scaleSubdivisionHeight}px`,
         markers: scaleMarkers,
         subdivisions: scaleSubdivisions
       }}

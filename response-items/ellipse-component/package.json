@@ -1,7 +1,7 @@
 {
   "name": "@decsys/ellipse-component",
   "componentName": "Ellipse",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "The Ellipse Scale component for the DECSYS Survey Platform",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -38,7 +38,7 @@
   "dependencies": {
     "@decsys/iaa": "^1.0.0-beta.4",
     "@decsys/param-types": "^0.3.1",
-    "@decsys/rating-scales": "^0.8.0",
+    "@decsys/rating-scales": "^1.0.0-beta.4",
     "styled-icons": "^7.6.0"
   },
   "peerDependencies": {

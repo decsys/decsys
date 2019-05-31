@@ -7,7 +7,7 @@ const params = {
   barRightMargin: ParamTypes.number("Bar Right Margin (%)", 10),
   barTopMargin: ParamTypes.number("Bar Top Margin (%)", 50),
   barColor: ParamTypes.string("Bar Color", "black"),
-  barThickness: ParamTypes.number("Bar Thickness (px)", 8),
+  barThickness: ParamTypes.number("Bar Thickness (px)", 4),
   barMinValue: ParamTypes.number("Bar Min Value"),
   barMaxValue: ParamTypes.number("Bar Max Value", 100),
   labelColor: ParamTypes.string("Label Color", "black"),
@@ -21,22 +21,22 @@ const params = {
   minLabel: ParamTypes.string("Minimum Label", "Min"),
   midLabel: ParamTypes.string("Middle Label"),
   maxLabel: ParamTypes.string("Maximum Label", "Max"),
-  penColor: ParamTypes.string("Pen Color", "black"),
+  penColor: ParamTypes.string("Pen Color", "red"),
   penThickness: ParamTypes.number("Pen Thickness", 2),
-  rangeMarkerColor: ParamTypes.string("Range Marker Color", "black"),
-  rangeMarkerLength: ParamTypes.number("Range Marker Length (px)", 100),
-  rangeMarkerThickness: ParamTypes.number("Range Marker Thickness (px)", 10),
+  rangeMarkerColor: ParamTypes.string("Range Marker Color", "blue"),
+  rangeMarkerHeight: ParamTypes.number("Range Marker Height (px)", 100),
+  rangeMarkerThickness: ParamTypes.number("Range Marker Thickness (px)", 6),
   scaleMarkerColor: ParamTypes.string("Scale Marker Color", "black"),
-  scaleMarkerThickness: ParamTypes.number("Scale Marker Thickness", 5),
-  scaleMarkerLength: ParamTypes.number("Scale Marker Length", 50),
+  scaleMarkerThickness: ParamTypes.number("Scale Marker Thickness", 4),
+  scaleMarkerHeight: ParamTypes.number("Scale Marker Height", 30),
   scaleSubdivisionColor: ParamTypes.string("Scale Subdivision Color", "black"),
   scaleSubdivisionThickness: ParamTypes.number(
     "Scale Subdivision Thickness",
-    5
+    4
   ),
-  scaleSubdivisionLength: ParamTypes.number("Scale Subdivision Length", 20),
-  scaleMarkers: ParamTypes.number("Scale Markers", 2),
-  scaleSubdivisions: ParamTypes.number("Scale Subdivisions", 10)
+  scaleSubdivisionHeight: ParamTypes.number("Scale Subdivision Height", 15),
+  scaleMarkers: ParamTypes.number("Scale Markers", 5),
+  scaleSubdivisions: ParamTypes.number("Scale Subdivisions", 4)
 };
 
 // Specify PropTypes for non-Configurable Props
