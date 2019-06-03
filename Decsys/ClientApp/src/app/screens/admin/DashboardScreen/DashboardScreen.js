@@ -16,6 +16,7 @@ import {
 import ReactTable from "react-table";
 import { useInterval } from "../../../utils/hooks";
 import * as api from "../../../api";
+import SurveyPageBody from "../../../components/SurveyPage/Body";
 
 const DashboardScreen = ({ instanceId, survey, results: initialResults }) => {
   const statsModal = useModal();
@@ -109,9 +110,22 @@ const DashboardScreen = ({ instanceId, survey, results: initialResults }) => {
         value: stats.stats[name]
       }))
     ];
+
+    const nop = () => {};
+
     return (
       <FlexBox width={1} flexDirection="column" alignItems="center">
-        <Box width="50%">{stats.visualizations[0].component}</Box>
+        <FlexBox width={1}>
+          <Box width="50%">
+            <SurveyPageBody
+              id={survey.id}
+              components={statsPage.components}
+              setNextEnabled={nop}
+              logEvent={nop}
+            />
+          </Box>
+          <Box width="50%">{stats.visualizations[0].component}</Box>
+        </FlexBox>
         <Box width={1}>
           <ReactTable
             minRows={1}

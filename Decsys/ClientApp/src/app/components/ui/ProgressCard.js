@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Typography, Box } from "@smooth-ui/core-sc";
+import { Typography, Box } from "@smooth-ui/core-sc";
 import { FlexBox, ActiveIndicator } from ".";
 
 const ProgressCard = ({
