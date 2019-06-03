@@ -3,9 +3,8 @@ import { Grid, Cell } from "styled-css-grid";
 import { FlexBox, Container } from "../../components/ui";
 import { Button } from "@smooth-ui/core-sc";
 import { ChevronRight } from "styled-icons/fa-solid";
-import ComponentRender from "../../components/ComponentRender";
-import { getComponent } from "../../utils/component-utils";
-import { COMPONENT_RESULTS, PAGE_LOAD } from "../../utils/event-types";
+import { PAGE_LOAD } from "../../utils/event-types";
+import SurveyPageBody from "./Body";
 
 // TODO: Prop Types!
 
@@ -25,29 +24,12 @@ const SurveyPage = ({ appBar, id, page, onNextPage, lastPage, logEvent }) => {
       <Cell>{appBar}</Cell>
       <Cell style={{ overflow: "auto" }}>
         <Container>
-          <FlexBox p={1} flexDirection="column">
-            {page.components.map(x => (
-              <ComponentRender
-                key={x.id}
-                component={getComponent(x.type)}
-                actions={{
-                  setNextEnabled,
-                  logEvent: (type, payload) => logEvent(x.id, type, payload),
-                  logResults: payload =>
-                    logEvent(x.id, COMPONENT_RESULTS, payload)
-                }}
-                params={
-                  x.type === "image"
-                    ? {
-                        ...x.params,
-                        surveyId: id,
-                        id: x.id
-                      }
-                    : x.params
-                }
-              />
-            ))}
-          </FlexBox>
+          <SurveyPageBody
+            id={id}
+            components={page.components}
+            setNextEnabled={setNextEnabled}
+            logEvent={logEvent}
+          />
         </Container>
       </Cell>
       <Cell>
