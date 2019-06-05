@@ -54,13 +54,10 @@ storiesOf("Component", module)
       radio1="1"
       radio2="2"
       radio3="3"
+      radio3Secondary="" //override defaults; this is what the platform does anyway
       radio4="4"
       radio5="5"
-      radio6="6"
-      radio7="7"
-      radio8="I'm not used"
-      radio1Secondary="Low"
-      radio7Secondary="High"
+      radio5Secondary="High"
       barLeftMargin={10}
       barTopMargin={50}
       barRightMargin={10}

@@ -17,8 +17,16 @@ const Component = ({
   initialValue,
   logResults,
   setNextEnabled,
-  ...radioParams
+  ...p
 }) => {
+  // get radio params from all other props
+  // (or more accurately, strip out anything the Platform passes
+  // that we don't need, like `logEvent` or other API methods)
+  const radioParams = Object.keys(p).reduce((acc, key) => {
+    if (key.includes("radio")) acc[key] = p[key];
+    return acc;
+  }, {});
+
   const handleDiscreteSelected = e => {
     logResults(e.detail);
     setNextEnabled(true);
@@ -32,18 +40,20 @@ const Component = ({
   }, []);
 
   // prepare radio button values
-  const radios = [];
-  for (let i = 0; i < 7; i++) {
-    const key = `radio${i + 1}`;
-    if (radioParams[key]) {
-      const r = [radioParams[key]];
+  const radios = Object.keys(radioParams)
+    .sort((a, b) => a.match(/\d+/) - b.match(/\d+/)) // guarantee ascending numeric order
+    .reduce((acc, key) => {
+      if (key.includes("Secondary")) return acc; // ignore secondary params
 
-      if (radioParams[`${key}Secondary`])
-        r.push(radioParams[`${key}Secondary`]);
+      const secondaryKey = `${key}Secondary`;
 
-      radios.push(r);
-    }
-  }
+      if (!radioParams[key] && !radioParams[secondaryKey]) return acc;
+
+      const radio = [radioParams[key], radioParams[secondaryKey]];
+
+      acc.push(radio);
+      return acc;
+    }, []);
 
   return (
     <DiscreteScale
