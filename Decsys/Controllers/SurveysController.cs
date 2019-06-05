@@ -139,11 +139,13 @@ namespace Decsys.Controllers
 
         [HttpPost("import")]
         public async Task<ActionResult<int>> Import(
+            bool importData,
             [SwaggerParameter("The survey export file")]
             IFormFile file)
         {
             Survey survey = null;
             var images = new List<(string filename, byte[] data)>();
+            var instances = new List<SurveyInstance>();
             using (var stream = new MemoryStream())
             {
                 await file.CopyToAsync(stream).ConfigureAwait(false);
@@ -161,11 +163,24 @@ namespace Decsys.Controllers
                         images.Add((entry.FullName.Replace("images/", string.Empty), bytes));
                     }
 
-
                     if (entry.FullName == "structure.json")
                     {
                         using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
                             survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+                    }
+                    else if (importData && entry.FullName.StartsWith("Instance-") && entry.FullName.EndsWith(".json"))
+                    {
+                        try
+                        {
+                            using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
+                                instances.Add(JsonConvert.DeserializeObject<SurveyInstance>(reader.ReadToEnd()));
+                        }
+                        catch (JsonSerializationException)
+                        {
+                            // This is fine
+                            // We just don't import what we can't deserialize as an instance
+                            // TODO: Maybe someday we could report on the result of our attempted import /shrug
+                        }
                     }
                 }
             }
