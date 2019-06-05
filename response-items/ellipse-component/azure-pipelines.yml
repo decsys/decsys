@@ -31,7 +31,7 @@ stages:
         pool:
           vmImage: ubuntu-latest
         dependsOn: Metadata
-        environment: GitHub
+        environment: github
         variables:
           version: '$[ dependencies.Metadata.outputs[''setVersion.version''] ]'
         strategy:
