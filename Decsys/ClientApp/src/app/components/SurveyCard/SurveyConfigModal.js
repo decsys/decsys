@@ -11,6 +11,7 @@ import {
 import { InfoCircle } from "styled-icons/fa-solid";
 import SurveyCardContext from "./Context";
 import { generateCombination } from "gfycat-style-urls";
+import { getCancelToken } from "../../api";
 
 const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
   const InfoIcon = styled(InfoCircle)`
@@ -28,12 +29,18 @@ const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
   const [idGenCount, setIdGenCount] = useState(10);
 
   useEffect(() => {
-    fetchSurveyConfig(surveyId).then(({ data }) => {
-      setOneTimeParticipants(data.oneTimeParticipants);
-      setUseParticipantIdentifiers(data.useParticipantIdentifiers);
-      setValidIdentifiers(data.validIdentifiers || []);
-      setCurrentConfigLoaded(true);
-    });
+    const token = getCancelToken();
+    fetchSurveyConfig(surveyId, token)
+      .then(({ data }) => {
+        setOneTimeParticipants(data.oneTimeParticipants);
+        setUseParticipantIdentifiers(data.useParticipantIdentifiers);
+        setValidIdentifiers(data.validIdentifiers || []);
+        setCurrentConfigLoaded(true);
+      })
+      .catch(e => {
+        if (!e.isCancellation) throw e; // cancellations are fine
+      });
+    return () => token.cancel();
   }, [fetchSurveyConfig, surveyId]);
 
   const handleConfirmClick = async () => {
