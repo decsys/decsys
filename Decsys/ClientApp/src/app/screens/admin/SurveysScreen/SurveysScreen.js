@@ -25,7 +25,8 @@ const SurveysScreen = ({ surveys }) => {
     handleLaunchClick: id => dispatch(ducks.launchSurvey(id)),
     handleCloseClick: (surveyId, instanceId) =>
       dispatch(ducks.closeSurvey(surveyId, instanceId)),
-    fetchSurveyConfig: async id => await api.getSurveyConfig(id),
+    fetchSurveyConfig: async (id, cancelToken) =>
+      await api.getSurveyConfig(id, cancelToken),
     handleSurveyConfigSaveClick: async (id, config) =>
       await api.setSurveyConfig(id, config)
   };

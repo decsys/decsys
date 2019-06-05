@@ -7,6 +7,8 @@ const appJsonHeaderOptions = {
   }
 };
 
+export const getCancelToken = () => Axios.CancelToken.source();
+
 export const setSurveyName = (id, name) =>
   Axios.put(
     `/api/surveys/${id}/name`,
@@ -158,8 +160,21 @@ export const getInstanceResultsFull = (surveyId, instanceId) =>
 export const setSurveyConfig = (surveyId, config) =>
   Axios.put(`/api/surveys/${surveyId}/config`, config);
 
-export const getSurveyConfig = surveyId =>
-  Axios.get(`/api/surveys/${surveyId}/config`);
+export const getSurveyConfig = async (surveyId, { token: cancelToken }) => {
+  try {
+    return await Axios.get(`/api/surveys/${surveyId}/config`, { cancelToken });
+  } catch (e) {
+    if (Axios.isCancel(e)) {
+      // cancellations are fine
+      const cancelError = new Error("Request Cancelled");
+      // enable calling code to check this without importing Axios
+      cancelError.isCancellation = true;
+      throw cancelError;
+    }
+
+    throw e;
+  }
+};
 
 export const getSurveyExport = (surveyId, type) =>
   Axios.get(`/api/surveys/${surveyId}/export?type=${type}`);

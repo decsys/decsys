@@ -27,7 +27,7 @@ const EditorPageList = ({ actions, components, pages, component }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            style={{ overflow: "auto", minHeight: "100%F" }}
+            style={{ overflow: "auto", minHeight: "100%" }}
           >
             <FlexBox flexDirection="column" px={2}>
               <FlexBox
@@ -82,7 +82,7 @@ const EditorPageList = ({ actions, components, pages, component }) => {
 };
 
 EditorPageList.propTypes = {
-  pages: PropTypes.arrayOf(PropTypes.shape(Page.propTypes.page)),
+  pages: PropTypes.arrayOf(Page.propTypes.page),
   components: Page.propTypes.componentList,
   actions: PropTypes.shape({
     onAddClick: PropTypes.func.isRequired,
