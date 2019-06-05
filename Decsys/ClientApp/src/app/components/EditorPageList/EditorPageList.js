@@ -27,7 +27,7 @@ const EditorPageList = ({ actions, components, pages, component }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            style={{ overflow: "auto", minHeight: "100%F" }}
+            style={{ overflow: "auto", minHeight: "100%" }}
           >
             <FlexBox flexDirection="column" px={2}>
               <FlexBox
@@ -82,7 +82,26 @@ const EditorPageList = ({ actions, components, pages, component }) => {
 };
 
 EditorPageList.propTypes = {
-  pages: PropTypes.arrayOf(PropTypes.shape(Page.propTypes.page)),
+  pages: PropTypes.arrayOf(Page.propTypes.page),
+  // pages: (props, propName, componentName) => {
+  //   const pages = props[propName];
+  //   PropTypes.checkPropTypes(
+  //     { pages: PropTypes.array }, // We always want `pages` to be an array
+  //     { pages },
+  //     componentName
+  //   );
+  //   // We want to allow an empty array
+  //   if (props[propName].length > 0) {
+  //     // If the array has any items, we want them to conform to a shape
+  //     PropTypes.checkPropTypes(
+  //       {
+  //         pages: PropTypes.arrayOf(PropTypes.shape(Page.propTypes.page))
+  //       },
+  //       { pages },
+  //       componentName
+  //     );
+  //   }
+  // },
   components: Page.propTypes.componentList,
   actions: PropTypes.shape({
     onAddClick: PropTypes.func.isRequired,
