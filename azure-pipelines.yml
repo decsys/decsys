@@ -22,7 +22,7 @@ stages:
           vmImage: ubuntu-latest
         dependsOn: Metadata
         variables:
-          clientVersion: '$[ dependencies.Metadata.outputs[''setClientVersion.clientVersion''] ]'
+          clientVersion: "$[ dependencies.Metadata.outputs['setClientVersion.clientVersion'] ]"
         steps:
           - task: file-creator@5
             inputs:
@@ -128,10 +128,10 @@ stages:
           matrix:
             dotnet:
               name: dotnet
-              argTargetRuntime: ''
+              argTargetRuntime: ""
             win64:
               name: win-x64
-              argTargetRuntime: '-r win-x64'
+              argTargetRuntime: "-r win-x64"
         steps:
           - checkout: none
           - task: DownloadPipelineArtifact@1
@@ -156,7 +156,7 @@ stages:
           - upload: $(Build.ArtifactStagingDirectory)
             artifact: $(name)
   - stage: Release
-    condition: 'and(succeeded(), eq(variables[''Build.SourceBranch''], ''refs/heads/master''))'
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
     jobs:
       - job: Metadata
         pool:
@@ -173,7 +173,7 @@ stages:
       - deployment: GitHub_Pages
         pool:
           vmImage: ubuntu-latest
-        environment: GitHub
+        environment: github
         variables:
           - group: GitHub
         strategy:
@@ -202,9 +202,9 @@ stages:
         pool:
           vmImage: ubuntu-latest
         dependsOn: Metadata
-        environment: GitHub
+        environment: github
         variables:
-          buildVersion: '$[ dependencies.Metadata.outputs[''setApiVersion.apiVersion''] ]'
+          buildVersion: "$[ dependencies.Metadata.outputs['setApiVersion.apiVersion'] ]"
         strategy:
           runOnce:
             deploy:
@@ -233,6 +233,6 @@ stages:
                     tagSource: manual
                     tag: $(buildVersion)
                     releaseNotesSource: input
-                    releaseNotes: '`// TODO`'
+                    releaseNotes: "`// TODO`"
                     isDraft: true
                     assets: $(Build.BinariesDirectory)/*.zip
