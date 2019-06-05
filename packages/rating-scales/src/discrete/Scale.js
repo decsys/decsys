@@ -80,21 +80,20 @@ export default class DiscreteScale extends React.Component {
 
   render() {
     const radios = [];
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < this.props.radios.length; i++) {
       const id = `radio${i + 1}`;
-      if (this.props.radios[i])
-        radios.push(
-          <Radio
-            {...this.props.radioOptions}
-            labelAbove={this.props.radioOptions.labelAlignment === "above"}
-            id={id}
-            key={id}
-            index={i}
-            defaultChecked={this.props.radioOptions.initialIndex === i}
-            value={this.props.radios[i][0]}
-            secondaryLabel={this.props.radios[i][1]}
-          />
-        );
+      radios.push(
+        <Radio
+          {...this.props.radioOptions}
+          labelAbove={this.props.radioOptions.labelAlignment === "above"}
+          id={id}
+          key={id}
+          index={i}
+          defaultChecked={this.props.radioOptions.initialIndex === i}
+          value={this.props.radios[i][0]}
+          secondaryLabel={this.props.radios[i][1]}
+        />
+      );
     }
 
     return (
