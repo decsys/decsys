@@ -13,17 +13,18 @@ const buildPropTypes = (params, propTypes, defaultProps) => {
     propTypes: propTypes || {},
     defaultProps: defaultProps || {}
   };
-  for (const param in params) {
-    switch (params[param].type) {
+  for (const key in params) {
+    const param = params[key];
+    switch (param.type) {
       case types.string:
       case types.number:
       case types.bool:
-        x.propTypes[param] = PropTypes[params[param].type];
+        x.propTypes[key] = PropTypes[param.type];
         break;
       case types.oneOf:
-        x.propTypes[param] = PropTypes.oneOf(param.oneOf);
+        x.propTypes[key] = PropTypes.oneOf(param.oneOf);
     }
-    x.defaultProps[param] = params[param].defaultValue;
+    x.defaultProps[key] = param.defaultValue;
   }
   return x;
 };
