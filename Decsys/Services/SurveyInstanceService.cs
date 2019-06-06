@@ -84,5 +84,10 @@ namespace Decsys.Services
             instance.Closed = DateTimeOffset.UtcNow;
             instances.Update(instance);
         }
+
+        public void Import(IList<Models.SurveyInstance> instances, int targetSurveyId)
+        {
+
+        }
     }
 }

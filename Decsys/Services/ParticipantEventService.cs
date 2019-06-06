@@ -56,7 +56,7 @@ namespace Decsys.Services
             // Get all participant collections for this instance
             var logs = GetAllParticipantLogs(instanceId);
 
-            // summarize each one
+            // Add each one
             var participants = new List<Models.ParticipantEvents>();
             foreach (var collectionName in logs)
             {
@@ -68,13 +68,10 @@ namespace Decsys.Services
                 });
             }
 
-            return new Models.SurveyInstanceResults<Models.ParticipantEvents>
-            {
-                Generated = DateTimeOffset.UtcNow,
-                Instance = instance.Published,
-                Survey = instance.Survey.Name,
-                Participants = participants
-            };
+            var result = _mapper.Map<Models.SurveyInstanceResults<Models.ParticipantEvents>>(instance);
+            result.Participants = participants;
+
+            return result;
         }
 
         /// <summary>
@@ -165,13 +162,10 @@ namespace Decsys.Services
                 participants.Add(ParticipantResultsSummary(instance, participantId));
             }
 
-            return new Models.SurveyInstanceResults<Models.ParticipantResultsSummary>
-            {
-                Generated = DateTimeOffset.UtcNow,
-                Instance = instance.Published,
-                Survey = instance.Survey.Name,
-                Participants = participants
-            };
+            var result = _mapper.Map<Models.SurveyInstanceResults<Models.ParticipantResultsSummary>>(instance);
+            result.Participants = participants;
+
+            return result;
         }
 
         /// <summary>

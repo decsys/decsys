@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decsys.Models;
@@ -177,7 +178,7 @@ namespace Decsys.Controllers
                         }
                         catch (JsonSerializationException)
                         {
-                            // This is fine
+                            // This is fine 🔥🍵🐕🔥
                             // We just don't import what we can't deserialize as an instance
                             // TODO: Maybe someday we could report on the result of our attempted import /shrug
                         }
@@ -188,7 +189,14 @@ namespace Decsys.Controllers
             if (survey is null)
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
-            return await _surveys.Import(survey, images);
+            var surveyId = await _surveys.Import(survey, images);
+
+            if (importData && instances.Any())
+            {
+                // attempt to import instances
+            }
+
+            return surveyId;
         }
     }
 }
