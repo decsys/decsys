@@ -195,12 +195,12 @@ export default class EllipseScale extends React.Component {
     this.app.stage.hitArea = this.app.screen;
 
     this.app.stage.pointerdown = e => {
-      if (e.data.originalEvent.buttons === 1)
+      if (e.data.buttons === 1)
         this.pen.reset({ x: e.data.global.x, y: e.data.global.y });
     };
 
     this.app.stage.pointermove = e => {
-      if (e.data.originalEvent.buttons === 1) {
+      if (e.data.buttons === 1) {
         const { x, y } = e.data.global;
         // also check we are in the hit area
         // (we don't care for moves outside it)
