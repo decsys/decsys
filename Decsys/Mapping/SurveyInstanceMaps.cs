@@ -21,8 +21,7 @@ namespace Decsys.Mapping
                 .ForMember(dest => dest.Survey, opt => opt.Ignore()); // do this manually as we don't export the id
 
             CreateMap(typeof(Models.SurveyInstanceResults<>), typeof(SurveyInstance))
-                .IncludeBase(typeof(Models.BaseSurveyInstanceResults), typeof(SurveyInstance))
-                .ForMember("Participants", opt => opt.Ignore());
+                .IncludeBase(typeof(Models.BaseSurveyInstanceResults), typeof(SurveyInstance));
         }
     }
 }
