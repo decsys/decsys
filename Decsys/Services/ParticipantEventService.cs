@@ -22,7 +22,7 @@ namespace Decsys.Services
             _mapper = mapper;
         }
 
-        private string GetCollectionName(int instanceId, string participantId)
+        public static string GetCollectionName(int instanceId, string participantId)
             => $"{Collections.EventLog}{instanceId}_{participantId}";
 
         private IEnumerable<Models.ParticipantEvent> _List(int instanceId, string participantId)

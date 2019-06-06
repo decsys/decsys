@@ -85,9 +85,28 @@ namespace Decsys.Services
             instances.Update(instance);
         }
 
-        public void Import(IList<Models.SurveyInstance> instances, int targetSurveyId)
+        public void Import(IList<Models.SurveyInstanceResults<Models.ParticipantEvents>> instanceModels, int targetSurveyId)
         {
+            var instances = _db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            var survey = _db.GetCollection<Survey>(Collections.Surveys).FindById(targetSurveyId);
 
+            foreach (var instanceModel in instanceModels)
+            {
+                var instance = _mapper.Map<SurveyInstance>(instanceModel);
+                instance.Survey = survey;
+                var instanceId = instances.Insert(instance);
+
+                foreach(var participant in instanceModel.Participants)
+                {
+                    var log = _db.GetCollection<ParticipantEvent>(
+                    ParticipantEventService.GetCollectionName(instanceId, participant.Id));
+
+                    foreach(var e in participant.Events)
+                    {
+                        log.Insert(_mapper.Map<ParticipantEvent>(e));
+                    }
+                }
+            }
         }
     }
 }

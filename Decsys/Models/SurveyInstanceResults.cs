@@ -10,29 +10,30 @@ namespace Decsys.Models
     public class BaseSurveyInstanceResults
     {
         /// <summary>
-        /// A timestamp for when the summary was produced
+        /// A timestamp for when the export was produced
         /// </summary>
-        public DateTimeOffset Generated { get; set; }
+        public DateTimeOffset ExportGenerated { get; set; }
 
         /// <summary>
         /// The timestamp which identifies the Survey Instance, by when it was published
         /// </summary>
-        public DateTimeOffset InstancePublished { get; set; }
+        public DateTimeOffset Published { get; set; }
 
         /// <summary>
         /// The timestamp for when the Survey was closed, if it has been
         /// </summary>
-        public DateTimeOffset? InstanceClosed { get; set; }
+        public DateTimeOffset? Closed { get; set; }
 
         /// <summary>
         /// The name of the survey the instance (and therefore these results) belong to
         /// </summary>
         public string Survey { get; set; } = string.Empty;
 
-        /// <summary>
-        /// The Survey Config that was used at the time of publishing this instance
-        /// </summary>
-        public object Config { get; set; } = new { };
+        public bool OneTimeParticipants { get; set; }
+
+        public bool UseParticipantIdentifiers { get; set; }
+
+        public IEnumerable<string> ValidIdentifiers { get; set; } = new List<string>();
     }
 
     /// <summary>

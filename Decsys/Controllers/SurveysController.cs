@@ -146,7 +146,7 @@ namespace Decsys.Controllers
         {
             Survey survey = null;
             var images = new List<(string filename, byte[] data)>();
-            var instances = new List<SurveyInstance>();
+            var instances = new List<SurveyInstanceResults<ParticipantEvents>>();
             using (var stream = new MemoryStream())
             {
                 await file.CopyToAsync(stream).ConfigureAwait(false);
@@ -174,7 +174,7 @@ namespace Decsys.Controllers
                         try
                         {
                             using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
-                                instances.Add(JsonConvert.DeserializeObject<SurveyInstance>(reader.ReadToEnd()));
+                                instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
                         }
                         catch (JsonSerializationException)
                         {
@@ -194,6 +194,7 @@ namespace Decsys.Controllers
             if (importData && instances.Any())
             {
                 // attempt to import instances
+
             }
 
             return surveyId;
