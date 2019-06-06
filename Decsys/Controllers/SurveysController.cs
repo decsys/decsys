@@ -19,12 +19,14 @@ namespace Decsys.Controllers
     public class SurveysController : ControllerBase
     {
         private readonly SurveyService _surveys;
+        private readonly SurveyInstanceService _instances;
         private readonly ExportService _export;
 
-        public SurveysController(SurveyService surveys, ExportService export)
+        public SurveysController(SurveyService surveys, ExportService export, SurveyInstanceService instances)
         {
             _surveys = surveys;
             _export = export;
+            _instances = instances;
         }
 
         [HttpGet]
@@ -194,7 +196,7 @@ namespace Decsys.Controllers
             if (importData && instances.Any())
             {
                 // attempt to import instances
-
+                _instances.Import(instances, surveyId);
             }
 
             return surveyId;
