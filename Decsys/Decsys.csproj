@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <Version>1.0.0-beta.3</Version>
+    <Version>1.0.0-beta.4</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -49,6 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Auth\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

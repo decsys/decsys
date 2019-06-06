@@ -1,7 +1,9 @@
 using AutoMapper;
 using ClacksMiddleware.Extensions;
+using Decsys.Auth;
 using Decsys.Services;
 using LiteDB;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +38,13 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add Authorization
+            services.AddAuthorization(opts => opts.AddPolicy(
+                nameof(AuthPolicies.LocalHost),
+                AuthPolicies.LocalHost()));
+
+            services.AddSingleton<IAuthorizationHandler, LocalMachineHandler>();
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
