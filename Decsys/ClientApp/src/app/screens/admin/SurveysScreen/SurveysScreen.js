@@ -16,7 +16,8 @@ const SurveysScreen = ({ surveys }) => {
   const navigation = useNavigation();
 
   const handleCreateClick = () => dispatch(ducks.createSurvey());
-  const handleImportClick = file => dispatch(ducks.importSurvey(file));
+  const handleImportClick = (file, importData) =>
+    dispatch(ducks.importSurvey(file, importData));
 
   const surveyCardActions = {
     handleEditClick: id => navigation.navigate(`admin/survey/${id}`), // TODO: Routing state for placeholder?

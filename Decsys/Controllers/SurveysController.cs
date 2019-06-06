@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Decsys.Models;
@@ -18,12 +19,14 @@ namespace Decsys.Controllers
     public class SurveysController : ControllerBase
     {
         private readonly SurveyService _surveys;
+        private readonly SurveyInstanceService _instances;
         private readonly ExportService _export;
 
-        public SurveysController(SurveyService surveys, ExportService export)
+        public SurveysController(SurveyService surveys, ExportService export, SurveyInstanceService instances)
         {
             _surveys = surveys;
             _export = export;
+            _instances = instances;
         }
 
         [HttpGet]
@@ -139,11 +142,13 @@ namespace Decsys.Controllers
 
         [HttpPost("import")]
         public async Task<ActionResult<int>> Import(
+            bool importData,
             [SwaggerParameter("The survey export file")]
             IFormFile file)
         {
             Survey survey = null;
             var images = new List<(string filename, byte[] data)>();
+            var instances = new List<SurveyInstanceResults<ParticipantEvents>>();
             using (var stream = new MemoryStream())
             {
                 await file.CopyToAsync(stream).ConfigureAwait(false);
@@ -161,11 +166,24 @@ namespace Decsys.Controllers
                         images.Add((entry.FullName.Replace("images/", string.Empty), bytes));
                     }
 
-
                     if (entry.FullName == "structure.json")
                     {
                         using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
                             survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+                    }
+                    else if (importData && entry.FullName.StartsWith("Instance-") && entry.FullName.EndsWith(".json"))
+                    {
+                        try
+                        {
+                            using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
+                                instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
+                        }
+                        catch (JsonSerializationException)
+                        {
+                            // This is fine 🔥🍵🐕🔥
+                            // We just don't import what we can't deserialize as an instance
+                            // TODO: Maybe someday we could report on the result of our attempted import /shrug
+                        }
                     }
                 }
             }
@@ -173,7 +191,15 @@ namespace Decsys.Controllers
             if (survey is null)
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
-            return await _surveys.Import(survey, images);
+            var surveyId = await _surveys.Import(survey, images);
+
+            if (importData && instances.Any())
+            {
+                // attempt to import instances
+                _instances.Import(instances, surveyId);
+            }
+
+            return surveyId;
         }
     }
 }
