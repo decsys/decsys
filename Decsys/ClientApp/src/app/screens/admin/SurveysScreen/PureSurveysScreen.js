@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Typography, Button, Alert, Box, Input } from "@smooth-ui/core-sc";
+import {
+  Typography,
+  Button,
+  Alert,
+  Box,
+  Input,
+  Checkbox,
+  FormCheck,
+  FormCheckLabel
+} from "@smooth-ui/core-sc";
 import {
   List,
   PlusCircle,
@@ -15,7 +24,9 @@ import ConfirmModal, { useModal } from "../../../components/ui/ConfirmModal";
 const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
   const importModal = useModal();
   const [importFile, setImportFile] = useState();
+  const [importData, setImportData] = useState(false);
   const [error, setError] = useState();
+  const idTimestamp = new Date().getTime();
 
   const handleFileSelect = e => {
     setImportFile();
@@ -33,7 +44,12 @@ const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
 
   const handleImportClick = () => {
     if (!importFile || error) return;
-    onImportClick(importFile);
+    onImportClick(importFile, importData);
+    importModal.toggleModal();
+  };
+
+  const handleImportDataCheckboxChange = e => {
+    setImportData(e.target.checked);
   };
 
   return (
@@ -97,6 +113,19 @@ const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
               <ExclamationCircle size="1em" /> {error}
             </Typography>
           )}
+
+          <FormCheck mt={2}>
+            <Checkbox
+              control
+              size="lg"
+              id={`import-data-${idTimestamp}`}
+              checked={importData}
+              onChange={handleImportDataCheckboxChange}
+            />
+            <FormCheckLabel htmlFor={`import-data-${idTimestamp}`}>
+              Also import any Results Data
+            </FormCheckLabel>
+          </FormCheck>
         </FlexBox>
       </ConfirmModal>
     </>
