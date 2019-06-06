@@ -44,7 +44,6 @@ namespace Decsys.Services
             return _List(instanceId, participantId);
         }
 
-        // TODO: refactor export types and their inheritance / genericness
         public Models.SurveyInstanceResults<Models.ParticipantEvents> Results(int instanceId)
         {
             var instance = _db.GetCollection<SurveyInstance>(
