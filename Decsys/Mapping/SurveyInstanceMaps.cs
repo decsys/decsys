@@ -18,6 +18,7 @@ namespace Decsys.Mapping
 
             // These are only used for imports!
             CreateMap<Models.BaseSurveyInstanceResults, SurveyInstance>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => 0))// always set to 0; we are inserting new instances
                 .ForMember(dest => dest.Survey, opt => opt.Ignore()); // do this manually as we don't export the id
 
             CreateMap(typeof(Models.SurveyInstanceResults<>), typeof(SurveyInstance))
