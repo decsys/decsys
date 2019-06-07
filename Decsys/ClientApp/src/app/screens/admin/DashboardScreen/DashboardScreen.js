@@ -151,7 +151,7 @@ const DashboardScreen = ({ instanceId, survey, results: initialResults }) => {
           {survey.name}
         </Typography>
         <Typography mb={2} variant="h3">
-          Dashboard for {results.instance}
+          Dashboard for {results.published}
         </Typography>
         <Typography mb={2} variant="h5">
           Participant progress by Question
