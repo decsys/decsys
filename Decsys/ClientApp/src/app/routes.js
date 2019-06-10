@@ -34,8 +34,15 @@ const routes = mount({
     "/": route({
       view: <SurveyIdScreen />
     }),
-    "/:id/complete": route({
-      view: <SurveyCompleteScreen /> // TODO: someday this might use the id (and therefore need to verify it)
+    "/:id/complete": route(({ params }, { users }) => {
+      // clear the stored user id for this survey
+      // - for anonymous surveys, this will force a new id to be generated
+      // - for surveys with identifier entry, it will force entry on the next run
+      users.clearInstanceParticipantId(params.id);
+
+      return {
+        view: <SurveyCompleteScreen />
+      };
     }),
     "/:id": route(async ({ params }, { users, user }) => {
       let view;
@@ -73,7 +80,7 @@ const routes = mount({
             users.storeInstanceParticipantId(params.id, userId);
           }
         } else {
-          userId = user.instances[params.id];
+          userId = user.instances[params.id]; // re-use the stored one if we're resuming
         }
 
         // check logs to set progressStatus and randomisation
