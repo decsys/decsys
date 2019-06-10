@@ -19,6 +19,11 @@ const dummyEllipseResults = [
     completed: true
   },
   {
+    minRangeValue: 0,
+    maxRangeValue: 100,
+    completed: true
+  },
+  {
     minRangeValue: 50,
     maxRangeValue: 90,
     completed: true
