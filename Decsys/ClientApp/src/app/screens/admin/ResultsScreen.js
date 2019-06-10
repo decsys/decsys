@@ -54,7 +54,7 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
   const resultsFilename = () =>
     `${survey.name}_Instance-${formatDate(
       Date.parse(currentInstance.published)
-    )}_${formatDate(Date.parse(results.generated))}`;
+    )}_${formatDate(Date.parse(results.exportGenerated))}`;
 
   const handleExportCsvClick = async () => {
     //figure out all the response columns we need

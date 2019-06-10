@@ -192,6 +192,11 @@ namespace Decsys.Services
 
         private Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
         {
+            var resultsSummary = new Models.ParticipantResultsSummary
+            {
+                Id = participantId
+            };
+
             var log = _db.GetCollection<ParticipantEvent>(GetCollectionName(instance.Id, participantId));
 
             var orderLog = log.Find(x =>
@@ -199,6 +204,11 @@ namespace Decsys.Services
                         && x.Type == EventTypes.PAGE_RANDOMIZE)
                     .OrderByDescending(x => x.Timestamp)
                     .FirstOrDefault();
+            if(orderLog is null)
+            {
+                resultsSummary.Responses = new List<Models.PageResponseSummary>();
+                return resultsSummary;
+            }
 
             var order = ((JArray)
                     ((dynamic)BsonJObjectConverter.Convert(orderLog.Payload))
@@ -209,8 +219,10 @@ namespace Decsys.Services
 
             foreach (var page in instance.Survey.Pages.OrderBy(x => x.Order))
             {
-                var responseComponent = page.Components.Single( // find the one with the Capitalised Type.
+                var responseComponent = page.Components.SingleOrDefault( // find the one with the Capitalised Type.
                         x => x.Type != x.Type.ToLower(CultureInfo.InvariantCulture));
+                if (responseComponent is null) continue; // we don't care about pages without responses
+
                 var finalResponse = log.Find(x =>
                         x.Source == responseComponent.Id.ToString()
                         && x.Type == EventTypes.COMPONENT_RESULTS)
@@ -240,11 +252,8 @@ namespace Decsys.Services
                 });
             }
 
-            return new Models.ParticipantResultsSummary
-            {
-                Id = participantId,
-                Responses = responses
-            };
+            resultsSummary.Responses = responses;
+            return resultsSummary;
         }
     }
 }

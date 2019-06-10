@@ -42,8 +42,15 @@ const routes = mount({
 
       const [surveyId, instanceId] = decode(params.id);
       try {
-        const instance = (await api.getSurveyInstance(surveyId, instanceId))
-          .data;
+        const { data: instance } = await api.getSurveyInstance(
+          surveyId,
+          instanceId
+        );
+        if (instance.closed) {
+          const e = new Error();
+          e.response = { status: 404 }; // pretend we got a 404 back from the API
+          throw e;
+        }
 
         // get the actual survey data
         const { data: survey } = await api.getSurvey(surveyId);
