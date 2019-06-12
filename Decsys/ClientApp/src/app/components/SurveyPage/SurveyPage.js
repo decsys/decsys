@@ -9,7 +9,7 @@ import SurveyPageBody from "./Body";
 // TODO: Prop Types!
 
 const SurveyPage = ({ appBar, id, page, onNextPage, lastPage, logEvent }) => {
-  const [nextEnabled, setNextEnabled] = useState(true);
+  const [nextEnabled, setNextEnabled] = useState(false);
 
   useEffect(() => {
     logEvent(page.id, PAGE_LOAD, {});

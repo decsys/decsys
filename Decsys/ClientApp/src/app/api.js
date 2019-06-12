@@ -128,6 +128,9 @@ export const listSurveyInstances = surveyId =>
 export const getAnonymousParticipantId = () =>
   Axios.post("/api/identity/anonymous");
 
+export const getNextParticipantIdForInstance = (participantId, instanceId) =>
+  Axios.get(`/api/identity/${participantId}/${instanceId}/next`);
+
 export const logParticipantEvent = (
   instanceId,
   participantId,
