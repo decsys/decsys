@@ -69,7 +69,7 @@ const Page = ({
                           id={x.id}
                           pageId={page.id}
                           type={x.type}
-                          text={x.params.text}
+                          params={x.params}
                           {...{
                             ...itemActions,
                             onClick: () => itemActions.onClick(page.id, x)

@@ -18,7 +18,7 @@ const PageItem = ({
   id,
   pageId,
   type,
-  text,
+  params,
   onDuplicateClick,
   onDeleteClick,
   onClick,
@@ -68,7 +68,10 @@ const PageItem = ({
           onMouseLeave={() => setHovered(false)}
           onClick={onClick}
         >
-          <Typography>{text || capitalise(type)}</Typography>
+          <Typography>
+            {params.text || capitalise(type)}
+            {type === "spacer" && ` (${params.height}px)`}
+          </Typography>
         </Cell>
         <Button
           size="sm"
