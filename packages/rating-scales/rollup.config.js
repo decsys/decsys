@@ -12,8 +12,7 @@ const plugins = [
   }),
   babel({ ...pkg.babel, exclude: "node_modules/**" }),
   resolve({ preferBuiltins: false }),
-  cjs(),
-  terser()
+  cjs()
 ];
 
 const bundleEntryPoint = "src/index.js";
@@ -40,7 +39,7 @@ export default [
       }
     },
     external: ["react", "styled-components"],
-    plugins
+    plugins: [...plugins, terser()]
   },
   // commonjs, esm
   {
