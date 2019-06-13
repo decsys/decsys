@@ -63,7 +63,7 @@ const actions = {
 };
 
 storiesOf("Component", module)
-  .add("Default", () => <Component {...props} {...actions} />)
+  .add("Default", () => <Component {...actions} />)
   .add(
     "Numeric Visualisation",
     visualization(
@@ -75,5 +75,10 @@ storiesOf("Component", module)
   )
   .add(
     "Numeric stats",
-    stats(Component.stats(Component.defaultProps, dummyEllipseResults))
+    stats(
+      Component.stats(
+        { ...Component.defaultProps, ...props },
+        dummyEllipseResults
+      )
+    )
   );

@@ -43,7 +43,7 @@
   "dependencies": {
     "@decsys/iaa": "^1.0.0-beta.5",
     "@decsys/param-types": "^1.0.0-beta.2",
-    "@decsys/rating-scales": "^1.0.0-beta.6",
+    "@decsys/rating-scales": "^1.0.0-beta.7",
     "styled-icons": "^7.15.1"
   },
   "peerDependencies": {
