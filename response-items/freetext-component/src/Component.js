@@ -12,12 +12,15 @@ import {
 import stats from "./Component.stats";
 
 // Build a React component for our FreeText question type
-const Component = ({ maxLength, initialText, logResults }) => {
+const Component = ({ maxLength, text, logResults, setNextEnabled }) => {
   const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
 
   const [badgeVariant, setBadgeVariant] = useState("info");
-  const [value, setValue] = useState(initialText);
-  useEffect(() => setValue(initialText), [initialText]);
+  const [value, setValue] = useState(text);
+  useEffect(() => {
+    setValue(text);
+    setNextEnabled(true);
+  }, [text]);
 
   const handleInput = ({ target }) => {
     setValue(target.value);
