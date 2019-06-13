@@ -16,7 +16,7 @@ const SurveyPage = ({ appBar, id, page, onNextPage, lastPage, logEvent }) => {
     logEvent(page.id, PAGE_LOAD, {});
     // check if the page has any Response Components
     // and set Next Button appropriately
-    setNextEnabled(!getResponseComponent(page.components));
+    if (!getResponseComponent(page.components)) setNextEnabled(true);
   }, [page, logEvent]);
 
   return (
