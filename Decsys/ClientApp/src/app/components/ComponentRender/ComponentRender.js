@@ -1,4 +1,4 @@
-import React, { cloneElement } from "react";
+import React from "react";
 
 const ComponentRender = ({ component, params, actions }) => {
   // short circuit
