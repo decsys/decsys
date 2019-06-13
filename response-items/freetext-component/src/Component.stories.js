@@ -94,6 +94,11 @@ const actions = {
 storiesOf("Component", module)
   .add("Default", () => (
     <Component
+      {...actions}
+    />
+  ))
+  .add("Initial Text", () => (
+    <Component
       text={text("Text", "Hello")}
       maxLength={number("Max Length", 50)}
       {...actions}
