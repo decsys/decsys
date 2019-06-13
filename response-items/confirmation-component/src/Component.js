@@ -2,17 +2,15 @@ import React, { useEffect, useState } from "react";
 import * as props from "./Component.props";
 import { FormCheck, Checkbox, FormCheckLabel } from "@smooth-ui/core-sc";
 
-const Component = ({ label, initialChecked, setNextEnabled, logResults }) => {
-  useEffect(() => setNextEnabled(false), []);
-
+const Component = ({ label, confirmed: initialChecked, setNextEnabled, logResults }) => {
   const [checked, setChecked] = useState(initialChecked);
+  useEffect(() => setNextEnabled(!!checked), [checked])
 
   const id = new Date().getTime();
 
   const handleChange = e => {
     logResults({ confirmed: e.target.checked });
     setChecked(e.target.checked);
-    setNextEnabled(e.target.checked);
   };
 
   return (

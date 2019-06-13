@@ -17,7 +17,6 @@ storiesOf("Component", module)
         Component.params.label.label,
         Component.params.label.defaultValue
       )}
-      initialChecked={false}
       {...actions}
     />
   ))
@@ -27,7 +26,7 @@ storiesOf("Component", module)
         Component.params.label.label,
         Component.params.label.defaultValue
       )}
-      initialChecked={true}
+      confirmed={true}
       {...actions}
     />
   ));
