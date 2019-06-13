@@ -174,7 +174,7 @@ namespace Decsys
         private IDictionary<string, string> GetValidMappings()
         {
             // in future we may want to make this a configurable list.
-            var validExtensions = new List<string> { ".js" };
+            var validExtensions = new List<string> { ".js", ".map" };
 
             // steal the mappings we want from a default FileExtensionContentTypeProvider
             return new FileExtensionContentTypeProvider().Mappings
