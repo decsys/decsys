@@ -75,6 +75,7 @@ const PureEditorScreen = ({
               />
             ) : (
               <ComponentRender
+                key={component.component.id}
                 component={CurrentComponent}
                 params={
                   component.component.type === "image"

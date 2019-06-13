@@ -20,3 +20,9 @@ export const storeInstanceParticipantId = (surveyInstanceId, participantId) => {
   localStorage.setItem("instances", JSON.stringify(user.instances));
   callback(user);
 };
+
+export const clearInstanceParticipantId = surveyInstanceId => {
+  user.instances[surveyInstanceId] = null;
+  localStorage.setItem("instances", JSON.stringify(user.instances));
+  callback(user);
+};

@@ -5,14 +5,18 @@ import { Button } from "@smooth-ui/core-sc";
 import { ChevronRight } from "styled-icons/fa-solid";
 import { PAGE_LOAD } from "../../utils/event-types";
 import SurveyPageBody from "./Body";
+import { getResponseComponent } from "../../utils/component-utils";
 
 // TODO: Prop Types!
 
 const SurveyPage = ({ appBar, id, page, onNextPage, lastPage, logEvent }) => {
-  const [nextEnabled, setNextEnabled] = useState(true);
+  const [nextEnabled, setNextEnabled] = useState(false);
 
   useEffect(() => {
     logEvent(page.id, PAGE_LOAD, {});
+    // check if the page has any Response Components
+    // and set Next Button appropriately
+    if (!getResponseComponent(page.components)) setNextEnabled(true);
   }, [page, logEvent]);
 
   return (

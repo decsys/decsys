@@ -24,6 +24,101 @@ import { randomize } from "./services/randomizer";
 // When React Suspense gets data fetching support, a lot of logic
 // can and should be moved to appropriate components (screens probably)
 
+// Some helpers to make the actual routing logic less noisy
+
+const tryFetchActiveSurveyInstance = async (surveyId, instanceId) => {
+  const { data: instance } = await api.getSurveyInstance(surveyId, instanceId);
+  if (instance.closed) {
+    const e = new Error();
+    e.response = { status: 404 }; // pretend we got a 404 back from the API
+    throw e;
+  }
+  return instance;
+};
+
+const getInstanceUserId = async (
+  combinedId,
+  user,
+  users,
+  generateIfNotFound = false
+) => {
+  if (user.instances[combinedId]) return user.instances[combinedId];
+
+  if (generateIfNotFound) {
+    const userId = (await api.getAnonymousParticipantId()).data;
+    users.storeInstanceParticipantId(combinedId, userId);
+    return userId;
+  }
+
+  return null;
+};
+
+const getProgress = async (surveyId, instance, userId) => {
+  // check logs to set progressStatus and randomisation
+  let complete;
+  let lastPageLoad;
+  try {
+    complete = (await api.getLastLogEntry(
+      instance.id,
+      userId,
+      surveyId,
+      SURVEY_COMPLETE
+    )).data;
+  } catch (err) {
+    if (err.response && err.response.status === 404) complete = null;
+    else throw err;
+  }
+  try {
+    lastPageLoad = (await api.getLastLogEntryByTypeOnly(
+      instance.id,
+      userId,
+      PAGE_LOAD
+    )).data;
+  } catch (err) {
+    if (err.response && err.response.status === 404) lastPageLoad = null;
+    else throw err;
+  }
+
+  return {
+    completed: complete != null,
+    lastPageLoaded: lastPageLoad && lastPageLoad.source,
+    oneTimeParticipants: instance.oneTimeParticipants,
+    inProgress: !complete && lastPageLoad
+  };
+};
+
+const randomizeOrder = async (survey, instanceId, userId) => {
+  const order = randomize(
+    survey.pages.reduce((a, page) => {
+      a[page.id] = page.randomize;
+      return a;
+    }, {})
+  );
+  await api.logParticipantEvent(instanceId, userId, survey.id, PAGE_RANDOMIZE, {
+    order
+  });
+  return order;
+};
+
+const getPageOrder = async (survey, instanceId, userId) => {
+  let random;
+  try {
+    random = (await api.getLastLogEntry(
+      instanceId,
+      userId,
+      survey.id,
+      PAGE_RANDOMIZE
+    )).data;
+  } catch (err) {
+    if (err.response && err.response.status === 404) random = null;
+    else throw err;
+  }
+
+  return random == null
+    ? randomizeOrder(survey, instanceId, userId)
+    : random.payload.order;
+};
+
 const routes = mount({
   "/": map((_, context) =>
     context.user.roles.admin ? redirect("/admin") : redirect("/survey")
@@ -34,124 +129,80 @@ const routes = mount({
     "/": route({
       view: <SurveyIdScreen />
     }),
-    "/:id/complete": route({
-      view: <SurveyCompleteScreen /> // TODO: someday this might use the id (and therefore need to verify it)
+    "/:id/complete": route(async ({ params }, { users }) => {
+      // if Participants enter Identifiers,
+      // then clear the stored ID now
+      // so they are asked to enter again next time
+
+      // We don't clear auto-generated ID's, to ensure we can track non-repeatable completion.
+
+      const [surveyId, instanceId] = decode(params.id);
+      const { data: instance } = await api.getSurveyInstance(
+        surveyId,
+        instanceId
+      );
+
+      if (instance.useParticipantIdentifiers)
+        users.clearInstanceParticipantId(params.id);
+
+      return {
+        view: <SurveyCompleteScreen />
+      };
     }),
     "/:id": route(async ({ params }, { users, user }) => {
       let view;
-
       const [surveyId, instanceId] = decode(params.id);
+
       try {
-        const { data: instance } = await api.getSurveyInstance(
+        const instance = await tryFetchActiveSurveyInstance(
           surveyId,
           instanceId
         );
-        if (instance.closed) {
-          const e = new Error();
-          e.response = { status: 404 }; // pretend we got a 404 back from the API
-          throw e;
+
+        let userId = await getInstanceUserId(
+          params.id,
+          user,
+          users,
+          !instance.useParticipantIdentifiers
+        );
+        if (!userId) {
+          // we failed to find or generate an id; ask the user to enter one
+          return {
+            view: (
+              <ParticipantIdScreen
+                users={users}
+                combinedId={params.id}
+                validIdentifiers={instance.validIdentifiers}
+              />
+            )
+          };
         }
 
-        // get the actual survey data
+        let progress = await getProgress(surveyId, instance, userId);
+
+        if (progress.completed && !instance.oneTimeParticipants) {
+          if (instance.useParticipantIdentifiers) {
+            // for entered id's, get the next unique one
+            userId = (await api.getNextParticipantIdForInstance(
+              userId,
+              instanceId
+            )).data;
+          } else {
+            // for anon: generate a new id
+            userId = (await api.getAnonymousParticipantId()).data;
+          }
+
+          users.storeInstanceParticipantId(params.id, userId);
+
+          // reset progress to pretend they're new
+          progress = {
+            oneTimeParticipants: instance.oneTimeParticipants
+          };
+        }
+
         const { data: survey } = await api.getSurvey(surveyId);
 
-        // also figure out a User ID
-        let userId;
-        if (!user.instances[params.id]) {
-          if (instance.useParticipantIdentifiers)
-            return {
-              view: (
-                <ParticipantIdScreen
-                  users={users}
-                  combinedId={params.id}
-                  validIdentifiers={instance.validIdentifiers}
-                />
-              )
-            };
-          else {
-            userId = (await api.getAnonymousParticipantId()).data;
-            users.storeInstanceParticipantId(params.id, userId);
-          }
-        } else {
-          userId = user.instances[params.id];
-        }
-
-        // check logs to set progressStatus and randomisation
-        let complete;
-        let lastPageLoad;
-        try {
-          complete = (await api.getLastLogEntry(
-            instanceId,
-            userId,
-            surveyId,
-            SURVEY_COMPLETE
-          )).data;
-        } catch (err) {
-          if (err.response && err.response.status === 404) complete = null;
-          else throw err;
-        }
-        try {
-          lastPageLoad = (await api.getLastLogEntryByTypeOnly(
-            instanceId,
-            userId,
-            PAGE_LOAD
-          )).data;
-        } catch (err) {
-          if (err.response && err.response.status === 404) lastPageLoad = null;
-          else throw err;
-        }
-
-        let progressStatus = {
-          completed: complete != null,
-          lastPageLoaded: lastPageLoad && lastPageLoad.source,
-          oneTimeParticipants: instance.oneTimeParticipants,
-          inProgress: !(
-            complete &&
-            lastPageLoad &&
-            complete.timestamp >= lastPageLoad.timestamp
-          )
-        };
-
-        let random;
-        let order;
-        try {
-          random = (await api.getLastLogEntry(
-            instanceId,
-            userId,
-            surveyId,
-            PAGE_RANDOMIZE
-          )).data;
-        } catch (err) {
-          if (err.response && err.response.status === 404) random = null;
-          else throw err;
-        }
-
-        const randomizeOrder = () => {
-          const order = randomize(
-            survey.pages.reduce((a, page) => {
-              a[page.id] = page.randomize;
-              return a;
-            }, {})
-          );
-          api.logParticipantEvent(
-            instanceId,
-            userId,
-            surveyId,
-            PAGE_RANDOMIZE,
-            { order }
-          );
-          return order;
-        };
-
-        if (random != null) {
-          // check the random log is newer than SURVEY_COMPLETE, if there is one
-          if (!complete) order = random.payload.order;
-          else if (complete.timestamp < random.timestamp)
-            order = random.payload.order;
-          else order = randomizeOrder(); // otherwise, new randomisation
-        } else {
-          order = randomizeOrder(); // new randomisation
-        }
+        const order = await getPageOrder(survey, instanceId, userId);
 
         view = (
           <SurveyScreen
@@ -160,7 +211,7 @@ const routes = mount({
             instanceId={instanceId}
             participantId={userId}
             order={order}
-            progressStatus={progressStatus}
+            progressStatus={progress}
           />
         );
       } catch (err) {

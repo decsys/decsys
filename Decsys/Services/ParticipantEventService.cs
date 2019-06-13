@@ -34,6 +34,37 @@ namespace Decsys.Services
                 log.FindAll().OrderBy(x => x.Timestamp));
         }
 
+        /// <summary>
+        /// For a given Participant ID and Instance ID, get the next
+        /// Unique Participant ID to use for that Instance.
+        /// 
+        /// e.g. if Participant "Bob" has completed Instance 1 seven times,
+        /// the next Unique ID for "Bob" will be "Bob_7"
+        /// </summary>
+        /// <param name="participantId"></param>
+        /// <param name="instanceId"></param>
+        /// <returns></returns>
+        public string GetNextId(string participantId, int instanceId)
+        {
+            if (!_db.GetCollection<SurveyInstance>(
+                    Collections.SurveyInstances)
+                .Exists(x => x.Id == instanceId))
+                throw new KeyNotFoundException("Survey Instance could not be found.");
+
+            var logNames = _db.GetCollectionNames()
+                .Where(x => x.StartsWith(GetCollectionName(instanceId, participantId)))
+                .OrderByDescending(x => x)
+                .ToList();
+
+            var latestLogName = logNames.FirstOrDefault();
+            if (latestLogName is null) return participantId;
+
+            var log = _db.GetCollection<ParticipantEvent>(latestLogName);
+            return log.Find(x => x.Type == EventTypes.SURVEY_COMPLETE).Any()
+                ? $"{participantId}-{logNames.Count}"
+                : latestLogName;
+        }
+
         public IEnumerable<Models.ParticipantEvent> List(int instanceId, string participantId)
         {
             if (!_db.GetCollection<SurveyInstance>(
@@ -204,7 +235,7 @@ namespace Decsys.Services
                         && x.Type == EventTypes.PAGE_RANDOMIZE)
                     .OrderByDescending(x => x.Timestamp)
                     .FirstOrDefault();
-            if(orderLog is null)
+            if (orderLog is null)
             {
                 resultsSummary.Responses = new List<Models.PageResponseSummary>();
                 return resultsSummary;

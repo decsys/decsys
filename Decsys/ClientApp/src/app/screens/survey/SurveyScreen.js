@@ -69,6 +69,7 @@ const SurveyScreen = ({
 
   return sortedPages[page] ? (
     <SurveyPage
+      key={sortedPages[page].id}
       id={surveyId}
       page={sortedPages[page]}
       appBar={<AppBar brand="DECSYS" brandLink="#" />}

@@ -1,14 +1,6 @@
-import React, { cloneElement } from "react";
+import React from "react";
 
-const ComponentRender = ({
-  component,
-  params,
-  actions = {
-    setNextEnabled: () => {},
-    logResults: () => {},
-    logEvent: () => {}
-  }
-}) => {
+const ComponentRender = ({ component, params, actions }) => {
   // short circuit
   if (!component) return null;
 
@@ -21,7 +13,14 @@ const ComponentRender = ({
     return agg;
   }, {});
 
-  return cloneElement(<Component />, { ...defaults, ...params, ...actions });
+  return <Component {...{ ...defaults, ...params, ...actions }} />;
+};
+ComponentRender.defaultProps = {
+  actions: {
+    setNextEnabled: () => {},
+    logResults: () => {},
+    logEvent: () => {}
+  }
 };
 
 export default ComponentRender;
