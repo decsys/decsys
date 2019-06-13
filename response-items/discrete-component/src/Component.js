@@ -33,7 +33,6 @@ const Component = ({
   };
 
   useEffect(() => {
-    setNextEnabled(false);
     document.addEventListener("DiscreteSelected", handleDiscreteSelected);
     return () =>
       document.removeEventListener("DiscreteSelected", handleDiscreteSelected);

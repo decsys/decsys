@@ -22,10 +22,10 @@ const stats = (_, results) => {
       }
     ],
     stats: {
-      ["Values - Mean, STD"]: values.some(n => isNaN(parseFloat(n)))
+      ["Values - Mean, St.D"]: values.some(n => isNaN(parseFloat(n)))
         ? "N/A"
         : `${fixed(math.mean, values)}, ${fixed(math.std, values)}`,
-      ["Index (from 0) - Mean, STD"]: `${fixed(math.mean, indices)}, ${fixed(
+      ["Index (from 0) - Mean, St.D"]: `${fixed(math.mean, indices)}, ${fixed(
         math.std,
         indices
       )}`
