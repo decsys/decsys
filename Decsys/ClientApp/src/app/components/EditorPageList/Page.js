@@ -5,6 +5,7 @@ import PageHeader from "./PageHeader";
 import PageComponent from "./PageComponent";
 import PageItem from "./PageItem";
 import { Droppable, Draggable } from "react-beautiful-dnd";
+import { isBuiltIn } from "../../utils/component-utils";
 
 const Page = ({
   page,
@@ -16,7 +17,6 @@ const Page = ({
   onComponentChange,
   pageListProvided
 }) => {
-  const isResponse = type => !["heading", "paragraph", "image"].includes(type);
   return (
     <Droppable type={page.id} droppableId={page.id}>
       {provided => (
@@ -45,7 +45,7 @@ const Page = ({
                 >
                   {provided => (
                     <div ref={provided.innerRef} {...provided.draggableProps}>
-                      {isResponse(x.type) ? (
+                      {!isBuiltIn(x.type) ? (
                         <PageComponent
                           provided={provided}
                           components={componentList}
@@ -80,7 +80,7 @@ const Page = ({
                   )}
                 </Draggable>
               ))}
-            {page.components.every(x => !isResponse(x.type)) && (
+            {page.components.every(x => isBuiltIn(x.type)) && (
               <PageComponent
                 components={componentList}
                 onComponentChange={type => onComponentChange(page.id, type)}

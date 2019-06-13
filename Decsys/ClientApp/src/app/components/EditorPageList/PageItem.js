@@ -7,7 +7,8 @@ import {
   Paragraph,
   Image,
   Copy,
-  Times
+  Times,
+  ArrowsAltV
 } from "styled-icons/fa-solid";
 import { Grid, Cell } from "styled-css-grid";
 
@@ -54,6 +55,7 @@ const PageItem = ({
             {type === "heading" && <Heading size="1em" />}
             {type === "paragraph" && <Paragraph size="1em" />}
             {type === "image" && <Image size="1em" />}
+            {type === "spacer" && <ArrowsAltV size="1em" />}
           </Box>
         </Cell>
         <Cell
