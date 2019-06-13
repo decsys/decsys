@@ -42,7 +42,6 @@ const Component = ({
   };
 
   useEffect(() => {
-    setNextEnabled(false);
     document.addEventListener("EllipseCompleted", handleEllipseCompleted);
     return () =>
       document.removeEventListener("EllipseCompleted", handleEllipseCompleted);

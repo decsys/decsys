@@ -42,7 +42,9 @@ const params = {
 // Specify PropTypes for non-Configurable Props
 const staticPropTypes = {
   minRangeValue: PropTypes.number,
-  maxRangeValue: PropTypes.number
+  maxRangeValue: PropTypes.number,
+  logResults: PropTypes.func.isRequired,
+  setNextEnabled: PropTypes.func.isRequired
 };
 
 // Create merged propTypes, defaultProps

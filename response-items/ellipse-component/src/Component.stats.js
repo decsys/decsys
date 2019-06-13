@@ -37,15 +37,15 @@ const stats = (params, results) => {
       }
     ],
     stats: {
-      ["Left Endpoint - Mean, STD"]: `${fixed(math.mean, minValues)}, ${fixed(
-        math.mean,
+      ["Left Endpoint - Mean, St.D"]: `${fixed(math.mean, minValues)}, ${fixed(
+        math.std,
+        minValues
+      )}`,
+      ["Right Endpoint - Mean, St.D"]: `${fixed(math.mean, maxValues)}, ${fixed(
+        math.std,
         maxValues
       )}`,
-      ["Right Endpoint - Mean, STD"]: `${fixed(math.mean, maxValues)}, ${fixed(
-        math.mean,
-        maxValues
-      )}`,
-      ["Size - Mean, STD"]: `${fixed(math.mean, intervalWidths)}, ${fixed(
+      ["Size - Mean, St.D"]: `${fixed(math.mean, intervalWidths)}, ${fixed(
         math.std,
         intervalWidths
       )}`,
