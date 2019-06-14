@@ -39,6 +39,4 @@ There are two aspects to the supported platforms for the Survey Platform:
         - Explicitly with support for directly loading ES Modules
             - `<script type="module">`
 
-!!! danger "Unsupported"
-  
- - Internet Explorer (any) - Any browser that doesn't support directly loading ES Modules - `<script type="module">`
+!!! danger "Unsupported" - Internet Explorer (any) - Any browser that doesn't support directly loading ES Modules - `<script type="module">`
