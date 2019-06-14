@@ -21,7 +21,7 @@ The typical intended use of this component is for asking a Participant to Accept
 This software is primarily licensed under the **GNU Affero General Public License v3.0 only** (`AGPL-3.0-only`)
 
     DECSYS Confirmation Component
-    Copyright (C) 2019
+    Copyright (C) 2019 Christian Wagner, LUCID (Lab for Uncertainty in Data and Decision Making)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
