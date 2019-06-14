@@ -3,7 +3,6 @@
 The DECSYS Survey Platform aims to be a flexible cross-platform web-based survey platform that particularly makes it easy to load custom question response components.
 
 !!! info "What's here?"
-
     This documentation site contains general information about the Survey Platform, including:
 
     - the technology behind it
@@ -13,8 +12,7 @@ The DECSYS Survey Platform aims to be a flexible cross-platform web-based survey
     Over time it is likely to contain User Guide style documentation in addition to the current technical documentation.
 
 !!! info "Where else can I find information?"
-  
- There are also other places you can find specific information about aspects of the wider DECSYS Project:
+    There are also other places you can find specific information about aspects of the wider DECSYS Project:
 
     - [Running or Building the Survey Platform](https://github.com/decsys/decsys/blob/master/README.md)
     - [About the DECSYS Project](http://www.lucidresearch.org/decsys.html)
