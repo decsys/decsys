@@ -8,7 +8,8 @@ import {
   Trash,
   Paragraph,
   Image,
-  Random
+  Random,
+  ArrowsAltV
 } from "styled-icons/fa-solid";
 import { Grid, Cell } from "styled-css-grid";
 import ToggleButton from "../ui/ToggleButton";
@@ -28,7 +29,10 @@ const PageHeader = ({
 
   return (
     <Box pr={1} borderBottom={1} borderColor="cardBorder">
-      <Grid columns="30px 1fr 40px 30px 30px 30px 30px 30px" columnGap=".1em">
+      <Grid
+        columns="30px 1fr 40px 30px 30px 30px 30px 30px 30px"
+        columnGap=".1em"
+      >
         <Cell middle>
           <div {...provided.dragHandleProps}>
             <Box textAlign="center">
@@ -95,6 +99,20 @@ const PageHeader = ({
             title="Add an Image to this Page"
           >
             <Image size="1em" />
+          </Button>
+        </Cell>
+        <Cell middle>
+          <Button
+            size="sm"
+            variant="light"
+            color="success"
+            border={1}
+            borderColor="success"
+            backgroundColor="lightest"
+            onClick={() => onAddPageItemClick(page.id, "spacer")}
+            title="Add a Vertical Spacer to this Page"
+          >
+            <ArrowsAltV size="1em" />
           </Button>
         </Cell>
 

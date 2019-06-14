@@ -6,11 +6,10 @@ import EditorPageList from "../../../components/EditorPageList";
 import { EmptyState } from "../../../components/ui";
 import { FileAlt } from "styled-icons/fa-solid";
 import { Box, colorVariant } from "@smooth-ui/core-sc";
-import ComponentRender from "../../../components/ComponentRender";
 import ComponentEditor from "../../../components/ComponentEditor";
-import ParagraphPreview from "../../../components/ComponentEditor/ParagraphPreview";
 import ImageUpload from "../../../components/ComponentEditor/ImageUpload";
 import { getComponent } from "../../../utils/component-utils";
+import SurveyPageBody from "../../../components/SurveyPage/Body";
 
 const PureEditorScreen = ({
   survey,
@@ -60,34 +59,15 @@ const PureEditorScreen = ({
       {(component && (
         <>
           <Cell style={{ padding: "1em", overflow: "auto" }}>
-            {component.component.type === "paragraph" ? (
-              <ParagraphPreview
-                component={CurrentComponent}
-                params={component.component.params}
-                onChange={e =>
-                  onParamChange(
-                    component.pageId,
-                    component.component.id,
-                    "text",
-                    e.target.value
-                  )
-                }
-              />
-            ) : (
-              <ComponentRender
-                key={component.component.id}
-                component={CurrentComponent}
-                params={
-                  component.component.type === "image"
-                    ? {
-                        ...component.component.params,
-                        surveyId: survey.id,
-                        id: component.component.id
-                      }
-                    : component.component.params
-                }
-              />
-            )}
+            <SurveyPageBody
+              id={component.pageId}
+              components={
+                survey.pages.find(page => page.id === component.pageId)
+                  .components
+              }
+              editorComponentId={component.component.id}
+              onParamChange={onParamChange}
+            />
           </Cell>
           <Cell
             style={{

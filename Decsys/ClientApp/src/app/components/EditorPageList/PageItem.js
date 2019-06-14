@@ -7,7 +7,8 @@ import {
   Paragraph,
   Image,
   Copy,
-  Times
+  Times,
+  ArrowsAltV
 } from "styled-icons/fa-solid";
 import { Grid, Cell } from "styled-css-grid";
 
@@ -17,7 +18,7 @@ const PageItem = ({
   id,
   pageId,
   type,
-  text,
+  params,
   onDuplicateClick,
   onDeleteClick,
   onClick,
@@ -54,6 +55,7 @@ const PageItem = ({
             {type === "heading" && <Heading size="1em" />}
             {type === "paragraph" && <Paragraph size="1em" />}
             {type === "image" && <Image size="1em" />}
+            {type === "spacer" && <ArrowsAltV size="1em" />}
           </Box>
         </Cell>
         <Cell
@@ -66,7 +68,10 @@ const PageItem = ({
           onMouseLeave={() => setHovered(false)}
           onClick={onClick}
         >
-          <Typography>{text || capitalise(type)}</Typography>
+          <Typography>
+            {params.text || capitalise(type)}
+            {type === "spacer" && ` (${params.height}px)`}
+          </Typography>
         </Cell>
         <Button
           size="sm"
@@ -91,7 +96,7 @@ const PageItem = ({
 PageItem.propTypes = {
   id: PropTypes.string.isRequired,
   pageId: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(["heading", "paragraph", "image"]).isRequired,
+  type: PropTypes.oneOf(["heading", "paragraph", "image", "spacer"]).isRequired,
   text: PropTypes.string,
   onDeleteClick: PropTypes.func.isRequired,
   onDuplicateClick: PropTypes.func.isRequired,
