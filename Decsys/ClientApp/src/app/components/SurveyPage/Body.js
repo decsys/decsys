@@ -3,7 +3,7 @@ import { FlexBox } from "../../components/ui";
 import ComponentRender from "../../components/ComponentRender";
 import { getComponent } from "../../utils/component-utils";
 import { COMPONENT_RESULTS } from "../../utils/event-types";
-import ParagraphPreview from "../ComponentEditor/ParagraphPreview";
+import ParagraphPreview from "./ParagraphPreview";
 
 const SurveyPageBody = ({
   id,
