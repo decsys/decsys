@@ -41,7 +41,7 @@ Because the Platform is a web app, platform support is based on web browser rath
     - Any browser that doesn't support directly loading ES Modules
         - `<script type="module">`
 
-### Test results
+### Browser Test Results
 
 | OS | Edge Classic | Chrome | Firefox | Safari | Samsung Internet |
 |-|-|-|-|-|-|
