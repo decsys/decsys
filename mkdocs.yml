@@ -28,3 +28,8 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - "State of Development": technical/development-state.md
+  - "Supported Platforms": platform-support.md
+  - "Structure Overview": technical/structure-overview.md
+  - "Tech stack": technical/stack.md
+  - "Source Code": technical/source-code.md
