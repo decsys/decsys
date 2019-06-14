@@ -5,10 +5,13 @@ There are two aspects to the supported platforms for the Survey Platform:
 
 ## Running the application
 
-!!! success "Tested and supported" - 64-bit Windows 10 Anniversary Update (version 1607) or newer.
+!!! success "Tested and supported"
+
+    - 64-bit Windows 10 Anniversary Update (version 1607) or newer.
 
 ??? "Should work"
-Realistically, you should be able to run the application anywhere [.NET Core 2.2 or newer is available](https://github.com/dotnet/core/blob/master/release-notes/2.2/2.2-supported-os.md).
+
+    Realistically, you should be able to run the application anywhere [.NET Core 2.2 or newer is available](https://github.com/dotnet/core/blob/master/release-notes/2.2/2.2-supported-os.md).
 
     At minimum this includes:
 
@@ -21,10 +24,21 @@ Realistically, you should be able to run the application anywhere [.NET Core 2.2
 
 ## Using the application
 
-!!! success "Tested and supported" - Microsoft Edge Classic (Windows 10 1607 or newer) - Google Chrome (last 2 versions)
+!!! success "Tested and supported"
 
-??? info "Tested" - `// TODO`
+    - Microsoft Edge Classic (Windows 10 1607 or newer)
+    - Google Chrome (last 2 versions)
 
-??? "Should work" - Any "evergreen" web browser - Explicitly with support for directly loading ES Modules - `<script type="module">`
+??? info "Tested"
 
-!!! danger "Unsupported" - Internet Explorer (any) - Any browser that doesn't support directly loading ES Modules - `<script type="module">`
+    - `// TODO`
+
+??? "Should work"
+
+    - Any "evergreen" web browser
+        - Explicitly with support for directly loading ES Modules
+            - `<script type="module">`
+
+!!! danger "Unsupported"
+  
+ - Internet Explorer (any) - Any browser that doesn't support directly loading ES Modules - `<script type="module">`
