@@ -6,7 +6,7 @@ import AboutLink from "../../components/AboutLink";
 
 const SurveyCompleteScreen = () => (
   <>
-    <AppBar brand="DECSYS" brandLink="#">
+    <AppBar brand="DECSYS">
       <AboutLink />
     </AppBar>
     <Container>

@@ -29,7 +29,7 @@ const ParticipantIdScreen = ({ combinedId, users, validIdentifiers }) => {
 
   return (
     <>
-      <AppBar brand="DECSYS" brandLink="#">
+      <AppBar brand="DECSYS">
         <AboutLink />
       </AppBar>
       <FlexBox flexDirection="column" alignItems="center" pt={100}>
