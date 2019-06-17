@@ -4,6 +4,7 @@ import * as api from "../../api";
 import SurveyPage from "../../components/SurveyPage";
 import AppBar from "../../components/AppBar";
 import { SURVEY_COMPLETE } from "../../utils/event-types";
+import AboutLink from "../../components/AboutLink";
 
 // TODO: PropTypes
 const SurveyScreen = ({
@@ -72,7 +73,11 @@ const SurveyScreen = ({
       key={sortedPages[page].id}
       id={surveyId}
       page={sortedPages[page]}
-      appBar={<AppBar brand="DECSYS" brandLink="#" />}
+      appBar={
+        <AppBar brand="DECSYS" brandLink="#">
+          <AboutLink />
+        </AppBar>
+      }
       onNextPage={handleClick}
       logEvent={logEvent}
       lastPage={lastPage}

@@ -17,6 +17,7 @@ import ReactTable from "react-table";
 import { useInterval } from "../../../utils/hooks";
 import * as api from "../../../api";
 import SurveyPageBody from "../../../components/SurveyPage/Body";
+import AboutLink from "../../../components/AboutLink";
 
 const DashboardScreen = ({ instanceId, survey, results: initialResults }) => {
   const statsModal = useModal();
@@ -145,7 +146,9 @@ const DashboardScreen = ({ instanceId, survey, results: initialResults }) => {
 
   return (
     <>
-      <AppBar brand="DECSYS" />
+      <AppBar brand="DECSYS">
+        <AboutLink />
+      </AppBar>
       <Container>
         <Typography my={2} variant="h2">
           {survey.name}

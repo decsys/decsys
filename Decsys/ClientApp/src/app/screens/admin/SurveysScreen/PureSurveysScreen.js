@@ -20,6 +20,8 @@ import {
 import { Container, FlexBox, EmptyState } from "../../../components/ui";
 import SurveyList from "../../../components/SurveyList";
 import ConfirmModal, { useModal } from "../../../components/ui/ConfirmModal";
+import AboutLink from "../../../components/AboutLink";
+import AppBar from "../../../components/AppBar";
 
 const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
   const importModal = useModal();
@@ -54,6 +56,9 @@ const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
 
   return (
     <>
+      <AppBar brand="DECSYS">
+        <AboutLink />
+      </AppBar>
       <Container>
         <FlexBox my={3} alignItems="center" justifyContent="space-between">
           <Typography variant="h1">My Surveys</Typography>

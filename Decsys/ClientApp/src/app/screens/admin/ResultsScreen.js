@@ -15,6 +15,7 @@ import download from "downloadjs";
 import { parse } from "json2csv";
 import { useNavigation } from "react-navi";
 import { encode } from "../../services/instance-id";
+import AboutLink from "../../components/AboutLink";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {
@@ -120,7 +121,9 @@ const ResultsScreen = ({ instances: initialInstances, survey }) => {
 
   return (
     <>
-      <AppBar brand="DECSYS" />
+      <AppBar brand="DECSYS">
+        <AboutLink />
+      </AppBar>
       <Container>
         <Typography my={2} variant="h2">
           {survey.name}
