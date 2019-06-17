@@ -2,6 +2,14 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import SurveyPage from "./SurveyPage";
 import { action } from "@storybook/addon-actions";
+import AppBar from "../AppBar";
+import AboutLink from "../AboutLink";
+
+const DummyAppBar = () => (
+  <AppBar brand="DECSYS">
+    <AboutLink />
+  </AppBar>
+);
 
 const page = {
   id: 1,
@@ -32,6 +40,12 @@ const actions = {
 
 storiesOf("Survey/SurveyPage", module)
   .add("Empty", () => (
-    <SurveyPage page={{ id: 1, components: [] }} {...actions} />
+    <SurveyPage
+      appBar={<DummyAppBar />}
+      page={{ id: 1, components: [] }}
+      {...actions}
+    />
   ))
-  .add("Content", () => <SurveyPage page={page} {...actions} />);
+  .add("Content", () => (
+    <SurveyPage appBar={<DummyAppBar />} page={page} {...actions} />
+  ));

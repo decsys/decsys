@@ -1,18 +1,19 @@
 import React from "react";
-import { Link } from "react-navi";
-import { QuestionCircle, ExternalLinkAlt } from "styled-icons/fa-solid";
+import AppBarLink from "../AppBar/Link";
+import { ExternalLinkAlt } from "styled-icons/fa-solid";
 
-const AboutLink = () => {
+const AboutLink = ({ href, ...p }) => {
   return (
-    <Link
+    <AppBarLink
+      variant="light"
+      {...p}
       href="http://www.lucidresearch.org/decsys.html"
-      style={{ textDecoration: "none" }}
     >
       About DECSYS{" "}
       <sup>
         <ExternalLinkAlt size="1em" />
       </sup>
-    </Link>
+    </AppBarLink>
   );
 };
 
