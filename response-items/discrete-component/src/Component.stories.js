@@ -3,29 +3,53 @@ import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import Component from "./Component";
 
-const dummyDiscreteResults = {
-  numbers: [
-    { index: 0, value: 1 },
-    { index: 1, value: 2 },
-    { index: 2, value: 3 },
-    { index: 2, value: 3 },
-    { index: 3, value: 4 },
-    { index: 4, value: 5 },
-    { index: 4, value: 5 },
-    { index: 0, value: 1 },
-    { index: 4, value: 5 }
-  ],
-  mixed: [
-    { index: 0, value: "Hello" },
-    { index: 0, value: "Hello" },
-    { index: 2, value: 3 },
-    { index: 2, value: 3 },
-    { index: 3, value: "Hllo" },
-    { index: 0, value: "Hello" },
-    { index: 1, value: "Goodbye" },
-    { index: 4, value: true },
-    { index: 5, value: "Other" }
-  ]
+const visProps = {
+  numbers: {
+    params: {
+      radio1: 1,
+      radio2: 2,
+      radio3: 3,
+      radio4: 4,
+      radio5: 5,
+      radio6: 6,
+      radio7: 7,
+      radio8: 8,
+      radio9: 9,
+      radio10: 10
+    },
+    results: [
+      { index: 0, value: 2 },
+      { index: 1, value: 3 },
+      { index: 2, value: 5 },
+      { index: 2, value: 5 },
+      { index: 3, value: 8 },
+      { index: 4, value: 9 },
+      { index: 4, value: 9 },
+      { index: 0, value: 2 },
+      { index: 4, value: 9 }
+    ]
+  },
+  mixed: {
+    params: {
+      radio1: "Hello",
+      radio2: "Goodbye",
+      radio3: 3,
+      radio4: "Hllo",
+      radio5: true,
+      radio6: "Other"
+    },
+    results: [
+      { index: 0, value: "Hello" },
+      { index: 0, value: "Hello" },
+      { index: 2, value: 3 },
+      { index: 2, value: 3 },
+      { index: 3, value: "Hllo" },
+      { index: 0, value: "Hello" },
+      { index: 1, value: "Goodbye" },
+      { index: 4, value: true },
+      { index: 5, value: "Other" }
+    ]
+  }
 };
 
 const visualization = stats => () => (
@@ -67,14 +91,21 @@ storiesOf("Component", module)
   ))
   .add(
     "Numeric Visualisation",
-    visualization(Component.stats({}, dummyDiscreteResults.numbers))
+    visualization(
+      Component.stats(visProps.numbers.params, visProps.numbers.results)
+    )
   )
-  .add("Numeric stats", stats(Component.stats({}, dummyDiscreteResults.numbers)))
+  .add(
+    "Numeric stats",
+    stats(Component.stats(visProps.numbers.params, visProps.numbers.results))
+  )
   .add(
     "Mixed value Visualisation",
-    visualization(Component.stats({}, dummyDiscreteResults.mixed))
+    visualization(
+      Component.stats(visProps.mixed.params, visProps.mixed.results)
+    )
   )
   .add(
     "Mixed value stats",
-    stats(Component.stats({}, dummyDiscreteResults.mixed))
+    stats(Component.stats(visProps.mixed.params, visProps.mixed.results))
   );

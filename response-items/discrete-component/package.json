@@ -1,7 +1,7 @@
 {
   "name": "@decsys/discrete-component",
   "componentName": "Discrete",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "The Discrete Scale component for the DECSYS Survey Platform",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -20,16 +20,16 @@
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
-    "@storybook/addon-actions": "^5.1.4",
-    "@storybook/addon-knobs": "^5.1.4",
-    "@storybook/addon-links": "^5.1.4",
-    "@storybook/addons": "^5.1.4",
-    "@storybook/react": "^5.1.4",
+    "@storybook/addon-actions": "^5.1.8",
+    "@storybook/addon-knobs": "^5.1.8",
+    "@storybook/addon-links": "^5.1.8",
+    "@storybook/addons": "^5.1.8",
+    "@storybook/react": "^5.1.8",
     "babel-loader": "^8.0.6",
     "mathjs": "^5.10.3",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
-    "rollup": "^1.15.2",
+    "rollup": "^1.15.6",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.3.4",
     "rollup-plugin-json": "^4.0.0",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@decsys/param-types": "^1.0.0-beta.2",
-    "@decsys/rating-scales": "^1.0.0-beta.6",
+    "@decsys/rating-scales": "^1.0.0-beta.7",
     "styled-icons": "^7.15.1"
   },
   "peerDependencies": {

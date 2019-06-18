@@ -1,11 +1,13 @@
 import React from "react";
 import * as math from "mathjs";
 import Visualization from "./components/Visualization";
+import { getRadioParams, getRadios } from "./utils/radio-params";
 
 const fixedVal = 3;
 const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
 
-const stats = (_, results) => {
+const stats = (params, results) => {
+  const radioValues = getRadios(getRadioParams(params)).map(r => r[0] || r[1]);
   const { values, indices } = results.reduce(
     (data, { value, index }) => {
       data.values.push(value);
@@ -18,7 +20,9 @@ const stats = (_, results) => {
     visualizations: [
       {
         name: "Discrete Results",
-        component: <Visualization values={values} />
+        component: (
+          <Visualization resultValues={values} radioValues={radioValues} />
+        )
       }
     ],
     stats: {
