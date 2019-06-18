@@ -60,7 +60,8 @@ const PureEditorScreen = ({
         <>
           <Cell style={{ padding: "1em", overflow: "auto" }}>
             <SurveyPageBody
-              id={component.pageId}
+              pageId={component.pageId}
+              id={survey.id}
               components={
                 survey.pages.find(page => page.id === component.pageId)
                   .components

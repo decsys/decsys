@@ -11,6 +11,7 @@ const SurveyPageBody = ({
   setNextEnabled,
   logEvent,
   editorComponentId,
+  pageId,
   onParamChange
 }) => {
   // if there's an editor component, we are in the editor
@@ -26,7 +27,7 @@ const SurveyPageBody = ({
       : undefined;
 
   const handleParagraphParamChange = e =>
-    onParamChange(id, editorComponentId, "text", e.target.value);
+    onParamChange(pageId, editorComponentId, "text", e.target.value);
 
   return (
     <FlexBox p={1} flexDirection="column">
@@ -37,6 +38,7 @@ const SurveyPageBody = ({
           if (x.type === "paragraph") {
             return (
               <ParagraphPreview
+                key={x.id}
                 component={getComponent(x.type)}
                 params={x.params}
                 onChange={handleParagraphParamChange}

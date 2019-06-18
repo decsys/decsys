@@ -6,7 +6,6 @@ import { ChevronRight } from "styled-icons/fa-solid";
 import { PAGE_LOAD } from "../../utils/event-types";
 import SurveyPageBody from "./Body";
 import { getResponseComponent } from "../../utils/component-utils";
-import AboutLink from "../AboutLink";
 
 // TODO: Prop Types!
 
