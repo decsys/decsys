@@ -6,7 +6,8 @@ import {
   Checkbox,
   FormCheck,
   FormCheckLabel,
-  Toggler
+  Toggler,
+  Tooltip
 } from "@smooth-ui/core-sc";
 import {
   InfoCircle,
@@ -120,8 +121,13 @@ const AddSurveyModal = ({
           borderColor="secondary"
           mb={1}
           onClick={handleLoadDemoClick}
+          title="This Survey demonstrates the features of the DECSYS Survey Platform."
         >
-          Load a demonstration Survey
+          Load the Demo Survey
+          <Tooltip placement="left" width="150px" zIndex={9999}>
+            <InfoCircle size="1em" /> This Survey demonstrates the features of
+            the DECSYS Survey Platform.
+          </Tooltip>
         </Button>
 
         <Button
@@ -130,7 +136,11 @@ const AddSurveyModal = ({
           borderColor="secondary"
           onClick={handleLoadSampleClick}
         >
-          Load a sample Survey
+          Load the Sample Research Survey
+          <Tooltip placement="left" width="150px" zIndex={9999}>
+            <InfoCircle size="1em" /> This Survey shows the Platform using the
+            Ellipse Rating Scale in a Research context.
+          </Tooltip>
         </Button>
       </FlexBox>
     </ConfirmModal>

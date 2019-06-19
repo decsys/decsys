@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Typography, Button, Box } from "@smooth-ui/core-sc";
+import { Typography, Button, Box, Tooltip } from "@smooth-ui/core-sc";
 import {
   EllipsisV,
   Heading,
@@ -9,7 +9,8 @@ import {
   Paragraph,
   Image,
   Random,
-  ArrowsAltV
+  ArrowsAltV,
+  ExclamationTriangle
 } from "styled-icons/fa-solid";
 import { Grid, Cell } from "styled-css-grid";
 import ToggleButton from "../ui/ToggleButton";
@@ -50,12 +51,23 @@ const PageHeader = ({
             size="sm"
             variant="info"
             onClick={handleRandomToggle}
-            title={`Random is ${
-              page.randomize ? "ON" : "OFF"
-            } for this Page. Careful: Random Pages are only randomised *between* Fixed Pages.`}
             checked={page.randomize}
           >
             <Random size="1em" />
+            <Tooltip placement="bottom">
+              Random is{" "}
+              <Typography
+                fontWeight="bold"
+                color={page.randomize ? "success" : "danger"}
+              >
+                {page.randomize ? "ON" : "OFF"}
+              </Typography>{" "}
+              for this Page.
+              <Typography as="div" color="warning">
+                <ExclamationTriangle size="1em" /> Random Pages are only
+                randomised *between* Fixed Pages.
+              </Typography>
+            </Tooltip>
           </ToggleButton>
         </Cell>
 
@@ -68,9 +80,9 @@ const PageHeader = ({
             borderColor="success"
             backgroundColor="lightest"
             onClick={() => onAddPageItemClick(page.id, "heading")}
-            title="Add a Heading to this Page"
           >
             <Heading size="1em" />
+            <Tooltip placement="bottom">Add a Heading to this Page</Tooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -82,9 +94,9 @@ const PageHeader = ({
             borderColor="success"
             backgroundColor="lightest"
             onClick={() => onAddPageItemClick(page.id, "paragraph")}
-            title="Add a Paragraph to this Page"
           >
             <Paragraph size="1em" />
+            <Tooltip placement="bottom">Add a Paragraph to this Page</Tooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -96,9 +108,9 @@ const PageHeader = ({
             borderColor="success"
             backgroundColor="lightest"
             onClick={() => onAddPageItemClick(page.id, "image")}
-            title="Add an Image to this Page"
           >
             <Image size="1em" />
+            <Tooltip placement="bottom">Add an Image to this Page</Tooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -110,9 +122,11 @@ const PageHeader = ({
             borderColor="success"
             backgroundColor="lightest"
             onClick={() => onAddPageItemClick(page.id, "spacer")}
-            title="Add a Vertical Spacer to this Page"
           >
             <ArrowsAltV size="1em" />
+            <Tooltip placement="bottom">
+              Add a Vertical Spacer to this Page
+            </Tooltip>
           </Button>
         </Cell>
 
@@ -123,9 +137,9 @@ const PageHeader = ({
             backgroundColor="lightest"
             color="info"
             onClick={() => onDuplicateClick(page.id)}
-            title="Duplicate this Page"
           >
             <Copy size="1em" />
+            <Tooltip placement="bottom">Duplicate this Page</Tooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -138,6 +152,7 @@ const PageHeader = ({
             title="Delete this Page"
           >
             <Trash size="1em" />
+            <Tooltip placement="bottom">Delete this Page</Tooltip>
           </Button>
         </Cell>
       </Grid>
