@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Decsys.Models;
 using Decsys.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -22,11 +23,18 @@ namespace Decsys.Controllers
         private readonly SurveyInstanceService _instances;
         private readonly ExportService _export;
 
-        public SurveysController(SurveyService surveys, ExportService export, SurveyInstanceService instances)
+        private readonly string _internalSurveysPath;
+
+        public SurveysController(
+            SurveyService surveys,
+            ExportService export,
+            SurveyInstanceService instances,
+            IHostingEnvironment env)
         {
             _surveys = surveys;
             _export = export;
             _instances = instances;
+            _internalSurveysPath = Path.Combine(env.ContentRootPath, "surveys");
         }
 
         [HttpGet]
@@ -140,66 +148,123 @@ namespace Decsys.Controllers
             }
         }
 
-        [HttpPost("import")]
-        public async Task<ActionResult<int>> Import(
-            bool importData,
-            [SwaggerParameter("The survey export file")]
-            IFormFile file)
+        [HttpPost("internal/{type}")]
+        public async Task<ActionResult<int>> LoadInternal(string type)
+        {
+            if (!new string[] { "demo", "sample" }.Contains(type))
+                return BadRequest("Unrecognised type requested. Expected 'demo' or 'sample'.");
+
+            using (var fs = new FileStream(Path.Combine(_internalSurveysPath,$"{type}.zip"), FileMode.Open))
+            {
+                var zip = new ZipArchive(fs);
+                var (survey, images, instances) = ProcessImportZip(zip);
+
+                try
+                {
+                    return await HandleImport(survey, images, instances);
+                }
+                catch (ArgumentNullException e)
+                {
+                    if (e.ParamName == nameof(survey))
+                        return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
+                    else throw;
+                }
+            }
+        }
+
+        private
+            (
+                Survey survey,
+                List<(string filename, byte[] data)> images,
+                List<SurveyInstanceResults<ParticipantEvents>> instances
+            )
+            ProcessImportZip(
+                ZipArchive zip,
+                bool importData = false)
         {
             Survey survey = null;
             var images = new List<(string filename, byte[] data)>();
             var instances = new List<SurveyInstanceResults<ParticipantEvents>>();
-            using (var stream = new MemoryStream())
-            {
-                await file.CopyToAsync(stream).ConfigureAwait(false);
-                var zip = new ZipArchive(stream);
-                foreach (var entry in zip.Entries)
-                {
-                    if (entry.FullName.StartsWith("images/"))
-                    {
-                        byte[] bytes;
-                        using (var ms = new MemoryStream())
-                        {
-                            entry.Open().CopyTo(ms);
-                            bytes = ms.ToArray();
-                        }
-                        images.Add((entry.FullName.Replace("images/", string.Empty), bytes));
-                    }
 
-                    if (entry.FullName == "structure.json")
+            foreach (var entry in zip.Entries)
+            {
+                if (entry.FullName.StartsWith("images/"))
+                {
+                    byte[] bytes;
+                    using (var ms = new MemoryStream())
+                    {
+                        entry.Open().CopyTo(ms);
+                        bytes = ms.ToArray();
+                    }
+                    images.Add((entry.FullName.Replace("images/", string.Empty), bytes));
+                }
+
+                if (entry.FullName == "structure.json")
+                {
+                    using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
+                        survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+                }
+                else if (importData && entry.FullName.StartsWith("Instance-") && entry.FullName.EndsWith(".json"))
+                {
+                    try
                     {
                         using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
-                            survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+                            instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
                     }
-                    else if (importData && entry.FullName.StartsWith("Instance-") && entry.FullName.EndsWith(".json"))
+                    catch (JsonSerializationException)
                     {
-                        try
-                        {
-                            using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
-                                instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
-                        }
-                        catch (JsonSerializationException)
-                        {
-                            // This is fine 🔥🍵🐕🔥
-                            // We just don't import what we can't deserialize as an instance
-                            // TODO: Maybe someday we could report on the result of our attempted import /shrug
-                        }
+                        // This is fine 🔥🍵🐕🔥
+                        // We just don't import what we can't deserialize as an instance
+                        // TODO: Maybe someday we could report on the result of our attempted import /shrug
                     }
                 }
             }
 
+            return (survey, images, instances);
+        }
+
+        private async Task<int> HandleImport(
+            Survey survey,
+            List<(string filename, byte[] data)> images,
+            List<SurveyInstanceResults<ParticipantEvents>> instances)
+        {
             if (survey is null)
-                return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
+                throw new ArgumentNullException(nameof(survey));
 
             var surveyId = await _surveys.Import(survey, images);
 
-            if (importData && instances.Any())
+            if (instances.Any())
             {
                 // attempt to import instances
                 _instances.Import(instances, surveyId);
             }
 
             return surveyId;
+        }
+
+        [HttpPost("import")]
+        public async Task<ActionResult<int>> Import(
+            bool importData,
+            [SwaggerParameter("The survey export file")]
+            IFormFile file)
+        {
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream).ConfigureAwait(false);
+                var zip = new ZipArchive(stream);
+                var (survey, images, instances) = ProcessImportZip(zip, importData);
+
+                try
+                {
+                    return await HandleImport(survey, images, instances);
+                }
+                catch (ArgumentNullException e)
+                {
+                    if (e.ParamName == nameof(survey))
+                        return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
+                    else throw;
+                }
+            }
         }
     }
 }

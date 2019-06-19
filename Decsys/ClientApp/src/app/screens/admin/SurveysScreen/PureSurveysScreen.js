@@ -1,58 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import {
-  Typography,
-  Button,
-  Alert,
-  Box,
-  Input,
-  Checkbox,
-  FormCheck,
-  FormCheckLabel
-} from "@smooth-ui/core-sc";
-import {
-  List,
-  PlusCircle,
-  InfoCircle,
-  FileImport,
-  ExclamationCircle
-} from "styled-icons/fa-solid";
+import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
+import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
 import { Container, FlexBox, EmptyState } from "../../../components/ui";
 import SurveyList from "../../../components/SurveyList";
-import ConfirmModal, { useModal } from "../../../components/ui/ConfirmModal";
+import { useModal } from "../../../components/ui/ConfirmModal";
 import AboutLink from "../../../components/AboutLink";
 import AppBar from "../../../components/AppBar";
+import AddSurveyModal from "./AddSurveyModal";
 
-const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
-  const importModal = useModal();
-  const [importFile, setImportFile] = useState();
-  const [importData, setImportData] = useState(false);
-  const [error, setError] = useState();
-  const idTimestamp = new Date().getTime();
-
-  const handleFileSelect = e => {
-    setImportFile();
-    setError();
-    e.persist();
-    if (
-      e.target.value
-        .split(".")
-        .pop()
-        .toLowerCase() !== "zip"
-    )
-      setError("Invalid file extension. Expected .zip");
-    setImportFile(e.target.files[0]);
-  };
-
-  const handleImportClick = () => {
-    if (!importFile || error) return;
-    onImportClick(importFile, importData);
-    importModal.toggleModal();
-  };
-
-  const handleImportDataCheckboxChange = e => {
-    setImportData(e.target.checked);
-  };
+const SurveysScreen = ({
+  surveys,
+  onCreateClick,
+  onImportClick,
+  onLoadInternalClick
+}) => {
+  const addSurveyModal = useModal();
 
   return (
     <>
@@ -63,11 +26,12 @@ const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
         <FlexBox my={3} alignItems="center" justifyContent="space-between">
           <Typography variant="h1">My Surveys</Typography>
           <FlexBox>
-            <Button mr={1} variant="success" onClick={onCreateClick}>
-              <PlusCircle size="1em" /> New
-            </Button>
-            <Button variant="secondary" onClick={importModal.toggleModal}>
-              <FileImport size="1em" /> Import
+            <Button
+              mr={1}
+              variant="success"
+              onClick={addSurveyModal.toggleModal}
+            >
+              <PlusCircle size="1em" /> Add a Survey
             </Button>
           </FlexBox>
         </FlexBox>
@@ -78,8 +42,8 @@ const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
               splash={<List />}
               message="You don't have any surveys yet."
               callToAction={{
-                label: "Create a survey",
-                onClick: onCreateClick
+                label: "Add a Survey",
+                onClick: addSurveyModal.toggleModal
               }}
             />
           </Box>
@@ -94,45 +58,13 @@ const SurveysScreen = ({ surveys, onCreateClick, onImportClick }) => {
           </>
         )}
       </Container>
-      <ConfirmModal
-        {...importModal}
-        header="Import a Survey"
-        confirmButton={{
-          content: (
-            <Typography>
-              <FileImport size="1em" /> Import
-            </Typography>
-          ),
-          onClick: handleImportClick
-        }}
-      >
-        <FlexBox flexDirection="column" width={1}>
-          <Typography color="info" mb={1}>
-            <InfoCircle size="1em" /> Select a previously exported DECSYS Survey
-            file to import.
-          </Typography>
 
-          <Input type="file" onChange={handleFileSelect} />
-          {error && (
-            <Typography color="danger">
-              <ExclamationCircle size="1em" /> {error}
-            </Typography>
-          )}
-
-          <FormCheck mt={2}>
-            <Checkbox
-              control
-              size="lg"
-              id={`import-data-${idTimestamp}`}
-              checked={importData}
-              onChange={handleImportDataCheckboxChange}
-            />
-            <FormCheckLabel htmlFor={`import-data-${idTimestamp}`}>
-              Also import any Results Data
-            </FormCheckLabel>
-          </FormCheck>
-        </FlexBox>
-      </ConfirmModal>
+      <AddSurveyModal
+        modalState={addSurveyModal}
+        onCreateClick={onCreateClick}
+        onImportClick={onImportClick}
+        onLoadInternalClick={onLoadInternalClick}
+      />
     </>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { styled, colorYik, colorVariant } from "@smooth-ui/core-sc";
+import { styled, colorYik, colorVariant, Tooltip } from "@smooth-ui/core-sc";
 import PropTypes from "prop-types";
 import { Check, Times } from "styled-icons/fa-solid";
 import FlexBox from "./FlexBox";
@@ -19,13 +19,10 @@ const ActiveIndicator = ({ active, tooltips, ...rest }) => {
   `;
 
   return (
-    <FlexBox
-      alignItems="center"
-      p={1}
-      backgroundColor={color}
-      title={tooltips[active]}
-      {...rest}
-    >
+    <FlexBox alignItems="center" p={1} backgroundColor={color} {...rest}>
+      <Tooltip placement="top" zIndex={9999}>
+        {tooltips[active]}
+      </Tooltip>
       <Icon size="1em" />
     </FlexBox>
   );

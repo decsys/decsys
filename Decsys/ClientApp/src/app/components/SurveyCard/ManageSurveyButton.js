@@ -22,11 +22,11 @@ const ManageSurveyButton = ({ name, editable, id }) => {
   return (
     <>
       <DropdownMenuButton
-        title="More survey actions..."
         display="block"
         variant="secondary"
         button={<EllipsisV size="1em" />}
         caret={false}
+        tooltip={{ placement: "top", content: "More survey actions..." }}
       >
         {editable && (
           <MenuItem onClick={() => handleEditClick(id)}>Edit</MenuItem>

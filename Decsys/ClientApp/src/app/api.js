@@ -73,7 +73,10 @@ export const deleteComponentImage = (surveyId, pageId, componentId) =>
   );
 
 export const uploadSurveyImport = async (file, importData = false) =>
-  uploadFile(`api/surveys/import?importData=${importData}`, file);
+  uploadFile(`/api/surveys/import?importData=${importData}`, file);
+
+export const loadInternalSurvey = async type =>
+  Axios.post(`/api/surveys/internal/${type}`);
 
 export const createSurveyPage = id => Axios.post(`/api/surveys/${id}/pages`);
 
