@@ -38,4 +38,18 @@ storiesOf("Common UI/DropdownButton", module)
       caret={false}
       onClick={action("Button clicked")}
     />
+  ))
+  .add("With Tooltip", () => (
+    <DropdownButton
+      tooltip={{
+        placement: "right",
+        content: (
+          <>
+            <EllipsisV size="1em" />
+            Hello there
+          </>
+        )
+      }}
+      onClick={action("Button clicked")}
+    />
   ));

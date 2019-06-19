@@ -121,7 +121,6 @@ const AddSurveyModal = ({
           borderColor="secondary"
           mb={1}
           onClick={handleLoadDemoClick}
-          title="This Survey demonstrates the features of the DECSYS Survey Platform."
         >
           Load the Demo Survey
           <Tooltip placement="left" width="150px" zIndex={9999}>

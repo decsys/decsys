@@ -54,7 +54,7 @@ const PageHeader = ({
             checked={page.randomize}
           >
             <Random size="1em" />
-            <Tooltip placement="bottom">
+            <Tooltip placement="top" zIndex={9999}>
               Random is{" "}
               <Typography
                 fontWeight="bold"
@@ -82,7 +82,9 @@ const PageHeader = ({
             onClick={() => onAddPageItemClick(page.id, "heading")}
           >
             <Heading size="1em" />
-            <Tooltip placement="bottom">Add a Heading to this Page</Tooltip>
+            <Tooltip placement="top" zIndex={9999}>
+              Add a Heading to this Page
+            </Tooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -96,7 +98,9 @@ const PageHeader = ({
             onClick={() => onAddPageItemClick(page.id, "paragraph")}
           >
             <Paragraph size="1em" />
-            <Tooltip placement="bottom">Add a Paragraph to this Page</Tooltip>
+            <Tooltip placement="top" zIndex={9999}>
+              Add a Paragraph to this Page
+            </Tooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -110,7 +114,9 @@ const PageHeader = ({
             onClick={() => onAddPageItemClick(page.id, "image")}
           >
             <Image size="1em" />
-            <Tooltip placement="bottom">Add an Image to this Page</Tooltip>
+            <Tooltip placement="top" zIndex={9999}>
+              Add an Image to this Page
+            </Tooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -124,7 +130,7 @@ const PageHeader = ({
             onClick={() => onAddPageItemClick(page.id, "spacer")}
           >
             <ArrowsAltV size="1em" />
-            <Tooltip placement="bottom">
+            <Tooltip placement="top" zIndex={9999}>
               Add a Vertical Spacer to this Page
             </Tooltip>
           </Button>
@@ -139,7 +145,9 @@ const PageHeader = ({
             onClick={() => onDuplicateClick(page.id)}
           >
             <Copy size="1em" />
-            <Tooltip placement="bottom">Duplicate this Page</Tooltip>
+            <Tooltip placement="top" zIndex={9999}>
+              Duplicate this Page
+            </Tooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -149,10 +157,11 @@ const PageHeader = ({
             color="danger"
             backgroundColor="lightest"
             onClick={() => onDeleteClick(page.id)}
-            title="Delete this Page"
           >
             <Trash size="1em" />
-            <Tooltip placement="bottom">Delete this Page</Tooltip>
+            <Tooltip placement="top" zIndex={9999}>
+              Delete this Page
+            </Tooltip>
           </Button>
         </Cell>
       </Grid>
