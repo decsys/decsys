@@ -11,7 +11,7 @@ import { decode } from "./services/instance-id";
 import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
 import ParticipantIdScreen from "./screens/survey/ParticipantIdScreen";
 import ResultsScreen from "./screens/admin/ResultsScreen";
-import DashbooardScreen from "./screens/admin/DashboardScreen";
+import DashboardScreen from "./screens/admin/DashboardScreen";
 import {
   PAGE_RANDOMIZE,
   SURVEY_COMPLETE,
@@ -274,7 +274,7 @@ const routes = mount({
               );
               return {
                 view: (
-                  <DashbooardScreen
+                  <DashboardScreen
                     instanceId={instanceId}
                     survey={survey}
                     results={results}
