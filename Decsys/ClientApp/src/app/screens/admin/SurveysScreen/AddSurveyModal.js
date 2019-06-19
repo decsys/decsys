@@ -63,7 +63,7 @@ const AddSurveyModal = ({
     <ConfirmModal {...modalState} header="Add a Survey" cancelButton={false}>
       <FlexBox flexDirection="column" width={1}>
         <Button variant="success" mb={1} onClick={onCreateClick}>
-          Create a blank Survey
+          Start with a blank Survey
         </Button>
 
         <Toggler>
