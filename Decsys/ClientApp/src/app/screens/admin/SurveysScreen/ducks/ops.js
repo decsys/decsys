@@ -12,6 +12,12 @@ export const importSurvey = (file, importData) => async dispatch => {
   dispatch(actions.fetchSurveys(surveyList));
 };
 
+export const loadInternalSurvey = type => async dispatch => {
+  await api.loadInternalSurvey(type);
+  const { data: surveyList } = await api.listSurveys();
+  dispatch(actions.fetchSurveys(surveyList));
+};
+
 export const deleteSurvey = id => async dispatch => {
   await api.deleteSurvey(id);
   dispatch(actions.deleteSurvey(id));

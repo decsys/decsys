@@ -18,6 +18,8 @@ const SurveysScreen = ({ surveys }) => {
   const handleCreateClick = () => dispatch(ducks.createSurvey());
   const handleImportClick = (file, importData) =>
     dispatch(ducks.importSurvey(file, importData));
+  const handleLoadInternalClick = type =>
+    dispatch(ducks.loadInternalSurvey(type));
 
   const surveyCardActions = {
     handleEditClick: id => navigation.navigate(`admin/survey/${id}`), // TODO: Routing state for placeholder?
@@ -38,6 +40,7 @@ const SurveysScreen = ({ surveys }) => {
         surveys={state}
         onCreateClick={handleCreateClick}
         onImportClick={handleImportClick}
+        onLoadInternalClick={handleLoadInternalClick}
       />
     </SurveyCardContext.Provider>
   );
