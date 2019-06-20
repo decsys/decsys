@@ -40,5 +40,3 @@ Link.propTypes = {
 };
 
 export default Link;
-
-// TODO: Yik!
