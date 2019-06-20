@@ -1,6 +1,6 @@
-[![NPM](https://nodeico.herokuapp.com/@decsys/param-types.svg)](https://npmjs.com/package/@decsys/param-types)
-
 ![GitHub](https://img.shields.io/github/license/decsys/param-types.svg)
+[![Build Status](https://dev.azure.com/UniversityOfNottingham/DECSYS/_apis/build/status/decsys.param-types?branchName=master)](https://dev.azure.com/UniversityOfNottingham/DECSYS/_build/latest?definitionId=179&branchName=master)
+[![npm (scoped with tag)](https://img.shields.io/npm/v/@decsys/param-types/latest.svg)](https://www.npmjs.com/package/@decsys/param-types)
 
 # Param Types
 
@@ -100,22 +100,29 @@ The Platform's Component Editor uses the `param-types` type constants to avoid m
 
 # Licensing
 
-This software is primarily licensed under the **GNU Affero General Public License v3.0 only** (`AGPL-3.0-only`)
+## Overview
 
-    DECSYS Param Types
-    Copyright (C) 2019 Christian Wagner, LUCID (Lab for Uncertainty in Data and Decision Making)
+This software is primarily licensed under the **GNU Affero General Public License v3.0 only** (`AGPL-3.0-only`).
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+A summary is provided below; the full license text may be found in `LICENSE.md`.
 
 Other license arrangements may be made as appropriate on request.
+
+## Copyright and License Summary
+
+> DECSYS Param Types
+>
+> Copyright (C) 2019 Christian Wagner, LUCID (Lab for Uncertainty in Data and Decision Making)
+>
+> This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+>
+> This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+>
+> You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
