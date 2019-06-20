@@ -108,8 +108,6 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to delete.</param>
         public void Delete(int id)
         {
-            // TODO: more to delete than just the survey
-            // sessions, results data etc...
             _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
                 .Delete(x => x.Survey.Id == id);
 
