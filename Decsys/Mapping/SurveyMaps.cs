@@ -28,6 +28,7 @@ namespace Decsys.Mapping
             // Survey
             CreateMap<Data.Entities.Survey, Survey>()
                 .ConstructUsing(src => new Survey(src.Name));
+            CreateMap<Survey, Data.Entities.Survey>();
 
 
             // Page
