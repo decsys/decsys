@@ -27,7 +27,7 @@ Additionally, all the Scale components are default exports from individual modul
 e.g. just the Discrete Scale
 
 - esm: `import DiscreteScale from "@decsys/rating-scales/esm/discrete";`
-- commonjs (node): `const Frame = require("@decsys/rating-scales/cjs/discrete");`
+- commonjs (node): `const DiscreteScale = require("@decsys/rating-scales/cjs/discrete");`
 
 ### Importing a Scale component from the main package export
 
@@ -91,7 +91,7 @@ Other license arrangements may be made as appropriate on request.
 
 ## Copyright and License Summary
 
-> DECSYS Param Types
+> DECSYS Rating Scales
 >
 > Copyright (C) 2019 Christian Wagner, LUCID (Lab for Uncertainty in Data and Decision Making)
 >
