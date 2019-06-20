@@ -6,9 +6,9 @@ import {
   Checkbox,
   FormCheck,
   FormCheckLabel,
-  Toggler,
-  Tooltip
+  Toggler
 } from "@smooth-ui/core-sc";
+import ReactTooltip from "react-tooltip";
 import {
   InfoCircle,
   FileImport,
@@ -121,12 +121,14 @@ const AddSurveyModal = ({
           borderColor="secondary"
           mb={1}
           onClick={handleLoadDemoClick}
+          data-tip
+          data-for="loadDemoSurvey"
         >
           Load the Demo Survey
-          <Tooltip placement="left" width="150px" zIndex={9999}>
+          <ReactTooltip id="loadDemoSurvey" place="top">
             <InfoCircle size="1em" /> This Survey demonstrates the features of
             the DECSYS Survey Platform.
-          </Tooltip>
+          </ReactTooltip>
         </Button>
 
         <Button
@@ -134,12 +136,14 @@ const AddSurveyModal = ({
           border={1}
           borderColor="secondary"
           onClick={handleLoadSampleClick}
+          data-tip
+          data-for="loadSampleSurvey"
         >
           Load the Sample Research Survey
-          <Tooltip placement="left" width="150px" zIndex={9999}>
+          <ReactTooltip id="loadSampleSurvey" place="top">
             <InfoCircle size="1em" /> This Survey shows the Platform using the
             Ellipse Rating Scale in a Research context.
-          </Tooltip>
+          </ReactTooltip>
         </Button>
       </FlexBox>
     </ConfirmModal>

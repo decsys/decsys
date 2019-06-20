@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Typography, Button, Box, Tooltip } from "@smooth-ui/core-sc";
+import { Typography, Button, Box } from "@smooth-ui/core-sc";
+import ReactTooltip from "react-tooltip";
 import {
   EllipsisV,
   Heading,
@@ -28,144 +29,151 @@ const PageHeader = ({
 }) => {
   const handleRandomToggle = e => onRandomToggle(page.id, e.target.checked);
 
+  const randomButton = useRef();
+  useEffect(() => {
+    ReactTooltip.hide(randomButton.current);
+    ReactTooltip.rebuild();
+    ReactTooltip.show(randomButton.current);
+  }, [page.randomize]);
+
   return (
-    <Box pr={1} borderBottom={1} borderColor="cardBorder">
-      <Grid
-        columns="30px 1fr 40px 30px 30px 30px 30px 30px 30px"
-        columnGap=".1em"
-      >
-        <Cell middle>
-          <div {...provided.dragHandleProps}>
-            <Box textAlign="center">
-              <EllipsisV size="1em" />
-            </Box>
-          </div>
-        </Cell>
+    <>
+      <ReactTooltip effect="solid" />
+      <Box pr={1} borderBottom={1} borderColor="cardBorder">
+        <Grid
+          columns="30px 1fr 40px 30px 30px 30px 30px 30px 30px"
+          columnGap=".1em"
+        >
+          <Cell middle>
+            <div {...provided.dragHandleProps}>
+              <Box textAlign="center">
+                <EllipsisV size="1em" />
+              </Box>
+            </div>
+          </Cell>
 
-        <Cell middle>
-          <Typography>Page {n}</Typography>
-        </Cell>
+          <Cell middle>
+            <Typography>Page {n}</Typography>
+          </Cell>
 
-        <Cell>
-          <ToggleButton
-            size="sm"
-            variant="info"
-            onClick={handleRandomToggle}
-            checked={page.randomize}
-          >
-            <Random size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
-              Random is{" "}
-              <Typography
-                fontWeight="bold"
-                color={page.randomize ? "success" : "danger"}
-              >
-                {page.randomize ? "ON" : "OFF"}
-              </Typography>{" "}
-              for this Page.
-              <Typography as="div" color="warning">
-                <ExclamationTriangle size="1em" /> Random Pages are only
-                randomised *between* Fixed Pages.
-              </Typography>
-            </Tooltip>
-          </ToggleButton>
-        </Cell>
+          <Cell>
+            <ToggleButton
+              size="sm"
+              variant="info"
+              onClick={handleRandomToggle}
+              checked={page.randomize}
+              data-tip={`${page.randomize}`}
+              data-for="random"
+              ref={randomButton}
+            >
+              <Random size="1em" />
+              <ReactTooltip
+                id="random"
+                effect="solid"
+                getContent={tip => (
+                  <>
+                    Random is{" "}
+                    <Typography
+                      fontWeight="bold"
+                      color={tip === "true" ? "success" : "danger"}
+                    >
+                      {tip === "true" ? "ON" : "OFF"}
+                    </Typography>{" "}
+                    for this Page.
+                    <Typography as="div" color="warning">
+                      <ExclamationTriangle size="1em" /> Random Pages are only
+                      randomised *between* Fixed Pages.
+                    </Typography>
+                  </>
+                )}
+              ></ReactTooltip>
+            </ToggleButton>
+          </Cell>
 
-        <Cell middle>
-          <Button
-            size="sm"
-            variant="light"
-            color="success"
-            border={1}
-            borderColor="success"
-            backgroundColor="lightest"
-            onClick={() => onAddPageItemClick(page.id, "heading")}
-          >
-            <Heading size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
-              Add a Heading to this Page
-            </Tooltip>
-          </Button>
-        </Cell>
-        <Cell middle>
-          <Button
-            size="sm"
-            variant="light"
-            color="success"
-            border={1}
-            borderColor="success"
-            backgroundColor="lightest"
-            onClick={() => onAddPageItemClick(page.id, "paragraph")}
-          >
-            <Paragraph size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
-              Add a Paragraph to this Page
-            </Tooltip>
-          </Button>
-        </Cell>
-        <Cell middle>
-          <Button
-            size="sm"
-            variant="light"
-            color="success"
-            border={1}
-            borderColor="success"
-            backgroundColor="lightest"
-            onClick={() => onAddPageItemClick(page.id, "image")}
-          >
-            <Image size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
-              Add an Image to this Page
-            </Tooltip>
-          </Button>
-        </Cell>
-        <Cell middle>
-          <Button
-            size="sm"
-            variant="light"
-            color="success"
-            border={1}
-            borderColor="success"
-            backgroundColor="lightest"
-            onClick={() => onAddPageItemClick(page.id, "spacer")}
-          >
-            <ArrowsAltV size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
-              Add a Vertical Spacer to this Page
-            </Tooltip>
-          </Button>
-        </Cell>
+          <Cell middle>
+            <Button
+              size="sm"
+              variant="light"
+              color="success"
+              border={1}
+              borderColor="success"
+              backgroundColor="lightest"
+              onClick={() => onAddPageItemClick(page.id, "heading")}
+              data-tip="Add a Heading to this Page"
+            >
+              <Heading size="1em" />
+            </Button>
+          </Cell>
+          <Cell middle>
+            <Button
+              size="sm"
+              variant="light"
+              color="success"
+              border={1}
+              borderColor="success"
+              backgroundColor="lightest"
+              onClick={() => onAddPageItemClick(page.id, "paragraph")}
+              data-tip="Add a Paragraph to this Page"
+            >
+              <Paragraph size="1em" />
+            </Button>
+          </Cell>
+          <Cell middle>
+            <Button
+              size="sm"
+              variant="light"
+              color="success"
+              border={1}
+              borderColor="success"
+              backgroundColor="lightest"
+              onClick={() => onAddPageItemClick(page.id, "image")}
+              data-tip="Add an Image to this Page"
+            >
+              <Image size="1em" />
+            </Button>
+          </Cell>
+          <Cell middle>
+            <Button
+              size="sm"
+              variant="light"
+              color="success"
+              border={1}
+              borderColor="success"
+              backgroundColor="lightest"
+              onClick={() => onAddPageItemClick(page.id, "spacer")}
+              data-tip="Add a Vertical Spacer to this Page"
+            >
+              <ArrowsAltV size="1em" />
+            </Button>
+          </Cell>
 
-        <Cell middle>
-          <Button
-            size="sm"
-            variant="light"
-            backgroundColor="lightest"
-            color="info"
-            onClick={() => onDuplicateClick(page.id)}
-          >
-            <Copy size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
-              Duplicate this Page
-            </Tooltip>
-          </Button>
-        </Cell>
-        <Cell middle>
-          <Button
-            size="sm"
-            variant="light"
-            color="danger"
-            backgroundColor="lightest"
-            onClick={() => onDeleteClick(page.id)}
-          >
-            <Trash size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
-              Delete this Page
-            </Tooltip>
-          </Button>
-        </Cell>
-      </Grid>
-    </Box>
+          <Cell middle>
+            <Button
+              size="sm"
+              variant="light"
+              backgroundColor="lightest"
+              color="info"
+              onClick={() => onDuplicateClick(page.id)}
+              data-tip="Duplicate this Page"
+            >
+              <Copy size="1em" />
+            </Button>
+          </Cell>
+          <Cell middle>
+            <Button
+              size="sm"
+              variant="light"
+              color="danger"
+              backgroundColor="lightest"
+              onClick={() => onDeleteClick(page.id)}
+              data-tip="Delete this Page"
+            >
+              <Trash size="1em" />
+            </Button>
+          </Cell>
+        </Grid>
+      </Box>
+    </>
   );
 };
 

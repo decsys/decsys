@@ -1,8 +1,8 @@
 ![GitHub](https://img.shields.io/github/license/decsys/decsys.svg)
 [![Build Status](https://dev.azure.com/UniversityOfNottingham/DECSYS/_apis/build/status/decsys.decsys?branchName=master)](https://dev.azure.com/UniversityOfNottingham/DECSYS/_build/latest?definitionId=155&branchName=master)
 
-![GitHub release](https://img.shields.io/github/release/decsys/decsys.svg?label=stable)
-![GitHub release](https://img.shields.io/github/release-pre/decsys/decsys.svg?label=latest)
+[![GitHub release](https://img.shields.io/github/release/decsys/decsys.svg?label=stable)](https://github.com/decsys/decsys/releases)
+[![GitHub release](https://img.shields.io/github/release-pre/decsys/decsys.svg?label=latest)](https://github.com/decsys/decsys/releases)
 
 # DECSYS Survey Platform
 
@@ -53,22 +53,29 @@ It is used to showcase the DECSYS Ellipse Rating Scale.
 
 # Licensing
 
-This software is primarily licensed under the **GNU Affero General Public License v3.0 only** (`AGPL-3.0-only`)
+## Overview
 
-    DECSYS Survey Platform
-    Copyright (C) 2019 Christian Wagner, LUCID (Lab for Uncertainty in Data and Decision Making)
+This software is primarily licensed under the **GNU Affero General Public License v3.0 only** (`AGPL-3.0-only`).
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+A summary is provided below; the full license text may be found in `LICENSE.md`.
 
 Other license arrangements may be made as appropriate on request.
+
+## Copyright and License Summary
+
+> DECSYS Survey Platform
+>
+> Copyright (C) 2019 Christian Wagner, LUCID (Lab for Uncertainty in Data and Decision Making)
+>
+> This program is free software: you can redistribute it and/or modify
+> it under the terms of the GNU Affero General Public License as published
+> by the Free Software Foundation, either version 3 of the License, or
+> (at your option) any later version.
+>
+> This program is distributed in the hope that it will be useful,
+> but WITHOUT ANY WARRANTY; without even the implied warranty of
+> MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> GNU Affero General Public License for more details.
+>
+> You should have received a copy of the GNU Affero General Public License
+> along with this program. If not, see <https://www.gnu.org/licenses/>.

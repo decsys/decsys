@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, forwardRef } from "react";
 import { Button } from "@smooth-ui/core-sc";
 
 const calculateToggleStyle = (on, variant) => {
@@ -20,34 +20,30 @@ const calculateToggleStyle = (on, variant) => {
     };
 };
 
-const ToggleButton = ({
-  variant = "primary",
-  checked,
-  children,
-  onClick,
-  ...p
-}) => {
-  const [on, setOn] = useState(checked);
-  const [toggleStyle, setToggleStyle] = useState(
-    calculateToggleStyle(checked, variant)
-  );
+const ToggleButton = forwardRef(
+  ({ variant = "primary", checked, children, onClick, ...p }, ref) => {
+    const [on, setOn] = useState(checked);
+    const [toggleStyle, setToggleStyle] = useState(
+      calculateToggleStyle(checked, variant)
+    );
 
-  useEffect(() => setToggleStyle(calculateToggleStyle(on, variant)), [
-    on,
-    variant
-  ]);
+    useEffect(() => setToggleStyle(calculateToggleStyle(on, variant)), [
+      on,
+      variant
+    ]);
 
-  const handleClick = e => {
-    e.target.checked = !on;
-    setOn(!on);
-    onClick(e);
-  };
+    const handleClick = e => {
+      e.target.checked = !on;
+      setOn(!on);
+      onClick(e);
+    };
 
-  return (
-    <Button {...toggleStyle} {...p} onClick={handleClick}>
-      {children}
-    </Button>
-  );
-};
+    return (
+      <Button ref={ref} {...toggleStyle} {...p} onClick={handleClick}>
+        {children}
+      </Button>
+    );
+  }
+);
 
 export default ToggleButton;

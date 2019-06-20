@@ -1,5 +1,6 @@
 import React from "react";
-import { styled, colorYik, colorVariant, Tooltip } from "@smooth-ui/core-sc";
+import { styled, colorYik, colorVariant } from "@smooth-ui/core-sc";
+import ReactTooltip from "react-tooltip";
 import PropTypes from "prop-types";
 import { Check, Times } from "styled-icons/fa-solid";
 import FlexBox from "./FlexBox";
@@ -13,18 +14,28 @@ import FlexBox from "./FlexBox";
  */
 const ActiveIndicator = ({ active, tooltips, ...rest }) => {
   const color = active ? "success" : "gray";
+  const ttid = `ddb${new Date().getTime()}`;
 
   const Icon = styled(active ? Check : Times)`
     color: ${p => colorYik(colorVariant(color)(p))(p)};
   `;
 
   return (
-    <FlexBox alignItems="center" p={1} backgroundColor={color} {...rest}>
-      <Tooltip placement="top" zIndex={9999}>
-        {tooltips[active]}
-      </Tooltip>
-      <Icon size="1em" />
-    </FlexBox>
+    <>
+      <FlexBox
+        alignItems="center"
+        p={1}
+        backgroundColor={color}
+        {...rest}
+        data-tip
+        data-for={ttid}
+      >
+        <Icon size="1em" />
+        <ReactTooltip id={ttid} effect="solid">
+          {tooltips[active]}
+        </ReactTooltip>
+      </FlexBox>
+    </>
   );
 };
 
