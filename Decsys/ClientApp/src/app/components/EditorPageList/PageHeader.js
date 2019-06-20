@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Typography, Button, Box, Tooltip } from "@smooth-ui/core-sc";
+import { Typography, Button, Box } from "@smooth-ui/core-sc";
+import ReactTooltip from "react-tooltip";
 import {
   EllipsisV,
   Heading,
@@ -28,6 +29,13 @@ const PageHeader = ({
 }) => {
   const handleRandomToggle = e => onRandomToggle(page.id, e.target.checked);
 
+  const randomButton = useRef();
+  useEffect(() => {
+    ReactTooltip.hide(randomButton.current);
+    ReactTooltip.rebuild();
+    ReactTooltip.show(randomButton.current);
+  }, [page.randomize]);
+
   return (
     <Box pr={1} borderBottom={1} borderColor="cardBorder">
       <Grid
@@ -52,22 +60,31 @@ const PageHeader = ({
             variant="info"
             onClick={handleRandomToggle}
             checked={page.randomize}
+            data-tip={`${page.randomize}`}
+            data-for="random"
+            ref={randomButton}
           >
             <Random size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
-              Random is{" "}
-              <Typography
-                fontWeight="bold"
-                color={page.randomize ? "success" : "danger"}
-              >
-                {page.randomize ? "ON" : "OFF"}
-              </Typography>{" "}
-              for this Page.
-              <Typography as="div" color="warning">
-                <ExclamationTriangle size="1em" /> Random Pages are only
-                randomised *between* Fixed Pages.
-              </Typography>
-            </Tooltip>
+            <ReactTooltip
+              id="random"
+              effect="solid"
+              getContent={tip => (
+                <>
+                  Random is{" "}
+                  <Typography
+                    fontWeight="bold"
+                    color={tip === "true" ? "success" : "danger"}
+                  >
+                    {tip === "true" ? "ON" : "OFF"}
+                  </Typography>{" "}
+                  for this Page.
+                  <Typography as="div" color="warning">
+                    <ExclamationTriangle size="1em" /> Random Pages are only
+                    randomised *between* Fixed Pages.
+                  </Typography>
+                </>
+              )}
+            ></ReactTooltip>
           </ToggleButton>
         </Cell>
 
@@ -80,11 +97,13 @@ const PageHeader = ({
             borderColor="success"
             backgroundColor="lightest"
             onClick={() => onAddPageItemClick(page.id, "heading")}
+            data-tip
+            data-for="heading"
           >
             <Heading size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
+            <ReactTooltip id="heading" effect="solid">
               Add a Heading to this Page
-            </Tooltip>
+            </ReactTooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -96,11 +115,13 @@ const PageHeader = ({
             borderColor="success"
             backgroundColor="lightest"
             onClick={() => onAddPageItemClick(page.id, "paragraph")}
+            data-tip
+            data-for="paragraph"
           >
             <Paragraph size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
+            <ReactTooltip id="paragraph" effect="solid">
               Add a Paragraph to this Page
-            </Tooltip>
+            </ReactTooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -112,11 +133,13 @@ const PageHeader = ({
             borderColor="success"
             backgroundColor="lightest"
             onClick={() => onAddPageItemClick(page.id, "image")}
+            data-tip
+            data-for="image"
           >
             <Image size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
+            <ReactTooltip id="image" effect="solid">
               Add an Image to this Page
-            </Tooltip>
+            </ReactTooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -128,11 +151,13 @@ const PageHeader = ({
             borderColor="success"
             backgroundColor="lightest"
             onClick={() => onAddPageItemClick(page.id, "spacer")}
+            data-tip
+            data-for="spacer"
           >
             <ArrowsAltV size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
+            <ReactTooltip id="spacer" effect="solid">
               Add a Vertical Spacer to this Page
-            </Tooltip>
+            </ReactTooltip>
           </Button>
         </Cell>
 
@@ -143,11 +168,13 @@ const PageHeader = ({
             backgroundColor="lightest"
             color="info"
             onClick={() => onDuplicateClick(page.id)}
+            data-tip
+            data-for="duplicate"
           >
             <Copy size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
+            <ReactTooltip id="duplicate" effect="solid">
               Duplicate this Page
-            </Tooltip>
+            </ReactTooltip>
           </Button>
         </Cell>
         <Cell middle>
@@ -157,11 +184,13 @@ const PageHeader = ({
             color="danger"
             backgroundColor="lightest"
             onClick={() => onDeleteClick(page.id)}
+            data-tip
+            data-for="delete"
           >
             <Trash size="1em" />
-            <Tooltip placement="top" zIndex={9999}>
+            <ReactTooltip id="delete" effect="solid">
               Delete this Page
-            </Tooltip>
+            </ReactTooltip>
           </Button>
         </Cell>
       </Grid>
