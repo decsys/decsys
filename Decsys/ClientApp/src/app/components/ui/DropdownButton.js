@@ -1,31 +1,40 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Tooltip } from "@smooth-ui/core-sc";
+import { Button } from "@smooth-ui/core-sc";
+import ReactTooltip from "react-tooltip";
 import { CaretDown } from "styled-icons/fa-solid";
 import styled from "styled-components";
 
-let DropdownButton = ({ onClick, button, caret, tooltip, ...rest }) => (
-  <Button
-    display="flex"
-    justifyContent="space-between"
-    alignItems="center"
-    onClick={onClick}
-    {...rest}
-  >
-    {tooltip && (
-      <Tooltip zIndex={9999} placement={tooltip.placement}>
-        {tooltip.content}
-      </Tooltip>
-    )}
-    {button}
-    {caret && (
-      <>
-        {" "}
-        <CaretDown size="1em" />
-      </>
-    )}
-  </Button>
-);
+let DropdownButton = ({ onClick, button, caret, tooltip, ...rest }) => {
+  const ttid = `ddb${new Date().getTime()}`;
+
+  return (
+    <>
+      <Button
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        onClick={onClick}
+        data-tip
+        data-for={ttid}
+        {...rest}
+      >
+        {tooltip && (
+          <ReactTooltip id={ttid} place={tooltip.placement} effect="solid">
+            {tooltip.content}
+          </ReactTooltip>
+        )}
+        {button}
+        {caret && (
+          <>
+            {" "}
+            <CaretDown size="1em" />
+          </>
+        )}
+      </Button>
+    </>
+  );
+};
 DropdownButton.propTypes = {
   /** The actual button contents */
   button: PropTypes.node,
