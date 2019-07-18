@@ -188,6 +188,8 @@ namespace Decsys.Controllers
 
             foreach (var entry in zip.Entries)
             {
+                if (entry.Length <= 0) continue;
+
                 if (entry.FullName.StartsWith("images/"))
                 {
                     byte[] bytes;
