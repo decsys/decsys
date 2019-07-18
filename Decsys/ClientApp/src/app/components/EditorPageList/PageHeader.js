@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Typography, Button, Box } from "@smooth-ui/core-sc";
 import ReactTooltip from "react-tooltip";
@@ -28,12 +28,17 @@ const PageHeader = ({
   }
 }) => {
   const handleRandomToggle = e => onRandomToggle(page.id, e.target.checked);
+  const [firstPropSet, setFirstPropSet] = useState(false);
 
   const randomButton = useRef();
   useEffect(() => {
-    ReactTooltip.hide(randomButton.current);
     ReactTooltip.rebuild();
-    ReactTooltip.show(randomButton.current);
+    if (firstPropSet) {
+      ReactTooltip.hide(randomButton.current);
+      ReactTooltip.show(randomButton.current);
+    } else {
+      setFirstPropSet(true);
+    }
   }, [page.randomize]);
 
   return (
@@ -86,7 +91,7 @@ const PageHeader = ({
                     </Typography>
                   </>
                 )}
-              ></ReactTooltip>
+              />
             </ToggleButton>
           </Cell>
 
