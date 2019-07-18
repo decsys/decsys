@@ -1,6 +1,6 @@
 {
   "name": "client-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "@decsys/param-types": "^1.0.0",
@@ -8,16 +8,16 @@
     "axios": "^0.19.0",
     "downloadjs": "^1.4.7",
     "gfycat-style-urls": "^1.0.3",
-    "json2csv": "^4.5.1",
+    "json2csv": "^4.5.2",
     "mathjs": "^5.10.3",
-    "navi": "^0.12.8",
+    "navi": "^0.12.10",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^10.1.1",
     "react-busy-indicator": "^1.0.0",
     "react-dom": "^16.8.6",
-    "react-markdown": "^4.0.8",
-    "react-navi": "^0.12.8",
+    "react-markdown": "^4.1.0",
+    "react-navi": "^0.12.9",
     "react-onclickoutside": "^6.8.0",
     "react-scripts": "3.0.0",
     "react-table": "^6.10.0",
@@ -26,7 +26,7 @@
     "styled-components": "^4.3.2",
     "styled-css-grid": "^1.2.1",
     "styled-icons": "^7.15.1",
-    "victory": "^32.3.0"
+    "victory": "^32.3.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -51,7 +51,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/core": "^7.4.5",
+    "@babel/core": "^7.5.5",
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-knobs": "^5.1.9",
     "@storybook/addon-links": "^5.1.9",
