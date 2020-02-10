@@ -19,8 +19,10 @@ namespace Decsys.Mapping
             var regex = new Regex(@"\{""\$(?<type>\w+)""\s*:\s*""(?<value>.+?)""\}");
             var matches = regex.Matches(extendedJson);
             var nonQuotable = new[] { "numberLong", "numberDecimal", "minValue", "maxValue" };
-            foreach (Match match in matches)
+            foreach (Match? match in matches)
             {
+                if (match is null) continue;
+
                 string type = match.Groups["type"].Value;
                 string value = match.Groups["value"].Value;
                 extendedJson = extendedJson.Replace(

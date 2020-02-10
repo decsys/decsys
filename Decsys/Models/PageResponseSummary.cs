@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Newtonsoft.Json.Linq;
 
 namespace Decsys.Models
@@ -28,7 +28,7 @@ namespace Decsys.Models
         /// <summary>
         /// The participant's response data
         /// </summary>
-        public JObject Response { get; set; } = new JObject();
+        public JObject? Response { get; set; }
 
         /// <summary>
         /// A timestamp of when the question page fully loaded

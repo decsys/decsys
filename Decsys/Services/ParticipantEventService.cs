@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Decsys.Data;
 using Decsys.Data.Entities;
 using Decsys.Mapping;
@@ -91,9 +91,8 @@ namespace Decsys.Services
             foreach (var collectionName in logs)
             {
                 var participantId = collectionName.Split("_").Last();
-                participants.Add(new Models.ParticipantEvents
+                participants.Add(new Models.ParticipantEvents(participantId)
                 {
-                    Id = participantId,
                     Events = _List(instanceId, participantId).ToList()
                 });
             }
@@ -223,10 +222,7 @@ namespace Decsys.Services
 
         private Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
         {
-            var resultsSummary = new Models.ParticipantResultsSummary
-            {
-                Id = participantId
-            };
+            var resultsSummary = new Models.ParticipantResultsSummary(participantId);
 
             var log = _db.GetCollection<ParticipantEvent>(GetCollectionName(instance.Id, participantId));
 

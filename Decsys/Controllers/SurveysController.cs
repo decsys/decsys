@@ -154,27 +154,18 @@ namespace Decsys.Controllers
             if (!new string[] { "demo", "sample" }.Contains(type))
                 return BadRequest("Unrecognised type requested. Expected 'demo' or 'sample'.");
 
-            using (var fs = new FileStream(Path.Combine(_internalSurveysPath,$"{type}.zip"), FileMode.Open))
-            {
-                var zip = new ZipArchive(fs);
-                var (survey, images, instances) = ProcessImportZip(zip);
+            using var fs = new FileStream(Path.Combine(_internalSurveysPath, $"{type}.zip"), FileMode.Open);
+            var zip = new ZipArchive(fs);
 
-                try
-                {
-                    return await HandleImport(survey, images, instances);
-                }
-                catch (ArgumentNullException e)
-                {
-                    if (e.ParamName == nameof(survey))
-                        return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
-                    else throw;
-                }
-            }
+            var (survey, images, instances) = ProcessImportZip(zip);
+            if (survey is null)
+                return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
+
+            return await HandleImport(survey, images, instances);
         }
 
-        private
-            (
-                Survey survey,
+        private static (
+                Survey? survey,
                 List<(string filename, byte[] data)> images,
                 List<SurveyInstanceResults<ParticipantEvents>> instances
             )
@@ -182,7 +173,7 @@ namespace Decsys.Controllers
                 ZipArchive zip,
                 bool importData = false)
         {
-            Survey survey = null;
+            Survey? survey = null;
             var images = new List<(string filename, byte[] data)>();
             var instances = new List<SurveyInstanceResults<ParticipantEvents>>();
 
@@ -203,15 +194,15 @@ namespace Decsys.Controllers
 
                 if (entry.FullName == "structure.json")
                 {
-                    using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
-                        survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+                    using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
+                    survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
                 }
                 else if (importData && entry.FullName.StartsWith("Instance-") && entry.FullName.EndsWith(".json"))
                 {
                     try
                     {
-                        using (var reader = new StreamReader(entry.Open(), Encoding.UTF8))
-                            instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
+                        using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
+                        instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
                     }
                     catch (JsonSerializationException)
                     {
@@ -230,16 +221,11 @@ namespace Decsys.Controllers
             List<(string filename, byte[] data)> images,
             List<SurveyInstanceResults<ParticipantEvents>> instances)
         {
-            if (survey is null)
-                throw new ArgumentNullException(nameof(survey));
-
             var surveyId = await _surveys.Import(survey, images);
 
-            if (instances.Any())
-            {
-                // attempt to import instances
+            // attempt to import any instances
+            if (instances.Count > 0)
                 _instances.Import(instances, surveyId);
-            }
 
             return surveyId;
         }
@@ -250,23 +236,15 @@ namespace Decsys.Controllers
             [SwaggerParameter("The survey export file")]
             IFormFile file)
         {
-            using (var stream = new MemoryStream())
-            {
-                await file.CopyToAsync(stream).ConfigureAwait(false);
-                var zip = new ZipArchive(stream);
-                var (survey, images, instances) = ProcessImportZip(zip, importData);
+            using var stream = new MemoryStream();
+            await file.CopyToAsync(stream).ConfigureAwait(false);
+            var zip = new ZipArchive(stream);
 
-                try
-                {
-                    return await HandleImport(survey, images, instances);
-                }
-                catch (ArgumentNullException e)
-                {
-                    if (e.ParamName == nameof(survey))
-                        return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
-                    else throw;
-                }
-            }
+            var (survey, images, instances) = ProcessImportZip(zip, importData);
+            if (survey is null)
+                return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
+
+            return await HandleImport(survey, images, instances);
         }
     }
 }
