@@ -5,6 +5,13 @@ import PropTypes from "prop-types";
 import { Check, Times } from "styled-icons/fa-solid";
 import FlexBox from "./FlexBox";
 
+const Icon = ({ active, ...p }) =>
+  active ? <Check {...p} /> : <Times {...p} />;
+
+const StyledIcon = styled(Icon)`
+  color: ${p => colorYik(colorVariant(p.color)(p))(p)};
+`;
+
 /**
  * A simple color and icon based indicator for showing
  * whether something is active.
@@ -16,10 +23,6 @@ const ActiveIndicator = ({ active, tooltips, ...rest }) => {
   const color = active ? "success" : "gray";
   const ttid = `ddb${new Date().getTime()}`;
 
-  const Icon = styled(active ? Check : Times)`
-    color: ${p => colorYik(colorVariant(color)(p))(p)};
-  `;
-
   return (
     <>
       <FlexBox
@@ -30,7 +33,7 @@ const ActiveIndicator = ({ active, tooltips, ...rest }) => {
         data-tip
         data-for={ttid}
       >
-        <Icon size="1em" />
+        <StyledIcon size="1em" color={color} active={active} />
         <ReactTooltip id={ttid} effect="solid">
           {tooltips[active]}
         </ReactTooltip>

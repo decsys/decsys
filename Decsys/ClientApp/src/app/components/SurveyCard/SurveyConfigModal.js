@@ -13,11 +13,11 @@ import SurveyCardContext from "./Context";
 import { generateCombination } from "gfycat-style-urls";
 import { getCancelToken } from "../../api";
 
-const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
-  const InfoIcon = styled(InfoCircle)`
-    color: ${({ theme }) => theme.info};
-  `;
+const InfoIcon = styled(InfoCircle)`
+  color: ${({ theme }) => theme.info};
+`;
 
+const SurveyConfigModal = ({ surveyId, surveyName, modalState }) => {
   const { fetchSurveyConfig, handleSurveyConfigSaveClick } = useContext(
     SurveyCardContext
   );
