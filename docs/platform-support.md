@@ -9,7 +9,7 @@ There are two aspects to the supported platforms for the Survey Platform:
     - 64-bit Windows 10 Anniversary Update (1607) or newer.
 
 ??? info "Should work"
-    Realistically, you should be able to run the application anywhere [.NET Core 2.2 or newer is available](https://github.com/dotnet/core/blob/master/release-notes/2.2/2.2-supported-os.md).
+    Realistically, you should be able to run the application anywhere [.NET Core 3.1 or newer is available](https://github.com/dotnet/core/blob/master/release-notes/3.1/3.1-supported-os.md).
 
     At minimum this includes:
 

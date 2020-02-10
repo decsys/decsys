@@ -20,8 +20,8 @@ It is used to showcase the DECSYS Ellipse Rating Scale.
   1. Double-click `Run Decsys`
   1. Open a web browser and navigate to `localhost`
 - For other OSes
-  1. Have the .NET Core runtime for your OS. (version `2.2` or newer)
-  1. Download a `dotnet-2.2` asset from **Releases**
+  1. Have the .NET Core runtime for your OS. (version `3.1` or newer)
+  1. Download a `dotnet-3.1` asset from **Releases**
   1. Extract it to a folder
   1. Run the application as follows:
      - Use the provided `run-decsys` or `Run Decsys (Windows)` script
@@ -40,7 +40,7 @@ It is used to showcase the DECSYS Ellipse Rating Scale.
 ## Building the Survey Platform
 
 1. Meet the prerequisites:
-   - `dotnet` SDK `2.2` or newer
+   - `dotnet` SDK `3.1` or newer
      - either independently or part of Visual Studio 2017 or newer
    - node.js `10.x` or newer (including `npm`)
    - Optionally get some [Response Components](https://github.com/search?q=org%3Adecsys+component+in%3Aname+archived%3Afalse) and put them in `Decsys/components/`
