@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,6 +39,10 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // If we're using LiteDb (i.e. for a locally run single instance app)
+            // we instantiate it ourselves and manage its disposal
+            services.AddSingleton(_ => new LiteDatabase(_config.GetConnectionString("DocumentStore")));
+
             services.AddResponseCompression();
 
             services.AddAuthorization(opts => opts.AddPolicy(
@@ -48,13 +51,15 @@ namespace Decsys
 
             services.AddSingleton<IAuthorizationHandler, LocalMachineHandler>();
 
-            services.AddControllers();
+            services.AddControllers()
+                // we used JSON.NET back in 2.x
+                // for ViewModel Property shenanigans so component params can be dynamic
+                // it doesn't really make sense to change this
+                // (if System.Text.Json even does what we need)
+                .AddNewtonsoftJson();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(o => o.RootPath = "ClientApp/build");
-
-            services.AddSingleton(_ => new LiteDatabase(
-                _config.GetConnectionString("DocumentStore")));
 
             services.AddAutoMapper(typeof(Startup));
 
@@ -81,7 +86,7 @@ namespace Decsys
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DECSYS API", Version = "v1" });
                 c.EnableAnnotations();
-            });
+            }).AddSwaggerGenNewtonsoftSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -138,6 +143,7 @@ namespace Decsys
             });
 
             app.UseRouting();
+            app.UseAuthorization();
 
             app.UseEndpoints(e =>
             {
@@ -153,7 +159,7 @@ namespace Decsys
             });
         }
 
-        private object GetVersionInfo(IVersionInformationService version)
+        private static object GetVersionInfo(IVersionInformationService version)
         {
             // start with the keys from the file, cast back to the original dictionary
             var versionInfo = (Dictionary<string, string>)
@@ -166,7 +172,7 @@ namespace Decsys
             return versionInfo;
         }
 
-        private IDictionary<string, string> GetValidMappings()
+        private static IDictionary<string, string> GetValidMappings()
         {
             // in future we may want to make this a configurable list.
             var validExtensions = new List<string> { ".js", ".map" };

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -109,7 +109,7 @@ namespace Decsys.Services
         public void Delete(int id)
         {
             _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
-                .Delete(x => x.Survey.Id == id);
+                .DeleteMany(x => x.Survey.Id == id);
 
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
 
