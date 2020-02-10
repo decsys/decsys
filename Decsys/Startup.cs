@@ -55,7 +55,7 @@ namespace Decsys
             services.AddSingleton(_ => new LiteDatabase(
                 _config.GetConnectionString("DocumentStore")));
 
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddVersionInformation(opts =>
                 opts.KeyHandlers.Add("file",
