@@ -6,7 +6,6 @@ using LiteDB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
@@ -28,10 +27,20 @@ namespace Decsys
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services, IConfiguration config)
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _config;
+
+        public Startup(IWebHostEnvironment env, IConfiguration config)
         {
-            // Add Authorization
+            _env = env;
+            _config = config;
+        }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddResponseCompression();
+
             services.AddAuthorization(opts => opts.AddPolicy(
                 nameof(AuthPolicies.LocalHost),
                 AuthPolicies.LocalHost()));
@@ -41,13 +50,10 @@ namespace Decsys
             services.AddControllers();
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            services.AddSpaStaticFiles(o => o.RootPath = "ClientApp/build");
 
             services.AddSingleton(_ => new LiteDatabase(
-                config.GetConnectionString("DocumentStore")));
+                _config.GetConnectionString("DocumentStore")));
 
             services.AddAutoMapper();
 
@@ -66,28 +72,25 @@ namespace Decsys
             services.AddTransient<ParticipantEventService>();
             services.AddTransient(svc => new ImageService(
                 Path.Combine(
-                    svc.GetRequiredService<IWebHostEnvironment>()
-                        .ContentRootPath,
+                    _env.ContentRootPath,
                     "SurveyImages"),
                 svc.GetRequiredService<LiteDatabase>()));
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "DECSYS API", Version = "v1" });
-                c.EnableAnnotations();
-            });
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.SwaggerDoc("v1", new Info { Title = "DECSYS API", Version = "v1" });
+            //    c.EnableAnnotations();
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(
-            IApplicationBuilder app,
-            IWebHostEnvironment env,
-            VersionInformationService version,
-            IConfiguration config)
+        public void Configure(IApplicationBuilder app, VersionInformationService version)
         {
-            app.GnuTerryPratchett(); // KEep at the top to add to all requests
+            app.UseResponseCompression();
 
-            if (env.IsDevelopment())
+            app.GnuTerryPratchett();
+
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -102,20 +105,20 @@ namespace Decsys
 
             app.UseVersion(GetVersionInfo(version));
 
-            app.UseStaticFiles();
+            app.UseDefaultFiles().UseStaticFiles();
 
             // components' static files
             // serve static files but only those we can validly map
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, config["Paths:Components:Root"])),
+                    Path.Combine(_env.ContentRootPath, _config["Paths:Components:Root"])),
                 RequestPath = "/static/components",
                 ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
             });
 
             // Survey Images folder
-            var imagePath = Path.Combine(env.ContentRootPath, "SurveyImages");
+            var imagePath = Path.Combine(_env.ContentRootPath, "SurveyImages");
             Directory.CreateDirectory(imagePath);
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -125,32 +128,27 @@ namespace Decsys
 
             app.UseSpaStaticFiles();
 
-            app.UseRewriter(new RewriteOptions()
-                .AddRedirect("docs", "docs/index.html"));
+            app.UseRouting();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(e =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                e.MapControllers();
             });
 
-            app.UseSwagger();
+            //app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
-            {
-                c.RoutePrefix = "api";
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DECSYS API v1");
-            });
+            //app.UseSwaggerUI(c =>
+            //{
+            //    c.RoutePrefix = "api";
+            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "DECSYS API v1");
+            //});
 
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
+                if (_env.IsDevelopment())
                     spa.UseReactDevelopmentServer(npmScript: "start");
-                }
             });
         }
 
