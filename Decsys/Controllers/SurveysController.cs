@@ -29,7 +29,7 @@ namespace Decsys.Controllers
             SurveyService surveys,
             ExportService export,
             SurveyInstanceService instances,
-            IHostingEnvironment env)
+            IWebHostEnvironment env)
         {
             _surveys = surveys;
             _export = export;

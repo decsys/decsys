@@ -6,13 +6,13 @@ using LiteDB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
@@ -28,15 +28,8 @@ namespace Decsys
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services, IConfiguration config)
         {
             // Add Authorization
             services.AddAuthorization(opts => opts.AddPolicy(
@@ -45,8 +38,7 @@ namespace Decsys
 
             services.AddSingleton<IAuthorizationHandler, LocalMachineHandler>();
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -55,7 +47,7 @@ namespace Decsys
             });
 
             services.AddSingleton(_ => new LiteDatabase(
-                Configuration.GetConnectionString("DocumentStore")));
+                config.GetConnectionString("DocumentStore")));
 
             services.AddAutoMapper();
 
@@ -74,7 +66,7 @@ namespace Decsys
             services.AddTransient<ParticipantEventService>();
             services.AddTransient(svc => new ImageService(
                 Path.Combine(
-                    svc.GetRequiredService<IHostingEnvironment>()
+                    svc.GetRequiredService<IWebHostEnvironment>()
                         .ContentRootPath,
                     "SurveyImages"),
                 svc.GetRequiredService<LiteDatabase>()));
@@ -87,7 +79,11 @@ namespace Decsys
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VersionInformationService version)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env,
+            VersionInformationService version,
+            IConfiguration config)
         {
             app.GnuTerryPratchett(); // KEep at the top to add to all requests
 
@@ -113,7 +109,7 @@ namespace Decsys
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, Configuration["Paths:Components:Root"])),
+                    Path.Combine(env.ContentRootPath, config["Paths:Components:Root"])),
                 RequestPath = "/static/components",
                 ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
             });
