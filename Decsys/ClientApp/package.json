@@ -13,7 +13,7 @@
     "navi": "^0.14.0",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
-    "react-beautiful-dnd": "^12.2.0",
+    "react-beautiful-dnd": "^10.1.1",
     "react-busy-indicator": "^1.0.0",
     "react-dom": "^16.12.0",
     "react-markdown": "^4.3.1",
