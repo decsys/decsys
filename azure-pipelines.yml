@@ -32,7 +32,7 @@ stages:
               filecontent: |-
                 Build=$(Build.BuildNumber)
                 Client App=$(clientVersion)
-          - upload: $(Build.ArtifactStagingDirectory)
+          - publish: $(Build.ArtifactStagingDirectory)
             artifact: version
       - job: Docs
         pool:
@@ -42,7 +42,7 @@ stages:
               docker run --rm -v $(System.DefaultWorkingDirectory):/docs -v
               $(Build.ArtifactStagingDirectory):/docs-out
               squidfunk/mkdocs-material build -c -s -v -d /docs-out
-          - upload: $(Build.ArtifactStagingDirectory)
+          - publish: $(Build.ArtifactStagingDirectory)
             artifact: docs
       - job: Response_Components
         pool:
@@ -69,7 +69,7 @@ stages:
               connection: decsys-pipelines
               userRepository: decsys/confirmation-component
               downloadPath: $(Build.ArtifactStagingDirectory)
-          - upload: $(Build.ArtifactStagingDirectory)
+          - publish: $(Build.ArtifactStagingDirectory)
             artifact: components
       - job: ClientApp
         pool:
@@ -81,7 +81,7 @@ stages:
             workingDirectory: $(baseDir)
           - script: npm run build
             workingDirectory: $(baseDir)
-          - upload: $(baseDir)/build
+          - publish: $(baseDir)/build
             artifact: clientapp
       - job: Dotnet
         pool:
@@ -97,31 +97,31 @@ stages:
         variables:
           appRoot: $(System.DefaultWorkingDirectory)/Decsys
         steps:
-          - task: DownloadPipelineArtifact@1
+          - task: DownloadPipelineArtifact@2
             inputs:
-              artifactName: components
-              downloadPath: $(appRoot)/components
-          - task: DownloadPipelineArtifact@1
+              artifact: components
+              path: $(appRoot)/components
+          - task: DownloadPipelineArtifact@2
             inputs:
-              artifactName: version
-              downloadPath: $(appRoot)
-          - task: DownloadPipelineArtifact@1
+              artifact: version
+              path: $(appRoot)
+          - task: DownloadPipelineArtifact@2
             inputs:
-              artifactName: clientapp
-              downloadPath: $(appRoot)/ClientApp/build
-          - task: DownloadPipelineArtifact@1
+              artifact: clientapp
+              path: $(appRoot)/ClientApp/build
+          - task: DownloadPipelineArtifact@2
             inputs:
-              artifactName: docs
-              downloadPath: $(appRoot)/wwwroot/docs
-          - upload: ./Decsys
+              artifact: docs
+              path: $(appRoot)/wwwroot/docs
+          - publish: ./Decsys
             artifact: prepublish
-          - upload: ./scripts
+          - publish: ./scripts
             artifact: scripts
-          - upload: ./LICENSE.md
+          - publish: ./LICENSE.md
             artifact: licence
       - job: Publish_Binaries
         pool:
-          vmImage: ubuntu-latest
+          vmImage: windows-latest
         dependsOn: Collate_Artifacts
         strategy:
           maxParallel: 2
@@ -134,26 +134,24 @@ stages:
               argTargetRuntime: "-r win-x64"
         steps:
           - checkout: none
-          - task: DownloadPipelineArtifact@1
+          - download: current
+            artifact: prepublish
+          - download: current
+            artifact: scripts
+          - task: DownloadPipelineArtifact@2
             inputs:
-              artifactName: prepublish
-              downloadPath: $(System.DefaultWorkingDirectory)/Decsys
-          - task: DownloadPipelineArtifact@1
-            inputs:
-              artifactName: scripts
-              downloadPath: $(System.DefaultWorkingDirectory)/scripts
-          - task: DownloadPipelineArtifact@1
-            inputs:
-              artifactName: licence
-              downloadPath: $(Build.ArtifactStagingDirectory)
+              artifact: licence
+              path: $(Build.ArtifactStagingDirectory)
           - script: >
               dotnet publish -c $(buildConfiguration) -o
               $(Build.ArtifactStagingDirectory)/Decsys $(argTargetRuntime)
-            workingDirectory: ./Decsys
-          - bash: >-
-              cp $(System.DefaultWorkingDirectory)/scripts/$(name)/*
-              $(Build.ArtifactStagingDirectory)
-          - upload: $(Build.ArtifactStagingDirectory)
+            workingDirectory: $(Pipeline.Workspace)/prepublish
+          - task: CopyFiles@2
+            inputs:
+              sourceFolder: $(Pipeline.Workspace)/scripts/$(name)
+              contents: "*"
+              targetFolder: $(Build.ArtifactStagingDirectory)
+          - publish: $(Build.ArtifactStagingDirectory)
             artifact: $(name)
   - stage: Release
     condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
