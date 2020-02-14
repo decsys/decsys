@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigation } from "react-navi";
-import * as api from "../../api";
-import SurveyPage from "../../components/SurveyPage";
-import AppBar from "../../components/AppBar";
-import { SURVEY_COMPLETE } from "../../utils/event-types";
-import AboutLink from "../../components/AboutLink";
+import * as api from "api";
+import SurveyPage from "components/SurveyPage";
+import AppBar from "components/AppBar";
+import { SURVEY_COMPLETE } from "utils/event-types";
+import AboutLink from "components/AboutLink";
 
 // TODO: PropTypes
 const SurveyScreen = ({

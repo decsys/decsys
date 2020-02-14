@@ -1,15 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import EditorBar from "../../../components/EditorBar";
+import EditorBar from "components/EditorBar";
 import { Grid, Cell } from "styled-css-grid";
-import EditorPageList from "../../../components/EditorPageList";
-import { EmptyState } from "../../../components/ui";
+import EditorPageList from "components/EditorPageList";
+import { EmptyState } from "components/ui";
 import { FileAlt } from "styled-icons/fa-solid";
 import { Box, colorVariant } from "@smooth-ui/core-sc";
-import ComponentEditor from "../../../components/ComponentEditor";
-import ImageUpload from "../../../components/ComponentEditor/ImageUpload";
-import { getComponent } from "../../../utils/component-utils";
-import SurveyPageBody from "../../../components/SurveyPage/Body";
+import ComponentEditor from "components/ComponentEditor";
+import ImageUpload from "components/ComponentEditor/ImageUpload";
+import { getComponent } from "utils/component-utils";
+import SurveyPageBody from "components/SurveyPage/Body";
 
 const PureEditorScreen = ({
   survey,

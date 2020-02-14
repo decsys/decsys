@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Typography, Button, Alert, Box } from "@smooth-ui/core-sc";
 import { List, PlusCircle, InfoCircle } from "styled-icons/fa-solid";
-import { Container, FlexBox, EmptyState } from "../../../components/ui";
-import SurveyList from "../../../components/SurveyList";
-import { useModal } from "../../../components/ui/ConfirmModal";
-import AboutLink from "../../../components/AboutLink";
-import AppBar from "../../../components/AppBar";
+import { Container, FlexBox, EmptyState } from "components/ui";
+import SurveyList from "components/SurveyList";
+import { useModal } from "components/ui/ConfirmModal";
+import AboutLink from "components/AboutLink";
+import AppBar from "components/AppBar";
 import AddSurveyModal from "./AddSurveyModal";
 
 const SurveysScreen = ({

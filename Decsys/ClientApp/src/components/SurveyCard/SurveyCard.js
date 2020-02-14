@@ -7,10 +7,10 @@ import { Grid, Cell } from "styled-css-grid";
 import * as Buttons from "./SurveyCardButton";
 import ManageSurveyButton from "./ManageSurveyButton";
 import SurveyCardContext from "./Context";
-import { encode } from "../../services/instance-id";
+import { encode } from "services/instance-id";
 import { InfoCircle } from "styled-icons/fa-solid";
 import ConfirmModal, { useModal } from "../ui/ConfirmModal";
-import * as api from "../../api";
+import * as api from "api";
 
 const SurveyCard = ({
   id,

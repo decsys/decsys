@@ -4,18 +4,18 @@ import {
   FlexBox,
   DropdownMenuButton,
   MenuItem
-} from "../../components/ui";
-import AppBar from "../../components/AppBar";
+} from "components/ui";
+import AppBar from "components/AppBar";
 import { Typography, Select, Box, Button } from "@smooth-ui/core-sc";
-import * as api from "../../api";
+import * as api from "api";
 import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
-import { exportDateFormat as formatDate } from "../../utils/date-formats";
+import { exportDateFormat as formatDate } from "utils/date-formats";
 import download from "downloadjs";
 import { parse } from "json2csv";
 import { useNavigation } from "react-navi";
-import { encode } from "../../services/instance-id";
-import AboutLink from "../../components/AboutLink";
+import { encode } from "services/instance-id";
+import AboutLink from "components/AboutLink";
 
 // TODO: move this somewhere reusable?
 function isEmpty(obj) {

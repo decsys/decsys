@@ -1,7 +1,7 @@
 import React from "react";
-import { useNaviReducer } from "../../../utils/hooks";
+import { useNaviReducer } from "utils/hooks";
 import PureEditorScreen from "./PureEditorScreen";
-import EditorBarContext from "../../../components/EditorBar/Context";
+import EditorBarContext from "components/EditorBar/Context";
 import reducer, * as ducks from "./ducks";
 import { useCurrentRoute } from "react-navi";
 

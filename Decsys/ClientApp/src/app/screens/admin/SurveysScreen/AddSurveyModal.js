@@ -14,8 +14,8 @@ import {
   FileImport,
   ExclamationCircle
 } from "styled-icons/fa-solid";
-import { FlexBox } from "../../../components/ui";
-import ConfirmModal from "../../../components/ui/ConfirmModal";
+import { FlexBox } from "components/ui";
+import ConfirmModal from "components/ui/ConfirmModal";
 
 const AddSurveyModal = ({
   modalState,

@@ -1,5 +1,5 @@
 import * as actions from "./actions";
-import * as api from "../../../../api";
+import * as api from "api";
 
 export const createSurvey = () => async (_, nav) => {
   const { data: id } = await api.createSurvey();

@@ -1,23 +1,19 @@
 import React from "react";
 import { mount, route, redirect, map, withData } from "navi";
-import * as api from "./api";
-import SurveysScreen from "./screens/admin/SurveysScreen";
-import EditorScreen from "./screens/admin/EditorScreen";
-import PreviewScreen from "./screens/admin/PreviewScreen";
-import ErrorScreen from "./screens/ErrorScreen";
-import SurveyIdScreen from "./screens/survey/SurveyIdScreen";
-import SurveyScreen from "./screens/survey/SurveyScreen";
-import { decode } from "./services/instance-id";
-import SurveyCompleteScreen from "./screens/survey/SurveyCompleteScreen";
-import ParticipantIdScreen from "./screens/survey/ParticipantIdScreen";
-import ResultsScreen from "./screens/admin/ResultsScreen";
-import DashboardScreen from "./screens/admin/DashboardScreen";
-import {
-  PAGE_RANDOMIZE,
-  SURVEY_COMPLETE,
-  PAGE_LOAD
-} from "./utils/event-types";
-import { randomize } from "./services/randomizer";
+import * as api from "api";
+import SurveysScreen from "../screens/admin/SurveysScreen";
+import EditorScreen from "../screens/admin/EditorScreen";
+import PreviewScreen from "../screens/admin/PreviewScreen";
+import ErrorScreen from "../screens/ErrorScreen";
+import SurveyIdScreen from "../screens/survey/SurveyIdScreen";
+import SurveyScreen from "../screens/survey/SurveyScreen";
+import { decode } from "services/instance-id";
+import SurveyCompleteScreen from "../screens/survey/SurveyCompleteScreen";
+import ParticipantIdScreen from "../screens/survey/ParticipantIdScreen";
+import ResultsScreen from "../screens/admin/ResultsScreen";
+import DashboardScreen from "../screens/admin/DashboardScreen";
+import { PAGE_RANDOMIZE, SURVEY_COMPLETE, PAGE_LOAD } from "utils/event-types";
+import { randomize } from "services/randomizer";
 
 // Note: Some routes here have a lot of data fetching logic,
 // because Navi does a great job of delaying component loads while waiting on data.
@@ -58,22 +54,17 @@ const getProgress = async (surveyId, instance, userId) => {
   let complete;
   let lastPageLoad;
   try {
-    complete = (await api.getLastLogEntry(
-      instance.id,
-      userId,
-      surveyId,
-      SURVEY_COMPLETE
-    )).data;
+    complete = (
+      await api.getLastLogEntry(instance.id, userId, surveyId, SURVEY_COMPLETE)
+    ).data;
   } catch (err) {
     if (err.response && err.response.status === 404) complete = null;
     else throw err;
   }
   try {
-    lastPageLoad = (await api.getLastLogEntryByTypeOnly(
-      instance.id,
-      userId,
-      PAGE_LOAD
-    )).data;
+    lastPageLoad = (
+      await api.getLastLogEntryByTypeOnly(instance.id, userId, PAGE_LOAD)
+    ).data;
   } catch (err) {
     if (err.response && err.response.status === 404) lastPageLoad = null;
     else throw err;
@@ -103,12 +94,9 @@ const randomizeOrder = async (survey, instanceId, userId) => {
 const getPageOrder = async (survey, instanceId, userId) => {
   let random;
   try {
-    random = (await api.getLastLogEntry(
-      instanceId,
-      userId,
-      survey.id,
-      PAGE_RANDOMIZE
-    )).data;
+    random = (
+      await api.getLastLogEntry(instanceId, userId, survey.id, PAGE_RANDOMIZE)
+    ).data;
   } catch (err) {
     if (err.response && err.response.status === 404) random = null;
     else throw err;
@@ -183,10 +171,9 @@ const routes = mount({
         if (progress.completed && !instance.oneTimeParticipants) {
           if (instance.useParticipantIdentifiers) {
             // for entered id's, get the next unique one
-            userId = (await api.getNextParticipantIdForInstance(
-              userId,
-              instanceId
-            )).data;
+            userId = (
+              await api.getNextParticipantIdForInstance(userId, instanceId)
+            ).data;
           } else {
             // for anon: generate a new id
             userId = (await api.getAnonymousParticipantId()).data;
