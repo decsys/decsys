@@ -136,7 +136,7 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{id}/export")]
-        public ActionResult<byte[]> Export(int id, string type = "structure")
+        public ActionResult<byte[]> Export(int id, string? type = "structure")
         {
             switch (type)
             {
