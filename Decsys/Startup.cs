@@ -6,14 +6,13 @@ using LiteDB;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,36 +27,41 @@ namespace Decsys
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _config;
 
-        public IConfiguration Configuration { get; }
+        public Startup(IWebHostEnvironment env, IConfiguration config)
+        {
+            _env = env;
+            _config = config;
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add Authorization
+            // If we're using LiteDb (i.e. for a locally run single instance app)
+            // we instantiate it ourselves and manage its disposal
+            services.AddSingleton(_ => new LiteDatabase(_config.GetConnectionString("DocumentStore")));
+
+            services.AddResponseCompression();
+
             services.AddAuthorization(opts => opts.AddPolicy(
                 nameof(AuthPolicies.LocalHost),
                 AuthPolicies.LocalHost()));
 
             services.AddSingleton<IAuthorizationHandler, LocalMachineHandler>();
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers()
+                // we used JSON.NET back in 2.x
+                // for ViewModel Property shenanigans so component params can be dynamic
+                // it doesn't really make sense to change this
+                // (if System.Text.Json even does what we need)
+                .AddNewtonsoftJson();
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
+            services.AddSpaStaticFiles(o => o.RootPath = "ClientApp/build");
 
-            services.AddSingleton(_ => new LiteDatabase(
-                Configuration.GetConnectionString("DocumentStore")));
-
-            services.AddAutoMapper();
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddVersionInformation(opts =>
                 opts.KeyHandlers.Add("file",
@@ -74,24 +78,25 @@ namespace Decsys
             services.AddTransient<ParticipantEventService>();
             services.AddTransient(svc => new ImageService(
                 Path.Combine(
-                    svc.GetRequiredService<IHostingEnvironment>()
-                        .ContentRootPath,
+                    _env.ContentRootPath,
                     "SurveyImages"),
                 svc.GetRequiredService<LiteDatabase>()));
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "DECSYS API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DECSYS API", Version = "v1" });
                 c.EnableAnnotations();
-            });
+            }).AddSwaggerGenNewtonsoftSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, VersionInformationService version)
+        public void Configure(IApplicationBuilder app, VersionInformationService version)
         {
-            app.GnuTerryPratchett(); // KEep at the top to add to all requests
+            app.UseResponseCompression();
 
-            if (env.IsDevelopment())
+            app.GnuTerryPratchett();
+
+            if (_env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -106,20 +111,20 @@ namespace Decsys
 
             app.UseVersion(GetVersionInfo(version));
 
-            app.UseStaticFiles();
+            app.UseDefaultFiles().UseStaticFiles();
 
             // components' static files
             // serve static files but only those we can validly map
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                    Path.Combine(env.ContentRootPath, Configuration["Paths:Components:Root"])),
+                    Path.Combine(_env.ContentRootPath, _config["Paths:Components:Root"])),
                 RequestPath = "/static/components",
                 ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
             });
 
             // Survey Images folder
-            var imagePath = Path.Combine(env.ContentRootPath, "SurveyImages");
+            var imagePath = Path.Combine(_env.ContentRootPath, "SurveyImages");
             Directory.CreateDirectory(imagePath);
             app.UseStaticFiles(new StaticFileOptions
             {
@@ -129,16 +134,6 @@ namespace Decsys
 
             app.UseSpaStaticFiles();
 
-            app.UseRewriter(new RewriteOptions()
-                .AddRedirect("docs", "docs/index.html"));
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
-            });
-
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -147,18 +142,24 @@ namespace Decsys
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "DECSYS API v1");
             });
 
+            app.UseRouting();
+            app.UseAuthorization();
+
+            app.UseEndpoints(e =>
+            {
+                e.MapControllers();
+            });
+
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
+                if (_env.IsDevelopment())
                     spa.UseReactDevelopmentServer(npmScript: "start");
-                }
             });
         }
 
-        private object GetVersionInfo(IVersionInformationService version)
+        private static object GetVersionInfo(IVersionInformationService version)
         {
             // start with the keys from the file, cast back to the original dictionary
             var versionInfo = (Dictionary<string, string>)
@@ -171,7 +172,7 @@ namespace Decsys
             return versionInfo;
         }
 
-        private IDictionary<string, string> GetValidMappings()
+        private static IDictionary<string, string> GetValidMappings()
         {
             // in future we may want to make this a configurable list.
             var validExtensions = new List<string> { ".js", ".map" };

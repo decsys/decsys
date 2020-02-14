@@ -4,10 +4,11 @@ import { Typography } from "@smooth-ui/core-sc";
 import { ExclamationTriangle } from "styled-icons/fa-solid";
 import { FlexBox, ConfirmModal } from "../ui";
 
+const DangerIcon = styled(ExclamationTriangle)`
+  color: ${({ theme }) => theme.danger};
+`;
+
 const DeleteSurveyModal = ({ surveyName, modalState, deleteSurvey }) => {
-  const DangerIcon = styled(ExclamationTriangle)`
-    color: ${({ theme }) => theme.danger};
-  `;
   return (
     <ConfirmModal
       {...modalState}

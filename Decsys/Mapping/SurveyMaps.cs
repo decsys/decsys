@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Decsys.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +51,7 @@ namespace Decsys.Mapping
                     new SurveyInstance(new Survey("")));
         }
 
-        private int? MapActiveInstanceToId(Data.Entities.SurveyInstance instance) // TODO: nullable
+        private int? MapActiveInstanceToId(Data.Entities.SurveyInstance? instance)
             => instance?.Id; // Necessary because Expression Trees are limited
     }
 }

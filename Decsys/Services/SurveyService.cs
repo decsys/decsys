@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -57,7 +57,7 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="name">The name to give the new Survey.</param>
         /// <returns>The ID of the newly created Survey.</returns>
-        public int Create(string name = null) // TODO: nullable
+        public int Create(string? name = null)
         {
             return _db.GetCollection<Survey>(Collections.Surveys)
                   .Insert(name is null
@@ -109,7 +109,7 @@ namespace Decsys.Services
         public void Delete(int id)
         {
             _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
-                .Delete(x => x.Survey.Id == id);
+                .DeleteMany(x => x.Survey.Id == id);
 
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
 

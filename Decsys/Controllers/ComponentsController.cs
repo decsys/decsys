@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -25,7 +25,7 @@ namespace Decsys.Controllers
         private readonly IFileProvider _fileProvider;
 
         public ComponentsController(
-            IHostingEnvironment env,
+            IWebHostEnvironment env,
             IConfiguration config,
             ComponentService components, ImageService images)
         {

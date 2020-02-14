@@ -17,7 +17,7 @@ The Database used is [LiteDB], which is an embedded NoSQL database for .NET Stan
 
 ## Backend
 
-The Backend application is an ASP.NET Core MVC 2.x REST API.
+The Backend application is an ASP.NET Core 3.1 MVC REST API.
 
 - It's [.NET Core] so it's cross-platform for Linux, macOS and Windows.
 - It's self-hosting - it doesn't require a reverse proxy in front of it.

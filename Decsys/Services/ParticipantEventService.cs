@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Base62;
 using Decsys.Data;
 using Decsys.Data.Entities;
 using Decsys.Mapping;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace Decsys.Services
 {
@@ -23,7 +25,10 @@ namespace Decsys.Services
         }
 
         public static string GetCollectionName(int instanceId, string participantId)
-            => $"{Collections.EventLog}{instanceId}_{participantId}";
+            => $"{Collections.EventLog}{instanceId}_{Encoding.UTF8.GetBytes(participantId).ToBase62()}"; // TODO: document collection name encoding, possibly decode on export?
+
+        public static string GetParticipantId(string collectionName)
+            => Encoding.UTF8.GetString(collectionName.Split("_").Last().FromBase62());
 
         private IEnumerable<Models.ParticipantEvent> _List(int instanceId, string participantId)
         {
@@ -87,16 +92,16 @@ namespace Decsys.Services
             var logs = GetAllParticipantLogs(instanceId);
 
             // Add each one
-            var participants = new List<Models.ParticipantEvents>();
-            foreach (var collectionName in logs)
-            {
-                var participantId = collectionName.Split("_").Last();
-                participants.Add(new Models.ParticipantEvents
+            var participants = logs
+                .Select(collectionName =>
                 {
-                    Id = participantId,
-                    Events = _List(instanceId, participantId).ToList()
-                });
-            }
+                    var participantId = GetParticipantId(collectionName);
+                    return new Models.ParticipantEvents(participantId)
+                    {
+                        Events = _List(instanceId, participantId).ToList()
+                    };
+                })
+                .ToList();
 
             var result = _mapper.Map<Models.SurveyInstanceResults<Models.ParticipantEvents>>(instance);
             result.Participants = participants;
@@ -185,12 +190,10 @@ namespace Decsys.Services
             var logs = GetAllParticipantLogs(instanceId);
 
             // summarize each one
-            var participants = new List<Models.ParticipantResultsSummary>();
-            foreach (var collectionName in logs)
-            {
-                var participantId = collectionName.Split("_").Last();
-                participants.Add(ParticipantResultsSummary(instance, participantId));
-            }
+            var participants = logs
+                .Select(collectionName =>
+                    ParticipantResultsSummary(instance, GetParticipantId(collectionName)))
+                .ToList();
 
             var result = _mapper.Map<Models.SurveyInstanceResults<Models.ParticipantResultsSummary>>(instance);
             result.Participants = participants;
@@ -223,10 +226,7 @@ namespace Decsys.Services
 
         private Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
         {
-            var resultsSummary = new Models.ParticipantResultsSummary
-            {
-                Id = participantId
-            };
+            var resultsSummary = new Models.ParticipantResultsSummary(participantId);
 
             var log = _db.GetCollection<ParticipantEvent>(GetCollectionName(instance.Id, participantId));
 

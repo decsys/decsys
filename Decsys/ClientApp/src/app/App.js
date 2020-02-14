@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from "react";
+import React, { StrictMode, Suspense, useState, useEffect } from "react";
 import BusyIndicator from "react-busy-indicator";
 import { Router, View, NotFoundBoundary, useLoadingRoute } from "react-navi";
 import routes from "./routes";
@@ -13,14 +13,18 @@ const App = () => {
   useEffect(() => users.subscribe(setUser), []);
 
   return (
-    <Router routes={routes} context={{ users, user }}>
-      <NotFoundBoundary render={() => <ErrorScreen message="404: Not Found" />}>
-        <BusyIndicator isBusy={!!loadingRoute} delayMs={200} />
-        <Suspense fallback={<LoadingIndicator />}>
-          <View />
-        </Suspense>
-      </NotFoundBoundary>
-    </Router>
+    <StrictMode>
+      <Router routes={routes} context={{ users, user }}>
+        <NotFoundBoundary
+          render={() => <ErrorScreen message="404: Not Found" />}
+        >
+          <BusyIndicator isBusy={!!loadingRoute} delayMs={200} />
+          <Suspense fallback={<LoadingIndicator />}>
+            <View />
+          </Suspense>
+        </NotFoundBoundary>
+      </Router>
+    </StrictMode>
   );
 };
 
