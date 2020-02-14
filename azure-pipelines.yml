@@ -85,7 +85,7 @@ stages:
             artifact: clientapp
       - job: Dotnet
         pool:
-          vmImage: ubuntu-latest
+          vmImage: windows-latest
         steps:
           - script: dotnet build -c $(buildConfiguration)
             workingDirectory: Decsys
