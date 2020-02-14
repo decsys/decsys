@@ -1,4 +1,4 @@
-﻿using Decsys.Models;
+using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -21,7 +21,7 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{instanceId}/results")]
-        public IActionResult Results(int id, int instanceId, string type = "summary")
+        public IActionResult Results(int id, int instanceId, string? type = "summary")
         {
             switch (type)
             {
