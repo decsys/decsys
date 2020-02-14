@@ -12,100 +12,17 @@ import SurveyCompleteScreen from "../screens/survey/SurveyCompleteScreen";
 import ParticipantIdScreen from "../screens/survey/ParticipantIdScreen";
 import ResultsScreen from "../screens/admin/ResultsScreen";
 import DashboardScreen from "../screens/admin/DashboardScreen";
-import { PAGE_RANDOMIZE, SURVEY_COMPLETE, PAGE_LOAD } from "utils/event-types";
-import { randomize } from "services/randomizer";
+import {
+  tryFetchActiveSurveyInstance,
+  getInstanceUserId,
+  getProgress,
+  getPageOrder
+} from "./helpers";
 
 // Note: Some routes here have a lot of data fetching logic,
 // because Navi does a great job of delaying component loads while waiting on data.
 // When React Suspense gets data fetching support, a lot of logic
 // can and should be moved to appropriate components (screens probably)
-
-// Some helpers to make the actual routing logic less noisy
-
-const tryFetchActiveSurveyInstance = async (surveyId, instanceId) => {
-  const { data: instance } = await api.getSurveyInstance(surveyId, instanceId);
-  if (instance.closed) {
-    const e = new Error();
-    e.response = { status: 404 }; // pretend we got a 404 back from the API
-    throw e;
-  }
-  return instance;
-};
-
-const getInstanceUserId = async (
-  combinedId,
-  user,
-  users,
-  generateIfNotFound = false
-) => {
-  if (user.instances[combinedId]) return user.instances[combinedId];
-
-  if (generateIfNotFound) {
-    const userId = (await api.getAnonymousParticipantId()).data;
-    users.storeInstanceParticipantId(combinedId, userId);
-    return userId;
-  }
-
-  return null;
-};
-
-const getProgress = async (surveyId, instance, userId) => {
-  // check logs to set progressStatus and randomisation
-  let complete;
-  let lastPageLoad;
-  try {
-    complete = (
-      await api.getLastLogEntry(instance.id, userId, surveyId, SURVEY_COMPLETE)
-    ).data;
-  } catch (err) {
-    if (err.response && err.response.status === 404) complete = null;
-    else throw err;
-  }
-  try {
-    lastPageLoad = (
-      await api.getLastLogEntryByTypeOnly(instance.id, userId, PAGE_LOAD)
-    ).data;
-  } catch (err) {
-    if (err.response && err.response.status === 404) lastPageLoad = null;
-    else throw err;
-  }
-
-  return {
-    completed: complete != null,
-    lastPageLoaded: lastPageLoad && lastPageLoad.source,
-    oneTimeParticipants: instance.oneTimeParticipants,
-    inProgress: !complete && lastPageLoad
-  };
-};
-
-const randomizeOrder = async (survey, instanceId, userId) => {
-  const order = randomize(
-    survey.pages.reduce((a, page) => {
-      a[page.id] = page.randomize;
-      return a;
-    }, {})
-  );
-  await api.logParticipantEvent(instanceId, userId, survey.id, PAGE_RANDOMIZE, {
-    order
-  });
-  return order;
-};
-
-const getPageOrder = async (survey, instanceId, userId) => {
-  let random;
-  try {
-    random = (
-      await api.getLastLogEntry(instanceId, userId, survey.id, PAGE_RANDOMIZE)
-    ).data;
-  } catch (err) {
-    if (err.response && err.response.status === 404) random = null;
-    else throw err;
-  }
-
-  return random == null
-    ? randomizeOrder(survey, instanceId, userId)
-    : random.payload.order;
-};
 
 const routes = mount({
   "/": map((_, context) =>

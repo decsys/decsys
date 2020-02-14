@@ -1,8 +1,8 @@
 import React from "react";
-import { FlexBox } from "../../components/ui";
-import ComponentRender from "../../components/ComponentRender";
-import { getComponent } from "../../utils/component-utils";
-import { COMPONENT_RESULTS } from "../../utils/event-types";
+import { FlexBox } from "components/ui";
+import ComponentRender from "components/ComponentRender";
+import { getComponent } from "utils/component-utils";
+import { COMPONENT_RESULTS } from "constants/event-types";
 import ParagraphPreview from "./ParagraphPreview";
 
 const SurveyPageBody = ({
