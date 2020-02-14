@@ -2,11 +2,13 @@ import React from "react";
 import { mount, route } from "navi";
 import * as api from "api";
 import { decode } from "services/instance-id";
-import SurveyIdScreen from "../screens/survey/SurveyIdScreen";
-import SurveyScreen from "../screens/survey/SurveyScreen";
-import SurveyCompleteScreen from "../screens/survey/SurveyCompleteScreen";
-import ParticipantIdScreen from "../screens/survey/ParticipantIdScreen";
-import ErrorScreen from "../screens/ErrorScreen";
+import {
+  SurveyIdScreen,
+  SurveyScreen,
+  SurveyCompleteScreen,
+  ParticipantIdScreen
+} from "app/screens/survey";
+import { ErrorScreen } from "app/screens";
 import {
   tryFetchActiveSurveyInstance,
   getInstanceUserId,

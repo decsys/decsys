@@ -1,13 +1,15 @@
 import React from "react";
 import { mount, route, map, withData } from "navi";
 import * as api from "api";
-import SurveysScreen from "../screens/admin/SurveysScreen";
-import EditorScreen from "../screens/admin/EditorScreen";
-import PreviewScreen from "../screens/admin/PreviewScreen";
-import ErrorScreen from "../screens/ErrorScreen";
+import {
+  SurveysScreen,
+  EditorScreen,
+  PreviewScreen,
+  ResultsScreen,
+  DashboardScreen
+} from "app/screens/admin";
+import { ErrorScreen } from "app/screens";
 import { decode } from "services/instance-id";
-import ResultsScreen from "../screens/admin/ResultsScreen";
-import DashboardScreen from "../screens/admin/DashboardScreen";
 
 const admin = map((_, context) =>
   context.user.roles.admin
