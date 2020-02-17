@@ -1,5 +1,4 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { ProgressCard } from "components/core";
 
 const progressData = [
@@ -15,26 +14,33 @@ const progressData = [
   { label: "10", complete: true }
 ];
 
-storiesOf("Common UI/ProgressCard", module)
-  .add("Default", () => <ProgressCard title="Question 1" total={10} />)
-  .add("With Header", () => (
-    <ProgressCard title="Question 1" progressHeader="Participants" total={50} />
-  ))
-  .add("With data", () => (
-    <ProgressCard
-      title="Question 1"
-      progressHeader="Participants"
-      progressData={progressData.map(({ complete }) => ({
-        complete
-      }))}
-      total={10}
-    />
-  ))
-  .add("With labelled data", () => (
-    <ProgressCard
-      title="Question 1"
-      progressHeader="Participants"
-      progressData={progressData}
-      total={20}
-    />
-  ));
+export default {
+  title: "Core UI/ProgressCard",
+  component: ProgressCard
+};
+
+export const Basic = () => <ProgressCard title="Question 1" total={10} />;
+
+export const WithHeader = () => (
+  <ProgressCard title="Question 1" progressHeader="Participants" total={50} />
+);
+
+export const WithData = () => (
+  <ProgressCard
+    title="Question 1"
+    progressHeader="Participants"
+    progressData={progressData.map(({ complete }) => ({
+      complete
+    }))}
+    total={10}
+  />
+);
+
+export const WithLabelledData = () => (
+  <ProgressCard
+    title="Question 1"
+    progressHeader="Participants"
+    progressData={progressData}
+    total={20}
+  />
+);

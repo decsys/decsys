@@ -6,5 +6,5 @@ export default {
   component: ActiveIndicator
 };
 
-export const inactive = () => <ActiveIndicator />;
-export const active = () => <ActiveIndicator active />;
+export const Inactive = () => <ActiveIndicator />;
+export const Active = () => <ActiveIndicator active />;

@@ -4,14 +4,13 @@ import { withKnobs } from "@storybook/addon-knobs";
 import { withThemesProvider } from "storybook-addon-styled-component-theme";
 import { Normalize } from "@smooth-ui/core-sc";
 import theme from "../src/themes";
+import { ThemeProvider } from "styled-components";
 
 addDecorator(s => (
   <>
     <Normalize />
-    {s()}
+    <ThemeProvider theme={theme}>{s()}</ThemeProvider>
   </>
 ));
-
-addDecorator(withThemesProvider([theme]));
 
 addDecorator(withKnobs({ escapeHTML: false }));

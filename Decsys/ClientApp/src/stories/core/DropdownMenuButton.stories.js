@@ -1,10 +1,14 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { AngleRight } from "styled-icons/fa-solid";
 import { DropdownMenuButton, MenuItem } from "components/core";
 
-storiesOf("Common UI/DropdownMenuButton", module).add("Default", () => (
+export default {
+  title: "Core UI/DropdownMenuButton",
+  component: DropdownMenuButton
+};
+
+export const Basic = () => (
   <DropdownMenuButton>
     <MenuItem onClick={action("Hello clicked")}>Hello</MenuItem>
     <MenuItem onClick={action("Goodbye clicked")}>
@@ -12,4 +16,4 @@ storiesOf("Common UI/DropdownMenuButton", module).add("Default", () => (
       Goodbye
     </MenuItem>
   </DropdownMenuButton>
-));
+);

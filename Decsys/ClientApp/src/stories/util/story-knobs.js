@@ -1,6 +1,6 @@
 import { optionsKnob } from "@storybook/addon-knobs";
 
-export const colorsKnob = (label, theme) =>
+export const themeVariantsKnob = (label, theme) =>
   optionsKnob(
     label,
     Object.keys(theme.colors).reduce((a, v) => {
@@ -8,5 +8,5 @@ export const colorsKnob = (label, theme) =>
       return a;
     }, {}),
     "info",
-    { display: "inline-radio" }
+    { display: "select" }
   );
