@@ -12,3 +12,4 @@ export { default as LoadingIndicator } from "./LoadingIndicator";
 export { default as RotatingSpinner } from "./RotatingSpinner";
 export { default as ConfirmModal, useModal } from "./ConfirmModal";
 export { default as ProgressCard } from "./ProgressCard";
+export { default as ToggleButton } from "./ToggleButton";
