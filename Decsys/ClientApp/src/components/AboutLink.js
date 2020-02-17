@@ -1,5 +1,5 @@
 import React from "react";
-import AppBarLink from "../AppBar/Link";
+import { AppBarLink } from "components/AppBar";
 import { ExternalLinkAlt } from "styled-icons/fa-solid";
 
 const AboutLink = ({ href, ...p }) => {

@@ -1,6 +1,6 @@
 import React, { cloneElement } from "react";
 import PropTypes from "prop-types";
-import { FlexBox, Container } from "../ui";
+import { FlexBox, Container } from "components/core";
 import Brand from "./Brand";
 import { Grid } from "styled-css-grid";
 
