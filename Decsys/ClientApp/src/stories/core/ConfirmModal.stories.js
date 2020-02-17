@@ -1,10 +1,9 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import ConfirmModal from "./ConfirmModal";
 import { ExclamationTriangle, ArrowLeft } from "styled-icons/fa-solid";
-import FlexBox from "./FlexBox";
 import { Typography } from "@smooth-ui/core-sc";
+import { ConfirmModal, FlexBox } from "components/core";
 
 const modalState = {
   modalOpened: true,

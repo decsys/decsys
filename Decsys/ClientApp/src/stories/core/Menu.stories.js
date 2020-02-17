@@ -2,9 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { AngleRight, GlobeAmericas } from "styled-icons/fa-solid";
-import MenuItem from "./MenuItem";
-import MenuRouterLink from "./MenuRouterLink";
-import DropdownMenu from "./Menu";
+import { MenuItem, MenuRouterLink, DropdownMenu } from "components/core";
 
 storiesOf("Common UI/Menu", module)
   .add("Empty", () => <DropdownMenu />)

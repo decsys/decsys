@@ -2,9 +2,8 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { AngleRight, GlobeAmericas } from "styled-icons/fa-solid";
-import MenuItem from "./MenuItem";
-import MenuRouterLink from "./MenuRouterLink";
-import withNavi from "../../utils/story-navi";
+import withNavi from "stories/util/story-navi";
+import { MenuItem, MenuRouterLink } from "components/core";
 
 storiesOf("Common UI/MenuItem", module)
   .addDecorator(withNavi(["/somewhere"]))

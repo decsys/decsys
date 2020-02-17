@@ -1,9 +1,8 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import DropdownMenuButton from "./DropdownMenuButton";
-import MenuItem from "./MenuItem";
 import { AngleRight } from "styled-icons/fa-solid";
+import { DropdownMenuButton, MenuItem } from "components/core";
 
 storiesOf("Common UI/DropdownMenuButton", module).add("Default", () => (
   <DropdownMenuButton>

@@ -10,7 +10,7 @@ import {
   ModalFooter,
   Button
 } from "@smooth-ui/core-sc";
-import FlexBox from "../ui/FlexBox";
+import FlexBox from "./FlexBox";
 
 export const useModal = () => {
   const [modalOpened, setModalOpened] = useState(false);

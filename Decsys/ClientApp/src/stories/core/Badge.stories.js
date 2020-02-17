@@ -1,9 +1,9 @@
 import React from "react";
 import { withTheme } from "styled-components";
 import { storiesOf } from "@storybook/react";
-import Badge from "./Badge";
 import { AlignCenter } from "styled-icons/fa-solid";
-import { colorsKnob } from "../../utils/story-knobs";
+import { colorsKnob } from "stories/util/story-knobs";
+import { Badge } from "components/core";
 
 //have to define this one separately to get the current theme
 const ThemedBadge = withTheme(props => (
