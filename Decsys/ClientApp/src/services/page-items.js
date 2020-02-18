@@ -1,7 +1,9 @@
-import PageHeading from "components/page-items/Heading";
-import PageParagraph from "components/page-items/Paragraph";
-import PageImage from "components/page-items/Image";
-import PageSpacer from "components/page-items/Spacer";
+import {
+  PageSpacer,
+  PageImage,
+  PageParagraph,
+  PageHeading
+} from "components/page-items";
 
 export const builtInLookup = {
   heading: PageHeading,

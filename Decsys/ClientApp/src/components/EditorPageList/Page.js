@@ -5,7 +5,7 @@ import PageHeader from "./PageHeader";
 import PageComponent from "./PageComponent";
 import PageItem from "./PageItem";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { isBuiltIn } from "services/page-components";
+import { isBuiltIn } from "services/page-items";
 
 const Page = ({
   page,
