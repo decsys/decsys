@@ -1,15 +1,10 @@
-import {
-  PageSpacer,
-  PageImage,
-  PageParagraph,
-  PageHeading
-} from "components/page-items";
+import { Spacer, Image, Paragraph, Heading } from "components/page-items";
 
 export const builtInLookup = {
-  heading: PageHeading,
-  paragraph: PageParagraph,
-  image: PageImage,
-  spacer: PageSpacer
+  heading: Heading,
+  paragraph: Paragraph,
+  image: Image,
+  spacer: Spacer
 };
 
 /**
