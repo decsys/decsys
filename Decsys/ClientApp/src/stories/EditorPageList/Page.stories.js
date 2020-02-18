@@ -1,7 +1,7 @@
 import React from "react";
 import { action } from "@storybook/addon-actions";
-import { storiesOf } from "@storybook/react";
-import Page from "./Page";
+import { DragDropContext } from "react-beautiful-dnd";
+import Page from "components/EditorPageList/Page";
 
 import { components } from "./PageComponent.stories";
 import { actions as headerActions } from "./PageHeader.stories";
@@ -46,10 +46,31 @@ export const pages = [
   }
 ];
 
-storiesOf("Admin/EditorPageList/Page", module)
-  .add("Welcome Page", () => (
-    <Page n={1} page={pages[0]} componentList={components} {...actions} />
-  ))
-  .add("Ellipse Page", () => (
-    <Page n={2} page={pages[1]} componentList={components} {...actions} />
-  ));
+export default {
+  title: "Admin/EditorPageList/Page",
+  component: Page,
+  includeStories: /Page$/,
+  decorators: [
+    s => <DragDropContext onDragEnd={() => {}}>{s()}</DragDropContext>
+  ]
+};
+
+export const WelcomePage = () => (
+  <Page
+    n={1}
+    page={pages[0]}
+    pageListProvided={{}}
+    componentList={components}
+    {...actions}
+  />
+);
+
+export const EllipsePage = () => (
+  <Page
+    n={2}
+    page={pages[1]}
+    pageListProvided={{}}
+    componentList={components}
+    {...actions}
+  />
+);

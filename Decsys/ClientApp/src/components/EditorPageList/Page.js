@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import FlexBox from "../ui/FlexBox";
+import { FlexBox } from "components/core";
 import PageHeader from "./PageHeader";
 import PageComponent from "./PageComponent";
 import PageItem from "./PageItem";
 import { Droppable, Draggable } from "react-beautiful-dnd";
-import { isBuiltIn } from "../../utils/component-utils";
+import { isBuiltIn } from "services/page-components";
 
 const Page = ({
   page,

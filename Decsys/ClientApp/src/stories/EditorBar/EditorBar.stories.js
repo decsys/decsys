@@ -1,5 +1,4 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { action, decorate } from "@storybook/addon-actions";
 import withNavi from "stories/util/story-navi";
 import EditorBar, { EditorBarContext } from "components/EditorBar";
@@ -13,11 +12,17 @@ const context = {
   nameUpdateState: {}
 };
 
-storiesOf("Admin/EditorBar", module)
-  .addDecorator(
-    withNavi(["/admin/survey/:id/preview", "/admin/survey/:id/export", "/"])
-  )
-  .addDecorator(s => (
-    <EditorBarContext.Provider value={context}>{s()}</EditorBarContext.Provider>
-  ))
-  .add("Default", () => <EditorBar name="My Survey" />);
+export default {
+  title: "Admin/EditorBar",
+  component: EditorBar,
+  decorators: [
+    withNavi(["/admin/survey/:id/preview", "/admin/survey/:id/export", "/"]),
+    s => (
+      <EditorBarContext.Provider value={context}>
+        {s()}
+      </EditorBarContext.Provider>
+    )
+  ]
+};
+
+export const Basic = () => <EditorBar name="My Survey" />;

@@ -1,6 +1,5 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
-import EditorPageList from "./EditorPageList";
+import EditorPageList from "components/EditorPageList";
 import { action } from "@storybook/addon-actions";
 
 import { pages, actions as pageActions } from "./Page.stories";
@@ -11,6 +10,12 @@ export const actions = {
   onAddClick: action("Add Page clicked")
 };
 
-storiesOf("Admin/EditorPageList", module).add("Default", () => (
+export default {
+  title: "Admin/EditorPageList",
+  component: EditorPageList,
+  includeStories: /^[A-Z]/
+};
+
+export const Basic = () => (
   <EditorPageList pages={pages} components={components} actions={actions} />
-));
+);

@@ -1,8 +1,7 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { optionsKnob, text } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
-import PageItem from "./PageItem";
+import PageItem from "components/EditorPageList/PageItem";
 
 const options = {
   Heading: "heading",
@@ -15,10 +14,16 @@ const actions = {
   onDuplicateClick: action("Duplicate clicked")
 };
 
-storiesOf("Admin/EditorPageList/PageItem", module).add("Default", () => (
+export default {
+  title: "Admin/EditorPageList/PageItem",
+  component: PageItem
+};
+
+export const Basic = () => (
   <PageItem
     type={optionsKnob("Type", options, "heading", { display: "inline-radio" })}
-    text={text("Preview text", "Heading")}
+    params={{ text: text("Preview text", "Heading") }}
+    provided={{}}
     {...actions}
   />
-));
+);

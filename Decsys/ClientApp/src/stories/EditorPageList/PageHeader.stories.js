@@ -1,8 +1,7 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { number } from "@storybook/addon-knobs";
-import PageHeader from "./PageHeader";
+import PageHeader from "components/EditorPageList/PageHeader";
 
 export const actions = {
   onRandomToggle: action("Random Toggle"),
@@ -13,6 +12,17 @@ export const actions = {
   onDeleteClick: action("Delete clicked")
 };
 
-storiesOf("Admin/EditorPageList/PageHeader", module).add("Default", () => (
-  <PageHeader n={number("Page Number", 1)} actions={actions} />
-));
+export default {
+  title: "Admin/EditorPageList/PageHeader",
+  component: PageHeader,
+  includeStories: /^[A-Z]/
+};
+
+export const Basic = () => (
+  <PageHeader
+    n={number("Page Number", 1)}
+    page={{}}
+    provided={{}}
+    actions={actions}
+  />
+);

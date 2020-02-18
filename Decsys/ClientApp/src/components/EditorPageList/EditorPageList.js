@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import FlexBox from "../ui/FlexBox";
+import { FlexBox } from "components/core";
 import { Typography, Box, Button } from "@smooth-ui/core-sc";
 import Page from "./Page";
 import { Plus } from "styled-icons/fa-solid";

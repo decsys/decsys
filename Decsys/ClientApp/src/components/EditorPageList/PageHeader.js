@@ -14,7 +14,7 @@ import {
   ExclamationTriangle
 } from "styled-icons/fa-solid";
 import { Grid, Cell } from "styled-css-grid";
-import ToggleButton from "../ui/ToggleButton";
+import { ToggleButton } from "components/core";
 
 const PageHeader = ({
   n,

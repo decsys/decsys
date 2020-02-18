@@ -7,7 +7,7 @@ import PageParagraph from "components/page-items/Paragraph";
 export default {
   title: "ComponentRender",
   component: ComponentRender,
-  includeStories: ["Basic"]
+  includeStories: /^[A-Z]/
 };
 
 // try and emulate things in the platform closely

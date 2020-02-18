@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import ParamTypes, { buildPropTypes } from "@decsys/param-types";
-import { FlexBox } from "../ui";
+import { FlexBox } from "components/core";
 import { Box } from "@smooth-ui/core-sc";
 
 const PageImage = ({ surveyId, id, extension }) => {
