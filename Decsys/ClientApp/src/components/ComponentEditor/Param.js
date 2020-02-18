@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FlexBox } from "../ui";
+import { FlexBox } from "components/core";
 import {
   Input,
   Checkbox,
