@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@smooth-ui/core-sc";
-import { surveyExport } from "../../services/export";
-import { FlexBox, ConfirmModal } from "../ui";
+import { surveyExport } from "services/export";
+import { FlexBox, ConfirmModal } from "components/core";
 
 const ExportModal = ({ modalState, survey }) => {
   const handleExportStructure = () => surveyExport(survey, "structure");

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Typography } from "@smooth-ui/core-sc";
 import { ExclamationTriangle } from "styled-icons/fa-solid";
-import { FlexBox, ConfirmModal } from "../ui";
+import { FlexBox, ConfirmModal } from "components/core";
 
 const DangerIcon = styled(ExclamationTriangle)`
   color: ${({ theme }) => theme.danger};

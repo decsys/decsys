@@ -1,11 +1,15 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { Umbrella } from "styled-icons/fa-solid";
 import { action } from "@storybook/addon-actions";
-import Button from "./Button";
+import Button from "components/EditorBar/Button";
 
-storiesOf("Admin/EditorBar/Button", module).add("Default", () => (
+export default {
+  title: "Admin/EditorBar/Button",
+  component: Button
+};
+
+export const Basic = () => (
   <Button onClick={action("Button clicked")}>
     <Umbrella size="1em" /> Umbrellas
   </Button>
-));
+);

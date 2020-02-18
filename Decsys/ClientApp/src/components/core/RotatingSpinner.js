@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { rotate } from "../../utils/keyframes";
+import { rotate } from "animations/rotate";
 import { Spinner } from "styled-icons/fa-solid";
 
 const RotatingSpinner = styled(Spinner)`

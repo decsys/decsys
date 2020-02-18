@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
-import { FlexBox, ActiveIndicator } from "../ui";
 import { Typography, Box, Button, Alert, Textarea } from "@smooth-ui/core-sc";
 import RunCountBadge from "./RunCountBadge";
 import { Grid, Cell } from "styled-css-grid";
@@ -9,7 +8,12 @@ import ManageSurveyButton from "./ManageSurveyButton";
 import SurveyCardContext from "./Context";
 import { encode } from "services/instance-id";
 import { InfoCircle } from "styled-icons/fa-solid";
-import ConfirmModal, { useModal } from "../ui/ConfirmModal";
+import {
+  FlexBox,
+  ActiveIndicator,
+  ConfirmModal,
+  useModal
+} from "components/core";
 import * as api from "api";
 
 const SurveyCard = ({

@@ -10,10 +10,10 @@ import {
 import { Grid } from "styled-css-grid";
 import EditorBarButton, { LinkButton as EditorBarLink } from "./Button";
 import NameInput from "./NameInput";
-import DeleteSurveyModal from "../SurveyCard/DeleteSurveyModal";
-import { useModal } from "../ui/ConfirmModal";
+import DeleteSurveyModal from "components/SurveyCard/DeleteSurveyModal";
+import { useModal } from "components/core";
 import EditorBarContext from "./Context";
-import ExportModal from "../ExportModal";
+import ExportModal from "components/ExportModal";
 
 const EditorBar = ({ id, name, disabled }) => {
   const deleteModal = useModal();

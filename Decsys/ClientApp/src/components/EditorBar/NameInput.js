@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Input } from "@smooth-ui/core-sc";
-import { FlexBox, RotatingSpinner } from "../ui";
+import { FlexBox, RotatingSpinner } from "components/core";
 import { Check } from "styled-icons/fa-solid";
-import { fadeOut } from "../../utils/keyframes";
+import { fadeOut } from "animations/fade-out";
 
 const IconDiv = styled.div`
   position: absolute;

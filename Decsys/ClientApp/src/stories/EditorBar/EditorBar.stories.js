@@ -1,9 +1,8 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action, decorate } from "@storybook/addon-actions";
-import withNavi from "../../utils/story-navi";
-import EditorBar from "./EditorBar";
-import EditorBarContext from "./Context";
+import withNavi from "stories/util/story-navi";
+import EditorBar, { EditorBarContext } from "components/EditorBar";
 
 const context = {
   handleDuplicateClick: action("Duplicate clicked"),
