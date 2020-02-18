@@ -1,9 +1,14 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { optionsKnob } from "@storybook/addon-knobs";
-import ComponentRender from "./ComponentRender";
-import PageHeading from "../page-items/Heading";
-import PageParagraph from "../page-items/Paragraph";
+import ComponentRender from "components/ComponentRender";
+import PageHeading from "components/page-items/Heading";
+import PageParagraph from "components/page-items/Paragraph";
+
+export default {
+  title: "ComponentRender",
+  component: ComponentRender,
+  includeStories: ["Basic"]
+};
 
 // try and emulate things in the platform closely
 
@@ -37,9 +42,9 @@ export const knob = () =>
     display: "inline-radio"
   });
 
-storiesOf("ComponentRender", module).add("Default", () => (
+export const Basic = () => (
   <ComponentRender
     component={components[knob()]}
     params={paramsLookup[knob()].params}
   />
-));
+);

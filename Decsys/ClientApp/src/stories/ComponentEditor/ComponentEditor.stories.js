@@ -1,10 +1,6 @@
 import React from "react";
 import ComponentEditor from "components/ComponentEditor";
-import {
-  paramsLookup,
-  knob,
-  components
-} from "components/ComponentRender/ComponentRender.stories";
+import { paramsLookup, knob, components } from "../ComponentRender.stories";
 
 export default {
   title: "Admin/ComponentEditor",
