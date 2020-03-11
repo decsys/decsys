@@ -1,5 +1,6 @@
 trigger:
   - master
+  - support/*
 variables:
   buildConfiguration: Release
 stages:
