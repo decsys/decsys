@@ -156,7 +156,7 @@ stages:
           - upload: $(Build.ArtifactStagingDirectory)
             artifact: $(name)
   - stage: Release
-    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
+    condition: "and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/support/'))"
     jobs:
       - job: Metadata
         pool:
@@ -171,6 +171,7 @@ stages:
               variable=apiVersion;isOutput=true]$(csproj_Project_PropertyGroup_0_Version)'
             name: setApiVersion
       - deployment: GitHub_Pages
+        condition: "eq(variables['Build.SourceBranch'], 'refs/heads/master')"
         pool:
           vmImage: ubuntu-latest
         environment: github
