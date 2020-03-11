@@ -157,7 +157,7 @@ stages:
           - upload: $(Build.ArtifactStagingDirectory)
             artifact: $(name)
   - stage: Release
-    condition: "and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/support/'))"
+    condition: "and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/master', 'refs/heads/support/*'))"
     jobs:
       - job: Metadata
         pool:
