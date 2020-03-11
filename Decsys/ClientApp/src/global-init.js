@@ -11,7 +11,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled, { css, withTheme } from "styled-components";
 import * as Victory from "victory";
 import * as math from "mathjs";
 import ReactWordCloud from "react-wordcloud";
@@ -31,6 +31,7 @@ const setGlobals = () => {
   // Styled doesn't put all its named exports on the default :(
   // So I guess that job is on us until we have a better way to do this than globals
   styled.css = css;
+  styled.withTheme = withTheme;
   window.styled = styled;
 };
 
