@@ -161,7 +161,7 @@ stages:
       and(
         succeeded(),
         or(
-          eq(variables['Build.SourceBranch'], 'refs/heads/support/'),
+          startsWith(variables['Build.SourceBranch'], 'refs/heads/support/'),
           eq(variables['Build.SourceBranch'], 'refs/heads/master')
         )
       )
