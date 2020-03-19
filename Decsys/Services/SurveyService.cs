@@ -18,9 +18,9 @@ namespace Decsys.Services
         private readonly ImageService _images;
 
         /// <summary>DI Constructor</summary>
-        public SurveyService(LiteDatabase db, IMapper mapper, ImageService images)
+        public SurveyService(LiteDbFactory db, IMapper mapper, ImageService images)
         {
-            _db = db;
+            _db = db.Surveys;
             _mapper = mapper;
             _images = images;
         }

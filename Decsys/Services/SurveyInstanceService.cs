@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Decsys.Data;
 using Decsys.Data.Entities;
 using LiteDB;
@@ -10,10 +10,10 @@ namespace Decsys.Services
     // TODO: Doc Comments!
     public class SurveyInstanceService
     {
-        private readonly LiteDatabase _db;
+        private readonly LiteDbFactory _db;
         private readonly IMapper _mapper;
 
-        public SurveyInstanceService(LiteDatabase db, IMapper mapper)
+        public SurveyInstanceService(LiteDbFactory db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
@@ -21,11 +21,11 @@ namespace Decsys.Services
 
         public int Create(int surveyId)
         {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
+            var surveys = _db.Surveys.GetCollection<Survey>(Collections.Surveys);
             if (!surveys.Exists(x => x.Id == surveyId))
                 throw new KeyNotFoundException();
 
-            var instances = _db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            var instances = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
 
             if (instances.Exists(x => x.Closed == null && x.Survey.Id == surveyId))
                 throw new ArgumentException(
@@ -47,11 +47,11 @@ namespace Decsys.Services
 
         public Models.SurveyInstance Get(int surveyId, int instanceId)
         {
-            if (!_db.GetCollection<Survey>(Collections.Surveys)
+            if (!_db.Surveys.GetCollection<Survey>(Collections.Surveys)
                     .Exists(x => x.Id == surveyId))
                 throw new KeyNotFoundException();
 
-            var instance = _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
+            var instance = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances)
                 .FindById(instanceId);
 
             if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();
@@ -61,22 +61,22 @@ namespace Decsys.Services
 
         public IEnumerable<Models.SurveyInstance> List(int surveyId)
         {
-            if (!_db.GetCollection<Survey>(Collections.Surveys)
+            if (!_db.Surveys.GetCollection<Survey>(Collections.Surveys)
                     .Exists(x => x.Id == surveyId))
                 throw new KeyNotFoundException();
 
             return _mapper.Map<IEnumerable<Models.SurveyInstance>>(
-                _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
+                _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances)
                     .Find(x => x.Survey.Id == surveyId));
         }
 
         public void Close(int surveyId, int instanceId)
         {
-            if (!_db.GetCollection<Survey>(Collections.Surveys)
+            if (!_db.Surveys.GetCollection<Survey>(Collections.Surveys)
                     .Exists(x => x.Id == surveyId))
                 throw new KeyNotFoundException();
 
-            var instances = _db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            var instances = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
             var instance = instances.FindById(instanceId);
 
             if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();
@@ -87,8 +87,8 @@ namespace Decsys.Services
 
         public void Import(IList<Models.SurveyInstanceResults<Models.ParticipantEvents>> instanceModels, int targetSurveyId)
         {
-            var instances = _db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
-            var survey = _db.GetCollection<Survey>(Collections.Surveys).FindById(targetSurveyId);
+            var instances = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            var survey = _db.Surveys.GetCollection<Survey>(Collections.Surveys).FindById(targetSurveyId);
 
             foreach (var instanceModel in instanceModels)
             {
@@ -98,7 +98,7 @@ namespace Decsys.Services
 
                 foreach(var participant in instanceModel.Participants)
                 {
-                    var log = _db.GetCollection<ParticipantEvent>(
+                    var log = _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(
                     ParticipantEventService.GetCollectionName(instanceId, participant.Id));
 
                     foreach(var e in participant.Events)
