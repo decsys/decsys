@@ -99,7 +99,7 @@ namespace Decsys.Services
                 foreach(var participant in instanceModel.Participants)
                 {
                     var log = _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(
-                    ParticipantEventService.GetCollectionName(instanceId, participant.Id));
+                    ParticipantEventService.GetCollectionName(participant.Id, _db.InstanceEventLogs(instanceId)));
 
                     foreach(var e in participant.Events)
                     {

@@ -6,7 +6,9 @@ namespace Decsys.Data
 
         public const string SurveyInstances = "SurveyInstances";
 
-        public const string EventLog = "Events_";
+        public const string EventLogDb = "events_";
+
+        public const string EventLog = "e";
 
         public const string EventLogLookup = "l";
     }

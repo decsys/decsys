@@ -20,7 +20,7 @@ namespace Decsys.Data
         private const string SurveysFile = "user-surveys.db";
 
         private static string InstanceEventLogsFile(int instanceId)
-            => $"{Collections.EventLog}{instanceId}.db";
+            => $"{Collections.EventLogDb}{instanceId}.db";
 
         private string BuildConnectionString(string file)
             => $"Filename={Path.Combine(_localDbPath, file)};Connection=direct;";
