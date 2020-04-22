@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import * as Victory from "victory";
 import * as math from "mathjs";
 import ReactWordCloud from "react-wordcloud";
-import styled, { css } from "styled-components";
+import styled, * as styledNamed from "styled-components";
 
 window.__DECSYS__ = {}; // Register our global namespace
 
@@ -21,8 +21,7 @@ window.reactWordCloud = ReactWordCloud;
 
 // Styled doesn't put all its named exports on the default :(
 // So I guess that job is on us until we have a better way to do this than globals
-styled.css = css;
-window.styled = styled;
+window.styled = { ...styled, ...styledNamed };
 
 /**
  * Fetch DECSYS Component modules from the API and chuck them on the page
