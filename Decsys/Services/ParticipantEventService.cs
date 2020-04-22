@@ -1,5 +1,4 @@
 using AutoMapper;
-using Base62;
 using Decsys.Data;
 using Decsys.Data.Entities;
 using Decsys.Mapping;
@@ -9,31 +8,52 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 
 namespace Decsys.Services
 {
     public class ParticipantEventService
     {
-        private readonly LiteDatabase _db;
+        private readonly LiteDbFactory _db;
         private readonly IMapper _mapper;
 
-        public ParticipantEventService(LiteDatabase db, IMapper mapper)
+        public ParticipantEventService(LiteDbFactory db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
         }
 
-        public static string GetCollectionName(int instanceId, string participantId)
-            => $"{Collections.EventLog}{instanceId}_{Encoding.UTF8.GetBytes(participantId).ToBase62()}"; // TODO: document collection name encoding, possibly decode on export?
+        public static string GetCollectionName(string participantId, LiteDatabase db)
+        {
+            var lookupId = db
+                .GetCollection<EventLogLookup>(Collections.EventLogLookup)
+                .FindOne(x => x.ParticipantId == participantId)?.Id;
 
-        public static string GetParticipantId(string collectionName)
-            => Encoding.UTF8.GetString(collectionName.Split("_").Last().FromBase62());
+            if (lookupId is null)
+            {
+                lookupId = db
+                    .GetCollection<EventLogLookup>(Collections.EventLogLookup)
+                    .Insert(new EventLogLookup { ParticipantId = participantId });
+            }
+
+            return $"{Collections.EventLog}{lookupId}";
+        }
+
+        public string GetCollectionName(int instanceId, string participantId)
+            => GetCollectionName(participantId, _db.InstanceEventLogs(instanceId));
+
+        public string GetParticipantId(int instanceId, string collectionName)
+            => _db.InstanceEventLogs(instanceId)
+                .GetCollection<EventLogLookup>(Collections.EventLogLookup)
+                .FindOne(x => x.Id.ToString() == collectionName.Substring(1))?
+                .ParticipantId
+            ?? throw new KeyNotFoundException(
+                $"Couldn't find the requested logs collection (id: {collectionName}) for the specified Survey Instance (id: {instanceId})");
 
         private IEnumerable<Models.ParticipantEvent> _List(int instanceId, string participantId)
         {
-            var log = _db.GetCollection<ParticipantEvent>(
-                GetCollectionName(instanceId, participantId));
+            var log = _db.InstanceEventLogs(instanceId)
+                .GetCollection<ParticipantEvent>(
+                    GetCollectionName(instanceId, participantId));
 
             return _mapper.Map<IEnumerable<Models.ParticipantEvent>>(
                 log.FindAll().OrderBy(x => x.Timestamp));
@@ -51,28 +71,29 @@ namespace Decsys.Services
         /// <returns></returns>
         public string GetNextId(string participantId, int instanceId)
         {
-            if (!_db.GetCollection<SurveyInstance>(
+            if (!_db.Surveys.GetCollection<SurveyInstance>(
                     Collections.SurveyInstances)
                 .Exists(x => x.Id == instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var logNames = _db.GetCollectionNames()
-                .Where(x => x.StartsWith(GetCollectionName(instanceId, participantId)))
-                .OrderByDescending(x => x)
+            var logCollections = _db.InstanceEventLogs(instanceId)
+                .GetCollection<EventLogLookup>(Collections.EventLogLookup)
+                .Find(x => x.ParticipantId.StartsWith(participantId))
+                .OrderByDescending(x => x.ParticipantId)
                 .ToList();
 
-            var latestLogName = logNames.FirstOrDefault();
-            if (latestLogName is null) return participantId;
+            var latestLog = logCollections.FirstOrDefault();
+            if (latestLog is null) return participantId;
 
-            var log = _db.GetCollection<ParticipantEvent>(latestLogName);
+            var log = _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(latestLog.Id.ToString());
             return log.Find(x => x.Type == EventTypes.SURVEY_COMPLETE).Any()
-                ? $"{participantId}-{logNames.Count}"
-                : latestLogName;
+                ? $"{participantId}-{logCollections.Count}"
+                : latestLog.ParticipantId;
         }
 
         public IEnumerable<Models.ParticipantEvent> List(int instanceId, string participantId)
         {
-            if (!_db.GetCollection<SurveyInstance>(
+            if (!_db.Surveys.GetCollection<SurveyInstance>(
                     Collections.SurveyInstances)
                 .Exists(x => x.Id == instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
@@ -82,7 +103,7 @@ namespace Decsys.Services
 
         public Models.SurveyInstanceResults<Models.ParticipantEvents> Results(int instanceId)
         {
-            var instance = _db.GetCollection<SurveyInstance>(
+            var instance = _db.Surveys.GetCollection<SurveyInstance>(
                 Collections.SurveyInstances)
                     .Include(x => x.Survey)
                     .FindById(instanceId) ??
@@ -95,7 +116,7 @@ namespace Decsys.Services
             var participants = logs
                 .Select(collectionName =>
                 {
-                    var participantId = GetParticipantId(collectionName);
+                    var participantId = GetParticipantId(instanceId, collectionName);
                     return new Models.ParticipantEvents(participantId)
                     {
                         Events = _List(instanceId, participantId).ToList()
@@ -118,13 +139,14 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
         public void Log(int instanceId, string participantId, Models.ParticipantEvent e)
         {
-            if (!_db.GetCollection<SurveyInstance>(
+            if (!_db.Surveys.GetCollection<SurveyInstance>(
                     Collections.SurveyInstances)
                 .Exists(x => x.Id == instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var log = _db.GetCollection<ParticipantEvent>(
-                GetCollectionName(instanceId, participantId));
+            var log = _db.InstanceEventLogs(instanceId)
+                .GetCollection<ParticipantEvent>(
+                    GetCollectionName(instanceId, participantId));
 
             log.Insert(_mapper.Map<ParticipantEvent>(e));
         }
@@ -140,13 +162,14 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
         public Models.ParticipantEvent Last(int instanceId, string participantId, string source, string type)
         {
-            if (!_db.GetCollection<SurveyInstance>(
+            if (!_db.Surveys.GetCollection<SurveyInstance>(
                     Collections.SurveyInstances)
                 .Exists(x => x.Id == instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var log = _db.GetCollection<ParticipantEvent>(
-                GetCollectionName(instanceId, participantId));
+            var log = _db.InstanceEventLogs(instanceId)
+                .GetCollection<ParticipantEvent>(
+                    GetCollectionName(instanceId, participantId));
 
             return _mapper.Map<Models.ParticipantEvent>(
                 log.Find(x => x.Source == source && x.Type == type)
@@ -164,13 +187,14 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
         public Models.ParticipantEvent Last(int instanceId, string participantId, string type)
         {
-            if (!_db.GetCollection<SurveyInstance>(
+            if (!_db.Surveys.GetCollection<SurveyInstance>(
                     Collections.SurveyInstances)
                 .Exists(x => x.Id == instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var log = _db.GetCollection<ParticipantEvent>(
-                GetCollectionName(instanceId, participantId));
+            var log = _db.InstanceEventLogs(instanceId)
+                .GetCollection<ParticipantEvent>(
+                    GetCollectionName(instanceId, participantId));
 
             return _mapper.Map<Models.ParticipantEvent>(
                 log.Find(x => x.Type == type)
@@ -180,7 +204,7 @@ namespace Decsys.Services
 
         public Models.SurveyInstanceResults<Models.ParticipantResultsSummary> ResultsSummary(int instanceId)
         {
-            var instance = _db.GetCollection<SurveyInstance>(
+            var instance = _db.Surveys.GetCollection<SurveyInstance>(
                 Collections.SurveyInstances)
                     .Include(x => x.Survey)
                     .FindById(instanceId) ??
@@ -192,7 +216,7 @@ namespace Decsys.Services
             // summarize each one
             var participants = logs
                 .Select(collectionName =>
-                    ParticipantResultsSummary(instance, GetParticipantId(collectionName)))
+                    ParticipantResultsSummary(instance, GetParticipantId(instanceId, collectionName)))
                 .ToList();
 
             var result = _mapper.Map<Models.SurveyInstanceResults<Models.ParticipantResultsSummary>>(instance);
@@ -208,14 +232,15 @@ namespace Decsys.Services
         /// <returns></returns>
         private List<string> GetAllParticipantLogs(int instanceId)
         {
-            return _db.GetCollectionNames()
-                .Where(x => x.StartsWith($"{Collections.EventLog}{instanceId}_"))
+            return _db.InstanceEventLogs(instanceId)
+                .GetCollectionNames()
+                .Where(x => x.StartsWith(Collections.EventLog))
                 .ToList();
         }
 
         public Models.ParticipantResultsSummary ResultsSummary(int instanceId, string participantId)
         {
-            var instance = _db.GetCollection<SurveyInstance>(
+            var instance = _db.Surveys.GetCollection<SurveyInstance>(
                 Collections.SurveyInstances)
                     .Include(x => x.Survey)
                     .FindById(instanceId) ??
@@ -228,7 +253,9 @@ namespace Decsys.Services
         {
             var resultsSummary = new Models.ParticipantResultsSummary(participantId);
 
-            var log = _db.GetCollection<ParticipantEvent>(GetCollectionName(instance.Id, participantId));
+            var log = _db.InstanceEventLogs(instance.Id)
+                .GetCollection<ParticipantEvent>(
+                    GetCollectionName(instance.Id, participantId));
 
             var orderLog = log.Find(x =>
                         x.Source == instance.Survey.Id.ToString()
