@@ -1,12 +1,16 @@
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { MenuItem, MenuRouterLink, DropdownMenuButton } from "../ui";
+import {
+  MenuItem,
+  MenuRouterLink,
+  DropdownMenuButton,
+  useModal
+} from "components/core";
 import DeleteSurveyModal from "./DeleteSurveyModal";
-import { useModal } from "../ui/ConfirmModal";
 import { EllipsisV } from "styled-icons/fa-solid";
 import SurveyCardContext from "./Context";
 import SurveyConfigModal from "./SurveyConfigModal";
-import ExportModal from "../ExportModal";
+import ExportModal from "components/ExportModal";
 
 const ManageSurveyButton = ({ name, editable, id }) => {
   const deleteModal = useModal();

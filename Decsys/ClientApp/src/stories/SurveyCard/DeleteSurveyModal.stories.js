@@ -1,10 +1,14 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { text } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
-import DeleteSurveyModal from "./DeleteSurveyModal";
+import DeleteSurveyModal from "components/SurveyCard/DeleteSurveyModal";
 
-storiesOf("Admin/SurveyCard/DeleteSurveyModal", module).add("Default", () => (
+export default {
+  title: "Admin/SurveyCard/DeleteSurveyModal",
+  component: DeleteSurveyModal
+};
+
+export const Basic = () => (
   <DeleteSurveyModal
     surveyName={text("Survey name", "My First Survey")}
     modalState={{
@@ -13,4 +17,4 @@ storiesOf("Admin/SurveyCard/DeleteSurveyModal", module).add("Default", () => (
     }}
     deleteSurvey={action("Delete clicked")}
   />
-));
+);

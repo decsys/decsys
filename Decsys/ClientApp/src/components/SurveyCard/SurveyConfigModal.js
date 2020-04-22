@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
-import { ConfirmModal, FlexBox, LoadingIndicator } from "../ui";
+import { ConfirmModal, FlexBox, LoadingIndicator } from "components/core";
 import {
   Switch,
   Typography,
@@ -11,7 +11,7 @@ import {
 import { InfoCircle } from "styled-icons/fa-solid";
 import SurveyCardContext from "./Context";
 import { generateCombination } from "gfycat-style-urls";
-import { getCancelToken } from "../../api";
+import { getCancelToken } from "api";
 
 const InfoIcon = styled(InfoCircle)`
   color: ${({ theme }) => theme.info};

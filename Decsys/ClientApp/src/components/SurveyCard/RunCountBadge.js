@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@smooth-ui/core-sc";
-import Badge from "../ui/Badge";
+import { Badge } from "components/core";
 
 const RunCountBadge = ({ count = 0 }) => (
   <Badge backgroundColor="info">
