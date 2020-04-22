@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
@@ -18,9 +18,9 @@ namespace Decsys.Services
         private readonly IMapper _mapper;
         private readonly ImageService _images;
 
-        public ComponentService(LiteDatabase db, IMapper mapper, ImageService images)
+        public ComponentService(LiteDbFactory db, IMapper mapper, ImageService images)
         {
-            _db = db;
+            _db = db.Surveys;
             _mapper = mapper;
             _images = images;
         }

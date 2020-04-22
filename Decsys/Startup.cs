@@ -1,6 +1,7 @@
 using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Decsys.Auth;
+using Decsys.Data;
 using Decsys.Services;
 using LiteDB;
 using Microsoft.AspNetCore.Authorization;
@@ -30,18 +31,44 @@ namespace Decsys
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _config;
 
+        private readonly IDictionary<string, string> _localPaths;
+
+        private IDictionary<string, string> PrepLocalDataPaths(string localDataPath)
+        {
+            // relative to contentRootPath if not absolute
+            localDataPath = Path.IsPathRooted(localDataPath)
+                ? localDataPath
+                : Path.Combine(_env.ContentRootPath, localDataPath);
+
+            // map our defined paths to absolute paths dictionary
+            var localPaths = new List<(string key, string path)>
+            {
+                ("SurveyImages", "survey-images"),
+                ("Databases", "db")
+            }
+            .ToDictionary(
+                subDir => subDir.key,
+                subDir => Path.Combine(localDataPath, subDir.path));
+
+            // ensure they all exist
+            localPaths.Values.ToList().ForEach(p => Directory.CreateDirectory(p));
+
+            // return the dictionary of absolute paths
+            return localPaths;
+        }
+
         public Startup(IWebHostEnvironment env, IConfiguration config)
         {
             _env = env;
             _config = config;
+
+            _localPaths = PrepLocalDataPaths(_config["Paths:LocalData"]);
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // If we're using LiteDb (i.e. for a locally run single instance app)
-            // we instantiate it ourselves and manage its disposal
-            services.AddSingleton(_ => new LiteDatabase(_config.GetConnectionString("DocumentStore")));
+            services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
 
             services.AddResponseCompression();
 
@@ -77,10 +104,8 @@ namespace Decsys
             services.AddTransient<ExportService>();
             services.AddTransient<ParticipantEventService>();
             services.AddTransient(svc => new ImageService(
-                Path.Combine(
-                    _env.ContentRootPath,
-                    "SurveyImages"),
-                svc.GetRequiredService<LiteDatabase>()));
+                _localPaths["SurveyImages"],
+                svc.GetRequiredService<LiteDbFactory>().Surveys));
 
             services.AddSwaggerGen(c =>
             {
@@ -124,11 +149,9 @@ namespace Decsys
             });
 
             // Survey Images folder
-            var imagePath = Path.Combine(_env.ContentRootPath, "SurveyImages");
-            Directory.CreateDirectory(imagePath);
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(imagePath),
+                FileProvider = new PhysicalFileProvider(_localPaths["SurveyImages"]),
                 RequestPath = "/surveys/images"
             });
 
