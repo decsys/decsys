@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigation } from "react-navi";
-import { useNaviReducer } from "../../../utils/hooks";
+import { useNaviReducer } from "hooks/reducers";
 import PureSurveysScreen from "./PureSurveysScreen";
-import SurveyCardContext from "../../../components/SurveyCard/Context";
+import SurveyCardContext from "components/SurveyCard/Context";
 import reducer, * as ducks from "./ducks";
-import * as api from "../../../api";
+import * as api from "api";
 
 const SurveysScreen = ({ surveys }) => {
   const [state, dispatch] = useNaviReducer(

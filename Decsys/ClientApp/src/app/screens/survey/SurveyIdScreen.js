@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { FlexBox } from "../../components/ui";
+import { FlexBox } from "components/core";
 import { Input, Button, Typography, Box } from "@smooth-ui/core-sc";
 import { useNavigation } from "react-navi";
 import { List } from "styled-icons/fa-solid";
-import AboutLink from "../../components/AboutLink";
-import AppBar from "../../components/AppBar";
+import AboutLink from "components/AboutLink";
+import AppBar from "components/AppBar";
 
 const SurveyIdScreen = () => {
   const [id, setId] = useState("");

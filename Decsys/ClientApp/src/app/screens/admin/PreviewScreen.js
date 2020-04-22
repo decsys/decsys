@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@smooth-ui/core-sc";
-import SurveyPage from "../../components/SurveyPage";
+import SurveyPage from "components/SurveyPage";
 import ErrorScreen from "../ErrorScreen";
 import { useNavigation, useCurrentRoute } from "react-navi";
-import AppBar, { AppBarLink } from "../../components/AppBar";
+import AppBar, { AppBarLink } from "components/AppBar";
 
 const PreviewScreen = () => {
   const nav = useNavigation();

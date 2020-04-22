@@ -1,26 +1,18 @@
 import * as serviceWorker from "./serviceWorker";
 import React from "react";
 import ReactDOM from "react-dom";
-import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
-import theme from "./app/themes";
-import App from "./app/App";
-import { loadComponentsModule } from "./global-init";
+import App from "app";
+import loadPageResponseComponents from "./global";
+
 import "react-table/react-table.css"; // sad now
 
-loadComponentsModule();
+// ask the backend to provide the page response components module
+loadPageResponseComponents();
 
-// Only actually boostrap the app once components from global-init are confirmed loaded
+// when that module finishes loading it fires an event
+// telling us we can bootstrap the ClientApp
 document.addEventListener("__DECSYS__ComponentsLoaded", () =>
-  ReactDOM.render(
-    <>
-      <Normalize />
-
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-    </>,
-    document.getElementById("root")
-  )
+  ReactDOM.render(<App />, document.getElementById("root"))
 );
 
 // If you want your app to work offline and load faster, you can change

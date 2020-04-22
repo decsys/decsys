@@ -1,5 +1,5 @@
 import * as actions from "./actions";
-import * as api from "../../../../api";
+import * as api from "api";
 
 /**
  * Edit the name of a Survey
