@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useRef } from "react";
+import { useReducer } from "react";
 import { useNavigation } from "react-navi";
 
 const thunkedDispatch = (dispatch, ...otherArgs) => thunk =>
@@ -15,24 +15,4 @@ export const useNaviReducer = (reducer, initArg, init) => {
   const navigation = useNavigation();
   const [state, dispatch] = useReducer(reducer, initArg, init);
   return [state, thunkedDispatch(dispatch, navigation)];
-};
-
-export const useInterval = (callback, delay) => {
-  const savedCallback = useRef();
-
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
 };

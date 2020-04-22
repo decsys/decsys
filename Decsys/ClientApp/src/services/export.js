@@ -1,6 +1,6 @@
-import { exportDateFormat } from "../utils/date-formats";
+import { exportDateFormat } from "services/date-formats";
 import download from "downloadjs";
-import * as api from "../api";
+import * as api from "api";
 
 /**
  * Helper for Client-Side file downloads
