@@ -1,10 +1,11 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { boolean, text } from "@storybook/addon-knobs";
-import SortButton from "./SortButton";
+import SortButton from "components/SurveyList/SortButton";
 
-storiesOf("Admin/SurveyList/SortButton", module).add("Default", () => (
+export default { title: "Admin/SurveyList/SortButton", component: SortButton };
+
+export const Basic = () => (
   <SortButton
     active={boolean("Active Sort Field", false)}
     asc={boolean("Ascending", false)}
@@ -12,4 +13,4 @@ storiesOf("Admin/SurveyList/SortButton", module).add("Default", () => (
   >
     {text("Sort Field label", "Name")}
   </SortButton>
-));
+);

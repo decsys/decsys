@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Typography, Input } from "@smooth-ui/core-sc";
-import FlexBox from "../ui/FlexBox";
+import { FlexBox } from "components/core";
 import SortPanel from "./SortPanel";
-import SurveyCard from "../SurveyCard";
+import SurveyCard from "components/SurveyCard";
 import { useSortingAndFiltering } from "./hooks";
 
 const SurveyList = ({ surveys }) => {
