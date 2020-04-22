@@ -1,5 +1,5 @@
 import React from "react";
-import { useNaviReducer } from "utils/hooks";
+import { useNaviReducer } from "hooks/reducers";
 import PureEditorScreen from "./PureEditorScreen";
 import EditorBarContext from "components/EditorBar/Context";
 import reducer, * as ducks from "./ducks";

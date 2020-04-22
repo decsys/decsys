@@ -5,7 +5,7 @@ import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
 import theme from "themes";
 import routes from "./routes";
 import ErrorScreen from "./screens/ErrorScreen";
-import { LoadingIndicator } from "components/ui";
+import { LoadingIndicator } from "components/core";
 import * as users from "services/user";
 
 const App = () => {

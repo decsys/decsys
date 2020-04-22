@@ -5,13 +5,13 @@ import {
   FlexBox,
   ProgressCard,
   useModal
-} from "components/ui";
+} from "components/core";
 import AppBar from "components/AppBar";
 import { Typography, Box, Alert } from "@smooth-ui/core-sc";
 import { InfoCircle, ExclamationTriangle } from "styled-icons/fa-solid";
-import { getComponent, getResponseComponent } from "utils/component-utils";
+import { getComponent, getResponseComponent } from "services/page-items";
 import ReactTable from "react-table";
-import { useInterval } from "utils/hooks";
+import { useInterval } from "hooks/use-interval";
 import * as api from "api";
 import SurveyPageBody from "components/SurveyPage/Body";
 import AboutLink from "components/AboutLink";

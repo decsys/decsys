@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlexBox } from "components/ui";
+import { FlexBox } from "components/core";
 import { Input, Button, Typography, Box, Alert } from "@smooth-ui/core-sc";
 import { useNavigation } from "react-navi";
 import { List } from "styled-icons/fa-solid";

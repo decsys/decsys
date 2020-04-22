@@ -1,6 +1,6 @@
 import React from "react";
 import AppBar from "components/AppBar";
-import { Container, FlexBox, EmptyState } from "components/ui";
+import { Container, FlexBox, EmptyState } from "components/core";
 import AboutLink from "components/AboutLink";
 
 const ErrorScreen = ({ splash, message, callToAction }) => (

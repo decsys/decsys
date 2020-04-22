@@ -4,13 +4,13 @@ import {
   FlexBox,
   DropdownMenuButton,
   MenuItem
-} from "components/ui";
+} from "components/core";
 import AppBar from "components/AppBar";
 import { Typography, Select, Box, Button } from "@smooth-ui/core-sc";
 import * as api from "api";
 import ReactTable from "react-table";
 import { Grid } from "styled-css-grid";
-import { exportDateFormat as formatDate } from "utils/date-formats";
+import { exportDateFormat as formatDate } from "services/date-formats";
 import download from "downloadjs";
 import { parse } from "json2csv";
 import { useNavigation } from "react-navi";

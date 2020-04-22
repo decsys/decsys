@@ -1,6 +1,6 @@
 import React from "react";
 import AppBar from "components/AppBar";
-import { Container, FlexBox, EmptyState } from "components/ui";
+import { Container, FlexBox, EmptyState } from "components/core";
 import { Check } from "styled-icons/fa-solid";
 import AboutLink from "components/AboutLink";
 
