@@ -1,5 +1,5 @@
 import React from "react";
-import withNavi from "stories/util/story-navi";
+import withNavi from "stories/helpers/story-navi";
 import { AppBarLink } from "components/AppBar";
 
 export default {

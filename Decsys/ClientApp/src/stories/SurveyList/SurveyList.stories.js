@@ -1,6 +1,6 @@
 import React from "react";
 import SurveyList from "components/SurveyList";
-import withNavi from "stories/util/story-navi";
+import withNavi from "stories/helpers/story-navi";
 import { naviPaths, context } from "../SurveyCard/SurveyCard.stories";
 import SurveyCardContext from "components/SurveyCard/Context";
 

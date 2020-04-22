@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Textarea, Typography } from "@smooth-ui/core-sc";
-import { FlexBox } from "../ui";
-import ComponentRender from "../ComponentRender";
+import { FlexBox } from "components/core";
+import ComponentRender from "components/ComponentRender";
 import { InfoCircle } from "styled-icons/fa-solid";
 
 const ParagraphPreview = ({ component, params, onChange }) => {

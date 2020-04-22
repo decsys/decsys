@@ -2,7 +2,7 @@ import React from "react";
 import { text, boolean } from "@storybook/addon-knobs";
 import ManageSurveyButton from "components/SurveyCard/ManageSurveyButton";
 import { action } from "@storybook/addon-actions";
-import withNavi from "stories/util/story-navi";
+import withNavi from "stories/helpers/story-navi";
 import SurveyCardContext from "components/SurveyCard/Context";
 import { context as configModalContext } from "./SurveyConfigModal.stories";
 

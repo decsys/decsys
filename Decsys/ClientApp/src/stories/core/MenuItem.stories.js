@@ -1,7 +1,7 @@
 import React from "react";
 import { action } from "@storybook/addon-actions";
 import { AngleRight, GlobeAmericas } from "styled-icons/fa-solid";
-import withNavi from "stories/util/story-navi";
+import withNavi from "stories/helpers/story-navi";
 import { MenuItem, MenuRouterLink } from "components/core";
 
 export default {

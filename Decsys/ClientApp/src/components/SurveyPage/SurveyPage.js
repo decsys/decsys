@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Cell } from "styled-css-grid";
-import { FlexBox, Container } from "components/ui";
+import { FlexBox, Container } from "components/core";
 import { Button } from "@smooth-ui/core-sc";
 import { ChevronRight } from "styled-icons/fa-solid";
 import { PAGE_LOAD } from "constants/event-types";
 import SurveyPageBody from "./Body";
-import { getResponseComponent } from "utils/component-utils";
+import { getResponseComponent } from "services/page-items";
 
 // TODO: Prop Types!
 

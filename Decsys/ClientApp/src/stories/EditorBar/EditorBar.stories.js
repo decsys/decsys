@@ -1,6 +1,6 @@
 import React from "react";
 import { action, decorate } from "@storybook/addon-actions";
-import withNavi from "stories/util/story-navi";
+import withNavi from "stories/helpers/story-navi";
 import EditorBar, { EditorBarContext } from "components/EditorBar";
 
 const context = {

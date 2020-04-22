@@ -1,7 +1,7 @@
 import React from "react";
-import { FlexBox } from "components/ui";
+import { FlexBox } from "components/core";
 import ComponentRender from "components/ComponentRender";
-import { getComponent } from "utils/component-utils";
+import { getComponent } from "services/page-items";
 import { COMPONENT_RESULTS } from "constants/event-types";
 import ParagraphPreview from "./ParagraphPreview";
 

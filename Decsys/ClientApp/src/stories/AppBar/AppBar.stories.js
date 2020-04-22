@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@smooth-ui/core-sc";
 import { action } from "@storybook/addon-actions";
-import withNavi from "stories/util/story-navi";
+import withNavi from "stories/helpers/story-navi";
 import AppBar, { AppBarLink } from "components/AppBar";
 
 export default {

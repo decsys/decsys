@@ -1,7 +1,7 @@
 import React from "react";
 import { ThemeConsumer } from "styled-components";
 import { AlignCenter } from "styled-icons/fa-solid";
-import { themeVariantsKnob } from "stories/util/story-knobs";
+import { themeVariantsKnob } from "stories/helpers/story-knobs";
 import { color } from "@storybook/addon-knobs";
 import { Badge } from "components/core";
 
