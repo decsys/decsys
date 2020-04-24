@@ -1,22 +1,33 @@
 import React from "react";
+import PropTypes from "prop-types";
 import FlexBox from "./FlexBox";
-import { Typography } from "@smooth-ui/core-sc";
+import { Typography, Box } from "@smooth-ui/core-sc";
 import RotatingSpinner from "./RotatingSpinner";
 
-const LoadingIndicator = () => (
+const LoadingIndicator = ({ verb, noun }) => (
   <FlexBox justifyContent="center">
     <Typography
       display="flex"
       justifyContent="space-evenly"
       alignItems="center"
-      width="10em"
       p={3}
       backgroundColor="cardBg"
     >
-      <RotatingSpinner size="1em" />
-      Loading...
+      <Box px={1}>
+        <RotatingSpinner size="1em" />
+      </Box>
+      {verb} {noun || null} ...
     </Typography>
   </FlexBox>
 );
+
+LoadingIndicator.propTypes = {
+  verb: PropTypes.string,
+  noun: PropTypes.string
+};
+
+LoadingIndicator.defaultProps = {
+  verb: "Loading"
+};
 
 export default LoadingIndicator;

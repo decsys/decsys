@@ -1,4 +1,5 @@
 import React from "react";
+import { text } from "@storybook/addon-knobs";
 import { LoadingIndicator } from "components/core";
 
 export default {
@@ -6,4 +7,6 @@ export default {
   component: LoadingIndicator
 };
 
-export const Basic = () => <LoadingIndicator />;
+export const Basic = () => (
+  <LoadingIndicator verb={text("Verb", "Loading")} noun={text("Noun", "")} />
+);
