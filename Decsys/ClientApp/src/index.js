@@ -1,21 +1,39 @@
-import * as serviceWorker from "./serviceWorker";
-import React from "react";
+import "react-table/react-table.css";
+
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import App from "app";
-import loadPageResponseComponents from "./global";
 
-import "react-table/react-table.css"; // sad now
+import AppWrapper from "./AppWrapper";
+import LoadingScreen from "app/screens/LoadingScreen";
 
-// ask the backend to provide the page response components module
-loadPageResponseComponents();
+const root = document.getElementById("root");
 
-// when that module finishes loading it fires an event
-// telling us we can bootstrap the ClientApp
-document.addEventListener("__DECSYS__ComponentsLoaded", () =>
-  ReactDOM.render(<App />, document.getElementById("root"))
+// render our lightweight loading shell
+// for fast first paint
+ReactDOM.render(
+  <AppWrapper>
+    <LoadingScreen />
+  </AppWrapper>,
+  root
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// asynchronously ask the backend to provide the page response components module
+import("./global").then(g => g.loadPageResponseComponents());
+
+// load the full app on demand
+const App = React.lazy(() => import("app"));
+
+// when that module finishes loading it fires an event
+// telling us we can bootstrap the full ClientApp
+// TODO: don't make this dependent on the event firing
+// instead have components that need DECSYS components suspend on them
+document.addEventListener("__DECSYS__ComponentsLoaded", () =>
+  ReactDOM.render(
+    <AppWrapper>
+      <Suspense fallback={<LoadingScreen noun="app" />}>
+        <App />
+      </Suspense>
+    </AppWrapper>,
+    root
+  )
+);

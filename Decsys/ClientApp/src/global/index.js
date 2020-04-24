@@ -33,11 +33,9 @@ window.styled = { ...styled, ...styledNamed };
  * Someday ES Modules will do this more nicely.
  * (dynamic import in ES2020?)
  */
-const loadPageResponseComponents = () => {
+export const loadPageResponseComponents = () => {
   const script = document.createElement("script");
   script.src = "/api/components";
   script.type = "module";
   document.body.appendChild(script);
 };
-
-export default loadPageResponseComponents;
