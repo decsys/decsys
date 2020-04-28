@@ -4,7 +4,7 @@ import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 
 import AppWrapper from "./AppWrapper";
-import LoadingScreen from "app/screens/LoadingScreen";
+import Loading from "app/pages/Loading";
 
 const root = document.getElementById("root");
 
@@ -12,7 +12,7 @@ const root = document.getElementById("root");
 // for "fast" first paint
 ReactDOM.render(
   <AppWrapper>
-    <LoadingScreen />
+    <Loading />
   </AppWrapper>,
   root
 );
@@ -30,7 +30,7 @@ const App = React.lazy(() => import("app"));
 document.addEventListener("__DECSYS__ComponentsLoaded", () =>
   ReactDOM.render(
     <AppWrapper>
-      <Suspense fallback={<LoadingScreen />}>
+      <Suspense fallback={<Loading />}>
         <App />
       </Suspense>
     </AppWrapper>,

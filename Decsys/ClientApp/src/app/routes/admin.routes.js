@@ -1,17 +1,18 @@
 import React from "react";
 import { Router } from "@reach/router";
-import ErrorScreen from "app/screens/ErrorScreen";
+import Error from "app/pages/Error";
 import { useUsers } from "contexts/UsersContext";
-import SurveysScreen from "app/screens/admin/SurveysScreen/new";
+import SurveysScreen from "app/screens/admin/SurveysScreen";
 
 const Admin = () => {
   const { user } = useUsers();
 
-  if (!user.roles.admin) return <ErrorScreen message="401: Unauthorised" />;
+  if (!user.roles.admin) return <Error message="401: Unauthorised" />;
 
   return (
     <Router>
-      <SurveysScreen path="/" />
+      <Error path="/" message="Surveys" />
+      {/* <SurveysScreen path="/" /> */}
     </Router>
   );
 };

@@ -7,7 +7,7 @@ import Admin from "./routes/admin.routes";
 import { LayoutProvider } from "components/core/LayoutPage";
 import layouts from "./layouts";
 
-const ErrorScreen = React.lazy(() => import("app/screens/ErrorScreen"));
+const Error = React.lazy(() => import("app/pages/Error"));
 
 const App = () => {
   const [user, setUser] = useState(() => users.get());
@@ -19,8 +19,8 @@ const App = () => {
         <Router>
           <Root path="/" />
           <Admin path="admin/*" />
-          <ErrorScreen message="Survey" path="survey/*" />
-          <ErrorScreen message="404: Not Found" default />
+          <Error message="Survey" path="survey/*" />
+          <Error message="404: Not Found" default />
         </Router>
       </LayoutProvider>
     </UsersContext>

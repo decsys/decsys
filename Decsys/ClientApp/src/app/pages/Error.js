@@ -1,7 +1,7 @@
 import React from "react";
 import { FlexBox, EmptyState, Page } from "components/core";
 
-const ErrorScreen = ({ splash, message, callToAction }) => (
+const Error = ({ splash, message, callToAction }) => (
   <Page>
     <FlexBox mt={5}>
       <EmptyState
@@ -13,4 +13,4 @@ const ErrorScreen = ({ splash, message, callToAction }) => (
   </Page>
 );
 
-export default ErrorScreen;
+export default Error;
