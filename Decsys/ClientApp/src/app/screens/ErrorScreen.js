@@ -1,11 +1,16 @@
 import React from "react";
-import { FlexBox, EmptyState } from "components/core";
-import withLayout from "app/layouts/withLayout";
+import { FlexBox, EmptyState, Page } from "components/core";
 
 const ErrorScreen = ({ splash, message, callToAction }) => (
-  <FlexBox mt={5}>
-    <EmptyState message={message} splash={splash} callToAction={callToAction} />
-  </FlexBox>
+  <Page>
+    <FlexBox mt={5}>
+      <EmptyState
+        message={message}
+        splash={splash}
+        callToAction={callToAction}
+      />
+    </FlexBox>
+  </Page>
 );
 
-export default withLayout(ErrorScreen);
+export default ErrorScreen;

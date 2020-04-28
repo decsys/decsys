@@ -9,7 +9,7 @@ import LoadingScreen from "app/screens/LoadingScreen";
 const root = document.getElementById("root");
 
 // render our lightweight loading shell
-// for fast first paint
+// for "fast" first paint
 ReactDOM.render(
   <AppWrapper>
     <LoadingScreen />
@@ -30,7 +30,7 @@ const App = React.lazy(() => import("app"));
 document.addEventListener("__DECSYS__ComponentsLoaded", () =>
   ReactDOM.render(
     <AppWrapper>
-      <Suspense fallback={<LoadingScreen noun="app" />}>
+      <Suspense fallback={<LoadingScreen />}>
         <App />
       </Suspense>
     </AppWrapper>,

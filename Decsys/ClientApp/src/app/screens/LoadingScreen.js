@@ -1,4 +1,11 @@
+import React from "react";
 import LoadingIndicator from "components/core/LoadingIndicator";
-import withLayout from "app/layouts/withLayout";
+import Layout from "app/layouts/Default";
 
-export default withLayout(LoadingIndicator);
+const LoadingScreen = () => (
+  <Layout>
+    <LoadingIndicator />
+  </Layout>
+);
+
+export default LoadingScreen;
