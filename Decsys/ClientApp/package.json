@@ -21,6 +21,7 @@
     "react-beautiful-dnd": "^10.1.1",
     "react-busy-indicator": "^1.0.0",
     "react-dom": "^16.13.1",
+    "react-icons": "^3.10.0",
     "react-markdown": "^4.3.1",
     "react-navi": "^0.14.3",
     "react-onclickoutside": "^6.9.0",

@@ -1,9 +1,9 @@
 import React from "react";
 import { action } from "@storybook/addon-actions";
 import { text } from "@storybook/addon-knobs";
-import { Coffee } from "styled-icons/feather/Coffee";
-import { PizzaSlice } from "styled-icons/fa-solid/PizzaSlice";
-import { EmptyState } from "components/core";
+import { FiCoffee } from "react-icons/fi";
+import { FaPizzaSlice } from "react-icons/fa";
+import EmptyState from "./EmptyState";
 
 export default {
   title: "Core UI/EmptyState",
@@ -13,7 +13,7 @@ export default {
 export const Basic = () => <EmptyState message={text("Message", undefined)} />;
 
 export const AlternateIcon = () => (
-  <EmptyState splash={<Coffee />} message="Take a break, you've earned it." />
+  <EmptyState splash={FiCoffee} message="Take a break, you've earned it." />
 );
 
 export const CallToAction = () => (
@@ -22,7 +22,7 @@ export const CallToAction = () => (
       label: "Order for me",
       onClick: action("Pizza ordered")
     }}
-    splash={<PizzaSlice />}
+    splash={FaPizzaSlice}
     message="Everything's done. Guess it's Pizza time."
   />
 );
