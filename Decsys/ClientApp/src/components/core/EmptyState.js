@@ -28,7 +28,7 @@ const EmptyState = ({ splash, message, callToAction }) => (
 );
 
 EmptyState.propTypes = {
-  splash: PropTypes.node,
+  splash: PropTypes.elementType,
   message: PropTypes.string,
   callToAction: PropTypes.shape({
     label: PropTypes.string.isRequired,
