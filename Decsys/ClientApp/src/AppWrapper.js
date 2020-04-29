@@ -1,11 +1,12 @@
 import React, { StrictMode } from "react";
-import { Normalize, ThemeProvider } from "@smooth-ui/core-sc";
-import theme from "themes";
+import { ThemeProvider, CSSReset, theme } from "@chakra-ui/core";
 
 const AppWrapper = ({ children }) => (
   <StrictMode>
-    <Normalize />
-    <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    <ThemeProvider theme={theme}>
+      <CSSReset />
+      {children}
+    </ThemeProvider>
   </StrictMode>
 );
 

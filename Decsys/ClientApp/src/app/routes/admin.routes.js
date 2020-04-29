@@ -2,7 +2,6 @@ import React from "react";
 import { Router } from "@reach/router";
 import Error from "app/pages/Error";
 import { useUsers } from "contexts/UsersContext";
-import SurveysScreen from "app/screens/admin/SurveysScreen";
 
 const Admin = () => {
   const { user } = useUsers();
