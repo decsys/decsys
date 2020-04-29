@@ -2,6 +2,8 @@ import React from "react";
 import { Router } from "@reach/router";
 import Error from "app/pages/Error";
 import { useUsers } from "contexts/UsersContext";
+import Surveys from "app/pages/Surveys";
+import Editor from "app/pages/Editor";
 
 const Admin = () => {
   const { user } = useUsers();
@@ -10,8 +12,8 @@ const Admin = () => {
 
   return (
     <Router>
-      <Error path="/" message="Surveys" />
-      {/* <SurveysScreen path="/" /> */}
+      <Surveys path="/" />
+      <Editor path="/survey/:id" />
     </Router>
   );
 };

@@ -13,6 +13,7 @@
     "downloadjs": "^1.4.7",
     "emotion-theming": "^10.0.27",
     "gfycat-style-urls": "^1.0.3",
+    "immer": "^6.0.3",
     "json2csv": "^4.5.4",
     "mathjs": "^6.6.4",
     "navi": "^0.14.0",
