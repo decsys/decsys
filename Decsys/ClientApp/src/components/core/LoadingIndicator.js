@@ -1,24 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
-import FlexBox from "./FlexBox";
-import { Typography, Box } from "@smooth-ui/core-sc";
-import RotatingSpinner from "./RotatingSpinner";
+import { Flex, Spinner, Text } from "@chakra-ui/core";
+// import FlexBox from "./FlexBox";
+// import { Typography, Box } from "@smooth-ui/core-sc";
+// import RotatingSpinner from "./RotatingSpinner";
 
 const LoadingIndicator = ({ verb, noun }) => (
-  <FlexBox justifyContent="center">
-    <Typography
-      display="flex"
-      justifyContent="space-evenly"
-      alignItems="center"
-      p={3}
-      backgroundColor="cardBg"
-    >
-      <Box px={1}>
-        <RotatingSpinner size="1em" />
-      </Box>
-      {verb} {noun || null} ...
-    </Typography>
-  </FlexBox>
+  <Flex justify="center">
+    <Flex justify="space-evenly" p={5}>
+      <Flex mr={2}>
+        <Spinner />
+      </Flex>
+      <Text as="i">
+        {verb} {noun || null} ...
+      </Text>
+    </Flex>
+  </Flex>
 );
 
 LoadingIndicator.propTypes = {
