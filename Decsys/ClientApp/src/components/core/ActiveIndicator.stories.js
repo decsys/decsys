@@ -1,5 +1,5 @@
 import React from "react";
-import { ActiveIndicator } from "components/core";
+import ActiveIndicator from "./ActiveIndicator";
 
 export default {
   title: "Core UI/ActiveIndicator",
