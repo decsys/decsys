@@ -16,11 +16,13 @@ export default {
   component: StandardModal
 };
 
-export const Basic = () => <StandardModal {...modalState} />;
+export const Basic = () => (
+  <StandardModal {...modalState}>Hello there!</StandardModal>
+);
 
 export const NoCancel = () => (
   <StandardModal {...modalState} cancelButton={false} header="Oops!">
-    <Text pb={5}>Some information here...</Text>
+    <Text>Some information here...</Text>
   </StandardModal>
 );
 

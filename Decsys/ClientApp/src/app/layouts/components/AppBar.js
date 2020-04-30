@@ -1,6 +1,7 @@
 import React from "react";
-import { Flex, Link, Grid, Heading } from "@chakra-ui/core";
+import { Flex, Link, Grid } from "@chakra-ui/core";
 import { Link as RouterLink } from "@reach/router";
+import LightHeading from "components/core/LightHeading";
 
 export const AppBarLink = p => (
   <Link
@@ -15,13 +16,13 @@ export const AppBarLink = p => (
 );
 
 const AppBar = ({ brand, children, brandLink }) => (
-  <Flex w="100%" justify="center" bg="black">
+  <Flex w="100%" justify="center" bg="gray.800">
     <Flex w="1140px" align="center" justify="space-between">
-      <Heading size="lg" p={2}>
+      <LightHeading size="lg" p={2}>
         <AppBarLink as={RouterLink} to={brandLink}>
           {brand}
         </AppBarLink>
-      </Heading>
+      </LightHeading>
       {children != null && (
         <Grid
           alignItems="center"

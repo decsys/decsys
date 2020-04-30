@@ -1,13 +1,13 @@
 import React from "react";
+import SurveyCard from "./SurveyCard";
+import { Stack } from "@chakra-ui/core";
 
 const SurveysList = ({ surveys }) => (
-  <ul>
+  <Stack>
     {surveys.map(s => (
-      <li key={s.id}>
-        {s.id}: {s.name}
-      </li>
+      <SurveyCard key={s.id} survey={s} />
     ))}
-  </ul>
+  </Stack>
 );
 
 export default SurveysList;

@@ -11,7 +11,7 @@ import { getContrastColor } from "services/colors";
  * All props other than `active` and `tooltips` are passed on
  * to the underlying `Flex` which composes the layout of this component.
  */
-const ActiveIndicator = ({ active, tooltips, ...rest }) => {
+const ActiveIndicator = ({ active, tooltips, ...p }) => {
   const { colors } = useTheme();
   const color = active ? colors.green[500] : colors.gray[500];
   const iconColor = getContrastColor(color);
@@ -19,7 +19,7 @@ const ActiveIndicator = ({ active, tooltips, ...rest }) => {
 
   return (
     <Tooltip hasArrow label={tooltips[active]}>
-      <Flex align="center" p={1} bg={color} {...rest}>
+      <Flex align="center" p={2} bg={color} {...p}>
         <Flex as={icon} color={iconColor} />
       </Flex>
     </Tooltip>

@@ -14,6 +14,7 @@ const Admin = () => {
     <Router>
       <Surveys path="/" />
       <Editor path="/survey/:id" />
+      <Error message="404: Not Found" default />
     </Router>
   );
 };

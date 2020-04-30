@@ -8,16 +8,18 @@ import {
   createSurvey,
   uploadSurveyImport,
   loadInternalSurvey,
-  useSurveysList
+  useSurveysList,
+  deleteSurvey,
+  duplicateSurvey
 } from "api/surveys";
 import { AddSurveyActionsProvider } from "./contexts/AddSurveyActions";
+import { SurveyCardActionsProvider } from "./contexts/SurveyCardActions";
 
 const Surveys = ({ navigate }) => {
   const { data: surveys, mutate: mutateSurveys } = useSurveysList();
 
   const addSurveyModal = useDisclosure();
 
-  // handlers that mutate surveys
   const AddSurveyActions = {
     create: async () => {
       const { data: id } = await createSurvey();
@@ -33,11 +35,28 @@ const Surveys = ({ navigate }) => {
     }
   };
 
+  const SurveyCardActions = {
+    launch: () => {},
+    close: () => {},
+    duplicate: async id => {
+      await duplicateSurvey(id);
+      mutateSurveys();
+    },
+    deleteSurvey: async id => {
+      await deleteSurvey(id);
+      mutateSurveys();
+    },
+    navigate
+  };
+
   return (
     <>
       <Page>
         <PageHeader buttonAction={addSurveyModal.onOpen} />
-        <SurveysList surveys={surveys} />
+
+        <SurveyCardActionsProvider value={SurveyCardActions}>
+          <SurveysList surveys={surveys} />
+        </SurveyCardActionsProvider>
       </Page>
 
       <AddSurveyActionsProvider value={AddSurveyActions}>

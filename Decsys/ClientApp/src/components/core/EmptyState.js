@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { FaQuestion } from "react-icons/fa";
-import { Flex, Heading, Button } from "@chakra-ui/core";
+import { Flex, Button } from "@chakra-ui/core";
 import { navigate } from "@reach/router";
+import LightHeading from "./LightHeading";
 
 const EmptyState = ({ splash, message, callToAction }) => (
   <Flex direction="column" w="100%" align="center" justify="center">
@@ -16,9 +17,9 @@ const EmptyState = ({ splash, message, callToAction }) => (
     >
       <Flex as={splash} size="100%" />
     </Flex>
-    <Heading as="h1" size="xl" m={8}>
+    <LightHeading as="h1" size="xl" m={8}>
       {message}
-    </Heading>
+    </LightHeading>
     {callToAction && (
       <Button size="lg" onClick={() => callToAction.onClick(navigate)}>
         {callToAction.label}

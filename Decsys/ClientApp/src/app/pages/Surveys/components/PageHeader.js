@@ -1,12 +1,13 @@
 import React from "react";
-import { Heading, Flex, Button } from "@chakra-ui/core";
+import { Flex, Button } from "@chakra-ui/core";
 import { FaPlusCircle } from "react-icons/fa";
+import LightHeading from "components/core/LightHeading";
 
 const PageHeader = ({ buttonAction }) => (
-  <Flex my={3} align="center" justify="space-between">
-    <Heading as="h1" size="xl">
+  <Flex my={8} align="center" justify="space-between">
+    <LightHeading as="h1" size="xl">
       My Surveys
-    </Heading>
+    </LightHeading>
     <Button variantColor="green" leftIcon={FaPlusCircle} onClick={buttonAction}>
       Add a Survey
     </Button>

@@ -15,6 +15,7 @@
     "gfycat-style-urls": "^1.0.3",
     "immer": "^6.0.3",
     "json2csv": "^4.5.4",
+    "lodash-es": "^4.17.15",
     "mathjs": "^6.6.4",
     "navi": "^0.14.0",
     "prop-types": "^15.7.2",

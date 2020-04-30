@@ -9,7 +9,8 @@ import {
   ModalCloseButton,
   Button,
   Grid,
-  Divider
+  Divider,
+  Flex
 } from "@chakra-ui/core";
 
 const StandardModal = ({
@@ -25,17 +26,20 @@ const StandardModal = ({
     <Modal preserveScrollBarGap onClose={onClose} {...p}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>
-          {header}
-          {header && <Divider />}
-        </ModalHeader>
+        <ModalHeader pb={2}>{header}</ModalHeader>
+        {header && <Divider m={0} />}
         {showCloseButton && <ModalCloseButton />}
 
-        <ModalBody>{children}</ModalBody>
+        <ModalBody>
+          <Flex width="100%" align="center" p={2}>
+            {children}
+          </Flex>
+        </ModalBody>
 
         {(cancelButton || confirmButton) && (
           <>
-            <ModalFooter>
+            <Divider m={0} />
+            <ModalFooter p={2}>
               <Grid templateColumns="auto auto" gap={2}>
                 {cancelButton && (
                   <Button

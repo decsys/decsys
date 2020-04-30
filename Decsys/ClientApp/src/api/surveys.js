@@ -1,11 +1,6 @@
 import axios from "axios";
-import { apiCallFactory, uploadFile, defaultFetcher } from "./helpers";
+import { uploadFile, defaultFetcher } from "./helpers";
 import useSWR from "swr";
-
-// export const listSurveys = apiCallFactory(
-//   "/api/surveys",
-//   async (url) => (await axios.get(url)).data
-// ); // TODO: do we need a separate simple get request?
 
 export const useSurveysList = () =>
   useSWR("/api/surveys", defaultFetcher, { suspense: true });
@@ -17,3 +12,15 @@ export const uploadSurveyImport = async (file, importData = false) =>
 
 export const loadInternalSurvey = async type =>
   await axios.post(`/api/surveys/internal/${type}`);
+
+export const deleteSurvey = async id =>
+  await axios.delete(`/api/surveys/${id}`);
+
+export const duplicateSurvey = async id =>
+  await axios.post(`/api/surveys/${id}/duplicate`);
+
+export const launchSurvey = async id =>
+  await axios.post(`/api/surveys/${id}/instances`);
+
+export const closeSurveyInstance = async (surveyId, instanceId) =>
+  await axios.post(`/api/surveys/${surveyId}/instances/${instanceId}/close`);
