@@ -5,22 +5,22 @@ import { listMatchingKeys } from "services/data-structures";
 import { FaTimesCircle, FaRocket } from "react-icons/fa";
 
 const buttons = {
-  launch: ({ onClick }) => (
+  launch: ({ onLaunch }) => (
     <Button
       lineHeight="inherit"
       variantColor="green"
       leftIcon={FaRocket}
-      onClick={onClick}
+      onClick={onLaunch}
     >
       Launch
     </Button>
   ),
-  close: ({ onClick }) => (
+  close: ({ onClose }) => (
     <Button
       lineHeight="inherit"
       variantColor="red"
       leftIcon={FaTimesCircle}
-      onClick={onClick}
+      onClick={onClose}
     >
       <Text>Close</Text>
     </Button>

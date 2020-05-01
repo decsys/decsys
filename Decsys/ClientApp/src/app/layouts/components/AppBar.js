@@ -17,7 +17,12 @@ export const AppBarLink = p => (
 
 const AppBar = ({ brand, children, brandLink }) => (
   <Flex w="100%" justify="center" bg="gray.800">
-    <Flex w="1140px" align="center" justify="space-between">
+    <Flex
+      w={{ base: "100%", lg: "1140px" }}
+      px={{ base: 2, xl: 0 }}
+      align="center"
+      justify="space-between"
+    >
       <LightHeading size="lg" p={2}>
         <AppBarLink as={RouterLink} to={brandLink}>
           {brand}

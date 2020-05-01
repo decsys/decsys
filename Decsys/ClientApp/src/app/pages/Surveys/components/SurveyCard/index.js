@@ -6,23 +6,28 @@ import ActionButtons, { getActionButtons } from "./ActionButtons";
 import { listMatchingKeys } from "services/data-structures";
 import { encode } from "services/instance-id";
 import ManageSurveyMenu from "./ManageSurveyMenu";
+import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 
 const SurveyCard = ({ survey }) => {
-  const friendlyId = !!survey.activeInstanceId
-    ? encode(survey.id, survey.activeInstanceId)
-    : false;
+  const { id, activeInstanceId, runCount } = survey;
+  const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : false;
+
   const actionButtons = getActionButtons(survey);
+
+  const { launch, close } = useSurveyCardActions();
+  const handleLaunch = () => launch(id);
+  const handleClose = () => close(id, activeInstanceId);
 
   return (
     <Stack
       isInline
-      key={survey.id}
+      key={id}
       borderBottom="thin solid"
       borderColor="gray.300"
       bg="gray.100"
       pr={2}
     >
-      <ActiveIndicator active={!!survey.activeInstanceId} />
+      <ActiveIndicator active={!!activeInstanceId} />
 
       <Stack gap={1} w="100%">
         <Grid
@@ -41,9 +46,11 @@ const SurveyCard = ({ survey }) => {
             {...survey}
             friendlyId={friendlyId}
             actionButtons={actionButtons}
+            onLaunch={handleLaunch}
+            onClose={handleClose}
           />
 
-          <ManageSurveyMenu {...survey} editable={!survey.runCount} />
+          <ManageSurveyMenu {...survey} editable={!runCount} />
         </Grid>
 
         {/* <ActiveInstanceLine /> */}

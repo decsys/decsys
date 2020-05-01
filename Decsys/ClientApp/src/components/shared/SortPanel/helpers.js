@@ -31,7 +31,7 @@ const getPropertySorter = (key, asc) => {
  * sorted by the specified object property,
  * ascending or descending.
  *
- * @param {object[]} input The source list of objects.
+ * @param {object} input The source dictionary of objects.
  * @param {string} key The object property to sort by.
  * @param {boolean} asc Sort ascending or descending.
  */

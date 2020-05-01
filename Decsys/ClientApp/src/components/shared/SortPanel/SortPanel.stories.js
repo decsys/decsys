@@ -1,9 +1,9 @@
 import React from "react";
 import { action } from "@storybook/addon-actions";
 import { array } from "@storybook/addon-knobs";
-import SortPanel from "components/SurveyList/SortPanel";
+import SortPanel from "components/shared/SortPanel";
 
-export default { title: "Admin/SurveyList/SortPanel", component: SortPanel };
+export default { title: "Shared/SortPanel", component: SortPanel };
 
 export const Basic = () => (
   <SortPanel

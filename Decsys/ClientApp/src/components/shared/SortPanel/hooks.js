@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getSortedLookup, getFilteredLookup } from "./utils";
+import { getSortedLookup, getFilteredLookup } from "./helpers";
 
 export const useSortingAndFiltering = surveys => {
   const [sorting, setSorting] = useState({ key: "name", name: true });

@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import SortButton from "./SortButton";
 
+export * from "./hooks";
+
 const SortPanel = ({ keys = [], state, onSortButtonClick }) => {
   const createSortButton = (label, key) => {
     return (

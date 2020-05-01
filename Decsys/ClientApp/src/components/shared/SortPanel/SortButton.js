@@ -1,17 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "@smooth-ui/core-sc";
-import { CaretUp, CaretDown } from "styled-icons/fa-solid";
+import { Button } from "@chakra-ui/core";
+import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 
 const SortButton = ({ active, asc, children, onClick, ...rest }) => (
   <Button
+    rightIcon={asc ? FaCaretUp : FaCaretDown}
+    _focus={{}}
+    lineHeight="inherit"
     borderRadius={0}
-    variant="light"
     fontWeight={active ? "bold" : "normal"}
     onClick={() => onClick(active ? !asc : asc)}
     {...rest}
   >
-    {children} {asc ? <CaretUp size="1em" /> : <CaretDown size="1em" />}
+    {children}
   </Button>
 );
 

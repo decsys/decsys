@@ -15,9 +15,10 @@ const SurveyInfoLine = ({ id, name, runCount }) => (
         {runCount} runs
       </Badge>
     </Flex>
+
     <Flex align="center">
       <LightHeading as="h2" size="md" title={name}>
-        {id}:{name}
+        {name}
       </LightHeading>
     </Flex>
   </>

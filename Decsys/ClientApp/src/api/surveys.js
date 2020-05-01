@@ -2,8 +2,21 @@ import axios from "axios";
 import { uploadFile, defaultFetcher } from "./helpers";
 import useSWR from "swr";
 
+const surveyMapReduce = surveys =>
+  surveys.reduce((acc, survey) => {
+    acc[survey.id] = survey;
+    return acc;
+  }, {});
+
 export const useSurveysList = () =>
-  useSWR("/api/surveys", defaultFetcher, { suspense: true });
+  useSWR(
+    "/api/surveys",
+    async url => {
+      const surveys = await defaultFetcher(url);
+      return surveyMapReduce(surveys);
+    },
+    { suspense: true }
+  );
 
 export const createSurvey = async () => await axios.post("/api/surveys");
 

@@ -12,7 +12,8 @@ const Default = ({ children }) => (
         </sup>
       </AppBarLink>
     </AppBar>
-    <Box w="1140px" mx="auto">
+    {/*TODO: make responsive*/}
+    <Box px={{ base: 2, xl: 0 }} w={{ xl: "1140px" }} mx="auto">
       {children}
     </Box>
   </>

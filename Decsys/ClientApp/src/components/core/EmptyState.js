@@ -21,7 +21,11 @@ const EmptyState = ({ splash, message, callToAction }) => (
       {message}
     </LightHeading>
     {callToAction && (
-      <Button size="lg" onClick={() => callToAction.onClick(navigate)}>
+      <Button
+        variantColor="blue"
+        size="lg"
+        onClick={() => callToAction.onClick(navigate)}
+      >
         {callToAction.label}
       </Button>
     )}
