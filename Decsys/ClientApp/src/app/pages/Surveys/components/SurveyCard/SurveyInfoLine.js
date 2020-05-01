@@ -2,7 +2,7 @@ import React from "react";
 import { Badge, Flex } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 
-const SurveyInfoLine = ({ id, name, runCount }) => (
+const SurveyInfoLine = ({ name, runCount }) => (
   <>
     <Flex align="center" justifyContent="center">
       <Badge

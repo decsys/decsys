@@ -6,23 +6,19 @@ import ActionButtons, { getActionButtons } from "./ActionButtons";
 import { listMatchingKeys } from "services/data-structures";
 import { encode } from "services/instance-id";
 import ManageSurveyMenu from "./ManageSurveyMenu";
-import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import ActiveInstanceLine from "./ActiveInstanceLine";
+import { useSurvey } from "../../contexts/Survey";
 
-const SurveyCard = ({ survey }) => {
+const SurveyCard = () => {
+  const survey = useSurvey();
   const { id, activeInstanceId, runCount } = survey;
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
 
   const actionButtons = getActionButtons(survey);
 
-  const { launch, close } = useSurveyCardActions();
-  const handleLaunch = () => launch(id);
-  const handleClose = () => close(id, activeInstanceId);
-
   return (
     <Stack
       isInline
-      key={id}
       borderBottom="thin solid"
       borderColor="gray.300"
       bg="gray.100"
@@ -43,33 +39,13 @@ const SurveyCard = ({ survey }) => {
         >
           <SurveyInfoLine {...survey} />
 
-          <ActionButtons
-            {...survey}
-            friendlyId={friendlyId}
-            actionButtons={actionButtons}
-            onLaunch={handleLaunch}
-            onClose={handleClose}
-          />
+          <ActionButtons actionButtons={actionButtons} {...survey} />
 
           <ManageSurveyMenu {...survey} editable={!runCount} />
         </Grid>
 
         {activeInstanceId && <ActiveInstanceLine friendlyId={friendlyId} />}
       </Stack>
-
-      {/* <FlexBox flexDirection="column" width={1}>
-          <Box
-            p={1}
-            borderBottom={!!activeInstanceId ? 1 : 0}
-            borderColor="cardBorder"
-          >
-          ...
-          </Box>
-
-          {!!activeInstanceId && (
-            
-          )}
-        </FlexBox> */}
     </Stack>
   );
 };

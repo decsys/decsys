@@ -3,6 +3,7 @@ import { Button, Text } from "@chakra-ui/core";
 import { Link } from "@reach/router";
 import { listMatchingKeys } from "services/data-structures";
 import { FaTimesCircle, FaRocket } from "react-icons/fa";
+import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 
 const buttons = {
   launch: ({ onLaunch }) => (
@@ -47,20 +48,21 @@ const buttons = {
   )
 };
 
-export const getActionButtons = ({
-  activeInstanceId,
-  allowLaunch,
-  runCount
-}) => ({
+export const getActionButtons = ({ activeInstanceId, runCount }) => ({
   close: !!activeInstanceId,
   dashboard: !!activeInstanceId,
   launch: !activeInstanceId,
   results: runCount > 0
 });
 
-const ActionButtons = ({ actionButtons, ...p }) =>
-  listMatchingKeys(actionButtons).map(key =>
-    createElement(buttons[key], { key, ...p })
+const ActionButtons = ({ actionButtons, id, activeInstanceId }) => {
+  const { launch, close } = useSurveyCardActions();
+  const handleLaunch = () => launch(id);
+  const handleClose = () => close(id, activeInstanceId);
+
+  return listMatchingKeys(actionButtons).map(key =>
+    createElement(buttons[key], { key, handleLaunch, handleClose })
   );
+};
 
 export default ActionButtons;
