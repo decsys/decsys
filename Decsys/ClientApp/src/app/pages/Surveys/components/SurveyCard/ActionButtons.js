@@ -6,22 +6,22 @@ import { FaTimesCircle, FaRocket } from "react-icons/fa";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 
 const buttons = {
-  launch: ({ onLaunch }) => (
+  launch: ({ handleLaunch }) => (
     <Button
       lineHeight="inherit"
       variantColor="green"
       leftIcon={FaRocket}
-      onClick={onLaunch}
+      onClick={handleLaunch}
     >
       Launch
     </Button>
   ),
-  close: ({ onClose }) => (
+  close: ({ handleClose }) => (
     <Button
       lineHeight="inherit"
       variantColor="red"
       leftIcon={FaTimesCircle}
-      onClick={onClose}
+      onClick={handleClose}
     >
       <Text>Close</Text>
     </Button>
