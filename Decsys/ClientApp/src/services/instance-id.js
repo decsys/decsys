@@ -3,7 +3,8 @@
  * - Add 10 so 0-9 are skipped for low numbers :) (purely visual)
  * - convert to base 35 (with the map [0-9][a-y])
  */
-const encodeId = n => (n + 10).toString(35);
+const encodeId = n =>
+  typeof n === "number" ? (parseInt(n) + 10).toString(35) : "";
 
 /**
  * Decode an encoded ID as follows:

@@ -7,10 +7,11 @@ import { listMatchingKeys } from "services/data-structures";
 import { encode } from "services/instance-id";
 import ManageSurveyMenu from "./ManageSurveyMenu";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
+import ActiveInstanceLine from "./ActiveInstanceLine";
 
 const SurveyCard = ({ survey }) => {
   const { id, activeInstanceId, runCount } = survey;
-  const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : false;
+  const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
 
   const actionButtons = getActionButtons(survey);
 
@@ -53,7 +54,7 @@ const SurveyCard = ({ survey }) => {
           <ManageSurveyMenu {...survey} editable={!runCount} />
         </Grid>
 
-        {/* <ActiveInstanceLine /> */}
+        {activeInstanceId && <ActiveInstanceLine friendlyId={friendlyId} />}
       </Stack>
 
       {/* <FlexBox flexDirection="column" width={1}>
@@ -66,32 +67,7 @@ const SurveyCard = ({ survey }) => {
           </Box>
 
           {!!activeInstanceId && (
-            <FlexBox p={1} alignItems="center">
-              <Typography fontWeight="bold" mx={1}>
-                Survey ID:
-              </Typography>
-              <Typography mr={3}>{friendlyId}</Typography>
-              <Typography fontWeight="bold" mr={1}>
-                Share Link:
-              </Typography>
-              <Typography mr={2}>/survey/{friendlyId}</Typography>
-              <Typography color="info">
-                <InfoCircle size="1em" /> Remember to include your DECSYS
-                server's address
-              </Typography>
-              <Button
-                size="sm"
-                ml="auto"
-                variant="light"
-                border={1}
-                borderColor="info"
-                color="info"
-                backgroundColor="lightest"
-                onClick={handleViewParticipantIdsClick}
-              >
-                View Valid Participant Identifiers
-              </Button>
-            </FlexBox>
+            
           )}
         </FlexBox> */}
     </Stack>

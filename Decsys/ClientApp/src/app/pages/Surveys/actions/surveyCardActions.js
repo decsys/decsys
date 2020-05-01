@@ -8,10 +8,10 @@ import produce from "immer";
 
 export default (navigate, mutateSurveys) => ({
   launch: async id => {
-    const instanceId = await launchSurvey(id);
+    const { data } = await launchSurvey(id);
     mutateSurveys(
       produce(surveys => {
-        surveys[id].activeInstanceId = instanceId;
+        surveys[id].activeInstanceId = data;
         surveys[id].runCount++;
       })
     );
