@@ -1,9 +1,5 @@
-import {
-  deleteSurvey,
-  duplicateSurvey,
-  launchSurvey,
-  closeSurveyInstance
-} from "api/surveys";
+import { deleteSurvey, duplicateSurvey, launchSurvey } from "api/surveys";
+import { closeSurveyInstance } from "api/survey-instances";
 import produce from "immer";
 
 export default (navigate, mutateSurveys) => ({

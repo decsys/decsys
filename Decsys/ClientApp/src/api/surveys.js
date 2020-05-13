@@ -34,6 +34,3 @@ export const duplicateSurvey = async id =>
 
 export const launchSurvey = async id =>
   await axios.post(`/api/surveys/${id}/instances`);
-
-export const closeSurveyInstance = async (surveyId, instanceId) =>
-  await axios.post(`/api/surveys/${surveyId}/instances/${instanceId}/close`);
