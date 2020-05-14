@@ -44,19 +44,12 @@ const StandardModal = ({
                 {cancelButton && (
                   <Button
                     variantColor={cancelButton.variantColor}
-                    onClick={onClose}
+                    onClick={cancelButton.onClick || onClose}
                   >
                     {cancelButton.content || "Cancel"}
                   </Button>
                 )}
-                {confirmButton && (
-                  <Button
-                    variantColor={confirmButton.variantColor}
-                    onClick={confirmButton.onClick}
-                  >
-                    {confirmButton.content}
-                  </Button>
-                )}
+                {confirmButton && <Button {...confirmButton} />}
               </Grid>
             </ModalFooter>
           </>

@@ -19,14 +19,14 @@ const SurveyCard = () => {
   return (
     <Stack
       isInline
+      spacing={0}
       borderBottom="thin solid"
       borderColor="gray.300"
       bg="gray.100"
-      pr={2}
     >
       <ActiveIndicator active={!!activeInstanceId} />
 
-      <Stack gap={1} w="100%">
+      <Stack spacing={0} w="100%">
         <Grid
           gap={2}
           templateColumns={`80px 1fr ${Array(
@@ -34,7 +34,7 @@ const SurveyCard = () => {
           )
             .fill("100px")
             .join(" ")} auto`}
-          py={2}
+          p={2}
           alignContent="center"
         >
           <SurveyInfoLine {...survey} />

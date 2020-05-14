@@ -10,6 +10,7 @@ import {
 import { FaEllipsisV } from "react-icons/fa";
 import DeleteSurveyModal from "./DeleteSurveyModal";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
+import SurveyConfigModal from "../SurveyConfigModal";
 
 const ManageSurveyMenu = ({ id, editable, name }) => {
   const deleteModal = useDisclosure();
@@ -48,12 +49,8 @@ const ManageSurveyMenu = ({ id, editable, name }) => {
         onConfirm={handleDelete}
         modalState={deleteModal}
       />
-      {/* <SurveyConfigModal
-        surveyId={id}
-        surveyName={name}
-        modalState={configModal}
-      />
-      <ExportModal survey={{ id, name }} modalState={exportModal} /> */}
+      <SurveyConfigModal id={id} name={name} modalState={configModal} />
+      {/*<ExportModal survey={{ id, name }} modalState={exportModal} /> */}
     </>
   );
 };

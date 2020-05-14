@@ -20,7 +20,8 @@ const ActiveInstanceLine = ({ friendlyId }) => {
     <>
       <Stack
         isInline
-        p={1}
+        py={1}
+        px={2}
         alignItems="center"
         borderTop="thin solid"
         borderColor="gray.300"

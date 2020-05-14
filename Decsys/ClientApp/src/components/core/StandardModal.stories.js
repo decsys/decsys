@@ -51,7 +51,7 @@ export const CustomButtons = () => (
       variantColor: "green"
     }}
     confirmButton={{
-      content: "Delete",
+      children: "Delete",
       variantColor: "red",
       onClick: action("Delete clicked")
     }}

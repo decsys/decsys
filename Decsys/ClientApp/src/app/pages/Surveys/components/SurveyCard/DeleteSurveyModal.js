@@ -10,7 +10,7 @@ const DeleteSurveyModal = ({ modalState, name, onConfirm }) => (
     header="Delete Survey"
     confirmButton={{
       variantColor: "red",
-      content: "Delete survey",
+      children: "Delete survey",
       onClick: onConfirm
     }}
   >
