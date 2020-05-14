@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Grid } from "@chakra-ui/core";
+import { Stack, Grid, useColorMode } from "@chakra-ui/core";
 import { ActiveIndicator } from "components/core";
 import SurveyInfoLine from "./SurveyInfoLine";
 import ActionButtons, { getActionButtons } from "./ActionButtons";
@@ -10,6 +10,11 @@ import ActiveInstanceLine from "./ActiveInstanceLine";
 import { useSurvey } from "../../contexts/Survey";
 
 const SurveyCard = () => {
+  const { colorMode } = useColorMode();
+  const style = {
+    light: { borderColor: "gray.300", bg: "gray.100" },
+    dark: { borderColor: "gray.600", bg: "gray.700" }
+  };
   const survey = useSurvey();
   const { id, activeInstanceId, runCount } = survey;
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
@@ -20,14 +25,15 @@ const SurveyCard = () => {
     <Stack
       isInline
       spacing={0}
-      borderBottom="thin solid"
-      borderColor="gray.300"
-      bg="gray.100"
+      bg={style[colorMode].bg}
+      boxShadow="grey 0 1px 2px"
     >
       <ActiveIndicator active={!!activeInstanceId} />
 
       <Stack spacing={0} w="100%">
         <Grid
+          borderBottom="thin solid"
+          borderColor={style[colorMode].borderColor}
           gap={2}
           templateColumns={`80px 1fr ${Array(
             listMatchingKeys(actionButtons).length

@@ -9,7 +9,7 @@ const SurveysList = ({ surveys }) => {
   const sortingAndFiltering = useSortingAndFiltering(surveys);
   const { surveyList } = sortingAndFiltering;
   return (
-    <Stack mt={2}>
+    <Stack mt={2} shouldWrapChildren>
       <Box py={4}>
         <SurveysSortingAndFiltering {...sortingAndFiltering} />
       </Box>

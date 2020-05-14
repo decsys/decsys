@@ -18,14 +18,7 @@ const ActiveInstanceLine = ({ friendlyId }) => {
 
   return (
     <>
-      <Stack
-        isInline
-        py={1}
-        px={2}
-        alignItems="center"
-        borderTop="thin solid"
-        borderColor="gray.300"
-      >
+      <Stack isInline py={1} px={2} alignItems="center">
         <Text fontWeight="bold">Survey ID:</Text>
         <Text>{friendlyId}</Text>
 
