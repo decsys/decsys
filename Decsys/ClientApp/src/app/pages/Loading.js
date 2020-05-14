@@ -1,16 +1,23 @@
 import React from "react";
 import LoadingIndicator from "components/core/LoadingIndicator";
 import Layout from "app/layouts/Default";
-import { Flex } from "@chakra-ui/core";
+import { Flex, useColorMode } from "@chakra-ui/core";
 
-const Loading = () => (
-  <Layout>
-    <Flex justify="center">
-      <Flex bg="gray.100" borderColor="gray.300" borderWidth={1} mt={10}>
-        <LoadingIndicator />
+const Loading = () => {
+  const { colorMode } = useColorMode();
+  const style = {
+    light: { borderColor: "gray.300", bg: "gray.100" },
+    dark: { borderColor: "gray.600", bg: "gray.700" }
+  };
+  return (
+    <Layout>
+      <Flex justify="center">
+        <Flex {...style[colorMode]} borderWidth={1} mt={10}>
+          <LoadingIndicator />
+        </Flex>
       </Flex>
-    </Flex>
-  </Layout>
-);
+    </Layout>
+  );
+};
 
 export default Loading;
