@@ -42,6 +42,7 @@ const SurveyConfigModal = ({ modalState, name, id }) => {
   };
   return (
     <StandardModal
+      closeOnOverlayClick={false}
       size="lg"
       header={`Configure ${name}`}
       confirmButton={{

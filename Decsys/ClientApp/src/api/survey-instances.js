@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { defaultFetcher } from "./helpers";
 import axios from "axios";
 
-export const useInstanceValidIds = (surveyId, instanceId) =>
+export const useSurveyInstance = (surveyId, instanceId) =>
   useSWR(`/api/surveys/${surveyId}/instances/${instanceId}`, defaultFetcher, {
     suspense: true
   });
