@@ -55,13 +55,19 @@ export const getActionButtons = ({ activeInstanceId, runCount }) => ({
   results: runCount > 0
 });
 
-const ActionButtons = ({ actionButtons, id, activeInstanceId }) => {
+const ActionButtons = ({ actionButtons, id, activeInstanceId, friendlyId }) => {
   const { launch, close } = useSurveyCardActions();
   const handleLaunch = () => launch(id);
   const handleClose = () => close(id, activeInstanceId);
 
   return listMatchingKeys(actionButtons).map(key =>
-    createElement(buttons[key], { key, handleLaunch, handleClose })
+    createElement(buttons[key], {
+      key,
+      handleLaunch,
+      handleClose,
+      id,
+      friendlyId
+    })
   );
 };
 

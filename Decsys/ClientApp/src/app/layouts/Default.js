@@ -4,7 +4,7 @@ import { Icon, Box } from "@chakra-ui/core";
 
 const Default = ({ children }) => (
   <>
-    <AppBar brand="DECSYS" brandLink="">
+    <AppBar brand="DECSYS" brandLink="/admin">
       <AppBarLink href="http://www.lucidresearch.org/decsys.html" isExternal>
         About DECSYS{" "}
         <sup>

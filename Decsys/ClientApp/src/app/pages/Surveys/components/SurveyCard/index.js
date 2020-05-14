@@ -39,7 +39,11 @@ const SurveyCard = () => {
         >
           <SurveyInfoLine {...survey} />
 
-          <ActionButtons actionButtons={actionButtons} {...survey} />
+          <ActionButtons
+            actionButtons={actionButtons}
+            {...survey}
+            friendlyId={friendlyId}
+          />
 
           <ManageSurveyMenu {...survey} editable={!runCount} />
         </Grid>
