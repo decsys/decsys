@@ -39,25 +39,11 @@ const b64toByteArrays = (b64Data, sliceSize = 512) => {
 };
 
 /**
- * Returns a function for downloading survey structure as a json file
- *
- * @param {number|object} survey
- * Either the survey id, or a complete survey object
- *
- * If an id, the survey data for that id will be fetched.
- *
- * If an object, the data passed will be used
+ * Download survey structure as a json file
  */
-export const surveyExport = (survey, type) => {
-  const filename = `Survey-${survey.name}_${exportDateFormat(
-    new Date()
-  )}_${type}`;
-
+export const surveyExport = async (id, name, type) => {
+  const filename = `Survey-${name}_${exportDateFormat(new Date())}_${type}`;
   const mime = "application/zip";
-
-  (async () => {
-    const { data } = await api.getSurveyExport(survey.id, type);
-
-    return downloadFile(b64toByteArrays(data), `${filename}.zip`, mime);
-  })();
+  const { data } = await api.getSurveyExport(id, type);
+  return downloadFile(b64toByteArrays(data), `${filename}.zip`, mime);
 };
