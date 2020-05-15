@@ -15,7 +15,7 @@ import {
 } from "react-icons/fa";
 import ExportModal from "components/shared/ExportModal";
 import DeleteSurveyModal from "components/shared/DeleteSurveyModal";
-import { useEditorBarActions } from "../../contexts/EditorBarActions";
+import { useEditorBarContext } from "../../contexts/EditorBar";
 
 const BarButton = p => {
   const { colorMode } = useColorMode();
@@ -58,7 +58,7 @@ export const ExportButton = ({ id, name }) => {
 };
 
 export const DuplicateButton = () => {
-  const { duplicate } = useEditorBarActions();
+  const { duplicate } = useEditorBarContext();
   return (
     <BarButton leftIcon={FaCopy} onClick={duplicate}>
       Duplicate
@@ -68,7 +68,7 @@ export const DuplicateButton = () => {
 
 export const DeleteButton = ({ name }) => {
   const modal = useDisclosure();
-  const { deleteSurvey } = useEditorBarActions();
+  const { deleteSurvey } = useEditorBarContext();
   return (
     <>
       <LightMode>
