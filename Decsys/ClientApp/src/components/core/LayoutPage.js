@@ -4,7 +4,7 @@ import useLocationStateToast from "hooks/useLocationStateToast";
 const LayoutContext = createContext({ getLayout: () => "div" });
 
 export const LayoutProvider = ({ children, layouts }) => {
-  const getLayout = (layout = "default") => layouts[layout];
+  const getLayout = (layout = "default") => layout && layouts[layout];
 
   return (
     <LayoutContext.Provider value={{ getLayout }}>
@@ -15,8 +15,8 @@ export const LayoutProvider = ({ children, layouts }) => {
 
 const useLayout = () => useContext(LayoutContext);
 
-export const Page = ({ layout, ...p }) => {
-  useLocationStateToast();
+export const Page = ({ layout, toastDefaults = { position: "top" }, ...p }) => {
+  useLocationStateToast(toastDefaults);
   const Layout = useLayout().getLayout(layout);
-  return Layout != null ? <Layout {...p} /> : null;
+  return Layout != null ? <Layout {...p} /> : p.children || null;
 };

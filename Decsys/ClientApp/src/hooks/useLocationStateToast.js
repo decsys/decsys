@@ -3,12 +3,12 @@ import { useToast } from "@chakra-ui/core";
 import { useLocation } from "@reach/router";
 import merge from "lodash-es/merge";
 
-const useLocationStateToast = (override = {}) => {
+const useLocationStateToast = (defaults = {}) => {
   const toast = useToast();
   const { state } = useLocation();
   useEffect(
     () => {
-      if (state.toast) toast(merge({}, state.toast, override));
+      if (state?.toast) toast(merge({}, defaults, state.toast));
     },
     // Don't need `override` here;
     // we don't want to retrigger the toast
