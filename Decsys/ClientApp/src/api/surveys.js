@@ -1,5 +1,5 @@
 import axios from "axios";
-import { uploadFile, defaultFetcher } from "./helpers";
+import { uploadFile, defaultFetcher, appJsonHeaderOptions } from "./helpers";
 import useSWR from "swr";
 
 const surveyMapReduce = surveys =>
@@ -18,6 +18,9 @@ export const useSurveysList = () =>
     { suspense: true }
   );
 
+export const useSurvey = id =>
+  useSWR(`/api/surveys/${id}`, defaultFetcher, { suspense: true });
+
 export const createSurvey = async () => await axios.post("/api/surveys");
 
 export const uploadSurveyImport = async (file, importData = false) =>
@@ -34,3 +37,10 @@ export const duplicateSurvey = async id =>
 
 export const launchSurvey = async id =>
   await axios.post(`/api/surveys/${id}/instances`);
+
+export const setSurveyName = async (id, name) =>
+  await axios.put(
+    `/api/surveys/${id}/name`,
+    JSON.stringify(name),
+    appJsonHeaderOptions
+  );

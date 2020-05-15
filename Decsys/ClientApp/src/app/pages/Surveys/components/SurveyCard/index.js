@@ -7,7 +7,7 @@ import { listMatchingKeys } from "services/data-structures";
 import { encode } from "services/instance-id";
 import ManageSurveyMenu from "./ManageSurveyMenu";
 import ActiveInstanceLine from "./ActiveInstanceLine";
-import { useSurvey } from "../../contexts/Survey";
+import { useSurvey } from "../../../../contexts/Survey";
 
 const SurveyCard = () => {
   const { colorMode } = useColorMode();

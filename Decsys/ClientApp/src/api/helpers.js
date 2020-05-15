@@ -11,3 +11,12 @@ export const uploadFile = async (url, file, method = "post") => {
     }
   });
 };
+
+/**
+ * for when we send a string not a JSON object as body data
+ */
+export const appJsonHeaderOptions = {
+  headers: {
+    "Content-Type": "application/json"
+  }
+};

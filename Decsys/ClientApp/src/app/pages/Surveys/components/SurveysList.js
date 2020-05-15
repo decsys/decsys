@@ -3,7 +3,7 @@ import SurveyCard from "./SurveyCard";
 import { Stack, Box } from "@chakra-ui/core";
 import { useSortingAndFiltering } from "components/shared/SortPanel";
 import SurveysSortingAndFiltering from "./SurveysSortingAndFiltering";
-import { SurveyProvider } from "../contexts/Survey";
+import { SurveyProvider } from "../../../contexts/Survey";
 
 const SurveysList = ({ surveys }) => {
   const sortingAndFiltering = useSortingAndFiltering(surveys);

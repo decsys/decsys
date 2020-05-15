@@ -1,7 +1,7 @@
 import React, { Suspense, useState, useEffect } from "react";
 import { StandardModal, LoadingIndicator } from "components/core";
 import { Stack } from "@chakra-ui/core";
-import { useSurvey } from "../../contexts/Survey";
+import { useSurvey } from "../../../../contexts/Survey";
 import { useSurveyConfig, saveSurveyConfig } from "api/survey-config";
 import produce from "immer";
 import OneTimeParticipantsSwitch from "./OneTimeParticipantsSwitch";

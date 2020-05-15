@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Flex, Input, useColorMode } from "@chakra-ui/core";
+import { Grid, Flex, useColorMode } from "@chakra-ui/core";
 import {
   BackButton,
   PreviewButton,
@@ -8,6 +8,7 @@ import {
   DeleteButton
 } from "./Buttons";
 import ToggleColorModeButton from "components/core/ToggleColorModeButton";
+import NameInput from "./NameInput";
 
 const EditorBar = ({ id, name }) => {
   const { colorMode } = useColorMode();
@@ -22,16 +23,14 @@ const EditorBar = ({ id, name }) => {
     >
       <BackButton />
 
-      <Flex>
-        <Input borderRadius={0} size="lg" placeholder="Untitled Survey" />
-      </Flex>
+      <NameInput name={name} />
 
       <PreviewButton />
       <ExportButton id={id} name={name} />
       <DuplicateButton />
       <DeleteButton name={name} />
 
-      <Flex align="center" justify="center" px={2}>
+      <Flex align="center" justify="center" px={2} py={1}>
         <ToggleColorModeButton isAlwaysDark />
       </Flex>
     </Grid>

@@ -1,7 +1,6 @@
 import { deleteSurvey, duplicateSurvey, launchSurvey } from "api/surveys";
 import { closeSurveyInstance } from "api/survey-instances";
 import produce from "immer";
-import { saveSurveyConfig } from "api/survey-config";
 
 export default (navigate, mutateSurveys) => ({
   launch: async id => {

@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { StandardModal, LoadingIndicator } from "components/core";
 import { Text, Flex, Textarea, Alert, AlertIcon } from "@chakra-ui/core";
 import { useSurveyInstance } from "api/survey-instances";
-import { useSurvey } from "../../contexts/Survey";
+import { useSurvey } from "../../../../contexts/Survey";
 import { useInstanceFriendlyId } from "../../contexts/InstanceFriendlyId";
 
 const BodyContent = () => {

@@ -1,4 +1,5 @@
 import React, { createContext, Children, useContext } from "react";
+import useLocationStateToast from "hooks/useLocationStateToast";
 
 const LayoutContext = createContext({ getLayout: () => "div" });
 
@@ -15,6 +16,7 @@ export const LayoutProvider = ({ children, layouts }) => {
 const useLayout = () => useContext(LayoutContext);
 
 export const Page = ({ layout, ...p }) => {
+  useLocationStateToast();
   const Layout = useLayout().getLayout(layout);
   return Layout != null ? <Layout {...p} /> : null;
 };
