@@ -26,13 +26,13 @@ const SurveyCard = () => {
       isInline
       spacing={0}
       bg={style[colorMode].bg}
-      boxShadow="grey 0 1px 2px"
+      boxShadow="0 2px 2px rgba(0,0,0,0.6)"
     >
       <ActiveIndicator active={!!activeInstanceId} />
 
       <Stack spacing={0} w="100%">
         <Grid
-          borderBottom="thin solid"
+          borderBottom={activeInstanceId ? "thin solid" : "none"}
           borderColor={style[colorMode].borderColor}
           gap={2}
           templateColumns={`80px 1fr ${Array(

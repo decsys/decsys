@@ -1,7 +1,22 @@
 import { theme } from "@chakra-ui/core";
 import merge from "lodash-es/merge";
 
-const decsysTheme = {};
+const decsysTheme = {
+  colors: {
+    "dark-gray": {
+      "50": "#f2f2f2",
+      "100": "#cccccc",
+      "200": "#a6a6a6",
+      "300": "#7f7f7f",
+      "400": "#595959",
+      "500": "#333333",
+      "600": "#292929",
+      "700": "#202020",
+      "800": "#161616",
+      "900": "#0d0d0d"
+    }
+  }
+};
 
 export default merge(theme, decsysTheme);
 

@@ -19,7 +19,12 @@ const AppBar = ({ brand, children, brandLink }) => {
   const { colorMode } = useColorMode();
   const bg = { light: "gray.800", dark: "gray.700" };
   return (
-    <Flex w="100%" justify="center" bg={bg[colorMode]}>
+    <Flex
+      w="100%"
+      justify="center"
+      bg={bg[colorMode]}
+      boxShadow="0 2px 2px rgba(0,0,0,0.6)"
+    >
       <Flex
         w={{ base: "100%", lg: "1140px" }}
         px={{ base: 2, xl: 0 }}

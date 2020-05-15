@@ -1,10 +1,6 @@
 import React, { StrictMode } from "react";
-import {
-  ThemeProvider,
-  CSSReset,
-  theme,
-  ColorModeProvider
-} from "@chakra-ui/core";
+import { ThemeProvider, CSSReset, ColorModeProvider } from "@chakra-ui/core";
+import theme from "themes";
 
 const AppWrapper = ({ children }) => (
   <StrictMode>

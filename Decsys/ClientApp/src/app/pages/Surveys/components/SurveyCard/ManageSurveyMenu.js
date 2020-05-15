@@ -8,7 +8,7 @@ import {
   useDisclosure
 } from "@chakra-ui/core";
 import { FaEllipsisV } from "react-icons/fa";
-import DeleteSurveyModal from "./DeleteSurveyModal";
+import DeleteSurveyModal from "../../../../../components/shared/DeleteSurveyModal";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import SurveyConfigModal from "../SurveyConfigModal";
 import ExportModal from "components/shared/ExportModal";
