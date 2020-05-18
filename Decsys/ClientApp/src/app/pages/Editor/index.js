@@ -7,11 +7,14 @@ import { useSurvey } from "api/surveys";
 import { SurveyProvider } from "app/contexts/Survey";
 import { EditorBarContextProvider } from "./contexts/EditorBar";
 import { Page } from "components/core";
+import pageListActions from "./actions/pageListActions";
+import { PageListActionsProvider } from "./contexts/PageListActions";
 
 const Editor = ({ id, navigate }) => {
   const { data: survey, mutate } = useSurvey(id);
   const [nameState, setNameState] = useState({});
   const EditorBarActions = editorBarActions(id, navigate, mutate, setNameState);
+  const PageListActions = pageListActions(id, mutate);
 
   return (
     <Page layout={null}>
@@ -32,7 +35,9 @@ const Editor = ({ id, navigate }) => {
           </Flex>
 
           <Flex boxShadow="2px 5px 5px rgba(0,0,0,0.6)" gridRow="span 2">
-            <PageList />
+            <PageListActionsProvider value={PageListActions}>
+              <PageList />
+            </PageListActionsProvider>
           </Flex>
 
           <Flex>Page Editor</Flex>

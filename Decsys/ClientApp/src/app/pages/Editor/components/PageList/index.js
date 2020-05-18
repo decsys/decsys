@@ -1,5 +1,30 @@
 import React from "react";
+import { Stack } from "@chakra-ui/core";
+import { DragDropContext } from "react-beautiful-dnd";
+import Header from "./Header";
+import DroppablePageList from "./DroppablePageList";
+import { usePageListActions } from "../../contexts/PageListActions";
 
-const PageList = () => <div>Hello</div>;
+const PageList = () => {
+  const { movePage } = usePageListActions();
+
+  const handleDragEnd = result => {
+    if (!result.destination) return;
+    if (result.source.droppableId !== result.destination.droppableId) return;
+    if (result.destination.index === result.source.index) return;
+    if (result.destination.droppableId === "page-list")
+      movePage(result.draggableId, result.destination.index);
+  };
+
+  return (
+    <Stack p={4} width="100%">
+      <Header />
+
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <DroppablePageList />
+      </DragDropContext>
+    </Stack>
+  );
+};
 
 export default PageList;
