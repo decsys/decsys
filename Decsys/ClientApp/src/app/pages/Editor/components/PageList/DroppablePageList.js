@@ -15,8 +15,8 @@ const DroppablePageList = () => {
           {...droppableProps}
           style={{ overflow: "auto" }}
         >
-          {pages.map(page => (
-            <DraggablePage key={page.id} page={page} />
+          {pages.map((page, i) => (
+            <DraggablePage key={i} page={page} />
           ))}
           {placeholder}
         </Box>

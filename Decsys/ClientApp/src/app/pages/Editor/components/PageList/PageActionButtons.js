@@ -5,7 +5,7 @@ import { DotHoverIconButton } from "components/core";
 import { usePageListActions } from "../../contexts/PageListActions";
 
 const PageActionButtons = ({ id, isPageHovered }) => {
-  const { deletePage } = usePageListActions();
+  const { deletePage, duplicatePage } = usePageListActions();
   return (
     <Flex>
       <IconButton variantColor="blue" icon={FaRandom} />
@@ -16,7 +16,11 @@ const PageActionButtons = ({ id, isPageHovered }) => {
         icon={FaPlus}
       />
 
-      <DotHoverIconButton isHovered={isPageHovered} icon={FaCopy} />
+      <DotHoverIconButton
+        isHovered={isPageHovered}
+        icon={FaCopy}
+        onClick={() => duplicatePage(id)}
+      />
 
       <DotHoverIconButton
         isHovered={isPageHovered}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, useColorMode, Box } from "@chakra-ui/core";
+import { Flex, useColorMode, Box, Spinner } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import { FaGripVertical } from "react-icons/fa";
 import PageActionButtons from "./PageActionButtons";
@@ -15,13 +15,15 @@ const PageHeader = ({ isPageHovered, page, dragHandleProps }) => {
       {...headerStyle[colorMode]}
     >
       <Flex {...dragHandleProps} p={2} align="center" width="100%">
-        <Box as={FaGripVertical} />
+        {page.id !== -1 ? <Box as={FaGripVertical} /> : <Spinner />}
         <LightHeading mx={2} size="sm">
           Page {page.order}
         </LightHeading>
       </Flex>
 
-      <PageActionButtons id={page.id} isPageHovered={isPageHovered} />
+      {page.id !== -1 && (
+        <PageActionButtons id={page.id} isPageHovered={isPageHovered} />
+      )}
     </Flex>
   );
 };

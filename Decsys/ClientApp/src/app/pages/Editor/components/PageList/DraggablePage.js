@@ -11,7 +11,11 @@ const DraggablePage = ({ page }) => {
   const handleMouseOut = () => setIsHovered(false);
 
   return (
-    <Draggable draggableId={page.id} index={page.order} type="PAGE">
+    <Draggable
+      draggableId={`page_${page.order}_${page.id}`}
+      index={page.order}
+      type="PAGE"
+    >
       {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
         <Flex
           direction="column"

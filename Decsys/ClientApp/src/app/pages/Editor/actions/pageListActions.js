@@ -1,7 +1,8 @@
 import {
   createSurveyPage,
   setSurveyPageOrder,
-  deleteSurveyPage
+  deleteSurveyPage,
+  duplicateSurveyPage
 } from "api/pages";
 import remove from "lodash-es/remove";
 
@@ -17,10 +18,31 @@ export default (id, mutate) => ({
     );
   },
 
+  duplicatePage: async pageId => {
+    await duplicateSurveyPage(id, pageId);
+    mutate(old => ({
+      ...old,
+      pages: [
+        ...old.pages,
+        {
+          ...old.pages.find(p => p.id === pageId),
+          order: old.pages.length + 1,
+          id: -1
+        }
+      ]
+    }));
+  },
+
   deletePage: async pageId => {
     await deleteSurveyPage(id, pageId);
     mutate(old => {
-      const pages = old.pages.filter(p => p.id !== pageId);
+      const pages = old.pages.reduce(
+        (pages, p) =>
+          p.id === pageId
+            ? pages
+            : [...pages, { ...p, order: pages.length + 1 }],
+        []
+      );
       return { ...old, pages };
     });
   },
