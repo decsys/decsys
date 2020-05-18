@@ -1,27 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import { Flex, useColorMode } from "@chakra-ui/core";
-import LightHeading from "components/core/LightHeading";
 import { Draggable } from "react-beautiful-dnd";
+import PageHeader from "./PageHeader";
 
 const DraggablePage = ({ page }) => {
   const { colorMode } = useColorMode();
-  const style = { light: { bg: "gray.200" }, dark: { bg: "gray.700" } };
+  const cardStyle = { light: { bg: "gray.200" }, dark: { bg: "gray.700" } };
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseOver = () => setIsHovered(true);
+  const handleMouseOut = () => setIsHovered(false);
+
   return (
     <Draggable draggableId={page.id} index={page.order} type="PAGE">
-      {({ innerRef, draggableProps, dragHandleProps }) => (
+      {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
         <Flex
-          p={4}
+          direction="column"
           mb={2}
           borderRadius={5}
-          {...style[colorMode]}
-          align="center"
+          {...cardStyle[colorMode]}
           ref={innerRef}
           {...draggableProps}
-          {...dragHandleProps}
+          boxShadow={isDragging ? "0 5px 10px rgba(0,0,0,0.6)" : "none"}
+          transition="box-shadow 0.2s ease"
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
         >
-          <LightHeading size="sm">
-            Page {page.order}: {page.id}
-          </LightHeading>
+          <PageHeader
+            page={page}
+            isPageHovered={isHovered}
+            dragHandleProps={dragHandleProps}
+          />
+
+          {/* Display items */}
+
+          <Flex p={2}>Response item</Flex>
         </Flex>
       )}
     </Draggable>

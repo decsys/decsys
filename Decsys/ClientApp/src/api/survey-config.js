@@ -9,4 +9,4 @@ export const useSurveyConfig = surveyId =>
   });
 
 export const saveSurveyConfig = async (surveyId, config) =>
-  axios.put(`/api/surveys/${surveyId}/config`, config);
+  await axios.put(`/api/surveys/${surveyId}/config`, config);

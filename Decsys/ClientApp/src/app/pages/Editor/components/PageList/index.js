@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/core";
 import { DragDropContext } from "react-beautiful-dnd";
 import Header from "./Header";
 import DroppablePageList from "./DroppablePageList";
@@ -17,13 +17,13 @@ const PageList = () => {
   };
 
   return (
-    <Stack p={4} width="100%">
+    <Flex direction="column" width="100%">
       <Header />
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <DroppablePageList />
       </DragDropContext>
-    </Stack>
+    </Flex>
   );
 };
 

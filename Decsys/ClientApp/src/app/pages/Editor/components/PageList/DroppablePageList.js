@@ -10,9 +10,7 @@ const DroppablePageList = () => {
     <Droppable droppableId="page-list" type="PAGE">
       {({ innerRef, droppableProps, placeholder }) => (
         <Box
-          mt={2}
-          p={2}
-          pb={0}
+          px={4}
           ref={innerRef}
           {...droppableProps}
           style={{ overflow: "auto" }}

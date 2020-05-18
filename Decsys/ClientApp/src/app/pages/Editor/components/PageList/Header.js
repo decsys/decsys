@@ -7,7 +7,7 @@ import { usePageListActions } from "../../contexts/PageListActions";
 const Header = () => {
   const { addPage } = usePageListActions();
   return (
-    <Flex justify="space-between" align="center">
+    <Flex p={4} justify="space-between" align="center">
       <LightHeading size="lg">Survey Pages</LightHeading>
       <Button variantColor="green" onClick={addPage} leftIcon={FaPlus}>
         Add Page

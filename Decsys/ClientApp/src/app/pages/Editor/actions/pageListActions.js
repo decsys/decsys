@@ -1,4 +1,9 @@
-import { createSurveyPage } from "api/pages";
+import {
+  createSurveyPage,
+  setSurveyPageOrder,
+  deleteSurveyPage
+} from "api/pages";
+import remove from "lodash-es/remove";
 
 export default (id, mutate) => ({
   addPage: async () => {
@@ -11,8 +16,16 @@ export default (id, mutate) => ({
       false
     );
   },
+
+  deletePage: async pageId => {
+    await deleteSurveyPage(id, pageId);
+    mutate(old => {
+      const pages = old.pages.filter(p => p.id !== pageId);
+      return { ...old, pages };
+    });
+  },
+
   movePage: async (targetId, destination) => {
-    // POST
     mutate(old => {
       const source = old.pages.findIndex(page => page.id === targetId);
 
@@ -35,5 +48,7 @@ export default (id, mutate) => ({
         }, [])
       };
     }, false);
+    await setSurveyPageOrder(id, targetId, destination);
+    mutate();
   }
 });

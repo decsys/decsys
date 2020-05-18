@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 
 const PageListActionsContext = createContext({
   addPage: () => {},
+  deletePage: () => {},
   movePage: () => {}
 });
 
