@@ -4,6 +4,7 @@ const PageListActionsContext = createContext({
   addPage: () => {},
   deletePage: () => {},
   duplicatePage: () => {},
+  setPageRandomize: () => {},
   movePage: () => {}
 });
 

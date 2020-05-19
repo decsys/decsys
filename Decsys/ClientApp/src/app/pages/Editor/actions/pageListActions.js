@@ -2,9 +2,10 @@ import {
   createSurveyPage,
   setSurveyPageOrder,
   deleteSurveyPage,
-  duplicateSurveyPage
+  duplicateSurveyPage,
+  setPageRandomize
 } from "api/pages";
-import remove from "lodash-es/remove";
+import produce from "immer";
 
 export default (id, mutate) => ({
   addPage: async () => {
@@ -45,6 +46,16 @@ export default (id, mutate) => ({
       );
       return { ...old, pages };
     });
+  },
+
+  setPageRandomize: async (pageId, randomize) => {
+    await setPageRandomize(id, pageId, randomize);
+    mutate(
+      produce(old => {
+        const p = old.pages.find(p => p.id === pageId);
+        p.randomize = randomize;
+      })
+    );
   },
 
   movePage: async (targetId, destination) => {

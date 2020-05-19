@@ -9,19 +9,21 @@ const SurveysList = ({ surveys }) => {
   const sortingAndFiltering = useSortingAndFiltering(surveys);
   const { surveyList } = sortingAndFiltering;
   return (
-    <Stack mt={2} shouldWrapChildren>
+    <Stack mt={2}>
       <Box py={4}>
         <SurveysSortingAndFiltering {...sortingAndFiltering} />
       </Box>
 
-      {surveyList.map(
-        ({ id }) =>
-          !!surveys[id] && (
-            <SurveyProvider key={id} value={surveys[id]}>
-              <SurveyCard />
-            </SurveyProvider>
-          )
-      )}
+      <Stack boxShadow="0 2px 5px rgba(0,0,0,0.6)">
+        {surveyList.map(
+          ({ id }) =>
+            !!surveys[id] && (
+              <SurveyProvider key={id} value={surveys[id]}>
+                <SurveyCard />
+              </SurveyProvider>
+            )
+        )}
+      </Stack>
     </Stack>
   );
 };

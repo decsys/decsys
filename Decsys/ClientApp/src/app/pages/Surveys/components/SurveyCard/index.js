@@ -25,8 +25,8 @@ const SurveyCard = () => {
     <Stack
       isInline
       spacing={0}
-      bg={style[colorMode].bg}
-      boxShadow="0 2px 2px rgba(0,0,0,0.6)"
+      borderBottom={"thin solid"}
+      {...style[colorMode]}
     >
       <ActiveIndicator active={!!activeInstanceId} />
 

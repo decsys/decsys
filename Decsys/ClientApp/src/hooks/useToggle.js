@@ -1,10 +1,17 @@
 import { useState } from "react";
 
-const useToggle = () => {
-  const [toggled, setToggled] = useState(false);
-  const toggle = () => setToggled(!toggled);
+/**
+ * when you want to toggle a boolean state.
+ *
+ * saves you writing a `toggle()` function :)
+ * @param {boolean} initial the initial state value
+ * @returns {[]} `[toggleState, toggle(), setState()]`
+ */
+const useToggle = (initial = false) => {
+  const [isOn, setIsOn] = useState(initial);
+  const toggle = () => setIsOn(!isOn);
 
-  return { toggled, setToggled, toggle };
+  return [isOn, toggle, setIsOn];
 };
 
 export default useToggle;

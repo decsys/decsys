@@ -16,3 +16,10 @@ export const deleteSurveyPage = async (surveyId, pageId) =>
 
 export const duplicateSurveyPage = async (surveyId, pageId) =>
   await axios.post(`/api/surveys/${surveyId}/pages/${pageId}/duplicate`);
+
+export const setPageRandomize = async (surveyId, pageId, randomize) =>
+  await axios.put(
+    `/api/surveys/${surveyId}/pages/${pageId}/randomize`,
+    randomize,
+    appJsonHeaderOptions
+  );

@@ -14,13 +14,13 @@ import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 
 const ImportSurvey = () => {
-  const { toggled, toggle } = useToggle();
+  const [isExpanded, toggleExpanded] = useToggle();
   return (
     <>
-      <Button mb={1} onClick={toggle}>
+      <Button mb={1} onClick={toggleExpanded}>
         Import an existing Survey...
       </Button>
-      <Collapse isOpen={toggled}>
+      <Collapse isOpen={isExpanded}>
         <ImportSurveyForm />
       </Collapse>
     </>
