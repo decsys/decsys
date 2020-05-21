@@ -1,19 +1,14 @@
 import axios from "axios";
 import { uploadFile, defaultFetcher, appJsonHeaderOptions } from "./helpers";
 import useSWR from "swr";
-
-const surveyMapReduce = surveys =>
-  surveys.reduce((acc, survey) => {
-    acc[survey.id] = survey;
-    return acc;
-  }, {});
+import { toDictionary } from "services/data-structures";
 
 export const useSurveysList = () =>
   useSWR(
     "/api/surveys",
     async url => {
       const surveys = await defaultFetcher(url);
-      return surveyMapReduce(surveys);
+      return toDictionary(surveys);
     },
     { suspense: true }
   );

@@ -6,6 +6,7 @@ import { Box } from "@chakra-ui/core";
 
 const DroppablePageList = () => {
   const { pages } = useSurvey();
+
   return (
     <Droppable droppableId="page-list" type="PAGE">
       {({ innerRef, droppableProps, placeholder }) => (

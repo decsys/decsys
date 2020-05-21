@@ -59,6 +59,7 @@ export default (id, mutate) => ({
   },
 
   movePage: async (targetId, destination) => {
+    setSurveyPageOrder(id, targetId, destination);
     mutate(old => {
       const source = old.pages.findIndex(page => page.id === targetId);
 
@@ -81,7 +82,5 @@ export default (id, mutate) => ({
         }, [])
       };
     }, false);
-    await setSurveyPageOrder(id, targetId, destination);
-    mutate();
   }
 });

@@ -7,7 +7,6 @@ import { SurveyProvider } from "../../../contexts/Survey";
 
 const SurveysList = ({ surveys }) => {
   const sortingAndFiltering = useSortingAndFiltering(surveys);
-  const { surveyList } = sortingAndFiltering;
   return (
     <Stack mt={2}>
       <Box py={4}>
@@ -15,7 +14,7 @@ const SurveysList = ({ surveys }) => {
       </Box>
 
       <Stack boxShadow="0 2px 5px rgba(0,0,0,0.6)">
-        {surveyList.map(
+        {sortingAndFiltering.surveyList.map(
           ({ id }) =>
             !!surveys[id] && (
               <SurveyProvider key={id} value={surveys[id]}>
