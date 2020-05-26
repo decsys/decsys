@@ -8,12 +8,12 @@ import { usePageListActions } from "../../contexts/PageListActions";
 const PageList = () => {
   const { movePage } = usePageListActions();
 
-  const handleDragEnd = result => {
-    if (!result.destination) return;
-    if (result.source.droppableId !== result.destination.droppableId) return;
-    if (result.destination.index === result.source.index) return;
-    if (result.destination.droppableId === "page-list")
-      movePage(result.draggableId.split("_")[1], result.destination.index);
+  const handleDragEnd = ({ draggableId, source, destination }) => {
+    if (!destination) return;
+    if (source.droppableId !== destination.droppableId) return;
+    if (destination.index === source.index) return;
+    if (destination.droppableId === "page-list")
+      movePage(draggableId.split("_")[1], destination.index);
   };
 
   return (

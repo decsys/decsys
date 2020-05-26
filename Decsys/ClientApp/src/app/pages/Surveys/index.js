@@ -13,7 +13,7 @@ import { FaList } from "react-icons/fa";
 
 const ShowSurveys = ({ surveys, actions }) => (
   <>
-    <Alert status="info">
+    <Alert status="info" variant="left-accent">
       <AlertIcon />
       Please don't forget to backup your surveys and results to an external
       source.

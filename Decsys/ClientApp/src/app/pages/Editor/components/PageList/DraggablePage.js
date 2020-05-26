@@ -19,8 +19,7 @@ const DraggablePage = ({ page }) => {
           {...cardStyle[colorMode]}
           ref={innerRef}
           {...draggableProps}
-          boxShadow={isDragging ? "0 5px 10px rgba(0,0,0,0.6)" : "none"}
-          transition="box-shadow 0.2s ease"
+          boxShadow={isDragging ? "outline" : "none"}
           role="group"
         >
           <PageHeader page={page} dragHandleProps={dragHandleProps} />

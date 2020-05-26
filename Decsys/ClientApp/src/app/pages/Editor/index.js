@@ -26,7 +26,7 @@ const Editor = ({ id, navigate }) => {
           height="100%"
           style={{ height: "100vh" }}
         >
-          <Flex boxShadow="0 2px 2px rgba(0,0,0,0.6)" gridColumn="span 2">
+          <Flex boxShadow="section-h" gridColumn="span 2">
             <EditorBarContextProvider
               value={{ ...EditorBarActions, nameState }}
             >
@@ -34,7 +34,7 @@ const Editor = ({ id, navigate }) => {
             </EditorBarContextProvider>
           </Flex>
 
-          <Flex boxShadow="2px 5px 5px rgba(0,0,0,0.6)" gridRow="span 2">
+          <Flex boxShadow="section-v" gridRow="span 2">
             <PageListActionsProvider value={PageListActions}>
               <PageList />
             </PageListActionsProvider>

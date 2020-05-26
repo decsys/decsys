@@ -60,27 +60,27 @@ export default (id, mutate) => ({
 
   movePage: async (targetId, destination) => {
     setSurveyPageOrder(id, targetId, destination);
-    mutate(old => {
-      const source = old.pages.findIndex(page => page.id === targetId);
+    mutate(
+      produce(({ pages }) => {
+        const source = pages.findIndex(page => page.id === targetId);
 
-      return {
-        ...old,
-        pages: old.pages.reduce((pages, page, i, oldPages) => {
-          if (page.id === targetId) return pages;
+        pages = pages.reduce((result, page, i) => {
+          if (page.id === targetId) return result;
 
           const mutations = (
             (i + 1 !== destination && [page]) ||
             (destination > source
-              ? [page, oldPages[source]]
-              : [oldPages[source], page])
+              ? [page, pages[source]]
+              : [pages[source], page])
           ).map((p, i) => ({
             ...p,
             order: pages.length + i + 1
           }));
 
           return [...pages, ...mutations];
-        }, [])
-      };
-    }, false);
+        }, []);
+      }),
+      false
+    );
   }
 });
