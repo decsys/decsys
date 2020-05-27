@@ -4,7 +4,7 @@ import { useSurvey } from "app/contexts/Survey";
 import DraggablePage from "./DraggablePage";
 import { Box } from "@chakra-ui/core";
 
-const DroppablePageList = () => {
+const DroppablePageList = ({ busy }) => {
   const { pages, pageOrder } = useSurvey();
 
   return (
@@ -17,7 +17,11 @@ const DroppablePageList = () => {
           style={{ overflow: "auto" }}
         >
           {pageOrder.map((id, i) => (
-            <DraggablePage key={i} page={pages[id]} order={i + 1} />
+            <DraggablePage
+              key={i}
+              page={busy ? { ...pages[id], loading: true } : pages[id]}
+              order={i + 1}
+            />
           ))}
           {placeholder}
         </Box>

@@ -1,5 +1,12 @@
 import React from "react";
-import { Flex, Tooltip, Box, Text, useColorMode } from "@chakra-ui/core";
+import {
+  Flex,
+  Tooltip,
+  Box,
+  Text,
+  useColorMode,
+  Button
+} from "@chakra-ui/core";
 import {
   FaTrash,
   FaCopy,
@@ -9,6 +16,7 @@ import {
 import { DotHoverIconButton, ToggleButton } from "components/core";
 import { usePageListActions } from "../../contexts/PageListActions";
 import AddContentItemMenu from "./AddContentItemMenu";
+import { BsDot } from "react-icons/bs";
 
 const RandomTooltip = ({ isRandom }) => {
   const { colorMode } = useColorMode();
@@ -37,14 +45,29 @@ const RandomTooltip = ({ isRandom }) => {
   );
 };
 
-const PageActionButtons = ({ id, randomize }) => {
+const PlaceholderDotButton = p => (
+  <Button p={0} variant="ghost" {...p}>
+    <Box as={BsDot} />
+  </Button>
+);
+
+const Placeholder = () => (
+  <>
+    <PlaceholderDotButton variantColor="blue" size="sm" />
+    <PlaceholderDotButton variantColor="green" />
+    <PlaceholderDotButton />
+    <PlaceholderDotButton variantColor="red" />
+  </>
+);
+
+const ActionButtons = ({ id, randomize }) => {
   const { deletePage, duplicatePage, setPageRandomize } = usePageListActions();
   const handleRandomClick = async e => {
     await setPageRandomize(id, e.target.checked);
   };
 
   return (
-    <Flex align="center">
+    <>
       <Tooltip
         maxW="auto"
         placement="top"
@@ -54,7 +77,7 @@ const PageActionButtons = ({ id, randomize }) => {
         <ToggleButton
           variantColor="blue"
           onClick={handleRandomClick}
-          defaultChecked={randomize}
+          checked={randomize}
           p={0}
           size="sm"
         >
@@ -75,8 +98,14 @@ const PageActionButtons = ({ id, randomize }) => {
           onClick={() => deletePage(id)}
         />
       </Tooltip>
-    </Flex>
+    </>
   );
 };
+
+const PageActionButtons = ({ busy, ...p }) => (
+  <Flex align="center">
+    {busy ? <Placeholder /> : <ActionButtons {...p} />}
+  </Flex>
+);
 
 export default PageActionButtons;

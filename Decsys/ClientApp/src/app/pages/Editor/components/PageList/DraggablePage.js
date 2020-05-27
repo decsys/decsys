@@ -36,9 +36,8 @@ const DraggablePage = ({ page, order }) => {
                 {...droppableProps}
                 ml={8}
               >
-                {page.components.map(c => (
-                  <Flex p={1}>{c.id}</Flex>
-                ))}
+                {page.components &&
+                  page.components.map(c => <Flex p={1}>{c.id}</Flex>)}
               </Flex>
             )}
           </Droppable>

@@ -6,56 +6,65 @@ import {
   setPageRandomize
 } from "api/pages";
 import produce from "immer";
+import { v4 as uuid } from "uuid";
 
 export default (id, mutate) => ({
   addPage: async () => {
+    const tempId = uuid();
+
+    mutate(
+      produce(({ pages, pageOrder }) => {
+        pages[tempId] = { id: tempId, loading: true };
+        pageOrder.push(tempId);
+      }),
+      false
+    );
     const { data: page } = await createSurveyPage(id);
     mutate(
-      old => ({
-        ...old,
-        pages: [...old.pages, page]
+      produce(({ pages, pageOrder }) => {
+        pages[page.id] = page;
+        const i = pageOrder.findIndex(p => p === tempId);
+        pageOrder.splice(i, 1);
+        pageOrder.splice(page.order - 1, 0, page.id);
       }),
       false
     );
   },
 
   duplicatePage: async pageId => {
+    mutate(
+      produce(({ pages, pageOrder }) => {
+        const newId = uuid();
+        pages[newId] = { ...pages[pageId], id: newId, loading: true };
+        pageOrder.push(newId);
+      }),
+      false
+    );
     await duplicateSurveyPage(id, pageId);
-    mutate(old => ({
-      ...old,
-      pages: [
-        ...old.pages,
-        {
-          ...old.pages.find(p => p.id === pageId),
-          order: old.pages.length + 1,
-          id: -1
-        }
-      ]
-    }));
+    mutate();
   },
 
   deletePage: async pageId => {
+    mutate(
+      produce(({ pageOrder }) => {
+        const i = pageOrder.findIndex(p => p === pageId);
+        pageOrder.splice(i, 1);
+      }),
+      false
+    );
     await deleteSurveyPage(id, pageId);
-    mutate(old => {
-      const pages = old.pages.reduce(
-        (pages, p) =>
-          p.id === pageId
-            ? pages
-            : [...pages, { ...p, order: pages.length + 1 }],
-        []
-      );
-      return { ...old, pages };
-    });
+    mutate();
   },
 
   setPageRandomize: async (pageId, randomize) => {
-    await setPageRandomize(id, pageId, randomize);
     mutate(
-      produce(old => {
-        const p = old.pages.find(p => p.id === pageId);
-        p.randomize = randomize;
-      })
+      produce(({ pages }) => {
+        pages[pageId].randomize = randomize;
+      }),
+      false
     );
+    await setPageRandomize(id, pageId, randomize);
+    mutate();
   },
 
   movePage: async (pageId, source, destination) => {

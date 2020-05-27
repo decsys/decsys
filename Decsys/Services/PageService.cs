@@ -151,7 +151,8 @@ namespace Decsys.Services
             {
                 Id = Guid.NewGuid(),
                 Order = pages.Count + 1,
-                Components = components
+                Components = components,
+                Randomize = page.Randomize
             };
             pages.Add(dupe);
 
