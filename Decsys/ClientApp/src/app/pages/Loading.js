@@ -12,7 +12,7 @@ const Loading = () => {
   return (
     <Layout>
       <Flex justify="center">
-        <Flex {...style[colorMode]} borderWidth={1} mt={10}>
+        <Flex {...style[colorMode]} borderWidth={1} mt={10} boxShadow="callout">
           <LoadingIndicator />
         </Flex>
       </Flex>
