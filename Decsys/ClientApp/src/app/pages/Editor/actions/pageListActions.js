@@ -58,7 +58,7 @@ export default (id, mutate) => ({
     );
   },
 
-  movePage: async (targetId, destination) => {
+  movePage: async (targetId, source, destination) => {
     setSurveyPageOrder(id, targetId, destination);
     mutate(
       produce(({ pages }) => {

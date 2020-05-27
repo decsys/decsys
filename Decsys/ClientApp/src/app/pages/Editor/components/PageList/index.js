@@ -13,7 +13,7 @@ const PageList = () => {
     if (source.droppableId !== destination.droppableId) return;
     if (destination.index === source.index) return;
     if (destination.droppableId === "page-list")
-      movePage(draggableId.split("_")[1], destination.index);
+      movePage(draggableId.split("_")[1], source.index, destination.index);
   };
 
   return (
