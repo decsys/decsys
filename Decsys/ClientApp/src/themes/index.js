@@ -18,8 +18,8 @@ const overrides = {
   },
   shadows: {
     callout: "0 2px 10px 0 rgba(0,0,0,.132), 0 0.5px 1.8px 0 rgba(0,0,0,.108)",
-    "section-h": "0 2px 10px 0 rgba(0,0,0,.2), 0 1px 1.8px 0 rgba(0,0,0,.5)",
-    "section-v": "2px 0 10px 0 rgba(0,0,0,.2), 1px 0 1.8px 0 rgba(0,0,0,.5)"
+    "section-h": "0 2px 10px 0 rgba(0,0,0,.2), 0 1px 3px 0 rgba(0,0,0,.5)",
+    "section-v": "2px 0 10px 0 rgba(0,0,0,.2), 1px 0 3px 0 rgba(0,0,0,.5)"
   }
 };
 
