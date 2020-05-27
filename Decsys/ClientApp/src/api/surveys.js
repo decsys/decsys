@@ -14,7 +14,18 @@ export const useSurveysList = () =>
   );
 
 export const useSurvey = id =>
-  useSWR(`/api/surveys/${id}`, defaultFetcher, { suspense: true });
+  useSWR(
+    `/api/surveys/${id}`,
+    async url => {
+      const survey = await defaultFetcher(url);
+      return {
+        ...survey,
+        pages: toDictionary(survey.pages),
+        pageOrder: survey.pages.map(p => p.id)
+      };
+    },
+    { suspense: true }
+  );
 
 export const createSurvey = async () => await axios.post("/api/surveys");
 
