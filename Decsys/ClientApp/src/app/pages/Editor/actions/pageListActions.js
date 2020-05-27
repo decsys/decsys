@@ -58,29 +58,15 @@ export default (id, mutate) => ({
     );
   },
 
-  movePage: async (targetId, source, destination) => {
-    setSurveyPageOrder(id, targetId, destination);
+  movePage: async (pageId, source, destination) => {
     mutate(
-      produce(({ pages }) => {
-        const source = pages.findIndex(page => page.id === targetId);
-
-        pages = pages.reduce((result, page, i) => {
-          if (page.id === targetId) return result;
-
-          const mutations = (
-            (i + 1 !== destination && [page]) ||
-            (destination > source
-              ? [page, pages[source]]
-              : [pages[source], page])
-          ).map((p, i) => ({
-            ...p,
-            order: pages.length + i + 1
-          }));
-
-          return [...pages, ...mutations];
-        }, []);
+      produce(({ pageOrder }) => {
+        const id = pageOrder.splice(source - 1, 1);
+        pageOrder.splice(destination - 1, 0, id);
       }),
       false
     );
+    await setSurveyPageOrder(id, pageId, destination);
+    mutate();
   }
 });

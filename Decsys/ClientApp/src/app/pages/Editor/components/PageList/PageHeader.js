@@ -4,7 +4,7 @@ import LightHeading from "components/core/LightHeading";
 import { FaGripVertical } from "react-icons/fa";
 import PageActionButtons from "./PageActionButtons";
 
-const PageHeader = ({ page, dragHandleProps }) => {
+const PageHeader = ({ page, order, dragHandleProps }) => {
   const { colorMode } = useColorMode();
   const headerStyle = { light: { bg: "gray.300" }, dark: { bg: "gray.600" } };
   return (
@@ -17,7 +17,7 @@ const PageHeader = ({ page, dragHandleProps }) => {
       <Flex {...dragHandleProps} p={2} align="center" width="100%">
         {page.id !== -1 ? <Box as={FaGripVertical} /> : <Spinner />}
         <LightHeading mx={2} size="sm">
-          Page {page.order}: {page.id}
+          Page {order}: {page.id}
         </LightHeading>
       </Flex>
 

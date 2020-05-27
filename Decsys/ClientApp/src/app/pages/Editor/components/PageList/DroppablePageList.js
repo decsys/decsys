@@ -5,7 +5,7 @@ import DraggablePage from "./DraggablePage";
 import { Box } from "@chakra-ui/core";
 
 const DroppablePageList = () => {
-  const { pages } = useSurvey();
+  const { pages, pageOrder } = useSurvey();
 
   return (
     <Droppable droppableId="page-list" type="PAGE">
@@ -16,8 +16,8 @@ const DroppablePageList = () => {
           {...droppableProps}
           style={{ overflow: "auto" }}
         >
-          {pages.map((page, i) => (
-            <DraggablePage key={i} page={page} />
+          {pageOrder.map((id, i) => (
+            <DraggablePage key={i} page={pages[id]} order={i + 1} />
           ))}
           {placeholder}
         </Box>

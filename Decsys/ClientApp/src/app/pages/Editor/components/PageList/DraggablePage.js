@@ -3,14 +3,14 @@ import { Flex, useColorMode } from "@chakra-ui/core";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import PageHeader from "./PageHeader";
 
-const DraggablePage = ({ page }) => {
+const DraggablePage = ({ page, order }) => {
   const { colorMode } = useColorMode();
   const cardStyle = { light: { bg: "gray.200" }, dark: { bg: "gray.700" } };
 
-  const uid = `${page.order}_${page.id}`;
+  const uid = `${order}_${page.id}`;
 
   return (
-    <Draggable draggableId={uid} index={page.order} type="PAGE">
+    <Draggable draggableId={uid} index={order} type="PAGE">
       {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
         <Flex
           direction="column"
@@ -22,7 +22,11 @@ const DraggablePage = ({ page }) => {
           boxShadow={isDragging ? "outline" : "none"}
           role="group"
         >
-          <PageHeader page={page} dragHandleProps={dragHandleProps} />
+          <PageHeader
+            page={page}
+            order={order}
+            dragHandleProps={dragHandleProps}
+          />
 
           <Droppable type={`${uid}_ITEM`} droppableId={uid}>
             {({ droppableProps, innerRef }) => (
