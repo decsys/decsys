@@ -17,7 +17,7 @@ const PageHeader = ({ page, dragHandleProps }) => {
       <Flex {...dragHandleProps} p={2} align="center" width="100%">
         {page.id !== -1 ? <Box as={FaGripVertical} /> : <Spinner />}
         <LightHeading mx={2} size="sm">
-          Page {page.order}
+          Page {page.order}: {page.id}
         </LightHeading>
       </Flex>
 
