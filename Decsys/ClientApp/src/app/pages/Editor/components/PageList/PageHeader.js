@@ -13,6 +13,7 @@ const PageHeader = ({ page, order, isBusy, dragHandleProps }) => {
       align="center"
       justify="space-between"
       {...headerStyle[colorMode]}
+      role="group"
     >
       <Flex {...dragHandleProps} p={2} align="center" width="100%">
         <Flex width="1.5em" justify="center">

@@ -20,7 +20,7 @@ const Editor = ({ id, navigate }) => {
     <Page layout={null}>
       <SurveyProvider value={survey}>
         <Grid
-          templateColumns="1fr 2fr"
+          templateColumns="2fr 5fr"
           templateRows="auto minmax(200px, 2fr) minmax(200px, 1fr)"
           gap={0}
           height="100%"

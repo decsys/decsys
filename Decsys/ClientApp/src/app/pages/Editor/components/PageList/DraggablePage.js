@@ -20,7 +20,6 @@ const DraggablePage = ({ page, order, isBusy }) => {
           ref={innerRef}
           boxShadow={isDragging ? "outline" : "none"}
           transition="box-shadow .2s ease"
-          role="group"
           {...draggableProps}
         >
           <PageHeader
