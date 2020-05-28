@@ -1,12 +1,27 @@
 import produce from "immer";
-import { deleteSurveyPageItem } from "api/page-items";
+import { v4 as uuid } from "uuid";
+import { deleteSurveyPageItem, duplicateSurveyPageItem } from "api/page-items";
 
 export default (surveyId, pageId, mutate) => ({
-  duplicatePageItem: itemId => {},
+  duplicatePageItem: async itemId => {
+    mutate(
+      produce(({ pages: { [pageId]: page } }) => {
+        const newId = uuid();
+        page.components[newId] = {
+          ...page.components[itemId],
+          id: newId,
+          isLoading: true
+        };
+        page.componentOrder.push(newId);
+      }),
+      false
+    );
+    await duplicateSurveyPageItem(surveyId, pageId, itemId);
+    mutate();
+  },
   deletePageItem: async itemId => {
     mutate(
-      produce(({ pages }) => {
-        const page = pages[pageId];
+      produce(({ pages: { [pageId]: page } }) => {
         const i = page.componentOrder.indexOf(itemId);
         i >= 0 && page.componentOrder.splice(i, 1);
       }),

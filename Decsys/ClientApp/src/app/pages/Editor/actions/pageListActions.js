@@ -15,7 +15,7 @@ export default (id, mutate) => ({
 
     mutate(
       produce(({ pages, pageOrder }) => {
-        pages[tempId] = { id: tempId, loading: true };
+        pages[tempId] = { id: tempId, isLoading: true };
         pageOrder.push(tempId);
       }),
       false
@@ -33,7 +33,7 @@ export default (id, mutate) => ({
           components: {},
           componentOrder: [],
           id: newId,
-          loading: true
+          isLoading: true
         };
         pageOrder.push(newId);
       }),
@@ -83,7 +83,7 @@ export default (id, mutate) => ({
     mutate(
       produce(({ pages }) => {
         const page = pages[pageId];
-        page.components[tempId] = { id: tempId, type };
+        page.components[tempId] = { id: tempId, type, isLoading: true };
         page.componentOrder.push(tempId);
       }),
       false

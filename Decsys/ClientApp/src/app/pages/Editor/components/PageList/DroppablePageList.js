@@ -21,7 +21,7 @@ const DroppablePageList = ({ isBusy, isPageBusy }) => {
           style={{ overflow: "auto" }}
         >
           {pageOrder.map((id, i) => {
-            const pageBusy = isBusy || pages[id].loading || isPageBusy;
+            const pageBusy = isBusy || pages[id].isLoading || isPageBusy;
             const actions = pageItemActions(surveyId, id, mutate);
             return (
               <PageItemActionsProvider key={id} value={actions}>

@@ -30,7 +30,7 @@ const DraggablePage = ({ page, order, isBusy }) => {
             dragHandleProps={dragHandleProps}
           />
 
-          {!page.loading && (
+          {!page.isLoading && (
             <>
               <Droppable type={`PAGE_ITEM:${page.id}`} droppableId={page.id}>
                 {({ innerRef, droppableProps, placeholder }) => (
@@ -55,7 +55,7 @@ const DraggablePage = ({ page, order, isBusy }) => {
             </>
           )}
 
-          {page.loading && (
+          {page.isLoading && (
             <Flex justify="center">
               <LoadingIndicator verb="Adding" noun="page" />
             </Flex>

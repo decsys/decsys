@@ -85,7 +85,11 @@ const DraggablePageItem = ({ item, order, isBusy }) => {
         >
           <ItemInfo {...item} dragHandleProps={dragHandleProps} />
 
-          <ItemActions isBusy={isBusy} {...item} {...actions} />
+          <ItemActions
+            isBusy={isBusy || item.isLoading}
+            {...item}
+            {...actions}
+          />
         </PseudoBox>
       )}
     </Draggable>
