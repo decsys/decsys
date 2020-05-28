@@ -14,7 +14,4 @@ export { default as StandardModal } from "./StandardModal";
 export { default as ProgressCard } from "./ProgressCard";
 export { default as ToggleButton } from "./ToggleButton";
 export { Page, LayoutProvider } from "./LayoutPage";
-export {
-  default as DotHoverIconButton,
-  PlaceholderDotButton
-} from "./DotHoverIconButton";
+export { default as DotHoverIconButton } from "./DotHoverIconButton";

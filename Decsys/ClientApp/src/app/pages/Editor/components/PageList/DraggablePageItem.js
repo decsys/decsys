@@ -11,7 +11,7 @@ import {
   FaTimes,
   FaCopy
 } from "react-icons/fa";
-import { PlaceholderDotButton, DotHoverIconButton } from "components/core";
+import { DotHoverIconButton } from "components/core";
 import { usePageItemActions } from "../../contexts/PageItemActions";
 
 const builtInIcons = {
@@ -44,8 +44,8 @@ const ItemInfo = ({ type, id, dragHandleProps }) => (
 
 const PlaceholderButtons = () => (
   <>
-    <PlaceholderDotButton size="sm" />
-    <PlaceholderDotButton size="sm" variantColor="red" />
+    <DotHoverIconButton size="sm" />
+    <DotHoverIconButton size="sm" variantColor="red" />
   </>
 );
 

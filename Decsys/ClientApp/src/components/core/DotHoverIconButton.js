@@ -1,19 +1,17 @@
 import React, { forwardRef } from "react";
 import { BsDot } from "react-icons/bs";
-import { Button, PseudoBox, Box } from "@chakra-ui/core";
+import { Button, PseudoBox } from "@chakra-ui/core";
 
-export const PlaceholderDotButton = p => (
-  <Button p={0} variant="ghost" _focus={{}} {...p}>
-    <Box as={BsDot} />
-  </Button>
-);
-
-const DotHoverIconButton = ({ icon, ...p }, ref) => (
-  <Button ref={ref} p={0} variant="ghost" _focus={{}} {...p}>
-    <PseudoBox display="none" _groupHover={{ display: "inherit" }} as={icon} />
-    <PseudoBox _groupHover={{ display: "none" }} as={BsDot} />
-  </Button>
-);
+const DotHoverIconButton = ({ icon, disableHover, ...p }, ref) => {
+  const show = { display: "inherit" };
+  const hide = { display: "none" };
+  return (
+    <Button ref={ref} p={0} variant="ghost" _focus={false} {...p}>
+      <PseudoBox {...hide} _groupHover={!disableHover && show} as={icon} />
+      <PseudoBox _groupHover={!disableHover && hide} as={BsDot} />
+    </Button>
+  );
+};
 
 // we use forwardRef so things that need to target the Button's underlying dom element can
 // e.g. tooltips

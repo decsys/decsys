@@ -8,10 +8,8 @@ const DraggablePage = ({ page, order, isBusy }) => {
   const { colorMode } = useColorMode();
   const cardStyle = { light: { bg: "gray.200" }, dark: { bg: "gray.700" } };
 
-  const uid = `${order}_${page.id}`;
-
   return (
-    <Draggable draggableId={uid} index={order}>
+    <Draggable draggableId={page.id} index={order}>
       {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
         <Flex
           direction="column"
@@ -20,16 +18,19 @@ const DraggablePage = ({ page, order, isBusy }) => {
           {...cardStyle[colorMode]}
           ref={innerRef}
           boxShadow={isDragging ? "outline" : "none"}
+          transition="box-shadow .2s ease"
           role="group"
           {...draggableProps}
         >
           <PageHeader
             page={page}
+            isBusy={isBusy}
             order={order}
             dragHandleProps={dragHandleProps}
           />
-
-          <Droppable type={`${uid}:PAGE_ITEM`} droppableId={uid}>
+          {page.componentOrder &&
+            page.componentOrder.map((id, i) => <div key={id}>{id}</div>)}
+          {/* <Droppable type={`${uid}:PAGE_ITEM`} droppableId={uid}>
             {({ innerRef, droppableProps, placeholder }) => (
               <Flex ref={innerRef} direction="column" {...droppableProps}>
                 {page.componentOrder &&
@@ -44,7 +45,7 @@ const DraggablePage = ({ page, order, isBusy }) => {
                 {placeholder}
               </Flex>
             )}
-          </Droppable>
+          </Droppable> */}
           <Flex ml={8} p={1}>
             Response item
           </Flex>

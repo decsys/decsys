@@ -19,7 +19,7 @@ import {
 import { BsDot } from "react-icons/bs";
 import { usePageListActions } from "../../contexts/PageListActions";
 
-const AddContentItemMenu = ({ id }) => {
+const AddContentItemMenu = ({ id, isBusy }) => {
   const { addItemToPage } = usePageListActions();
 
   const handleItemClick = type => {
@@ -42,10 +42,10 @@ const AddContentItemMenu = ({ id }) => {
         >
           <PseudoBox
             display="none"
-            _groupHover={{ display: "inherit" }}
+            _groupHover={!isBusy && { display: "inherit" }}
             as={FaPlus}
           />
-          <PseudoBox _groupHover={{ display: "none" }} as={BsDot} />
+          <PseudoBox _groupHover={!isBusy && { display: "none" }} as={BsDot} />
         </MenuButton>
       </Tooltip>
 

@@ -6,11 +6,7 @@ import {
   FaRandom,
   FaExclamationTriangle
 } from "react-icons/fa";
-import {
-  DotHoverIconButton,
-  ToggleButton,
-  PlaceholderDotButton
-} from "components/core";
+import { DotHoverIconButton, ToggleButton } from "components/core";
 import { usePageListActions } from "../../contexts/PageListActions";
 import AddContentItemMenu from "./AddContentItemMenu";
 
@@ -41,23 +37,14 @@ const RandomTooltip = ({ isRandom }) => {
   );
 };
 
-const Placeholder = () => (
-  <>
-    <PlaceholderDotButton variantColor="blue" size="sm" />
-    <PlaceholderDotButton variantColor="green" />
-    <PlaceholderDotButton />
-    <PlaceholderDotButton variantColor="red" />
-  </>
-);
-
-const ActionButtons = ({ id, randomize }) => {
+const PageActionButtons = ({ id, randomize, isBusy }) => {
   const { deletePage, duplicatePage, setPageRandomize } = usePageListActions();
   const handleRandomClick = async e => {
     await setPageRandomize(id, e.target.checked);
   };
 
   return (
-    <>
+    <Flex align="center">
       <Tooltip
         maxW="auto"
         placement="top"
@@ -75,27 +62,26 @@ const ActionButtons = ({ id, randomize }) => {
         </ToggleButton>
       </Tooltip>
 
-      <AddContentItemMenu id={id} />
+      <AddContentItemMenu id={id} isBusy={isBusy} />
 
       <Tooltip placement="top" hasArrow label="Duplicate this page">
-        <DotHoverIconButton icon={FaCopy} onClick={() => duplicatePage(id)} />
+        <DotHoverIconButton
+          disableHover={isBusy}
+          icon={FaCopy}
+          onClick={() => duplicatePage(id)}
+        />
       </Tooltip>
 
       <Tooltip placement="top" hasArrow label="Delete this page">
         <DotHoverIconButton
+          disableHover={isBusy}
           variantColor="red"
           icon={FaTrash}
           onClick={() => deletePage(id)}
         />
       </Tooltip>
-    </>
+    </Flex>
   );
 };
-
-const PageActionButtons = ({ busy, ...p }) => (
-  <Flex align="center">
-    {busy ? <Placeholder /> : <ActionButtons {...p} />}
-  </Flex>
-);
 
 export default PageActionButtons;
