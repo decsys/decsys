@@ -23,3 +23,10 @@ export const setPageRandomize = async (surveyId, pageId, randomize) =>
     randomize,
     appJsonHeaderOptions
   );
+
+export const addSurveyPageItem = async (surveyId, pageId, type) =>
+  await axios.post(
+    `/api/surveys/${surveyId}/pages/${pageId}/components`,
+    JSON.stringify(type),
+    appJsonHeaderOptions
+  );

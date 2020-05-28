@@ -20,7 +20,13 @@ export const useSurvey = id =>
       const survey = await defaultFetcher(url);
       return {
         ...survey,
-        pages: toDictionary(survey.pages),
+        pages: toDictionary(
+          survey.pages.map(p => ({
+            ...p,
+            components: toDictionary(p.components),
+            componentOrder: p.components.map(p => p.id)
+          }))
+        ),
         pageOrder: survey.pages.map(p => p.id)
       };
     },
