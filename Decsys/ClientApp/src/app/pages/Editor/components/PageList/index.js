@@ -6,18 +6,16 @@ import DroppablePageList from "./DroppablePageList";
 import { usePageListActions } from "../../contexts/PageListActions";
 
 const PageList = () => {
-  const [isListBusy, setIsListBusy] = useState(false);
-  const [isPageBusy, setIsPageBusy] = useState(false);
+  const [busy, setBusy] = useState({});
   const { movePage } = usePageListActions();
 
-  const handleDragStart = ({ source, type }) => {
-    if (type === "PAGE") setIsListBusy(true);
-    if (type.split(":")[1] === "PAGE_ITEM") setIsPageBusy(true);
+  const handleDragStart = ({ type }) => {
+    if (type === "PAGE") setBusy({ list: true });
+    if (type.split(":")[0] === "PAGE_ITEM") setBusy({ page: true });
   };
 
   const handleDragEnd = ({ draggableId, source, destination }) => {
-    setIsListBusy(false);
-    setIsPageBusy(false);
+    setBusy({});
     if (!destination) return;
     if (source.droppableId !== destination.droppableId) return;
     if (destination.index === source.index) return;
@@ -30,7 +28,7 @@ const PageList = () => {
       <Header />
 
       <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <DroppablePageList isBusy={isListBusy} isPageBusy={isPageBusy} />
+        <DroppablePageList isBusy={busy.list} isPageBusy={busy.page} />
       </DragDropContext>
     </Flex>
   );

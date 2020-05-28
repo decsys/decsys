@@ -28,7 +28,13 @@ export default (id, mutate) => ({
     mutate(
       produce(({ pages, pageOrder }) => {
         const newId = uuid();
-        pages[newId] = { ...pages[pageId], id: newId, loading: true };
+        pages[newId] = {
+          ...pages[pageId],
+          components: {},
+          componentOrder: [],
+          id: newId,
+          loading: true
+        };
         pageOrder.push(newId);
       }),
       false

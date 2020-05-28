@@ -42,24 +42,19 @@ const ItemInfo = ({ type, id, dragHandleProps }) => (
   </Flex>
 );
 
-const PlaceholderButtons = () => (
-  <>
-    <DotHoverIconButton size="sm" />
-    <DotHoverIconButton size="sm" variantColor="red" />
-  </>
-);
-
-const ItemActions = ({ id, duplicatePageItem, deletePageItem }) => {
+const ItemActions = ({ id, isBusy, duplicatePageItem, deletePageItem }) => {
   const handleDeleteClick = () => deletePageItem(id);
   const handleDuplicateClick = () => duplicatePageItem(id);
   return (
     <>
       <DotHoverIconButton
+        disableHover={isBusy}
         size="sm"
         icon={FaCopy}
         onClick={handleDuplicateClick}
       />
       <DotHoverIconButton
+        disableHover={isBusy}
         size="sm"
         variantColor="red"
         icon={FaTimes}
@@ -90,11 +85,7 @@ const DraggablePageItem = ({ item, order, isBusy }) => {
         >
           <ItemInfo {...item} dragHandleProps={dragHandleProps} />
 
-          {isBusy ? (
-            <PlaceholderButtons />
-          ) : (
-            <ItemActions {...item} {...actions} />
-          )}
+          <ItemActions isBusy={isBusy} {...item} {...actions} />
         </PseudoBox>
       )}
     </Draggable>

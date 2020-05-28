@@ -3,6 +3,7 @@ import { Flex, useColorMode } from "@chakra-ui/core";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import PageHeader from "./PageHeader";
 import DraggablePageItem from "./DraggablePageItem";
+import { LoadingIndicator } from "components/core";
 
 const DraggablePage = ({ page, order, isBusy }) => {
   const { colorMode } = useColorMode();
@@ -28,27 +29,37 @@ const DraggablePage = ({ page, order, isBusy }) => {
             order={order}
             dragHandleProps={dragHandleProps}
           />
-          {page.componentOrder &&
-            page.componentOrder.map((id, i) => <div key={id}>{id}</div>)}
-          {/* <Droppable type={`${uid}:PAGE_ITEM`} droppableId={uid}>
-            {({ innerRef, droppableProps, placeholder }) => (
-              <Flex ref={innerRef} direction="column" {...droppableProps}>
-                {page.componentOrder &&
-                  page.componentOrder.map((id, i) => (
-                    <DraggablePageItem
-                      key={i}
-                      item={page.components[id]}
-                      order={i + 1}
-                      isBusy={isBusy}
-                    />
-                  ))}
-                {placeholder}
+
+          {!page.loading && (
+            <>
+              <Droppable type={`PAGE_ITEM:${page.id}`} droppableId={page.id}>
+                {({ innerRef, droppableProps, placeholder }) => (
+                  <Flex ref={innerRef} direction="column" {...droppableProps}>
+                    {page.componentOrder &&
+                      page.componentOrder.map((id, i) => (
+                        <DraggablePageItem
+                          key={id}
+                          item={page.components[id]}
+                          order={i + 1}
+                          isBusy={isBusy}
+                        />
+                      ))}
+                    {placeholder}
+                  </Flex>
+                )}
+              </Droppable>
+
+              <Flex ml={8} p={1}>
+                Response item
               </Flex>
-            )}
-          </Droppable> */}
-          <Flex ml={8} p={1}>
-            Response item
-          </Flex>
+            </>
+          )}
+
+          {page.loading && (
+            <Flex justify="center">
+              <LoadingIndicator verb="Adding" noun="page" />
+            </Flex>
+          )}
         </Flex>
       )}
     </Draggable>
