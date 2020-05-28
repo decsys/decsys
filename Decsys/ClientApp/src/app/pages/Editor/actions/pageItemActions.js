@@ -7,12 +7,12 @@ export default (surveyId, pageId, mutate) => ({
     mutate(
       produce(({ pages }) => {
         const page = pages[pageId];
-        const i = page.componentOrder.indexOf(c => c.id === itemId);
-        page.componentOrder.splice(i, 1);
+        const i = page.componentOrder.indexOf(itemId);
+        i >= 0 && page.componentOrder.splice(i, 1);
       }),
       false
     );
     await deleteSurveyPageItem(surveyId, pageId, itemId);
-    // mutate();
+    mutate();
   }
 });
