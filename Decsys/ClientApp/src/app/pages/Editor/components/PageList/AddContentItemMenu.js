@@ -17,8 +17,15 @@ import {
   FaArrowsAltV
 } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
+import { usePageListActions } from "../../contexts/PageListActions";
 
-const AddContentItemMenu = () => {
+const AddContentItemMenu = ({ id }) => {
+  const { addItemToPage } = usePageListActions();
+
+  const handleItemClick = type => {
+    addItemToPage(id, type);
+  };
+
   return (
     <Menu>
       <Tooltip
@@ -26,7 +33,13 @@ const AddContentItemMenu = () => {
         hasArrow
         label="Add Page Content items to this page"
       >
-        <MenuButton as={Button} p={0} variant="ghost" variantColor="green">
+        <MenuButton
+          as={Button}
+          p={0}
+          variant="ghost"
+          variantColor="green"
+          _focus={{}}
+        >
           <PseudoBox
             display="none"
             _groupHover={{ display: "inherit" }}
@@ -37,19 +50,19 @@ const AddContentItemMenu = () => {
       </Tooltip>
 
       <MenuList>
-        <MenuItem>
+        <MenuItem onClick={() => handleItemClick("heading")}>
           <Box as={FaHeading} mr={2} />
           Heading
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => handleItemClick("paragraph")}>
           <Box as={FaParagraph} mr={2} />
           Paragraph
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => handleItemClick("image")}>
           <Box as={FaImage} mr={2} />
           Image
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => handleItemClick("spacer")}>
           <Box as={FaArrowsAltV} mr={2} />
           Vertical Spacer
         </MenuItem>

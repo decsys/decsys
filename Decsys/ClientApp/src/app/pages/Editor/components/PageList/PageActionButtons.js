@@ -1,22 +1,18 @@
 import React from "react";
-import {
-  Flex,
-  Tooltip,
-  Box,
-  Text,
-  useColorMode,
-  Button
-} from "@chakra-ui/core";
+import { Flex, Tooltip, Box, Text, useColorMode } from "@chakra-ui/core";
 import {
   FaTrash,
   FaCopy,
   FaRandom,
   FaExclamationTriangle
 } from "react-icons/fa";
-import { DotHoverIconButton, ToggleButton } from "components/core";
+import {
+  DotHoverIconButton,
+  ToggleButton,
+  PlaceholderDotButton
+} from "components/core";
 import { usePageListActions } from "../../contexts/PageListActions";
 import AddContentItemMenu from "./AddContentItemMenu";
-import { BsDot } from "react-icons/bs";
 
 const RandomTooltip = ({ isRandom }) => {
   const { colorMode } = useColorMode();
@@ -44,12 +40,6 @@ const RandomTooltip = ({ isRandom }) => {
     </Flex>
   );
 };
-
-const PlaceholderDotButton = p => (
-  <Button p={0} variant="ghost" {...p}>
-    <Box as={BsDot} />
-  </Button>
-);
 
 const Placeholder = () => (
   <>
@@ -85,7 +75,7 @@ const ActionButtons = ({ id, randomize }) => {
         </ToggleButton>
       </Tooltip>
 
-      <AddContentItemMenu />
+      <AddContentItemMenu id={id} />
 
       <Tooltip placement="top" hasArrow label="Duplicate this page">
         <DotHoverIconButton icon={FaCopy} onClick={() => duplicatePage(id)} />

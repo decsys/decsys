@@ -3,7 +3,8 @@ import {
   setSurveyPageOrder,
   deleteSurveyPage,
   duplicateSurveyPage,
-  setPageRandomize
+  setPageRandomize,
+  addSurveyPageItem
 } from "api/pages";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
@@ -19,16 +20,8 @@ export default (id, mutate) => ({
       }),
       false
     );
-    const { data: page } = await createSurveyPage(id);
-    mutate(
-      produce(({ pages, pageOrder }) => {
-        pages[page.id] = page;
-        const i = pageOrder.findIndex(p => p === tempId);
-        pageOrder.splice(i, 1);
-        pageOrder.splice(page.order - 1, 0, page.id);
-      }),
-      false
-    );
+    await createSurveyPage(id);
+    mutate();
   },
 
   duplicatePage: async pageId => {
@@ -77,5 +70,22 @@ export default (id, mutate) => ({
     );
     await setSurveyPageOrder(id, pageId, destination);
     mutate();
-  }
+  },
+
+  addItemToPage: async (pageId, type) => {
+    const tempId = uuid();
+    mutate(
+      produce(({ pages }) => {
+        const page = pages[pageId];
+        page.components[tempId] = { id: tempId, type };
+        page.componentOrder.push(tempId);
+      }),
+      false
+    );
+    await addSurveyPageItem(id, pageId, type);
+    mutate();
+  },
+
+  movePageItem: (pageId, itemId, source, destination) => {},
+  mutate
 });

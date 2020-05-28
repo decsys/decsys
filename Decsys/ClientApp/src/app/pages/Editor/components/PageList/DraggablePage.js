@@ -2,15 +2,16 @@ import React from "react";
 import { Flex, useColorMode } from "@chakra-ui/core";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import PageHeader from "./PageHeader";
+import DraggablePageItem from "./DraggablePageItem";
 
-const DraggablePage = ({ page, order }) => {
+const DraggablePage = ({ page, order, isBusy }) => {
   const { colorMode } = useColorMode();
   const cardStyle = { light: { bg: "gray.200" }, dark: { bg: "gray.700" } };
 
   const uid = `${order}_${page.id}`;
 
   return (
-    <Draggable draggableId={uid} index={order} type="PAGE">
+    <Draggable draggableId={uid} index={order}>
       {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
         <Flex
           direction="column"
@@ -18,9 +19,9 @@ const DraggablePage = ({ page, order }) => {
           borderRadius={5}
           {...cardStyle[colorMode]}
           ref={innerRef}
-          {...draggableProps}
           boxShadow={isDragging ? "outline" : "none"}
           role="group"
+          {...draggableProps}
         >
           <PageHeader
             page={page}
@@ -28,16 +29,19 @@ const DraggablePage = ({ page, order }) => {
             dragHandleProps={dragHandleProps}
           />
 
-          <Droppable type={`${uid}_ITEM`} droppableId={uid}>
-            {({ droppableProps, innerRef }) => (
-              <Flex
-                ref={innerRef}
-                direction="column"
-                {...droppableProps}
-                ml={8}
-              >
-                {page.components &&
-                  page.components.map(c => <Flex p={1}>{c.id}</Flex>)}
+          <Droppable type={`${uid}:PAGE_ITEM`} droppableId={uid}>
+            {({ innerRef, droppableProps, placeholder }) => (
+              <Flex ref={innerRef} direction="column" {...droppableProps}>
+                {page.componentOrder &&
+                  page.componentOrder.map((id, i) => (
+                    <DraggablePageItem
+                      key={i}
+                      item={page.components[id]}
+                      order={i + 1}
+                      isBusy={isBusy}
+                    />
+                  ))}
+                {placeholder}
               </Flex>
             )}
           </Droppable>
