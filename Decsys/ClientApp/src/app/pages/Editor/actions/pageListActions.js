@@ -12,11 +12,9 @@ import { v4 as uuid } from "uuid";
 export default (id, mutate) => ({
   addPage: async () => {
     const tempId = uuid();
-
     mutate(
-      produce(({ pages, pageOrder }) => {
-        pages[tempId] = { id: tempId, isLoading: true };
-        pageOrder.push(tempId);
+      produce(({ pages }) => {
+        pages.push({ id: tempId, isLoading: true });
       }),
       false
     );
@@ -26,16 +24,10 @@ export default (id, mutate) => ({
 
   duplicatePage: async pageId => {
     mutate(
-      produce(({ pages, pageOrder }) => {
+      produce(({ pages }) => {
         const newId = uuid();
-        pages[newId] = {
-          ...pages[pageId],
-          components: {},
-          componentOrder: [],
-          id: newId,
-          isLoading: true
-        };
-        pageOrder.push(newId);
+        const i = pages.findIndex(({ id }) => id === pageId);
+        pages.splice(i + 1, 0, { ...pages[i], id: newId, isLoading: true });
       }),
       false
     );
@@ -45,9 +37,9 @@ export default (id, mutate) => ({
 
   deletePage: async pageId => {
     mutate(
-      produce(({ pageOrder }) => {
-        const i = pageOrder.findIndex(p => p === pageId);
-        pageOrder.splice(i, 1);
+      produce(({ pages }) => {
+        const i = pages.findIndex(({ id }) => id === pageId);
+        pages.splice(i, 1);
       }),
       false
     );
@@ -58,7 +50,8 @@ export default (id, mutate) => ({
   setPageRandomize: async (pageId, randomize) => {
     mutate(
       produce(({ pages }) => {
-        pages[pageId].randomize = randomize;
+        const page = pages.find(({ id }) => id === pageId);
+        page.randomize = randomize;
       }),
       false
     );
@@ -68,9 +61,9 @@ export default (id, mutate) => ({
 
   movePage: async (pageId, source, destination) => {
     mutate(
-      produce(({ pageOrder }) => {
-        const id = pageOrder.splice(source - 1, 1);
-        pageOrder.splice(destination - 1, 0, id);
+      produce(({ pages }) => {
+        const [page] = pages.splice(source - 1, 1);
+        pages.splice(destination - 1, 0, page);
       }),
       false
     );
@@ -82,9 +75,8 @@ export default (id, mutate) => ({
     const tempId = uuid();
     mutate(
       produce(({ pages }) => {
-        const page = pages[pageId];
-        page.components[tempId] = { id: tempId, type, isLoading: true };
-        page.componentOrder.push(tempId);
+        const page = pages.find(({ id }) => id === pageId);
+        page.components.push({ id: tempId, type, isLoading: true });
       }),
       false
     );

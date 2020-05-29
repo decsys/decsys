@@ -5,25 +5,28 @@ import { deleteSurveyPageItem, duplicateSurveyPageItem } from "api/page-items";
 export default (surveyId, pageId, mutate) => ({
   duplicatePageItem: async itemId => {
     mutate(
-      produce(({ pages: { [pageId]: page } }) => {
+      produce(({ pages }) => {
         const newId = uuid();
-        page.components[newId] = {
-          ...page.components[itemId],
+        const page = pages.find(({ id }) => id === pageId);
+        const i = page.components.findIndex(({ id }) => id === itemId);
+        page.components.splice(i + 1, 0, {
+          ...page.components[i],
           id: newId,
           isLoading: true
-        };
-        page.componentOrder.push(newId);
+        });
       }),
       false
     );
     await duplicateSurveyPageItem(surveyId, pageId, itemId);
     mutate();
   },
+
   deletePageItem: async itemId => {
     mutate(
-      produce(({ pages: { [pageId]: page } }) => {
-        const i = page.componentOrder.indexOf(itemId);
-        i >= 0 && page.componentOrder.splice(i, 1);
+      produce(({ pages }) => {
+        const page = pages.find(({ id }) => id === pageId);
+        const i = page.components.findIndex(({ id }) => id === itemId);
+        page.components.splice(i, 1);
       }),
       false
     );

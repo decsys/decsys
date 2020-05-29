@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using AutoMapper;
+
 using Decsys.Data;
 using Decsys.Data.Entities;
+
 using LiteDB;
+
 using Newtonsoft.Json.Linq;
 
 namespace Decsys.Services
@@ -159,7 +163,7 @@ namespace Decsys.Services
             var component = page.Components.ToList().SingleOrDefault(x => x.Id == componentId);
             if (component is null) return false;
 
-            if(component.Type == "image")
+            if (component.Type == "image")
                 _images.RemoveFile(id, pageId, componentId);
 
             var components = page.Components.ToList();
@@ -221,8 +225,9 @@ namespace Decsys.Services
                 ?? throw new KeyNotFoundException("Page could not be found.");
 
             var components = page.Components.ToList();
-            var component = components.SingleOrDefault(x => x.Id == componentId)
-                ?? throw new KeyNotFoundException("Component could not be found.");
+            var i = components.FindIndex(x => x.Id == componentId);
+            if (i < 0) throw new KeyNotFoundException("Component could not be found.");
+            var component = components[i];
 
             // manual deep copy
             var dupe = new Component(component.Type)
@@ -231,11 +236,11 @@ namespace Decsys.Services
                 Order = components.Count + 1,
                 Params = component.Params
             };
-            components.Add(dupe);
+            components.Insert(i + 1, dupe);
 
             _images.CopyFile(id, pageId, componentId, dupe.Id);
 
-            page.Components = components;
+            page.Components = components.Select((x, i) => { x.Order = i + 1; return x; }); ;
 
             survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
             surveys.Update(survey);

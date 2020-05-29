@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using AutoMapper;
+
 using Decsys.Data;
 using Decsys.Data.Entities;
+
 using LiteDB;
 
 namespace Decsys.Services
@@ -137,8 +140,9 @@ namespace Decsys.Services
                 ?? throw new KeyNotFoundException("Survey could not be found.");
 
             var pages = survey.Pages.ToList();
-            var page = pages.SingleOrDefault(x => x.Id == pageId)
-                ?? throw new KeyNotFoundException("Page could not be found.");
+            var iPage = pages.FindIndex(x => x.Id == pageId);
+            if (iPage < 0) throw new KeyNotFoundException("Page could not be found.");
+            var page = pages[iPage];
 
             // blah manual deep copy time, i guess
             var components = page.Components.Select(x => new Component(x.Type)
@@ -154,9 +158,9 @@ namespace Decsys.Services
                 Components = components,
                 Randomize = page.Randomize
             };
-            pages.Add(dupe);
+            pages.Insert(iPage + 1, dupe);
 
-            survey.Pages = pages;
+            survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
             surveys.Update(survey);
 
             var srcComponents = page.Components.OrderBy(x => x.Order).ToList();

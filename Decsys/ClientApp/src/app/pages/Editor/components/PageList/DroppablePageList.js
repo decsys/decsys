@@ -8,7 +8,7 @@ import { PageItemActionsProvider } from "../../contexts/PageItemActions";
 import { usePageListActions } from "../../contexts/PageListActions";
 
 const DroppablePageList = ({ isBusy, isPageBusy }) => {
-  const { pages, pageOrder, id: surveyId } = useSurvey();
+  const { pages, id: surveyId } = useSurvey();
   const { mutate } = usePageListActions();
 
   return (
@@ -18,18 +18,15 @@ const DroppablePageList = ({ isBusy, isPageBusy }) => {
           px={4}
           ref={innerRef}
           {...droppableProps}
-          style={{ overflow: "auto" }}
+          height="100%"
+          style={{ overflowY: "scroll" }}
         >
-          {pageOrder.map((id, i) => {
-            const pageBusy = isBusy || pages[id].isLoading || isPageBusy;
-            const actions = pageItemActions(surveyId, id, mutate);
+          {pages.map((page, i) => {
+            const pageBusy = isBusy || page.isLoading || isPageBusy;
+            const actions = pageItemActions(surveyId, page.id, mutate);
             return (
-              <PageItemActionsProvider key={id} value={actions}>
-                <DraggablePage
-                  page={pages[id]}
-                  isBusy={pageBusy}
-                  order={i + 1}
-                />
+              <PageItemActionsProvider key={page.id} value={actions}>
+                <DraggablePage page={page} isBusy={pageBusy} order={i + 1} />
               </PageItemActionsProvider>
             );
           })}
