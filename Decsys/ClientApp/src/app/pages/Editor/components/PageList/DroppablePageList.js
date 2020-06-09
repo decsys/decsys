@@ -5,11 +5,11 @@ import DraggablePage from "./DraggablePage";
 import { Box } from "@chakra-ui/core";
 import pageItemActions from "../../actions/pageItemActions";
 import { PageItemActionsProvider } from "../../contexts/PageItemActions";
-import { usePageListActions } from "../../contexts/PageListActions";
+import { usePageListContext } from "../../contexts/PageList";
 
-const DroppablePageList = ({ isBusy, isPageBusy }) => {
+const DroppablePageList = () => {
   const { pages, id: surveyId } = useSurvey();
-  const { mutate } = usePageListActions();
+  const { mutate } = usePageListContext();
 
   return (
     <Droppable droppableId="page-list" type="PAGE">
@@ -22,11 +22,10 @@ const DroppablePageList = ({ isBusy, isPageBusy }) => {
           style={{ overflowY: "scroll" }}
         >
           {pages.map((page, i) => {
-            const pageBusy = isBusy || page.isLoading || isPageBusy;
             const actions = pageItemActions(surveyId, page.id, mutate);
             return (
               <PageItemActionsProvider key={page.id} value={actions}>
-                <DraggablePage page={page} isBusy={pageBusy} order={i + 1} />
+                <DraggablePage page={page} order={i + 1} />
               </PageItemActionsProvider>
             );
           })}

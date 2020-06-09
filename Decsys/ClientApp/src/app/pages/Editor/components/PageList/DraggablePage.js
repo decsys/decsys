@@ -2,13 +2,61 @@ import React from "react";
 import { Flex, useColorMode } from "@chakra-ui/core";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import PageHeader from "./PageHeader";
-import DraggablePageItem from "./DraggablePageItem";
+import DraggablePageItem, { PageItem } from "./DraggablePageItem";
 import { LoadingIndicator } from "components/core";
+import { usePageListContext } from "../../contexts/PageList";
+
+const DroppableItemList = ({ page }) => {
+  return (
+    <>
+      <Droppable type={`PAGE_ITEM:${page.id}`} droppableId={page.id}>
+        {({ innerRef, droppableProps, placeholder }) => (
+          <Flex ref={innerRef} direction="column" {...droppableProps}>
+            {page.components.map((item, i) => (
+              <DraggablePageItem key={item.id} item={item} order={i + 1} />
+            ))}
+            {placeholder}
+          </Flex>
+        )}
+      </Droppable>
+
+      <Flex ml={8} p={1}>
+        Response item
+      </Flex>
+    </>
+  );
+};
+
+const PlaceholderItemList = ({ page }) => {
+  return (
+    <>
+      {page.components.map((item, i) => (
+        <PageItem key={item.id} item={item} ph={true} />
+      ))}
+      <Flex ml={8} p={1}>
+        Response item
+      </Flex>
+    </>
+  );
+};
+
+const PageContent = ({ page }) => {
+  const { busy } = usePageListContext();
+  if (page.isLoading)
+    return (
+      <Flex justify="center">
+        <LoadingIndicator verb="Adding" noun="page" />
+      </Flex>
+    );
+
+  if (busy.isPageDragging) return <PlaceholderItemList page={page} />;
+
+  return <DroppableItemList page={page} />;
+};
 
 export const Page = ({
   page,
   order,
-  isBusy,
   innerRef,
   draggableProps,
   dragHandleProps,
@@ -28,57 +76,17 @@ export const Page = ({
       transition="box-shadow .2s ease"
       {...draggableProps}
     >
-      <PageHeader
-        page={page}
-        isBusy={isBusy}
-        order={order}
-        dragHandleProps={dragHandleProps}
-      />
+      <PageHeader page={page} order={order} dragHandleProps={dragHandleProps} />
 
-      {!page.isLoading && (
-        <>
-          <Droppable type={`PAGE_ITEM:${page.id}`} droppableId={page.id}>
-            {({ innerRef, droppableProps, placeholder }) => (
-              <Flex ref={innerRef} direction="column" {...droppableProps}>
-                {page.components &&
-                  page.components.map((item, i) => (
-                    <DraggablePageItem
-                      key={item.id}
-                      item={item}
-                      order={i + 1}
-                      isBusy={isBusy}
-                    />
-                  ))}
-                {placeholder}
-              </Flex>
-            )}
-          </Droppable>
-
-          <Flex ml={8} p={1}>
-            Response item
-          </Flex>
-        </>
-      )}
-
-      {page.isLoading && (
-        <Flex justify="center">
-          <LoadingIndicator verb="Adding" noun="page" />
-        </Flex>
-      )}
+      <PageContent page={page} />
     </Flex>
   );
 };
 
-const DraggablePage = ({ page, order, isBusy }) => (
+const DraggablePage = ({ page, order }) => (
   <Draggable draggableId={page.id} index={order}>
     {(provided, snapshot) => (
-      <Page
-        page={page}
-        order={order}
-        isBusy={isBusy}
-        {...provided}
-        {...snapshot}
-      />
+      <Page page={page} order={order} {...provided} {...snapshot} />
     )}
   </Draggable>
 );

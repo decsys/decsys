@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { Flex } from "@chakra-ui/core";
 import { DragDropContext } from "react-beautiful-dnd";
 import Header from "./Header";
 import DroppablePageList from "./DroppablePageList";
-import { usePageListActions } from "../../contexts/PageListActions";
+import { usePageListContext } from "../../contexts/PageList";
 
 const PageList = () => {
-  const [busy, setBusy] = useState({});
-  const { movePage } = usePageListActions();
+  const { movePage, setBusy } = usePageListContext();
 
-  const handleDragStart = ({ type }) => {
-    if (type === "PAGE") setBusy({ list: true });
-    if (type.split(":")[0] === "PAGE_ITEM") setBusy({ page: true });
+  const handleBeforeDragStart = ({ type }) => {
+    if (type === "PAGE") setBusy({ isPageDragging: true });
+    if (type.split(":")[0] === "PAGE_ITEM")
+      setBusy({ isPageItemDragging: true });
   };
 
   const handleDragEnd = ({ draggableId, source, destination }) => {
@@ -27,8 +27,11 @@ const PageList = () => {
     <Flex direction="column" width="100%">
       <Header />
 
-      <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <DroppablePageList isBusy={busy.list} isPageBusy={busy.page} />
+      <DragDropContext
+        onBeforeDragStart={handleBeforeDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <DroppablePageList />
       </DragDropContext>
     </Flex>
   );

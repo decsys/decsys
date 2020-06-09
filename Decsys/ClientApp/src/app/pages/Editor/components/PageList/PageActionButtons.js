@@ -7,8 +7,10 @@ import {
   FaExclamationTriangle
 } from "react-icons/fa";
 import { DotHoverIconButton, ToggleButton } from "components/core";
-import { usePageListActions } from "../../contexts/PageListActions";
+import { usePageListContext } from "../../contexts/PageList";
 import AddContentItemMenu from "./AddContentItemMenu";
+import { some } from "services/flags";
+import PlaceholderDot from "components/core/PlaceholderDot";
 
 const RandomTooltip = ({ isRandom }) => {
   const { colorMode } = useColorMode();
@@ -37,8 +39,40 @@ const RandomTooltip = ({ isRandom }) => {
   );
 };
 
-const PageActionButtons = ({ id, randomize, isBusy }) => {
-  const { deletePage, duplicatePage, setPageRandomize } = usePageListActions();
+const ActionButtons = ({ id }) => {
+  const { deletePage, duplicatePage } = usePageListContext();
+
+  return (
+    <>
+      <AddContentItemMenu id={id} />
+
+      <Tooltip placement="top" hasArrow label="Duplicate this page">
+        <DotHoverIconButton icon={FaCopy} onClick={() => duplicatePage(id)} />
+      </Tooltip>
+
+      <Tooltip placement="top" hasArrow label="Delete this page">
+        <DotHoverIconButton
+          variantColor="red"
+          icon={FaTrash}
+          onClick={() => deletePage(id)}
+        />
+      </Tooltip>
+    </>
+  );
+};
+
+const ActionPlaceholders = () => (
+  <>
+    <PlaceholderDot variantColor="green" p={3} />
+    <PlaceholderDot p={3} />
+    <PlaceholderDot variantColor="red" p={3} />
+  </>
+);
+
+const PageActionButtons = ({ id, randomize, isLoading }) => {
+  const { busy, setPageRandomize } = usePageListContext();
+  const isBusy = isLoading || some(busy);
+
   const handleRandomClick = async e => {
     await setPageRandomize(id, e.target.checked);
   };
@@ -50,10 +84,11 @@ const PageActionButtons = ({ id, randomize, isBusy }) => {
         placement="top"
         hasArrow
         label={<RandomTooltip isRandom={randomize} />}
+        hidden={isBusy}
       >
         <ToggleButton
           variantColor="blue"
-          onClick={handleRandomClick}
+          onClick={!isBusy && handleRandomClick}
           checked={randomize}
           p={0}
           size="sm"
@@ -62,24 +97,7 @@ const PageActionButtons = ({ id, randomize, isBusy }) => {
         </ToggleButton>
       </Tooltip>
 
-      <AddContentItemMenu id={id} isBusy={isBusy} />
-
-      <Tooltip placement="top" hasArrow label="Duplicate this page">
-        <DotHoverIconButton
-          disableHover={isBusy}
-          icon={FaCopy}
-          onClick={() => duplicatePage(id)}
-        />
-      </Tooltip>
-
-      <Tooltip placement="top" hasArrow label="Delete this page">
-        <DotHoverIconButton
-          disableHover={isBusy}
-          variantColor="red"
-          icon={FaTrash}
-          onClick={() => deletePage(id)}
-        />
-      </Tooltip>
+      {isBusy ? <ActionPlaceholders /> : <ActionButtons id={id} />}
     </Flex>
   );
 };

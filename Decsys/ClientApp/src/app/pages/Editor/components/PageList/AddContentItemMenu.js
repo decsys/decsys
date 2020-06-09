@@ -17,10 +17,10 @@ import {
   FaArrowsAltV
 } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
-import { usePageListActions } from "../../contexts/PageListActions";
+import { usePageListContext } from "../../contexts/PageList";
 
-const AddContentItemMenu = ({ id, isBusy }) => {
-  const { addItemToPage } = usePageListActions();
+const AddContentItemMenu = ({ id }) => {
+  const { addItemToPage } = usePageListContext();
 
   const handleItemClick = type => {
     addItemToPage(id, type);
@@ -42,10 +42,10 @@ const AddContentItemMenu = ({ id, isBusy }) => {
         >
           <PseudoBox
             display="none"
-            _groupHover={!isBusy && { display: "inherit" }}
+            _groupHover={{ display: "inherit" }}
             as={FaPlus}
           />
-          <PseudoBox _groupHover={!isBusy && { display: "none" }} as={BsDot} />
+          <PseudoBox _groupHover={{ display: "none" }} as={BsDot} />
         </MenuButton>
       </Tooltip>
 

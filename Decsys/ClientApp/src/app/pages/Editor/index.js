@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Grid, Flex } from "@chakra-ui/core";
 import PageList from "./components/PageList";
 import EditorBar from "./components/EditorBar";
@@ -8,13 +8,25 @@ import { SurveyProvider } from "app/contexts/Survey";
 import { EditorBarContextProvider } from "./contexts/EditorBar";
 import { Page } from "components/core";
 import pageListActions from "./actions/pageListActions";
-import { PageListActionsProvider } from "./contexts/PageListActions";
+import { PageListContextProvider } from "./contexts/PageList";
 
 const Editor = ({ id, navigate }) => {
   const { data: survey, mutate } = useSurvey(id);
+
   const [nameState, setNameState] = useState({});
-  const EditorBarActions = editorBarActions(id, navigate, mutate, setNameState);
-  const PageListActions = pageListActions(id, mutate);
+  const [busy, setBusy] = useState({});
+
+  const EditorBarActions = useMemo(
+    () => editorBarActions(id, navigate, mutate, setNameState),
+    [id, navigate, mutate, setNameState]
+  );
+  const editorBarContext = { ...EditorBarActions, nameState };
+
+  const PageListActions = useMemo(() => pageListActions(id, mutate), [
+    id,
+    mutate
+  ]);
+  const pageListContext = { ...PageListActions, busy, setBusy };
 
   return (
     <Page layout={null}>
@@ -27,17 +39,15 @@ const Editor = ({ id, navigate }) => {
           style={{ height: "100vh" }}
         >
           <Flex boxShadow="section-h" gridColumn="span 2">
-            <EditorBarContextProvider
-              value={{ ...EditorBarActions, nameState }}
-            >
+            <EditorBarContextProvider value={editorBarContext}>
               <EditorBar {...survey} />
             </EditorBarContextProvider>
           </Flex>
 
           <Flex boxShadow="section-v" gridRow="span 2">
-            <PageListActionsProvider value={PageListActions}>
+            <PageListContextProvider value={pageListContext}>
               <PageList />
-            </PageListActionsProvider>
+            </PageListContextProvider>
           </Flex>
 
           <Flex>Page Editor</Flex>

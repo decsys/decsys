@@ -14,7 +14,7 @@ export default (id, mutate) => ({
     const tempId = uuid();
     mutate(
       produce(({ pages }) => {
-        pages.push({ id: tempId, isLoading: true });
+        pages.push({ id: tempId, components: [], isLoading: true });
       }),
       false
     );

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-const PageListActionsContext = createContext({
+const PageListContext = createContext({
   addPage: () => {},
   deletePage: pageId => {},
   duplicatePage: pageId => {},
@@ -8,9 +8,14 @@ const PageListActionsContext = createContext({
   movePage: (pageId, source, destination) => {},
   addItemToPage: (pageId, type) => {},
   movePageItem: (pageId, itemId, source, destination) => {},
-  mutate: () => {}
+  mutate: () => {},
+  busy: {
+    isPageDragging: false,
+    isPageItemDragging: false
+  },
+  setBusy: ({ isPageDragging, isPageItemDragging }) => {}
 });
 
-export const usePageListActions = () => useContext(PageListActionsContext);
+export const usePageListContext = () => useContext(PageListContext);
 
-export const PageListActionsProvider = PageListActionsContext.Provider;
+export const PageListContextProvider = PageListContext.Provider;

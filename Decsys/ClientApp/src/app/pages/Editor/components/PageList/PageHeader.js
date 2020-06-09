@@ -4,7 +4,7 @@ import LightHeading from "components/core/LightHeading";
 import { FaGripVertical } from "react-icons/fa";
 import PageActionButtons from "./PageActionButtons";
 
-const PageHeader = ({ page, order, isBusy, dragHandleProps }) => {
+const PageHeader = ({ page, order, dragHandleProps }) => {
   const { colorMode } = useColorMode();
   const headerStyle = { light: { bg: "gray.300" }, dark: { bg: "gray.600" } };
   return (
@@ -24,7 +24,7 @@ const PageHeader = ({ page, order, isBusy, dragHandleProps }) => {
         </LightHeading>
       </Flex>
 
-      <PageActionButtons {...page} isBusy={isBusy} />
+      <PageActionButtons {...page} />
     </Flex>
   );
 };

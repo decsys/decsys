@@ -2,10 +2,10 @@ import React from "react";
 import { Button, Flex } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import { FaPlus } from "react-icons/fa";
-import { usePageListActions } from "../../contexts/PageListActions";
+import { usePageListContext } from "../../contexts/PageList";
 
 const Header = () => {
-  const { addPage } = usePageListActions();
+  const { addPage } = usePageListContext();
   return (
     <Flex p={4} justify="space-between" align="center">
       <LightHeading size="lg">Survey Pages</LightHeading>
