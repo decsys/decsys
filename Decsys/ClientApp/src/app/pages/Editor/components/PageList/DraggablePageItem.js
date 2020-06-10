@@ -1,6 +1,6 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { Flex, Box, PseudoBox, useColorMode } from "@chakra-ui/core";
+import { Flex, Box, PseudoBox, useColorMode, Text } from "@chakra-ui/core";
 import {
   FaHeading,
   FaParagraph,
@@ -42,7 +42,7 @@ const ItemInfo = ({ type, id, dragHandleProps, isBusy }) => (
       {<Box as={isBusy ? BsDot : FaGripVertical} color="gray.500" />}
     </Flex>
     <ItemIcon type={type} />
-    {id}
+    <Text isTruncated>{id}</Text>
   </Flex>
 );
 
