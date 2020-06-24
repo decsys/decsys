@@ -4,7 +4,7 @@ import {
   deleteSurveyPage,
   duplicateSurveyPage,
   setPageRandomize,
-  addSurveyPageItem
+  addSurveyPageItem,
 } from "api/pages";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
@@ -22,7 +22,7 @@ export default (id, mutate) => ({
     mutate();
   },
 
-  duplicatePage: async pageId => {
+  duplicatePage: async (pageId) => {
     mutate(
       produce(({ pages }) => {
         const newId = uuid();
@@ -35,7 +35,7 @@ export default (id, mutate) => ({
     mutate();
   },
 
-  deletePage: async pageId => {
+  deletePage: async (pageId) => {
     mutate(
       produce(({ pages }) => {
         const i = pages.findIndex(({ id }) => id === pageId);
@@ -85,5 +85,5 @@ export default (id, mutate) => ({
   },
 
   movePageItem: (pageId, itemId, source, destination) => {},
-  mutate
+  mutate,
 });

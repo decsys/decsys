@@ -9,7 +9,18 @@ import { usePageListContext } from "../../contexts/PageList";
 const DroppableItemList = ({ page }) => {
   return (
     <>
-      <Droppable type={`PAGE_ITEM:${page.id}`} droppableId={page.id}>
+      <Droppable
+        type={`PAGE_ITEM:${page.id}`}
+        droppableId={page.id}
+        renderClone={(provided, snapshot, { source: { index } }) => (
+          <PageItem
+            item={page.components[index - 1]}
+            order={index}
+            {...provided}
+            {...snapshot}
+          />
+        )}
+      >
         {({ innerRef, droppableProps, placeholder }) => (
           <Flex ref={innerRef} direction="column" {...droppableProps}>
             {page.components.map((item, i) => (
@@ -31,7 +42,7 @@ const PlaceholderItemList = ({ page }) => {
   return (
     <>
       {page.components.map((item, i) => (
-        <PageItem key={item.id} item={item} ph={true} />
+        <PageItem key={item.id} item={item} />
       ))}
       <Flex ml={8} p={1}>
         Response item
@@ -69,6 +80,7 @@ export const Page = ({
     <Flex
       direction="column"
       mb={2}
+      mx={4}
       borderRadius={5}
       {...cardStyle[colorMode]}
       ref={innerRef}

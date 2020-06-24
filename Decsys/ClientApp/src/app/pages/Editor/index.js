@@ -35,8 +35,7 @@ const Editor = ({ id, navigate }) => {
           templateColumns="2fr 5fr"
           templateRows="auto minmax(200px, 2fr) minmax(200px, 1fr)"
           gap={0}
-          height="100%"
-          style={{ height: "100vh" }}
+          height="100vh"
         >
           <Flex boxShadow="section-h" gridColumn="span 2">
             <EditorBarContextProvider value={editorBarContext}>

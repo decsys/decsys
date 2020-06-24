@@ -13,12 +13,12 @@ const basePageHeight = 80;
 const pageItemHeight = 32;
 
 /** calculate the height of a page based on the known height per page item, and the rest of the page */
-const getPageHeight = counts => i =>
+const getPageHeight = (counts) => (i) =>
   basePageHeight + pageItemHeight * counts[i];
 
 /** split the heights of all pages evenly, so the whole list is the correct height */
 const getPageHeightEstimate = (pageCount, pageItemCounts) => {
-  const totalItems = pageItemCounts.reduce((a, c) => a + c);
+  const totalItems = pageItemCounts.reduce((a, c) => a + c, 0);
   return basePageHeight + (pageItemHeight * totalItems) / pageCount;
 };
 
@@ -39,7 +39,7 @@ const DroppablePageList = () => {
   const { pages, id: surveyId } = useSurvey();
   const { mutate } = usePageListContext();
 
-  const pageItemCounts = pages.map(p => p.components.length);
+  const pageItemCounts = pages.map((p) => p.components.length);
 
   return (
     <Box height="100%">
@@ -62,6 +62,7 @@ const DroppablePageList = () => {
               <VariableSizeList
                 height={height}
                 width={width}
+                itemKey={(i, { pages }) => pages[i].id}
                 itemCount={pages.length}
                 estimatedItemSize={getPageHeightEstimate(
                   pages.length,
@@ -70,6 +71,7 @@ const DroppablePageList = () => {
                 itemSize={getPageHeight(pageItemCounts)}
                 itemData={{ pages, surveyId, mutate }}
                 outerRef={innerRef}
+                style={{ overflowY: "scroll" }}
               >
                 {Row}
               </VariableSizeList>
