@@ -8,14 +8,20 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CS8618;CS8600;CS8602;CS8603</WarningsAsErrors>
-    
+
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    
+
     <IsPackable>false</IsPackable>
-    <SpaRoot>../client-app/</SpaRoot>
+    <SpaSource>../client-app/</SpaSource>
+    <SpaDist>ClientApp/</SpaDist>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Don't show built SPA files in VS if they are present locally -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);ClientApp/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -60,22 +66,32 @@
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
     <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+
+    <!-- npm install for the SPA on Debug runs, in case it hasn't been done outside VS/dotnet -->
+    <Exec WorkingDirectory="$(SpaSource)" Command="npm install" />
   </Target>
 
-  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
-    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-    <!-- <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" /> -->
-
+  <Target Name="PublishIncludeSpaBuild" AfterTargets="ComputeFilesToPublish">
     <!-- 
-    Actually, We run the webpack build ourselves in CI,
-    so we just need the publish inclusion below
+    Unlike the ASP.NET Core Template, which runs the Webpack build on publish,
+    we do the client app build independently in parallel during CI.
+    So this process appears more manual (but is automated in CI instead).
+    
+    The resulting publish steps are therefore:
+    1. `npm run build` in `$(SpaSource)`
+    2. Copy the built output from `$(SpaSource)/build` to `$(SpaDist)`
+         - in CI this looks like the artifact output from step 1
+           being downloaded to $(SpaDist) in the working directory for step 3
+    3. `dotnet publish`, which will run this Target
+       and include the files from `$(SpaDist)` in the publish output
+       
+    CI should therefore take care of the build steps, and copying the output
+    to the right place before publishing.
     -->
 
-    <!-- Include the newly-built files in the publish output -->
+    <!-- Include the SPA build files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="$(SpaRoot)build\**" />
+      <DistFiles Include="$(SpaDist)**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
         <RelativePath>%(DistFiles.Identity)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

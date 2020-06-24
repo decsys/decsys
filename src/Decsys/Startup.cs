@@ -86,7 +86,7 @@ namespace Decsys
                 .AddNewtonsoftJson();
 
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(o => o.RootPath = "client-app/build");
+            services.AddSpaStaticFiles(o => o.RootPath = "ClientApp");
 
             services.AddAutoMapper(typeof(Startup));
 

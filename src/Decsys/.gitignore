@@ -1,0 +1,14 @@
+# Built SPA files for publishing
+ClientApp/
+
+# app-data when using a local datastore
+local-data/
+
+# additional version information, usually from build process
+version.txt
+
+# non-shipped components
+components/
+
+# published (built) version of docs
+wwwroot/docs/
