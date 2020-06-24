@@ -13,7 +13,7 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     
     <IsPackable>false</IsPackable>
-    <SpaRoot>ClientApp\</SpaRoot>
+    <SpaRoot>../client-app/</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
@@ -32,13 +32,6 @@
     <PackageReference Include="UoN.AspNetCore.VersionMiddleware" Version="1.1.1" />
     <PackageReference Include="UoN.VersionInformation.DependencyInjection" Version="1.0.0" />
     <PackageReference Include="UoN.ZipBuilder" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Don't publish the SPA source files, but do show them in the project files list -->
-    <Content Remove="$(SpaRoot)**" />
-    <None Remove="$(SpaRoot)**" />
-    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
