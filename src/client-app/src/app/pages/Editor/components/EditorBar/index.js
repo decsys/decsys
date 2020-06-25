@@ -9,8 +9,10 @@ import {
 } from "./Buttons";
 import ToggleColorModeButton from "components/core/ToggleColorModeButton";
 import NameInput from "./NameInput";
+import { useFetchSurvey } from "app/contexts/FetchSurvey";
 
-const EditorBar = ({ id, name }) => {
+const EditorBar = () => {
+  const { id, name } = useFetchSurvey();
   const { colorMode } = useColorMode();
   const bg = { light: "gray.800" };
 

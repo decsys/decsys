@@ -1,11 +1,11 @@
 import React, { memo } from "react";
 import { Droppable } from "react-beautiful-dnd";
-import { useSurvey } from "app/contexts/Survey";
 import DraggablePage, { Page } from "./DraggablePage";
 import { Box } from "@chakra-ui/core";
 import pageItemActions from "../../actions/pageItemActions";
 import { PageItemActionsProvider } from "../../contexts/PageItemActions";
 import { usePageListContext } from "../../contexts/PageList";
+import { useFetchSurvey } from "app/contexts/FetchSurvey";
 
 const Row = memo(
   ({ data, index: i, style }) => {
@@ -27,7 +27,7 @@ const Row = memo(
 );
 
 const DroppablePageList = () => {
-  const { pages, id: surveyId } = useSurvey();
+  const { pages, id: surveyId } = useFetchSurvey();
   const { mutate } = usePageListContext();
   const getPageItemActions = pageId =>
     pageItemActions(surveyId, pageId, mutate);

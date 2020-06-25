@@ -32,5 +32,7 @@ export default (surveyId, pageId, mutate) => ({
     );
     await deleteSurveyPageItem(surveyId, pageId, itemId);
     mutate();
-  }
+  },
+
+  setParamValue: async (itemId, paramKey, value) => {}
 });

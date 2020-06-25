@@ -1,15 +1,11 @@
 import React from "react";
 
-const ComponentRender = ({ component, params, actions }) => {
-  // short circuit
-  if (!component) return null;
-
-  // set to a constructable version for JSX
-  const Component = component;
+const ComponentRender = ({ component: Component, params, actions }) => {
+  if (!Component) return null;
 
   // merge default Params and set ones
-  const defaults = Object.keys(component.params).reduce((agg, x) => {
-    agg[x] = component.params[x].defaultValue;
+  const defaults = Object.keys(Component.params).reduce((agg, x) => {
+    agg[x] = Component.params[x].defaultValue;
     return agg;
   }, {});
 

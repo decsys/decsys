@@ -13,6 +13,11 @@ export const useSurveysList = () =>
     { suspense: true }
   );
 
+/**
+ * Fetch a single Survey from the API using SWR
+ * @param {*} id The ID of the Survey to fetch
+ * @returns `{data, mutate}`
+ */
 export const useSurvey = id =>
   useSWR(`/api/surveys/${id}`, defaultFetcher, { suspense: true });
 
