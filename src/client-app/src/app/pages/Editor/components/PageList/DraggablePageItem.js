@@ -119,7 +119,7 @@ export const PageItem = ({
 
 const DraggablePageItem = ({ item, order }) => {
   return (
-    <Draggable draggableId={item.id} index={order}>
+    <Draggable draggableId={item.id} index={order - 1}>
       {(provided, snapshot) => (
         <PageItem item={item} {...provided} {...snapshot} />
       )}

@@ -14,8 +14,8 @@ const DroppableItemList = ({ page }) => {
         droppableId={page.id}
         renderClone={(provided, snapshot, { source: { index } }) => (
           <PageItem
-            item={page.components[index - 1]}
-            order={index}
+            item={page.components[index]}
+            order={index + 1}
             {...provided}
             {...snapshot}
           />

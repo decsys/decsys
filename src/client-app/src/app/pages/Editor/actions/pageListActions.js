@@ -4,8 +4,9 @@ import {
   deleteSurveyPage,
   duplicateSurveyPage,
   setPageRandomize,
-  addSurveyPageItem,
+  addSurveyPageItem
 } from "api/pages";
+import { setSurveyPageItemOrder } from "api/page-items";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
 
@@ -22,7 +23,7 @@ export default (id, mutate) => ({
     mutate();
   },
 
-  duplicatePage: async (pageId) => {
+  duplicatePage: async pageId => {
     mutate(
       produce(({ pages }) => {
         const newId = uuid();
@@ -35,7 +36,7 @@ export default (id, mutate) => ({
     mutate();
   },
 
-  deletePage: async (pageId) => {
+  deletePage: async pageId => {
     mutate(
       produce(({ pages }) => {
         const i = pages.findIndex(({ id }) => id === pageId);
@@ -62,12 +63,12 @@ export default (id, mutate) => ({
   movePage: async (pageId, source, destination) => {
     mutate(
       produce(({ pages }) => {
-        const [page] = pages.splice(source - 1, 1);
-        pages.splice(destination - 1, 0, page);
+        const [page] = pages.splice(source, 1);
+        pages.splice(destination, 0, page);
       }),
       false
     );
-    await setSurveyPageOrder(id, pageId, destination);
+    await setSurveyPageOrder(id, pageId, destination + 1);
     mutate();
   },
 
@@ -84,6 +85,18 @@ export default (id, mutate) => ({
     mutate();
   },
 
-  movePageItem: (pageId, itemId, source, destination) => {},
-  mutate,
+  // This has to be here because it's used higher up than the PageItemActions Context
+  movePageItem: async (pageId, itemId, source, destination) => {
+    mutate(
+      produce(({ pages }) => {
+        const { components: pageItems } = pages.find(({ id }) => id === pageId);
+        const [item] = pageItems.splice(source, 1);
+        pageItems.splice(destination, 0, item);
+      }),
+      false
+    );
+    await setSurveyPageItemOrder(id, pageId, itemId, destination + 1);
+    mutate();
+  },
+  mutate
 });
