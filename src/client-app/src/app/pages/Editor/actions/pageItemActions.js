@@ -1,6 +1,10 @@
 import produce from "immer";
 import { v4 as uuid } from "uuid";
-import { deleteSurveyPageItem, duplicateSurveyPageItem } from "api/page-items";
+import {
+  deleteSurveyPageItem,
+  duplicateSurveyPageItem,
+  setSurveyPageItemParam
+} from "api/page-items";
 
 export default (
   surveyId,
@@ -49,6 +53,15 @@ export default (
     mutate();
   },
   setParamValue: async (itemId, paramKey, value) => {
-    console.log(itemId, paramKey, value);
+    mutate(
+      produce(({ pages }) => {
+        const page = pages.find(({ id }) => id === pageId);
+        const item = page.components.find(({ id }) => id === itemId);
+        item.params[paramKey] = value;
+      }),
+      false
+    );
+    await setSurveyPageItemParam(surveyId, pageId, itemId, paramKey, value);
+    mutate();
   }
 });

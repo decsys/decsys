@@ -25,6 +25,8 @@ const builtInIcons = {
   spacer: FaArrowsAltV
 };
 
+const capitalise = s => `${s[0].toUpperCase()}${s.substring(1)}`;
+
 const ItemIcon = ({ type }) => {
   const Icon = builtInIcons[type] || FaQuestion;
   //TODO: response item icons
@@ -36,7 +38,13 @@ const ItemIcon = ({ type }) => {
   );
 };
 
-const ItemInfo = ({ type, id, dragHandleProps, isBusy, onSelect }) => (
+const ItemInfo = ({
+  type,
+  params: { text },
+  dragHandleProps,
+  isBusy,
+  onSelect
+}) => (
   <Flex
     ml={8}
     align="center"
@@ -48,7 +56,9 @@ const ItemInfo = ({ type, id, dragHandleProps, isBusy, onSelect }) => (
       {<Box as={isBusy ? BsDot : FaGripVertical} color="gray.500" />}
     </Flex>
     <ItemIcon type={type} />
-    <Text isTruncated>{id}</Text>
+    <Text as={!text ? "em" : "p"} isTruncated>
+      {text ?? capitalise(type)}
+    </Text>
   </Flex>
 );
 

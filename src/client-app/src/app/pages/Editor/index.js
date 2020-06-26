@@ -1,15 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Flex } from "@chakra-ui/core";
 import PageList from "./components/PageList";
 import EditorBar from "./components/EditorBar";
-import { Page } from "components/core";
+import { Page, EmptyState } from "components/core";
 import { SurveyEditorContextProvider } from "./contexts/SurveyEditor";
+import { usePageListContext } from "./contexts/PageList";
 import PagePreview from "./components/PagePreview";
+import { FaFileAlt } from "react-icons/fa";
+import { useFetchSurvey } from "app/contexts/FetchSurvey";
+import PageItemEditor from "./components/PageItemEditor";
+
+const NoPages = ({ addPage }) => (
+  <EmptyState
+    message="Get your Survey started with a new Page"
+    splash={FaFileAlt}
+    callToAction={{
+      label: "Add a Page",
+      onClick: addPage
+    }}
+  />
+);
+
+const NoSelection = () => {
+  const { pages } = useFetchSurvey();
+  const { addPage } = usePageListContext();
+  if (!pages?.length) return <NoPages addPage={addPage} />;
+  return <EmptyState message="Select a Page Item to edit" />;
+};
 
 const Editor = ({ id, navigate }) => {
+  // This is top level state, since we use it here,
+  // we ultimately expose it to children through the PageList context
+  const [selectedPageItem, setSelectedPageItem] = useState({
+    pageId: undefined,
+    itemId: undefined
+  });
+
   return (
     <Page layout={null}>
-      <SurveyEditorContextProvider id={id} navigate={navigate}>
+      <SurveyEditorContextProvider
+        id={id}
+        navigate={navigate}
+        selectedPageItem={selectedPageItem}
+        setSelectedPageItem={setSelectedPageItem}
+      >
         <Grid
           templateColumns="2fr 5fr"
           templateRows="auto minmax(200px, 2fr) minmax(200px, 1fr)"
@@ -24,10 +58,20 @@ const Editor = ({ id, navigate }) => {
             <PageList />
           </Flex>
 
-          <Flex>
-            <PagePreview />
-          </Flex>
-          <Flex>Params Editor</Flex>
+          {!selectedPageItem?.pageId ? (
+            <Flex gridRow="span 2">
+              <NoSelection />
+            </Flex>
+          ) : (
+            <>
+              <Flex overflowY="auto">
+                <PagePreview />
+              </Flex>
+              <Flex overflowY="auto">
+                <PageItemEditor />
+              </Flex>
+            </>
+          )}
         </Grid>
       </SurveyEditorContextProvider>
     </Page>

@@ -15,3 +15,17 @@ export const setSurveyPageItemOrder = (surveyId, pageId, itemId, newOrder) =>
     newOrder,
     appJsonHeaderOptions
   );
+
+export const setSurveyPageItemParam = (
+  surveyId,
+  pageId,
+  componentId,
+  paramKey,
+  value
+) =>
+  axios.patch(
+    `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/params`,
+    {
+      [paramKey]: value
+    }
+  );

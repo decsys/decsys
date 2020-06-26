@@ -24,13 +24,14 @@ const PageListContext = createContext(defaults);
 
 export const usePageListContext = () => useContext(PageListContext);
 
-export const PageListContextProvider = ({ children }) => {
+export const PageListContextProvider = ({
+  selectedPageItem,
+  setSelectedPageItem,
+  children
+}) => {
   const { id, mutate } = useFetchSurvey();
 
   const [busy, setBusy] = useState(defaults.busy);
-  const [selectedPageItem, setSelectedPageItem] = useState(
-    defaults.selectedPageItem
-  );
   const PageListActions = useMemo(
     () => pageListActions(id, mutate, selectedPageItem, setSelectedPageItem),
     [id, mutate, selectedPageItem, setSelectedPageItem]

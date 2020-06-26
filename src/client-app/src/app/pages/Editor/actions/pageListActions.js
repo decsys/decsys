@@ -78,16 +78,14 @@ export default (id, mutate, selectedPageItem, setSelectedPageItem) => ({
     mutate(
       produce(({ pages }) => {
         const page = pages.find(({ id }) => id === pageId);
-        page.components.push({ id: tempId, type, isLoading: true });
-        if (!selectedPageItem?.itemId)
-          setSelectedPageItem({ pageId, itemId: tempId });
+        page.components.push({ id: tempId, type, isLoading: true, params: {} });
       }),
       false
     );
-    const itemId = await addSurveyPageItem(id, pageId, type);
+    const { data } = await addSurveyPageItem(id, pageId, type);
     mutate();
-    if (selectedPageItem.itemId === tempId)
-      setSelectedPageItem({ pageId, itemId });
+    if (!selectedPageItem?.itemId)
+      setSelectedPageItem({ pageId, itemId: data.id });
   },
 
   // This has to be here because it's used higher up than the PageItemActions Context

@@ -8,11 +8,22 @@ import { PageListContextProvider } from "./PageList";
 
 // This wraps up all the other more specific (but still top level)
 // context providers used by the editor, as well as providing their values
-export const SurveyEditorContextProvider = ({ id, navigate, children }) => {
+export const SurveyEditorContextProvider = ({
+  id,
+  navigate,
+  selectedPageItem,
+  setSelectedPageItem,
+  children
+}) => {
   return (
     <FetchSurveyProvider id={id}>
       <EditorBarContextProvider navigate={navigate}>
-        <PageListContextProvider>{children}</PageListContextProvider>
+        <PageListContextProvider
+          selectedPageItem={selectedPageItem}
+          setSelectedPageItem={setSelectedPageItem}
+        >
+          {children}
+        </PageListContextProvider>
       </EditorBarContextProvider>
     </FetchSurveyProvider>
   );
