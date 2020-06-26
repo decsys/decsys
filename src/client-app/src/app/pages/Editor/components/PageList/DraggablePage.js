@@ -14,6 +14,7 @@ const DroppableItemList = ({ page }) => {
         droppableId={page.id}
         renderClone={(provided, snapshot, { source: { index } }) => (
           <PageItem
+            pageId={page.id}
             item={page.components[index]}
             order={index + 1}
             {...provided}
@@ -24,7 +25,12 @@ const DroppableItemList = ({ page }) => {
         {({ innerRef, droppableProps, placeholder }) => (
           <Flex ref={innerRef} direction="column" {...droppableProps}>
             {page.components.map((item, i) => (
-              <DraggablePageItem key={item.id} item={item} order={i + 1} />
+              <DraggablePageItem
+                pageId={page.id}
+                key={item.id}
+                item={item}
+                order={i + 1}
+              />
             ))}
             {placeholder}
           </Flex>

@@ -28,9 +28,19 @@ const Row = memo(
 
 const DroppablePageList = () => {
   const { pages, id: surveyId } = useFetchSurvey();
-  const { mutate } = usePageListContext();
+  const {
+    mutate,
+    selectedPageItem,
+    setSelectedPageItem
+  } = usePageListContext();
   const getPageItemActions = pageId =>
-    pageItemActions(surveyId, pageId, mutate);
+    pageItemActions(
+      surveyId,
+      pageId,
+      mutate,
+      selectedPageItem,
+      setSelectedPageItem
+    );
 
   return (
     <Droppable

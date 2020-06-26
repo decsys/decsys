@@ -4,6 +4,7 @@ import PageList from "./components/PageList";
 import EditorBar from "./components/EditorBar";
 import { Page } from "components/core";
 import { SurveyEditorContextProvider } from "./contexts/SurveyEditor";
+import PagePreview from "./components/PagePreview";
 
 const Editor = ({ id, navigate }) => {
   return (
@@ -23,7 +24,9 @@ const Editor = ({ id, navigate }) => {
             <PageList />
           </Flex>
 
-          <Flex>Page Editor</Flex>
+          <Flex>
+            <PagePreview />
+          </Flex>
           <Flex>Params Editor</Flex>
         </Grid>
       </SurveyEditorContextProvider>

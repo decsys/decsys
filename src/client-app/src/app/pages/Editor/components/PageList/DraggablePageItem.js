@@ -36,8 +36,14 @@ const ItemIcon = ({ type }) => {
   );
 };
 
-const ItemInfo = ({ type, id, dragHandleProps, isBusy }) => (
-  <Flex ml={8} align="center" {...dragHandleProps} width="100%">
+const ItemInfo = ({ type, id, dragHandleProps, isBusy, onSelect }) => (
+  <Flex
+    ml={8}
+    align="center"
+    width="100%"
+    {...dragHandleProps}
+    onClick={onSelect}
+  >
     <Flex width="1.5em" justify="center">
       {<Box as={isBusy ? BsDot : FaGripVertical} color="gray.500" />}
     </Flex>
@@ -77,6 +83,7 @@ const ItemActionPlaceholders = () => {
 };
 
 export const PageItem = ({
+  pageId,
   item,
   innerRef,
   draggableProps = {},
@@ -84,19 +91,25 @@ export const PageItem = ({
   isDragging
 }) => {
   const actions = usePageItemActions();
-  const { busy } = usePageListContext();
+  const { busy, selectedPageItem, setSelectedPageItem } = usePageListContext();
   const isBusy = item.isLoading || some(busy);
+  const isSelected = selectedPageItem.itemId === item.id;
 
   const { colorMode } = useColorMode();
   const selectStyle = {
     light: { bg: "blue.200" },
     dark: { bg: "blue.700" }
   };
+
+  const handleSelect = () => {
+    setSelectedPageItem({ pageId, itemId: item.id });
+  };
+
   return (
     <PseudoBox
       as={Flex}
       ref={innerRef}
-      bg={isDragging ? selectStyle[colorMode].bg : "inherit"}
+      bg={isDragging || isSelected ? selectStyle[colorMode].bg : "inherit"}
       _hover={isBusy ? {} : { ...selectStyle[colorMode] }}
       transition="background-color .1s ease"
       {...draggableProps}
@@ -106,6 +119,7 @@ export const PageItem = ({
         isBusy={busy.isPageDragging}
         {...item}
         dragHandleProps={dragHandleProps}
+        onSelect={handleSelect}
       />
 
       {some(busy) ? (
@@ -117,11 +131,11 @@ export const PageItem = ({
   );
 };
 
-const DraggablePageItem = ({ item, order }) => {
+const DraggablePageItem = ({ item, order, pageId }) => {
   return (
     <Draggable draggableId={item.id} index={order - 1}>
       {(provided, snapshot) => (
-        <PageItem item={item} {...provided} {...snapshot} />
+        <PageItem pageId={pageId} item={item} {...provided} {...snapshot} />
       )}
     </Draggable>
   );

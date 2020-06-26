@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useMemo } from "react";
 import pageListActions from "../actions/pageListActions";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 
-const PageListContext = createContext({
+const defaults = {
   addPage: () => {},
   deletePage: pageId => {},
   duplicatePage: pageId => {},
@@ -16,21 +16,25 @@ const PageListContext = createContext({
     isPageItemDragging: false
   },
   setBusy: ({ isPageDragging, isPageItemDragging }) => {},
-  selectedPageItem: null,
-  setSelectedPageItem: itemId => {}
-});
+  selectedPageItem: { pageId: undefined, itemId: undefined },
+  setSelectedPageItem: ({ pageId, itemId }) => {}
+};
+
+const PageListContext = createContext(defaults);
 
 export const usePageListContext = () => useContext(PageListContext);
 
 export const PageListContextProvider = ({ children }) => {
   const { id, mutate } = useFetchSurvey();
 
-  const [busy, setBusy] = useState({});
-  const [selectedPageItem, setSelectedPageItem] = useState(null);
-  const PageListActions = useMemo(() => pageListActions(id, mutate), [
-    id,
-    mutate
-  ]);
+  const [busy, setBusy] = useState(defaults.busy);
+  const [selectedPageItem, setSelectedPageItem] = useState(
+    defaults.selectedPageItem
+  );
+  const PageListActions = useMemo(
+    () => pageListActions(id, mutate, selectedPageItem, setSelectedPageItem),
+    [id, mutate, selectedPageItem, setSelectedPageItem]
+  );
 
   const value = {
     ...PageListActions,
