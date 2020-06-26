@@ -1,32 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { FlexBox } from "components/core";
 import {
-  Input,
+  SmoothInput,
   Checkbox,
   Radio,
   FormCheck,
   FormCheckLabel
 } from "@smooth-ui/core-sc";
 import { types } from "@decsys/param-types";
+import { Input } from "@chakra-ui/core";
 
-// const useDelayedChangeHandler = (init) => {
-//   const [timer, setTimer] = useState();
+const useDelayedChangeHandler = (paramKey, init, onChange) => {
+  const [timer, setTimer] = useState();
 
-//   const [value, setValue] = useState(init); // we use local state so updates work without delay
-//   useEffect(() => setValue(value), [value]); // but still ensure update when new name props come in
+  const [value, setValue] = useState(init); // we use local state so updates work without delay
+  useEffect(() => setValue(init), [init]); // but still ensure update when new props come in
 
-//   const delayedHandleValueChange = e => {
-//     setText(e.target.value); //update local state
-//     e.persist();
-//     //delay, then fire the onChange passed in
-//     clearTimeout(timer); // reset the delay timer every change
-//     setTimer(setTimeout(() => onChange(paramKey, e.target.value), 500));
-//   };
-// }
+  const delayedHandleValueChange = e => {
+    setValue(e.target.value); //update local state
+    e.persist();
+    //delay, then fire the onChange passed in
+    clearTimeout(timer); // reset the delay timer every change
+    setTimer(setTimeout(() => onChange(paramKey, e.target.value), 500));
+  };
 
-// const StandardInput = () => {
+  return [value, delayedHandleValueChange];
+};
 
-// }
+const StandardInput = ({
+  paramKey,
+  value: init,
+  onChange,
+  inputType = "text",
+  ...p
+}) => {
+  const [value, handleChange] = useDelayedChangeHandler(
+    paramKey,
+    init,
+    onChange
+  );
+
+  return (
+    <Input
+      size="sm"
+      type={inputType}
+      onChange={handleChange}
+      value={value}
+      {...p}
+    />
+  );
+};
 
 const Param = ({ paramKey, value, type, oneOf, onChange }) => {
   const [timer, setTimer] = useState();
@@ -55,11 +78,10 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
     switch (type) {
       case types.string:
         return (
-          <Input
-            control
-            size="sm"
-            value={text}
-            onChange={delayedHandleValueChange}
+          <StandardInput
+            paramKey={paramKey}
+            value={value}
+            onChange={onChange}
           />
         );
       case types.bool:
@@ -86,11 +108,11 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
         );
       case types.number:
         return (
-          <Input
-            size="sm"
-            type="number"
-            value={text}
-            onChange={delayedHandleValueChange}
+          <StandardInput
+            paramKey={paramKey}
+            inputType="number"
+            value={value}
+            onChange={onChange}
           />
         );
       default:
@@ -98,7 +120,7 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
     }
   })(type);
 
-  return <FlexBox width={1}>{input}</FlexBox>;
+  return input;
 };
 
 export default Param;

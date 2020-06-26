@@ -2,7 +2,7 @@ import React, { createElement } from "react";
 import { getComponent } from "services/page-items";
 import { usePageListContext } from "../contexts/PageList";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import { Stack } from "@chakra-ui/core";
+import { Stack, LightMode } from "@chakra-ui/core";
 import PageItemRender from "components/shared/PageItemRender";
 import {
   usePageItemActions,
@@ -40,43 +40,45 @@ const PagePreview = () => {
   const page = pages.find(({ id }) => id === selectedPageItem.pageId);
 
   return (
-    <Stack width="100%">
-      {page.components.map(item => {
-        const isSelected = item.id === selectedPageItem.itemId;
-        const renderComponent = getComponent(item.type);
+    <LightMode>
+      <Stack width="100%">
+        {page.components.map(item => {
+          const isSelected = item.id === selectedPageItem.itemId;
+          const renderComponent = getComponent(item.type);
 
-        // If there's a custom editor for the current selected item, use it
-        if (isSelected && renderComponent.editorComponent) {
-          const actions = pageItemActions(
-            id,
-            page.id,
-            mutate,
-            selectedPageItem,
-            setSelectedPageItem
-          );
+          // If there's a custom editor for the current selected item, use it
+          if (isSelected && renderComponent.editorComponent) {
+            const actions = pageItemActions(
+              id,
+              page.id,
+              mutate,
+              selectedPageItem,
+              setSelectedPageItem
+            );
 
+            return (
+              <PageItemActionsProvider key={item.id} value={actions}>
+                <PageItemPreviewEditor
+                  itemId={item.id}
+                  renderComponent={renderComponent}
+                  params={item.params}
+                />
+              </PageItemActionsProvider>
+            );
+          }
+
+          // else just render it and it will use the params editor window
           return (
-            <PageItemActionsProvider key={item.id} value={actions}>
-              <PageItemPreviewEditor
-                itemId={item.id}
-                renderComponent={renderComponent}
-                params={item.params}
-              />
-            </PageItemActionsProvider>
+            <PageItemRender
+              key={item.id}
+              itemId={item.id}
+              component={renderComponent}
+              params={item.params}
+            />
           );
-        }
-
-        // else just render it and it will use the params editor window
-        return (
-          <PageItemRender
-            key={item.id}
-            itemId={item.id}
-            component={renderComponent}
-            params={item.params}
-          />
-        );
-      })}
-    </Stack>
+        })}
+      </Stack>
+    </LightMode>
   );
 };
 

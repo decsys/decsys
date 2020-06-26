@@ -24,7 +24,13 @@ const ParamsEditor = ({ component, params, onParamChange }) => {
   }
 
   return (
-    <Grid templateColumns="2fr 5fr" gridRowGap=".2em">
+    <Grid
+      templateColumns="2fr 5fr"
+      gap={2}
+      alignItems="center"
+      width="100%"
+      p={2}
+    >
       {list}
     </Grid>
   );

@@ -4,8 +4,12 @@ import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { usePageListContext } from "../../contexts/PageList";
 import { getComponent } from "services/page-items";
 import pageItemActions from "../../actions/pageItemActions";
+import { Flex, useColorMode } from "@chakra-ui/core";
 
 const PageItemEditor = () => {
+  const { colorMode } = useColorMode();
+  const bg = { light: "gray.100", dark: "gray.900" };
+
   const { pages, id, mutate } = useFetchSurvey();
   const { selectedPageItem, setSelectedPageItem } = usePageListContext();
 
@@ -33,11 +37,13 @@ const PageItemEditor = () => {
 
   // TODO: Custom Editor (e.g. Image Upload)
   return (
-    <ParamsEditor
-      component={component}
-      params={item.params}
-      onParamChange={handleParamChange}
-    />
+    <Flex align="flex-start" bg={bg[colorMode]} width="100%">
+      <ParamsEditor
+        component={component}
+        params={item.params}
+        onParamChange={handleParamChange}
+      />
+    </Flex>
   );
 };
 

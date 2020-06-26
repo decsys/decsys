@@ -50,11 +50,11 @@ const Editor = ({ id, navigate }) => {
           gap={0}
           height="100vh"
         >
-          <Flex boxShadow="section-h" gridColumn="span 2">
+          <Flex boxShadow="section-h" gridColumn="span 2" zIndex={1000}>
             <EditorBar />
           </Flex>
 
-          <Flex boxShadow="section-v" gridRow="span 2">
+          <Flex boxShadow="section-v" gridRow="span 2" zIndex={200}>
             <PageList />
           </Flex>
 
@@ -64,7 +64,7 @@ const Editor = ({ id, navigate }) => {
             </Flex>
           ) : (
             <>
-              <Flex overflowY="auto">
+              <Flex boxShadow="section-v" overflowY="auto" zIndex={100}>
                 <PagePreview />
               </Flex>
               <Flex overflowY="auto">
