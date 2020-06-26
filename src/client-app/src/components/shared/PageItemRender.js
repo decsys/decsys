@@ -4,7 +4,7 @@ import { defaultProps as contextDefaults } from "constants/param-types";
 
 // TODO: actions can almost certainly come from a context, but need to support no-ops
 
-const PageItemRender = ({ key: itemId, component, params, actions }) => {
+const PageItemRender = ({ itemId, component, params, actions }) => {
   // Gather platform context data to give to the component
   const { id: surveyId } = useFetchSurvey();
 

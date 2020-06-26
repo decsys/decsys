@@ -6,7 +6,6 @@ import ReactMarkdown from "react-markdown";
 import { FlexBox } from "components/core";
 import { Button, Box, Textarea } from "@chakra-ui/core";
 import { FaInfoCircle } from "react-icons/fa";
-import PageItemRender from "components/shared/PageItemRender";
 
 const PageParagraph = ({ text, ...p }) => (
   <Typography as="div" {...p}>
@@ -28,12 +27,7 @@ const { pt, defaultProps } = buildPropTypes(PageParagraph.params, {
 PageParagraph.propTypes = pt;
 PageParagraph.defaultProps = defaultProps;
 
-const PageParagraphEditor = ({
-  key: itemId,
-  component,
-  params,
-  onParamChange
-}) => {
+const PageParagraphEditor = ({ params, onParamChange, renderedItem }) => {
   const [tab, setTab] = useState("edit");
 
   const [timer, setTimer] = useState();
@@ -46,9 +40,7 @@ const PageParagraphEditor = ({
     e.persist(); // tell React we want the event to have a longer lifetime than this scope
     //delay, then fire the onChange passed in
     clearTimeout(timer); // reset the delay timer every change
-    setTimer(
-      setTimeout(() => onParamChange(itemId, "text", e.target.value), 500)
-    );
+    setTimer(setTimeout(() => onParamChange("text", e.target.value), 500));
   };
   return (
     <FlexBox flexDirection="column">
@@ -80,9 +72,7 @@ const PageParagraphEditor = ({
       {tab === "edit" && (
         <Textarea rows="8" value={text} onChange={handleChange} />
       )}
-      {tab === "preview" && (
-        <PageItemRender key={itemId} component={component} params={params} />
-      )}
+      {tab === "preview" && renderedItem}
     </FlexBox>
   );
 };
