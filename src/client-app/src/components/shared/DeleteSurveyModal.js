@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Flex, Text } from "@chakra-ui/core";
+import { Stack, Text, Icon } from "@chakra-ui/core";
 import StandardModal from "components/core/StandardModal";
 import { FaExclamationTriangle } from "react-icons/fa";
 
@@ -9,13 +9,13 @@ const DeleteSurveyModal = ({ modalState, name, onConfirm }) => (
     {...modalState}
     header="Delete Survey"
     confirmButton={{
-      variantColor: "red",
+      colorScheme: "red",
       children: "Delete survey",
-      onClick: onConfirm
+      onClick: onConfirm,
     }}
   >
-    <Flex as={FaExclamationTriangle} fontSize="5em" color="red.500" />
-    <Stack gap={2} flexDirection="column" ml={4}>
+    <Icon as={FaExclamationTriangle} fontSize="5em" color="red.500" />
+    <Stack spacing={2} ml={4}>
       <Text>
         Are you sure you want to delete{" "}
         <Text as="span" fontWeight="bold">

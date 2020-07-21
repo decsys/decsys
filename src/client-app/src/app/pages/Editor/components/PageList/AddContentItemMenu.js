@@ -5,16 +5,15 @@ import {
   MenuList,
   MenuItem,
   Button,
-  PseudoBox,
-  Box,
-  Tooltip
+  Icon,
+  Tooltip,
 } from "@chakra-ui/core";
 import {
   FaPlus,
   FaHeading,
   FaParagraph,
   FaImage,
-  FaArrowsAltV
+  FaArrowsAltV,
 } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
 import { usePageListContext } from "../../contexts/PageList";
@@ -22,13 +21,14 @@ import { usePageListContext } from "../../contexts/PageList";
 const AddContentItemMenu = ({ id }) => {
   const { addItemToPage } = usePageListContext();
 
-  const handleItemClick = type => {
+  const handleItemClick = (type) => {
     addItemToPage(id, type);
   };
 
   return (
     <Menu>
       <Tooltip
+        zIndex={999999}
         placement="top"
         hasArrow
         label="Add Page Content items to this page"
@@ -37,33 +37,33 @@ const AddContentItemMenu = ({ id }) => {
           as={Button}
           p={0}
           variant="ghost"
-          variantColor="green"
+          colorScheme="green"
           _focus={{}}
         >
-          <PseudoBox
+          <Icon
             display="none"
             _groupHover={{ display: "inherit" }}
             as={FaPlus}
           />
-          <PseudoBox _groupHover={{ display: "none" }} as={BsDot} />
+          <Icon _groupHover={{ display: "none" }} as={BsDot} />
         </MenuButton>
       </Tooltip>
 
       <MenuList>
         <MenuItem onClick={() => handleItemClick("heading")}>
-          <Box as={FaHeading} mr={2} />
+          <Icon as={FaHeading} mr={2} />
           Heading
         </MenuItem>
         <MenuItem onClick={() => handleItemClick("paragraph")}>
-          <Box as={FaParagraph} mr={2} />
+          <Icon as={FaParagraph} mr={2} />
           Paragraph
         </MenuItem>
         <MenuItem onClick={() => handleItemClick("image")}>
-          <Box as={FaImage} mr={2} />
+          <Icon as={FaImage} mr={2} />
           Image
         </MenuItem>
         <MenuItem onClick={() => handleItemClick("spacer")}>
-          <Box as={FaArrowsAltV} mr={2} />
+          <Icon as={FaArrowsAltV} mr={2} />
           Vertical Spacer
         </MenuItem>
       </MenuList>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { Flex, Box, PseudoBox, useColorMode, Text } from "@chakra-ui/core";
+import { Flex, Icon, useColorMode, Text } from "@chakra-ui/core";
 import {
   FaHeading,
   FaParagraph,
@@ -9,7 +9,7 @@ import {
   FaQuestion,
   FaGripVertical,
   FaTimes,
-  FaCopy
+  FaCopy,
 } from "react-icons/fa";
 import { DotHoverIconButton } from "components/core";
 import { usePageItemActions } from "../../contexts/PageItemActions";
@@ -22,18 +22,18 @@ const builtInIcons = {
   heading: FaHeading,
   paragraph: FaParagraph,
   image: FaImage,
-  spacer: FaArrowsAltV
+  spacer: FaArrowsAltV,
 };
 
-const capitalise = s => `${s[0].toUpperCase()}${s.substring(1)}`;
+const capitalise = (s) => `${s[0].toUpperCase()}${s.substring(1)}`;
 
 const ItemIcon = ({ type }) => {
-  const Icon = builtInIcons[type] || FaQuestion;
+  const CustomIcon = builtInIcons[type] || FaQuestion;
   //TODO: response item icons
 
   return (
     <Flex px={1} align="center">
-      <Box as={Icon} />
+      <Icon as={CustomIcon} />
     </Flex>
   );
 };
@@ -43,7 +43,7 @@ const ItemInfo = ({
   params: { text },
   dragHandleProps,
   isBusy,
-  onSelect
+  onSelect,
 }) => (
   <Flex
     ml={8}
@@ -53,7 +53,7 @@ const ItemInfo = ({
     onClick={onSelect}
   >
     <Flex width="1.5em" justify="center">
-      {<Box as={isBusy ? BsDot : FaGripVertical} color="gray.500" />}
+      {<Icon as={isBusy ? BsDot : FaGripVertical} color="gray.500" />}
     </Flex>
     <ItemIcon type={type} />
     <Text as={!text ? "em" : "p"} isTruncated>
@@ -74,7 +74,7 @@ const ItemActions = ({ id, duplicatePageItem, deletePageItem }) => {
       />
       <DotHoverIconButton
         size="sm"
-        variantColor="red"
+        colorScheme="red"
         icon={FaTimes}
         onClick={handleDeleteClick}
       />
@@ -87,7 +87,7 @@ const ItemActionPlaceholders = () => {
   return (
     <>
       <PlaceholderDot {...p} />
-      <PlaceholderDot {...p} variantColor="red" />
+      <PlaceholderDot {...p} colorScheme="red" />
     </>
   );
 };
@@ -98,7 +98,7 @@ export const PageItem = ({
   innerRef,
   draggableProps = {},
   dragHandleProps = {},
-  isDragging
+  isDragging,
 }) => {
   const actions = usePageItemActions();
   const { busy, selectedPageItem, setSelectedPageItem } = usePageListContext();
@@ -108,7 +108,7 @@ export const PageItem = ({
   const { colorMode } = useColorMode();
   const selectStyle = {
     light: { bg: "blue.200" },
-    dark: { bg: "blue.700" }
+    dark: { bg: "blue.700" },
   };
 
   const handleSelect = () => {
@@ -116,8 +116,7 @@ export const PageItem = ({
   };
 
   return (
-    <PseudoBox
-      as={Flex}
+    <Flex
       ref={innerRef}
       bg={isDragging || isSelected ? selectStyle[colorMode].bg : "inherit"}
       _hover={isBusy ? {} : { ...selectStyle[colorMode] }}
@@ -137,7 +136,7 @@ export const PageItem = ({
       ) : (
         <ItemActions {...item} {...actions} />
       )}
-    </PseudoBox>
+    </Flex>
   );
 };
 

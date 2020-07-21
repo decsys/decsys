@@ -17,7 +17,7 @@ const BodyContent = ({ setConfig }) => {
   }, [config, setConfig]);
 
   return (
-    <Stack shouldWrapChildren>
+    <Stack>
       <OneTimeParticipantsSwitch {...config} />
 
       <UseParticipantIdentifiersSwitch {...config} />
@@ -34,8 +34,8 @@ const SurveyConfigModal = ({ modalState, name, id }) => {
   const handleConfirm = async () => {
     await saveSurveyConfig(
       id,
-      produce(config, data => {
-        data.validIdentifiers = data.validIdentifiers.filter(x => !!x);
+      produce(config, (data) => {
+        data.validIdentifiers = data.validIdentifiers.filter((x) => !!x);
       })
     );
     modalState.onClose();
@@ -48,8 +48,8 @@ const SurveyConfigModal = ({ modalState, name, id }) => {
       confirmButton={{
         isDisabled: !config,
         children: "Save",
-        variantColor: "blue",
-        onClick: handleConfirm
+        colorScheme: "blue",
+        onClick: handleConfirm,
       }}
       {...modalState}
     >

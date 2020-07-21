@@ -9,8 +9,8 @@ const buttons = {
   launch: ({ handleLaunch }) => (
     <Button
       lineHeight="inherit"
-      variantColor="green"
-      leftIcon={FaRocket}
+      colorScheme="green"
+      leftIcon={<FaRocket />}
       onClick={handleLaunch}
     >
       Launch
@@ -19,8 +19,8 @@ const buttons = {
   close: ({ handleClose }) => (
     <Button
       lineHeight="inherit"
-      variantColor="red"
-      leftIcon={FaTimesCircle}
+      colorScheme="red"
+      leftIcon={<FaTimesCircle />}
       onClick={handleClose}
     >
       <Text>Close</Text>
@@ -29,7 +29,7 @@ const buttons = {
   dashboard: ({ friendlyId }) => (
     <Button
       lineHeight="inherit"
-      variantColor="green"
+      colorScheme="green"
       as={Link}
       to={`/admin/survey/dashboard/${friendlyId}`}
     >
@@ -39,20 +39,20 @@ const buttons = {
   results: ({ id }) => (
     <Button
       lineHeight="inherit"
-      variantColor="cyan"
+      colorScheme="cyan"
       as={Link}
       to={`/admin/survey/${id}/results`}
     >
       Results
     </Button>
-  )
+  ),
 };
 
 export const getActionButtons = ({ activeInstanceId, runCount }) => ({
   close: !!activeInstanceId,
   dashboard: !!activeInstanceId,
   launch: !activeInstanceId,
-  results: runCount > 0
+  results: runCount > 0,
 });
 
 const ActionButtons = ({ actionButtons, id, activeInstanceId, friendlyId }) => {
@@ -60,13 +60,13 @@ const ActionButtons = ({ actionButtons, id, activeInstanceId, friendlyId }) => {
   const handleLaunch = () => launch(id);
   const handleClose = () => close(id, activeInstanceId);
 
-  return listMatchingKeys(actionButtons).map(key =>
+  return listMatchingKeys(actionButtons).map((key) =>
     createElement(buttons[key], {
       key,
       handleLaunch,
       handleClose,
       id,
-      friendlyId
+      friendlyId,
     })
   );
 };

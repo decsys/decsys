@@ -10,7 +10,7 @@ import {
   Button,
   Grid,
   Divider,
-  Flex
+  Flex,
 } from "@chakra-ui/core";
 
 const StandardModal = ({
@@ -24,37 +24,38 @@ const StandardModal = ({
 }) => {
   return (
     <Modal preserveScrollBarGap onClose={onClose} {...p}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader pb={2}>{header}</ModalHeader>
-        {header && <Divider m={0} />}
-        {showCloseButton && <ModalCloseButton />}
+      <ModalOverlay>
+        <ModalContent>
+          <ModalHeader pb={2}>{header}</ModalHeader>
+          {header && <Divider m={0} />}
+          {showCloseButton && <ModalCloseButton />}
 
-        <ModalBody>
-          <Flex width="100%" align="center" p={2}>
-            {children}
-          </Flex>
-        </ModalBody>
+          <ModalBody>
+            <Flex width="100%" align="center" p={2}>
+              {children}
+            </Flex>
+          </ModalBody>
 
-        {(cancelButton || confirmButton) && (
-          <>
-            <Divider m={0} />
-            <ModalFooter p={2}>
-              <Grid templateColumns="auto auto" gap={2}>
-                {cancelButton && (
-                  <Button
-                    variantColor={cancelButton.variantColor}
-                    onClick={cancelButton.onClick || onClose}
-                  >
-                    {cancelButton.content || "Cancel"}
-                  </Button>
-                )}
-                {confirmButton && <Button {...confirmButton} />}
-              </Grid>
-            </ModalFooter>
-          </>
-        )}
-      </ModalContent>
+          {(cancelButton || confirmButton) && (
+            <>
+              <Divider m={0} />
+              <ModalFooter p={2}>
+                <Grid templateColumns="auto auto" gap={2}>
+                  {cancelButton && (
+                    <Button
+                      colorScheme={cancelButton.colorScheme}
+                      onClick={cancelButton.onClick || onClose}
+                    >
+                      {cancelButton.content || "Cancel"}
+                    </Button>
+                  )}
+                  {confirmButton && <Button {...confirmButton} />}
+                </Grid>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </ModalOverlay>
     </Modal>
   );
 };

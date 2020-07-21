@@ -4,7 +4,7 @@ import { Typography } from "@smooth-ui/core-sc";
 import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 import ReactMarkdown from "react-markdown";
 import { FlexBox } from "components/core";
-import { Button, Box, Textarea } from "@chakra-ui/core";
+import { Button, Icon, Textarea } from "@chakra-ui/core";
 import { FaInfoCircle } from "react-icons/fa";
 
 const PageParagraph = ({ text, ...p }) => (
@@ -16,13 +16,13 @@ const PageParagraph = ({ text, ...p }) => (
 PageParagraph.params = {
   color: ParamTypes.string("Color", "black"),
   textAlign: ParamTypes.oneOf("Alignment", ["left", "center", "right"], "left"),
-  fontFamily: ParamTypes.stringUndefined("Font Family")
+  fontFamily: ParamTypes.stringUndefined("Font Family"),
 };
 
 const { pt, defaultProps } = buildPropTypes(PageParagraph.params, {
   // Text is configurable, but edited by our custom editor component
   // not the Platform's Params Editor
-  text: PropTypes.string
+  text: PropTypes.string,
 });
 PageParagraph.propTypes = pt;
 PageParagraph.defaultProps = defaultProps;
@@ -35,7 +35,7 @@ const PageParagraphEditor = ({ params, onParamChange, renderedItem }) => {
   const [text, setText] = useState(params.text); // we use local state so updates work without delay
   useEffect(() => setText(params.text), [params]); // but still ensure update when new name props come in
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setText(e.target.value); //update local state
     e.persist(); // tell React we want the event to have a longer lifetime than this scope
     //delay, then fire the onChange passed in
@@ -62,7 +62,7 @@ const PageParagraphEditor = ({ params, onParamChange, renderedItem }) => {
         </Button>
         {tab === "edit" && (
           <Typography ml={1}>
-            <Box as={FaInfoCircle} /> Paragraphs support{" "}
+            <Icon as={FaInfoCircle} /> Paragraphs support{" "}
             <a href="https://github.github.com/gfm/">
               Github Flavoured Markdown
             </a>

@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <Flex p={4} justify="space-between" align="center">
       <LightHeading size="lg">Survey Pages</LightHeading>
-      <Button variantColor="green" onClick={addPage} leftIcon={FaPlus}>
+      <Button colorScheme="green" onClick={addPage} leftIcon={<FaPlus />}>
         Add Page
       </Button>
     </Flex>

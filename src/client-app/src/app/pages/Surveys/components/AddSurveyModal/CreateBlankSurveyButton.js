@@ -5,7 +5,7 @@ import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 const CreateBlankSurveyButton = () => {
   const { create } = useAddSurveyActions();
   return (
-    <Button variantColor="green" mb={1} onClick={create}>
+    <Button colorScheme="green" mb={1} onClick={create}>
       Start with a blank Survey
     </Button>
   );

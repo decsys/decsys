@@ -8,12 +8,12 @@ const modalState = {
   isOpen: true,
   onOpen: action("Modal opened"),
   onClose: action("Modal closed"),
-  onToggle: action("Modal toggled")
+  onToggle: action("Modal toggled"),
 };
 
 export default {
   title: "Core UI/StandardModal",
-  component: StandardModal
+  component: StandardModal,
 };
 
 export const Basic = () => (
@@ -48,12 +48,12 @@ export const CustomButtons = () => (
           <Text ml={1}>Go back</Text>
         </Flex>
       ),
-      variantColor: "green"
+      colorScheme: "green",
     }}
     confirmButton={{
       children: "Delete",
-      variantColor: "red",
-      onClick: action("Delete clicked")
+      colorScheme: "red",
+      onClick: action("Delete clicked"),
     }}
   >
     Are you sure?

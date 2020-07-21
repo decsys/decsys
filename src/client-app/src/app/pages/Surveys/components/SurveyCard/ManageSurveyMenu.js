@@ -5,7 +5,7 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/core";
 import { FaEllipsisV } from "react-icons/fa";
 import DeleteSurveyModal from "../../../../../components/shared/DeleteSurveyModal";
@@ -29,7 +29,7 @@ const ManageSurveyMenu = ({ id, editable, name }) => {
           border="thin solid"
           borderColor="gray.500"
           as={IconButton}
-          icon={FaEllipsisV}
+          icon={<FaEllipsisV />}
         />
         <MenuList>
           {editable && (

@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
-import { Flex, Text, Button, Input, Textarea, Stack } from "@chakra-ui/core";
+import {
+  Flex,
+  Text,
+  Button,
+  Input,
+  Textarea,
+  Stack,
+  Icon,
+} from "@chakra-ui/core";
 import { generateCombination } from "gfycat-style-urls";
 import produce from "immer";
 
@@ -11,11 +19,11 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
 
   const handleIdGenClick = () =>
     mutate(
-      produce(config => {
+      produce((config) => {
         config.validIdentifiers.push(
           ...Array(idGenCount)
             .fill(() => generateCombination(1, "", true))
-            .map(x => x())
+            .map((x) => x())
         );
       }),
       false
@@ -28,7 +36,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       </Text>
 
       <Flex alignItems="center" my={1} ml={2}>
-        <Flex as={FaInfoCircle} fontSize="5em" color="cyan.500" />
+        <Icon as={FaInfoCircle} fontSize="5em" color="cyan.500" />
         <Flex flexDirection="column" ml={2}>
           <Text color="cyan.500">
             • Restrict Survey access to only these Identifiers
@@ -40,7 +48,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
         </Flex>
       </Flex>
 
-      <Stack isInline my={2}>
+      <Stack direction="row" my={2}>
         <Flex>
           <Input
             size="sm"
@@ -49,7 +57,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
             onChange={handleGenCountChange}
           />
         </Flex>
-        <Button size="sm" variantColor="gray" onClick={handleIdGenClick}>
+        <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
           Generate Random IDs
         </Button>
       </Stack>

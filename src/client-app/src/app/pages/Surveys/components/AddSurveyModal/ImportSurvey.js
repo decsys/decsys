@@ -3,15 +3,14 @@ import {
   Button,
   Flex,
   Collapse,
-  Alert,
-  AlertIcon,
   Input,
   Stack,
-  Checkbox
+  Checkbox,
 } from "@chakra-ui/core";
 import useToggle from "hooks/useToggle";
 import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
+import Alert from "components/core/Alert";
 
 const ImportSurvey = () => {
   const [isExpanded, toggleExpanded] = useToggle();
@@ -27,20 +26,16 @@ const ImportSurvey = () => {
   );
 };
 
-const isZip = filename =>
-  filename
-    .split(".")
-    .pop()
-    .toLowerCase() === "zip";
+const isZip = (filename) => filename.split(".").pop().toLowerCase() === "zip";
 
 const ImportSurveyForm = ({ modalState }) => {
   const { importFile } = useAddSurveyActions();
 
   const [state, setState] = useState({
-    importData: false
+    importData: false,
   });
 
-  const handleFileSelect = e => {
+  const handleFileSelect = (e) => {
     e.persist();
     const error = !isZip(e.target.value)
       ? "Invalid file extension. Expected .zip"
@@ -48,7 +43,7 @@ const ImportSurveyForm = ({ modalState }) => {
     setState({ ...state, error, file: e.target.files[0] });
   };
 
-  const handleDataImportChange = e => {
+  const handleDataImportChange = (e) => {
     setState({ ...state, importData: e.target.checked });
   };
 
@@ -59,16 +54,14 @@ const ImportSurveyForm = ({ modalState }) => {
   };
 
   return (
-    <Stack gap={1} p={2}>
-      <Alert>
-        <AlertIcon />
+    <Stack spacing={1} p={2}>
+      <Alert hasIcon>
         Select a previously exported DECSYS Survey file to import.
       </Alert>
 
       <Input type="file" onChange={handleFileSelect} />
       {state.error && (
-        <Alert status="error">
-          <AlertIcon />
+        <Alert hasIcon status="error">
           {state.error}
         </Alert>
       )}
@@ -79,8 +72,8 @@ const ImportSurveyForm = ({ modalState }) => {
 
       <Flex justifyContent="flex-end">
         <Button
-          variantColor="blue"
-          leftIcon={FaFileImport}
+          colorScheme="blue"
+          leftIcon={<FaFileImport />}
           onClick={handleImportClick}
         >
           Import

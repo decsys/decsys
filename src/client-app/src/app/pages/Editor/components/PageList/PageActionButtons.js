@@ -1,10 +1,17 @@
 import React from "react";
-import { Flex, Tooltip, Box, Text, useColorMode } from "@chakra-ui/core";
+import {
+  Flex,
+  Tooltip,
+  Icon,
+  Text,
+  useColorMode,
+  Divider,
+} from "@chakra-ui/core";
 import {
   FaTrash,
   FaCopy,
   FaRandom,
-  FaExclamationTriangle
+  FaExclamationTriangle,
 } from "react-icons/fa";
 import { DotHoverIconButton, ToggleButton } from "components/core";
 import { usePageListContext } from "../../contexts/PageList";
@@ -16,7 +23,7 @@ const RandomTooltip = ({ isRandom }) => {
   const { colorMode } = useColorMode();
   const warningStyle = {
     light: { color: "yellow.400" },
-    dark: { color: "yellow.700" }
+    dark: { color: "yellow.700" },
   };
   return (
     <Flex direction="column" align="center">
@@ -31,9 +38,12 @@ const RandomTooltip = ({ isRandom }) => {
         </Text>
         for this Page.
       </Flex>
+      <Divider />
       <Flex align="center" {...warningStyle[colorMode]}>
-        <Box mr={1} as={FaExclamationTriangle} />
-        Random Pages are only randomised *between* Fixed Pages.
+        <Icon ml={2} as={FaExclamationTriangle} />
+        <Flex textAlign="center">
+          Random Pages are only randomised *between* Fixed Pages.
+        </Flex>
       </Flex>
     </Flex>
   );
@@ -46,13 +56,23 @@ const ActionButtons = ({ id }) => {
     <>
       <AddContentItemMenu id={id} />
 
-      <Tooltip placement="top" hasArrow label="Duplicate this page">
+      <Tooltip
+        zIndex={999999}
+        placement="top"
+        hasArrow
+        label="Duplicate this page"
+      >
         <DotHoverIconButton icon={FaCopy} onClick={() => duplicatePage(id)} />
       </Tooltip>
 
-      <Tooltip placement="top" hasArrow label="Delete this page">
+      <Tooltip
+        zIndex={999999}
+        placement="top"
+        hasArrow
+        label="Delete this page"
+      >
         <DotHoverIconButton
-          variantColor="red"
+          colorScheme="red"
           icon={FaTrash}
           onClick={() => deletePage(id)}
         />
@@ -63,9 +83,9 @@ const ActionButtons = ({ id }) => {
 
 const ActionPlaceholders = () => (
   <>
-    <PlaceholderDot variantColor="green" p={3} />
+    <PlaceholderDot colorScheme="green" p={3} />
     <PlaceholderDot p={3} />
-    <PlaceholderDot variantColor="red" p={3} />
+    <PlaceholderDot colorScheme="red" p={3} />
   </>
 );
 
@@ -73,27 +93,29 @@ const PageActionButtons = ({ id, randomize, isLoading }) => {
   const { busy, setPageRandomize } = usePageListContext();
   const isBusy = isLoading || some(busy);
 
-  const handleRandomClick = async e => {
+  const handleRandomClick = async (e) => {
     await setPageRandomize(id, e.target.checked);
   };
 
   return (
     <Flex align="center">
       <Tooltip
+        zIndex={999999}
         maxW="auto"
         placement="top"
         hasArrow
         label={<RandomTooltip isRandom={randomize} />}
         hidden={isBusy}
+        closeOnClick={false}
       >
         <ToggleButton
-          variantColor="blue"
+          colorScheme="blue"
           onClick={!isBusy && handleRandomClick}
           checked={randomize}
           p={0}
           size="sm"
         >
-          <Box as={FaRandom} />
+          <Icon as={FaRandom} />
         </ToggleButton>
       </Tooltip>
 

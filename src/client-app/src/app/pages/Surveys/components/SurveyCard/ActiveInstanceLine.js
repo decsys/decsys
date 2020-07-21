@@ -2,23 +2,22 @@ import React from "react";
 import {
   Text,
   Button,
-  AlertIcon,
-  Alert,
   Link,
   Stack,
   Divider,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/core";
 import { Link as RouterLink } from "@reach/router";
 import InstanceValidIdModal from "./InstanceValidIdModal";
 import { InstanceFriendlyIdProvider } from "../../contexts/InstanceFriendlyId";
+import Alert from "components/core/Alert";
 
 const ActiveInstanceLine = ({ friendlyId }) => {
   const instanceValidIdModal = useDisclosure();
 
   return (
     <>
-      <Stack isInline py={1} px={2} alignItems="center">
+      <Stack direction="row" py={1} px={2} alignItems="center">
         <Text fontWeight="bold">Survey ID:</Text>
         <Text>{friendlyId}</Text>
 
@@ -29,12 +28,11 @@ const ActiveInstanceLine = ({ friendlyId }) => {
           /survey/{friendlyId}
         </Link>
 
-        <Stack display={{ base: "none", lg: "inherit" }}>
-          <Alert variant="left-accent" status="info" py={1}>
-            <AlertIcon />
-            Remember to include your DECSYS server's address
-          </Alert>
-        </Stack>
+        {/* <Stack display={{ base: "none", lg: "inherit" }}> */}
+        <Alert hasIcon variant="left-accent" status="info" py={1}>
+          Remember to include your DECSYS server's address
+        </Alert>
+        {/* </Stack> */}
 
         <Button
           size="sm"

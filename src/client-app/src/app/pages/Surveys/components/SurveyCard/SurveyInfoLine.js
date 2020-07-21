@@ -8,7 +8,7 @@ const SurveyInfoLine = ({ name, runCount }) => (
       <Badge
         w="100%"
         textAlign="center"
-        variantColor="cyan"
+        colorScheme="cyan"
         variant="solid"
         py={1}
       >

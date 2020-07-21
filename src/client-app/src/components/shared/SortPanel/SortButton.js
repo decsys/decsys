@@ -5,7 +5,7 @@ import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 
 const SortButton = ({ active, asc, children, onClick, ...rest }) => (
   <Button
-    rightIcon={asc ? FaCaretUp : FaCaretDown}
+    rightIcon={asc ? <FaCaretUp /> : <FaCaretDown />}
     _focus={{}}
     lineHeight="inherit"
     borderRadius={0}
@@ -21,11 +21,11 @@ SortButton.propTypes = {
   asc: PropTypes.bool,
   active: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
-  children: PropTypes.any
+  children: PropTypes.any,
 };
 
 SortButton.defaultProps = {
-  asc: false
+  asc: false,
 };
 
 export default SortButton;

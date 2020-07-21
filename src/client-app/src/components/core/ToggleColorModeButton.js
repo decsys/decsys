@@ -9,7 +9,7 @@ const ToggleColorModeButton = ({ isAlwaysDark }) => {
       color="whiteAlpha.700"
       title={`${colorMode === "light" ? "Dark" : "Light"} mode`}
       onClick={toggleColorMode}
-      icon={colorMode === "light" ? FaMoon : FaSun}
+      icon={colorMode === "light" ? <FaMoon /> : <FaSun />}
     />
   );
   return isAlwaysDark ? <DarkMode>{button}</DarkMode> : button;

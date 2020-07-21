@@ -13,7 +13,7 @@ const SurveyCard = () => {
   const { colorMode } = useColorMode();
   const style = {
     light: { borderColor: "gray.300", bg: "gray.100" },
-    dark: { borderColor: "gray.600", bg: "gray.700" }
+    dark: { borderColor: "gray.600", bg: "gray.700" },
   };
   const survey = useSurvey();
   const { id, activeInstanceId, runCount } = survey;
@@ -23,7 +23,7 @@ const SurveyCard = () => {
 
   return (
     <Stack
-      isInline
+      direction="row"
       spacing={0}
       borderBottom={"thin solid"}
       {...style[colorMode]}

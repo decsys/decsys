@@ -4,9 +4,9 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
-  Box,
   Spinner,
-  useToast
+  useToast,
+  Icon,
 } from "@chakra-ui/core";
 import { FaEdit } from "react-icons/fa";
 import { useEditorBarContext } from "../../contexts/EditorBar";
@@ -31,7 +31,7 @@ const NameInput = ({ name }) => {
         title: "Name saved.",
         status: "success",
         duration: 2500,
-        isClosable: true
+        isClosable: true,
       });
   }, [nameState.hasSaved, toast]);
 
@@ -39,7 +39,7 @@ const NameInput = ({ name }) => {
     <Flex align="center" width="100%" px={2}>
       <InputGroup color="white" width="100%">
         <InputLeftElement>
-          {nameState.isSaving ? <Spinner /> : <Box as={FaEdit} />}
+          {nameState.isSaving ? <Spinner /> : <Icon as={FaEdit} />}
         </InputLeftElement>
         <Input
           color="white"

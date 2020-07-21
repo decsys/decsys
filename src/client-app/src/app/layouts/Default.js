@@ -2,6 +2,7 @@ import React from "react";
 import AppBar, { AppBarLink } from "./components/AppBar";
 import { Icon, Box } from "@chakra-ui/core";
 import ToggleColorModeButton from "components/core/ToggleColorModeButton";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const Default = ({ children }) => {
   return (
@@ -10,7 +11,7 @@ const Default = ({ children }) => {
         <AppBarLink href="http://www.lucidresearch.org/decsys.html" isExternal>
           About DECSYS{" "}
           <sup>
-            <Icon name="external-link" />
+            <Icon as={FaExternalLinkAlt} />
           </sup>
         </AppBarLink>
 

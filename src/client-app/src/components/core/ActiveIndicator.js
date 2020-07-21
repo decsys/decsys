@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Flex, Tooltip, useTheme } from "@chakra-ui/core";
+import { Flex, Tooltip, useTheme, Icon } from "@chakra-ui/core";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { getContrastColor } from "services/colors";
 
@@ -20,7 +20,7 @@ const ActiveIndicator = ({ active, tooltips, ...p }) => {
   return (
     <Tooltip hasArrow label={tooltips[active]}>
       <Flex align="center" p={2} bg={color} {...p}>
-        <Flex as={icon} color={iconColor} />
+        <Icon as={icon} color={iconColor} />
       </Flex>
     </Tooltip>
   );
@@ -30,15 +30,15 @@ ActiveIndicator.propTypes = {
   active: PropTypes.bool,
   tooltips: PropTypes.shape({
     [true]: PropTypes.string,
-    [false]: PropTypes.string
-  })
+    [false]: PropTypes.string,
+  }),
 };
 ActiveIndicator.defaultProps = {
   active: false,
   tooltips: {
     [true]: "Active",
-    [false]: "Inactive"
-  }
+    [false]: "Inactive",
+  },
 };
 
 export default ActiveIndicator;

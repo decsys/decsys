@@ -1,14 +1,14 @@
 import React, { forwardRef } from "react";
 import { BsDot } from "react-icons/bs";
-import { Button, PseudoBox } from "@chakra-ui/core";
+import { Button, Box } from "@chakra-ui/core";
 
 const DotHoverIconButton = ({ icon, disableHover, ...p }, ref) => {
   const show = { display: "inherit" };
   const hide = { display: "none" };
   return (
     <Button ref={ref} p={0} variant="ghost" _focus={false} {...p}>
-      <PseudoBox {...hide} _groupHover={!disableHover && show} as={icon} />
-      <PseudoBox _groupHover={!disableHover && hide} as={BsDot} />
+      <Box {...hide} _groupHover={!disableHover && show} as={icon} />
+      <Box _groupHover={!disableHover && hide} as={BsDot} />
     </Button>
   );
 };

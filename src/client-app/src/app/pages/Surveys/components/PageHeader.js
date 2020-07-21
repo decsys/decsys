@@ -8,7 +8,11 @@ const PageHeader = ({ buttonAction }) => (
     <LightHeading as="h1" size="xl">
       My Surveys
     </LightHeading>
-    <Button variantColor="green" leftIcon={FaPlusCircle} onClick={buttonAction}>
+    <Button
+      colorScheme="green"
+      leftIcon={<FaPlusCircle />}
+      onClick={buttonAction}
+    >
       Add a Survey
     </Button>
   </Flex>
