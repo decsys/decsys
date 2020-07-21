@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from "react";
+import { filterOptions } from "./utils/option-params";
 import * as props from "./Component.props";
 
 // Build a Response Component as a React Functional Component
-const Component = ({ label, text, logResults, setNextEnabled }) => {
-  const [value, setValue] = useState(text);
-  useEffect(() => {
-    setValue(text);
-    setNextEnabled(true);
-  }, [text, setNextEnabled]);
+const Component = ({
+  logResults, 
+  setNextEnabled,
+  dropDown,
+  ...p
+}) => {
 
-  const handleInput = ({ target }) => {
-    setValue(target.value);
-  };
+  const options = filterOptions(p);
 
-  const handleBlur = e => {
-    e.persist();
-    logResults({ text: e.target.value });
-  };
+  useEffect(() => setNextEnabled(true), [setNextEnabled]);
+
+  console.log(dropDown);
 
   return (
     <div>
-      <div>{label}</div>
-      <input value={value} onBlur={handleBlur} onChange={handleInput} />
+      <div>DropDown: {dropDown ? "True" : "False"}</div>
+      <div>Options: {options.length}</div>
+      {
+        options.map(x => <p>{x.option}</p>)
+      }
     </div>
   );
 };

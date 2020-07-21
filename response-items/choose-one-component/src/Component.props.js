@@ -1,26 +1,32 @@
 import PropTypes from "prop-types";
 import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 
+
 // Specify Configurable Parameters
 const params = {
-  label: ParamTypes.string("label", "Enter some text")
+  dropDown: ParamTypes.bool("Drop Down?", false),
+  option0: ParamTypes.string("Options: 0", ""),
+  option1: ParamTypes.string("1", ""),
+  option2: ParamTypes.string("2", ""),
+  option3: ParamTypes.string("3", ""),
+  option4: ParamTypes.string("4", ""),
+  option5: ParamTypes.string("5", ""),
+  option6: ParamTypes.string("6", ""),
+  option7: ParamTypes.string("7", ""),
+  option8: ParamTypes.string("8", ""),
+  option9: ParamTypes.string("9", ""),
 };
 
 // Specify PropTypes for non-Configurable Props
 const staticPropTypes = {
-  text: PropTypes.string,
   logResults: PropTypes.func.isRequired,
   setNextEnabled: PropTypes.func.isRequired
 };
 
 // Specify Defaults for non-Configurable Props
-const staticDefaultProps = {
-  text: ""
-};
+const staticDefaultProps = {};
 
-// Create merged propTypes, defaultProps
-// for Configurable Parameters
-// and non-Configurable Props
+// Create merged propTypes
 const { propTypes, defaultProps } = buildPropTypes(
   params,
   staticPropTypes,
