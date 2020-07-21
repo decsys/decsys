@@ -6,6 +6,7 @@ import { FaExclamationCircle, FaInfoCircle } from "react-icons/fa";
 // it only contains the features the codebase already used of chakra's.
 // should make the API such that we can replace the internals of this with chakra when ready
 // and leave the call sites alone?
+// TODO: replace with chakra version when possible
 
 //--
 // Status Color Styles

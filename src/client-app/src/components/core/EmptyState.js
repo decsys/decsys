@@ -1,7 +1,7 @@
-import React from "react";
+import React, { createElement } from "react";
 import PropTypes from "prop-types";
 import { FaQuestion } from "react-icons/fa";
-import { Flex, Button, Icon } from "@chakra-ui/core";
+import { Flex, Button, Icon, Box } from "@chakra-ui/core";
 import { navigate } from "@reach/router";
 import LightHeading from "./LightHeading";
 
@@ -15,7 +15,7 @@ const EmptyState = ({ splash, message, callToAction }) => (
       borderRadius={15}
       p={10}
     >
-      <Icon as={splash} w="100%" />
+      <Icon as={splash} boxSize="100%" />
     </Flex>
     <LightHeading as="h1" size="xl" m={8}>
       {message}
