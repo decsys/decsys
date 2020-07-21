@@ -1,11 +1,11 @@
 import React from "react";
-import { Grid, Flex, useColorMode } from "@chakra-ui/core";
+import { Grid, Flex, useColorMode, DarkMode } from "@chakra-ui/core";
 import {
   BackButton,
   PreviewButton,
   ExportButton,
   DuplicateButton,
-  DeleteButton
+  DeleteButton,
 } from "./Buttons";
 import ToggleColorModeButton from "components/core/ToggleColorModeButton";
 import NameInput from "./NameInput";
@@ -25,7 +25,9 @@ const EditorBar = () => {
     >
       <BackButton />
 
-      <NameInput name={name} />
+      <DarkMode>
+        <NameInput name={name} />
+      </DarkMode>
 
       <PreviewButton />
       <ExportButton id={id} name={name} />
