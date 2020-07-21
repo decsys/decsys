@@ -81,6 +81,7 @@ export const DeleteButton = ({ name }) => {
       </LightMode>
 
       <DeleteSurveyModal
+        zIndex={999999}
         name={name}
         onConfirm={deleteSurvey}
         modalState={modal}

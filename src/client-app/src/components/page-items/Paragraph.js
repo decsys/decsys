@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Typography } from "@smooth-ui/core-sc";
 import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 import ReactMarkdown from "react-markdown";
-import { FlexBox } from "components/core";
-import { Button, Icon, Textarea } from "@chakra-ui/core";
-import { FaInfoCircle } from "react-icons/fa";
+import {
+  Icon,
+  Textarea,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Link,
+  Stack,
+  Text,
+} from "@chakra-ui/core";
+import { FaInfoCircle, FaExternalLinkAlt } from "react-icons/fa";
 
 const PageParagraph = ({ text, ...p }) => (
-  <Typography as="div" {...p}>
+  <Text as="div" {...p}>
     <ReactMarkdown source={text} />
-  </Typography>
+  </Text>
 );
 
 PageParagraph.params = {
@@ -28,7 +37,7 @@ PageParagraph.propTypes = pt;
 PageParagraph.defaultProps = defaultProps;
 
 const PageParagraphEditor = ({ params, onParamChange, renderedItem }) => {
-  const [tab, setTab] = useState("edit");
+  const [gfmVisible, setGfmVisible] = useState(true);
 
   const [timer, setTimer] = useState();
 
@@ -43,37 +52,33 @@ const PageParagraphEditor = ({ params, onParamChange, renderedItem }) => {
     setTimer(setTimeout(() => onParamChange("text", e.target.value), 500));
   };
   return (
-    <FlexBox flexDirection="column">
-      <FlexBox alignItems="center">
-        {/* TODO: Chakra Tabs */}
-        <Button
-          borderRadius={0}
-          variant={tab === "edit" ? "primary" : "secondary"}
-          onClick={() => setTab("edit")}
-        >
-          Edit Text
-        </Button>
-        <Button
-          borderRadius={0}
-          variant={tab === "preview" ? "primary" : "secondary"}
-          onClick={() => setTab("preview")}
-        >
-          Preview
-        </Button>
-        {tab === "edit" && (
-          <Typography ml={1}>
-            <Icon as={FaInfoCircle} /> Paragraphs support{" "}
-            <a href="https://github.github.com/gfm/">
-              Github Flavoured Markdown
-            </a>
-          </Typography>
-        )}
-      </FlexBox>
-      {tab === "edit" && (
-        <Textarea rows="8" value={text} onChange={handleChange} />
-      )}
-      {tab === "preview" && renderedItem}
-    </FlexBox>
+    <Tabs onChange={(i) => setGfmVisible(!i)}>
+      <TabList>
+        <Tab>Edit</Tab>
+        <Tab>Preview</Tab>
+        <Stack direction="row" align="center" hidden={!gfmVisible}>
+          <Icon as={FaInfoCircle} />
+          <Text>Paragraphs support</Text>
+          <Link
+            isExternal
+            href="https://github.github.com/gfm/"
+            color="blue.500"
+          >
+            Github Flavoured Markdown
+            <sup>
+              <Icon ml={1} as={FaExternalLinkAlt} />
+            </sup>
+          </Link>
+        </Stack>
+      </TabList>
+
+      <TabPanels>
+        <TabPanel>
+          <Textarea rows="8" value={text} onChange={handleChange} />
+        </TabPanel>
+        <TabPanel>{renderedItem}</TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };
 

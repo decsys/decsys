@@ -6,7 +6,7 @@ import { Stack, LightMode } from "@chakra-ui/core";
 import PageItemRender from "components/shared/PageItemRender";
 import {
   usePageItemActions,
-  PageItemActionsProvider
+  PageItemActionsProvider,
 } from "../contexts/PageItemActions";
 import pageItemActions from "../actions/pageItemActions";
 
@@ -29,7 +29,7 @@ const PageItemPreviewEditor = ({ itemId, renderComponent, params }) => {
       />
     ),
     params,
-    onParamChange: handleParamChange
+    onParamChange: handleParamChange,
   });
 };
 
@@ -42,7 +42,7 @@ const PagePreview = () => {
   return (
     <LightMode>
       <Stack width="100%">
-        {page.components.map(item => {
+        {page.components.map((item) => {
           const isSelected = item.id === selectedPageItem.itemId;
           const renderComponent = getComponent(item.type);
 

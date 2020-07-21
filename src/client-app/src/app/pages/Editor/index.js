@@ -16,7 +16,7 @@ const NoPages = ({ addPage }) => (
     splash={FaFileAlt}
     callToAction={{
       label: "Add a Page",
-      onClick: addPage
+      onClick: addPage,
     }}
   />
 );
@@ -33,7 +33,7 @@ const Editor = ({ id, navigate }) => {
   // we ultimately expose it to children through the PageList context
   const [selectedPageItem, setSelectedPageItem] = useState({
     pageId: undefined,
-    itemId: undefined
+    itemId: undefined,
   });
 
   return (
@@ -50,11 +50,11 @@ const Editor = ({ id, navigate }) => {
           gap={0}
           height="100vh"
         >
-          <Flex boxShadow="section-h" gridColumn="span 2" zIndex={1000}>
+          <Flex boxShadow="section-h" gridColumn="span 2" zIndex={3}>
             <EditorBar />
           </Flex>
 
-          <Flex boxShadow="section-v" gridRow="span 2" zIndex={200}>
+          <Flex boxShadow="section-v" gridRow="span 2" zIndex={2}>
             <PageList />
           </Flex>
 
@@ -64,7 +64,7 @@ const Editor = ({ id, navigate }) => {
             </Flex>
           ) : (
             <>
-              <Flex boxShadow="section-v" overflowY="auto" zIndex={100}>
+              <Flex boxShadow="section-v" overflowY="auto" zIndex={1}>
                 <PagePreview />
               </Flex>
               <Flex overflowY="auto">
