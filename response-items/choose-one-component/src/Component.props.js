@@ -4,7 +4,16 @@ import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 
 // Specify Configurable Parameters
 const params = {
+  // Dropdown Flag
   dropDown: ParamTypes.bool("Drop Down?", false),
+
+  // Styling Options
+  color: ParamTypes.string("Text Color", "black"),
+  fontsize: ParamTypes.string("Text Size", "1em"),
+  fontfamily: ParamTypes.string("Text Font", "Arial"),
+  scale: ParamTypes.string("Scale", "1em"),
+
+  // Qualitivative answers
   option0: ParamTypes.string("Options: 0", ""),
   option1: ParamTypes.string("1", ""),
   option2: ParamTypes.string("2", ""),
@@ -15,6 +24,7 @@ const params = {
   option7: ParamTypes.string("7", ""),
   option8: ParamTypes.string("8", ""),
   option9: ParamTypes.string("9", ""),
+
 };
 
 // Specify PropTypes for non-Configurable Props

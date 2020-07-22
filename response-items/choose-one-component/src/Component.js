@@ -9,11 +9,21 @@ const Component = ({
   logResults, 
   setNextEnabled,
   dropDown,
-  styles,
-  ...p
+  color,
+  fontsize,
+  fontfamily,
+  scale,
+  ...props
 }) => {
 
-  const options = filterOptions(p);
+  const options = filterOptions(props);
+
+  const styles = {
+    color,
+    fontsize,
+    fontfamily,
+    scale
+  }
 
   const logOption = option => {
     setNextEnabled(true);
@@ -23,8 +33,8 @@ const Component = ({
   return (
     <div>
       {
-        dropDown  ? <DropDownList options={options} logOption={logOption} />
-                  : <RadioButtonList styles={styles} options={options} onSelection={logOption} />
+        dropDown  ? <DropDownList options={options} logOption={logOption} {...styles} />
+                  : <RadioButtonList options={options} onSelection={logOption} {...styles} />
       }
     </div>
   );

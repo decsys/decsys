@@ -7,7 +7,7 @@ const ListContainer = styled.div`
     flex-direction: column;
 `;
 
-const RadioButtonList = ({ options, styles, onSelection }) => {
+const RadioButtonList = ({ options, onSelection, ...props }) => {
     
     // Generate identifier to group radios
     const name = Date.now();
@@ -16,7 +16,7 @@ const RadioButtonList = ({ options, styles, onSelection }) => {
         <ListContainer>
         {
             options.map(option =>
-                <RadioListItem name={name} option={option} styles={styles} onSelection={onSelection} />    
+                <RadioListItem name={name} option={option} onSelection={onSelection} {...props}/>    
             )
         }
         </ListContainer>

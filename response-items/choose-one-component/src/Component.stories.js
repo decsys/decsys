@@ -2,6 +2,7 @@ import React from "react";
 import { withKnobs, text, boolean, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import Component from "./Component";
+import styled from "styled-components";
 
 export default {
   title: "Horizontal",
@@ -38,11 +39,11 @@ const options = () => {
 }
 
 const props = () => {
-  return {...actions, ...options()}
+  return {...actions, ...options(), ...styles()}
 }
 
 export const Horizontal = () => {
-  return <Component dropDown={boolean("Drop Down", true)} styles={styles()} {...props()} />
+  return <Component dropDown={boolean("Drop Down", true)} {...props()} />
 };
 
 export const DropDown = () => {
@@ -50,5 +51,5 @@ export const DropDown = () => {
 };
 
 export const RadioList = () => {
-  return <Component dropDown={false} styles={styles()} {...props()} />
+  return <Component dropDown={false} {...props()} />
 };
