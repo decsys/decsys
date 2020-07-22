@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Decsys.Data.Entities
+{
+    public class BaseSurveyInstance
+    {
+        /// <summary>
+        /// DO NOT USE. Only provided for ORM use.
+        /// </summary>
+        [Obsolete]
+        public BaseSurveyInstance() { }
+
+        /// <summary>
+        /// Create a SurveyInstance belong to a given Survey.
+        /// </summary>
+        /// <param name="surveyId">ID of the owning Survey.</param>
+      
+
+        public int Id { get; set; }
+
+        public DateTimeOffset Published { get; set; } = DateTimeOffset.UtcNow;
+
+        public DateTimeOffset? Closed { get; set; }
+
+        public bool OneTimeParticipants { get; set; }
+
+        public bool UseParticipantIdentifiers { get; set; }
+
+        public IEnumerable<string> ValidIdentifiers { get; set; } = new List<string>();
+    }
+}
