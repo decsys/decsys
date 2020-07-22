@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Decsys.Data.Entities
 {
-    public class BaseSurveyInstance
+    public abstract class BaseSurveyInstance
     {
         /// <summary>
         /// DO NOT USE. Only provided for ORM use.
@@ -17,7 +17,13 @@ namespace Decsys.Data.Entities
         /// Create a SurveyInstance belong to a given Survey.
         /// </summary>
         /// <param name="surveyId">ID of the owning Survey.</param>
-      
+        /// 
+
+        public BaseSurveyInstance(int surveyId)
+        {
+            Survey survey  = new Survey { Id = surveyId };
+        }
+
 
         public int Id { get; set; }
 

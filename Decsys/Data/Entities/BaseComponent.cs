@@ -7,7 +7,6 @@ namespace Decsys.Data.Entities
 {
     public abstract class BaseComponent
     {
-
         /// <summary>
         /// DO NOT USE. Only provided for ORM use.
         /// </summary>

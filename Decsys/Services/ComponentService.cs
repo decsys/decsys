@@ -54,7 +54,7 @@ namespace Decsys.Services
             surveys.Update(survey);
 
             return _mapper.Map<Models.Component>(entity);
-        }
+        } 
 
         /// <summary>
         /// Move a Component to a new position in the Component Order of a Page.
