@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { filterOptions } from "./utils/option-params";
 import * as props from "./Component.props";
+import DropDownList from "./components/DropDownList";
+import RadioButtonList from "./components/RadioButtonList"
+import { filterOptions } from "./utils/option-params";
 
 // Build a Response Component as a React Functional Component
 const Component = ({
@@ -12,16 +14,16 @@ const Component = ({
 
   const options = filterOptions(p);
 
-  useEffect(() => setNextEnabled(true), [setNextEnabled]);
-
-  console.log(dropDown);
+  const logOption = option => {
+    setNextEnabled(true);
+    logResults(option);
+  }
 
   return (
     <div>
-      <div>DropDown: {dropDown ? "True" : "False"}</div>
-      <div>Options: {options.length}</div>
       {
-        options.map(x => <p>{x.option}</p>)
+        dropDown  ? <DropDownList logOption={logOption} options={options} />
+                  : <RadioButtonList logOption={logOption} options={options} />
       }
     </div>
   );

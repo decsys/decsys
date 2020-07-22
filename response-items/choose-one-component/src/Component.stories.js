@@ -15,10 +15,10 @@ const actions =  {
 
 const options = () => {
   return {
-    option0 : text("Option 0", ""),
-    option1 : text("Option 1", ""),
-    option2 : text("Option 2", ""),
-    option3 : text("Option 3", ""),
+    option0 : text("Option 0", "Option 0"),
+    option1 : text("Option 1", "Option 1"),
+    option2 : text("Option 2", "Option 2"),
+    option3 : text("Option 3", "Option 3"),
     option4 : text("Option 4", ""),
     option5 : text("Option 5", ""),
     option6 : text("Option 6", ""),
