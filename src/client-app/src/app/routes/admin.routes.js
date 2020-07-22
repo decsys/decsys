@@ -4,6 +4,7 @@ import Error from "app/pages/Error";
 import { useUsers } from "contexts/UsersContext";
 import Surveys from "app/pages/Surveys";
 import Editor from "app/pages/Editor";
+import Preview from "app/pages/Preview";
 
 const Admin = () => {
   const { user } = useUsers();
@@ -14,6 +15,7 @@ const Admin = () => {
     <Router>
       <Surveys path="/" />
       <Editor path="/survey/:id" />
+      <Preview path="/survey/:id/preview" />
       <Error message="404: Not Found" default />
     </Router>
   );

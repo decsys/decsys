@@ -3,13 +3,14 @@ import { Flex, Link, Grid, useColorMode } from "@chakra-ui/core";
 import { Link as RouterLink } from "@reach/router";
 import LightHeading from "components/core/LightHeading";
 
-export const AppBarLink = p => (
+export const AppBarLink = (p) => (
   <Link
     color="gray.400"
     _focus={{}}
     _hover={{
       color: "gray.300",
-      textShadow: "black 1px 1px 2px, grey 0 0 .2em, white 0 0 .5em"
+      textShadow: "black 1px 1px 2px, grey 0 0 .2em, white 0 0 .5em",
+      textDecoration: "none",
     }}
     {...p}
   />
@@ -48,7 +49,7 @@ const AppBar = ({ brand, children, brandLink }) => {
 };
 
 AppBar.defaultProps = {
-  brandLink: "/"
+  brandLink: "/",
 };
 
 export default AppBar;

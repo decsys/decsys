@@ -2,7 +2,7 @@ import React, { createElement } from "react";
 import { getComponent } from "services/page-items";
 import { usePageListContext } from "../contexts/PageList";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import { Stack, LightMode } from "@chakra-ui/core";
+import { Stack } from "@chakra-ui/core";
 import PageItemRender from "components/shared/PageItemRender";
 import {
   usePageItemActions,
@@ -61,56 +61,54 @@ const PagePreview = () => {
   const page = pages.find(({ id }) => id === selectedPageItem.pageId);
 
   return (
-    <LightMode>
-      <Stack width="100%" p={4}>
-        {page.components.map((item) => {
-          const isSelected = item.id === selectedPageItem.itemId;
-          const renderComponent = getComponent(item.type);
+    <Stack width="100%" p={4}>
+      {page.components.map((item) => {
+        const isSelected = item.id === selectedPageItem.itemId;
+        const renderComponent = getComponent(item.type);
 
-          // prepare contexts for previewing
+        // prepare contexts for previewing
 
-          // If there's a custom editor for the current selected item, use it
-          if (isSelected && renderComponent.previewEditorComponent) {
-            const actions = pageItemActions(
-              id,
-              page.id,
-              mutate,
-              selectedPageItem,
-              setSelectedPageItem
-            );
-
-            return (
-              <PageItemActionsProvider key={item.id} value={actions}>
-                <PageItemCustomPreviewEditor
-                  surveyId={id}
-                  pageId={selectedPageItem.pageId}
-                  itemId={item.id}
-                  renderComponent={renderComponent}
-                  params={item.params}
-                />
-              </PageItemActionsProvider>
-            );
-          }
-
-          // else just render it and it will use the params editor window
-          const renderContext = {
-            itemId: item.id,
-            pageId: selectedPageItem.pageId,
-            surveyId: id,
-            ...renderActions,
-          };
+        // If there's a custom editor for the current selected item, use it
+        if (isSelected && renderComponent.previewEditorComponent) {
+          const actions = pageItemActions(
+            id,
+            page.id,
+            mutate,
+            selectedPageItem,
+            setSelectedPageItem
+          );
 
           return (
-            <PageItemRender
-              key={item.id}
-              _context={renderContext}
-              component={renderComponent}
-              params={item.params}
-            />
+            <PageItemActionsProvider key={item.id} value={actions}>
+              <PageItemCustomPreviewEditor
+                surveyId={id}
+                pageId={selectedPageItem.pageId}
+                itemId={item.id}
+                renderComponent={renderComponent}
+                params={item.params}
+              />
+            </PageItemActionsProvider>
           );
-        })}
-      </Stack>
-    </LightMode>
+        }
+
+        // else just render it and it will use the params editor window
+        const renderContext = {
+          itemId: item.id,
+          pageId: selectedPageItem.pageId,
+          surveyId: id,
+          ...renderActions,
+        };
+
+        return (
+          <PageItemRender
+            key={item.id}
+            _context={renderContext}
+            component={renderComponent}
+            params={item.params}
+          />
+        );
+      })}
+    </Stack>
   );
 };
 

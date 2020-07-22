@@ -13,7 +13,7 @@ const SurveysList = ({ surveys }) => {
         <SurveysSortingAndFiltering {...sortingAndFiltering} />
       </Box>
 
-      <Stack boxShadow="callout">
+      <Stack boxShadow="callout" spacing={0}>
         {sortingAndFiltering.surveyList.map(
           ({ id }) =>
             !!surveys[id] && (

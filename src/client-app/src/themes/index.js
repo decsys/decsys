@@ -2,6 +2,9 @@ import theme from "@chakra-ui/theme";
 import merge from "lodash-es/merge";
 
 const overrides = {
+  config: {
+    initialColorMode: "light", // dark mode is wip
+  },
   colors: {
     "dark-gray": {
       "50": "#f0f1f5",
