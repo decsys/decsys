@@ -13,6 +13,15 @@ const actions =  {
   setNextEnabled: action("Next button enabled")
 };
 
+const styles = () => { 
+  return {
+    color: text("Text Color", "black"),
+    fontsize: text("Text Size", "1em"),
+    fontfamily: text("Text Font", "Arial"),
+    scale: text("Scale", "1em")
+  }
+}
+
 const options = () => {
   return {
     option0 : text("Option 0", "Option 0"),
@@ -33,7 +42,7 @@ const props = () => {
 }
 
 export const Horizontal = () => {
-  return <Component dropDown={boolean("Drop Down", true)} {...props()} />
+  return <Component dropDown={boolean("Drop Down", true)} styles={styles()} {...props()} />
 };
 
 export const DropDown = () => {
@@ -41,5 +50,5 @@ export const DropDown = () => {
 };
 
 export const RadioList = () => {
-  return <Component dropDown={false} {...props()} />
+  return <Component dropDown={false} styles={styles()} {...props()} />
 };

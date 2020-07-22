@@ -9,6 +9,7 @@ const Component = ({
   logResults, 
   setNextEnabled,
   dropDown,
+  styles,
   ...p
 }) => {
 
@@ -22,8 +23,8 @@ const Component = ({
   return (
     <div>
       {
-        dropDown  ? <DropDownList logOption={logOption} options={options} />
-                  : <RadioButtonList logOption={logOption} options={options} />
+        dropDown  ? <DropDownList options={options} logOption={logOption} />
+                  : <RadioButtonList styles={styles} options={options} onSelection={logOption} />
       }
     </div>
   );

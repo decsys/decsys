@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import FlexBox from './FlexBox'
 import RadioListItem from "./RadioListItem"
 
-const styles = {
-    color: "black",
-    scale: "1em",
-    fontsize: "1em",
-    fontfamily: "Arial"
-}
+const ListContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
 
-const RadioButtonList = ({ logOption, options }) => {
+const RadioButtonList = ({ options, styles, onSelection }) => {
     
     // Generate identifier to group radios
     const name = Date.now();
 
     return (
-        <div>
+        <ListContainer>
         {
             options.map(option =>
-                <RadioListItem name={name} option={option} styles={styles} onSelection={logOption} />    
+                <RadioListItem name={name} option={option} styles={styles} onSelection={onSelection} />    
             )
         }
-        </div>
+        </ListContainer>
     )
 }
 
