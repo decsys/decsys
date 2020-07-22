@@ -77,7 +77,7 @@ export const Page = ({
   innerRef,
   draggableProps,
   dragHandleProps,
-  isDragging
+  isDragging,
 }) => {
   const { colorMode } = useColorMode();
   const cardStyle = { light: { bg: "gray.200" }, dark: { bg: "gray.700" } };
@@ -86,7 +86,6 @@ export const Page = ({
     <Flex
       direction="column"
       mb={2}
-      mx={4}
       borderRadius={5}
       {...cardStyle[colorMode]}
       ref={innerRef}

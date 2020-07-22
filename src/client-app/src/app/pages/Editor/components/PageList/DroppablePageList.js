@@ -31,9 +31,9 @@ const DroppablePageList = () => {
   const {
     mutate,
     selectedPageItem,
-    setSelectedPageItem
+    setSelectedPageItem,
   } = usePageListContext();
-  const getPageItemActions = pageId =>
+  const getPageItemActions = (pageId) =>
     pageItemActions(
       surveyId,
       pageId,

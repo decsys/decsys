@@ -45,7 +45,7 @@ const Editor = ({ id, navigate }) => {
         setSelectedPageItem={setSelectedPageItem}
       >
         <Grid
-          templateColumns="2fr 5fr"
+          templateColumns="minmax(350px, 2fr) 5fr"
           templateRows="auto minmax(200px, 2fr) minmax(200px, 1fr)"
           gap={0}
           height="100vh"

@@ -1,6 +1,6 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { Flex, Icon, useColorMode, Text } from "@chakra-ui/core";
+import { Flex, Icon, useColorMode, Text, Grid } from "@chakra-ui/core";
 import {
   FaHeading,
   FaParagraph,
@@ -46,18 +46,16 @@ const ItemInfo = ({
   onSelect,
 }) => (
   <Flex
-    ml={8}
+    pl={8}
     align="center"
     width="100%"
     {...dragHandleProps}
     onClick={onSelect}
   >
-    <Flex width="1.5em" justify="center">
-      {<Icon as={isBusy ? BsDot : FaGripVertical} color="gray.500" />}
-    </Flex>
+    <Icon as={isBusy ? BsDot : FaGripVertical} color="gray.500" />
     <ItemIcon type={type} />
     <Text as={!text ? "em" : "p"} isTruncated>
-      {text ?? capitalise(type)}
+      {text || capitalise(type)}
     </Text>
   </Flex>
 );
@@ -116,13 +114,14 @@ export const PageItem = ({
   };
 
   return (
-    <Flex
+    <Grid
       ref={innerRef}
       bg={isDragging || isSelected ? selectStyle[colorMode].bg : "inherit"}
       _hover={isBusy ? {} : { ...selectStyle[colorMode] }}
       transition="background-color .1s ease"
       {...draggableProps}
       role="group"
+      templateColumns="minmax(50px, 1fr) auto auto"
     >
       <ItemInfo
         isBusy={busy.isPageDragging}
@@ -136,7 +135,7 @@ export const PageItem = ({
       ) : (
         <ItemActions {...item} {...actions} />
       )}
-    </Flex>
+    </Grid>
   );
 };
 
