@@ -2,15 +2,15 @@ import React from "react";
 import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 import { Box } from "@chakra-ui/core";
 
-const Spacer = ({ height }) => {
+const PageVerticalSpacer = ({ height }) => {
   return <Box minHeight={`${height}px`} />;
 };
 
-Spacer.params = {
+PageVerticalSpacer.params = {
   height: ParamTypes.number("Height (px)", 50),
 };
-const { pt, defaultProps } = buildPropTypes(Spacer.params);
-Spacer.propTypes = pt;
-Spacer.defaultProps = defaultProps;
+const { pt, defaultProps } = buildPropTypes(PageVerticalSpacer.params);
+PageVerticalSpacer.propTypes = pt;
+PageVerticalSpacer.defaultProps = defaultProps;
 
-export default Spacer;
+export default PageVerticalSpacer;

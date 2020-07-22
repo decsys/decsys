@@ -1,20 +1,11 @@
 import { createElement } from "react";
-import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import { defaultProps as contextDefaults } from "constants/param-types";
 
-// TODO: actions can almost certainly come from a context, but need to support no-ops
-
-const PageItemRender = ({ itemId, component, params, actions }) => {
-  // Gather platform context data to give to the component
-  const { id: surveyId } = useFetchSurvey();
-
+const PageItemRender = ({ _context, component, params }) => {
   if (!component) return null;
 
-  // prepare props
-  // TODO: document the signature change here.
+  // TODO: document the props signature change here.
   // Components now receive ({_context, ...params, ...results}) props
-
-  const _context = { itemId, surveyId, ...actions };
+  // _context is prepared in the call site; this allows Previews to behave differently to Surveys
 
   // merge default Params and set ones
   // TODO: change defaults behaviour.
@@ -30,12 +21,8 @@ const PageItemRender = ({ itemId, component, params, actions }) => {
   return createElement(component, {
     ...{ ...paramDefaults, ...params },
     ...results,
-    _context
+    _context,
   });
-};
-
-PageItemRender.defaultProps = {
-  actions: contextDefaults
 };
 
 export default PageItemRender;

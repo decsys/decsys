@@ -9,27 +9,48 @@ import {
   PageItemActionsProvider,
 } from "../contexts/PageItemActions";
 import pageItemActions from "../actions/pageItemActions";
+import { defaultProps as renderActions } from "constants/param-types";
 
 // TODO: Document this capability for components
-// with the api (props signature, how renderedItem works...)
-const PageItemPreviewEditor = ({ itemId, renderComponent, params }) => {
+// with the api (props signature, how renderedItem works..., _context...)
+const PageItemCustomPreviewEditor = ({
+  surveyId,
+  pageId,
+  itemId,
+  renderComponent,
+  params,
+}) => {
   const { setParamValue } = usePageItemActions();
 
   // item specific param value setter, so the custom editor can easily set params
   const handleParamChange = (paramKey, paramValue) =>
     setParamValue(itemId, paramKey, paramValue);
 
-  return createElement(renderComponent.editorComponent, {
+  const previewEditorContext = {
+    itemId,
+    pageId,
+    surveyId,
+    handleParamChange,
+  };
+
+  const renderContext = {
+    itemId,
+    pageId,
+    surveyId,
+    ...renderActions,
+  };
+
+  return createElement(renderComponent.previewEditorComponent, {
     // rendered as the platform normally would
     renderedItem: (
       <PageItemRender
-        itemId={itemId}
+        _context={renderContext}
         component={renderComponent}
         params={params}
       />
     ),
     params,
-    onParamChange: handleParamChange,
+    _context: previewEditorContext,
   });
 };
 
@@ -41,13 +62,15 @@ const PagePreview = () => {
 
   return (
     <LightMode>
-      <Stack width="100%">
+      <Stack width="100%" p={4}>
         {page.components.map((item) => {
           const isSelected = item.id === selectedPageItem.itemId;
           const renderComponent = getComponent(item.type);
 
+          // prepare contexts for previewing
+
           // If there's a custom editor for the current selected item, use it
-          if (isSelected && renderComponent.editorComponent) {
+          if (isSelected && renderComponent.previewEditorComponent) {
             const actions = pageItemActions(
               id,
               page.id,
@@ -58,7 +81,9 @@ const PagePreview = () => {
 
             return (
               <PageItemActionsProvider key={item.id} value={actions}>
-                <PageItemPreviewEditor
+                <PageItemCustomPreviewEditor
+                  surveyId={id}
+                  pageId={selectedPageItem.pageId}
                   itemId={item.id}
                   renderComponent={renderComponent}
                   params={item.params}
@@ -68,10 +93,17 @@ const PagePreview = () => {
           }
 
           // else just render it and it will use the params editor window
+          const renderContext = {
+            itemId: item.id,
+            pageId: selectedPageItem.pageId,
+            surveyId: id,
+            ...renderActions,
+          };
+
           return (
             <PageItemRender
               key={item.id}
-              itemId={item.id}
+              _context={renderContext}
               component={renderComponent}
               params={item.params}
             />
