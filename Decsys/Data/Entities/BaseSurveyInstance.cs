@@ -7,11 +7,7 @@ namespace Decsys.Data.Entities
 {
     public abstract class BaseSurveyInstance
     {
-        /// <summary>
-        /// DO NOT USE. Only provided for ORM use.
-        /// </summary>
-        [Obsolete]
-        public BaseSurveyInstance() { }
+
 
         /// <summary>
         /// Create a SurveyInstance belong to a given Survey.
@@ -19,10 +15,10 @@ namespace Decsys.Data.Entities
         /// <param name="surveyId">ID of the owning Survey.</param>
         /// 
 
-        public BaseSurveyInstance(int surveyId)
+        /*public BaseSurveyInstance(int surveyId)
         {
             Survey survey  = new Survey { Id = surveyId };
-        }
+        } */
 
 
         public int Id { get; set; }
