@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import FlexBox from './FlexBox'
+import RadioListItem from "./RadioListItem"
+
+const styles = {
+    color: "black",
+    scale: "1em",
+    fontsize: "1em",
+    fontfamily: "Arial"
+}
 
 const RadioButtonList = ({ logOption, options }) => {
     
     // Generate identifier to group radios
     const name = Date.now();
 
-    const logSelection = e => {
-        logOption(options[e.target.value])
-    }
-
     return (
         <div>
         {
-            options.map(x => 
-                <label>
-                    <input  type="radio" name={name} value={x.value} onChange={logSelection}/>
-                    { x.option }
-                </label>    
+            options.map(option =>
+                <RadioListItem name={name} option={option} styles={styles} onSelection={logOption} />    
             )
         }
         </div>

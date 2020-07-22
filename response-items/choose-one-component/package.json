@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@decsys/param-types": "^1.0.0",
+    "@smooth-ui/core-sc": "^10.1.0",
     "styled-icons": "^7.15.1"
   },
   "peerDependencies": {
