@@ -16,8 +16,11 @@ import {
 } from "@chakra-ui/core";
 import { FaInfoCircle, FaExternalLinkAlt } from "react-icons/fa";
 
-const PageParagraph = ({ text, ...p }) => (
-  <Text as="div" {...p}>
+const PageParagraph = ({ text, color, ...p }) => (
+  // we set color in standard CSS,
+  // so that simple CSS color names work e.g. "red"
+  // and we don't have to explain to users how chakra theme colors work e.g. "red.500"
+  <Text as="div" {...p} style={{ color }}>
     <ReactMarkdown source={text} />
   </Text>
 );
