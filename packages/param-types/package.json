@@ -11,12 +11,12 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/decsys/param-types.git"
+    "url": "git+https://github.com/decsys/decsys.git"
   },
   "bugs": {
-    "url": "https://github.com/decsys/param-types/issues"
+    "url": "https://github.com/decsys/decsys/issues"
   },
-  "homepage": "https://github.com/decsys/param-types#readme",
+  "homepage": "https://github.com/decsys/decsys#readme",
   "devDependencies": {
     "prop-types": "^15.7.2"
   },
