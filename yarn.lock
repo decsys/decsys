@@ -1663,11 +1663,6 @@
   resolved "https://registry.yarnpkg.com/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha512-ij4wRiunFfaJxjB0BdrYHIH8FxBJpOwNPhhAcunlmPdXudL1WQV1qoP9un6JsEBAgQH+7UXyyjh0g7jTxXK6tg==
 
-"@decsys/param-types@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@decsys/param-types/-/param-types-1.0.0.tgz#250fc46b9f9c331265ec6cc3d7f647e5f9e5ba2a"
-  integrity sha512-i9bMrfqxQ9YurRVghm1LsiuwYchFgPVpijSfjcUekweeMbKacY7ur64YQmlDn2h4r4t2XA0SvhC+XRbuZrbqaQ==
-
 "@emotion/cache@^10.0.27", "@emotion/cache@^10.0.9":
   version "10.0.29"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.29.tgz#87e7e64f412c060102d589fe7c6dc042e6f9d1e0"
