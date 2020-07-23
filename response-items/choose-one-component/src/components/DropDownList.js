@@ -12,7 +12,10 @@ const DropDownList = ({ logOption, options, ...props }) => {
     const styles = {
         placeholder: (provided, state) => ({ ...provided, ...style }),
         singleValue: (provided, state) => ({ ...provided, ...style }),
-        option: (provided, state) => ({ ...provided, ...style })
+        option: (provided, state) => ({ ...provided, ...style }),
+        container: (provided, state) => ({ ...provided, 
+            width: props.width || "100%"
+        })
     };
 
     return (

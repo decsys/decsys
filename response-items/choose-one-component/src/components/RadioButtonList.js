@@ -1,11 +1,6 @@
 import React from "react";
-import styled from "styled-components";
+import FlexBox from "./FlexBox";
 import RadioListItem from "./RadioListItem"
-
-const FlexBox = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
 
 const RadioButtonList = ({ options, onSelection, ...props }) => {
     

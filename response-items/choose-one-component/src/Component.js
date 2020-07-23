@@ -1,16 +1,9 @@
 import React from "react";
 import * as props from "./Component.props";
+import FlexBox from "./components/FlexBox";
 import DropDownList from "./components/DropDownList";
 import RadioButtonList from "./components/RadioButtonList"
 import { filterOptions } from "./utils/option-params";
-import styled from "styled-components";
-
-// Container to sort out component alignment and size
-const Alignment = styled.div`
-  width: ${x => x.dropDown ? (x.width || "100%") : "fit-content"};
-  float: ${x => (x.alignment == "center") ? "" : x.alignment};
-  margin: auto;
-`;
 
 // Main Component
 const Component = ({
@@ -28,6 +21,7 @@ const Component = ({
   const options = filterOptions(props);
 
   const styles = {
+    width,
     textColor,
     fontSize,
     fontFamily,
@@ -39,15 +33,12 @@ const Component = ({
   }
 
   return (
-    // Parent <div> required for alignment in Decsys
-    <div>
-      <Alignment {...{dropDown, width, alignment}}>
-        {
-          dropDown  ? <DropDownList options={options} logOption={logOption} {...styles} />
-                    : <RadioButtonList options={options} onSelection={logOption} {...styles} />
-        }
-      </Alignment>
-    </div>
+    <FlexBox alignment={alignment}>
+      {
+        dropDown  ? <DropDownList options={options} logOption={logOption} {...styles} />
+                  : <RadioButtonList options={options} onSelection={logOption} {...styles} />
+      }
+    </FlexBox>
   );
 };
 
