@@ -1,0 +1,6 @@
+{
+  "packages": ["app/*", "packages/*", "response-items/*"],
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true
+}

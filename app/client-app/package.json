@@ -1,6 +1,6 @@
 {
-  "name": "client-app",
-  "version": "1.0.2",
+  "name": "@decsys/client-app",
+  "version": "2.0.0-alpha.1",
   "private": true,
   "dependencies": {
     "@chakra-ui/alert": "^1.0.0-next.6",
