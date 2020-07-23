@@ -1,23 +1,23 @@
-import resolve from "rollup-plugin-node-resolve";
-import cjs from "rollup-plugin-commonjs";
-import replace from "rollup-plugin-replace";
-import babel from "rollup-plugin-babel";
-import json from "rollup-plugin-json";
+import resolve from "@rollup/plugin-node-resolve";
+import cjs from "@rollup/plugin-commonjs";
+import replace from "@rollup/plugin-replace";
+import babel from "@rollup/plugin-babel";
+import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
 
 const pkg = require("./package.json");
 
 // the actual module exports from the bundled IIFE
 const footer = `
-export const name = DecsysComponent.displayName;
-export default DecsysComponent;
+export const name = DecsysResponseItem.displayName;
+export default DecsysResponseItem;
 `;
 
 export default {
   input: "src/index.js",
   output: {
     format: "iife",
-    name: "DecsysComponent",
+    name: "DecsysResponseItem",
     file: `dist/${pkg.responseItemName}.js`,
     sourcemap: true,
     preferConst: true,
@@ -47,6 +47,7 @@ export default {
         ],
         "@babel/preset-react",
       ],
+      "babelHelpers": "bundled" // TODO: we can probably make this "runtime"
     }),
     resolve({ preferBuiltins: false }),
     cjs(),
