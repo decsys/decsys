@@ -1,8 +1,8 @@
 {
-  "name": "@decsys/horizontal-component",
-  "componentName": "Horizontal",
+  "name": "@decsys/choose-one-component",
+  "componentName": "Choose One",
   "version": "0.1.0",
-  "description": "A selection of qualitative answers",
+  "description": "Choose one from a selection of qualitative answers",
   "author": "James Fleming <jamesfleming91@gmail.com>",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
