@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import RadioListItem from "./RadioListItem"
 
-const ListContainer = styled.div`
+const FlexBox = styled.div`
     display: flex;
     flex-direction: column;
 `;
@@ -13,13 +13,13 @@ const RadioButtonList = ({ options, onSelection, ...props }) => {
     const name = Date.now();
 
     return (
-        <ListContainer>
+        <FlexBox>
         {
             options.map(option =>
                 <RadioListItem name={name} option={option} onSelection={onSelection} {...props}/>    
             )
         }
-        </ListContainer>
+        </FlexBox>
     )
 }
 

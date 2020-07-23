@@ -9,8 +9,7 @@
     "rollup": "rollup -c",
     "build": "npm run rollup",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "reload": "npm run-scrip build && @powershell copy ./dist/%npm_package_componentName%.js ../decsys/Decsys/components"
+    "build-storybook": "build-storybook"
   },
   "license": "AGPL-3.0-only",
   "devDependencies": {
