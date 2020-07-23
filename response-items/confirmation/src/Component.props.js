@@ -6,14 +6,14 @@ const params = {
   label: ParamTypes.string(
     "Checkbox Label",
     "I confirm that I have read and understood the instructions, and that I wish to proceed."
-  )
+  ),
 };
 
 // Specify PropTypes for non-Configurable Props
 const staticPropTypes = {
   confirmed: PropTypes.bool,
   logResults: PropTypes.func.isRequired,
-  setNextEnabled: PropTypes.func.isRequired
+  setNextEnabled: PropTypes.func.isRequired,
 };
 
 // Create merged propTypes, defaultProps

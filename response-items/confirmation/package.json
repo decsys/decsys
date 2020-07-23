@@ -1,8 +1,8 @@
 {
-  "name": "@decsys/confirmation-component",
+  "name": "@decsys/confirmation-response",
   "componentName": "Confirmation",
-  "version": "1.0.1",
-  "description": "Participant Confirmation component for the DECSYS Survey Platform",
+  "version": "2.0.0-alpha.1",
+  "description": "Confirmation Page Response Item for the DECSYS Survey Platform",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "rollup": "rollup -c",
@@ -14,7 +14,7 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "https://github.com/decsys/confirmation-component.git"
+    "url": "https://github.com/decsys/decsys.git"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
