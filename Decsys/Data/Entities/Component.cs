@@ -3,7 +3,6 @@ using System;
 
 namespace Decsys.Data.Entities
 {
-    //[Obsolete]
     public class Component : BaseComponent
     {
 
@@ -12,10 +11,9 @@ namespace Decsys.Data.Entities
         /// </summary>
         [Obsolete]
         public Component() { }
-        //Call base constructor for service layer
-        public Component(string type) 
+
+        public Component(string type) : base(type)
         {
-            Type = type;
         }
 
         public BsonDocument Params { get; set; } = new BsonDocument();
