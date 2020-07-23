@@ -1,7 +1,7 @@
 import React from "react";
 import Select from 'react-select'
 
-const DropDownList = ({ logOption, options, ...props }) => {
+const DropDownList = ({ onSelection, options, ...props }) => {
     
     const style = {
         color: props.textColor || "black",
@@ -19,7 +19,7 @@ const DropDownList = ({ logOption, options, ...props }) => {
     };
 
     return (
-        <Select styles={styles} options={options} onChange={logOption} />
+        <Select styles={styles} options={options} onChange={onSelection} />
     )
 };
 

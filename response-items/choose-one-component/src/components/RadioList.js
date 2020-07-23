@@ -2,7 +2,7 @@ import React from "react";
 import FlexBox from "./FlexBox";
 import RadioListItem from "./RadioListItem"
 
-const RadioButtonList = ({ options, onSelection, ...props }) => {
+const RadioList = ({ options, onSelection, ...props }) => {
     
     // Generate identifier to group radios
     const name = Date.now();
@@ -11,11 +11,11 @@ const RadioButtonList = ({ options, onSelection, ...props }) => {
         <FlexBox>
         {
             options.map(option =>
-                <RadioListItem name={name} option={option} onSelection={onSelection} {...props}/>    
+                <RadioListItem key={key} name={name} option={option} onSelection={onSelection} {...props}/>    
             )
         }
         </FlexBox>
     )
 }
 
-export default RadioButtonList;
+export default RadioList;
