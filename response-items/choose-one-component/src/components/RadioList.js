@@ -11,7 +11,7 @@ const RadioList = ({ options, onSelection, ...props }) => {
         <FlexBox>
         {
             options.map(option =>
-                <RadioListItem name={name} option={option} onSelection={onSelection} {...props}/>    
+                <RadioListItem key={name} name={name} option={option} onSelection={onSelection} {...props}/>    
             )
         }
         </FlexBox>
