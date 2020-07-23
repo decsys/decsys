@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 const buildPropTypes = (params, propTypes, defaultProps) => {
   const x = {
     propTypes: propTypes || {},
-    defaultProps: defaultProps || {}
+    defaultProps: defaultProps || {},
   };
   for (const key in params) {
     const param = params[key];

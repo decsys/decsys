@@ -23,7 +23,7 @@ export const string = (label, defaultValue = "") =>
  * with NO default value.
  * @param {*} label
  */
-export const stringUndefined = label => new ParamType(label, types.string);
+export const stringUndefined = (label) => new ParamType(label, types.string);
 
 /**
  * Spec this Parameter as an enum,

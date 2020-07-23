@@ -29,5 +29,5 @@ export default {
   bool,
   number,
   bool,
-  oneOf
+  oneOf,
 };
