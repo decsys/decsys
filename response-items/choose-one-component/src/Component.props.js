@@ -15,10 +15,10 @@ const params = {
   fontFamily: ParamTypes.string("Text Font", "Arial"),
 
   // Qualitivative answers
-  option0: ParamTypes.string("Options: 0", ""),
-  option1: ParamTypes.string("1", ""),
-  option2: ParamTypes.string("2", ""),
-  option3: ParamTypes.string("3", ""),
+  option0: ParamTypes.string("Options: 0", "Option 0"),
+  option1: ParamTypes.string("1", "Option 1"),
+  option2: ParamTypes.string("2", "Option 2"),
+  option3: ParamTypes.string("3", "Option 3"),
   option4: ParamTypes.string("4", ""),
   option5: ParamTypes.string("5", ""),
   option6: ParamTypes.string("6", ""),
