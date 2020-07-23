@@ -18,7 +18,7 @@ const StyledRadio = styled.input.attrs({ type: 'radio' })`
 
 const RadioListItem = ({ name, option, onSelection, ...props }) => (
     <StyledLabel {...props}>
-        <StyledRadio name={name} onChange={() => onSelection(option)} {...props} />
+        <StyledRadio key={name} name={name} onChange={() => onSelection(option)} {...props} />
         <>{ option.label }</>
     </StyledLabel>
 )

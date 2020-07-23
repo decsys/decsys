@@ -2,7 +2,7 @@ import React from "react";
 import * as props from "./Component.props";
 import FlexBox from "./components/FlexBox";
 import DropDownList from "./components/DropDownList";
-import RadioList from "./components/RadioButtonList"
+import RadioList from "./components/RadioList"
 import { filterOptions } from "./utils/option-params";
 
 // Main Component
@@ -36,7 +36,7 @@ const Component = ({
     <FlexBox alignment={alignment}>
       {
         dropDown  ? <DropDownList options={options} onSelection={logOption} {...styles} />
-                  : <RadioButtonList options={options} onSelection={logOption} {...styles} />
+                  : <RadioList options={options} onSelection={logOption} {...styles} />
       }
     </FlexBox>
   );
