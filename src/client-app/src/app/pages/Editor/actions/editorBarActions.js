@@ -2,11 +2,14 @@ import { setSurveyName, duplicateSurvey } from "api/surveys";
 import { deleteSurvey } from "api";
 
 export default (id, navigate, mutate, setNameState) => ({
-  saveName: async newName => {
+  saveName: async (newName) => {
     setNameState({ isSaving: true });
     const { data: name } = await setSurveyName(id, newName);
-    mutate(old => ({ ...old, name }), false);
-    setNameState({ hasSaved: true });
+    mutate((old) => ({ ...old, name }), false);
+    setNameState({ hasSaved: true }); // this state update triggers a toast
+    // whatever saved state side effects should have been triggered;
+    // we don't want them to trigger erroneously on other re-renders
+    setNameState({});
   },
   duplicate: async () => {
     const { data: newId } = await duplicateSurvey(id);
@@ -17,9 +20,9 @@ export default (id, navigate, mutate, setNameState) => ({
           title: "Survey duplicated.",
           status: "success",
           duration: 2500,
-          isClosable: true
-        }
-      }
+          isClosable: true,
+        },
+      },
     });
   },
   deleteSurvey: async () => {
@@ -31,9 +34,9 @@ export default (id, navigate, mutate, setNameState) => ({
           title: "Survey deleted.",
           status: "success",
           duration: 2500,
-          isClosable: true
-        }
-      }
+          isClosable: true,
+        },
+      },
     });
-  }
+  },
 });

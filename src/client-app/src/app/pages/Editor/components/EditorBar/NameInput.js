@@ -36,13 +36,12 @@ const NameInput = ({ name }) => {
   }, [nameState.hasSaved, toast]);
 
   return (
-    <Flex align="center" width="100%" px={2}>
-      <InputGroup color="white" width="100%">
+    <Flex align="center" width="100%">
+      <InputGroup width="100%">
         <InputLeftElement>
           {nameState.isSaving ? <Spinner /> : <Icon as={FaEdit} />}
         </InputLeftElement>
         <Input
-          color="white"
           variant="flushed"
           borderRadius={0}
           size="lg"
