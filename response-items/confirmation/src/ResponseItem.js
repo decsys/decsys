@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import * as props from "./Component.props";
+import * as props from "./ResponseItem.props";
 import { FormCheck, Checkbox, FormCheckLabel } from "@smooth-ui/core-sc";
 
-const Component = ({
+const ResponseItem = ({
   label,
   confirmed: initialChecked,
   setNextEnabled,
@@ -32,8 +32,8 @@ const Component = ({
   );
 };
 
-Component.params = props.params;
-Component.propTypes = props.propTypes;
-Component.defaultProps = props.defaultProps;
+ResponseItem.params = props.params;
+ResponseItem.propTypes = props.propTypes;
+ResponseItem.defaultProps = props.defaultProps;
 
-export default Component;
+export default ResponseItem;

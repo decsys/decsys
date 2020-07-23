@@ -1,6 +1,6 @@
 {
   "name": "@decsys/confirmation-response",
-  "componentName": "Confirmation",
+  "responseItemName": "Confirmation",
   "version": "2.0.0-alpha.1",
   "description": "Confirmation Page Response Item for the DECSYS Survey Platform",
   "private": true,
@@ -18,17 +18,10 @@
     "url": "https://github.com/decsys/decsys.git"
   },
   "devDependencies": {
-    "@babel/core": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
     "@babel/preset-react": "^7.8.3",
-    "@storybook/addon-actions": "^5.3.13",
-    "@storybook/addon-knobs": "^5.3.13",
-    "@storybook/addon-links": "^5.3.13",
-    "@storybook/addons": "^5.3.13",
-    "@storybook/react": "^5.3.13",
     "babel-loader": "^8.0.6",
     "prop-types": "^15.7.2",
-    "react": "^16.12.0",
     "rollup": "^1.31.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^9.3.4",
