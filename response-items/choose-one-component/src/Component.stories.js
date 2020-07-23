@@ -16,9 +16,9 @@ const actions =  {
 
 const styles = () => { 
   return {
-    color: text("Text Color", "black"),
-    fontsize: text("Text Size", "1em"),
-    fontfamily: text("Text Font", "Arial"),
+    textColor: text("Text Color", "black"),
+    fontSize: text("Text Size", "1em"),
+    fontFamily: text("Text Font", "Arial"),
     scale: text("Scale", "1em")
   }
 }

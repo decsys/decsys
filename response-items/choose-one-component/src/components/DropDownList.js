@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import Select from 'react-select'
 
-const DropDownList = ({ logOption, options }) => {
+const DropDownList = ({ logOption, options, ...props }) => {
     
-    const logSelection = e => {
-        logOption(options[e.target.value])
+    const style = {
+        color: props.textColor || "black",
+        fontSize: props.fontSize || "1em",
+        fontFamily: props.fontFamily || "Arial"
     }
 
+    const styles = {
+        placeholder: (provided, state) => ({ ...provided, ...style }),
+        singleValue: (provided, state) => ({ ...provided, ...style }),
+        option: (provided, state) => ({ ...provided, ...style })
+    };
+
     return (
-        <select onChange={logSelection}>
-            <option hidden disabled selected>-- Select an option --</option>
-            {
-                options.map(x => 
-                    <option value={x.value}>{x.option}</option>
-                )
-            }
-        </select>
+        <Select styles={styles} options={options} onChange={logOption} />
     )
-}
+};
 
 export default DropDownList;

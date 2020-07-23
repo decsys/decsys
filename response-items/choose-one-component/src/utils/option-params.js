@@ -8,7 +8,7 @@ export const filterOptions = (options) => {
         .reduce((acc, [key, val], idx) => {
             if (key.includes("option") && !!val) {
                 return [...acc, {
-                    option: val,
+                    label: val,
                     value: idx
                 }]
             }

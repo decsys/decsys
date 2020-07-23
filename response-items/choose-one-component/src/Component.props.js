@@ -8,9 +8,9 @@ const params = {
   dropDown: ParamTypes.bool("Drop Down?", false),
 
   // Styling Options
-  color: ParamTypes.string("Text Color", "black"),
-  fontsize: ParamTypes.string("Text Size", "1em"),
-  fontfamily: ParamTypes.string("Text Font", "Arial"),
+  textColor: ParamTypes.string("Text Color", "black"),
+  fontSize: ParamTypes.string("Text Size", "1em"),
+  fontFamily: ParamTypes.string("Text Font", "Arial"),
   scale: ParamTypes.string("Scale", "1em"),
 
   // Qualitivative answers

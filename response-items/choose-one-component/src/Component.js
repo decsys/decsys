@@ -9,9 +9,9 @@ const Component = ({
   logResults, 
   setNextEnabled,
   dropDown,
-  color,
-  fontsize,
-  fontfamily,
+  textColor,
+  fontSize,
+  fontFamily,
   scale,
   ...props
 }) => {
@@ -19,9 +19,9 @@ const Component = ({
   const options = filterOptions(props);
 
   const styles = {
-    color,
-    fontsize,
-    fontfamily,
+    textColor,
+    fontSize,
+    fontFamily,
     scale
   }
 

@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledLabel = styled.label`
-    color: ${x => x.color || "black"};
-    font-size: ${x => x.fontsize || "1em"};
-    font-family: ${x => x.fontfamily || "Times New Roman"};
+    color: ${x => x.textColor || "black"};
+    font-size: ${x => x.fontSize || "1em"};
+    font-family: ${x => x.fontFamily || "Times New Roman"};
 `;
 
 const StyledRadio = styled.input.attrs({ type: 'radio' })`
@@ -18,7 +18,7 @@ const StyledRadio = styled.input.attrs({ type: 'radio' })`
 const RadioListItem = ({ name, option, onSelection, ...props }) => (
     <StyledLabel {...props}>
         <StyledRadio name={name} onChange={() => onSelection(option)} {...props} />
-        <>{ option.option }</>
+        <>{ option.label }</>
     </StyledLabel>
 )
 
