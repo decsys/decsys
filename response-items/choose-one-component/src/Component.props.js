@@ -8,10 +8,11 @@ const params = {
   dropDown: ParamTypes.bool("Drop Down?", false),
 
   // Styling Options
+  width: ParamTypes.string("Width", "70%"),
+  alignment: ParamTypes.oneOf("Alignment", ["left", "center", "right"], "center"),
   textColor: ParamTypes.string("Text Color", "black"),
   fontSize: ParamTypes.string("Text Size", "1em"),
   fontFamily: ParamTypes.string("Text Font", "Arial"),
-  scale: ParamTypes.string("Scale", "1em"),
 
   // Qualitivative answers
   option0: ParamTypes.string("Options: 0", ""),

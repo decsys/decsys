@@ -1,8 +1,7 @@
 import React from "react";
-import { withKnobs, text, boolean, number } from "@storybook/addon-knobs";
+import { text, radios, color, boolean } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import Component from "./Component";
-import styled from "styled-components";
 
 export default {
   title: "Horizontal",
@@ -16,10 +15,15 @@ const actions =  {
 
 const styles = () => { 
   return {
-    textColor: text("Text Color", "black"),
+    alignment: radios("Alignment", {
+      left: "left",
+      center: "center",
+      right: "right"
+    }, "center"),
+    width: text("Width", "50%"),
+    textColor: color("Text Color", "black"),
     fontSize: text("Text Size", "1em"),
     fontFamily: text("Text Font", "Arial"),
-    scale: text("Scale", "1em")
   }
 }
 
