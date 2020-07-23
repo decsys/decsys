@@ -1,6 +1,6 @@
 namespace Decsys.Data.Entities
 {
-    public class EventLogLookup
+    public class EventLogLookup 
     {
         public int Id { get; set; }
 
