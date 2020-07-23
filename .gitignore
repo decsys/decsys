@@ -3,3 +3,6 @@
 
 # built docs output
 docs/site/
+
+
+node_modules

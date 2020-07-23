@@ -1,55 +1,27 @@
-![GitHub](https://img.shields.io/github/license/decsys/decsys.svg)
-[![Build Status](https://dev.azure.com/UniversityOfNottingham/DECSYS/_apis/build/status/decsys.decsys?branchName=master)](https://dev.azure.com/UniversityOfNottingham/DECSYS/_build/latest?definitionId=155&branchName=master)
+# DECSYS
 
-[![GitHub release](https://img.shields.io/github/release/decsys/decsys.svg?label=stable)](https://github.com/decsys/decsys/releases)
-[![GitHub release](https://img.shields.io/github/release-pre/decsys/decsys.svg?label=latest)](https://github.com/decsys/decsys/releases)
+This is the main repository for DECSYS; a configurable Survey Platform that makes it easy to provide custom responses via a plugin system.
 
-# DECSYS Survey Platform
+This repository contains:
 
-The DECSYS Survey Platform aims to be a flexible cross-platform web-based survey platform that particularly makes it easy to load custom question response components.
+- The DECSYS Survey Platform application.
+  - a .NET Core 3.1 backend web application.
+  - a Create React App client application, hosted by the backend app.
+- Packages used by the overall project, and designed to be useful to other developers.
+  - `param-types` is a utility library used by the platform and any Page Items.
+  - `rating-scales` is a set of React Components for a variety of rating scales, that can be used anywhere React is.
+  - `iaa` is a set of implementations for applying the type-1 Interval Agreement Approach, which is used by DECSYS' Ellipse Rating Scale.
+- First party Page Response Items that ship with releases of the app.
+  - `FreeText`
+  - `Confirmation`
+  - `Discrete Scale`
+  - `Ellipse Scale`
+  - `Choose one`
+- Documentation for using, working with and developing for DECSYS.
+  - This is also published to GitHub Pages.
+  - It also ships with every release of the Survey Platform.
 
-It is used to showcase the DECSYS Ellipse Rating Scale.
-
-# Getting Started
-
-## Running the Survey Platform
-
-- For Windows 7+ (64-bit)
-  1. Download a `win-x64` asset from **Releases**
-  1. Extract it to a folder
-  1. Double-click `Run Decsys`
-  1. Open a web browser and navigate to `localhost`
-- For other OSes
-  1. Have the .NET Core runtime for your OS. (version `3.1` or newer)
-  1. Download a `dotnet-3.1` asset from **Releases**
-  1. Extract it to a folder
-  1. Run the application as follows:
-     - Use the provided `run-decsys` or `Run Decsys (Windows)` script
-     - Use the `dotnet` CLI
-       - Navigate inside the `Decsys/` folder
-       - run `dotnet decsys.dll`
-       - Optionally pass server urls argument to specify a port, otherwise `5000` will be used.
-         - e.g. `dotnet decsys.dll --server.urls http://0.0.0.0:80`
-  1. Open a web browser and navigate to `localhost`
-
-### Troubleshooting
-
-- Mostly just ensure nothing else is bound to port `80` on your network interfaces.
-  - Or edit the launch script to change the port / specify a port when using the `dotnet` CLI
-
-## Building the Survey Platform
-
-1. Meet the prerequisites:
-   - `dotnet` SDK `3.1` or newer
-     - either independently or part of Visual Studio 2017 or newer
-   - node.js `10.x` or newer (including `npm`)
-   - Optionally get some [Response Components](https://github.com/search?q=org%3Adecsys+component+in%3Aname+archived%3Afalse) and put them in `Decsys/components/`
-1. Clone this repository
-1. Inside `Decsys/ClientApp/`
-   - run `npm i`
-1. Inside `Decsys/`
-   - Open `Decsys.sln` in Visual Studio
-   - `dotnet build`
+These various areas have their own READMEs with details on working with them.
 
 # Licensing
 
@@ -63,7 +35,7 @@ Other license arrangements may be made as appropriate on request.
 
 ## Copyright and License Summary
 
-> DECSYS Survey Platform
+> DECSYS
 >
 > Copyright (C) 2019 Christian Wagner, LUCID (Lab for Uncertainty in Data and Decision Making)
 >
