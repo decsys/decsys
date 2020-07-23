@@ -39,7 +39,12 @@ const SurveyPage = ({ appBar, id, page, onNextPage, lastPage, logEvent }) => {
       <Cell>
         <Container>
           <FlexBox p={2} justifyContent="flex-end">
-            <Button size="lg" disabled={!nextEnabled} onClick={onNextPage}>
+            <Button
+              size="lg"
+              disabled={!nextEnabled}
+              onClick={onNextPage}
+              variant={nextEnabled ? "primary" : "secondary"}
+            >
               {lastPage ? (
                 <>Finish</>
               ) : (
