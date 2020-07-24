@@ -3,7 +3,6 @@
   "version": "2.0.0-alpha.1",
   "private": true,
   "dependencies": {
-    "@chakra-ui/alert": "^1.0.0-next.6",
     "@chakra-ui/core": "^1.0.0-next.6",
     "@chakra-ui/theme": "^1.0.0-next.6",
     "@decsys/param-types": "^2.0.0-alpha.1",
@@ -55,14 +54,6 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/core": "^7.10.1",
-    "@storybook/addon-actions": "^5.3.19",
-    "@storybook/addon-backgrounds": "^5.3.19",
-    "@storybook/addon-knobs": "^5.3.19",
-    "@storybook/addon-links": "^5.3.19",
-    "@storybook/addon-storysource": "^5.3.19",
-    "@storybook/addons": "^5.3.19",
-    "@storybook/preset-create-react-app": "^1.5.2",
-    "@storybook/react": "^5.3.19"
+    "@storybook/preset-create-react-app": "^1.5.2"
   }
 }
