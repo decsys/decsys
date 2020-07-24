@@ -17,21 +17,12 @@
     "type": "git",
     "url": "https://github.com/decsys/decsys.git"
   },
-  "devDependencies": {
-    "@babel/preset-env": "^7.8.4",
-    "@babel/preset-react": "^7.8.3",
-    "babel-loader": "^8.0.6",
-    "prop-types": "^15.7.2",
-    "styled-components": "^4.4.1"
-  },
   "dependencies": {
-    "@decsys/param-types": "^2.0.0-alpha.1",
-    "@smooth-ui/core-sc": "^10.1.0",
-    "styled-icons": "^7.15.1"
+    "@chakra-ui/core": "1.0.0-next.6",
+    "@decsys/param-types": "^2.0.0-alpha.1"
   },
   "peerDependencies": {
     "prop-types": "~15",
-    "react": "~16",
-    "styled-components": "~4"
+    "react": "~16"
   }
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import * as props from "./ResponseItem.props";
-import { FormCheck, Checkbox, FormCheckLabel } from "@smooth-ui/core-sc";
+import { Flex } from "@chakra-ui/layout";
+import { Checkbox } from "@chakra-ui/checkbox";
 
 const ResponseItem = ({
   label,
@@ -11,24 +12,17 @@ const ResponseItem = ({
   const [checked, setChecked] = useState(initialChecked);
   useEffect(() => setNextEnabled(!!checked), [checked]);
 
-  const id = new Date().getTime();
-
   const handleChange = (e) => {
     logResults({ confirmed: e.target.checked });
     setChecked(e.target.checked);
   };
 
   return (
-    <FormCheck mr={2}>
-      <Checkbox
-        control
-        size="lg"
-        id={id}
-        checked={checked}
-        onChange={handleChange}
-      />
-      <FormCheckLabel htmlFor={id}>{label}</FormCheckLabel>
-    </FormCheck>
+    <Flex>
+      <Checkbox size="lg" isChecked={checked} onChange={handleChange}>
+        {label}
+      </Checkbox>
+    </Flex>
   );
 };
 

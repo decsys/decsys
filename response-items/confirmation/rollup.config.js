@@ -25,12 +25,10 @@ export default {
     footer: footer,
     globals: {
       react: "React",
-      "styled-components": "styled",
-      "react-dom": "ReactDOM",
       "prop-types": "PropTypes",
     },
   },
-  external: ["react", "styled-components", "react-dom", "prop-types"],
+  external: ["react", "prop-types"],
   plugins: [
     replace({
       "process.env.NODE_ENV": JSON.stringify("production"),
@@ -47,7 +45,7 @@ export default {
         ],
         "@babel/preset-react",
       ],
-      "babelHelpers": "bundled" // TODO: we can probably make this "runtime"
+      babelHelpers: "bundled", // TODO: we can probably make this "runtime"
     }),
     resolve({ preferBuiltins: false }),
     cjs(),

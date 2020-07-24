@@ -17,9 +17,6 @@
     "url": "https://github.com/decsys/decsys/issues"
   },
   "homepage": "https://github.com/decsys/decsys#readme",
-  "devDependencies": {
-    "prop-types": "^15.7.2"
-  },
   "peerDependencies": {
     "prop-types": "~15"
   }
