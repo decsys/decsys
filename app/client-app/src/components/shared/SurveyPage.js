@@ -13,7 +13,7 @@ const Body = ({ page, renderContext }) => {
     return (
       <PageItemRender
         key={item.id}
-        _context={{ renderContext, itemId: item.id }}
+        _context={{ ...renderContext, itemId: item.id }}
         component={renderComponent}
         params={item.params}
       />
@@ -27,6 +27,7 @@ const SurveyPage = ({
   lastPage,
   handleNextClick,
   logEvent = () => {},
+  logResults = () => {},
 }) => {
   // TODO: get log Actions from context?
 
@@ -44,7 +45,7 @@ const SurveyPage = ({
     surveyId,
     setNextEnabled,
     logEvent,
-    // TODO: other context items?
+    logResults,
   };
 
   return (
