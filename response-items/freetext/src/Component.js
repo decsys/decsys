@@ -7,7 +7,7 @@ import {
   Typography,
   Textarea,
   colorYik,
-  colorVariant
+  colorVariant,
 } from "@smooth-ui/core-sc";
 import stats from "./Component.stats";
 
@@ -34,7 +34,7 @@ const Component = ({ maxLength, text, logResults, setNextEnabled }) => {
     }
   };
 
-  const handleBlur = e => {
+  const handleBlur = (e) => {
     e.persist();
     logResults({ text: e.target.value });
   };
@@ -47,7 +47,7 @@ const Component = ({ maxLength, text, logResults, setNextEnabled }) => {
       borderRadius: 8,
       textAlign: "center",
       backgroundColor: backgroundColor,
-      color: colorYik(colorVariant(backgroundColor)(p))(p)
+      color: colorYik(colorVariant(backgroundColor)(p))(p),
     })
   )``;
 

@@ -17,7 +17,7 @@ const Visualization = ({ values }) => {
       // split the text into single words
       const words = text.split(/\s+/);
 
-      words.forEach(w => {
+      words.forEach((w) => {
         const word = w.toLowerCase();
         a[word] = (a[word] || 0) + 1;
       });
@@ -25,9 +25,9 @@ const Visualization = ({ values }) => {
       return a;
     }, {});
 
-    const data = Object.keys(weightedWords).map(text => ({
+    const data = Object.keys(weightedWords).map((text) => ({
       text,
-      value: weightedWords[text]
+      value: weightedWords[text],
     }));
 
     return (
@@ -36,7 +36,7 @@ const Visualization = ({ values }) => {
           rotations: 0,
           fontFamily: "Arial",
           fontSizes: [10, 60],
-          scale: "sqrt"
+          scale: "sqrt",
         }}
         words={data}
       />

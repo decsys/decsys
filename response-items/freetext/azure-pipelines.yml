@@ -13,7 +13,7 @@ stages:
           - upload: dist
             artifact: dist
   - stage: Release
-    condition: 'and(succeeded(), eq(variables[''Build.SourceBranch''], ''refs/heads/master''))'
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
     jobs:
       - job: Metadata
         pool:
@@ -33,7 +33,7 @@ stages:
         dependsOn: Metadata
         environment: github
         variables:
-          version: '$[ dependencies.Metadata.outputs[''setVersion.version''] ]'
+          version: "$[ dependencies.Metadata.outputs['setVersion.version'] ]"
         strategy:
           runOnce:
             deploy:
@@ -48,6 +48,6 @@ stages:
                     tagSource: manual
                     tag: $(version)
                     releaseNotesSource: input
-                    releaseNotes: '`// TODO`'
+                    releaseNotes: "`// TODO`"
                     isDraft: true
                     assets: $(Pipeline.Workspace)/dist/*.js

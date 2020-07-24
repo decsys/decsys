@@ -3,19 +3,19 @@ import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 
 // Specify Configurable Parameters
 const params = {
-  maxLength: ParamTypes.number("Character Limit", 200)
+  maxLength: ParamTypes.number("Character Limit", 200),
 };
 
 // Specify PropTypes for non-Configurable Props
 const staticPropTypes = {
   text: PropTypes.string,
   logResults: PropTypes.func.isRequired,
-  setNextEnabled: PropTypes.func.isRequired
+  setNextEnabled: PropTypes.func.isRequired,
 };
 
 // Specify Defaults for non-Configurable Props
 const staticDefaultProps = {
-  text: ""
+  text: "",
 };
 
 // Create merged propTypes, defaultProps
