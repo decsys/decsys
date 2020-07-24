@@ -10,16 +10,30 @@ DECSYS is a tool that enables the creation and administration of digital surveys
 
 # 📦 Repository Contents
 
-| Project | Description |
+## Applications
+
+| Location | Description |
 | - | - |
 | [`app/Decsys`](app/Decsys)         | The core DECSYS backend app.<br>An ASP.NET Core 3.1 API.                     |
 | [`app/client-app`](app/client-app) | The core DECSYS frontend app.<br>A React app, hosted by the backend process. |
-|
+
+## Published Packages
+
+| Location | Description |
+| - | - |
 | [`packages/param-types`](packages/param-types) | A utility package for specifying and handling Response Item parameters. |
-|
+
+## First Party Response Items
+
+| Location | Description |
+| - | - |
 | [`response-items/confirmation`](response-items/confirmation) | The Confirmation Response Item that ships with DECSYS. |
 | [`response-items/freetext`](response-items/freetext) | The Free Text Response Item that ships with DECSYS. |
-|
+
+## Other
+
+| Location | Description |
+| - | - |
 | [`docs`](docs) | The documentation site.<br>Built by mkdocs. |
 
 Most of the above Project Areas has its own README with some details on getting started, and further details can be found in the Developer Guide.
