@@ -26,6 +26,7 @@ export default {
     footer: footer,
     globals: {
       react: "React",
+      "prop-types": "PropTypes",
       "react-wordcloud": "reactWordCloud",
       mathjs: "math",
       "@chakra-ui/core": "Chakra",
