@@ -17,7 +17,11 @@ import { usePageListContext } from "../../contexts/PageList";
 import { some } from "services/flags";
 import PlaceholderDot from "components/core/PlaceholderDot";
 import { BsDot } from "react-icons/bs";
-import { isBuiltIn, listLoadedResponseItemTypes } from "services/page-items";
+import {
+  isBuiltIn,
+  listLoadedResponseItemTypes,
+  getComponent,
+} from "services/page-items";
 
 const builtInIcons = {
   heading: FaHeading,
@@ -29,7 +33,8 @@ const builtInIcons = {
 const capitalise = (s) => `${s[0].toUpperCase()}${s.substring(1)}`;
 
 const ItemIcon = ({ type }) => {
-  const CustomIcon = builtInIcons[type] || FaQuestion;
+  const CustomIcon =
+    builtInIcons[type] || getComponent(type)?.icon || FaQuestion;
   //TODO: response item icons
 
   return (
