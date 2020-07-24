@@ -18,10 +18,10 @@
     "url": "https://github.com/decsys/decsys.git"
   },
   "dependencies": {
-    "@chakra-ui/core": "1.0.0-next.6",
     "@decsys/param-types": "^2.0.0-alpha.1"
   },
   "peerDependencies": {
+    "@chakra-ui/core": "1.0.0-next.6",
     "prop-types": "~15",
     "react": "~16"
   }

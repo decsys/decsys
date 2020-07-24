@@ -1,23 +1,22 @@
 /** Configure the global environment. */
 
 import React from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import * as Victory from "victory";
 import * as math from "mathjs";
 import ReactWordCloud from "react-wordcloud";
-import styled, * as styledNamed from "styled-components";
+import * as Chakra from "@chakra-ui/core";
 
 window.__DECSYS__ = {}; // Register our global namespace
 
-// React, ReactDOM and styled need to stay as single instances, so we make them global for modules
+// React needs to be a single instance, so we make it global for modules
 // We do the same with some other supporting libraries too
 window.React = React;
-// window.ReactDOM = ReactDOM;
 window.PropTypes = PropTypes;
 window.Victory = Victory;
 window.math = math;
 window.reactWordCloud = ReactWordCloud;
+window.Chakra = Chakra;
 
 /**
  * Fetch DECSYS Component modules from the API and chuck them on the page

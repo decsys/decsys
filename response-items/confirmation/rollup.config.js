@@ -26,9 +26,10 @@ export default {
     globals: {
       react: "React",
       "prop-types": "PropTypes",
+      "@chakra-ui/core": "Chakra",
     },
   },
-  external: ["react", "prop-types"],
+  external: ["react", "prop-types", "@chakra-ui/core"],
   plugins: [
     replace({
       "process.env.NODE_ENV": JSON.stringify("production"),

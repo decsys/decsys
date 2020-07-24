@@ -3,7 +3,10 @@ import { text } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
 
-const actions = {
+const _context = {
+  surveyId: 0,
+  pageId: "",
+  itemId: "",
   setNextEnabled: action("Next Button toggled"),
   logEvent: action("Custom Event logged"),
   logResults: action("ResponseItem Results logged"),
@@ -20,7 +23,7 @@ export const Basic = () => (
       ResponseItem.params.label.label,
       ResponseItem.params.label.defaultValue
     )}
-    {...actions}
+    _context={_context}
   />
 );
 
@@ -31,6 +34,6 @@ export const intiallyChecked = () => (
       ResponseItem.params.label.defaultValue
     )}
     confirmed={true}
-    {...actions}
+    _context={_context}
   />
 );
