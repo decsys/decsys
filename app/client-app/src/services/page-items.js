@@ -14,7 +14,10 @@ export const builtInLookup = {
  * @param {*} components
  */
 export const getPageResponseItem = (pageItems) =>
-  pageItems.reduce((_, c) => (isBuiltIn(c.type) ? null : c), null);
+  pageItems.reduce(
+    (result, c) => result || (isBuiltIn(c.type) ? null : c),
+    null
+  );
 
 export const isBuiltIn = (type) => Object.keys(builtInLookup).includes(type);
 
