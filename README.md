@@ -36,7 +36,7 @@ DECSYS is a tool that enables the creation and administration of digital surveys
 | - | - |
 | [`docs`](docs) | The documentation site.<br>Built by mkdocs. |
 
-Most of the above Project Areas has its own README with some details on getting started, and further details can be found in the Developer Guide.
+Most of the above Project Areas each have their own README with some details on getting started, and further details can be found in the Developer Guide.
 
 # ⚖ Licensing
 
