@@ -5,8 +5,7 @@ import { Flex, Checkbox } from "@chakra-ui/core";
 const ResponseItem = ({
   label,
   confirmed: initialChecked,
-  setNextEnabled,
-  logResults,
+  _context: { setNextEnabled, logResults },
 }) => {
   const [checked, setChecked] = useState(initialChecked);
   useEffect(() => setNextEnabled(!!checked), [checked]);

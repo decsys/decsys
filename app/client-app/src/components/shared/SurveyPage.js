@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getComponent, getResponseComponent } from "services/page-items";
+import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD } from "constants/event-types";
 import { Stack, Button, Flex } from "@chakra-ui/core";
@@ -13,7 +13,7 @@ const Body = ({ page, renderContext }) => {
     return (
       <PageItemRender
         key={item.id}
-        _context={{ renderContext, itemId: item.id }}
+        _context={{ ...renderContext, itemId: item.id }}
         component={renderComponent}
         params={item.params}
       />
@@ -27,6 +27,7 @@ const SurveyPage = ({
   lastPage,
   handleNextClick,
   logEvent = () => {},
+  logResults = () => {},
 }) => {
   // TODO: get log Actions from context?
 
@@ -34,9 +35,9 @@ const SurveyPage = ({
 
   useEffect(() => {
     logEvent(page.id, PAGE_LOAD, {});
-    // check if the page has any Response Components
+    // check if the page has any Response Items
     // and set Next Button appropriately
-    if (!getResponseComponent(page.components)) setNextEnabled(true);
+    if (!getPageResponseItem(page.components)) setNextEnabled(true);
   }, [page, logEvent]);
 
   const renderContext = {
@@ -44,7 +45,7 @@ const SurveyPage = ({
     surveyId,
     setNextEnabled,
     logEvent,
-    // TODO: other context items?
+    logResults,
   };
 
   return (

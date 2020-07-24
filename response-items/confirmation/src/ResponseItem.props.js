@@ -1,5 +1,8 @@
 import PropTypes from "prop-types";
-import ParamTypes, { buildPropTypes } from "@decsys/param-types";
+import ParamTypes, {
+  buildPropTypes,
+  renderContextPropTypes,
+} from "@decsys/param-types";
 
 // Specify Configurable Parameters
 const params = {
@@ -12,8 +15,7 @@ const params = {
 // Specify PropTypes for non-Configurable Props
 const staticPropTypes = {
   confirmed: PropTypes.bool,
-  logResults: PropTypes.func.isRequired,
-  setNextEnabled: PropTypes.func.isRequired,
+  ...renderContextPropTypes,
 };
 
 // Create merged propTypes, defaultProps

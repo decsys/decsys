@@ -1,12 +1,21 @@
-// https://reactsvgicons.com/css.gg
-// check
-export const icon = (props) => {
-  return (
-    <svg fill="none" viewBox="0 0 24 24" {...props}>
-      <path
-        fill="currentColor"
-        d="M10.586 13.414l-2.829-2.828L6.343 12l4.243 4.243 7.07-7.071-1.413-1.415-5.657 5.657z"
-      />
-    </svg>
-  );
-};
+// https://reactsvgicons.com/ionicons
+// checkbox-outline
+export const icon = (props) => (
+  <svg viewBox="0 0 512 512" fill="currentColor" {...props}>
+    <path
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={32}
+      d="M352 176L217.6 336 160 272"
+    />
+    <path
+      fill="none"
+      stroke="currentColor"
+      strokeLinejoin="round"
+      strokeWidth={32}
+      d="M112 64 H400 A48 48 0 0 1 448 112 V400 A48 48 0 0 1 400 448 H112 A48 48 0 0 1 64 400 V112 A48 48 0 0 1 112 64 z"
+    />
+  </svg>
+);
