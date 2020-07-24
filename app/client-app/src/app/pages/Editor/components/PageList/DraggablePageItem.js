@@ -93,7 +93,7 @@ const ItemActionPlaceholders = () => {
 
 const ResponseItemSelector = ({ item, isBusy, changePageResponseItem }) => {
   const handleChange = (e) => {
-    const v = e.target.value === "None" ? null : e.target.value;
+    const v = e.target.value === "None" ? "" : e.target.value;
     changePageResponseItem(item && item.id, v, item && item.order);
   };
 
