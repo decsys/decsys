@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as props from "./ResponseItem.props";
-import { Flex } from "@chakra-ui/layout";
-import { Checkbox } from "@chakra-ui/checkbox";
+import { Flex, Checkbox } from "@chakra-ui/core";
 
 const ResponseItem = ({
   label,
