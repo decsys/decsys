@@ -4,6 +4,7 @@ import replace from "@rollup/plugin-replace";
 import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
+import path from "path";
 
 const pkg = require("./package.json");
 
@@ -14,11 +15,11 @@ export default DecsysResponseItem;
 `;
 
 export default {
-  input: "src/index.js",
+  input: path.join(__dirname, "src/index.js"),
   output: {
     format: "iife",
     name: "DecsysResponseItem",
-    file: `dist/${pkg.responseItemName}.js`,
+    file: path.join(__dirname, `dist/${pkg.responseItemName}.js`),
     sourcemap: true,
     preferConst: true,
     compact: true,

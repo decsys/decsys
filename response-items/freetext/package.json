@@ -3,13 +3,7 @@
   "responseItemName": "Free Text",
   "version": "2.0.0-alpha.1",
   "description": "Free Text Page Response Item for the DECSYS Survey Platform",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "rollup": "rollup -c",
-    "build": "npm run rollup",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
-  },
+  "private": true,
   "author": "Jonathan Couldridge <jon@jon.gg>",
   "license": "AGPL-3.0-only",
   "repository": {
@@ -17,13 +11,13 @@
     "url": "https://github.com/decsys/decsys.git"
   },
   "dependencies": {
-    "@decsys/param-types": "^2.0.0-alpha.1"
+    "@decsys/param-types": "file:../../packages/param-types"
   },
   "peerDependencies": {
     "@chakra-ui/core": "1.0.0-next.6",
-    "react-wordcloud": "~1",
     "mathjs": "~5",
     "prop-types": "~15",
-    "react": "~16"
+    "react": "~16",
+    "react-wordcloud": "~1"
   }
 }
