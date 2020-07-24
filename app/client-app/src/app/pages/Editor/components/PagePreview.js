@@ -9,7 +9,7 @@ import {
   PageItemActionsProvider,
 } from "../contexts/PageItemActions";
 import pageItemActions from "../actions/pageItemActions";
-import { defaultProps as renderActions } from "@decsys/param-types/ResponseItemRenderContext";
+import { renderContextDefaults as renderActions } from "@decsys/param-types/ResponseItemContexts";
 
 // TODO: Document this capability for components
 // with the api (props signature, how renderedItem works..., _context...)
