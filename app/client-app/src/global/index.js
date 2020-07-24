@@ -13,15 +13,11 @@ window.__DECSYS__ = {}; // Register our global namespace
 // React, ReactDOM and styled need to stay as single instances, so we make them global for modules
 // We do the same with some other supporting libraries too
 window.React = React;
-window.ReactDOM = ReactDOM;
+// window.ReactDOM = ReactDOM;
 window.PropTypes = PropTypes;
 window.Victory = Victory;
 window.math = math;
 window.reactWordCloud = ReactWordCloud;
-
-// Styled doesn't put all its named exports on the default :(
-// So I guess that job is on us until we have a better way to do this than globals
-window.styled = { ...styled, ...styledNamed };
 
 /**
  * Fetch DECSYS Component modules from the API and chuck them on the page

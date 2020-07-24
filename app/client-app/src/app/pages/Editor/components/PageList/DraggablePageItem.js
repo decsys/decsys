@@ -1,6 +1,6 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { Flex, Icon, useColorMode, Text, Grid } from "@chakra-ui/core";
+import { Flex, Icon, useColorMode, Text, Grid, Select } from "@chakra-ui/core";
 import {
   FaHeading,
   FaParagraph,
@@ -17,6 +17,7 @@ import { usePageListContext } from "../../contexts/PageList";
 import { some } from "services/flags";
 import PlaceholderDot from "components/core/PlaceholderDot";
 import { BsDot } from "react-icons/bs";
+import { isBuiltIn, listLoadedResponseItemTypes } from "services/page-items";
 
 const builtInIcons = {
   heading: FaHeading,
@@ -38,7 +39,7 @@ const ItemIcon = ({ type }) => {
   );
 };
 
-const ItemInfo = ({
+export const ItemInfo = ({
   type,
   params: { text },
   dragHandleProps,
@@ -52,10 +53,10 @@ const ItemInfo = ({
     {...dragHandleProps}
     onClick={onSelect}
   >
-    <Icon as={isBusy ? BsDot : FaGripVertical} color="gray.500" />
+    <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
     <ItemIcon type={type} />
     <Text as={!text ? "em" : "p"} isTruncated>
-      {text || capitalise(type)}
+      {isBuiltIn(type) ? text || capitalise(type) : "Response"}
     </Text>
   </Flex>
 );
@@ -90,6 +91,31 @@ const ItemActionPlaceholders = () => {
   );
 };
 
+const ResponseItemSelector = ({ item, isBusy, changePageResponseItem }) => {
+  const handleChange = (e) => {
+    const v = e.target.value === "None" ? null : e.target.value;
+    changePageResponseItem(item && item.id, v, item && item.order);
+  };
+
+  return (
+    <Select
+      size="sm"
+      minW="220px"
+      gridColumn="span 2"
+      isDisabled={isBusy}
+      value={item && item.type}
+      onChange={handleChange}
+    >
+      <>
+        <option>None</option>
+        {listLoadedResponseItemTypes().map((type) => (
+          <option key={type}>{type}</option>
+        ))}
+      </>
+    </Select>
+  );
+};
+
 export const PageItem = ({
   pageId,
   item,
@@ -100,8 +126,8 @@ export const PageItem = ({
 }) => {
   const actions = usePageItemActions();
   const { busy, selectedPageItem, setSelectedPageItem } = usePageListContext();
-  const isBusy = item.isLoading || some(busy);
-  const isSelected = selectedPageItem.itemId === item.id;
+  const isBusy = (item && item.isLoading) || some(busy);
+  const isSelected = item && selectedPageItem.itemId === item.id;
 
   const { colorMode } = useColorMode();
   const selectStyle = {
@@ -110,14 +136,24 @@ export const PageItem = ({
   };
 
   const handleSelect = () => {
-    setSelectedPageItem({ pageId, itemId: item.id });
+    item && setSelectedPageItem({ pageId, itemId: item.id });
   };
+
+  let ActionArea;
+  if (!item || !isBuiltIn(item.type)) {
+    ActionArea = (
+      <ResponseItemSelector item={item} isBusy={isBusy} {...actions} />
+    );
+  } else {
+    if (some(busy)) ActionArea = <ItemActionPlaceholders />;
+    else ActionArea = <ItemActions {...item} {...actions} />;
+  }
 
   return (
     <Grid
       ref={innerRef}
       bg={isDragging || isSelected ? selectStyle[colorMode].bg : "inherit"}
-      _hover={isBusy ? {} : { ...selectStyle[colorMode] }}
+      _hover={!item || isBusy ? {} : { ...selectStyle[colorMode] }}
       transition="background-color .1s ease"
       {...draggableProps}
       role="group"
@@ -125,16 +161,12 @@ export const PageItem = ({
     >
       <ItemInfo
         isBusy={busy.isPageDragging}
-        {...item}
+        {...(item || { params: {} })}
         dragHandleProps={dragHandleProps}
         onSelect={handleSelect}
       />
 
-      {some(busy) ? (
-        <ItemActionPlaceholders />
-      ) : (
-        <ItemActions {...item} {...actions} />
-      )}
+      {ActionArea}
     </Grid>
   );
 };
