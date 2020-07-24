@@ -27,7 +27,7 @@ export const Basic = () => (
   />
 );
 
-export const intiallyChecked = () => (
+export const InitiallyChecked = () => (
   <ResponseItem
     label={text(
       ResponseItem.params.label.label,

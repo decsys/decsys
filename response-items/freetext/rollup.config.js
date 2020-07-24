@@ -1,44 +1,41 @@
-import resolve from "rollup-plugin-node-resolve";
-import cjs from "rollup-plugin-commonjs";
-import replace from "rollup-plugin-replace";
-import babel from "rollup-plugin-babel";
-import json from "rollup-plugin-json";
+import resolve from "@rollup/plugin-node-resolve";
+import cjs from "@rollup/plugin-commonjs";
+import replace from "@rollup/plugin-replace";
+import babel from "@rollup/plugin-babel";
+import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
 
 const pkg = require("./package.json");
 
 // the actual module exports from the bundled IIFE
 const footer = `
-export const name = DecsysComponent.displayName;
-export default DecsysComponent;
+export const name = DecsysResponseItem.displayName;
+export default DecsysResponseItem;
 `;
 
 export default {
   input: "src/index.js",
   output: {
     format: "iife",
-    name: "DecsysComponent",
-    file: `dist/${pkg.componentName}.js`,
+    name: "DecsysResponseItem",
+    file: `dist/${pkg.responseItemName}.js`,
     sourcemap: true,
     preferConst: true,
     compact: true,
     footer: footer,
     globals: {
       react: "React",
-      "styled-components": "styled",
-      "react-dom": "ReactDOM",
-      "prop-types": "PropTypes",
       "react-wordcloud": "reactWordCloud",
       mathjs: "math",
+      "@chakra-ui/core": "Chakra",
     },
   },
   external: [
     "react",
-    "styled-components",
-    "react-dom",
     "prop-types",
     "react-wordcloud",
     "mathjs",
+    "@chakra-ui/core",
   ],
   plugins: [
     replace({
@@ -56,6 +53,7 @@ export default {
         ],
         "@babel/preset-react",
       ],
+      babelHelpers: "bundled", // TODO: we can probably make this "runtime"
     }),
     resolve({ preferBuiltins: false }),
     cjs(),

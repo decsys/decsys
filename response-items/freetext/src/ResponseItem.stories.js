@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { storiesOf } from "@storybook/react";
 import { text, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
-import Component from "./Component";
+import ResponseItem from "./ResponseItem";
+
+export default {
+  title: "Free Text Response",
+  component: ResponseItem,
+};
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -68,7 +72,7 @@ const Refresh = ({ initialData, onRefresh, changeData }) => {
 
   // mimic the platform's stats renderer
   const getStatsComponent = () => {
-    const stats = Component.stats({}, data);
+    const stats = ResponseItem.stats({}, data);
     return stats.visualizations[0].component;
   };
 
@@ -86,29 +90,39 @@ const stats = (stats) => () => (
   </div>
 );
 
-const actions = {
+const _context = {
+  surveyId: 0,
+  pageId: "",
+  itemId: "",
+  logEvent: () => {},
   logResults: action("Results logged"),
   setNextEnabled: action("Next button enabled"),
 };
 
-storiesOf("Component", module)
-  .add("Default", () => <Component {...actions} />)
-  .add("Initial Text", () => (
-    <Component
-      text={text("Text", "Hello")}
-      maxLength={number("Max Length", 50)}
-      {...actions}
-    />
-  ))
-  .add("Visualisation", visualization(Component.stats({}, dummyResults)))
-  .add("Static Data Auto Refresh", () => (
-    <Refresh initialData={dummyResults} onRefresh={action("refresh")} />
-  ))
-  .add("Dynamic Data Auto Refresh", () => (
-    <Refresh
-      initialData={dummyResults}
-      onRefresh={action("refresh")}
-      changeData={true}
-    />
-  ))
-  .add("Stats", stats(Component.stats({}, dummyResults)));
+export const Basic = () => <ResponseItem _context={_context} />;
+
+export const InitialText = () => (
+  <ResponseItem
+    text={text("Text", "Hello")}
+    maxLength={number("Max Length", 50)}
+    _context={_context}
+  />
+);
+
+export const Visualisation = visualization(
+  ResponseItem.stats({}, dummyResults)
+);
+
+export const StaticDataAutoRefresh = () => (
+  <Refresh initialData={dummyResults} onRefresh={action("refresh")} />
+);
+
+export const DynamicDataAutoRefresh = () => (
+  <Refresh
+    initialData={dummyResults}
+    onRefresh={action("refresh")}
+    changeData={true}
+  />
+);
+
+export const Stats = stats(ResponseItem.stats({}, dummyResults));

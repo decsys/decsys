@@ -1,5 +1,6 @@
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import ReactWordCloud from "react-wordcloud";
+import transition from "d3-transition";
 
 const Visualization = ({ values }) => {
   const previous = useRef(values);
