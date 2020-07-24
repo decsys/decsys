@@ -11,8 +11,10 @@ namespace Decsys.Repositories.Contracts
     interface IParticipantEventRepository
     {
         string GetCollectionName(string participantId, LiteDatabase db);
+        string GetCollectionName(int instanceId, string participantId);
         string GetParticipantId(int instanceId, string participantId);
         string GetNextId(string participantId, int instanceId);
+        IEnumerable<ParticipantEvent> List(int instanceId, string participantId);
         SurveyInstanceResults<ParticipantEvents> Results(int instanceId);
         void Log(int instanceId, string participantId, ParticipantEvent e);
 
