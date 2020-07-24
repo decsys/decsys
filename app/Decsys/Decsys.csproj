@@ -65,10 +65,17 @@
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
 
-    <!-- npm install for the SPA on Debug runs, in case it hasn't been done outside VS/dotnet -->
-    <Exec WorkingDirectory="$(SpaSource)" Command="npm install" />
+    <!-- Ensure Yarn cli is installed -->
+    <Exec Command="yarn -v" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Yarn is required to build and run this project. To continue, please install yarn globally via npm: 'npm i -g yarn', and then restart your command prompt or IDE." />
+
+    <Message Importance="high" Text="Restoring dependencies using 'yarn'. This may take several minutes..." />
+
+    <!-- yarn install for the SPA on Debug runs, in case it hasn't been done outside VS/dotnet -->
+    <Exec WorkingDirectory="$(SpaSource)" Command="yarn" />
   </Target>
 
   <Target Name="PublishIncludeSpaBuild" AfterTargets="ComputeFilesToPublish">
