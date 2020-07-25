@@ -21,6 +21,6 @@ This is a simple component that provides a Free Textarea for Survey Participants
 In the **root** of the repo:
 
 - `npm i`
-- `npm run confirmation:build`
+- `npm run freetext:build`
 
 The build outputs to the local `./dist` directory.
