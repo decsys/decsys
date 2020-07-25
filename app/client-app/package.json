@@ -3,9 +3,7 @@
   "version": "2.0.0-alpha.1",
   "private": true,
   "dependencies": {
-    "@chakra-ui/core": "^1.0.0-next.6",
-    "@chakra-ui/theme": "^1.0.0-next.6",
-    "@decsys/param-types": "^2.0.0-alpha.1",
+    "@decsys/param-types": "file:../../packages/param-types",
     "@reach/router": "^1.3.3",
     "@smooth-ui/core-sc": "^10.1.0",
     "axios": "^0.19.2",
@@ -14,10 +12,7 @@
     "immer": "^6.0.9",
     "json2csv": "^4.5.4",
     "lodash-es": "^4.17.15",
-    "mathjs": "^6.6.5",
     "navi": "^0.14.0",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
     "react-busy-indicator": "^1.0.0",
     "react-dom": "^16.13.1",
@@ -28,13 +23,15 @@
     "react-scripts": "^3.4.1",
     "react-table": "^6.11.5",
     "react-tooltip": "^4.2.6",
-    "react-wordcloud": "^1.2.3",
     "styled-components": "^5.1.1",
     "styled-css-grid": "^1.2.1",
     "styled-icons": "^9.5.0",
     "swr": "^0.2.2",
     "uuid": "^8.1.0",
     "victory": "^34.3.8"
+  },
+  "devDependencies": {
+    "@storybook/preset-create-react-app": "^1.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -52,8 +49,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "devDependencies": {
-    "@storybook/preset-create-react-app": "^1.5.2"
-  }
+  ]
 }

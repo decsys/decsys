@@ -2,6 +2,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+While these scripts are available as usual, because this app is hosted by the .NET Core application in `app/Decsys`, in practice these scripts are only run by that application (during development), or the Continuous Integration pipelines (during releases).
+
+CRA README follows:
+
 In the project directory, you can run:
 
 ### `npm start`
