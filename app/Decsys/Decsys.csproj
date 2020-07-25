@@ -13,6 +13,7 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
 
     <IsPackable>false</IsPackable>
+    <RepoRoot>../../</RepoRoot>
     <SpaSource>../client-app/</SpaSource>
     <SpaDist>ClientApp/</SpaDist>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
@@ -59,23 +60,24 @@
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
-    <!-- Ensure Node.js is installed -->
+  <!-- Ensure Node.js is installed -->
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+  </Target>
 
-    <!-- Ensure Yarn cli is installed -->
-    <Exec Command="yarn -v" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-    </Exec>
-    <Error Condition="'$(ErrorCode)' != '0'" Text="Yarn is required to build and run this project. To continue, please install yarn globally via npm: 'npm i -g yarn', and then restart your command prompt or IDE." />
+  <!-- Install npm packages at the top level of the monorepo -->
+  <Target Name="DebugRootNpmInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(RepoRoot)node_modules') ">
+    <Message Importance="high" Text="Restoring top level dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(RepoRoot)" Command="npm i" />
+  </Target>
 
-    <Message Importance="high" Text="Restoring dependencies using 'yarn'. This may take several minutes..." />
-
-    <!-- yarn install for the SPA on Debug runs, in case it hasn't been done outside VS/dotnet -->
-    <Exec WorkingDirectory="$(SpaSource)" Command="yarn" />
+  <!-- Install npm packages locally to the SPA (so react-scripts works) -->
+  <Target Name="DebugLocalNpmInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaSource)node_modules') ">
+    <Message Importance="high" Text="Restoring local dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaSource)" Command="npm i" />
   </Target>
 
   <Target Name="PublishIncludeSpaBuild" AfterTargets="ComputeFilesToPublish">

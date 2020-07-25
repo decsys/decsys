@@ -30,6 +30,9 @@
     "uuid": "^8.1.0",
     "victory": "^34.3.8"
   },
+  "devDependencies": {
+    "@storybook/preset-create-react-app": "^1.5.2"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

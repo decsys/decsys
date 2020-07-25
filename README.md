@@ -38,6 +38,38 @@ DECSYS is a tool that enables the creation and administration of digital surveys
 
 Most of the above Project Areas each have their own README with some details on getting started, and further details can be found in the Developer Guide.
 
+# 🚝 Monorepo notes
+
+This monorepo uses a possibly slightly unorthodox approach to managing some of its contents (at least compared to repos full of only javascript packages, such as Babel).
+
+This is for three reasons:
+
+- The repo contents are cross stack (Dotnet, JS, python...)
+- We have a Create-React-App application (`app/client-app`)
+- We have javascript packages that are both depended on elsewhere in the repo, *and* published to public registries.
+
+The result of all of this is as follows:
+
+- Non Javascript projects are managed local to themselves, as normal.
+  - Really this is because they aren't interdependent.
+  - But regardless, work with them as you normally would: from their own project roots.
+  - The semi-exception to this is the Visual Studio Solution file in the root of the repo.
+- All javascript in `packages/` or `response-items/` use Lerna, npm, and the npm `file:` protocol for local dependencies.
+  - Don't use `lerna bootstrap`; this is a `lerna link convert` repo.
+  - Shared dev dependencies are in the top level `package.json`
+  - `npm install` at the top level; `npm run` top level scripts only.
+  - There are no project local `node_modules`.
+- The CRA app (`appp/client-app`) is sort of a hybrid.
+  - It isn't a Lerna package.
+  - `npm install` locally - gives a local `node_modules` directory.
+  - `npm run` local scripts. This is necessary so `react-scripts` works properly.
+  - However, it still uses the top-level shared dependencies, to ensure version consistency in the repo.
+    - so `devDependencies` can be either in the local `package.json` or the top-level one, depending if they're shared.
+    - This works due to node module resolution, without worrying about Lerna.
+    - technically, all `dependencies` are `devDependencies` because it's a built app not a package.
+    - therefore its ok to hoist `dependencies` like `@chakra-ui/core` to the top-level `devDependencies`.
+  - This app isn't a published package, so we don't have to resolve the `file:` links; we only distribute the built version.
+
 # ⚖ Licensing
 
 ## Overview

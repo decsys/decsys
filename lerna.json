@@ -1,4 +1,4 @@
 {
-  "packages": ["app/*", "packages/*", "response-items/*"],
+  "packages": ["packages/*", "response-items/*"],
   "version": "independent"
 }
