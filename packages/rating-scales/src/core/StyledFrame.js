@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import React from "react";
 import PropTypes from "prop-types";
 
 /**
@@ -7,20 +7,25 @@ import PropTypes from "prop-types";
  * This component sets a base CSS font-size which many relative values
  * (`em`, `rem`, `%`) in sub-components are based on
  */
-const StyledFrame = styled.div`
-  height: ${props => props.frameHeight};
-  width: 100%;
-  position: relative;
-  font-size: 14px;
-`;
+const StyledFrame = ({ frameHeight, ...p }) => (
+  <div
+    css={{
+      height: frameHeight,
+      width: "100%",
+      position: "relative",
+      fontSize: "14px",
+    }}
+    {...p}
+  />
+);
 
 StyledFrame.propTypes = {
   /** A valid CSS Dimension value for the height of the Frame. */
-  frameHeight: PropTypes.string
+  frameHeight: PropTypes.string,
 };
 
 StyledFrame.defaultProps = {
-  frameHeight: "400px"
+  frameHeight: "400px",
 };
 
 /** @component */

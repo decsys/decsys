@@ -1,43 +1,48 @@
-import styled from "styled-components";
+import React from "react";
 import PropTypes from "prop-types";
 
 /**
  * A reusable question component for a scale component.
  */
-const StyledQuestion = styled.div`
-  color: ${props => props.textColor};
-  position: absolute;
-  top: ${props => props.topMargin};
-  font-family: ${props => props.fontFamily};
-  font-size: ${props => props.fontSize};
-  text-align: ${props => props.xAlign}
-  width: ${props => {
-    switch (props.xAlign) {
+const StyledQuestion = ({
+  textColor,
+  topMargin,
+  fontFamily,
+  fontSize,
+  xAlign,
+  xMargin,
+  ...p
+}) => {
+  const xAlignStyles = (() => {
+    switch (xAlign) {
       case "center":
+        return { width: "inherit", margin: "auto", transform: "unset" };
       case "right":
-        return "inherit";
+        return {
+          width: "inherit",
+          margin: "auto",
+          transform: `translate(calc(${xMargin} * -1))`,
+        };
       default:
-        return "initial";
+        return { width: "initial", margin: `0 ${xMargin}`, transform: "unset" };
     }
-  }};
-  margin: ${props => {
-    switch (props.xAlign) {
-      case "center":
-      case "right":
-        return "auto";
-      default:
-        return `0 ${props.xMargin}`;
-    }
-  }};
-  transform: ${props => {
-    switch (props.xAlign) {
-      case "right":
-        return `translate(calc(${props.xMargin} * -1))`;
-      default:
-        return "unset";
-    }
-  }};
-`;
+  })();
+
+  return (
+    <div
+      css={{
+        color: textColor,
+        position: "absolute",
+        top: topMargin,
+        fontFamily,
+        fontSize,
+        textAlign: xAlign,
+        ...xAlignStyles,
+      }}
+      {...p}
+    />
+  );
+};
 
 StyledQuestion.propTypes = {
   /** A valid CSS Color value for the question color. */
@@ -61,7 +66,7 @@ StyledQuestion.propTypes = {
   fontSize: PropTypes.string,
 
   /** Text alignment of the question within the frame. */
-  xAlign: PropTypes.oneOf(["left", "center", "right"])
+  xAlign: PropTypes.oneOf(["left", "center", "right"]),
 };
 
 StyledQuestion.defaultProps = {
@@ -70,7 +75,7 @@ StyledQuestion.defaultProps = {
   xMargin: "5%",
   fontFamily: "Arial",
   fontSize: "1.6em",
-  xAlign: "left"
+  xAlign: "left",
 };
 
 /** @component */

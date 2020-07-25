@@ -12,7 +12,7 @@ const StyledBarContainer = (p) => (
       justifyContent: "space-between",
     }}
     {...p}
-  ></div>
+  />
 );
 
 /** @component */

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import React from "react";
 import PropTypes from "prop-types";
 
 /**
@@ -11,23 +11,33 @@ export const ClassName = "js--scalebar";
  * A reusable scale bar, that can be styled and contain further
  * scale components such as radio buttons, markers, labels etc.
  */
-const StyledScaleBar = styled.div.attrs({
-  className: ClassName
-})`
-  margin-left: ${props => props.leftMargin};
-  margin-right: ${props => props.rightMargin};
-  position: relative;
-  top: ${props => props.topMargin};
-
-  &::before {
-    border-top: ${props => `${props.thickness} solid ${props.barColor}`};
-    content: "";
-    position: absolute;
-    top: ${props => `calc(${props.thickness} / -2)`};
-    width: 100%;
-    z-index: 1;
-  }
-`;
+const StyledScaleBar = ({
+  leftMargin,
+  rightMargin,
+  topMargin,
+  thickness,
+  barColor,
+  ...p
+}) => (
+  <div
+    className={ClassName}
+    css={{
+      marginLeft: leftMargin,
+      marginRight: rightMargin,
+      position: "relative",
+      top: topMargin,
+      "&::before": {
+        borderTop: `${thickness} solid ${barColor}`,
+        content: '""',
+        position: "absolute",
+        top: `calc(${thickness} / -2)`,
+        width: "100%",
+        zIndex: 1,
+      },
+    }}
+    {...p}
+  />
+);
 
 StyledScaleBar.propTypes = {
   /** A valid CSS Dimension value for the bar left margin. */
@@ -43,7 +53,7 @@ StyledScaleBar.propTypes = {
   barColor: PropTypes.string,
 
   /** A valid CSS Dimension value for the bar thickness. */
-  thickness: PropTypes.string
+  thickness: PropTypes.string,
 };
 
 StyledScaleBar.defaultProps = {
@@ -51,7 +61,7 @@ StyledScaleBar.defaultProps = {
   rightMargin: "10%",
   topMargin: "50%",
   thickness: "0.2em",
-  barColor: "black"
+  barColor: "black",
 };
 
 /** @component */
