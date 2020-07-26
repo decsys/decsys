@@ -1,0 +1,71 @@
+{
+  "name": "@decsys/rating-scales",
+  "version": "2.0.0-alpha.1",
+  "description": "Reusable React Components for Rating Scales as used by the DECSYS Project",
+  "main": "cjs/decsys.rating-scales.js",
+  "browser": "umd/decsys.rating-scales.js",
+  "module": "esm/decsys.rating-scales.js",
+  "files": [
+    "umd",
+    "cjs",
+    "esm"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+    ],
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    }
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "@emotion/babel-preset-css-prop"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/decsys/decsys.git"
+  },
+  "author": "Jonathan Couldridge <jon@jon.gg>",
+  "license": "AGPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/decsys/decsys/issues"
+  },
+  "homepage": "https://github.com/decsys/decsys#readme",
+  "peerDependencies": {
+    "react": "~16"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@pixi/app": "^5.3.1",
+    "@pixi/constants": "^5.3.1",
+    "@pixi/core": "^5.3.1",
+    "@pixi/display": "^5.3.1",
+    "@pixi/graphics": "^5.3.1",
+    "@pixi/interaction": "^5.3.1",
+    "@pixi/math": "^5.3.1",
+    "@pixi/runner": "^5.3.1",
+    "@pixi/settings": "^5.3.1",
+    "@pixi/ticker": "^5.3.1",
+    "@pixi/utils": "^5.3.1",
+    "@seznam/compose-react-refs": "^1.0.4",
+    "colornames": "^1.1.1",
+    "prop-types": "^15.7.2",
+    "unit-value": "^1.0.1"
+  }
+}

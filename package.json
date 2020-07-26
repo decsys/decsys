@@ -11,7 +11,9 @@
     "confirmation:build": "rollup -c ./response-items/confirmation/rollup.config.js",
     "confirmation:storybook": "start-storybook -c ./response-items/confirmation/.storybook -p 6006",
     "freetext:storybook": "start-storybook -c ./response-items/freetext/.storybook -p 6006",
-    "freetext:build": "rollup -c ./response-items/freetext/rollup.config.js"
+    "freetext:build": "rollup -c ./response-items/freetext/rollup.config.js",
+    "rating-scales:storybook": "start-storybook -c ./packages/rating-scales/.storybook -p 6006",
+    "rating-scales:build": "rollup -c ./packages/rating-scales/rollup.config.js"
   },
   "husky": {
     "hooks": {
@@ -24,6 +26,7 @@
     "@babel/preset-react": "^7.10.4",
     "@chakra-ui/core": "1.0.0-next.6",
     "@chakra-ui/theme": "1.0.0-next.6",
+    "@emotion/babel-preset-css-prop": "^10.0.27",
     "@rollup/plugin-babel": "^5.1.0",
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-json": "^4.1.0",
@@ -35,9 +38,12 @@
     "@storybook/addon-links": "^6.0.0-rc.14",
     "@storybook/addon-storysource": "^6.0.0-rc.14",
     "@storybook/addons": "^6.0.0-rc.14",
+    "@storybook/preset-create-react-app": "^3.1.4",
     "@storybook/react": "^6.0.0-rc.14",
     "@storybook/source-loader": "^6.0.0-rc.14",
     "babel-loader": "^8.1.0",
+    "eslint": "^7.5.0",
+    "eslint-plugin-react": "^7.18.3",
     "husky": "^4.2.5",
     "lerna": "^3.22.1",
     "mathjs": "^7.1.0",
@@ -51,8 +57,10 @@
     "rollup-plugin-terser": "^6.1.0"
   },
   "dependencies": {
+    "@decsys/client-app": "file:app\\client-app",
     "@decsys/confirmation-response": "file:response-items\\confirmation",
     "@decsys/freetext-response": "file:response-items\\freetext",
-    "@decsys/param-types": "file:packages\\param-types"
+    "@decsys/param-types": "file:packages\\param-types",
+    "@decsys/rating-scales": "file:packages\\rating-scales"
   }
 }

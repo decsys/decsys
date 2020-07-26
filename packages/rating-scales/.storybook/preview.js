@@ -13,4 +13,4 @@ addDecorator((s) => (
   </>
 ));
 
-addDecorator(withKnobs({ escapeHTML: false }));
+addDecorator(withKnobs());
