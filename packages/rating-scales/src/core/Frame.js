@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
  * This component sets a base CSS font-size which many relative values
  * (`em`, `rem`, `%`) in sub-components are based on
  */
-const StyledFrame = ({ frameHeight, ...p }) => (
+const Frame = ({ frameHeight, ...p }) => (
   <div
     css={{
       height: frameHeight,
@@ -19,14 +19,15 @@ const StyledFrame = ({ frameHeight, ...p }) => (
   />
 );
 
-StyledFrame.propTypes = {
+export const framePropTypes = {
   /** A valid CSS Dimension value for the height of the Frame. */
   frameHeight: PropTypes.string,
 };
 
-StyledFrame.defaultProps = {
+Frame.propTypes = framePropTypes;
+Frame.defaultProps = {
   frameHeight: "400px",
 };
 
 /** @component */
-export default StyledFrame;
+export default Frame;

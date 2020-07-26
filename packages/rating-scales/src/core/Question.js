@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 /**
  * A reusable question component for a scale component.
  */
-const StyledQuestion = ({
+const Question = ({
   textColor,
   topMargin,
   fontFamily,
@@ -44,7 +44,7 @@ const StyledQuestion = ({
   );
 };
 
-StyledQuestion.propTypes = {
+export const questionPropTypes = {
   /** A valid CSS Color value for the question color. */
   textColor: PropTypes.string,
 
@@ -69,7 +69,8 @@ StyledQuestion.propTypes = {
   xAlign: PropTypes.oneOf(["left", "center", "right"]),
 };
 
-StyledQuestion.defaultProps = {
+Question.propTypes = questionPropTypes;
+Question.defaultProps = {
   textColor: "black",
   topMargin: "10%",
   xMargin: "5%",
@@ -79,4 +80,4 @@ StyledQuestion.defaultProps = {
 };
 
 /** @component */
-export default StyledQuestion;
+export default Question;

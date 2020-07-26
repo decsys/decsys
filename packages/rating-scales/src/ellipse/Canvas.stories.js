@@ -1,13 +1,13 @@
 import React, { useState, useRef } from "react";
 import EllipseCanvas from "./Canvas";
-import StyledFrame from "../core/StyledFrame";
+import Frame from "../core/Frame";
 import { Button } from "@chakra-ui/core";
 import { text, number } from "@storybook/addon-knobs";
 
 export default {
   title: "Ellipse/Canvas",
   component: EllipseCanvas,
-  decorators: [(s) => <StyledFrame>{s()}</StyledFrame>],
+  decorators: [(s) => <Frame>{s()}</Frame>],
 };
 
 export const Basic = () => <EllipseCanvas />;
@@ -40,18 +40,18 @@ export const ImperativelyClear = () => {
       <Button onClick={() => canvasRef.current.clear()}>
         Draw something, then click here to clear
       </Button>
-      <StyledFrame>
+      <Frame>
         <EllipseCanvas ref={canvasRef} />
-      </StyledFrame>
+      </Frame>
     </>
   );
 };
 
 export const WithKnobs = () => (
-  <StyledFrame>
+  <Frame>
     <EllipseCanvas
       color={text("Pen Color", "red")}
       thickness={number("Pen Thickness", 5)}
     />
-  </StyledFrame>
+  </Frame>
 );

@@ -12,6 +12,8 @@ import * as Color from "./services/color";
 import * as Collision from "./services/collision";
 import PropTypes from "prop-types";
 
+//#region Static Methods
+
 const getHandlers = (setPenPoints, setDimensions, setCompleted) => ({
   handlePointerDown: ({
     data: {
@@ -116,6 +118,8 @@ const draw = (pen, thickness, color, points) => {
   }
 };
 
+//#endregion
+
 /**
  * An HTML Canvas element with styling applied, to be used for ellipse drawing
  *
@@ -180,7 +184,7 @@ const EllipseCanvas = forwardRef(
   }
 );
 
-EllipseCanvas.propTypes = {
+export const ellipseCanvasPropTypes = {
   /** A valid CSS Color value for the pen line */
   color: PropTypes.string,
 
@@ -193,6 +197,8 @@ EllipseCanvas.propTypes = {
   /** A callback, called every draw action */
   onDraw: PropTypes.func,
 };
+
+EllipseCanvas.propTypes = ellipseCanvasPropTypes;
 
 EllipseCanvas.defaultProps = {
   color: "black",
