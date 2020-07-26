@@ -1,25 +1,27 @@
-import resolve from "rollup-plugin-node-resolve";
-import cjs from "rollup-plugin-commonjs";
-import replace from "rollup-plugin-replace";
-import babel from "rollup-plugin-babel";
+import resolve from "@rollup/plugin-node-resolve";
+import cjs from "@rollup/plugin-commonjs";
+import replace from "@rollup/plugin-replace";
+import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
+
+import path from "path";
 
 import pkg from "./package.json";
 
 const plugins = [
   replace({
-    "process.env.NODE_ENV": JSON.stringify("production")
+    "process.env.NODE_ENV": JSON.stringify("production"),
   }),
-  babel({ ...pkg.babel, exclude: "node_modules/**" }),
+  babel({ ...pkg.babel, exclude: "node_modules/**", babelHelpers: "bundled" }),
   resolve({ preferBuiltins: false }),
-  cjs()
+  cjs(),
 ];
 
-const bundleEntryPoint = "src/index.js";
+const bundleEntryPoint = path.join(__dirname, "src/index.js");
 const input = {
   [pkg.name.replace("@", "").replace("/", ".")]: bundleEntryPoint,
-  ellipse: "src/ellipse/Scale.js",
-  discrete: "src/discrete/Scale.js"
+  ellipse: path.join(__dirname, "src/ellipse/Scale.js"),
+  discrete: path.join(__dirname, "src/discrete/Scale.js"),
 };
 
 const entryFileNames = `[name].js`;
@@ -30,46 +32,43 @@ export default [
     input: bundleEntryPoint,
     output: {
       name: "DECSYS",
-      file: pkg.browser,
+      file: path.join(__dirname, pkg.browser),
       format: "umd",
       sourcemap: true,
       globals: {
         react: "React",
-        "styled-components": "styled"
-      }
+      },
     },
-    external: ["react", "styled-components"],
-    plugins: [...plugins, terser()]
+    external: ["react"],
+    plugins: [...plugins, terser()],
   },
   // commonjs, esm
   {
     input,
     output: [
       {
-        dir: "cjs",
+        dir: path.join(__dirname, "cjs"),
         entryFileNames,
         format: "cjs",
         sourcemap: true,
         globals: {
           react: "React",
-          "styled-components": "styled"
-        }
+        },
       },
       {
-        dir: "esm",
+        dir: path.join(__dirname, "esm"),
         entryFileNames,
         format: "esm",
         sourcemap: true,
         globals: {
           react: "React",
-          "styled-components": "styled"
-        }
-      }
+        },
+      },
     ],
     external: [
       "react",
-      "styled-components",
       "prop-types",
+      "@emotion/core",
       "@pixi/app",
       "@pixi/constants",
       "@pixi/core",
@@ -81,9 +80,10 @@ export default [
       "@pixi/settings",
       "@pixi/ticker",
       "@pixi/utils",
+      "@seznam/compose-react-refs",
       "colornames",
-      "unit-value"
+      "unit-value",
     ],
-    plugins
-  }
+    plugins,
+  },
 ];
