@@ -2,37 +2,38 @@ import React from "react";
 import PropTypes from "prop-types";
 import ScaleBar, { ClassName } from "../core/StyledScaleBar";
 
+export const getBounds = () => {
+  const bounds = document
+    .querySelector(`.${ClassName}`)
+    .getBoundingClientRect();
+  // Handle MS ClientRect since even Edge is non-standard >.<
+  if (bounds.x == null) bounds.x = bounds.left;
+  if (bounds.y == null) bounds.y = bounds.top;
+
+  return bounds;
+};
+
 /**
  * The Ellipse variant of a Scale Bar, supporting child markers
  *
  * This accepts (and passes on) all Props that `core/StyledScaleBar` does
  */
-export default class RangeBar extends React.Component {
-  static propTypes = {
-    /**
-     * The numeric value of the left hand end of the range bar
-     * (the minimum possible value of the range)
-     */
-    minValue: PropTypes.number.isRequired,
+const RangeBar = ({ minValue, maxValue, ...p }) => {};
+RangeBar.propTypes = {
+  /**
+   * The numeric value of the left hand end of the range bar
+   * (the minimum possible value of the range)
+   */
+  minValue: PropTypes.number.isRequired,
 
-    /**
-     * The numeric value of the right hand end of the range bar
-     * (the maximum possible value of the range)
-     */
-    maxValue: PropTypes.number.isRequired
-  };
+  /**
+   * The numeric value of the right hand end of the range bar
+   * (the maximum possible value of the range)
+   */
+  maxValue: PropTypes.number.isRequired,
+};
 
-  get bounds() {
-    const bounds = document
-      .querySelector(`.${ClassName}`)
-      .getBoundingClientRect();
-    // Handle MS ClientRect since even Edge is non-standard >.<
-    if (bounds.x == null) bounds.x = bounds.left;
-    if (bounds.y == null) bounds.y = bounds.top;
-
-    return bounds;
-  }
-
+export default class OldRangeBar extends React.Component {
   /**
    * Convert an absolute x co-ordinate to a value on this RangeBar
    * @public
