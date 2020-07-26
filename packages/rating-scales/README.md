@@ -1,4 +1,4 @@
-# DECSYS Rating Scales
+# ✅ DECSYS Rating Scales
 
 This package contains re-usable [React] Components used by the DECSYS project for native HTML/JS [Rating Scales].
 
@@ -6,7 +6,7 @@ You can use these basically anywhere you have [React].
 
 The DECSYS Project uses them for survey question components for its Survey Platform.
 
-# Usage
+# 🎉 Usage
 
 ## Installation
 
@@ -39,7 +39,7 @@ e.g. for just the Discrete Scale
 
 ## Browser
 
-The components can be used directly in the browser, as per the examples in `samples/`.
+The components can be used directly in the browser.
 
 You can access each Scale component under the namespace `DECSYS`.
 
@@ -60,20 +60,12 @@ The following complete ratings scale components are available:
   - commonjs (node): `const EllipseScale = require("@decsys/rating-scales/cjs/ellipse");`
   - browser (umd): `DECSYS.EllipseScale`
 
-# Documentation
+# 🏗 Building
 
-Full Component reference documentation can be built by running `npm run docs` in a clone of the repository.
+At the top level of the repo:
 
-# Building
-
-The build workflow consists of several npm scripts.
-
-There are a number of sub-tasks composed into higher-level tasks you're more likely to want to run:
-
-- `npm run lint` will run eslint against the source.
-- `npm run rollup` will build transpiled, minified bundles (with external source maps) for Browser, CommonJS and ES Modules.
-- `npm run build` will lint and, if it passes, build the bundles as above. This is used in CI.
-- `npm run watch [build]` will run `build` script described above and then watch for changes in the `src/` directory.
+- `npm i`
+- `npm run rating-scales:build`
 
 [react]: https://reactjs.org/
 [rating scales]: https://en.wikipedia.org/wiki/Rating_scale
