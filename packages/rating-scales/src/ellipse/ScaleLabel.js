@@ -4,6 +4,7 @@ import { labelDistance } from "../constants";
 
 // TODO: work out a sensible way to write stories for this
 // cos there's some complex alignment shenanigans going on
+// do it on a Scalebar, I guess?
 
 /** A point a label is relative to */
 const LabelPoint = (p) => <div css={{ position: "relative" }} {...p} />;
@@ -19,13 +20,17 @@ const BarLabel = ({
 }) => {
   const left = yAlign === "below" ? "0.05em" : "0";
 
-  const yTransform = yAlign === "center" ? "translateY(-50%)" : "";
-  const transform =
-    {
+  let transform;
+  let yTransform = "";
+  if (yAlign === "center") {
+    yTransform = "translateY(-50%)";
+    transform = {
       // 0 and 2 are the left and rightmost labels
       [0]: `${yTransform} translateX(calc(-100% + ${labelDistance} * -1))`,
       [2]: `${yTransform} translateX(${labelDistance})`,
-    }[labelIndex] ?? `${yTransform} translateX(-50%)`;
+    }[labelIndex];
+  }
+  transform = transform || `${yTransform} translateX(-50%)`;
 
   const marginTop = {
     above: `calc(${labelDistance} * -1)`,
@@ -77,6 +82,7 @@ BarLabel.defaultProps = {
   fontFamily: "Arial",
   fontSize: "1.2em",
   labelIndex: 0,
+  yAlign: "below",
 };
 
 /** A positionable label for a ScaleBar */

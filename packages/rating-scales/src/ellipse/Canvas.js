@@ -4,6 +4,7 @@ import React, {
   useEffect,
   forwardRef,
   useImperativeHandle,
+  useRef,
 } from "react";
 import "./pixi";
 import { Graphics } from "@pixi/graphics";
@@ -11,6 +12,7 @@ import { Application } from "@pixi/app";
 import * as Color from "./services/color";
 import * as Collision from "./services/collision";
 import PropTypes from "prop-types";
+import composeRefs from "@seznam/compose-react-refs";
 
 //#region Static Methods
 
@@ -44,9 +46,15 @@ const getHandlers = (setPenPoints, setDimensions, setCompleted) => ({
   },
 
   handlePointerUp: () => {
-    // effectively close the path, but with a nice bezier
-    setPenPoints((penPoints) => [...penPoints, penPoints[0], penPoints[0]]);
-    setCompleted(true);
+    let completed = false;
+    setPenPoints((penPoints) => {
+      // sanity check that we have an actually useful path
+      if (penPoints < 2) return penPoints;
+      completed = true;
+      // effectively close the path, but with a nice bezier
+      return [...penPoints, penPoints[0], penPoints[0]];
+    });
+    if (completed) setCompleted(true);
   },
 
   handleResize: (app) => {
@@ -127,28 +135,32 @@ const draw = (pen, thickness, color, points) => {
  * but needs to be provided with state for pen's path, and a function to update it.
  */
 const EllipseCanvas = forwardRef(
-  ({ color, thickness, onComplete, onDraw }, ref) => {
+  ({ color, thickness, onCompleted, onDraw }, externalRef) => {
     const [pen, setPen] = useState(new Graphics());
     const [penPoints, setPenPoints] = useState([]);
     const [completed, setCompleted] = useState(false);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
     getHandlers(setPenPoints, setDimensions);
 
-    // expose a brief imperative API
+    // external ref api
+    const canvasRef = useRef();
     useImperativeHandle(
-      ref,
+      externalRef,
       () => ({
         // eslint-disable-next-line
         clear: () => {
+          setCompleted(false);
           setPenPoints([]);
           pen.clear();
         },
+        canvas: canvasRef.current,
       }),
       [pen]
     );
 
     // the canvas element triggers initialisation of PIXI
-    const canvasRef = useCallback((canvas) => {
+    const canvasRefCb = useCallback((canvas) => {
       if (!canvas) return;
       initialisePixi(
         canvas,
@@ -165,13 +177,13 @@ const EllipseCanvas = forwardRef(
     // trigger callback props
     useEffect(() => {
       const payload = { points: penPoints, completed };
-      if (completed) onComplete(payload);
+      if (completed) onCompleted(payload);
       onDraw(payload);
     }, [completed, penPoints]);
 
     return (
       <canvas
-        ref={canvasRef}
+        ref={composeRefs(canvasRef, canvasRefCb)}
         css={{
           position: "absolute",
           zIndex: 100,
@@ -192,7 +204,7 @@ export const ellipseCanvasPropTypes = {
   thickness: PropTypes.number,
 
   /** A callback, called when an Ellipse is completed */
-  onComplete: PropTypes.func,
+  onCompleted: PropTypes.func,
 
   /** A callback, called every draw action */
   onDraw: PropTypes.func,
@@ -203,7 +215,7 @@ EllipseCanvas.propTypes = ellipseCanvasPropTypes;
 EllipseCanvas.defaultProps = {
   color: "black",
   thickness: 2,
-  onComplete: () => {},
+  onCompleted: () => {},
   onDraw: () => {},
 };
 

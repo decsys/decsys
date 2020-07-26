@@ -57,12 +57,10 @@
   "homepage": "https://github.com/decsys/decsys#readme",
   "devDependencies": {
     "react-styleguidist": "^10.6.2",
-    "styled-components": "^4.4.1",
     "webpack": "^4.41.6"
   },
   "peerDependencies": {
-    "react": "~16",
-    "styled-components": "~4"
+    "react": "~16"
   },
   "dependencies": {
     "@emotion/core": "^10.0.28",
@@ -77,6 +75,7 @@
     "@pixi/settings": "^5.3.1",
     "@pixi/ticker": "^5.3.1",
     "@pixi/utils": "^5.3.1",
+    "@seznam/compose-react-refs": "^1.0.4",
     "colornames": "^1.1.1",
     "prop-types": "^15.7.2",
     "unit-value": "^1.0.1"

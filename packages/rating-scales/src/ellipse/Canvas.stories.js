@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import EllipseCanvas from "./Canvas";
 import Frame from "../core/Frame";
 import { Button } from "@chakra-ui/core";
@@ -40,6 +40,30 @@ export const ImperativelyClear = () => {
       <Button onClick={() => canvasRef.current.clear()}>
         Draw something, then click here to clear
       </Button>
+      <Frame>
+        <EllipseCanvas ref={canvasRef} />
+      </Frame>
+    </>
+  );
+};
+
+export const WithRef = () => {
+  const [width, setWidth] = useState();
+  const canvasRef = useCallback((canvasRef) => {
+    if (!canvasRef) return;
+    const { canvas } = canvasRef;
+    const resize = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setWidth(entry.target.getBoundingClientRect().width);
+      }
+    });
+
+    resize.observe(canvas);
+  }, []);
+
+  return (
+    <>
+      <div>Canvas width: {width} (Try resizing the window)</div>
       <Frame>
         <EllipseCanvas ref={canvasRef} />
       </Frame>

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import ScaleBar, { scaleBarDefaultProps } from "./ScaleBar";
+import ScaleBar, { scaleBarDefaultProps, FlexContainer } from "./ScaleBar";
 import { text } from "@storybook/addon-knobs";
 
 export default {
@@ -32,11 +32,13 @@ export const WithKnobs = () => (
 
 export const WithChildren = () => (
   <ScaleBar>
-    {[1, 2, 3].map((n) => (
-      <div style={{ marginTop: `${n}0px` }} key={n}>
-        {n}
-      </div>
-    ))}
+    <FlexContainer>
+      {[1, 2, 3].map((n) => (
+        <div style={{ marginTop: `${n}0px` }} key={n}>
+          {n}
+        </div>
+      ))}
+    </FlexContainer>
   </ScaleBar>
 );
 

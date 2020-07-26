@@ -1,9 +1,7 @@
-import { ClassName } from "../../constants";
+export const getScrolledY = (y) => y + window.pageYOffset;
 
-export const getBounds = () => {
-  const bounds = document
-    .querySelector(`.${ClassName}`) // TODO: use a ref instead?
-    .getBoundingClientRect();
+export const getBounds = (bar) => {
+  const bounds = bar.getBoundingClientRect();
   // Handle MS ClientRect since even Classic Edge is non-standard >.<
   if (bounds.x == null) bounds.x = bounds.left;
   if (bounds.y == null) bounds.y = bounds.top;
@@ -17,9 +15,9 @@ export const getBounds = () => {
  * @param {number} x the absolute x co-ordinate
  * @returns {number} The converted value
  */
-export const getValueForX = (x, minValue, maxValue) => {
-  const { width } = getBounds();
-  const relativeX = getRelativeXPos(x);
+export const getValueForX = (x, minValue, maxValue, bar) => {
+  const { width } = getBounds(bar);
+  const relativeX = getRelativeXPos(x, bar);
   return (maxValue - minValue) * (relativeX / width) + minValue;
 };
 
@@ -29,14 +27,14 @@ export const getValueForX = (x, minValue, maxValue) => {
  * @param {number} value the value to convert
  * @returns {number} The relative x co-ordinate
  */
-export const getXPosForValue = (value, minValue, maxValue) => {
+export const getXPosForValue = (value, minValue, maxValue, bar) => {
   // get value as a ratio of absolute bar range
   const adjustedValue = value - minValue;
   const absBarMax = maxValue - minValue;
   const valueRatio = adjustedValue / absBarMax;
 
   // apply the ratio to the relative max co-ord
-  return getBounds().width * valueRatio;
+  return getBounds(bar).width * valueRatio;
 };
 
 /**
@@ -47,8 +45,8 @@ export const getXPosForValue = (value, minValue, maxValue) => {
  * @param {number} absX the absolute x co-ordinate
  * @returns {number} The relative x co-ordinate
  */
-export const getRelativeXPos = (absX) => {
-  const { x, right, width } = getBounds();
+export const getRelativeXPos = (absX, bar) => {
+  const { x, right, width } = getBounds(bar);
   return absX <= x // clamp results to the bar bounds, else adjust the offset
     ? 0
     : absX >= right

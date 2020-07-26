@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Frame from "../core/Frame";
-import ScaleBar from "../core/ScaleBar";
+import ScaleBar, { FlexContainer } from "../core/ScaleBar";
 import Question from "../core/Question";
 import Radio from "./Radio";
 
@@ -34,7 +34,9 @@ const DiscreteScale = ({
   return (
     <Frame frameHeight={frameHeight}>
       <Question {...questionOptions}>{question}</Question>
-      <ScaleBar {...barOptions}>{radioComponents}</ScaleBar>
+      <ScaleBar {...barOptions}>
+        <FlexContainer>{radioComponents}</FlexContainer>
+      </ScaleBar>
     </Frame>
   );
 };

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
  * Simply provides a container for children of a ScaleBar
  * that will be evenly spaced out using flexbox
  */
-const ChildrenContainer = (p) => (
+export const FlexContainer = (p) => (
   <div
     css={{
       display: "flex",
@@ -17,31 +17,30 @@ const ChildrenContainer = (p) => (
 );
 
 const ScaleBar = (
-  { leftMargin, rightMargin, topMargin, thickness, barColor, children, ...p },
+  { leftMargin, rightMargin, topMargin, thickness, barColor, ...p },
   ref
-) => (
-  <div
-    className={ClassName}
-    css={{
-      marginLeft: leftMargin,
-      marginRight: rightMargin,
-      position: "relative",
-      top: topMargin,
-      "&::before": {
-        borderTop: `${thickness} solid ${barColor}`,
-        content: '""',
-        position: "absolute",
-        top: `calc(${thickness} / -2)`,
-        width: "100%",
-        zIndex: 1,
-      },
-    }}
-    ref={ref}
-    {...p}
-  >
-    {children && <ChildrenContainer>{children}</ChildrenContainer>}
-  </div>
-);
+) => {
+  return (
+    <div
+      css={{
+        marginLeft: leftMargin,
+        marginRight: rightMargin,
+        position: "relative",
+        top: topMargin,
+        "&::before": {
+          borderTop: `${thickness} solid ${barColor}`,
+          content: '""',
+          position: "absolute",
+          top: `calc(${thickness} / -2)`,
+          width: "100%",
+          zIndex: 1,
+        },
+      }}
+      ref={ref}
+      {...p}
+    />
+  );
+};
 
 /**
  * A reusable scale bar, that can be styled and contain further
@@ -74,7 +73,7 @@ export const scaleBarDefaultProps = {
   barColor: "black",
 };
 
-ScaleBar.propTypes = { ...scaleBarPropTypes, children: PropTypes.node };
+ScaleBar.propTypes = { ...scaleBarPropTypes };
 ForwardScaleBar.propTypes = scaleBarPropTypes;
 ForwardScaleBar.defaultProps = scaleBarDefaultProps;
 
