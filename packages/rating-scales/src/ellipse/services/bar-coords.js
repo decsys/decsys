@@ -1,8 +1,8 @@
-import { ClassName } from "../../core/ScaleBar";
+import { ClassName } from "../../constants";
 
 export const getBounds = () => {
   const bounds = document
-    .querySelector(`.${ClassName}`)
+    .querySelector(`.${ClassName}`) // TODO: use a ref instead?
     .getBoundingClientRect();
   // Handle MS ClientRect since even Classic Edge is non-standard >.<
   if (bounds.x == null) bounds.x = bounds.left;

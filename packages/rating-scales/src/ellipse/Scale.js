@@ -86,30 +86,6 @@ export default EllipseScale;
 
 //   static propTypes = {
 
-//     /** Options for the scale's horizontal bar */
-//     barOptions: PropTypes.shape({
-//       /**
-//        * The numeric value of the left hand end of the range bar
-//        * (the minimum possible value of the range)
-//        */
-//       minValue: PropTypes.number.isRequired,
-//       /**
-//        * The numeric value of the right hand end of the range bar
-//        * (the maximum possible value of the range)
-//        */
-//       maxValue: PropTypes.number.isRequired,
-//       /** A valid CSS Dimension value for the bar left margin. */
-//       leftMargin: PropTypes.string,
-//       /** A valid CSS Dimension value for the bar right margin. */
-//       rightMargin: PropTypes.string,
-//       /** A valid CSS Dimension value for the bar top margin. */
-//       topMargin: PropTypes.string,
-//       /** A valid CSS Color value for the bar color. */
-//       barColor: PropTypes.string,
-//       /** A valid CSS Dimension value for the bar thickness. */
-//       thickness: PropTypes.string,
-//     }),
-
 //     /** Options for the range bar's fixed labels */
 //     labelOptions: PropTypes.shape({
 //       /** A valid CSS Color value for the label text */

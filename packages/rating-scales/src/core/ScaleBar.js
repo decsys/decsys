@@ -2,12 +2,6 @@ import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
 
 /**
- * The class name used on the ScaleBar's containing element.
- * May be of interest to anything that wants to select it.
- */
-export const ClassName = "js--scalebar";
-
-/**
  * Simply provides a container for children of a ScaleBar
  * that will be evenly spaced out using flexbox
  */

@@ -1,59 +1,57 @@
-import styled from "styled-components";
 import React from "react";
 import PropTypes from "prop-types";
+import { labelDistance } from "../constants";
 
-const labelDistance = "2.8rem";
+// TODO: work out a sensible way to write stories for this
+// cos there's some complex alignment shenanigans going on
 
 /** A point a label is relative to */
-const LabelPoint = styled.div`
-  position: relative;
-`;
+const LabelPoint = (p) => <div css={{ position: "relative" }} {...p} />;
 
 /** A label at a position */
-const BarLabel = styled.label`
-  color: ${props => props.labelColor};
-  font-family: ${props => props.fontFamily};
-  font-size: ${props => props.fontSize};
-  margin-left: 0;
-  position: absolute;
-  left: ${props => {
-    switch (props.yAlign) {
-      case "below":
-        return "0.05em";
-      default:
-        return "0";
-    }
-  }};
-  transform: ${props => {
-    let yTransform = "";
-    // specific cases
-    if (props.yAlign === "center") {
-      yTransform = "translateY(-50%)";
-      switch (props.labelIndex) {
-        case 0: // min label (left)
-          return `${yTransform} translateX(calc(-100% + ${labelDistance} * -1))`;
-        case 2: // max label (right)
-          return `${yTransform} translateX(${labelDistance})`;
-      }
-    }
+const BarLabel = ({
+  labelColor,
+  fontFamily,
+  fontSize,
+  yAlign,
+  labelIndex,
+  ...p
+}) => {
+  const left = yAlign === "below" ? "0.05em" : "0";
 
-    // Default
-    return `${yTransform} translateX(-50%)`;
-  }};
-  white-space: nowrap;
-  margin-top: ${props => {
-    switch (props.yAlign) {
-      case "above":
-        return `calc(${labelDistance} * -1)`;
-      case "center":
-        return "0";
-      case "below":
-        return labelDistance;
-    }
-  }};
-`;
+  const yTransform = yAlign === "center" ? "translateY(-50%)" : "";
+  const transform =
+    {
+      // 0 and 2 are the left and rightmost labels
+      [0]: `${yTransform} translateX(calc(-100% + ${labelDistance} * -1))`,
+      [2]: `${yTransform} translateX(${labelDistance})`,
+    }[labelIndex] ?? `${yTransform} translateX(-50%)`;
 
-BarLabel.propTypes = {
+  const marginTop = {
+    above: `calc(${labelDistance} * -1)`,
+    center: 0,
+    below: labelDistance,
+  }[yAlign];
+
+  return (
+    <label
+      css={{
+        color: labelColor,
+        fontFamily,
+        fontSize,
+        marginLeft: 0,
+        position: "absolute",
+        left,
+        transform,
+        whiteSpace: "nowrap",
+        marginTop,
+      }}
+      {...p}
+    />
+  );
+};
+
+const barLabelPropTypes = {
   /** A valid CSS Color value for the label text */
   labelColor: PropTypes.string,
 
@@ -70,46 +68,30 @@ BarLabel.propTypes = {
    * The index of the position of the label relative to the Scale Bar.
    * 0 - hard left, 1 - center, 2 - hard right
    */
-  labelIndex: PropTypes.number
+  labelIndex: PropTypes.number,
 };
 
+BarLabel.propTypes = barLabelPropTypes;
 BarLabel.defaultProps = {
   labelColor: "black",
   fontFamily: "Arial",
   fontSize: "1.2em",
-  labelIndex: 0
+  labelIndex: 0,
 };
 
 /** A positionable label for a ScaleBar */
-export default class ScaleLabel extends React.Component {
-  static propTypes = {
-    /** The actual label text */
-    value: PropTypes.string.isRequired,
+const ScaleLabel = ({ value, ...p }) => (
+  <LabelPoint>
+    <BarLabel {...p}>{value}</BarLabel>
+  </LabelPoint>
+);
 
-    /** A valid CSS Color value for the label text */
-    labelColor: PropTypes.string,
+export const scaleLabelPropTypes = {
+  ...barLabelPropTypes,
+  /** The actual label text */
+  value: PropTypes.string.isRequired,
+};
 
-    /** A valid CSS Font Family value for any labels associated with this Radio component. */
-    fontFamily: PropTypes.string,
+ScaleLabel.propTypes = scaleLabelPropTypes;
 
-    /** A valid CSS Font Size value for any labels associated with this Radio component. */
-    fontSize: PropTypes.string,
-
-    /** Vertical alignment of the label relative to its position */
-    yAlign: PropTypes.oneOf(["above", "center", "below"]),
-
-    /**
-     * The index of the position of the label relative to the Scale Bar.
-     * 0 - hard left, 1 - center, 2 - hard right
-     */
-    labelIndex: PropTypes.number
-  };
-
-  render() {
-    return (
-      <LabelPoint>
-        <BarLabel {...this.props}>{this.props.value}</BarLabel>
-      </LabelPoint>
-    );
-  }
-}
+export default ScaleLabel;

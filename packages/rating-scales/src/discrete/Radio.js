@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
-const labelDistance = "2.8rem";
+import { labelDistance } from "../constants";
 
 const labelPropTypes = {
   /** A valid CSS Color value for the label text. */
