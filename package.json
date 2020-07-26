@@ -12,7 +12,8 @@
     "confirmation:storybook": "start-storybook -c ./response-items/confirmation/.storybook -p 6006",
     "freetext:storybook": "start-storybook -c ./response-items/freetext/.storybook -p 6006",
     "freetext:build": "rollup -c ./response-items/freetext/rollup.config.js",
-    "rating-scales:storybook": "start-storybook -c ./packages/rating-scales/.storybook -p 6006"
+    "rating-scales:storybook": "start-storybook -c ./packages/rating-scales/.storybook -p 6006",
+    "rating-scales:build": "rollup -c ./packages/rating-scales/rollup.config.js"
   },
   "husky": {
     "hooks": {

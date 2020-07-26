@@ -13,12 +13,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "scripts": {
-    "rollup": "rollup -c",
-    "lint": "eslint src/**/*.js",
-    "build": "npm run lint && npm run rollup",
-    "docs": "styleguidist build"
-  },
   "eslintConfig": {
     "extends": [
       "eslint:recommended",
@@ -40,9 +34,6 @@
       "@babel/preset-env",
       "@babel/preset-react",
       "@emotion/babel-preset-css-prop"
-    ],
-    "plugins": [
-      "@babel/plugin-proposal-class-properties"
     ]
   },
   "repository": {
@@ -55,10 +46,6 @@
     "url": "https://github.com/decsys/decsys/issues"
   },
   "homepage": "https://github.com/decsys/decsys#readme",
-  "devDependencies": {
-    "react-styleguidist": "^10.6.2",
-    "webpack": "^4.41.6"
-  },
   "peerDependencies": {
     "react": "~16"
   },
