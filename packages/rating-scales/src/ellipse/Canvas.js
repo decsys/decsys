@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import "./pixi";
 import { Graphics } from "@pixi/graphics";
 import { Application } from "@pixi/app";
@@ -116,48 +122,63 @@ const draw = (pen, thickness, color, points) => {
  * Contains the drawing logic for simple pen drawing,
  * but needs to be provided with state for pen's path, and a function to update it.
  */
-const EllipseCanvas = ({ color, thickness, onComplete, onDraw }) => {
-  const [pen, setPen] = useState(new Graphics());
-  const [penPoints, setPenPoints] = useState([]);
-  const [completed, setCompleted] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  getHandlers(setPenPoints, setDimensions);
+const EllipseCanvas = forwardRef(
+  ({ color, thickness, onComplete, onDraw }, ref) => {
+    const [pen, setPen] = useState(new Graphics());
+    const [penPoints, setPenPoints] = useState([]);
+    const [completed, setCompleted] = useState(false);
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    getHandlers(setPenPoints, setDimensions);
 
-  // the canvas element triggers initialisation of PIXI
-  const canvasRef = useCallback((canvas) => {
-    if (!canvas) return;
-    initialisePixi(
-      canvas,
-      setPen,
-      getHandlers(setPenPoints, setDimensions, setCompleted)
+    // expose a brief imperative API
+    useImperativeHandle(
+      ref,
+      () => ({
+        // eslint-disable-next-line
+        clear: () => {
+          setPenPoints([]);
+          pen.clear();
+        },
+      }),
+      [pen]
     );
-  }, []);
 
-  //re-draw on state/props change
-  useEffect(() => {
-    draw(pen, thickness, color, penPoints);
-  }, [pen, penPoints, thickness, color]);
+    // the canvas element triggers initialisation of PIXI
+    const canvasRef = useCallback((canvas) => {
+      if (!canvas) return;
+      initialisePixi(
+        canvas,
+        setPen,
+        getHandlers(setPenPoints, setDimensions, setCompleted)
+      );
+    }, []);
 
-  // trigger callback props
-  useEffect(() => {
-    const payload = { points: penPoints, completed };
-    if (completed) onComplete(payload);
-    onDraw(payload);
-  }, [completed, penPoints]);
+    //re-draw on state/props change
+    useEffect(() => {
+      draw(pen, thickness, color, penPoints);
+    }, [pen, penPoints, thickness, color]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      css={{
-        position: "absolute",
-        zIndex: 100,
-        top: 0,
-        left: 0,
-        ...dimensions,
-      }}
-    />
-  );
-};
+    // trigger callback props
+    useEffect(() => {
+      const payload = { points: penPoints, completed };
+      if (completed) onComplete(payload);
+      onDraw(payload);
+    }, [completed, penPoints]);
+
+    return (
+      <canvas
+        ref={canvasRef}
+        css={{
+          position: "absolute",
+          zIndex: 100,
+          top: 0,
+          left: 0,
+          ...dimensions,
+        }}
+      />
+    );
+  }
+);
 
 EllipseCanvas.propTypes = {
   /** A valid CSS Color value for the pen line */

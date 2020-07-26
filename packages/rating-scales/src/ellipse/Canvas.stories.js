@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import EllipseCanvas from "./Canvas";
 import StyledFrame from "../core/StyledFrame";
+import { Button } from "@chakra-ui/core";
+import { text, number } from "@storybook/addon-knobs";
 
 export default {
   title: "Ellipse/Canvas",
@@ -21,7 +23,7 @@ export const WithCallbacks = () => {
     status = <div style={{ color: "green" }}>ellipse complete!</div>;
   else if (data?.points?.length > 0)
     status = <div style={{ color: "orange" }}>drawing!</div>;
-  else status = <div style={{ color: "red" }}>no action yet</div>;
+  else status = <div style={{ color: "red" }}>Draw something</div>;
 
   return (
     <>
@@ -30,3 +32,26 @@ export const WithCallbacks = () => {
     </>
   );
 };
+
+export const ImperativelyClear = () => {
+  const canvasRef = useRef();
+  return (
+    <>
+      <Button onClick={() => canvasRef.current.clear()}>
+        Draw something, then click here to clear
+      </Button>
+      <StyledFrame>
+        <EllipseCanvas ref={canvasRef} />
+      </StyledFrame>
+    </>
+  );
+};
+
+export const WithKnobs = () => (
+  <StyledFrame>
+    <EllipseCanvas
+      color={text("Pen Color", "red")}
+      thickness={number("Pen Thickness", 5)}
+    />
+  </StyledFrame>
+);
