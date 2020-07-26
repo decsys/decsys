@@ -36,7 +36,7 @@ const EllipseScale = ({
     <Frame frameHeight={frameHeight}>
       <EllipseCanvas ref={canvasRef} {...penOptions} />
       <Question {...questionOptions}>{question}</Question>
-      <ScaleBar {...barOptions} />
+      <ScaleBar {...barOptions}></ScaleBar>
     </Frame>
   );
 };
