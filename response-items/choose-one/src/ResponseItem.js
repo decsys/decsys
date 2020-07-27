@@ -1,12 +1,12 @@
 import React from "react";
-import * as props from "./Component.props";
+import * as props from "./ResponseItem.props";
 import FlexBox from "./components/FlexBox";
 import DropDownList from "./components/DropDownList";
 import RadioList from "./components/RadioList";
 import { filterOptions } from "./utils/option-params";
 
 // Main Component
-const Component = ({
+const ResponseItem = ({
   logResults,
   setNextEnabled,
   dropDown,
@@ -43,8 +43,8 @@ const Component = ({
 };
 
 // Props metadata - Edit these in `./Component.props.js`
-Component.params = props.params;
-Component.propTypes = props.propTypes;
-Component.defaultProps = props.defaultProps;
+ResponseItem.params = props.params;
+ResponseItem.propTypes = props.propTypes;
+ResponseItem.defaultProps = props.defaultProps;
 
-export default Component;
+export default ResponseItem;

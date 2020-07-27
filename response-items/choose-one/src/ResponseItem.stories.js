@@ -1,11 +1,12 @@
 import React from "react";
 import { text, radios, color, boolean } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
-import Component from "./Component";
+import ResponseItem from "./ResponseItem";
+import { Icon } from "./metadata";
 
 export default {
-  title: "Horizontal",
-  component: Component,
+  title: "Choose One Response",
+  component: ResponseItem,
 };
 
 const actions = {
@@ -50,14 +51,16 @@ const props = () => {
   return { ...actions, ...options(), ...styles() };
 };
 
-export const Horizontal = () => {
-  return <Component dropDown={boolean("Drop Down", true)} {...props()} />;
+export const WithKnobs = () => {
+  return <ResponseItem dropDown={boolean("Drop Down", true)} {...props()} />;
 };
 
 export const DropDown = () => {
-  return <Component dropDown={true} {...props()} />;
+  return <ResponseItem dropDown={true} {...props()} />;
 };
 
 export const RadioList = () => {
-  return <Component dropDown={false} {...props()} />;
+  return <ResponseItem dropDown={false} {...props()} />;
 };
+
+export const MetadataIcon = () => <Icon width="24px" />;

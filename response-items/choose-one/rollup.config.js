@@ -18,7 +18,7 @@ export default {
   output: {
     format: "iife",
     name: "DecsysComponent",
-    file: `dist/${pkg.componentName}.js`,
+    file: `dist/${pkg.responseItemName}.js`,
     sourcemap: true,
     preferConst: true,
     compact: true,
