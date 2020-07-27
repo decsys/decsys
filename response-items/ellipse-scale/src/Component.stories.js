@@ -1,7 +1,12 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import Component from "./Component";
+import { Icon } from "./metadata";
+
+export default {
+  title: "Ellipse Scale Response",
+  component: Component,
+};
 
 const props = {
   barLeftMargin: 10,
@@ -62,23 +67,14 @@ const actions = {
   logResults: action("Results logged"),
 };
 
-storiesOf("Component", module)
-  .add("Default", () => <Component {...actions} />)
-  .add(
-    "Numeric Visualisation",
-    visualization(
-      Component.stats(
-        { ...Component.defaultProps, ...props },
-        dummyEllipseResults
-      )
-    )
-  )
-  .add(
-    "Numeric stats",
-    stats(
-      Component.stats(
-        { ...Component.defaultProps, ...props },
-        dummyEllipseResults
-      )
-    )
-  );
+export const Basic = () => <Component {...actions} />;
+
+export const NumericVisualisation = visualization(
+  Component.stats({ ...Component.defaultProps, ...props }, dummyEllipseResults)
+);
+
+export const NumericStats = stats(
+  Component.stats({ ...Component.defaultProps, ...props }, dummyEllipseResults)
+);
+
+export const MetadataIcon = () => <Icon width="24px" />;
