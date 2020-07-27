@@ -42,6 +42,7 @@ export default [
     plugins: [...plugins, terser()],
   },
   // commonjs, esm
+  // TODO: the esm bundle is broken due to compose-react-refs. needs exploration. cjs is fine.
   {
     input,
     output: [

@@ -8,9 +8,9 @@ const RadioList = ({ options, onSelection, ...props }) => {
 
   return (
     <FlexBox>
-      {options.map((option) => (
+      {options.map((option, i) => (
         <RadioListItem
-          key={name}
+          key={i}
           name={name}
           option={option}
           onSelection={onSelection}
