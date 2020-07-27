@@ -1,0 +1,105 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Decsys.Models;
+using Decsys.Data;
+using Decsys.Data.Entities;
+using Decsys.Repositories.Contracts;
+using Decsys.Services;
+using AutoMapper;
+using LiteDB;
+
+
+namespace Decsys.Repositories.LiteDb
+{
+
+    public class LiteDbSurveyRepository :  ISurveyRepository
+    {
+        private readonly LiteDatabase _db;
+        private readonly IMapper _mapper;
+        private readonly ImageService _images;
+        public LiteDbSurveyRepository (LiteDbFactory db, IMapper mapper, ImageService images)
+        {
+            _db = db.Surveys;
+            _mapper = mapper;
+            _images = images;
+        }
+
+        public Models.Survey Get(int id) => _mapper.Map<Models.Survey>(
+            _db.GetCollection<Data.Entities.Survey>(Collections.Surveys)
+            .FindById(id));
+
+
+        public int Create(string? name = null)
+        {
+            return _db.GetCollection<Data.Entities.Survey>(Collections.Surveys)
+                .Insert(name is null
+                    ? new Data.Entities.Survey()
+                    : new Data.Entities.Survey { Name = name });
+        }
+
+        public int Duplicate(int id)
+        {
+            var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
+
+            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            var oldId = survey.Id;
+
+            survey.Id = 0;
+            survey.Name = $"{survey.Name} (Copy)";
+
+            var newId = surveys.Insert(survey);
+
+            _images.CopyAllSurveyFiles(oldId, newId);
+
+            return newId;
+
+        }
+
+        public async Task<int> Import(Models.Survey survey, List<(string filename, byte[] data)> images)
+        {
+            var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
+
+            survey.Id = 0;
+            var id = surveys.Insert(_mapper.Map<Data.Entities.Survey>(survey));
+
+            if (images.Count > 0)
+                await _images.Import(id, images).ConfigureAwait(false);
+
+            return id;
+        }
+
+        public void Delete(int id)
+        {
+            _db.GetCollection<Data.Entities.SurveyInstance>(Collections.SurveyInstances)
+                .DeleteMany(x => x.Survey.Id == id);
+
+            var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
+
+            // delete images on disk for built-in image Page Items
+            _images.RemoveAllSurveyFiles(id);
+
+            surveys.Delete(id);
+        }
+
+        public void EditName(int id, string name)
+        {
+            var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            survey.Name = name;
+            surveys.Update(survey);
+        }
+
+        public void Configure(int id, Models.ConfigureSurveyModel config)
+        {
+            var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
+            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            survey.OneTimeParticipants = config.OneTimeParticipants;
+            survey.UseParticipantIdentifiers = config.UseParticipantIdentifiers;
+            survey.ValidIdentifiers = config.ValidIdentifiers;
+            surveys.Update(survey);
+        }
+    
+    }
+}
