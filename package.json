@@ -33,6 +33,7 @@
     "@chakra-ui/core": "1.0.0-rc.0",
     "@chakra-ui/theme": "1.0.0-rc.0",
     "@emotion/babel-preset-css-prop": "^10.0.27",
+    "@emotion/core": "^10.0.28",
     "@rollup/plugin-babel": "^5.1.0",
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-json": "^4.1.0",
@@ -60,6 +61,7 @@
     "react-dom": "^16.13.1",
     "react-wordcloud": "1.0.3",
     "rollup": "^2.22.2",
+    "rollup-plugin-analyzer": "^3.3.0",
     "rollup-plugin-terser": "^6.1.0",
     "victory": "^35.0.5"
   },

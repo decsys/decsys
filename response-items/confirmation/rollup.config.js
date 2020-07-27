@@ -26,11 +26,12 @@ export default {
     footer: footer,
     globals: {
       react: "React",
+      "react-dom": "ReactDOM",
       "prop-types": "PropTypes",
       "@chakra-ui/core": "Chakra",
     },
   },
-  external: ["react", "prop-types", "@chakra-ui/core"],
+  external: ["react", "react-dom", "prop-types", "@chakra-ui/core"],
   plugins: [
     replace({
       "process.env.NODE_ENV": JSON.stringify("production"),
@@ -47,7 +48,7 @@ export default {
         ],
         "@babel/preset-react",
       ],
-      babelHelpers: "bundled", // TODO: we can probably make this "runtime"
+      babelHelpers: "bundled",
     }),
     resolve({ preferBuiltins: false }),
     cjs(),

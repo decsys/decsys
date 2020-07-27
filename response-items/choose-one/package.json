@@ -15,11 +15,12 @@
   },
   "dependencies": {
     "@decsys/param-types": "file:../../packages/param-types",
-    "react-select": "^3.1.0",
-    "@emotion/core": "^10.0.28"
+    "react-select": "^3.1.0"
   },
   "peerDependencies": {
+    "@emotion/core": "~10",
     "prop-types": "~15",
-    "react": "^16.8"
+    "react": "^16.8",
+    "react-dom": "~16"
   }
 }

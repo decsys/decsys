@@ -18,6 +18,7 @@
     "mathjs": "~7",
     "prop-types": "~15",
     "react": "~16",
+    "react-dom": "~16",
     "react-wordcloud": "~1"
   }
 }
