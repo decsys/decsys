@@ -24,3 +24,7 @@ In the **root** of the repo:
 - `npm run discrete-scale:build`
 
 The build outputs to the local `./dist` directory.
+
+### Troubleshooting
+
+At this time, it may be necessary to ensure `packages/rating-scales` is built locally before trying to build / storybook this project.
