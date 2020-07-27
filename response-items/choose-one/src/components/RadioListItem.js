@@ -1,20 +1,35 @@
 import React from "react";
-import styled from "styled-components";
 
-const StyledLabel = styled.label`
-  width: fit-content;
-  color: ${(x) => x.textColor || "black"};
-  font-size: ${(x) => x.fontSize || "1em"};
-  font-family: ${(x) => x.fontFamily || "Times New Roman"};
-`;
+const StyledLabel = ({
+  textColor = "black",
+  fontSize = "1em",
+  fontFamily = "Times New Roman",
+  ...p
+}) => (
+  <label
+    css={{
+      width: "fit-content",
+      color: textColor,
+      fontSize,
+      fontFamily,
+    }}
+    {...p}
+  />
+);
 
-const StyledRadio = styled.input.attrs({ type: "radio" })`
-    vertical-align: middle;
-    padding: 0;
-    margin: 0 .5em .25em 0;
-    width: "1em",
-    height: "1em"
-`;
+const StyledRadio = (p) => (
+  <input
+    type="radio"
+    css={{
+      verticalAlign: "middle",
+      padding: 0,
+      margin: "0 .5em .25em 0",
+      width: "1em",
+      height: "1em",
+    }}
+    {...p}
+  />
+);
 
 const RadioListItem = ({ name, option, onSelection, ...props }) => (
   <StyledLabel {...props}>

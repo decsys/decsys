@@ -1,19 +1,22 @@
 import React from "react";
-import styled from "styled-components";
 
-const FlexBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: ${(x) => {
-    switch (x.alignment) {
-      case "left":
-        return "flex-start";
-      case "right":
-        return "flex-end";
-      default:
-        return "center";
-    }
-  }};
-`;
+const FlexBox = ({ alignment, ...p }) => {
+  const alignItems =
+    {
+      left: "flex-start",
+      right: "flex-end",
+    }[alignment] ?? "center";
+
+  return (
+    <div
+      css={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems,
+      }}
+      {...p}
+    />
+  );
+};
 
 export default FlexBox;

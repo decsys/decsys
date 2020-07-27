@@ -6,10 +6,17 @@
   "private": true,
   "author": "James Fleming <jamesfleming91@gmail.com>",
   "license": "AGPL-3.0-only",
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react",
+      "@emotion/babel-preset-css-prop"
+    ]
+  },
   "dependencies": {
-    "@decsys/param-types": "^1.0.0",
-    "@smooth-ui/core-sc": "^10.1.0",
-    "react-select": "^3.1.0"
+    "@decsys/param-types": "file:../../packages/param-types",
+    "react-select": "^3.1.0",
+    "@emotion/core": "^10.0.28"
   },
   "peerDependencies": {
     "prop-types": "~15",
