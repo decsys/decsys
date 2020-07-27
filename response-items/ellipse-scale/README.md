@@ -21,7 +21,7 @@ This is a component that allows a Survey Participant to provide a ranged answer 
 In the **root** of the repo:
 
 - `npm i`
-- `npm run discrete-scale:build`
+- `npm run ellipse-scale:build`
 
 The build outputs to the local `./dist` directory.
 
