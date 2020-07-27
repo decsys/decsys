@@ -1,0 +1,25 @@
+{
+  "name": "@decsys/ellipse-scale-response",
+  "responseItemName": "Ellipse Scale",
+  "version": "2.0.0-alpha.1",
+  "description": "The Ellipse Scale Page Response Item for the DECSYS Survey Platform",
+  "private": true,
+  "author": "Jonathan Couldridge <jon@jon.gg>",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/decsys/decsys.git"
+  },
+  "dependencies": {
+    "@decsys/iaa": "^1.0.2",
+    "@decsys/param-types": "file:../../packages/param-types",
+    "@decsys/rating-scales": "file:../../packages/rating-scales"
+  },
+  "peerDependencies": {
+    "@chakra-ui/core": "^1.0.0-rc.0",
+    "prop-types": "~15",
+    "react": "~16",
+    "victory": "~35",
+    "mathjs": "~7"
+  }
+}

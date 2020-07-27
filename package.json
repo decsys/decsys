@@ -15,7 +15,9 @@
     "rating-scales:storybook": "start-storybook -c ./packages/rating-scales/.storybook -p 6006",
     "rating-scales:build": "rollup -c ./packages/rating-scales/rollup.config.js",
     "discrete-scale:storybook": "start-storybook -c ./response-items/discrete-scale/.storybook -p 6006",
-    "discrete-scale:build": "rollup -c ./response-items/discrete-scale/rollup.config.js"
+    "discrete-scale:build": "rollup -c ./response-items/discrete-scale/rollup.config.js",
+    "ellipse-scale:storybook": "start-storybook -c ./response-items/ellipse-scale/.storybook -p 6006",
+    "ellipse-scale:build": "rollup -c ./response-items/ellipse-scale/rollup.config.js"
   },
   "husky": {
     "hooks": {
@@ -64,6 +66,7 @@
     "@decsys/confirmation-response": "file:response-items\\confirmation",
     "@decsys/freetext-response": "file:response-items\\freetext",
     "@decsys/discrete-scale-response": "file:response-items\\discrete-scale",
+    "@decsys/ellipse-scale-response": "file:response-items\\ellipse-scale",
     "@decsys/param-types": "file:packages\\param-types",
     "@decsys/rating-scales": "file:packages\\rating-scales"
   }
