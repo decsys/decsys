@@ -29,10 +29,9 @@ export default {
       "prop-types": "PropTypes",
       victory: "Victory",
       mathjs: "math",
-      "@chakra-ui/core": "Chakra",
     },
   },
-  external: ["react", "prop-types", "victory", "mathjs", "@chakra-ui/core"],
+  external: ["react", "prop-types", "victory", "mathjs"],
   plugins: [
     replace({
       "process.env.NODE_ENV": JSON.stringify("production"),
