@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  VictoryLabel,
-  VictoryChart,
-  VictoryAxis,
-  VictoryLine
-} from "victory";
+import { VictoryLabel, VictoryChart, VictoryAxis, VictoryLine } from "victory";
 
 const tiny = 1e-10;
 
@@ -22,17 +17,20 @@ const Visualization = ({ barMaxValue, iaa }) => {
   };
   const data = iaa.intervals.singletonKeys.reduce(reducer, [{ x: 0, y: 0 }]);
 
-  const maxY = Math.max(...data.map(d => d.y));
+  const maxY = Math.max(...data.map((d) => d.y));
 
   const centroidValue = iaa.centroid;
-  const centroid = [{ x: centroidValue, y: 0 }, { x: centroidValue, y: maxY }];
+  const centroid = [
+    { x: centroidValue, y: 0 },
+    { x: centroidValue, y: maxY },
+  ];
 
   return (
     <VictoryChart
       minDomain={{ x: 0, y: 0 }}
       maxDomain={{
         x: barMaxValue + barMaxValue * 0.1,
-        y: maxY + maxY * 0.1
+        y: maxY + maxY * 0.1,
       }}
     >
       <VictoryAxis
@@ -41,9 +39,9 @@ const Visualization = ({ barMaxValue, iaa }) => {
         axisLabelComponent={<VictoryLabel x={20} />}
       />
       {/* We draw the x axis twice
-        * so we can fixed tick it at 0,
-        * and then auto tick the rest
-        */}
+       * so we can fixed tick it at 0,
+       * and then auto tick the rest
+       */}
       <VictoryAxis label="Scale Value" />
       <VictoryAxis tickValues={[0]} />
       <VictoryLine data={data} />
@@ -51,7 +49,7 @@ const Visualization = ({ barMaxValue, iaa }) => {
         data={centroid}
         style={{
           data: { stroke: "red" },
-          labels: { angle: -90, fill: "red", fontSize: 16 }
+          labels: { angle: -90, fill: "red", fontSize: 16 },
         }}
         labels={["Centroid"]}
         labelComponent={<VictoryLabel y={150} />}

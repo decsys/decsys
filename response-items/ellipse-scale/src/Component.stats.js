@@ -21,7 +21,7 @@ const stats = (params, results) => {
       values: [],
       intervalWidths: [],
       minValues: [],
-      maxValues: []
+      maxValues: [],
     }
   );
 
@@ -33,8 +33,8 @@ const stats = (params, results) => {
     visualizations: [
       {
         name: "Ellipse Results",
-        component: <Visualization {...params} iaa={iaa} />
-      }
+        component: <Visualization {...params} iaa={iaa} />,
+      },
     ],
     stats: {
       ["Left Endpoint - Mean, St.D"]: `${fixed(math.mean, minValues)}, ${fixed(
@@ -53,8 +53,8 @@ const stats = (params, results) => {
         Math.max,
         ...maxValues
       )}`,
-      ["Centroid"]: fixed(args => args, centroidValue)
-    }
+      ["Centroid"]: fixed((args) => args, centroidValue),
+    },
   };
 };
 

@@ -9,46 +9,46 @@ const props = {
   barRightMargin: 10,
   barThickness: 8,
   barMaxValue: 100,
-  barMinValue: 0
+  barMinValue: 0,
 };
 
 const dummyEllipseResults = [
   {
     minRangeValue: 60,
     maxRangeValue: 90,
-    completed: true
+    completed: true,
   },
   {
     minRangeValue: 0,
     maxRangeValue: 100,
-    completed: true
+    completed: true,
   },
   {
     minRangeValue: 50,
     maxRangeValue: 90,
-    completed: true
+    completed: true,
   },
   {
     minRangeValue: 40,
     maxRangeValue: 90,
-    completed: true
+    completed: true,
   },
   {
     minRangeValue: 80,
     maxRangeValue: 90,
-    completed: true
-  }
+    completed: true,
+  },
 ];
 
-const visualization = stats => () => (
+const visualization = (stats) => () => (
   <div style={{ marginLeft: "3em", width: "40%" }}>
     {stats.visualizations[0].component}
   </div>
 );
 
-const stats = stats => () => (
+const stats = (stats) => () => (
   <div>
-    {Object.keys(stats.stats).map(x => (
+    {Object.keys(stats.stats).map((x) => (
       <div key={x}>
         <h4>{x}</h4>
         <p>{stats.stats[x]}</p>
@@ -59,7 +59,7 @@ const stats = stats => () => (
 
 const actions = {
   setNextEnabled: action("Next button toggled"),
-  logResults: action("Results logged")
+  logResults: action("Results logged"),
 };
 
 storiesOf("Component", module)

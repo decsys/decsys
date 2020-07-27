@@ -34,9 +34,9 @@ const Component = ({
   scaleMarkers,
   scaleSubdivisions,
   setNextEnabled,
-  logResults
+  logResults,
 }) => {
-  const handleEllipseCompleted = e => {
+  const handleEllipseCompleted = (e) => {
     logResults(e.detail);
     setNextEnabled(true);
   };
@@ -56,27 +56,27 @@ const Component = ({
         rightMargin: `${barRightMargin}%`,
         topMargin: `${barTopMargin}%`,
         barColor,
-        thickness: `${barThickness}px`
+        thickness: `${barThickness}px`,
       }}
       penOptions={{
         color: penColor,
-        thickness: penThickness
+        thickness: penThickness,
       }}
       labels={{
         min: minLabel,
         mid: midLabel,
-        max: maxLabel
+        max: maxLabel,
       }}
       labelOptions={{
         labelColor,
         fontFamily,
         fontSize,
-        yAlign: labelAlignment
+        yAlign: labelAlignment,
       }}
       rangeMarkerOptions={{
         markerColor: rangeMarkerColor,
         length: `${rangeMarkerHeight}px`,
-        thickness: `${rangeMarkerThickness}px`
+        thickness: `${rangeMarkerThickness}px`,
       }}
       scaleMarkerOptions={{
         markerColor: scaleMarkerColor,
@@ -86,7 +86,7 @@ const Component = ({
         subThickness: `${scaleSubdivisionThickness}px`,
         subLength: `${scaleSubdivisionHeight}px`,
         markers: scaleMarkers,
-        subdivisions: scaleSubdivisions
+        subdivisions: scaleSubdivisions,
       }}
       minRangeValue={minRangeValue}
       maxRangeValue={maxRangeValue}

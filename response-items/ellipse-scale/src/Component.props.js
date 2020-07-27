@@ -36,7 +36,7 @@ const params = {
   ),
   scaleSubdivisionHeight: ParamTypes.number("Scale Subdivision Height", 15),
   scaleMarkers: ParamTypes.number("Scale Markers", 5),
-  scaleSubdivisions: ParamTypes.number("Scale Subdivisions", 4)
+  scaleSubdivisions: ParamTypes.number("Scale Subdivisions", 4),
 };
 
 // Specify PropTypes for non-Configurable Props
@@ -44,7 +44,7 @@ const staticPropTypes = {
   minRangeValue: PropTypes.number,
   maxRangeValue: PropTypes.number,
   logResults: PropTypes.func.isRequired,
-  setNextEnabled: PropTypes.func.isRequired
+  setNextEnabled: PropTypes.func.isRequired,
 };
 
 // Create merged propTypes, defaultProps
