@@ -10,20 +10,17 @@
     "type": "git",
     "url": "https://github.com/decsys/decsys.git"
   },
-  "devDependencies": {
-    "styled-components": "^4.4.1",
-    "victory": "^32.3.7"
-  },
   "dependencies": {
     "@decsys/param-types": "file:../../packages/param-types",
     "@decsys/rating-scales": "file:../../packages/rating-scales",
-    "styled-icons": "^7.15.1"
+    "styled-icons": "^7.15.1",
+    "styled-components": "^4.4.1"
   },
   "peerDependencies": {
+    "@chakra-ui/core": "1.0.0-next.6",
     "mathjs": "~7",
     "prop-types": "~15",
     "react": "~16",
-    "styled-components": "~4",
-    "victory": "~32"
+    "victory": "~35"
   }
 }
