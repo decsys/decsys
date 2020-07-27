@@ -3,7 +3,6 @@ import cjs from "@rollup/plugin-commonjs";
 import replace from "@rollup/plugin-replace";
 import babel from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
-
 import path from "path";
 
 import pkg from "./package.json";
@@ -51,18 +50,12 @@ export default [
         entryFileNames,
         format: "cjs",
         sourcemap: true,
-        globals: {
-          react: "React",
-        },
       },
       {
         dir: path.join(__dirname, "esm"),
         entryFileNames,
         format: "esm",
         sourcemap: true,
-        globals: {
-          react: "React",
-        },
       },
     ],
     external: [

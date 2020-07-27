@@ -47,6 +47,7 @@ export default {
           },
         ],
         "@babel/preset-react",
+        "@emotion/babel-preset-css-prop",
       ],
       babelHelpers: "bundled",
     }),
