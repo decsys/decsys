@@ -1,4 +1,5 @@
 ﻿using Decsys.Models;
+using Decsys.Services;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Decsys.Repositories.Contracts
     {
 
         Survey Get(int id);
+        IEnumerable<SurveySummary> List();
         int Create(string? name = null);
         int Duplicate(int id);
         Task<int> Import(Survey survey, List<(string filename, byte[] data)> images);
