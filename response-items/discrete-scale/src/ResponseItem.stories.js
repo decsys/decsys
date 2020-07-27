@@ -1,6 +1,7 @@
 import React from "react";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
+import { Icon } from "./metadata";
 
 export default {
   title: "Discrete Scale Response",
@@ -106,3 +107,5 @@ export const MixedValueVisualisation = visualization(
 export const MixedValueStats = stats(
   ResponseItem.stats(visProps.mixed.params, visProps.mixed.results)
 );
+
+export const MetadataIcon = () => <Icon width="24px" />;

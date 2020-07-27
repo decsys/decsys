@@ -2,6 +2,7 @@ import React from "react";
 import { text } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
+import { Icon } from "./metadata";
 
 const _context = {
   surveyId: 0,
@@ -37,3 +38,5 @@ export const InitiallyChecked = () => (
     _context={_context}
   />
 );
+
+export const MetadataIcon = () => <Icon width="24px" />;
