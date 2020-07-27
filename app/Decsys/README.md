@@ -4,7 +4,7 @@ The DECSYS Survey Platform aims to be a flexible cross-platform web-based survey
 
 It is used to showcase the DECSYS Ellipse Rating Scale.
 
-# 🎉 Running the Survey Platform
+# 🏃‍♀️ Running the Survey Platform
 
 - For Windows 7+ (64-bit)
   1. Download a `win-x64` asset from **Releases**
@@ -23,6 +23,12 @@ It is used to showcase the DECSYS Ellipse Rating Scale.
        - Optionally pass server urls argument to specify a port, otherwise `5000` will be used.
          - e.g. `dotnet decsys.dll --server.urls http://0.0.0.0:80`
   1. Open a web browser and navigate to `localhost`
+
+## Running as a service
+
+When hosting Decsys on a remote server, you may want to install it as a service, if you don't put it behind a reverse proxy.
+
+For Windows, we recommend using [NSSM](https://nssm.cc/) to do so.
 
 ### Troubleshooting
 
