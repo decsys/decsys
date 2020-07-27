@@ -1,7 +1,9 @@
+import React from "react";
+
 // https://reactsvgicons.com/ionicons
 // checkbox-outline
-export const icon = (props) => (
-  <svg viewBox="0 0 512 512" fill="currentColor" {...props}>
+export const Icon = (p) => (
+  <svg viewBox="0 0 512 512" fill="currentColor" {...p}>
     <path
       fill="none"
       stroke="currentColor"

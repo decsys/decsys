@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { text, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
+import { Icon } from "./metadata";
 
 export default {
   title: "Free Text Response",
@@ -126,3 +127,5 @@ export const DynamicDataAutoRefresh = () => (
 );
 
 export const Stats = stats(ResponseItem.stats({}, dummyResults));
+
+export const MetadataIcon = () => <Icon width="24px" />;
