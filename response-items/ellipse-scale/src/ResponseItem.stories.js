@@ -1,11 +1,11 @@
 import React from "react";
 import { action } from "@storybook/addon-actions";
-import Component from "./Component";
+import ResponseItem from "./ResponseItem";
 import { Icon } from "./metadata";
 
 export default {
   title: "Ellipse Scale Response",
-  component: Component,
+  component: ResponseItem,
 };
 
 const props = {
@@ -62,19 +62,25 @@ const stats = (stats) => () => (
   </div>
 );
 
-const actions = {
+const _context = {
   setNextEnabled: action("Next button toggled"),
   logResults: action("Results logged"),
 };
 
-export const Basic = () => <Component {...actions} />;
+export const Basic = () => <ResponseItem _context={_context} />;
 
 export const NumericVisualisation = visualization(
-  Component.stats({ ...Component.defaultProps, ...props }, dummyEllipseResults)
+  ResponseItem.stats(
+    { ...ResponseItem.defaultProps, ...props },
+    dummyEllipseResults
+  )
 );
 
 export const NumericStats = stats(
-  Component.stats({ ...Component.defaultProps, ...props }, dummyEllipseResults)
+  ResponseItem.stats(
+    { ...ResponseItem.defaultProps, ...props },
+    dummyEllipseResults
+  )
 );
 
 export const MetadataIcon = () => <Icon width="24px" />;

@@ -1,10 +1,10 @@
-import { icon } from "./metadata";
+import { Icon } from "./metadata";
 import Component from "./Component";
-import { version, componentName } from "../package.json";
+import { version, responseItemName } from "../package.json";
 
 // Set Component Metadata
-Component.icon = icon;
-Component.displayName = componentName;
+Component.icon = Icon;
+Component.displayName = responseItemName;
 Component.version = version;
 
 export default Component;

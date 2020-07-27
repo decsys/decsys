@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { EllipseScale } from "@decsys/rating-scales";
-import * as props from "./Component.props";
-import stats from "./Component.stats";
+import EllipseScale from "@decsys/rating-scales/esm/ellipse";
+import * as props from "./ResponseItem.props";
+import stats from "./ResponseItem.stats";
 
 const Component = ({
   barLeftMargin,
@@ -33,8 +33,7 @@ const Component = ({
   scaleSubdivisionHeight,
   scaleMarkers,
   scaleSubdivisions,
-  setNextEnabled,
-  logResults,
+  _context: { setNextEnabled, logResults },
 }) => {
   const handleEllipseCompleted = (e) => {
     logResults(e.detail);
