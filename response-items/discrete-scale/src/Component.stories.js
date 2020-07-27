@@ -15,7 +15,7 @@ const visProps = {
       radio7: 7,
       radio8: 8,
       radio9: 9,
-      radio10: 10
+      radio10: 10,
     },
     results: [
       { index: 0, value: 2 },
@@ -26,8 +26,8 @@ const visProps = {
       { index: 4, value: 9 },
       { index: 4, value: 9 },
       { index: 0, value: 2 },
-      { index: 4, value: 9 }
-    ]
+      { index: 4, value: 9 },
+    ],
   },
   mixed: {
     params: {
@@ -36,7 +36,7 @@ const visProps = {
       radio3: 3,
       radio4: "Hllo",
       radio5: true,
-      radio6: "Other"
+      radio6: "Other",
     },
     results: [
       { index: 0, value: "Hello" },
@@ -47,18 +47,18 @@ const visProps = {
       { index: 0, value: "Hello" },
       { index: 1, value: "Goodbye" },
       { index: 4, value: true },
-      { index: 5, value: "Other" }
-    ]
-  }
+      { index: 5, value: "Other" },
+    ],
+  },
 };
 
-const visualization = stats => () => (
+const visualization = (stats) => () => (
   <div style={{ width: "40%" }}>{stats.visualizations[0].component}</div>
 );
 
-const stats = stats => () => (
+const stats = (stats) => () => (
   <div>
-    {Object.keys(stats.stats).map(x => (
+    {Object.keys(stats.stats).map((x) => (
       <div key={x}>
         <h4>{x}</h4>
         <p>{stats.stats[x]}</p>
@@ -69,7 +69,7 @@ const stats = stats => () => (
 
 const actions = {
   setNextEnabled: action("Next button toggled"),
-  logResults: action("Results logged")
+  logResults: action("Results logged"),
 };
 
 storiesOf("Component", module)

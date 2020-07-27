@@ -22,7 +22,7 @@ const Component = ({
 }) => {
   const radioParams = getRadioParams(p);
 
-  const handleDiscreteSelected = e => {
+  const handleDiscreteSelected = (e) => {
     logResults(e.detail);
     setNextEnabled(true);
   };
@@ -43,7 +43,7 @@ const Component = ({
         rightMargin: `${barRightMargin}%`,
         topMargin: `${barTopMargin}%`,
         barColor,
-        thickness: `${barThickness}px`
+        thickness: `${barThickness}px`,
       }}
       radioOptions={{
         labelColor,
@@ -51,7 +51,7 @@ const Component = ({
         fontSize,
         labelAlignment,
         initialIndex,
-        initialValue
+        initialValue,
       }}
       radios={radios}
       frameHeight="300px"

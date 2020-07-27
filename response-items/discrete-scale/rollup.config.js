@@ -29,8 +29,8 @@ export default {
       "react-dom": "ReactDOM",
       "prop-types": "PropTypes",
       victory: "Victory",
-      mathjs: "math"
-    }
+      mathjs: "math",
+    },
   },
   external: [
     "react",
@@ -38,11 +38,11 @@ export default {
     "react-dom",
     "prop-types",
     "victory",
-    "mathjs"
+    "mathjs",
   ],
   plugins: [
     replace({
-      "process.env.NODE_ENV": JSON.stringify("production")
+      "process.env.NODE_ENV": JSON.stringify("production"),
     }),
     babel({
       exclude: "node_modules/**",
@@ -51,15 +51,15 @@ export default {
           "@babel/preset-env",
           {
             targets: ">0.2%, not dead, not ie <= 11, not op_mini all",
-            modules: false
-          }
+            modules: false,
+          },
         ],
-        "@babel/preset-react"
-      ]
+        "@babel/preset-react",
+      ],
     }),
     resolve({ preferBuiltins: false }),
     cjs(),
     json(),
-    terser()
-  ]
+    terser(),
+  ],
 };

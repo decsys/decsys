@@ -37,7 +37,7 @@ const params = {
     "Label Alignment",
     ["above", "below"],
     "below"
-  )
+  ),
 };
 
 // Specify PropTypes for non-Configurable Props
@@ -45,7 +45,7 @@ const staticPropTypes = {
   initialIndex: PropTypes.number,
   initialValue: PropTypes.string,
   logResults: PropTypes.func.isRequired,
-  setNextEnabled: PropTypes.func.isRequired
+  setNextEnabled: PropTypes.func.isRequired,
 };
 
 // Create merged propTypes, defaultProps

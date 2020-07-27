@@ -4,7 +4,7 @@
  * that we don't need, like `logEvent` or other API methods)
  * @param {*} p props including radio params
  */
-export const getRadioParams = p => {
+export const getRadioParams = (p) => {
   return Object.keys(p).reduce((acc, key) => {
     if (key.includes("radio")) acc[key] = p[key];
     return acc;
@@ -17,7 +17,7 @@ export const getRadioParams = p => {
  * `[[primary label], [secondary label], ...]`
  * @param {*} radioParams
  */
-export const getRadios = radioParams => {
+export const getRadios = (radioParams) => {
   return Object.keys(radioParams)
     .sort((a, b) => a.match(/\d+/) - b.match(/\d+/)) // guarantee ascending numeric order
     .reduce((acc, key) => {

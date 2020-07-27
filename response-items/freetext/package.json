@@ -15,7 +15,7 @@
   },
   "peerDependencies": {
     "@chakra-ui/core": "1.0.0-next.6",
-    "mathjs": "~5",
+    "mathjs": "~7",
     "prop-types": "~15",
     "react": "~16",
     "react-wordcloud": "~1"

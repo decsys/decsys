@@ -7,8 +7,8 @@ const Visualization = ({ resultValues, radioValues }) => {
     return agg;
   }, {});
 
-  const counts = Object.keys(aggregate).map(v => aggregate[v]);
-  const data = radioValues.map(x => ({ x, y: aggregate[x] || 0 }));
+  const counts = Object.keys(aggregate).map((v) => aggregate[v]);
+  const data = radioValues.map((x) => ({ x, y: aggregate[x] || 0 }));
 
   return (
     <VictoryChart domainPadding={20}>
@@ -16,9 +16,12 @@ const Visualization = ({ resultValues, radioValues }) => {
         label="Participants"
         dependentAxis
         tickCount={Math.max(...counts)}
-        tickFormat={x => parseInt(x).toString()}
+        tickFormat={(x) => parseInt(x).toString()}
       />
-      <VictoryAxis label="Discrete Value" tickValues={radioValues.map(x => x.toString())} />
+      <VictoryAxis
+        label="Discrete Value"
+        tickValues={radioValues.map((x) => x.toString())}
+      />
       <VictoryBar data={data} />
     </VictoryChart>
   );
