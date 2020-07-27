@@ -1,4 +1,4 @@
-﻿using Decsys.Data.Entities;
+﻿using Decsys.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace Decsys.Repositories.Contracts
         Task<int> Import(Survey survey, List<(string filename, byte[] data)> images);
         void Delete(int id);
         void EditName(int id, string name);
-        void Configure(int id, Models.ConfigureSurveyModel config);
+        void Configure(int id, ConfigureSurveyModel config);
 
 
     }

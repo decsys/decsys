@@ -1,5 +1,5 @@
 ﻿using System;
-using Decsys.Data.Entities;
+using Decsys.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
