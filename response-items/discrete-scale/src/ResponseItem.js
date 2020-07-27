@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import * as props from "./Component.props";
+import * as props from "./ResponseItem.props";
 import DiscreteScale from "@decsys/rating-scales/esm/discrete";
-import stats from "./Component.stats";
+import stats from "./ResponseItem.stats";
 import { getRadios, getRadioParams } from "./utils/radio-params";
 
-const Component = ({
+const ResponseItem = ({
   barLeftMargin,
   barRightMargin,
   barTopMargin,
@@ -16,8 +16,7 @@ const Component = ({
   labelAlignment,
   initialIndex,
   initialValue,
-  logResults,
-  setNextEnabled,
+  _context: { logResults, setNextEnabled },
   ...p
 }) => {
   const radioParams = getRadioParams(p);
@@ -59,9 +58,9 @@ const Component = ({
   );
 };
 
-Component.params = props.params;
-Component.propTypes = props.propTypes;
-Component.defaultProps = props.defaultProps;
-Component.stats = stats;
+ResponseItem.params = props.params;
+ResponseItem.propTypes = props.propTypes;
+ResponseItem.defaultProps = props.defaultProps;
+ResponseItem.stats = stats;
 
-export default Component;
+export default ResponseItem;

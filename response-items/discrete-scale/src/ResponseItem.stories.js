@@ -1,7 +1,11 @@
 import React from "react";
-import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import Component from "./Component";
+import ResponseItem from "./ResponseItem";
+
+export default {
+  title: "Discrete Scale Response",
+  component: ResponseItem,
+};
 
 const visProps = {
   numbers: {
@@ -67,45 +71,38 @@ const stats = (stats) => () => (
   </div>
 );
 
-const actions = {
+const _context = {
   setNextEnabled: action("Next button toggled"),
   logResults: action("Results logged"),
 };
 
-storiesOf("Component", module)
-  .add("Default", () => (
-    <Component
-      radio1="1"
-      radio2="2"
-      radio3="3"
-      radio3Secondary="" //override defaults; this is what the platform does anyway
-      radio4="4"
-      radio5="5"
-      radio5Secondary="High"
-      barLeftMargin={10}
-      barTopMargin={50}
-      barRightMargin={10}
-      barThickness={8}
-      {...actions}
-    />
-  ))
-  .add(
-    "Numeric Visualisation",
-    visualization(
-      Component.stats(visProps.numbers.params, visProps.numbers.results)
-    )
-  )
-  .add(
-    "Numeric stats",
-    stats(Component.stats(visProps.numbers.params, visProps.numbers.results))
-  )
-  .add(
-    "Mixed value Visualisation",
-    visualization(
-      Component.stats(visProps.mixed.params, visProps.mixed.results)
-    )
-  )
-  .add(
-    "Mixed value stats",
-    stats(Component.stats(visProps.mixed.params, visProps.mixed.results))
-  );
+export const Basic = () => (
+  <ResponseItem
+    radio1="1"
+    radio2="2"
+    radio3="3"
+    radio3Secondary="" //override defaults; this is what the platform does anyway
+    radio4="4"
+    radio5="5"
+    radio5Secondary="High"
+    barLeftMargin={10}
+    barTopMargin={50}
+    barRightMargin={10}
+    barThickness={8}
+    _context={_context}
+  />
+);
+
+export const NumericVisualisation = visualization(
+  ResponseItem.stats(visProps.numbers.params, visProps.numbers.results)
+);
+export const NumericStats = stats(
+  ResponseItem.stats(visProps.numbers.params, visProps.numbers.results)
+);
+
+export const MixedValueVisualisation = visualization(
+  ResponseItem.stats(visProps.mixed.params, visProps.mixed.results)
+);
+export const MixedValueStats = stats(
+  ResponseItem.stats(visProps.mixed.params, visProps.mixed.results)
+);

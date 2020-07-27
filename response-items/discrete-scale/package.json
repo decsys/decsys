@@ -1,6 +1,6 @@
 {
   "name": "@decsys/discrete-scale-response",
-  "componentName": "Discrete Scale",
+  "responseItemName": "Discrete Scale",
   "version": "2.0.0-alpha.1",
   "description": "The Discrete Scale Page Response Item for the DECSYS Survey Platform",
   "private": true,
