@@ -9,7 +9,7 @@ export default {
   component: ResponseItem,
 };
 
-const actions = {
+const _context = {
   logResults: action("Results logged"),
   setNextEnabled: action("Next button enabled"),
 };
@@ -48,7 +48,7 @@ const options = () => {
 };
 
 const props = () => {
-  return { ...actions, ...options(), ...styles() };
+  return { _context, ...options(), ...styles() };
 };
 
 export const WithKnobs = () => {

@@ -7,8 +7,7 @@ import { filterOptions } from "./utils/option-params";
 
 // Main Component
 const ResponseItem = ({
-  logResults,
-  setNextEnabled,
+  _context: { logResults, setNextEnabled },
   dropDown,
   width,
   alignment,
