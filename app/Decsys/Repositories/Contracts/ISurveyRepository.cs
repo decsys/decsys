@@ -15,10 +15,10 @@ namespace Decsys.Repositories.Contracts
         IEnumerable<SurveySummary> List();
         int Create(string? name = null);
         int Duplicate(int id);
-        Task<int> Import(Survey survey, List<(string filename, byte[] data)> images);
+        int Import(Survey survey);
         void Delete(int id);
         void EditName(int id, string name);
-        void Configure(int id, ConfigureSurveyModel config);
+        void Update(Survey survey);
 
 
     }

@@ -28,19 +28,36 @@ namespace Decsys.Services
             _images = images;
         }
 
+        /// <summary>
+        /// Get a Survey by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to get.</param>
+        /// <returns>The requested Survey, or null if not found.</returns>
         public Models.Survey Get(int id) => _surveys.Get(id);
 
-        public IEnumerable<Models.SurveySummary> List()
-        {
-            return _surveys.List();
-        }
+        // TODO: PAGINATE?
+        /// <summary>
+        /// List summary data for all Surveys.
+        /// </summary>
+        /// <returns>All surveys summarised.</returns>
+        public IEnumerable<Models.SurveySummary> List() => _surveys.List();
 
-       
-        public int Create(string? name = null)
-        {
-            return _surveys.Create(name);
-        }
 
+        /// <summary>
+        /// Creates a Survey with the provided name (or the default one).
+        /// </summary>
+        /// <param name="name">The name to give the new Survey.</param>
+        /// <returns>The ID of the newly created Survey.</returns>
+
+        public int Create(string? name = null) => _surveys.Create(name);
+
+
+        /// <summary>
+        /// Duplicate a Survey, but not any of its Instance data.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to use a source.</param>
+        /// <returns>The ID of the newly created duplicate Survey.</returns>
+        /// <exception cref="KeyNotFoundException">Thrown if a Survey could not be found with the specified ID.</exception>
 
         public int Duplicate(int id)
         {
@@ -60,30 +77,36 @@ namespace Decsys.Services
 
         public async Task<int> Import(Models.Survey survey, List<(string filename, byte[] data)> images)
         {
+            int id = _surveys.Import(survey);
 
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys); //Done repo side?
-
-            survey.Id = 0; // Done service side?
-            var id = surveys.Insert(_mapper.Map<Survey>(survey)); //What does _mapper do?
-
-
-
-            if (images.Count > 0) //Service side?
+            if (images.Count > 0) 
                 await _images.Import(id, images).ConfigureAwait(false);
 
             return id;
         }
 
-        public void Delete(int id)
-        {
-            _surveys.Delete(id);
-        }
+        /// <summary>
+        /// Attempt to delete a Survey by ID.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to delete.</param>
+        public void Delete(int id) => _surveys.Delete(id);
 
 
-        public void EditName(int id, string name)
-        {
-            _surveys.EditName(id, name);
-        }
+        /// <summary>
+        /// Edit the name of a Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to edit.</param>
+        /// <param name="name">The new name for the Survey.</param>
+        /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
+
+        public void EditName(int id, string name) => _surveys.EditName(id, name);
+
+
+        /// <summary>
+        /// Configure a Survey for the next Instance run
+        /// </summary>
+        /// <param name="id">The ID of the Survey to Configure.</param>
+        /// <param name="config">A model of configuration values</param>
 
         public void Configure(int id, Models.ConfigureSurveyModel config)
         {
@@ -92,8 +115,8 @@ namespace Decsys.Services
             survey.OneTimeParticipants = config.OneTimeParticipants;
             survey.UseParticipantIdentifiers = config.UseParticipantIdentifiers;
             survey.ValidIdentifiers = config.ValidIdentifiers;
-            //Do I need to write Update method in repo? -> or would the configure method take suvery Model as a paramter? 
-            surveys.Update(survey);
+            _surveys.Update(survey);
+
         }
     }
 }

@@ -30,3 +30,4 @@ namespace Decsys.Repositories.Contracts
 
     }
 }
+  

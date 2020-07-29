@@ -9,10 +9,7 @@ using Decsys.Data.Entities;
 using Decsys.Mapping;
 using LiteDB;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using Decsys.Services;
 
 namespace Decsys.Repositories.LiteDb

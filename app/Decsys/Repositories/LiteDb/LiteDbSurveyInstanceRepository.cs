@@ -2,6 +2,7 @@
 using Decsys.Data;
 using Decsys.Data.Entities;
 using Decsys.Repositories.Contracts;
+using Decsys.Services;
 using LiteDB;
 using System;
 using System.Collections.Generic;
@@ -100,7 +101,7 @@ namespace Decsys.Repositories.LiteDb
                 foreach (var participant in instanceModel.Participants)
                 {
                     var log = _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(
-                    LiteDbParticipantEventLogRepository.GetCollectionName(participant.Id, _db.InstanceEventLogs(instanceId)));
+                    ParticipantEventService.GetCollectionName(participant.Id, _db.InstanceEventLogs(instanceId)));
 
                     foreach (var e in participant.Events)
                     {
