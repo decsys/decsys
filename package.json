@@ -7,67 +7,22 @@
   "author": "Jon Couldridge <jonathan.couldridge@nottingham.ac.uk>",
   "license": "AGPL-3.0-only",
   "private": true,
-  "scripts": {
-    "confirmation:build": "rollup -c ./response-items/confirmation/rollup.config.js",
-    "confirmation:storybook": "start-storybook -c ./response-items/confirmation/.storybook -p 6006",
-    "freetext:storybook": "start-storybook -c ./response-items/freetext/.storybook -p 6006",
-    "freetext:build": "rollup -c ./response-items/freetext/rollup.config.js",
-    "rating-scales:storybook": "start-storybook -c ./packages/rating-scales/.storybook -p 6006",
-    "rating-scales:build": "rollup -c ./packages/rating-scales/rollup.config.js",
-    "discrete-scale:storybook": "start-storybook -c ./response-items/discrete-scale/.storybook -p 6006",
-    "discrete-scale:build": "rollup -c ./response-items/discrete-scale/rollup.config.js",
-    "ellipse-scale:storybook": "start-storybook -c ./response-items/ellipse-scale/.storybook -p 6006",
-    "ellipse-scale:build": "rollup -c ./response-items/ellipse-scale/rollup.config.js"
-  },
+  "workspaces": [
+    "app/*",
+    "packages/*",
+    "response-items/*"
+  ],
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.10.5",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-react": "^7.10.4",
-    "@chakra-ui/core": "1.0.0-rc.0",
-    "@chakra-ui/theme": "1.0.0-rc.0",
-    "@emotion/babel-preset-css-prop": "^10.0.27",
-    "@rollup/plugin-babel": "^5.1.0",
-    "@rollup/plugin-commonjs": "^14.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@rollup/plugin-replace": "^2.3.3",
-    "@storybook/addon-actions": "^6.0.0-rc.14",
-    "@storybook/addon-backgrounds": "^6.0.0-rc.14",
-    "@storybook/addon-knobs": "^6.0.0-rc.14",
-    "@storybook/addon-links": "^6.0.0-rc.14",
-    "@storybook/addon-storysource": "^6.0.0-rc.14",
-    "@storybook/addons": "^6.0.0-rc.14",
-    "@storybook/preset-create-react-app": "^3.1.4",
-    "@storybook/react": "^6.0.0-rc.14",
-    "@storybook/source-loader": "^6.0.0-rc.14",
-    "babel-loader": "^8.1.0",
     "eslint": "^7.5.0",
     "eslint-plugin-react": "^7.18.3",
     "husky": "^4.2.5",
     "lerna": "^3.22.1",
-    "mathjs": "^7.1.0",
     "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-wordcloud": "1.0.3",
-    "rollup": "^2.22.2",
-    "rollup-plugin-terser": "^6.1.0",
-    "victory": "^35.0.5"
-  },
-  "dependencies": {
-    "@decsys/client-app": "file:app\\client-app",
-    "@decsys/confirmation-response": "file:response-items\\confirmation",
-    "@decsys/freetext-response": "file:response-items\\freetext",
-    "@decsys/discrete-scale-response": "file:response-items\\discrete-scale",
-    "@decsys/ellipse-scale-response": "file:response-items\\ellipse-scale",
-    "@decsys/param-types": "file:packages\\param-types",
-    "@decsys/rating-scales": "file:packages\\rating-scales"
+    "pretty-quick": "^2.0.1"
   }
 }

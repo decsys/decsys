@@ -26,6 +26,7 @@ export default {
     footer: footer,
     globals: {
       react: "React",
+      "react-dom": "ReactDOM",
       "prop-types": "PropTypes",
       "react-wordcloud": "reactWordCloud",
       mathjs: "math",
@@ -34,6 +35,7 @@ export default {
   },
   external: [
     "react",
+    "react-dom",
     "prop-types",
     "react-wordcloud",
     "mathjs",
@@ -55,7 +57,7 @@ export default {
         ],
         "@babel/preset-react",
       ],
-      babelHelpers: "bundled", // TODO: we can probably make this "runtime"
+      babelHelpers: "bundled",
     }),
     resolve({ preferBuiltins: false }),
     cjs(),

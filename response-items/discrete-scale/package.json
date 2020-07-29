@@ -10,15 +10,51 @@
     "type": "git",
     "url": "https://github.com/decsys/decsys.git"
   },
+  "scripts": {
+    "storybook": "start-storybook -p 6006",
+    "build": "rollup -c"
+  },
   "dependencies": {
     "@decsys/param-types": "file:../../packages/param-types",
     "@decsys/rating-scales": "file:../../packages/rating-scales"
   },
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "@chakra-ui/core": "1.0.0-rc.0",
+    "@chakra-ui/system": "1.0.0-rc.0",
+    "@chakra-ui/theme": "1.0.0-rc.0",
+    "@rollup/plugin-babel": "^5.1.0",
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@rollup/plugin-replace": "^2.3.3",
+    "@storybook/addon-actions": "^6.0.0-rc.15",
+    "@storybook/addon-backgrounds": "^6.0.0-rc.15",
+    "@storybook/addon-knobs": "^6.0.0-rc.15",
+    "@storybook/addon-links": "^6.0.0-rc.15",
+    "@storybook/addon-storysource": "^6.0.0-rc.15",
+    "@storybook/addons": "^6.0.0-rc.15",
+    "@storybook/react": "^6.0.0-rc.15",
+    "@storybook/source-loader": "^6.0.0-rc.15",
+    "babel-loader": "^8.1.0",
+    "core-js": "^3.6.5",
+    "mathjs": "^7.1.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "rollup": "^2.22.2",
+    "rollup-plugin-analyzer": "^3.3.0",
+    "rollup-plugin-terser": "^6.1.0",
+    "victory": "^35.0.6",
+    "webpack": "^4.44.0"
+  },
   "peerDependencies": {
-    "@chakra-ui/core": "^1.0.0-rc.0",
     "mathjs": "~7",
     "prop-types": "~15",
     "react": "~16",
+    "react-dom": "~16",
     "victory": "~35"
   }
 }

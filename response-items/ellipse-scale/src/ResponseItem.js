@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import EllipseScale from "@decsys/rating-scales/esm/ellipse";
+import EllipseScale from "@decsys/rating-scales/cjs/ellipse";
 import * as props from "./ResponseItem.props";
 import stats from "./ResponseItem.stats";
 
-const Component = ({
+const ResponseItem = ({
   barLeftMargin,
   barRightMargin,
   barTopMargin,
@@ -94,9 +94,9 @@ const Component = ({
   );
 };
 
-Component.params = props.params;
-Component.propTypes = props.propTypes;
-Component.defaultProps = props.defaultProps;
-Component.stats = stats;
+ResponseItem.params = props.params;
+ResponseItem.propTypes = props.propTypes;
+ResponseItem.defaultProps = props.defaultProps;
+ResponseItem.stats = stats;
 
-export default Component;
+export default ResponseItem;
