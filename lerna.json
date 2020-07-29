@@ -1,0 +1,4 @@
+{
+  "packages": ["packages/*", "response-items/*"],
+  "version": "independent"
+}

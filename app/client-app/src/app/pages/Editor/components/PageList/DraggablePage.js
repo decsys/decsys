@@ -5,6 +5,7 @@ import PageHeader from "./PageHeader";
 import DraggablePageItem, { PageItem } from "./DraggablePageItem";
 import { LoadingIndicator } from "components/core";
 import { usePageListContext } from "../../contexts/PageList";
+import { getPageResponseItem } from "services/page-items";
 
 const DroppableItemList = ({ page }) => {
   return (
@@ -37,9 +38,7 @@ const DroppableItemList = ({ page }) => {
         )}
       </Droppable>
 
-      <Flex ml={8} p={1}>
-        Response item
-      </Flex>
+      {!getPageResponseItem(page.components) && <PageItem />}
     </>
   );
 };
@@ -47,12 +46,10 @@ const DroppableItemList = ({ page }) => {
 const PlaceholderItemList = ({ page }) => {
   return (
     <>
-      {page.components.map((item, i) => (
+      {page.components.map((item) => (
         <PageItem key={item.id} item={item} />
       ))}
-      <Flex ml={8} p={1}>
-        Response item
-      </Flex>
+      {!getPageResponseItem(page.components) && <PageItem />}
     </>
   );
 };
