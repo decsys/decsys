@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD } from "constants/event-types";
@@ -26,10 +26,14 @@ const SurveyPage = ({
   page,
   lastPage,
   handleNextClick,
-  logEvent = () => {},
-  logResults = () => {},
+  logEvent,
+  logResults,
 }) => {
   // TODO: get log Actions from context?
+  // need to ensure this doesn't change often as an effect depends on it
+  const nop = useCallback(() => () => {}, []);
+  logEvent = logEvent || nop;
+  logResults = logResults || nop;
 
   const [nextEnabled, setNextEnabled] = useState(false);
 
@@ -38,6 +42,8 @@ const SurveyPage = ({
     // check if the page has any Response Items
     // and set Next Button appropriately
     if (!getPageResponseItem(page.components)) setNextEnabled(true);
+    else setNextEnabled(false);
+    console.log("effect");
   }, [page, logEvent]);
 
   const renderContext = {
