@@ -2539,7 +2539,6 @@ __metadata:
     victory: ^35.0.6
     webpack: ^4.44.0
   peerDependencies:
-    "@chakra-ui/core": ^1.0.0-rc.0
     mathjs: ~7
     prop-types: ~15
     react: ~16
@@ -2586,7 +2585,6 @@ __metadata:
     victory: ^35.0.6
     webpack: ^4.44.0
   peerDependencies:
-    "@chakra-ui/core": ^1.0.0-rc.0
     mathjs: ~7
     prop-types: ~15
     react: ~16
