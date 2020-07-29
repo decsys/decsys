@@ -6,11 +6,12 @@ import {
   Stack,
   Divider,
   useDisclosure,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/core";
 import { Link as RouterLink } from "@reach/router";
 import InstanceValidIdModal from "./InstanceValidIdModal";
 import { InstanceFriendlyIdProvider } from "../../contexts/InstanceFriendlyId";
-import Alert from "components/core/Alert";
 
 const ActiveInstanceLine = ({ friendlyId }) => {
   const instanceValidIdModal = useDisclosure();
@@ -29,7 +30,8 @@ const ActiveInstanceLine = ({ friendlyId }) => {
         </Link>
 
         {/* <Stack display={{ base: "none", lg: "inherit" }}> */}
-        <Alert hasIcon variant="left-accent" status="info" py={1}>
+        <Alert variant="left-accent" status="info" py={1}>
+          <AlertIcon />
           Remember to include your DECSYS server's address
         </Alert>
         {/* </Stack> */}

@@ -69,10 +69,10 @@
   </Target>
 
   <!-- Install npm packages at the top level of the monorepo -->
-  <Target Name="DebugRootNpmInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(RepoRoot)node_modules') ">
+  <!--<Target Name="DebugRootNpmInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(RepoRoot)node_modules') ">
     <Message Importance="high" Text="Restoring top level dependencies using 'npm'. This may take several minutes..." />
     <Exec WorkingDirectory="$(RepoRoot)" Command="npm i" />
-  </Target>
+  </Target>-->
 
   <!-- Install npm packages locally to the SPA (so react-scripts works) -->
   <Target Name="DebugLocalNpmInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaSource)node_modules') ">
