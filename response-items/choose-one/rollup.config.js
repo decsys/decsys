@@ -1,5 +1,5 @@
 import resolve from "@rollup/plugin-node-resolve";
-import cjs from "@rollup/plugin-commonjs";
+import cjs from "rollup-plugin-commonjs";
 import replace from "@rollup/plugin-replace";
 import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
@@ -23,19 +23,23 @@ export default {
     sourcemap: true,
     preferConst: true,
     compact: true,
-    footer: footer,
+    footer,
     globals: {
       react: "React",
       "react-dom": "ReactDOM",
       "prop-types": "PropTypes",
       "@emotion/core": "EmotionCore",
+      "@emotion/css": "EmotionCore.css",
     },
   },
-  external: ["react", "react-dom", "prop-types", "@emotion/core"],
+  external: [
+    "react",
+    "react-dom",
+    "prop-types",
+    "@emotion/core",
+    "@emotion/css",
+  ],
   plugins: [
-    replace({
-      "process.env.NODE_ENV": JSON.stringify("production"),
-    }),
     babel({
       exclude: "node_modules/**",
       presets: [
@@ -50,6 +54,9 @@ export default {
         "@emotion/babel-preset-css-prop",
       ],
       babelHelpers: "bundled",
+    }),
+    replace({
+      "process.env.NODE_ENV": JSON.stringify("production"),
     }),
     resolve({ preferBuiltins: false }),
     cjs(),
