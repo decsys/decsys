@@ -29,13 +29,7 @@ namespace Decsys.Services
             _images = images;
         }
 
-        /// <summary>
-        /// Create a new Component in a given Survey Page.
-        /// </summary>
-        /// <param name="id">The ID of the Survey the Page belongs to.</param>
-        /// <param name="pageId">The ID of the Page to create the new Component in.</param>
-        /// <param name="type">The type of the new Component.</param>
-        /// <exception cref="KeyNotFoundException">If the Survey or Page cannot be found.</exception>
+
         public Models.Component Create(int id, Guid pageId, string type)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
@@ -60,14 +54,6 @@ namespace Decsys.Services
             return _mapper.Map<Models.Component>(entity);
         } 
 
-        /// <summary>
-        /// Move a Component to a new position in the Component Order of a Page.
-        /// </summary>
-        /// <param name="id">The ID of the Survey the Page belongs to.</param>
-        /// <param name="pageId">The ID of the Page the Component belongs to.</param>
-        /// <param name="componentId">The ID of the Component to move.</param>
-        /// <param name="targetPosition">The new position in the order to put the Component at.</param>
-        /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
         public void Move(int id, Guid pageId, Guid componentId, int targetPosition)
         {
             if (targetPosition <= 0) targetPosition = 1; //silently fix this
@@ -112,14 +98,7 @@ namespace Decsys.Services
             surveys.Update(survey);
         }
 
-        /// <summary>
-        /// Clear a Parameter of a Component.
-        /// </summary>
-        /// <param name="id">The ID of the Survey the Page belongs to.</param>
-        /// <param name="pageId">The ID of the Page the Component belongs to.</param>
-        /// <param name="componentId">The ID of the Component to edit.</param>
-        /// <param name="paramKey">The Key of the Parameter value to clear.</param>
-        /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
+
         internal void ClearParam(int id, Guid pageId, Guid componentId, string paramKey)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
@@ -144,13 +123,7 @@ namespace Decsys.Services
             surveys.Update(survey);
         }
 
-        /// <summary>
-        /// Delete a Page from a Survey.
-        /// </summary>
-        /// <param name="id">The ID of the Survey the Page belongs to.</param>
-        /// <param name="pageId">The ID of the Page to delete the Component from.</param>
-        /// <param name="componentId">The ID of the Component.</param>
-        /// <returns>True if the deletion was successful, false if the Survey, Page or Component could not be found.</returns>
+
         public bool Delete(int id, Guid pageId, Guid componentId)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
@@ -176,14 +149,7 @@ namespace Decsys.Services
             return true;
         }
 
-        /// <summary>
-        /// Merge new Params into the Components's current Params property.
-        /// </summary>
-        /// <param name="id">The ID of the Survey the Page belongs to.</param>
-        /// <param name="pageId">The ID of the Page to edit the Component in.</param>
-        /// <param name="componentId">The ID of the Component to edit.</param>
-        /// <param name="componentParams">The Params object to merge.</param>
-        /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
+ 
         public void MergeParams(int id, Guid pageId, Guid componentId, JObject componentParams)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
@@ -208,13 +174,6 @@ namespace Decsys.Services
             surveys.Update(survey);
         }
 
-        /// <summary>
-        /// Duplicate a component in a Page
-        /// </summary>
-        /// <param name="id">The ID of the Survey the Page belongs to.</param>
-        /// <param name="pageId">The ID of the Page to duplicate the Component in.</param>
-        /// <param name="componentId">The ID of the Component to duplicate.</param>
-        /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
         public Models.Component Duplicate(int id, Guid pageId, Guid componentId)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);

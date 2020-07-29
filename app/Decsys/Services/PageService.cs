@@ -27,11 +27,7 @@ namespace Decsys.Services
             _images = images;
         }
 
-        /// <summary>
-        /// Create a new Page in a given Survey.
-        /// </summary>
-        /// <param name="id">The ID of the Survey to create the new Page in.</param>
-        /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
+
         public Models.Page Create(int id)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
@@ -51,13 +47,7 @@ namespace Decsys.Services
             return _mapper.Map<Models.Page>(entity);
         }
 
-        /// <summary>
-        /// Move a Page to a new position in the Page Order of a Survey.
-        /// </summary>
-        /// <param name="id">The ID of the Survey to move a Page in.</param>
-        /// <param name="pageId">The ID of the Page to move.</param>
-        /// <param name="targetPosition">The new position in the order to put the Page at.</param>
-        /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
+
         public void Move(int id, Guid pageId, int targetPosition)
         {
             if (targetPosition <= 0) targetPosition = 1; //silently fix this
@@ -97,12 +87,6 @@ namespace Decsys.Services
             surveys.Update(survey);
         }
 
-        /// <summary>
-        /// Delete a Page from a Survey.
-        /// </summary>
-        /// <param name="id">The ID of the Survey to remove the Page from.</param>
-        /// <param name="pageId">The ID of the Page.</param>
-        /// <returns>True if the deletion was successful, false if the Survey or Page could not be found.</returns>
         public bool Delete(int id, Guid pageId)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
@@ -175,14 +159,6 @@ namespace Decsys.Services
             return _mapper.Map<Models.Page>(dupe);
         }
 
-        /// <summary>
-        /// Set whether or not a Survey Page should have its order
-        /// randomised with other randomisble siblings, per Participant.
-        /// </summary>
-        /// <param name="id">The ID of the Survey to duplicate the Page in.</param>
-        /// <param name="pageId">The ID of the Page.</param>
-        /// <param name="randomize">True or false</param>
-        /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
         public void SetRandomized(int id, Guid pageId, bool randomize)
         {
             var surveys = _db.GetCollection<Survey>(Collections.Surveys);
