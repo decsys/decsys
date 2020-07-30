@@ -3,8 +3,10 @@ import { v4 as uuid } from "uuid";
 import {
   deleteSurveyPageItem,
   duplicateSurveyPageItem,
-  setSurveyPageItemParam
+  setSurveyPageItemParam,
+  setSurveyPageItemOrder,
 } from "api/page-items";
+import { addSurveyPageItem } from "api/pages";
 
 export default (
   surveyId,
@@ -13,7 +15,7 @@ export default (
   selectedPageItem,
   setSelectedPageItem
 ) => ({
-  duplicatePageItem: async itemId => {
+  duplicatePageItem: async (itemId) => {
     mutate(
       produce(({ pages }) => {
         const newId = uuid();
@@ -22,7 +24,7 @@ export default (
         page.components.splice(i + 1, 0, {
           ...page.components[i],
           id: newId,
-          isLoading: true
+          isLoading: true,
         });
       }),
       false
@@ -31,7 +33,7 @@ export default (
     mutate();
   },
 
-  deletePageItem: async itemId => {
+  deletePageItem: async (itemId) => {
     mutate(
       produce(({ pages }) => {
         const page = pages.find(({ id }) => id === pageId);
@@ -63,5 +65,32 @@ export default (
     );
     await setSurveyPageItemParam(surveyId, pageId, itemId, paramKey, value);
     mutate();
-  }
+  },
+  changePageResponseItem: async (itemId, type, order) => {
+    mutate(
+      produce(({ pages }) => {
+        const newId = uuid();
+        const page = pages.find(({ id }) => id === pageId);
+        const i = page.components.findIndex(({ id }) => id === itemId);
+        page.components[i] = {
+          id: newId,
+          type,
+          isLoading: true,
+          params: {},
+        };
+      }),
+      false
+    );
+
+    if (itemId) await deleteSurveyPageItem(surveyId, pageId, itemId);
+
+    if (type) {
+      const { data } = await addSurveyPageItem(surveyId, pageId, type);
+
+      if (itemId)
+        await setSurveyPageItemOrder(surveyId, pageId, data.id, order);
+    }
+
+    mutate();
+  },
 });

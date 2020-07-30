@@ -1,0 +1,28 @@
+{
+  "name": "decsys",
+  "version": "2.0.0",
+  "description": "The DECSYS Project main repository",
+  "main": "index.js",
+  "repository": "https://github.com/decsys/decsys.git",
+  "author": "Jon Couldridge <jonathan.couldridge@nottingham.ac.uk>",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "workspaces": [
+    "app/*",
+    "packages/*",
+    "response-items/*"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-plugin-react": "^7.18.3",
+    "husky": "^4.2.5",
+    "lerna": "^3.22.1",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1"
+  }
+}

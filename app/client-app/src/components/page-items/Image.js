@@ -1,9 +1,8 @@
 import React from "react";
-import ParamTypes, { buildPropTypes } from "@decsys/param-types";
-import {
-  propTypes as contextProps,
-  defaultProps as contextDefaults,
-} from "constants/param-types";
+import ParamTypes, {
+  buildPropTypes,
+  renderContextPropTypes,
+} from "@decsys/param-types";
 import { Image, Flex } from "@chakra-ui/core";
 import ImageParamsEditor from "./Image.ParamsEditor";
 
@@ -37,8 +36,7 @@ PageImage.params = {
 
 const { pt, defaultProps } = buildPropTypes(
   PageImage.params,
-  contextProps,
-  contextDefaults
+  renderContextPropTypes
 );
 PageImage.propTypes = pt;
 PageImage.defaultProps = defaultProps;

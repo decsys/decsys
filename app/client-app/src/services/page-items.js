@@ -4,7 +4,7 @@ export const builtInLookup = {
   heading: Heading,
   paragraph: Paragraph,
   image: Image,
-  spacer: Spacer
+  spacer: Spacer,
 };
 
 /**
@@ -13,10 +13,16 @@ export const builtInLookup = {
  * This holds true for the Survey Platform at the time of writing.
  * @param {*} components
  */
-export const getResponseComponent = components =>
-  components.reduce((_, c) => (isBuiltIn(c.type) ? null : c), null);
+export const getPageResponseItem = (pageItems) =>
+  pageItems.reduce(
+    (result, c) => result || (isBuiltIn(c.type) ? null : c),
+    null
+  );
 
-export const isBuiltIn = type => Object.keys(builtInLookup).includes(type);
+export const isBuiltIn = (type) => Object.keys(builtInLookup).includes(type);
 
-export const getComponent = type =>
+export const getComponent = (type) =>
   isBuiltIn(type) ? builtInLookup[type] : window.__DECSYS__.Components[type];
+
+export const listLoadedResponseItemTypes = () =>
+  Object.keys(window.__DECSYS__.Components);

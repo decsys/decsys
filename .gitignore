@@ -3,3 +3,21 @@
 
 # built docs output
 docs/site/
+
+# traditional npm
+node_modules
+
+# yarn 2
+.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+yarn-error.log
+
+# yarn 1 pnp
+.pnp/*
+
+# lerna
+lerna-debug.log

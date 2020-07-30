@@ -1,5 +1,6 @@
 ﻿ using Decsys.Models;
 using Decsys.Data.Entities;
+
 using LiteDB;
 using System;
 using System.Collections.Generic;
@@ -30,4 +31,4 @@ namespace Decsys.Repositories.Contracts
 
     }
 }
-  
+
