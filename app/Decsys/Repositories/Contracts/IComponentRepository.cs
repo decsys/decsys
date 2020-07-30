@@ -8,13 +8,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Decsys.Repositories.Contracts
 {
-    interface IComponentRepository
+    public interface IComponentRepository
     {
-        Component Create(int id, Guid pageId, string type);
-        void Move(int id, Guid pageId, Guid componentId, int targetPosition);
-        void ClearParam(int id, Guid pageId, Guid componentId, string paramKey);
-        bool Delete(int id, Guid pageId, Guid componentId);
-        void MergeParams(int id, Guid pageId, Guid componentId, JObject componentParams);
-        Component Duplicate(int id, Guid pageId, Guid componentId);
+        Data.Entities.Survey Get(int id);
+        void Update(Data.Entities.Survey survey);
     }
 }
