@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Decsys.Repositories.Contracts;
 
 using AutoMapper;
 
@@ -8,6 +9,7 @@ using Decsys.Data;
 using Decsys.Data.Entities;
 
 using LiteDB;
+using Decsys.Repositories.LiteDb;
 
 namespace Decsys.Services
 {
@@ -16,23 +18,28 @@ namespace Decsys.Services
     /// </summary>
     public class PageService
     {
-        private readonly LiteDatabase _db;
+        private readonly IPageRepository _pages;
         private readonly IMapper _mapper;
         private readonly ImageService _images;
+        
 
-        public PageService(LiteDbFactory db, IMapper mapper, ImageService images)
+        public PageService(IPageRepository pages, IMapper mapper, ImageService images)
         {
-            _db = db.Surveys;
+            _pages = pages;
             _mapper = mapper;
             _images = images;
         }
 
+        /// <summary>
+        /// Create a new Page in a given Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to create the new Page in.</param>
+        /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
+        /// Creates new Page in given survey - pass new survey entity to function from service layer
 
         public Models.Page Create(int id)
         {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-            var survey = surveys.FindById(id)
-                ?? throw new KeyNotFoundException();
+            var survey = _pages.Get(id);
 
             var pages = survey.Pages.OrderBy(x => x.Order).ToList();
 
@@ -42,18 +49,24 @@ namespace Decsys.Services
 
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
 
-            surveys.Update(survey);
+            _pages.Update(survey);
 
             return _mapper.Map<Models.Page>(entity);
         }
 
+        /// <summary>
+        /// Move a Page to a new position in the Page Order of a Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to move a Page in.</param>
+        /// <param name="pageId">The ID of the Page to move.</param>
+        /// <param name="targetPosition">The new position in the order to put the Page at.</param>
+        /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
 
         public void Move(int id, Guid pageId, int targetPosition)
         {
             if (targetPosition <= 0) targetPosition = 1; //silently fix this
 
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-            var survey = surveys.FindById(id);
+            var survey = _pages.Get(id);
             if (survey is null) throw new KeyNotFoundException("Survey could not be found.");
 
             var pages = survey.Pages.OrderBy(x => x.Order).ToList();
@@ -84,13 +97,19 @@ namespace Decsys.Services
             }
 
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            surveys.Update(survey);
+            _pages.Update(survey);
         }
+
+        /// <summary>
+        /// Delete a Page from a Survey.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to remove the Page from.</param>
+        /// <param name="pageId">The ID of the Page.</param>
+        /// <returns>True if the deletion was successful, false if the Survey or Page could not be found.</returns>
 
         public bool Delete(int id, Guid pageId)
         {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-            var survey = surveys.FindById(id);
+            var survey = _pages.Get(id);
             if (survey is null) return false;
 
             var pages = survey.Pages.OrderBy(x => x.Order).ToList();
@@ -105,7 +124,7 @@ namespace Decsys.Services
 
             pages.Remove(page);
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            surveys.Update(survey);
+            _pages.Update(survey);
 
             return true;
         }
@@ -119,9 +138,7 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
         public Models.Page Duplicate(int id, Guid pageId)
         {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-            var survey = surveys.FindById(id)
-                ?? throw new KeyNotFoundException("Survey could not be found.");
+            var survey = _pages.Get(id);
 
             var pages = survey.Pages.ToList();
             var iPage = pages.FindIndex(x => x.Id == pageId);
@@ -145,7 +162,7 @@ namespace Decsys.Services
             pages.Insert(iPage + 1, dupe);
 
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            surveys.Update(survey);
+            _pages.Update(survey);
 
             var srcComponents = page.Components.OrderBy(x => x.Order).ToList();
             var destComponents = dupe.Components.OrderBy(x => x.Order).ToList();
@@ -159,11 +176,19 @@ namespace Decsys.Services
             return _mapper.Map<Models.Page>(dupe);
         }
 
+
+        /// <summary>
+        /// Set whether or not a Survey Page should have its order
+        /// randomised with other randomisble siblings, per Participant.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to duplicate the Page in.</param>
+        /// <param name="pageId">The ID of the Page.</param>
+        /// <param name="randomize">True or false</param>
+        /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
+
         public void SetRandomized(int id, Guid pageId, bool randomize)
         {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-            var survey = surveys.FindById(id)
-                ?? throw new KeyNotFoundException("Survey could not be found.");
+            var survey = _pages.Get(id);
 
             var pages = survey.Pages.ToList();
             var page = pages.SingleOrDefault(x => x.Id == pageId)
@@ -173,7 +198,7 @@ namespace Decsys.Services
             pages = pages.Select(x => x.Id == page.Id ? page : x).ToList();
 
             survey.Pages = pages;
-            surveys.Update(survey);
+            _pages.Update(survey);
         }
     }
 }
