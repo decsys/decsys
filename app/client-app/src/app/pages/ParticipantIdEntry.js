@@ -6,7 +6,7 @@ import { FaList } from "react-icons/fa";
 import LightHeading from "components/core/LightHeading";
 import { useUsers } from "contexts/UsersContext";
 
-const ParticipantIdEntry = ({ combinedId, validIdentifiers }) => {
+const ParticipantIdEntry = ({ setUserId, combinedId, validIdentifiers }) => {
   const [id, setId] = useState();
   const [validationError, setValidationError] = useState("");
   const { users } = useUsers();
@@ -21,7 +21,7 @@ const ParticipantIdEntry = ({ combinedId, validIdentifiers }) => {
       return;
     }
     users.storeInstanceParticipantId(combinedId, id);
-    navigate(`/survey/${combinedId}`); // will this retrigger the id check?
+    setUserId(id); // this state change will re-render the survey page and re-check the id
   };
 
   return (

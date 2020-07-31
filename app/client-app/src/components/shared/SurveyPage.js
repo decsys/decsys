@@ -43,7 +43,6 @@ const SurveyPage = ({
     // and set Next Button appropriately
     if (!getPageResponseItem(page.components)) setNextEnabled(true);
     else setNextEnabled(false);
-    console.log("effect");
   }, [page, logEvent]);
 
   const renderContext = {

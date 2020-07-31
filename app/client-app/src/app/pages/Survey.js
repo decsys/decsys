@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
-import { navigate } from "@reach/router";
+import { navigate, redirectTo } from "@reach/router";
 import { decode } from "services/instance-id";
 import { useSurveyInstance } from "api/survey-instances";
 import Error from "./Error";
@@ -23,24 +23,11 @@ import Loading from "./Loading";
 import { routes, bootstrapSurvey } from "services/survey-bootstrap";
 import ParticipantIdEntry from "./ParticipantIdEntry";
 import ErrorBoundary from "components/ErrorBoundary";
+import SurveyNotFoundError, { errorCallToAction } from "./SurveyNotFoundError";
 
 //Contexts all the way down?
 var InstanceContext = createContext();
 const useInstance = () => useContext(InstanceContext);
-
-const errorCallToAction = {
-  label: "Try a different ID",
-  onClick: () => {
-    navigate("/survey");
-  },
-};
-
-const SurveyNotFoundError = () => (
-  <Error
-    message="We couldn't find that Survey. It may have closed already."
-    callToAction={errorCallToAction}
-  />
-);
 
 // Do all the data fetching and validation ahead of rendering the survey
 const SurveyBootstrapper = ({ id }) => {
@@ -79,21 +66,22 @@ const SurveyBootstrapper = ({ id }) => {
         <ParticipantIdEntry
           combinedId={id}
           validIdentifiers={instance.validIdentifiers}
+          setUserId={setUserId}
         />
       );
     case routes.SURVEY_COMPLETED:
-      return <div>You've already completed this survey!</div>;
+      return redirectTo(`/survey/${id}/complete`);
     default:
       return (
         <InstanceContext.Provider value={instance}>
-          <Survey userId={userId} />
+          <Survey combinedId={id} userId={userId} />
         </InstanceContext.Provider>
       );
   }
 };
 
 // TODO: move the callbacks out to static methods in the survey-bootstrap service
-const Survey = ({ userId }) => {
+const Survey = ({ combinedId, userId }) => {
   const instance = useInstance();
   const [pages, setPages] = useState([]);
 
@@ -161,7 +149,7 @@ const Survey = ({ userId }) => {
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
 
   const handleClick = () => {
-    if (lastPage) return navigate(-1); // TODO Complete
+    if (lastPage) return navigate(`/survey/${combinedId}/complete`);
     setPage(page + 1);
   };
 
