@@ -3,7 +3,7 @@
   "version": "2.0.0-alpha.1",
   "private": true,
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --no-cache",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

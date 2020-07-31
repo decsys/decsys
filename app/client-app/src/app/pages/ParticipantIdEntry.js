@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { navigate } from "@reach/router";
 import { Page } from "components/core";
 import { Flex, Icon, Input, Button, Alert, AlertIcon } from "@chakra-ui/core";
 import { FaList } from "react-icons/fa";
@@ -21,7 +20,6 @@ const ParticipantIdEntry = ({ setUserId, combinedId, validIdentifiers }) => {
       return;
     }
     users.storeInstanceParticipantId(combinedId, id);
-    setUserId(id); // this state change will re-render the survey page and re-check the id
   };
 
   return (

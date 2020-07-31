@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
-import { PAGE_LOAD } from "constants/event-types";
+import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
 import { Stack, Button, Flex } from "@chakra-ui/core";
 import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight } from "react-icons/fa";
@@ -13,7 +13,12 @@ const Body = ({ page, renderContext }) => {
     return (
       <PageItemRender
         key={item.id}
-        _context={{ ...renderContext, itemId: item.id }}
+        _context={{
+          ...renderContext,
+          itemId: item.id,
+          logResults: (payload) =>
+            renderContext.logEvent(item.id, COMPONENT_RESULTS, payload),
+        }}
         component={renderComponent}
         params={item.params}
       />
@@ -27,13 +32,10 @@ const SurveyPage = ({
   lastPage,
   handleNextClick,
   logEvent,
-  logResults,
 }) => {
-  // TODO: get log Actions from context?
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
   logEvent = logEvent || nop;
-  logResults = logResults || nop;
 
   const [nextEnabled, setNextEnabled] = useState(false);
 
@@ -50,7 +52,6 @@ const SurveyPage = ({
     surveyId,
     setNextEnabled,
     logEvent,
-    logResults,
   };
 
   return (

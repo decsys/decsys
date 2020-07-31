@@ -13,7 +13,7 @@ import { decode } from "services/instance-id";
 import { useSurveyInstance } from "api/survey-instances";
 import Error from "./Error";
 import { useUsers } from "contexts/UsersContext";
-import { PAGE_RANDOMIZE } from "constants/event-types";
+import { PAGE_RANDOMIZE, SURVEY_COMPLETE } from "constants/event-types";
 import {
   getLastLogEntry,
   logParticipantEvent,
@@ -35,18 +35,17 @@ const SurveyBootstrapper = ({ id }) => {
   const { user, users } = useUsers();
   const [route, setRoute] = useState();
   const [userId, setUserId] = useState();
+  const [progress, setProgress] = useState({});
 
   useLayoutEffect(() => {
-    (async () => {
-      const { route, userId } = await bootstrapSurvey(
-        id,
-        instance,
-        user,
-        users
-      );
-      setRoute(route);
-      setUserId(userId);
-    })();
+    bootstrapSurvey(id, instance, user, users).then(
+      ({ route, userId, progress }) => {
+        setRoute(route);
+        setUserId(userId);
+        setProgress(progress || {});
+        users.storeInstanceParticipantId(id, userId);
+      }
+    );
   }, [id, instance, user, users]);
 
   // render appropriately based on
@@ -66,22 +65,24 @@ const SurveyBootstrapper = ({ id }) => {
         <ParticipantIdEntry
           combinedId={id}
           validIdentifiers={instance.validIdentifiers}
-          setUserId={setUserId}
         />
       );
     case routes.SURVEY_COMPLETED:
-      return redirectTo(`/survey/${id}/complete`);
-    default:
+      navigate(`/survey/${id}/complete`);
+      return null;
+    case routes.BOOTSTRAP_COMPLETE:
       return (
         <InstanceContext.Provider value={instance}>
-          <Survey combinedId={id} userId={userId} />
+          <Survey combinedId={id} userId={userId} progressStatus={progress} />
         </InstanceContext.Provider>
       );
+    default:
+      return <Loading />;
   }
 };
 
 // TODO: move the callbacks out to static methods in the survey-bootstrap service
-const Survey = ({ combinedId, userId }) => {
+const Survey = ({ combinedId, userId, progressStatus }) => {
   const instance = useInstance();
   const [pages, setPages] = useState([]);
 
@@ -123,7 +124,7 @@ const Survey = ({ combinedId, userId }) => {
     return random == null ? await randomizePageOrder() : random.payload.order;
   }, [instance, userId, randomizePageOrder]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (userId) {
       // if the user or the instance are different
       // get page order
@@ -144,16 +145,43 @@ const Survey = ({ combinedId, userId }) => {
     [instance.id, userId]
   );
 
-  const [page, setPage] = useState(0);
+  // we set an initialPage value
+  // based on progressStatus provided to us
+  // about the current Participant ID
+  let initialPage;
+  if (progressStatus.completed && progressStatus.oneTimeParticipants)
+    initialPage = pages.length;
+  else if (progressStatus.inProgress)
+    initialPage = pages.findIndex(
+      (x) => x.id === progressStatus.lastPageLoaded
+    );
+  else initialPage = 0;
+
+  const [page, setPage] = useState(initialPage < 0 ? 0 : initialPage);
+
   const [lastPage, setLastPage] = useState(false);
-  useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
+  useEffect(() => {
+    if (pages.length) {
+      // check if we are beyond lastPage
+      // (e.g. resuming an already completed one time survey)
+      if (page >= pages.length) {
+        logEvent(instance.survey.id, SURVEY_COMPLETE, {});
+        navigate(`/survey/${combinedId}/complete`);
+        return;
+      }
+
+      // if no reason to navigate to the completion page,
+      // then do an ordinary lastPage check
+      setLastPage(page >= pages.length - 1);
+    }
+  }, [page, combinedId, logEvent, pages.length, instance.survey.id]);
 
   const handleClick = () => {
-    if (lastPage) return navigate(`/survey/${combinedId}/complete`);
+    // TODO confirm modal? if (lastPage)
     setPage(page + 1);
   };
 
-  if (!pages.length) return <Loading />;
+  if (!pages.length || !pages[page]) return <Loading />;
 
   return (
     <Page layout="survey">

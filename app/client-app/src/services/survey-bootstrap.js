@@ -58,6 +58,7 @@ export const routes = {
   SURVEY_EMPTY: 0,
   PARTICIPANT_ID_ENTRY: 1,
   SURVEY_COMPLETED: 2,
+  BOOTSTRAP_COMPLETE: 99,
 };
 
 /**
@@ -80,10 +81,7 @@ export const bootstrapSurvey = async (id, instance, user, users) => {
   if (!userId) {
     if (instance.useParticipantIdentifiers)
       return { route: routes.PARTICIPANT_ID_ENTRY };
-    else {
-      userId = uuid();
-      users.storeInstanceParticipantId(id, userId);
-    }
+    else userId = uuid();
   }
 
   // Get Progress for this user
@@ -104,8 +102,6 @@ export const bootstrapSurvey = async (id, instance, user, users) => {
         userId = uuid();
       }
 
-      users.storeInstanceParticipantId(id, userId);
-
       // reset progress to pretend they're new
       progress = {
         oneTimeParticipants: instance.oneTimeParticipants,
@@ -113,5 +109,5 @@ export const bootstrapSurvey = async (id, instance, user, users) => {
     }
   }
 
-  return { route: null, userId };
+  return { route: routes.BOOTSTRAP_COMPLETE, userId, progress };
 };
