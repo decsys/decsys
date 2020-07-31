@@ -20,7 +20,7 @@ const App = () => {
         <Router>
           <Root path="/" />
           <Admin path="admin/*" />
-          <Participant path="/*" />
+          <Participant path="/survey/*" />
           <Error message="404: Not Found" default />
         </Router>
       </LayoutProvider>

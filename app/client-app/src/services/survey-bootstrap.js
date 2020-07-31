@@ -62,7 +62,9 @@ export const routes = {
 
 /**
  * Attempt to bootstrap a Survey Instance for a Participant
- * @param {*} id
+ *
+ * This is where a LOT of the Participant magic happens
+ * @param {*} id combined SurveyId/InstanceId
  * @param {*} instance
  * @param {*} user
  * @param {*} users
