@@ -18,13 +18,13 @@ namespace Decsys.Services
     /// </summary>
     public class ComponentService
     {
-        private readonly IComponentRepository _components;
+        private readonly ISurveyRepository _surveys;
         private readonly IMapper _mapper;
         private readonly ImageService _images;
 
-        public ComponentService(IComponentRepository components, IMapper mapper, ImageService images)
+        public ComponentService(ISurveyRepository surveys, IMapper mapper, ImageService images)
         {
-            _components = components;
+            _surveys = surveys;
             _mapper = mapper;
             _images = images;
         }
@@ -38,24 +38,24 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">If the Survey or Page cannot be found.</exception>
         public Models.Component Create(int id, Guid pageId, string type)
         {
-            var survey = _components.Get(id);
+            var survey = _surveys.Get(id);
 
             var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
                 ?? throw new KeyNotFoundException(); ;
 
-            var entity = new Component(type);
+            var model = new Models.Component(type);
 
             var components = page.Components.OrderBy(x => x.Order).ToList();
 
-            components.Add(entity);
+            components.Add(model);
 
             page.Components = components.Select((x, i) => { x.Order = i + 1; return x; });
 
             survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
 
-            _components.Update(survey);
+            _surveys.Update(survey);
 
-            return _mapper.Map<Models.Component>(entity);
+            return _mapper.Map<Models.Component>(model);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Decsys.Services
         {
             if (targetPosition <= 0) targetPosition = 1; //silently fix this
 
-            var survey = _components.Get(id);
+            var survey = _surveys.Get(id);
             if (survey is null) throw new KeyNotFoundException("Survey could not be found.");
 
             var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
@@ -106,7 +106,7 @@ namespace Decsys.Services
             page.Components = components.Select((x, i) => { x.Order = i + 1; return x; });
 
             survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
-            _components.Update(survey);
+            _surveys.Update(survey);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
         internal void ClearParam(int id, Guid pageId, Guid componentId, string paramKey)
         {
-            var survey = _components.Get(id)
+            var survey = _surveys.Get(id)
                 ?? throw new KeyNotFoundException("Survey could not be found.");
 
             var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
@@ -132,12 +132,12 @@ namespace Decsys.Services
             var component = _mapper.Map<Models.Component>(entity);
             component.Params.Remove(paramKey);
 
-            components[components.IndexOf(entity)] = _mapper.Map<Component>(component);
+            components[components.IndexOf(entity)] = _mapper.Map<Models.Component>(component);
 
             page.Components = components;
 
             survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
-            _components.Update(survey);
+            _surveys.Update(survey);
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace Decsys.Services
         /// <returns>True if the deletion was successful, false if the Survey, Page or Component could not be found.</returns>
         public bool Delete(int id, Guid pageId, Guid componentId)
         {
-            var survey = _components.Get(id);
+            var survey = _surveys.Get(id);
             if (survey is null) return false;
 
             var page = survey.Pages.SingleOrDefault(x => x.Id == pageId);
@@ -166,7 +166,7 @@ namespace Decsys.Services
             page.Components = components.Select((x, i) => { x.Order = i + 1; return x; });
 
             survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
-            _components.Update(survey);
+            _surveys.Update(survey);
 
             return true;
         }
@@ -181,7 +181,7 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
         public void MergeParams(int id, Guid pageId, Guid componentId, JObject componentParams)
         {
-            var survey = _components.Get(id)
+            var survey = _surveys.Get(id)
                 ?? throw new KeyNotFoundException("Survey could not be found.");
 
             var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
@@ -194,12 +194,12 @@ namespace Decsys.Services
             var component = _mapper.Map<Models.Component>(entity);
             component.Params.Merge(componentParams);
 
-            components[components.IndexOf(entity)] = _mapper.Map<Component>(component);
+            components[components.IndexOf(entity)] = _mapper.Map<Models.Component>(component);
 
             page.Components = components;
 
             survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
-            _components.Update(survey);
+            _surveys.Update(survey);
         }
 
 
@@ -212,7 +212,7 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
         public Models.Component Duplicate(int id, Guid pageId, Guid componentId)
         {
-            var survey = _components.Get(id)
+            var survey = _surveys.Get(id)
                 ?? throw new KeyNotFoundException("Survey could not be found.");
 
             var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
@@ -224,7 +224,7 @@ namespace Decsys.Services
             var component = components[i];
 
             // manual deep copy
-            var dupe = new Component(component.Type)
+            var dupe = new Models.Component(component.Type)
             {
                 Id = Guid.NewGuid(),
                 Order = components.Count + 1,
@@ -237,7 +237,7 @@ namespace Decsys.Services
             page.Components = components.Select((x, i) => { x.Order = i + 1; return x; }); ;
 
             survey.Pages = survey.Pages.Select(x => x.Id == pageId ? page : x);
-            _components.Update(survey);
+            _surveys.Update(survey);
 
             return _mapper.Map<Models.Component>(dupe);
         }

@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Decsys.Repositories.LiteDb
 {
-    public class LiteDbComponentRepository : IComponentRepository
+    public class LiteDbComponentRepository 
     {
         private readonly LiteDatabase _db;
         private readonly IMapper _mapper;
@@ -24,17 +24,6 @@ namespace Decsys.Repositories.LiteDb
             _mapper = mapper;
             _images = images;
         }
-
-        public Data.Entities.Survey Get(int id) =>
-            _db.GetCollection<Data.Entities.Survey>(Collections.Surveys).FindById(id);
-
-
-        public void Update(Data.Entities.Survey survey)
-        {
-            var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
-
-            surveys.Update(survey);
-        } 
 
     }
 }
