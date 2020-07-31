@@ -72,9 +72,6 @@ namespace Decsys.Repositories.LiteDb
 
             var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
 
-            // delete images on disk for built-in image Page Items
-            _images.RemoveAllSurveyFiles(id);
-
             surveys.Delete(id);
         }
 

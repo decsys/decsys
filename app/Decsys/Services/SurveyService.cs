@@ -89,7 +89,13 @@ namespace Decsys.Services
         /// Attempt to delete a Survey by ID.
         /// </summary>
         /// <param name="id">The ID of the Survey to delete.</param>
-        public void Delete(int id) => _surveys.Delete(id);
+        public void Delete(int id)
+        {
+            // delete images on disk for built-in image Page Items
+            _images.RemoveAllSurveyFiles(id);
+            _surveys.Delete(id);
+        }
+        
 
 
         /// <summary>
