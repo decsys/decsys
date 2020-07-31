@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
-import { navigate, redirectTo } from "@reach/router";
+import { navigate } from "@reach/router";
 import { decode } from "services/instance-id";
 import { useSurveyInstance } from "api/survey-instances";
 import Error from "./Error";

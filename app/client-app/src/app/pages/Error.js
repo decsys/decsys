@@ -4,7 +4,7 @@ import { Flex } from "@chakra-ui/core";
 import Default from "app/layouts/Default";
 
 const Error = ({ splash, message, callToAction }) => (
-  <Default brandLink="-1">
+  <Default brandLink="">
     <Flex mt={5}>
       <EmptyState
         message={message}
