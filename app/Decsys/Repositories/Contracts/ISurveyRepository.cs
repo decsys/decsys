@@ -14,7 +14,6 @@ namespace Decsys.Repositories.Contracts
         Survey Get(int id);
         IEnumerable<SurveySummary> List();
         int Create(string? name = null);
-        int Duplicate(int id);
         int Import(Survey survey);
         void Delete(int id);
         void EditName(int id, string name);

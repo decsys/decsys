@@ -1,6 +1,7 @@
 using AutoMapper;
 using Decsys.Data;
 using Decsys.Data.Entities;
+using Decsys.Repositories.Contracts;
 using LiteDB;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,12 @@ namespace Decsys.Services
     // TODO: Doc Comments!
     public class SurveyInstanceService
     {
-        private readonly LiteDbFactory _db;
+        private readonly ISurveyInstanceRepository _surveyInstance;
         private readonly IMapper _mapper;
 
-        public SurveyInstanceService(LiteDbFactory db, IMapper mapper)
+        public SurveyInstanceService(ISurveyInstanceRepository surveyInstance, IMapper mapper)
         {
-            _db = db;
+            _surveyInstance = surveyInstance;
             _mapper = mapper;
         }
 

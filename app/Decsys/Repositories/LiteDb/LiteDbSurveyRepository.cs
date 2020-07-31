@@ -55,25 +55,6 @@ namespace Decsys.Repositories.LiteDb
         }
 
 
-
-        public int Duplicate(int id)
-        {
-            var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
-
-            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
-            var oldId = survey.Id;
-
-            survey.Id = 0;
-            survey.Name = $"{survey.Name} (Copy)";
-
-            var newId = surveys.Insert(survey);
-
-            _images.CopyAllSurveyFiles(oldId, newId);
-
-            return newId;
-
-        }
-
         public int Import(Models.Survey survey)
         {
             var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
