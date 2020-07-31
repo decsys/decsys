@@ -14,7 +14,7 @@ using LiteDB;
 
 namespace Decsys.Repositories.LiteDb
 {
-    public class LiteDbPageRepository : IPageRepository
+    public class LiteDbPageRepository
     {
         private readonly LiteDatabase _db;
         private readonly IMapper _mapper;
@@ -24,20 +24,7 @@ namespace Decsys.Repositories.LiteDb
             _db = db.Surveys;
             _mapper = mapper;
             _images = images;
-      
         }
-
-        public Data.Entities.Survey Get(int id) =>
-            _db.GetCollection<Data.Entities.Survey>(Collections.Surveys).FindById(id);
-
-
-        public void Update(Data.Entities.Survey survey) 
-        {
-            var surveys = _db.GetCollection<Data.Entities.Survey>(Collections.Surveys);
-
-            surveys.Update(survey);
-        }
-
         
     }
 }

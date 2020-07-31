@@ -26,7 +26,7 @@ namespace Decsys.Repositories.Contracts
         List<string> GetAllParticipantLogs(int instanceId);
 
         ParticipantResultsSummary ResultsSummary(int instanceId, string participantId);
-        ParticipantResultsSummary ParticipantResultsSummary(Data.Entities.SurveyInstance instance, string participantId);
+        ParticipantResultsSummary ParticipantResultsSummary(Models.SurveyInstance instance, string participantId);
 
     }
 }

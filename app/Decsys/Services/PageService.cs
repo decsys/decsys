@@ -18,14 +18,14 @@ namespace Decsys.Services
     /// </summary>
     public class PageService
     {
-        private readonly IPageRepository _pages;
+        private readonly ISurveyRepository _surveys;
         private readonly IMapper _mapper;
         private readonly ImageService _images;
         
 
-        public PageService(IPageRepository pages, IMapper mapper, ImageService images)
+        public PageService(ISurveyRepository surveys, IMapper mapper, ImageService images)
         {
-            _pages = pages;
+            _surveys = surveys;
             _mapper = mapper;
             _images = images;
         }
@@ -39,19 +39,19 @@ namespace Decsys.Services
 
         public Models.Page Create(int id)
         {
-            var survey = _pages.Get(id);
+            var survey = _surveys.Get(id);
 
             var pages = survey.Pages.OrderBy(x => x.Order).ToList();
 
-            var entity = _mapper.Map<Page>(new Page());
+            var model = _mapper.Map<Models.Page>(new Page());
 
-            pages.Add(entity);
+            pages.Add(model);
 
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
 
-            _pages.Update(survey);
+            _surveys.Update(survey);
 
-            return _mapper.Map<Models.Page>(entity);
+            return _mapper.Map<Models.Page>(model);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Decsys.Services
         {
             if (targetPosition <= 0) targetPosition = 1; //silently fix this
 
-            var survey = _pages.Get(id);
+            var survey = _surveys.Get(id);
             if (survey is null) throw new KeyNotFoundException("Survey could not be found.");
 
             var pages = survey.Pages.OrderBy(x => x.Order).ToList();
@@ -97,7 +97,7 @@ namespace Decsys.Services
             }
 
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            _pages.Update(survey);
+            _surveys.Update(survey);
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Decsys.Services
 
         public bool Delete(int id, Guid pageId)
         {
-            var survey = _pages.Get(id);
+            var survey = _surveys.Get(id);
             if (survey is null) return false;
 
             var pages = survey.Pages.OrderBy(x => x.Order).ToList();
@@ -124,7 +124,7 @@ namespace Decsys.Services
 
             pages.Remove(page);
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            _pages.Update(survey);
+            _surveys.Update(survey);
 
             return true;
         }
@@ -138,7 +138,7 @@ namespace Decsys.Services
         /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
         public Models.Page Duplicate(int id, Guid pageId)
         {
-            var survey = _pages.Get(id);
+            var survey = _surveys.Get(id);
 
             var pages = survey.Pages.ToList();
             var iPage = pages.FindIndex(x => x.Id == pageId);
@@ -146,23 +146,24 @@ namespace Decsys.Services
             var page = pages[iPage];
 
             // blah manual deep copy time, i guess
-            var components = page.Components.Select(x => new Component(x.Type)
+            var components = page.Components.Select(x => new Models.Component(x.Type)
             {
                 Id = Guid.NewGuid(),
                 Order = x.Order,
                 Params = x.Params
             }).ToList();
-            var dupe = new Page
+            var dupe = new Models.Page
             {
                 Id = Guid.NewGuid(),
                 Order = pages.Count + 1,
                 Components = components,
                 Randomize = page.Randomize
             };
+
             pages.Insert(iPage + 1, dupe);
 
             survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            _pages.Update(survey);
+            _surveys.Update(survey);
 
             var srcComponents = page.Components.OrderBy(x => x.Order).ToList();
             var destComponents = dupe.Components.OrderBy(x => x.Order).ToList();
@@ -188,7 +189,7 @@ namespace Decsys.Services
 
         public void SetRandomized(int id, Guid pageId, bool randomize)
         {
-            var survey = _pages.Get(id);
+            var survey = _surveys.Get(id);
 
             var pages = survey.Pages.ToList();
             var page = pages.SingleOrDefault(x => x.Id == pageId)
@@ -198,7 +199,7 @@ namespace Decsys.Services
             pages = pages.Select(x => x.Id == page.Id ? page : x).ToList();
 
             survey.Pages = pages;
-            _pages.Update(survey);
+            _surveys.Update(survey);
         }
     }
 }

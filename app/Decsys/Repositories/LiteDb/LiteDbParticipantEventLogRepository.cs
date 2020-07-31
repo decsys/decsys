@@ -244,7 +244,7 @@ namespace Decsys.Repositories.LiteDb
             return ParticipantResultsSummary(instance, participantId);
         }
 
-        public Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
+        public Models.ParticipantResultsSummary ParticipantResultsSummary(Models.SurveyInstance instance, string participantId)
         {
             var resultsSummary = new Models.ParticipantResultsSummary(participantId);
 

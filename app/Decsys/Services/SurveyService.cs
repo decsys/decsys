@@ -73,7 +73,7 @@ namespace Decsys.Services
 
             return newId;
         }
-
+         
 
         public async Task<int> Import(Models.Survey survey, List<(string filename, byte[] data)> images)
         {
