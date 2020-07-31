@@ -1,16 +1,28 @@
 import React, { useState } from "react";
 import { navigate } from "@reach/router";
 import { Page } from "components/core";
-import { Flex, Icon, Input, Button } from "@chakra-ui/core";
+import { Flex, Icon, Input, Button, Alert, AlertIcon } from "@chakra-ui/core";
 import { FaList } from "react-icons/fa";
 import LightHeading from "components/core/LightHeading";
+import { useUsers } from "contexts/UsersContext";
 
-const SurveyIdEntry = () => {
+const ParticipantIdEntry = ({ combinedId, validIdentifiers }) => {
   const [id, setId] = useState();
+  const [validationError, setValidationError] = useState("");
+  const { users } = useUsers();
 
   const handleChange = ({ target: { value } }) => setId(value);
 
-  const handleClick = () => navigate(`/survey/${id}`);
+  const handleClick = () => {
+    if (validIdentifiers.length > 0 && !validIdentifiers.includes(id)) {
+      setValidationError(
+        "The Participant ID entered was not accepted for accessing this Survey."
+      );
+      return;
+    }
+    users.storeInstanceParticipantId(combinedId, id);
+    navigate(`/survey/${combinedId}`); // will this retrigger the id check?
+  };
 
   return (
     <Page brandLink="">
@@ -21,12 +33,19 @@ const SurveyIdEntry = () => {
         justify="center"
         pt={100}
       >
+        {validationError && (
+          <Alert status="error">
+            <AlertIcon />
+            {validationError}
+          </Alert>
+        )}
+
         <Flex w="250px">
           <Icon as={FaList} boxSize="100%" />
         </Flex>
 
         <LightHeading as="h2" size="lg" mb={3}>
-          Please enter a Survey ID to participate
+          Please enter a Participant ID to participate
         </LightHeading>
         <Flex>
           <Input
@@ -44,4 +63,4 @@ const SurveyIdEntry = () => {
   );
 };
 
-export default SurveyIdEntry;
+export default ParticipantIdEntry;

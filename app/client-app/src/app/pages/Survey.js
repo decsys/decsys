@@ -20,48 +20,67 @@ import {
 } from "api/participant-event-logs";
 import { randomize } from "services/randomizer";
 import Loading from "./Loading";
-import useSWR from "swr";
 import { routes, bootstrapSurvey } from "services/survey-bootstrap";
+import ParticipantIdEntry from "./ParticipantIdEntry";
+import ErrorBoundary from "components/ErrorBoundary";
 
 //Contexts all the way down?
 var InstanceContext = createContext();
 const useInstance = () => useContext(InstanceContext);
 
+const errorCallToAction = {
+  label: "Try a different ID",
+  onClick: () => {
+    navigate("/survey");
+  },
+};
+
+const SurveyNotFoundError = () => (
+  <Error
+    message="We couldn't find that Survey. It may have closed already."
+    callToAction={errorCallToAction}
+  />
+);
+
+// Do all the data fetching and validation ahead of rendering the survey
 const SurveyBootstrapper = ({ id }) => {
   const { data: instance } = useSurveyInstance(...decode(id));
   const { user, users } = useUsers();
-  const {
-    data: { route, userId },
-  } = useSWR(
-    () => `surveyBootstrap_${id}`, // TODO: is this key good enough?
-    bootstrapSurvey(id, instance, user, users),
-    {
-      suspense: true,
-    }
-  );
+  const [route, setRoute] = useState();
+  const [userId, setUserId] = useState();
+
+  useLayoutEffect(() => {
+    (async () => {
+      const { route, userId } = await bootstrapSurvey(
+        id,
+        instance,
+        user,
+        users
+      );
+      setRoute(route);
+      setUserId(userId);
+    })();
+  }, [id, instance, user, users]);
 
   // render appropriately based on
   // the route arrived at during the above render
   switch (route) {
-    // Errors
     case routes.INSTANCE_404:
-      let errorMessage =
-        "We couldn't find that Survey. It may have closed already.";
-    case routes.SURVEY_EMPTY: // eslint-disable-line
-      errorMessage = "That Survey contains no pages.";
+      return <SurveyNotFoundError />;
+    case routes.SURVEY_EMPTY:
       return (
         <Error
-          message={errorMessage}
-          callToAction={{
-            label: "Try a different ID",
-            onClick: () => {
-              navigate("/survey");
-            },
-          }}
+          message={"That Survey contains no pages."}
+          callToAction={errorCallToAction}
         />
       );
     case routes.PARTICIPANT_ID_ENTRY:
-      return <div>Participant ID Entry Page</div>;
+      return (
+        <ParticipantIdEntry
+          combinedId={id}
+          validIdentifiers={instance.validIdentifiers}
+        />
+      );
     case routes.SURVEY_COMPLETED:
       return <div>You've already completed this survey!</div>;
     default:
@@ -73,6 +92,7 @@ const SurveyBootstrapper = ({ id }) => {
   }
 };
 
+// TODO: move the callbacks out to static methods in the survey-bootstrap service
 const Survey = ({ userId }) => {
   const instance = useInstance();
   const [pages, setPages] = useState([]);
@@ -160,4 +180,12 @@ const Survey = ({ userId }) => {
   );
 };
 
-export default SurveyBootstrapper;
+// Wrap everything in an error boundary,
+// to catch errors from getting the instance via SWR (404, 400...)
+const SurveyWrapper = ({ id }) => (
+  <ErrorBoundary fallback={<SurveyNotFoundError />}>
+    <SurveyBootstrapper id={id} />
+  </ErrorBoundary>
+);
+
+export default SurveyWrapper;

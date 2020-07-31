@@ -69,7 +69,7 @@ export const routes = {
  * @param {*} user
  * @param {*} users
  */
-export const bootstrapSurvey = (id, instance, user, users) => async () => {
+export const bootstrapSurvey = async (id, instance, user, users) => {
   //validate instance
   if (!instance || instance.closed) return { route: routes.INSTANCE_404 };
   if (!instance.survey.pages.length) return { route: routes.SURVEY_EMPTY };
