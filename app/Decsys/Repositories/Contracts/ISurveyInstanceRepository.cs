@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Decsys.Repositories.Contracts
 {
-    interface ISurveyInstanceRepository
+    public interface ISurveyInstanceRepository
     {
         int Create(int surveyId);
         SurveyInstance Get(int surveyId, int instanceId);

@@ -52,15 +52,6 @@ namespace Decsys.Repositories.LiteDb
            ?? throw new KeyNotFoundException(
                $"Couldn't find the requested logs collection (id: {collectionName}) for the specified Survey Instance (id: {instanceId})");
 
-        public IEnumerable<Models.ParticipantEvent> _List(int instanceId, string participantId)
-        {
-            var log = _db.InstanceEventLogs(instanceId)
-                .GetCollection<ParticipantEvent>(
-                    GetCollectionName(instanceId, participantId));
-
-            return _mapper.Map<IEnumerable<Models.ParticipantEvent>>(
-                log.FindAll().OrderBy(x => x.Timestamp));
-        }
 
         /// <summary>
         /// For a given Participant ID and Instance ID, get the next

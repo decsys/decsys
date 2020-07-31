@@ -15,7 +15,6 @@ namespace Decsys.Repositories.Contracts
         string GetCollectionName(string participantId, LiteDatabase db);
         string GetCollectionName(int instanceId, string participantId);
         string GetParticipantId(int instanceId, string participantId);
-        IEnumerable<Models.ParticipantEvent> _List(int instanceId, string participantId);
         string GetNextId(string participantId, int instanceId);
         IEnumerable<Models.ParticipantEvent> List(int instanceId, string participantId);
         SurveyInstanceResults<ParticipantEvents> Results(int instanceId);
