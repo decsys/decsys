@@ -6950,11 +6950,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ],
                   [
                     "react-table",
-                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:6.11.5",
+                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:7.3.3",
                   ],
                   [
                     "react-tooltip",
                     "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:4.2.7",
+                  ],
+                  [
+                    "react-visibility-sensor",
+                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:5.1.1",
                   ],
                   [
                     "react-wordcloud",
@@ -13779,23 +13783,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   "./.yarn/cache/@types-react-syntax-highlighter-npm-11.0.4-5f9af2517d-cbff39a7f4.zip/node_modules/@types/react-syntax-highlighter/",
                 packageDependencies: [
                   ["@types/react-syntax-highlighter", "npm:11.0.4"],
-                  ["@types/react", "npm:16.9.43"],
-                ],
-                linkType: "HARD",
-              },
-            ],
-          ],
-        ],
-        [
-          "@types/react-table",
-          [
-            [
-              "npm:6.8.7",
-              {
-                packageLocation:
-                  "./.yarn/cache/@types-react-table-npm-6.8.7-9b63439bbf-e1c707573e.zip/node_modules/@types/react-table/",
-                packageDependencies: [
-                  ["@types/react-table", "npm:6.8.7"],
                   ["@types/react", "npm:16.9.43"],
                 ],
                 linkType: "HARD",
@@ -38160,26 +38147,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "react-table",
           [
             [
-              "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:6.11.5",
+              "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:7.3.3",
               {
                 packageLocation:
-                  "./.yarn/$$virtual/react-table-virtual-dd04754f62/0/cache/react-table-npm-6.11.5-0cca7a8a50-f929e5b663.zip/node_modules/react-table/",
+                  "./.yarn/$$virtual/react-table-virtual-e593bb0844/0/cache/react-table-npm-7.3.3-833b1cbf89-1351957279.zip/node_modules/react-table/",
                 packageDependencies: [
                   [
                     "react-table",
-                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:6.11.5",
+                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:7.3.3",
                   ],
-                  ["@types/react-table", "npm:6.8.7"],
-                  ["classnames", "npm:2.2.6"],
-                  ["prop-types", "npm:15.7.2"],
                   ["react", "npm:16.13.1"],
-                  [
-                    "react-dom",
-                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:16.13.1",
-                  ],
-                  ["react-is", "npm:16.13.1"],
                 ],
-                packagePeers: ["prop-types", "react", "react-dom"],
+                packagePeers: ["react"],
                 linkType: "HARD",
               },
             ],
@@ -38282,6 +38261,32 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                   ["@babel/runtime", "npm:7.10.5"],
                   ["dom-helpers", "npm:5.1.4"],
                   ["loose-envify", "npm:1.4.0"],
+                  ["prop-types", "npm:15.7.2"],
+                  ["react", "npm:16.13.1"],
+                  [
+                    "react-dom",
+                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:16.13.1",
+                  ],
+                ],
+                packagePeers: ["react", "react-dom"],
+                linkType: "HARD",
+              },
+            ],
+          ],
+        ],
+        [
+          "react-visibility-sensor",
+          [
+            [
+              "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:5.1.1",
+              {
+                packageLocation:
+                  "./.yarn/$$virtual/react-visibility-sensor-virtual-6df8014f9e/0/cache/react-visibility-sensor-npm-5.1.1-7aa966cf7a-3243e89a49.zip/node_modules/react-visibility-sensor/",
+                packageDependencies: [
+                  [
+                    "react-visibility-sensor",
+                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:5.1.1",
+                  ],
                   ["prop-types", "npm:15.7.2"],
                   ["react", "npm:16.13.1"],
                   [

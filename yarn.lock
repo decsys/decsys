@@ -2449,8 +2449,9 @@ __metadata:
     react-navi: ^0.14.3
     react-onclickoutside: ^6.9.0
     react-scripts: ^3.4.1
-    react-table: ^6.11.5
+    react-table: ^7.3.3
     react-tooltip: ^4.2.6
+    react-visibility-sensor: ^5.1.1
     react-wordcloud: ^1.2.6
     styled-components: ^5.1.1
     styled-css-grid: ^1.2.1
@@ -5960,15 +5961,6 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: cbff39a7f480f19cbb497ad6eda8b829d016fe79300c241e0083d2ab2b5affd27c543457a34eeb505de797993aa995af0ee06e5b107c8c83cc73f048e0d54be5
-  languageName: node
-  linkType: hard
-
-"@types/react-table@npm:^6.8.5":
-  version: 6.8.7
-  resolution: "@types/react-table@npm:6.8.7"
-  dependencies:
-    "@types/react": "*"
-  checksum: e1c707573e6fe92dbc3b4a849c25786b82e93d20c0a9123846799f7294a8c4efc9e441ba316d5482954aea2f0658732a683a6ad55ad8db29cca3dbc80b1e7bd6
   languageName: node
   linkType: hard
 
@@ -20062,18 +20054,12 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"react-table@npm:^6.11.5":
-  version: 6.11.5
-  resolution: "react-table@npm:6.11.5"
-  dependencies:
-    "@types/react-table": ^6.8.5
-    classnames: ^2.2.5
-    react-is: ^16.8.1
+"react-table@npm:^7.3.3":
+  version: 7.3.3
+  resolution: "react-table@npm:7.3.3"
   peerDependencies:
-    prop-types: ^15.7.0
-    react: ^16.x.x
-    react-dom: ^16.x.x
-  checksum: f929e5b663f07e50357597f32331726a20f52a8d5c058bf61f3ad42f8db09036fb8d63487cd63a0b01bb71d7172a3e1a594fb0b756a793bba4080aec4cee607e
+    react: ^16.8.3
+  checksum: 1351957279834072ab1ff7229f17a56263b2fb5cac384bcaff94843f16c18a6fbffd0b27c259229b4466bea870b009335b3d2ef056c5777900f4c0b49acb0254
   languageName: node
   linkType: hard
 
@@ -20115,6 +20101,18 @@ fsevents@~2.1.2:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: e14446123f820e804335c64be5270333c29e8cfaa43dfc33387e132c5d521cf4a0a7c2408058a147b254ae82a6569f373394d83e977ef340d6937bc2f4ff7d6c
+  languageName: node
+  linkType: hard
+
+"react-visibility-sensor@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "react-visibility-sensor@npm:5.1.1"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ">=16.0.0"
+    react-dom: ">=16.0.0"
+  checksum: 3243e89a4931c5500d242aaf5d21b31fe68521325458a2e4532022ba4b8cff63203f563ac45d38795d5fcd59d7fc5dffc9d23e46a78fb7c15ca31cc41b6fd35f
   languageName: node
   linkType: hard
 

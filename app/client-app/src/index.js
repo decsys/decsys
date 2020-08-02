@@ -1,5 +1,3 @@
-import "react-table/react-table.css";
-
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 

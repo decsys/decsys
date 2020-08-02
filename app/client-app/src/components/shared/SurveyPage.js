@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
-import { Stack, Button, Flex } from "@chakra-ui/core";
+import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/core";
 import DefaultContainer from "./DefaultContainer";
-import { FaChevronRight } from "react-icons/fa";
+import { FaChevronRight, FaChevronDown } from "react-icons/fa";
+import VisibilitySensor from "react-visibility-sensor";
 
 const Body = ({ page, renderContext }) => {
   return page.components.map((item) => {
@@ -54,16 +55,44 @@ const SurveyPage = ({
     logEvent,
   };
 
+  const [isMore, setIsMore] = useState();
+  const handleBodyBottomVisibilityChange = (isVisible) => setIsMore(!isVisible);
+
   return (
     <>
-      <DefaultContainer>
-        <Stack>
-          <Body page={page} renderContext={renderContext} />
-        </Stack>
-      </DefaultContainer>
+      <Flex overflowY="auto" py={2}>
+        <DefaultContainer>
+          <Stack>
+            <Body page={page} renderContext={renderContext} />
+            <VisibilitySensor onChange={handleBodyBottomVisibilityChange}>
+              <div style={{ height: "1px" }} />
+            </VisibilitySensor>
+          </Stack>
+        </DefaultContainer>
+      </Flex>
 
-      <DefaultContainer>
-        <Flex justify="flex-end">
+      <Flex
+        w="100%"
+        zIndex={1}
+        boxShadow={
+          isMore
+            ? "0 -10px 10px -5px rgba(50,100,200,.5), 0 -1px 3px -5px rgba(50,100,200,.8)"
+            : "none"
+        }
+      >
+        <DefaultContainer
+          display="flex"
+          w="100%"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <div>
+            {isMore && (
+              <Badge>
+                Scroll down for more <Icon as={FaChevronDown} />
+              </Badge>
+            )}
+          </div>
           <Button
             size="lg"
             disabled={!nextEnabled}
@@ -73,8 +102,8 @@ const SurveyPage = ({
           >
             {lastPage ? "Finish" : "Next"}
           </Button>
-        </Flex>
-      </DefaultContainer>
+        </DefaultContainer>
+      </Flex>
     </>
   );
 };
