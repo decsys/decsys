@@ -1,13 +1,14 @@
 import { exportDateFormat } from "services/date-formats";
 import download from "downloadjs";
 import * as api from "api";
+import { parse } from "json2csv";
 
 /**
  * Helper for Client-Side file downloads
  */
 export const downloadFile = (data, filename, type = "application/json") => {
   const file = new Blob(data, {
-    type
+    type,
   });
   download(file, filename, type);
 };
@@ -46,4 +47,40 @@ export const surveyExport = async (id, name, type) => {
   const mime = "application/zip";
   const { data } = await api.getSurveyExport(id, type);
   return downloadFile(b64toByteArrays(data), `${filename}.zip`, mime);
+};
+
+export const getResultsCsvData = (results) => {
+  //figure out all the response columns we need
+  const responseColumns = results.participants.reduce(
+    (agg, p) => {
+      const responseColumns = p.responses.map((x) =>
+        Object.keys(x.response).map((r) => ({
+          label: `${x.responseType}_${r}`,
+          value: `responses.response.${r}`,
+        }))
+      );
+
+      responseColumns.forEach((response) => {
+        response.forEach((column) => {
+          if (!agg.lookup[column.value]) agg.columns.push(column);
+          agg.lookup[column.value] = true;
+        });
+      });
+      return agg;
+    },
+    { lookup: {}, columns: [] }
+  ).columns;
+  const data = parse(results.participants, {
+    fields: [
+      { label: "Participant", value: "id" },
+      { label: "Page", value: "responses.page" },
+      { label: "Order", value: "responses.order" },
+      { label: "Page Loaded", value: "responses.pageLoad" },
+      { label: "Response Type", value: "responses.responseType" },
+      { label: "Response Recorded", value: "responses.responseRecorded" },
+      ...responseColumns,
+    ],
+    unwind: "responses",
+  });
+  return data;
 };
