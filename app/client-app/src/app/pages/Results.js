@@ -150,7 +150,14 @@ const ResultsTable = ({ columns, data }) => {
   } = useTable({ columns, data });
 
   return (
-    <table {...getTableProps()}>
+    <table
+      css={{
+        tableLayout: "fixed",
+        width: "100%",
+        borderCollapse: "collapse",
+      }}
+      {...getTableProps()}
+    >
       <thead>
         {headerGroups.map((group) => (
           <tr {...group.getHeaderGroupProps()}>

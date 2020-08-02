@@ -86,7 +86,7 @@
     So this process appears more manual (but is automated in CI instead).
     
     The resulting publish steps are therefore:
-    1. `npm run build` in `$(SpaSource)`
+    1. `yarn build` in `$(SpaSource)`
     2. Copy the built output from `$(SpaSource)/build` to `$(SpaDist)`
          - in CI this looks like the artifact output from step 1
            being downloaded to $(SpaDist) in the working directory for step 3
