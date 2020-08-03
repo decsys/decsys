@@ -35,7 +35,6 @@ const capitalise = (s) => `${s[0].toUpperCase()}${s.substring(1)}`;
 const ItemIcon = ({ type }) => {
   const CustomIcon =
     builtInIcons[type] || getComponent(type)?.icon || FaQuestion;
-  //TODO: response item icons
 
   return (
     <Flex px={1} align="center">
@@ -136,6 +135,10 @@ export const PageItem = ({
 
   const { colorMode } = useColorMode();
   const selectStyle = {
+    light: { bg: "blue.300" },
+    dark: { bg: "blue.700" },
+  };
+  const hoverStyle = {
     light: { bg: "blue.200" },
     dark: { bg: "blue.700" },
   };
@@ -158,7 +161,7 @@ export const PageItem = ({
     <Grid
       ref={innerRef}
       bg={isDragging || isSelected ? selectStyle[colorMode].bg : "inherit"}
-      _hover={!item || isBusy ? {} : { ...selectStyle[colorMode] }}
+      _hover={!item || isBusy ? {} : { ...hoverStyle[colorMode] }}
       transition="background-color .1s ease"
       {...draggableProps}
       role="group"

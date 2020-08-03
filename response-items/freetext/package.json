@@ -15,7 +15,7 @@
     "build": "rollup -c"
   },
   "dependencies": {
-    "@decsys/param-types": "file:../../packages/param-types"
+    "@decsys/param-types": "2.0.0-alpha.1"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",

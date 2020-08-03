@@ -1,7 +1,7 @@
 import React from "react";
 import { Page, EmptyState } from "components/core";
 import SurveysList from "./components/SurveysList";
-import { useDisclosure, Box } from "@chakra-ui/core";
+import { useDisclosure, Box, Alert, AlertIcon } from "@chakra-ui/core";
 import PageHeader from "./components/PageHeader";
 import AddSurveyModal from "./components/AddSurveyModal";
 import { useSurveysList } from "api/surveys";
@@ -10,11 +10,11 @@ import { SurveyCardActionsProvider } from "./contexts/SurveyCardActions";
 import addSurveyActions from "./actions/addSurveyActions";
 import surveyCardActions from "./actions/surveyCardActions";
 import { FaList } from "react-icons/fa";
-import Alert from "components/core/Alert";
 
 const ShowSurveys = ({ surveys, actions }) => (
   <>
-    <Alert hasIcon>
+    <Alert>
+      <AlertIcon />
       Please don't forget to backup your surveys and results to an external
       source.
     </Alert>

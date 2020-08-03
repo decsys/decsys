@@ -53,6 +53,8 @@ namespace Decsys.Services
                 throw new KeyNotFoundException();
 
             var instance = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances)
+                .Include(x => x.Survey)
+                .Include(x => x.Survey.Pages)
                 .FindById(instanceId);
 
             if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();

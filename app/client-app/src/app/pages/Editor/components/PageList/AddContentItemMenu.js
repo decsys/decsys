@@ -4,7 +4,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Button,
   Icon,
   Tooltip,
 } from "@chakra-ui/core";
@@ -15,8 +14,8 @@ import {
   FaImage,
   FaArrowsAltV,
 } from "react-icons/fa";
-import { BsDot } from "react-icons/bs";
 import { usePageListContext } from "../../contexts/PageList";
+import { DotHoverIconButton } from "components/core";
 
 const AddContentItemMenu = ({ id }) => {
   const { addItemToPage } = usePageListContext();
@@ -34,19 +33,13 @@ const AddContentItemMenu = ({ id }) => {
         label="Add Page Content items to this page"
       >
         <MenuButton
-          as={Button}
+          as={DotHoverIconButton}
           p={0}
           variant="ghost"
           colorScheme="green"
           _focus={{}}
-        >
-          <Icon
-            display="none"
-            _groupHover={{ display: "inherit" }}
-            as={FaPlus}
-          />
-          <Icon _groupHover={{ display: "none" }} as={BsDot} />
-        </MenuButton>
+          icon={FaPlus}
+        />
       </Tooltip>
 
       <MenuList>

@@ -1,9 +1,10 @@
 import React from "react";
-import { EmptyState, Page } from "components/core";
+import { EmptyState } from "components/core";
 import { Flex } from "@chakra-ui/core";
+import Default from "app/layouts/Default";
 
 const Error = ({ splash, message, callToAction }) => (
-  <Page>
+  <Default brandLink="">
     <Flex mt={5}>
       <EmptyState
         message={message}
@@ -11,7 +12,7 @@ const Error = ({ splash, message, callToAction }) => (
         callToAction={callToAction}
       />
     </Flex>
-  </Page>
+  </Default>
 );
 
 export default Error;
