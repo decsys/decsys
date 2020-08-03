@@ -4,7 +4,7 @@
  * @param {boolean} [truthy] whether to look for truthy or falsey values. Defaults to truthy.
  */
 export const listMatchingKeys = (o, truthy = true) =>
-  Object.keys(o).filter(k => !!o[k] === truthy);
+  Object.keys(o).filter((k) => !!o[k] === truthy);
 
 /**
  * Reduce an array of objects to a keyed dictionary of those objects
@@ -26,3 +26,14 @@ export const toDictionary = (data, keyProp = "id") =>
     acc[datum[keyProp]] = datum;
     return acc;
   }, {});
+
+/**
+ * Is an Object empty?
+ * @param {Object} obj
+ */
+export const isEmpty = (obj) => {
+  for (var key in obj) {
+    if (obj.hasOwnProperty(key)) return false;
+  }
+  return true;
+};

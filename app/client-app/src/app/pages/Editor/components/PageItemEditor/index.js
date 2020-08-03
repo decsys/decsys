@@ -4,7 +4,7 @@ import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { usePageListContext } from "../../contexts/PageList";
 import { getComponent } from "services/page-items";
 import pageItemActions from "../../actions/pageItemActions";
-import { Flex, useColorMode } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/core";
 
 // TODO: Document this capability for components
 // with the api (props signature, _context etc...)
@@ -33,9 +33,6 @@ const PageItemCustomParamsEditor = ({
 };
 
 const PageItemEditor = () => {
-  const { colorMode } = useColorMode();
-  const bg = { light: "gray.100", dark: "gray.900" };
-
   const { pages, id, mutate } = useFetchSurvey();
   const { selectedPageItem, setSelectedPageItem } = usePageListContext();
 
@@ -62,7 +59,7 @@ const PageItemEditor = () => {
   };
 
   return (
-    <Flex align="flex-start" bg={bg[colorMode]} width="100%">
+    <Flex align="flex-start" width="100%">
       {component.paramsEditorComponent ? (
         // If there's a custom editor, use it
         <PageItemCustomParamsEditor

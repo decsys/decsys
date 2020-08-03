@@ -1,10 +1,9 @@
 import React, { Suspense } from "react";
 import { StandardModal, LoadingIndicator } from "components/core";
-import { Text, Flex, Textarea } from "@chakra-ui/core";
+import { Text, Flex, Textarea, Alert, AlertIcon } from "@chakra-ui/core";
 import { useSurveyInstance } from "api/survey-instances";
 import { useSurvey } from "../../../../contexts/Survey";
 import { useInstanceFriendlyId } from "../../contexts/InstanceFriendlyId";
-import Alert from "components/core/Alert";
 
 const BodyContent = () => {
   const survey = useSurvey();
@@ -32,7 +31,8 @@ const BodyContent = () => {
       />
     </Flex>
   ) : (
-    <Alert hasIcon status="info" width="100%">
+    <Alert status="info" width="100%">
+      <AlertIcon />
       <Text>
         No specific Participant Identifiers for Survey{" "}
         <Text as="span" fontWeight="bold">

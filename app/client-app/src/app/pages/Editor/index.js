@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Flex } from "@chakra-ui/core";
+import { Grid, Flex, useColorMode } from "@chakra-ui/core";
 import PageList from "./components/PageList";
 import EditorBar from "./components/EditorBar";
 import { Page, EmptyState } from "components/core";
@@ -36,6 +36,9 @@ const Editor = ({ id, navigate }) => {
     itemId: undefined,
   });
 
+  const { colorMode } = useColorMode();
+  const bg = { light: "gray.100", dark: "gray.900" };
+
   return (
     <Page layout={null}>
       <SurveyEditorContextProvider
@@ -67,7 +70,7 @@ const Editor = ({ id, navigate }) => {
               <Flex boxShadow="section-v" overflowY="auto" zIndex={1}>
                 <PagePreview />
               </Flex>
-              <Flex overflowY="auto">
+              <Flex overflowY="auto" bg={bg[colorMode]}>
                 <PageItemEditor />
               </Flex>
             </>

@@ -1,4 +1,6 @@
 {
-  "packages": ["packages/*", "response-items/*"],
-  "version": "independent"
+  "packages": ["packages/*", "response-items/*", "app/*"],
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true
 }

@@ -26,21 +26,23 @@ const input = {
 const entryFileNames = `[name].js`;
 
 export default [
+  // TODO: the browser bundle is broken due to the way we re-bundle @pixi ES bundles.
+  // I think it's plugin-commonjs's fault...
   // browser
-  {
-    input: bundleEntryPoint,
-    output: {
-      name: "DECSYS",
-      file: path.join(__dirname, pkg.browser),
-      format: "umd",
-      sourcemap: true,
-      globals: {
-        react: "React",
-      },
-    },
-    external: ["react"],
-    plugins: [...plugins, terser()],
-  },
+  // {
+  //   input: bundleEntryPoint,
+  //   output: {
+  //     name: "DECSYS",
+  //     file: path.join(__dirname, pkg.browser),
+  //     format: "umd",
+  //     sourcemap: true,
+  //     globals: {
+  //       react: "React",
+  //     },
+  //   },
+  //   external: ["react"],
+  //   plugins: [...plugins, terser()],
+  // },
   // commonjs, esm
   // TODO: the esm bundle is broken due to compose-react-refs. needs exploration. cjs is fine.
   {

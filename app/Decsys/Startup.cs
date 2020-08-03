@@ -1,9 +1,13 @@
 using AutoMapper;
+
 using ClacksMiddleware.Extensions;
+
 using Decsys.Auth;
 using Decsys.Data;
 using Decsys.Services;
+
 using LiteDB;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,10 +18,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
@@ -176,6 +182,7 @@ namespace Decsys
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "../client-app";
+                spa.Options.PackageManagerCommand = "yarn";
 
                 if (_env.IsDevelopment())
                     spa.UseReactDevelopmentServer(npmScript: "start");

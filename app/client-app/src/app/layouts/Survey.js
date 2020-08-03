@@ -5,7 +5,7 @@ import SurveyLayout from "./components/SurveyLayout";
 const Survey = ({ children }) => {
   return (
     <SurveyLayout>
-      <DefaultAppBar />
+      <DefaultAppBar brandLink="" />
       {children}
     </SurveyLayout>
   );

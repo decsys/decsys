@@ -1,10 +1,10 @@
-import "react-table/react-table.css";
-
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 
 import AppWrapper from "./AppWrapper";
 import Loading from "app/pages/Loading";
+import ErrorBoundary from "components/ErrorBoundary";
+import Error from "app/pages/Error";
 
 const root = document.getElementById("root");
 
@@ -18,7 +18,7 @@ ReactDOM.render(
 );
 
 // asynchronously ask the backend to provide the page response components module
-import("./global").then(g => g.loadPageResponseComponents());
+import("./global").then((g) => g.loadPageResponseComponents());
 
 // load the full app on demand
 const App = React.lazy(() => import("app"));
@@ -30,9 +30,11 @@ const App = React.lazy(() => import("app"));
 document.addEventListener("__DECSYS__ComponentsLoaded", () =>
   ReactDOM.render(
     <AppWrapper>
-      <Suspense fallback={<Loading />}>
-        <App />
-      </Suspense>
+      <ErrorBoundary fallback={<Error message="Something went wrong!" />}>
+        <Suspense fallback={<Loading />}>
+          <App />
+        </Suspense>
+      </ErrorBoundary>
     </AppWrapper>,
     root
   )

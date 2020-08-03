@@ -46,7 +46,7 @@ ScaleMarker.defaultProps = {
 export const RangeMarker = ({ position, ...p }) => (
   <ScaleMarker
     css={{
-      display: position ? "block" : "none",
+      display: position != null ? "block" : "none",
       left: `${position ?? 0}px`,
       "&::before": { zIndex: 3 },
     }}

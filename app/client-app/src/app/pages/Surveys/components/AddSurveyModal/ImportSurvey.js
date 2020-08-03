@@ -6,11 +6,12 @@ import {
   Input,
   Stack,
   Checkbox,
+  AlertIcon,
+  Alert,
 } from "@chakra-ui/core";
 import useToggle from "hooks/useToggle";
 import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
-import Alert from "components/core/Alert";
 
 const ImportSurvey = () => {
   const [isExpanded, toggleExpanded] = useToggle();
@@ -55,13 +56,15 @@ const ImportSurveyForm = ({ modalState }) => {
 
   return (
     <Stack spacing={1} p={2}>
-      <Alert hasIcon>
+      <Alert>
+        <AlertIcon />
         Select a previously exported DECSYS Survey file to import.
       </Alert>
 
       <Input type="file" onChange={handleFileSelect} />
       {state.error && (
-        <Alert hasIcon status="error">
+        <Alert status="error">
+          <AlertIcon />
           {state.error}
         </Alert>
       )}

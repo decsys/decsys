@@ -40,10 +40,14 @@ const convertRange = (inMin, inMax, min, max, bar, isValue = false) => {
   const vMax = isValue ? inMax : getValueForX(inMax, min, max, bar);
 
   const xMin = isValue
-    ? getXPosForValue(inMin, min, max, bar)
+    ? inMin != null
+      ? getXPosForValue(inMin, min, max, bar)
+      : inMin
     : getRelativeXPos(inMin, bar);
   const xMax = isValue
-    ? getXPosForValue(inMax, min, max, bar)
+    ? inMax != null
+      ? getXPosForValue(inMax, min, max, bar)
+      : inMax
     : getRelativeXPos(inMax, bar);
 
   return {
@@ -60,7 +64,7 @@ const EllipseScale = ({
   penOptions,
   question,
   questionOptions,
-  barOptions,
+  barOptions: { minValue, maxValue, ...barOptions },
   labelOptions,
   labels: { min, mid, max },
   scaleMarkerOptions,
@@ -94,8 +98,8 @@ const EllipseScale = ({
     } = convertRange(
       minRangeValue,
       maxRangeValue,
-      barOptions.minValue,
-      barOptions.maxValue,
+      minValue,
+      maxValue,
       bar,
       true
     );
