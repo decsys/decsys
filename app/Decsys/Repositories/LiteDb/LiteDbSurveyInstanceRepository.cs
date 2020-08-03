@@ -28,10 +28,10 @@ namespace Decsys.Repositories.LiteDb
         public bool HasActiveInstance(int id) =>
             _instances.Exists(x => x.Survey.Id == id && x.Closed == null);
 
-        public int Insert(Models.SurveyInstance instance) =>
+        public int Create(Models.SurveyInstance instance) =>
             _instances.Insert(_mapper.Map<SurveyInstance>(instance));
 
-        public Models.SurveyInstance Get(int id) =>
+        public Models.SurveyInstance Find(int id) =>
             _mapper.Map<Models.SurveyInstance>(
                 _instances
                     .Include(x => x.Survey)

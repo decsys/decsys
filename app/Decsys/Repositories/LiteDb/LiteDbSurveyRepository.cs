@@ -28,7 +28,7 @@ namespace Decsys.Repositories.LiteDb
         public bool Exists(int id) =>
             _surveys.Exists(x => x.Id == id);
 
-        public Models.Survey Get(int id) =>
+        public Models.Survey Find(int id) =>
             _mapper.Map<Models.Survey>(
                 _surveys.FindById(id));
 
@@ -44,13 +44,13 @@ namespace Decsys.Repositories.LiteDb
                     survey));
         }
 
-        public int Insert(string? name = null) =>
+        public int Create(string? name = null) =>
             _surveys.Insert(
                 name is null
                     ? new Survey()
                     : new Survey { Name = name });
 
-        public int Import(Models.Survey survey)
+        public int Create(Models.Survey survey)
         {
             survey.Id = 0;
             return _surveys.Insert(_mapper.Map<Survey>(survey));
@@ -62,7 +62,7 @@ namespace Decsys.Repositories.LiteDb
             _surveys.Delete(id);
         }
 
-        public void EditName(int id, string name)
+        public void UpdateName(int id, string name)
         {
             var survey = _surveys.FindById(id) ?? throw new KeyNotFoundException();
             survey.Name = name;

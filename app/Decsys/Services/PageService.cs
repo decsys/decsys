@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Decsys.Models;
 using Decsys.Repositories.Contracts;
 
-using AutoMapper;
-
-using Decsys.Data;
-using Decsys.Data.Entities;
-
 using LiteDB;
-using Decsys.Repositories.LiteDb;
 
 namespace Decsys.Services
 {
@@ -19,59 +15,39 @@ namespace Decsys.Services
     public class PageService
     {
         private readonly ISurveyRepository _surveys;
-        private readonly IMapper _mapper;
+        private readonly IPageRepository _pages;
         private readonly ImageService _images;
-        
 
-        public PageService(ISurveyRepository surveys, IMapper mapper, ImageService images)
+
+        public PageService(ISurveyRepository surveys, IPageRepository pages, ImageService images)
         {
             _surveys = surveys;
-            _mapper = mapper;
+            _pages = pages;
             _images = images;
         }
 
         /// <summary>
         /// Create a new Page in a given Survey.
         /// </summary>
-        /// <param name="id">The ID of the Survey to create the new Page in.</param>
+        /// <param name="surveyId">The ID of the Survey to create the new Page in.</param>
         /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
-        /// Creates new Page in given survey - pass new survey entity to function from service layer
+        public Page Create(int surveyId) => _pages.Create(surveyId);
 
-        public Models.Page Create(int id)
-        {
-            var survey = _surveys.Get(id);
-
-            var pages = survey.Pages.OrderBy(x => x.Order).ToList();
-
-            var model = _mapper.Map<Models.Page>(new Page());
-
-            pages.Add(model);
-
-            survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-
-            _surveys.Update(survey);
-
-            return _mapper.Map<Models.Page>(model);
-        }
 
         /// <summary>
         /// Move a Page to a new position in the Page Order of a Survey.
         /// </summary>
-        /// <param name="id">The ID of the Survey to move a Page in.</param>
+        /// <param name="surveyId">The ID of the Survey to move a Page in.</param>
         /// <param name="pageId">The ID of the Page to move.</param>
         /// <param name="targetPosition">The new position in the order to put the Page at.</param>
         /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
-
-        public void Move(int id, Guid pageId, int targetPosition)
+        public void Move(int surveyId, Guid pageId, int targetPosition)
         {
             if (targetPosition <= 0) targetPosition = 1; //silently fix this
 
-            var survey = _surveys.Get(id);
-            if (survey is null) throw new KeyNotFoundException("Survey could not be found.");
+            var pages = _pages.List(surveyId);
 
-            var pages = survey.Pages.OrderBy(x => x.Order).ToList();
-
-            if (targetPosition > pages.Count()) targetPosition = pages.Count(); // silently fix this
+            if (targetPosition > pages.Count) targetPosition = pages.Count; // silently fix this
 
             var page = pages.SingleOrDefault(x => x.Id == pageId)
                 ?? throw new KeyNotFoundException("Page could not be found.");
@@ -96,8 +72,7 @@ namespace Decsys.Services
                 pages.Insert(targetPosition - 1, page);
             }
 
-            survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            _surveys.Update(survey);
+            _pages.Replace(surveyId, pages.Select((x, i) => { x.Order = i + 1; return x; }));
         }
 
         /// <summary>
@@ -107,52 +82,45 @@ namespace Decsys.Services
         /// <param name="pageId">The ID of the Page.</param>
         /// <returns>True if the deletion was successful, false if the Survey or Page could not be found.</returns>
 
-        public bool Delete(int id, Guid pageId)
+        public bool Delete(int surveyId, Guid pageId)
         {
-            var survey = _surveys.Get(id);
-            if (survey is null) return false;
+            if (!_surveys.Exists(surveyId)) return false;
 
-            var pages = survey.Pages.OrderBy(x => x.Order).ToList();
-            var page = pages.SingleOrDefault(x => x.Id == pageId);
+            var page = _pages.Find(surveyId, pageId);
             if (page is null) return false;
 
             page.Components.ToList().ForEach(component =>
             {
                 if (component.Type == "image")
-                    _images.RemoveFile(id, pageId, component.Id);
+                    _images.RemoveFile(surveyId, pageId, component.Id);
             });
 
-            pages.Remove(page);
-            survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            _surveys.Update(survey);
-
+            _pages.Delete(surveyId, pageId);
             return true;
         }
 
         /// <summary>
         /// Duplicate a Page in a Survey.
         /// </summary>
-        /// <param name="id">The ID of the Survey to duplicate the Page in.</param>
+        /// <param name="surveyId">The ID of the Survey to duplicate the Page in.</param>
         /// <param name="pageId">The ID of the Page.</param>
         /// <returns>The newly duplicated Page</returns>
         /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
-        public Models.Page Duplicate(int id, Guid pageId)
+        public Page Duplicate(int surveyId, Guid pageId)
         {
-            var survey = _surveys.Get(id);
-
-            var pages = survey.Pages.ToList();
+            var pages = _pages.List(surveyId);
             var iPage = pages.FindIndex(x => x.Id == pageId);
             if (iPage < 0) throw new KeyNotFoundException("Page could not be found.");
             var page = pages[iPage];
 
-            // blah manual deep copy time, i guess
-            var components = page.Components.Select(x => new Models.Component(x.Type)
+            // blah manual deep copy time, i guess // TODO Components Repo might ease this?
+            var components = page.Components.Select(x => new Component(x.Type)
             {
                 Id = Guid.NewGuid(),
                 Order = x.Order,
                 Params = x.Params
             }).ToList();
-            var dupe = new Models.Page
+            var dupe = new Page
             {
                 Id = Guid.NewGuid(),
                 Order = pages.Count + 1,
@@ -161,9 +129,7 @@ namespace Decsys.Services
             };
 
             pages.Insert(iPage + 1, dupe);
-
-            survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
-            _surveys.Update(survey);
+            _pages.Replace(surveyId, pages.Select((x, i) => { x.Order = i + 1; return x; }));
 
             var srcComponents = page.Components.OrderBy(x => x.Order).ToList();
             var destComponents = dupe.Components.OrderBy(x => x.Order).ToList();
@@ -171,10 +137,10 @@ namespace Decsys.Services
             for (var i = 0; i < srcComponents.Count; i++)
             {
                 if (srcComponents[i].Type == "image")
-                    _images.CopyFile(id, pageId, srcComponents[i].Id, destComponents[i].Id);
+                    _images.CopyFile(surveyId, pageId, srcComponents[i].Id, destComponents[i].Id);
             }
 
-            return _mapper.Map<Models.Page>(dupe);
+            return dupe;
         }
 
 
@@ -182,24 +148,19 @@ namespace Decsys.Services
         /// Set whether or not a Survey Page should have its order
         /// randomised with other randomisble siblings, per Participant.
         /// </summary>
-        /// <param name="id">The ID of the Survey to duplicate the Page in.</param>
+        /// <param name="surveyId">The ID of the Survey to duplicate the Page in.</param>
         /// <param name="pageId">The ID of the Page.</param>
         /// <param name="randomize">True or false</param>
         /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
 
-        public void SetRandomized(int id, Guid pageId, bool randomize)
+        public void SetRandomized(int surveyId, Guid pageId, bool randomize)
         {
-            var survey = _surveys.Get(id);
-
-            var pages = survey.Pages.ToList();
-            var page = pages.SingleOrDefault(x => x.Id == pageId)
+            var page = _pages.Find(surveyId, pageId)
                 ?? throw new KeyNotFoundException("Page could not be found.");
 
             page.Randomize = randomize;
-            pages = pages.Select(x => x.Id == page.Id ? page : x).ToList();
 
-            survey.Pages = pages;
-            _surveys.Update(survey);
+            _pages.Update(surveyId, page);
         }
     }
 }

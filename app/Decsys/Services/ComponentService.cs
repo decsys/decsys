@@ -36,14 +36,14 @@ namespace Decsys.Services
         /// <param name="pageId">The ID of the Page to create the new Component in.</param>
         /// <param name="type">The type of the new Component.</param>
         /// <exception cref="KeyNotFoundException">If the Survey or Page cannot be found.</exception>
-        public Models.Component Create(int id, Guid pageId, string type)
+        public Component Create(int id, Guid pageId, string type)
         {
-            var survey = _surveys.Get(id);
+            var survey = _surveys.Find(id);
 
             var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
                 ?? throw new KeyNotFoundException(); ;
 
-            var model = new Models.Component(type);
+            var model = new Component(type);
 
             var components = page.Components.OrderBy(x => x.Order).ToList();
 
@@ -55,7 +55,7 @@ namespace Decsys.Services
 
             _surveys.Update(survey);
 
-            return _mapper.Map<Models.Component>(model);
+            return model;
         }
 
         /// <summary>
@@ -129,10 +129,10 @@ namespace Decsys.Services
             var entity = components.SingleOrDefault(x => x.Id == componentId)
                 ?? throw new KeyNotFoundException("Component could not be found.");
 
-            var component = _mapper.Map<Models.Component>(entity);
+            var component = _mapper.Map<Component>(entity);
             component.Params.Remove(paramKey);
 
-            components[components.IndexOf(entity)] = _mapper.Map<Models.Component>(component);
+            components[components.IndexOf(entity)] = _mapper.Map<Component>(component);
 
             page.Components = components;
 

@@ -7,10 +7,10 @@ namespace Decsys.Repositories.Contracts
     public interface ISurveyRepository
     {
         /// <summary>
-        /// Get a Survey
+        /// Find a Survey
         /// </summary>
-        /// <param name="id">The ID of the Survey to fetch</param>
-        Survey Get(int id);
+        /// <param name="id">The ID of the Survey to find</param>
+        Survey Find(int id);
 
         /// <summary>
         /// List Summaries of all Surveys
@@ -18,16 +18,16 @@ namespace Decsys.Repositories.Contracts
         IEnumerable<SurveySummary> List();
 
         /// <summary>
-        /// Insert a new Survey into the database
+        /// Create a new empty Survey
         /// </summary>
         /// <param name="name">Optional Survey name</param>
-        int Insert(string? name = null);
+        int Create(string? name = null);
 
         /// <summary>
-        /// Creates a new Survey from a provided model
+        /// Create a new Survey from a provided model
         /// </summary>
         /// <param name="survey">Survey model to import</param>
-        int Import(Survey survey);
+        int Create(Survey survey);
 
         /// <summary>
         /// Delete a Survey
@@ -36,11 +36,11 @@ namespace Decsys.Repositories.Contracts
         void Delete(int id);
 
         /// <summary>
-        /// Edit the name of a Survey
+        /// Update the name of a Survey
         /// </summary>
         /// <param name="id">ID of the Survey</param>
         /// <param name="name">New name</param>
-        void EditName(int id, string name);
+        void UpdateName(int id, string name);
 
         /// <summary>
         /// Generally update a Survey from the provided model

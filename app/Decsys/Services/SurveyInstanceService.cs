@@ -26,7 +26,7 @@ namespace Decsys.Services
         /// <param name="surveyId">ID of the Survey to create an Instance of</param>
         public int Create(int surveyId)
         {
-            var survey = _surveys.Get(surveyId) ?? throw new KeyNotFoundException();
+            var survey = _surveys.Find(surveyId) ?? throw new KeyNotFoundException();
 
             if (_instances.HasActiveInstance(surveyId))
                 throw new ArgumentException(
@@ -41,7 +41,7 @@ namespace Decsys.Services
                 ValidIdentifiers = survey.ValidIdentifiers
             };
 
-            return _instances.Insert(instance);
+            return _instances.Create(instance);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Decsys.Services
             if (!_surveys.Exists(surveyId))
                 throw new KeyNotFoundException();
 
-            var instance = _instances.Get(instanceId);
+            var instance = _instances.Find(instanceId);
 
             if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();
 
@@ -83,8 +83,8 @@ namespace Decsys.Services
             if (!_surveys.Exists(surveyId))
                 throw new KeyNotFoundException();
 
-            var instance = _instances.Get(instanceId);
-            if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();
+            var instance = _instances.Find(instanceId);
+            if (instance?.Survey.Id != surveyId) throw new KeyNotFoundException();
 
             _instances.Close(instanceId);
         }

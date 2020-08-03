@@ -11,7 +11,7 @@ namespace Decsys.Services
     /// </summary>
     public class SurveyService
     {
- 
+
         private readonly ISurveyRepository _surveys;
         private readonly ImageService _images;
 
@@ -27,7 +27,7 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="id">The ID of the Survey to get.</param>
         /// <returns>The requested Survey, or null if not found.</returns>
-        public Survey Get(int id) => _surveys.Get(id);
+        public Survey Get(int id) => _surveys.Find(id);
 
         // TODO: PAGINATE?
         /// <summary>
@@ -43,7 +43,7 @@ namespace Decsys.Services
         /// <param name="name">The name to give the new Survey.</param>
         /// <returns>The ID of the newly created Survey.</returns>
 
-        public int Create(string? name = null) => _surveys.Insert(name);
+        public int Create(string? name = null) => _surveys.Create(name);
 
 
         /// <summary>
@@ -55,19 +55,17 @@ namespace Decsys.Services
 
         public int Duplicate(int id)
         {
-            var survey = _surveys.Get(id) ?? throw new KeyNotFoundException();
+            var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             var oldId = survey.Id;
 
-            survey.Id = 0;
             survey.Name = $"{survey.Name} (Copy)";
+            var newId = _surveys.Create(survey);
 
-            var newId = _surveys.Insert(survey.Name);
-
-            _images.CopyAllSurveyFiles(oldId , newId);
+            _images.CopyAllSurveyFiles(oldId, newId);
 
             return newId;
         }
-         
+
         /// <summary>
         /// Import a Survey, including any images
         /// </summary>
@@ -75,9 +73,9 @@ namespace Decsys.Services
         /// <param name="images">List of Survey Images to import</param>
         public async Task<int> Import(Survey survey, List<(string filename, byte[] data)> images)
         {
-            int id = _surveys.Import(survey);
+            int id = _surveys.Create(survey);
 
-            if (images.Count > 0) 
+            if (images.Count > 0)
                 await _images.Import(id, images).ConfigureAwait(false);
 
             return id;
@@ -89,11 +87,10 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to delete.</param>
         public void Delete(int id)
         {
-            // delete images on disk for built-in image Page Items
-            _images.RemoveAllSurveyFiles(id);
+            _images.RemoveAllSurveyFiles(id); // delete images on disk for built-in image Page Items
             _surveys.Delete(id);
         }
-        
+
 
 
         /// <summary>
@@ -103,7 +100,7 @@ namespace Decsys.Services
         /// <param name="name">The new name for the Survey.</param>
         /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
 
-        public void EditName(int id, string name) => _surveys.EditName(id, name);
+        public void EditName(int id, string name) => _surveys.UpdateName(id, name);
 
 
         /// <summary>
@@ -114,7 +111,7 @@ namespace Decsys.Services
 
         public void Configure(int id, ConfigureSurveyModel config)
         {
-            var survey = _surveys.Get(id) ?? throw new KeyNotFoundException();
+            var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             survey.OneTimeParticipants = config.OneTimeParticipants;
             survey.UseParticipantIdentifiers = config.UseParticipantIdentifiers;
             survey.ValidIdentifiers = config.ValidIdentifiers;
