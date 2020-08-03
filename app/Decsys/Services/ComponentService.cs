@@ -4,9 +4,9 @@ using System.Linq;
 
 using AutoMapper;
 
-using Decsys.Data;
-using Decsys.Data.Entities;
 using Decsys.Repositories.Contracts;
+using Decsys.Models;
+
 using LiteDB;
 
 using Newtonsoft.Json.Linq;

@@ -1,12 +1,8 @@
-﻿ using Decsys.Models;
-using Decsys.Data.Entities;
+using Decsys.Models;
 
 using LiteDB;
-using System;
+
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Decsys.Repositories.Contracts
 {
@@ -26,7 +22,7 @@ namespace Decsys.Repositories.Contracts
         List<string> GetAllParticipantLogs(int instanceId);
 
         ParticipantResultsSummary ResultsSummary(int instanceId, string participantId);
-        ParticipantResultsSummary ParticipantResultsSummary(Models.SurveyInstance instance, string participantId);
+        ParticipantResultsSummary ParticipantResultsSummary(Data.Entities.SurveyInstance instance, string participantId);
 
     }
 }

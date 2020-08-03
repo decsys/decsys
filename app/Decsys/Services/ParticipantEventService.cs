@@ -249,7 +249,7 @@ namespace Decsys.Services
             return ParticipantResultsSummary(instance, participantId);
         }
 
-        private Models.ParticipantResultsSummary ParticipantResultsSummary(Models.SurveyInstance instance, string participantId)
+        private Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
         {
             var resultsSummary = new Models.ParticipantResultsSummary(participantId);
 

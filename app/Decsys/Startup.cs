@@ -105,6 +105,7 @@ namespace Decsys
                     }));
 
             services.AddTransient<ISurveyRepository, LiteDbSurveyRepository>();
+            services.AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>();
             services.AddTransient<SurveyService>();
             services.AddTransient<PageService>();
             services.AddTransient<ComponentService>();
