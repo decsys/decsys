@@ -27,23 +27,19 @@ import { encode } from "services/instance-id";
 import { FaChevronDown } from "react-icons/fa";
 import { useTable } from "react-table";
 import { isEmpty } from "services/data-structures";
+import themes from "themes";
 
 const exportMime = "application/json";
 
 const resultsFilename = (surveyName, instancePublished, resultsGenerated) =>
-  `${surveyName}_Instance-${formatDate(
-    Date.parse(instancePublished)
-  )}_${formatDate(Date.parse(resultsGenerated))}`;
+  `${surveyName}_Instance-${formatDate(Date.parse(instancePublished)).flat}_${
+    formatDate(Date.parse(resultsGenerated)).flat
+  }`;
 
 const Heading = ({ name }) => (
-  <>
-    <LightHeading as="h2" size="lg" my={2}>
-      {name}
-    </LightHeading>
-    <LightHeading as="h3" size="md" my={2}>
-      Results
-    </LightHeading>
-  </>
+  <LightHeading p={2} mb={4} as="h2" size="lg">
+    {name} Results
+  </LightHeading>
 );
 
 const InstanceSelector = ({ surveyId, onChange }) => {
@@ -72,7 +68,7 @@ const InstanceSelector = ({ surveyId, onChange }) => {
       <Select onChange={handleInstanceChange} value={currentInstance?.id}>
         {instances.map((x) => (
           <option key={x.id} value={x.id}>
-            {formatDate(Date.parse(x.published))}
+            {formatDate(Date.parse(x.published)).flat}
           </option>
         ))}
       </Select>
@@ -150,36 +146,98 @@ const ResultsTable = ({ columns, data }) => {
   } = useTable({ columns, data });
 
   return (
-    <table
-      css={{
-        tableLayout: "fixed",
-        width: "100%",
-        borderCollapse: "collapse",
-      }}
-      {...getTableProps()}
-    >
-      <thead>
-        {headerGroups.map((group) => (
-          <tr {...group.getHeaderGroupProps()}>
-            {group.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => (
-                <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-              ))}
+    <Flex mx={2}>
+      <table
+        css={{
+          tableLayout: "fixed",
+          width: "100%",
+          borderCollapse: "collapse",
+          boxShadow: themes.shadows.callout,
+        }}
+        {...getTableProps()}
+      >
+        <thead>
+          {headerGroups.map((group) => (
+            <tr
+              css={{
+                background: "#575757",
+              }}
+              {...group.getHeaderGroupProps()}
+            >
+              {group.headers.map((column) => {
+                const width =
+                  {
+                    Page: "60px",
+                    Order: "60px",
+                    "Page Loaded (UTC)": "200px",
+                    "Recorded (UTC)": "200px",
+                  }[column.Header] ?? "auto";
+                return (
+                  <th
+                    css={{
+                      width,
+                      color: "#FFFFFF",
+                      textAlign: "center",
+                    }}
+                    {...column.getHeaderProps()}
+                  >
+                    {column.render("Header")}
+                  </th>
+                );
+              })}
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row) => {
+            prepareRow(row);
+            return (
+              <tr
+                css={{
+                  ":nth-of-type(2n)": {
+                    background: "#eeeeee",
+                    "& td:nth-of-type(2n)": {
+                      background: "#dddddd",
+                    },
+                  },
+                  ":nth-of-type(2n+1)": {
+                    "& td:nth-of-type(2n)": {
+                      background: "#eeeeee",
+                    },
+                  },
+                }}
+                {...row.getRowProps()}
+              >
+                {row.cells.map((cell) => (
+                  <td
+                    css={{
+                      padding: "0 8px",
+                      //border: "thin solid #bbb",
+                    }}
+                    {...cell.getCellProps()}
+                  >
+                    {cell.render("Cell")}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </Flex>
+  );
+};
+
+const DateTimeCellRender = ({ value }) => {
+  const formatted = formatDate(value);
+
+  return (
+    <Grid columnGap={2} templateColumns="1fr 1fr">
+      <Text textAlign="center" fontWeight="bold">
+        {formatted.date}
+      </Text>
+      <Text textAlign="center">{formatted.time}</Text>
+    </Grid>
   );
 };
 
@@ -195,16 +253,18 @@ const ResultsTables = ({ results }) => {
         accessor: "order",
       },
       {
-        Header: "Page Loaded",
-        accessor: "pageLoad",
-        Cell: ({ value }) => <span>{formatDate(Date.parse(value))}</span>,
+        Header: "Page Loaded (UTC)",
+        accessor: (d) => Date.parse(d.pageLoad),
+        Cell: DateTimeCellRender,
       },
       {
         id: "nullableResponse",
         Header: "Response",
         Cell: ({ value }) =>
           typeof value === "string" ? (
-            <Flex textAlign="center">{value}</Flex>
+            <Flex w="100%" justify="center">
+              {value}
+            </Flex>
           ) : (
             <Grid columnGap={2} templateColumns="1fr 1fr">
               {Object.keys(value).map((key) => [
@@ -220,11 +280,19 @@ const ResultsTables = ({ results }) => {
       },
       {
         id: "nullableResponseRecorded",
-        Header: "Recorded",
+        Header: "Recorded (UTC)",
         accessor: (d) =>
           isEmpty(d.response)
             ? "- not recorded -"
-            : formatDate(Date.parse(d.responseRecorded)),
+            : Date.parse(d.responseRecorded),
+        Cell: ({ value }) =>
+          typeof value === "string" ? (
+            <Flex w="100%" justify="center">
+              {value}
+            </Flex>
+          ) : (
+            <DateTimeCellRender value={value} />
+          ),
       },
     ],
     []
@@ -245,7 +313,7 @@ const ResultsTables = ({ results }) => {
   return (
     <>
       <Stack
-        mt={2}
+        mx={2}
         direction="row"
         align="center"
         p={2}
@@ -274,6 +342,8 @@ const ResultsTables = ({ results }) => {
       </Stack>
 
       <ResultsTable data={selectedParticipant.responses} columns={columns} />
+
+      <Flex>Pagination</Flex>
     </>
   );
 };
@@ -298,31 +368,33 @@ const Results = ({ id }) => {
   }, [currentInstance]);
 
   return (
-    <Page>
-      <Heading name={survey.name} />
+    <Page layout="results">
+      <Flex direction="column" p={2}>
+        <Heading name={survey.name} />
 
-      <Flex p={4} bg="gray.100" borderRadius={8} direction="column">
-        <Text as="div" mb={1}>
-          Select an instance of this Survey to view the results for
-        </Text>
+        <Flex p={4} bg="gray.100" borderRadius={8} direction="column">
+          <Text as="div" mb={1}>
+            Select an instance of this Survey to view the results for
+          </Text>
 
-        <Flex justifyContent="space-between">
-          <InstanceSelector surveyId={id} onChange={handleInstanceChange} />
-          <Stack direction="row">
-            <DashboardButton surveyId={id} instanceId={currentInstance?.id} />
-            <ExportResultsMenu
-              surveyId={id}
-              instanceId={currentInstance?.id}
-              results={results}
-            />
-          </Stack>
+          <Flex justifyContent="space-between">
+            <InstanceSelector surveyId={id} onChange={handleInstanceChange} />
+            <Stack direction="row">
+              <DashboardButton surveyId={id} instanceId={currentInstance?.id} />
+              <ExportResultsMenu
+                surveyId={id}
+                instanceId={currentInstance?.id}
+                results={results}
+              />
+            </Stack>
+          </Flex>
         </Flex>
       </Flex>
 
       {results?.participants.length ? (
         <ResultsTables results={results} />
       ) : (
-        <Flex mt={4}>
+        <Flex mt={4} gridRow="span 3">
           <EmptyState message="There are no results available for this Survey Instance" />
         </Flex>
       )}
