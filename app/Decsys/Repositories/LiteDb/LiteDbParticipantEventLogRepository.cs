@@ -1,8 +1,7 @@
-﻿using Decsys.Repositories.Contracts;
+using Decsys.Repositories.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Decsys.Data;
 using Decsys.Data.Entities;
@@ -85,6 +84,16 @@ namespace Decsys.Repositories.LiteDb
                 : latestLog.ParticipantId;
         }
 
+        private IEnumerable<Models.ParticipantEvent> ListEvents(int instanceId, string participantId)
+        {
+            var log = _db.InstanceEventLogs(instanceId)
+                .GetCollection<ParticipantEvent>(
+                    GetCollectionName(instanceId, participantId));
+
+            return _mapper.Map<IEnumerable<Models.ParticipantEvent>>(
+                log.FindAll().OrderBy(x => x.Timestamp));
+        }
+
         public IEnumerable<Models.ParticipantEvent> List(int instanceId, string participantId)
         {
             if (!_db.Surveys.GetCollection<SurveyInstance>(
@@ -92,7 +101,7 @@ namespace Decsys.Repositories.LiteDb
                 .Exists(x => x.Id == instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            return _List(instanceId, participantId);
+            return ListEvents(instanceId, participantId);
         }
 
         public Models.SurveyInstanceResults<Models.ParticipantEvents> Results(int instanceId)
@@ -113,7 +122,7 @@ namespace Decsys.Repositories.LiteDb
                     var participantId = GetParticipantId(instanceId, collectionName);
                     return new Models.ParticipantEvents(participantId)
                     {
-                        Events = _List(instanceId, participantId).ToList()
+                        Events = ListEvents(instanceId, participantId).ToList()
                     };
                 })
                 .ToList();

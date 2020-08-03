@@ -6,6 +6,7 @@ using Decsys.Auth;
 using Decsys.Data;
 using Decsys.Services;
 using Decsys.Repositories.Contracts;
+using Decsys.Repositories.LiteDb;
 using LiteDB;
 
 using Microsoft.AspNetCore.Authorization;
@@ -28,8 +29,6 @@ using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
 using UoN.VersionInformation.Providers;
-using Decsys.Repositories.Contracts;
-using Decsys.Repositories.LiteDb;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -105,8 +104,6 @@ namespace Decsys
                         FileOptional = true
                     }));
 
-            services.AddTransient<IComponentRepository, LiteDbComponentRepository>();
-            services.AddTransient<IPageRepository, LiteDbPageRepository>();
             services.AddTransient<ISurveyRepository, LiteDbSurveyRepository>();
             services.AddTransient<SurveyService>();
             services.AddTransient<PageService>();

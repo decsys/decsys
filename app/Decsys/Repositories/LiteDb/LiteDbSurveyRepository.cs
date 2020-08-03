@@ -1,12 +1,8 @@
-﻿  using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Decsys.Models;
 using Decsys.Data;
-using Decsys.Data.Entities;
 using Decsys.Repositories.Contracts;
-using Decsys.Services;
+using Decsys.Data.Entities;
 using AutoMapper;
 using LiteDB;
 
@@ -14,33 +10,32 @@ using LiteDB;
 namespace Decsys.Repositories.LiteDb
 {
 
-    public class LiteDbSurveyRepository :  ISurveyRepository
+    public class LiteDbSurveyRepository : ISurveyRepository
     {
-        private readonly LiteDatabase _db;
+        private readonly ILiteCollection<Survey> _surveys;
         private readonly IMapper _mapper;
-        private readonly ImageService _images;
-        public LiteDbSurveyRepository (LiteDbFactory db, IMapper mapper, ImageService images)
+
+        public LiteDbSurveyRepository(LiteDbFactory db, IMapper mapper)
         {
-            _db = db.Surveys;
+            _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _mapper = mapper;
-            _images = images;
         }
 
+        public bool Exists(int id) =>
+            _surveys.Exists(x => x.Id == id);
 
-        public Models.Survey Get(int id) => _mapper.Map<Models.Survey>(
-            _db.GetCollection<Data.Entities.Survey>(Collections.Surveys)
-            .FindById(id));
+        public Models.Survey Get(int id) =>
+            _mapper.Map<Models.Survey>(
+                _surveys.FindById(id));
 
-
-
-        public IEnumerable<SurveySummary> List()
+        public IEnumerable<Models.SurveySummary> List()
         {
             var summaries = _mapper.Map<IEnumerable<Models.SurveySummary>>(
                 _db.GetCollection<Data.Entities.Survey>(Collections.Surveys)
                 .FindAll());
 
             return summaries.Select(survey =>
-                _mapper.Map<IEnumerable<Data.Entities.SurveyInstance>, Models.SurveySummary>(
+                _mapper.Map(
                     _db.GetCollection<Data.Entities.SurveyInstance>(Collections.SurveyInstances)
                         .Find(instance => instance.Survey.Id == survey.Id),
                     survey));
