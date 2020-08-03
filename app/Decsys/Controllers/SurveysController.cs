@@ -224,8 +224,9 @@ namespace Decsys.Controllers
             var surveyId = await _surveys.Import(survey, images);
 
             // attempt to import any instances
-            if (instances.Count > 0)
-                _instances.Import(instances, surveyId);
+            // TODO: blocked by EventLog Repo
+            //if (instances.Count > 0)
+            //    _instances.Import(instances, surveyId);
 
             return surveyId;
         }

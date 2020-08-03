@@ -26,9 +26,7 @@ namespace Decsys.Services
         /// <param name="surveyId">ID of the Survey to create an Instance of</param>
         public int Create(int surveyId)
         {
-            var survey = _surveys.Get(surveyId);
-            if (survey is null)
-                throw new KeyNotFoundException();
+            var survey = _surveys.Get(surveyId) ?? throw new KeyNotFoundException();
 
             if (_instances.HasActiveInstance(surveyId))
                 throw new ArgumentException(
@@ -67,7 +65,7 @@ namespace Decsys.Services
         /// List all Instances of a Survey
         /// </summary>
         /// <param name="surveyId">ID of the Survey</param>
-        public IEnumerable<Models.SurveyInstance> List(int surveyId)
+        public IEnumerable<SurveyInstance> List(int surveyId)
         {
             if (!_surveys.Exists(surveyId))
                 throw new KeyNotFoundException();

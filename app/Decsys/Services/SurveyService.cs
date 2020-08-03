@@ -1,12 +1,8 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Decsys.Data;
-using Decsys.Data.Entities;
+
 using Decsys.Repositories.Contracts;
-using Decsys.Repositories.LiteDb;
-using LiteDB;
+using Decsys.Models;
 
 namespace Decsys.Services
 {
@@ -17,14 +13,12 @@ namespace Decsys.Services
     {
  
         private readonly ISurveyRepository _surveys;
-        private readonly IMapper _mapper;
         private readonly ImageService _images;
 
         /// <summary>DI Constructor</summary>
-        public SurveyService(ISurveyRepository surveys, IMapper mapper, ImageService images)
+        public SurveyService(ISurveyRepository surveys, ImageService images)
         {
             _surveys = surveys;
-            _mapper = mapper;
             _images = images;
         }
 
@@ -33,14 +27,14 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="id">The ID of the Survey to get.</param>
         /// <returns>The requested Survey, or null if not found.</returns>
-        public Models.Survey Get(int id) => _surveys.Get(id);
+        public Survey Get(int id) => _surveys.Get(id);
 
         // TODO: PAGINATE?
         /// <summary>
         /// List summary data for all Surveys.
         /// </summary>
         /// <returns>All surveys summarised.</returns>
-        public IEnumerable<Models.SurveySummary> List() => _surveys.List();
+        public IEnumerable<SurveySummary> List() => _surveys.List();
 
 
         /// <summary>
@@ -49,7 +43,7 @@ namespace Decsys.Services
         /// <param name="name">The name to give the new Survey.</param>
         /// <returns>The ID of the newly created Survey.</returns>
 
-        public int Create(string? name = null) => _surveys.Create(name);
+        public int Create(string? name = null) => _surveys.Insert(name);
 
 
         /// <summary>
@@ -67,15 +61,19 @@ namespace Decsys.Services
             survey.Id = 0;
             survey.Name = $"{survey.Name} (Copy)";
 
-            var newId = _surveys.Create(survey.Name);
+            var newId = _surveys.Insert(survey.Name);
 
             _images.CopyAllSurveyFiles(oldId , newId);
 
             return newId;
         }
          
-
-        public async Task<int> Import(Models.Survey survey, List<(string filename, byte[] data)> images)
+        /// <summary>
+        /// Import a Survey, including any images
+        /// </summary>
+        /// <param name="survey">Survey model to import</param>
+        /// <param name="images">List of Survey Images to import</param>
+        public async Task<int> Import(Survey survey, List<(string filename, byte[] data)> images)
         {
             int id = _surveys.Import(survey);
 
@@ -114,9 +112,8 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to Configure.</param>
         /// <param name="config">A model of configuration values</param>
 
-        public void Configure(int id, Models.ConfigureSurveyModel config)
+        public void Configure(int id, ConfigureSurveyModel config)
         {
-
             var survey = _surveys.Get(id) ?? throw new KeyNotFoundException();
             survey.OneTimeParticipants = config.OneTimeParticipants;
             survey.UseParticipantIdentifiers = config.UseParticipantIdentifiers;
