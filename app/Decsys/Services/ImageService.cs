@@ -1,24 +1,23 @@
-﻿using Decsys.Data;
-using Decsys.Data.Entities;
-using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Decsys.Repositories.Contracts;
+
 namespace Decsys.Services
 {
     public class ImageService
     {
-        private readonly LiteDatabase _db;
+        private readonly IComponentRepository _components;
 
         public string ImagesPath { get; }
 
-        public ImageService(string imagesPath, LiteDatabase db)
+        public ImageService(string imagesPath, IComponentRepository components)
         {
             ImagesPath = imagesPath;
-            _db = db;
+            _components = components;
         }
 
         public string SurveyImagesPath(int id) =>
@@ -34,10 +33,8 @@ namespace Decsys.Services
 
             var path = Path.Combine(dir, filename);
 
-            using (var stream = File.Create(path))
-            {
-                await stream.WriteAsync(file.bytes, 0, file.bytes.Length);
-            }
+            using var stream = File.Create(path);
+            await stream.WriteAsync(file.bytes, 0, file.bytes.Length);
         }
 
         public void RemoveFile(int surveyId, Guid pageId, Guid componentId)
@@ -92,10 +89,8 @@ namespace Decsys.Services
             Directory.CreateDirectory(dest);
             foreach (var (filename, data) in images)
             {
-                using (var stream = File.Create(Path.Combine(dest, filename)))
-                {
-                    await stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
-                }
+                using var stream = File.Create(Path.Combine(dest, filename));
+                await stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
             }
         }
 
@@ -110,19 +105,9 @@ namespace Decsys.Services
         public bool HasImages(int surveyId)
             => Enumerate(surveyId).Any();
 
-        private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId)
-        {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-            var survey = surveys.FindById(surveyId)
-                ?? throw new KeyNotFoundException("Survey could not be found.");
+        private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
+            _components.Find(surveyId, pageId, componentId)
+                .Params.Value<string>("extension");
 
-            var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
-                ?? throw new KeyNotFoundException("Page could not be found.");
-
-            var component = page.Components.SingleOrDefault(x => x.Id == componentId)
-                ?? throw new KeyNotFoundException("Page could not be found."); ;
-
-            return component.Params["extension"].AsString;
-        }
     }
 }
