@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Decsys.Models
 {
@@ -8,6 +8,6 @@ namespace Decsys.Models
 
         public bool UseParticipantIdentifiers { get; set; }
 
-        public IEnumerable<string> ValidIdentifiers { get; set; } = new List<string>();
+        public List<string> ValidIdentifiers { get; set; } = new List<string>();
     }
 }

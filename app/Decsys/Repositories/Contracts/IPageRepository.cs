@@ -47,6 +47,6 @@ namespace Decsys.Repositories.Contracts
         /// </summary>
         /// <param name="surveyId">ID of the Survey</param>
         /// <param name="page">ID of the Page to update</param>
-        void Update(int surveyId, Page page)
+        void Update(int surveyId, Page page);
     }
 }

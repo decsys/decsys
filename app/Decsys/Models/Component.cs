@@ -14,7 +14,7 @@ namespace Decsys.Models
 
         public int Order { get; set; }
 
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
 
         public JObject Params { get; set; } = new JObject();
     }

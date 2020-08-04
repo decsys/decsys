@@ -38,8 +38,8 @@ namespace Decsys.Repositories.LiteDb
                     .Include(x => x.Survey.Pages)
                     .FindById(id));
 
-        public IEnumerable<Models.SurveyInstance> List(int surveyId) =>
-            _mapper.Map<IEnumerable<Models.SurveyInstance>>(
+        public List<Models.SurveyInstance> List(int surveyId) =>
+            _mapper.Map<List<Models.SurveyInstance>>(
                 _instances.Find(x => x.Survey.Id == surveyId));
 
         public void Close(int id)

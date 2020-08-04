@@ -15,7 +15,7 @@ namespace Decsys.Repositories.Contracts
         /// <summary>
         /// List Summaries of all Surveys
         /// </summary>
-        IEnumerable<SurveySummary> List();
+        List<SurveySummary> List();
 
         /// <summary>
         /// Create a new empty Survey

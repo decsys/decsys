@@ -28,7 +28,7 @@ namespace Decsys.Repositories.Contracts
         /// List all the Instances belonging to a Survey
         /// </summary>
         /// <param name="surveyId">ID of the Survey to list Instances of</param>
-        IEnumerable<SurveyInstance> List(int surveyId);
+        List<SurveyInstance> List(int surveyId);
 
         /// <summary>
         /// Close a SurveyInstance

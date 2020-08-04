@@ -1,8 +1,6 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 using AutoMapper;
 
@@ -35,7 +33,7 @@ namespace Decsys.Repositories.LiteDb
                 Order = survey.Pages.Count()
             };
 
-            survey.Pages = survey.Pages.Append(page);
+            survey.Pages.Add(page);
             _surveys.Update(survey);
 
             return _mapper.Map<Models.Page>(page);
@@ -44,13 +42,13 @@ namespace Decsys.Repositories.LiteDb
         public List<Models.Page> List(int surveyId)
         {
             var survey = _surveys.FindById(surveyId) ?? throw new KeyNotFoundException();
-            return _mapper.Map<IList<Models.Page>>(survey.Pages);
+            return _mapper.Map<List<Models.Page>>(survey.Pages);
         }
 
         public void Replace(int surveyId, IEnumerable<Models.Page> pages)
         {
             var survey = _surveys.FindById(surveyId) ?? throw new KeyNotFoundException();
-            survey.Pages = _mapper.Map<IEnumerable<Page>>(pages);
+            survey.Pages = _mapper.Map<List<Page>>(pages);
             _surveys.Update(survey);
         }
 
@@ -65,11 +63,11 @@ namespace Decsys.Repositories.LiteDb
         {
             var survey = _surveys.FindById(surveyId) ?? throw new KeyNotFoundException();
 
-            var pages = survey.Pages.ToList();
-            var page = pages.Find(x => x.Id == pageId) ?? throw new KeyNotFoundException();
-            pages.Remove(page);
+            var page = survey.Pages.SingleOrDefault(x => x.Id == pageId)
+                ?? throw new KeyNotFoundException();
+            survey.Pages.Remove(page);
 
-            survey.Pages = pages.Select((x, i) => { x.Order = i + 1; return x; });
+            survey.Pages = survey.Pages.Select((x, i) => { x.Order = i + 1; return x; }).ToList();
             _surveys.Update(survey);
         }
 
@@ -77,12 +75,10 @@ namespace Decsys.Repositories.LiteDb
         {
             var survey = _surveys.FindById(surveyId) ?? throw new KeyNotFoundException();
 
-            var pages = survey.Pages.ToList();
-            var iPage = pages.FindIndex(x => x.Id == page.Id);
+            var iPage = survey.Pages.FindIndex(x => x.Id == page.Id);
             if (iPage < 0) throw new KeyNotFoundException();
 
-            pages[iPage] = _mapper.Map<Page>(page);
-            survey.Pages = pages;
+            survey.Pages[iPage] = _mapper.Map<Page>(page);
             _surveys.Update(survey);
         }
     }

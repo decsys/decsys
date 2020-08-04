@@ -59,9 +59,9 @@ namespace Decsys.Services
                 // moving upwards:
                 // 1. Insert the page later
                 // 2. Delete the old page
-                var iPage = pages.IndexOf(page);
+                var i = pages.IndexOf(page);
                 pages.Insert(targetPosition, page);
-                pages.RemoveAt(iPage);
+                pages.RemoveAt(i);
             }
             else
             {
@@ -84,19 +84,24 @@ namespace Decsys.Services
 
         public bool Delete(int surveyId, Guid pageId)
         {
-            if (!_surveys.Exists(surveyId)) return false;
-
-            var page = _pages.Find(surveyId, pageId);
-            if (page is null) return false;
-
-            page.Components.ToList().ForEach(component =>
+            try
             {
-                if (component.Type == "image")
-                    _images.RemoveFile(surveyId, pageId, component.Id);
-            });
+                var page = _pages.Find(surveyId, pageId);
+                if (page is null) return false;
 
-            _pages.Delete(surveyId, pageId);
-            return true;
+                page.Components.ForEach(component =>
+                {
+                    if (component.Type == "image")
+                        _images.RemoveFile(surveyId, pageId, component.Id);
+                });
+
+                _pages.Delete(surveyId, pageId);
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
         }
 
         /// <summary>

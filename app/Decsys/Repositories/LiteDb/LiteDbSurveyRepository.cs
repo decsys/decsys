@@ -32,16 +32,16 @@ namespace Decsys.Repositories.LiteDb
             _mapper.Map<Models.Survey>(
                 _surveys.FindById(id));
 
-        public IEnumerable<Models.SurveySummary> List()
+        public List<Models.SurveySummary> List()
         {
-            var summaries = _mapper.Map<IEnumerable<Models.SurveySummary>>(
+            var summaries = _mapper.Map<List<Models.SurveySummary>>(
                 _surveys.FindAll());
 
             return summaries.Select(survey =>
                 _mapper.Map(
                     _instances.Find(
                         instance => instance.Survey.Id == survey.Id),
-                    survey));
+                    survey)).ToList();
         }
 
         public int Create(string? name = null) =>
