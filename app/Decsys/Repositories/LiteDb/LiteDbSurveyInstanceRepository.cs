@@ -48,30 +48,5 @@ namespace Decsys.Repositories.LiteDb
         }
 
         public bool Exists(int id) => _instances.Exists(x => x.Id == id);
-
-        // TODO: blocked by EventLogs Repo
-        //public void Import(IList<Models.SurveyInstanceResults<Models.ParticipantEvents>> instanceModels, int targetSurveyId)
-        //{
-        //    var instances = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
-        //    var survey = _db.Surveys.GetCollection<Survey>(Collections.Surveys).FindById(targetSurveyId);
-
-        //    foreach (var instanceModel in instanceModels)
-        //    {
-        //        var instance = _mapper.Map<SurveyInstance>(instanceModel);
-        //        instance.Survey = survey;
-        //        var instanceId = instances.Insert(instance);
-
-        //        foreach (var participant in instanceModel.Participants)
-        //        {
-        //            var log = _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(
-        //            ParticipantEventService.GetCollectionName(participant.Id, _db.InstanceEventLogs(instanceId)));
-
-        //            foreach (var e in participant.Events)
-        //            {
-        //                log.Insert(_mapper.Map<ParticipantEvent>(e));
-        //            }
-        //        }
-        //    }
-        //}
     }
 }

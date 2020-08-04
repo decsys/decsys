@@ -1,23 +1,28 @@
 using System;
 using System.Collections.Generic;
-
 using AutoMapper;
-
 using Decsys.Models;
 using Decsys.Repositories.Contracts;
 
 namespace Decsys.Services
 {
-    // TODO: Doc Comments!
     public class SurveyInstanceService
     {
         private readonly ISurveyInstanceRepository _instances;
         private readonly ISurveyRepository _surveys;
+        private readonly IParticipantEventRepository _events;
+        private readonly IMapper _mapper;
 
-        public SurveyInstanceService(ISurveyInstanceRepository instances, ISurveyRepository surveys)
+        public SurveyInstanceService(
+            ISurveyInstanceRepository instances,
+            ISurveyRepository surveys,
+            IParticipantEventRepository events,
+            IMapper mapper)
         {
             _instances = instances;
             _surveys = surveys;
+            _events = events;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -92,33 +97,23 @@ namespace Decsys.Services
         /// <summary>
         /// Import Instances to a target Survey
         /// </summary>
-        /// <param name="instanceModels">Instance data to import</param>
+        /// <param name="instances">Instance data to import</param>
         /// <param name="targetSurveyId">ID of the Survey to import to</param>
-        // TODO: blocked by EventLog Repo
-        //public void Import(IList<SurveyInstanceResults<ParticipantEvents>> instanceModels, int targetSurveyId)
-        //{
-        //    var survey = _surveys.Get(targetSurveyId);
-        //    if (survey is null) throw new KeyNotFoundException();
+        public void Import(IList<SurveyInstanceResults<ParticipantEvents>> instances, int targetSurveyId)
+        {
+            var survey = _surveys.Find(targetSurveyId);
+            if (survey is null) throw new KeyNotFoundException();
 
+            foreach (var instanceImport in instances)
+            {
+                var instance = _mapper.Map<SurveyInstance>(instanceImport);
+                instance.Survey = survey;
+                var instanceId = _instances.Create(instance);
 
-
-        //    foreach (var instanceModel in instanceModels)
-        //    {
-        //        var instance = _mapper.Map<SurveyInstance>(instanceModel);
-        //        instance.Survey = survey;
-        //        var instanceId = _instances.Insert(instance);
-
-        //        foreach (var participant in instanceModel.Participants)
-        //        {
-        //            var log = _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(
-        //            ParticipantEventService.GetCollectionName(participant.Id, _db.InstanceEventLogs(instanceId)));
-
-        //            foreach (var e in participant.Events)
-        //            {
-        //                log.Insert(_mapper.Map<ParticipantEvent>(e));
-        //            }
-        //        }
-        //    }
-        //}
+                foreach (var participant in instanceImport.Participants)
+                    foreach (var e in participant.Events)
+                        _events.Create(instanceId, participant.Id, e);
+            }
+        }
     }
 }
