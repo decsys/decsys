@@ -3,6 +3,7 @@ using System.Linq;
 
 using AutoMapper;
 
+using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities;
 using Decsys.Repositories.Contracts;

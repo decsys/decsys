@@ -1,29 +1,45 @@
-using Decsys.Models;
-
-using LiteDB;
-
 using System.Collections.Generic;
+
+using Decsys.Models;
 
 namespace Decsys.Repositories.Contracts
 {
-    interface IParticipantEventRepository
+    public interface IParticipantEventRepository
     {
-        string GetCollectionName(string participantId, LiteDatabase db);
-        string GetCollectionName(int instanceId, string participantId);
-        string GetParticipantId(int instanceId, string participantId);
-        string GetNextId(string participantId, int instanceId);
-        IEnumerable<Models.ParticipantEvent> List(int instanceId, string participantId);
-        SurveyInstanceResults<ParticipantEvents> Results(int instanceId);
-        void Log(int instanceId, string participantId, Models.ParticipantEvent e);
+        /// <summary>
+        /// List all Events for a Participant, ordered by Timestamp
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance the Participant belongs to</param>
+        /// <param name="participantId">ID of the Participant to list events for</param>
+        /// <param name="source">Optional Source value to filter on</param>
+        /// <param name="type">Optional Type value to filter on</param>
+        List<ParticipantEvent> List(
+            int instanceId,
+            string participantId,
+            string? source = null,
+            string? type = null);
 
-        Models.ParticipantEvent Last(int instanceId, string participantId, string source, string type);
-        Models.ParticipantEvent Last(int instanceId, string participantId, string type);
-        SurveyInstanceResults<ParticipantResultsSummary> ResultsSummary(int instanceId);
-        List<string> GetAllParticipantLogs(int instanceId);
+        /// <summary>
+        /// List all Events for all Participants in the Instance
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance to list Events for</param>
+        Dictionary<string, List<ParticipantEvent>> List(int instanceId);
 
-        ParticipantResultsSummary ResultsSummary(int instanceId, string participantId);
-        ParticipantResultsSummary ParticipantResultsSummary(Data.Entities.SurveyInstance instance, string participantId);
+        /// <summary>
+        /// Get the next sequential ID for a Participant
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance the Participant belongs to</param>
+        /// <param name="participantIdPrefix">Public Participant ID, that prefixes the internal ID</param>
+        /// <returns></returns>
+        string NextParticipantId(int instanceId, string participantIdPrefix);
 
+        /// <summary>
+        /// Create an Event from the provided model
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance the Participant is in</param>
+        /// <param name="participantId">ID of the Participant to create the Event for</param>
+        /// <param name="e">Event model to create from</param>
+        void Create(int instanceId, string participantId, ParticipantEvent e);
     }
 }
 

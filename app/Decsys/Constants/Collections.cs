@@ -1,4 +1,4 @@
-namespace Decsys.Data
+namespace Decsys.Constants
 {
     public static class Collections
     {

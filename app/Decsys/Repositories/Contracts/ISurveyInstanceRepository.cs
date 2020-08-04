@@ -35,5 +35,11 @@ namespace Decsys.Repositories.Contracts
         /// </summary>
         /// <param name="instanceId">ID of the Instance to close</param>
         void Close(int instanceId);
+
+        /// <summary>
+        /// Check if a SurveyInstance exists
+        /// </summary>
+        /// <param name="id">The ID of the Instance to look for</param>
+        bool Exists(int id);
     }
 }

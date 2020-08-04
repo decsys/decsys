@@ -1,13 +1,11 @@
+using System;
+using System.Collections.Generic;
 using AutoMapper;
-
+using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities;
 using Decsys.Repositories.Contracts;
-
 using LiteDB;
-
-using System;
-using System.Collections.Generic;
 
 namespace Decsys.Repositories.LiteDb
 {
@@ -48,6 +46,8 @@ namespace Decsys.Repositories.LiteDb
             instance.Closed = DateTimeOffset.UtcNow;
             _instances.Update(instance);
         }
+
+        public bool Exists(int id) => _instances.Exists(x => x.Id == id);
 
         // TODO: blocked by EventLogs Repo
         //public void Import(IList<Models.SurveyInstanceResults<Models.ParticipantEvents>> instanceModels, int targetSurveyId)

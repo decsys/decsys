@@ -108,6 +108,5 @@ namespace Decsys.Services
         private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
             _components.Find(surveyId, pageId, componentId)
                 .Params.Value<string>("extension");
-
     }
 }

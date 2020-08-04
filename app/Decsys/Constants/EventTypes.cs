@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using AutoMapper;
-using Decsys.Data;
-using Decsys.Data.Entities;
-using LiteDB;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-namespace Decsys.Services
+﻿namespace Decsys.Constants
 {
 
     public static class EventTypes

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 using AutoMapper;
 
+using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities;
 using Decsys.Repositories.Contracts;
