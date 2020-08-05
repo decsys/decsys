@@ -1,6 +1,8 @@
-﻿using LiteDB;
+using Decsys.Constants;
+
+using LiteDB;
+
 using System;
-using System.Collections.Generic;
 
 namespace Decsys.Data.Entities
 {
@@ -27,4 +29,3 @@ namespace Decsys.Data.Entities
 
     }
 }
-    

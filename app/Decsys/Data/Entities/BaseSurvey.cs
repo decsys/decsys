@@ -1,7 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Decsys.Data.Entities
 {
@@ -14,6 +11,6 @@ namespace Decsys.Data.Entities
 
         public bool UseParticipantIdentifiers { get; set; }
 
-        public IEnumerable<string> ValidIdentifiers { get; set; } = new List<string>();
+        public List<string> ValidIdentifiers { get; set; } = new List<string>();
     }
 }

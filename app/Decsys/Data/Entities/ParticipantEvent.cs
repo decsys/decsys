@@ -1,5 +1,4 @@
-﻿using LiteDB;
-using System;
+using LiteDB;
 
 namespace Decsys.Data.Entities
 {

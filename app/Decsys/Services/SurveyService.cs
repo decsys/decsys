@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Decsys.Data;
-using Decsys.Data.Entities;
-using LiteDB;
+
+using Decsys.Repositories.Contracts;
+using Decsys.Models;
 
 namespace Decsys.Services
 {
@@ -13,15 +11,14 @@ namespace Decsys.Services
     /// </summary>
     public class SurveyService
     {
-        private readonly LiteDatabase _db;
-        private readonly IMapper _mapper;
+
+        private readonly ISurveyRepository _surveys;
         private readonly ImageService _images;
 
         /// <summary>DI Constructor</summary>
-        public SurveyService(LiteDbFactory db, IMapper mapper, ImageService images)
+        public SurveyService(ISurveyRepository surveys, ImageService images)
         {
-            _db = db.Surveys;
-            _mapper = mapper;
+            _surveys = surveys;
             _images = images;
         }
 
@@ -30,40 +27,24 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="id">The ID of the Survey to get.</param>
         /// <returns>The requested Survey, or null if not found.</returns>
-        public Models.Survey Get(int id) => _mapper.Map<Models.Survey>(
-            _db.GetCollection<Survey>(Collections.Surveys)
-            .FindById(id));
+        public Survey Get(int id) => _surveys.Find(id);
 
         // TODO: PAGINATE?
         /// <summary>
         /// List summary data for all Surveys.
         /// </summary>
         /// <returns>All surveys summarised.</returns>
-        public IEnumerable<Models.SurveySummary> List()
-        {
-            var summaries = _mapper.Map<IEnumerable<Models.SurveySummary>>(
-                _db.GetCollection<Survey>(Collections.Surveys)
-                    .FindAll());
+        public IEnumerable<SurveySummary> List() => _surveys.List();
 
-            return summaries.Select(survey =>
-                _mapper.Map<IEnumerable<SurveyInstance>, Models.SurveySummary>(
-                    _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
-                        .Find(instance => instance.Survey.Id == survey.Id),
-                    survey));
-        }
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
         /// </summary>
         /// <param name="name">The name to give the new Survey.</param>
         /// <returns>The ID of the newly created Survey.</returns>
-        public int Create(string? name = null)
-        {
-            return _db.GetCollection<Survey>(Collections.Surveys)
-                  .Insert(name is null
-                      ? new Survey()
-                      : new Survey { Name = name });
-        }
+
+        public int Create(string? name = null) => _surveys.Create(name);
+
 
         /// <summary>
         /// Duplicate a Survey, but not any of its Instance data.
@@ -71,30 +52,28 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to use a source.</param>
         /// <returns>The ID of the newly created duplicate Survey.</returns>
         /// <exception cref="KeyNotFoundException">Thrown if a Survey could not be found with the specified ID.</exception>
+
         public int Duplicate(int id)
         {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-
-            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             var oldId = survey.Id;
 
-            survey.Id = 0;
             survey.Name = $"{survey.Name} (Copy)";
-
-            var newId = surveys.Insert(survey);
+            var newId = _surveys.Create(survey);
 
             _images.CopyAllSurveyFiles(oldId, newId);
 
             return newId;
         }
 
-
-        public async Task<int> Import(Models.Survey survey, List<(string filename, byte[] data)> images)
+        /// <summary>
+        /// Import a Survey, including any images
+        /// </summary>
+        /// <param name="survey">Survey model to import</param>
+        /// <param name="images">List of Survey Images to import</param>
+        public async Task<int> Import(Survey survey, List<(string filename, byte[] data)> images)
         {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-
-            survey.Id = 0;
-            var id = surveys.Insert(_mapper.Map<Survey>(survey));
+            int id = _surveys.Create(survey);
 
             if (images.Count > 0)
                 await _images.Import(id, images).ConfigureAwait(false);
@@ -108,16 +87,11 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to delete.</param>
         public void Delete(int id)
         {
-            _db.GetCollection<SurveyInstance>(Collections.SurveyInstances)
-                .DeleteMany(x => x.Survey.Id == id);
-
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-
-            // delete images on disk for built-in image Page Items
-            _images.RemoveAllSurveyFiles(id);
-
-            surveys.Delete(id);
+            _images.RemoveAllSurveyFiles(id); // delete images on disk for built-in image Page Items
+            _surveys.Delete(id);
         }
+
+
 
         /// <summary>
         /// Edit the name of a Survey.
@@ -125,27 +99,24 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to edit.</param>
         /// <param name="name">The new name for the Survey.</param>
         /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
-        public void EditName(int id, string name)
-        {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
-            survey.Name = name;
-            surveys.Update(survey);
-        }
+
+        public void EditName(int id, string name) => _surveys.UpdateName(id, name);
+
 
         /// <summary>
         /// Configure a Survey for the next Instance run
         /// </summary>
         /// <param name="id">The ID of the Survey to Configure.</param>
         /// <param name="config">A model of configuration values</param>
-        public void Configure(int id, Models.ConfigureSurveyModel config)
+
+        public void Configure(int id, ConfigureSurveyModel config)
         {
-            var surveys = _db.GetCollection<Survey>(Collections.Surveys);
-            var survey = surveys.FindById(id) ?? throw new KeyNotFoundException();
+            var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             survey.OneTimeParticipants = config.OneTimeParticipants;
             survey.UseParticipantIdentifiers = config.UseParticipantIdentifiers;
             survey.ValidIdentifiers = config.ValidIdentifiers;
-            surveys.Update(survey);
+            _surveys.Update(survey);
+
         }
     }
 }

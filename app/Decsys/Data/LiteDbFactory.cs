@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
+using Decsys.Constants;
+
 using LiteDB;
 
 namespace Decsys.Data

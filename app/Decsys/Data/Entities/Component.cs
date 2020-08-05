@@ -1,5 +1,5 @@
-﻿using LiteDB;
 using System;
+using LiteDB;
 
 namespace Decsys.Data.Entities
 {
@@ -10,14 +10,14 @@ namespace Decsys.Data.Entities
         /// DO NOT USE. Only provided for ORM use.
         /// </summary>
         [Obsolete]
-        public Component() { }
+        public Component() : base() { }
 
-        public Component(string type) : base(type)
-        {
-        }
+        /// <summary>
+        /// Create a Component of the specified type.
+        /// </summary>
+        /// <param name="type">The component type.</param>
+        public Component(string type) : base(type) { }
 
         public BsonDocument Params { get; set; } = new BsonDocument();
-
-
     }
 }

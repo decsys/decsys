@@ -1,62 +1,33 @@
-using AutoMapper;
-using Decsys.Data;
-using Decsys.Data.Entities;
-using Decsys.Mapping;
-using LiteDB;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using AutoMapper;
+
+using Decsys.Constants;
+using Decsys.Mapping;
+using Decsys.Models;
+using Decsys.Repositories.Contracts;
+
+using LiteDB;
+
 namespace Decsys.Services
 {
     public class ParticipantEventService
     {
-        private readonly LiteDbFactory _db;
+        private readonly IParticipantEventRepository _events;
+        private readonly ISurveyInstanceRepository _instances;
         private readonly IMapper _mapper;
 
-        public ParticipantEventService(LiteDbFactory db, IMapper mapper)
+        public ParticipantEventService(
+            IParticipantEventRepository events,
+            ISurveyInstanceRepository instances,
+            IMapper mapper)
         {
-            _db = db;
+            _events = events;
+            _instances = instances;
             _mapper = mapper;
-        }
-
-        public static string GetCollectionName(string participantId, LiteDatabase db)
-        {
-            var lookupId = db
-                .GetCollection<EventLogLookup>(Collections.EventLogLookup)
-                .FindOne(x => x.ParticipantId == participantId)?.Id;
-
-            if (lookupId is null)
-            {
-                lookupId = db
-                    .GetCollection<EventLogLookup>(Collections.EventLogLookup)
-                    .Insert(new EventLogLookup { ParticipantId = participantId });
-            }
-
-            return $"{Collections.EventLog}{lookupId}";
-        }
-
-        public string GetCollectionName(int instanceId, string participantId)
-            => GetCollectionName(participantId, _db.InstanceEventLogs(instanceId));
-
-        public string GetParticipantId(int instanceId, string collectionName)
-            => _db.InstanceEventLogs(instanceId)
-                .GetCollection<EventLogLookup>(Collections.EventLogLookup)
-                .FindOne(x => x.Id.ToString() == collectionName.Substring(1))?
-                .ParticipantId
-            ?? throw new KeyNotFoundException(
-                $"Couldn't find the requested logs collection (id: {collectionName}) for the specified Survey Instance (id: {instanceId})");
-
-        private IEnumerable<Models.ParticipantEvent> _List(int instanceId, string participantId)
-        {
-            var log = _db.InstanceEventLogs(instanceId)
-                .GetCollection<ParticipantEvent>(
-                    GetCollectionName(instanceId, participantId));
-
-            return _mapper.Map<IEnumerable<Models.ParticipantEvent>>(
-                log.FindAll().OrderBy(x => x.Timestamp));
         }
 
         /// <summary>
@@ -68,63 +39,43 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="participantId"></param>
         /// <param name="instanceId"></param>
-        /// <returns></returns>
         public string GetNextId(string participantId, int instanceId)
         {
-            if (!_db.Surveys.GetCollection<SurveyInstance>(
-                    Collections.SurveyInstances)
-                .Exists(x => x.Id == instanceId))
+            if (!_instances.Exists(instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var logCollections = _db.InstanceEventLogs(instanceId)
-                .GetCollection<EventLogLookup>(Collections.EventLogLookup)
-                .Find(x => x.ParticipantId.StartsWith(participantId))
-                .OrderByDescending(x => x.ParticipantId)
-                .ToList();
-
-            var latestLog = logCollections.FirstOrDefault();
-            if (latestLog is null) return participantId;
-
-            var log = _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(latestLog.Id.ToString());
-            return log.Find(x => x.Type == EventTypes.SURVEY_COMPLETE).Any()
-                ? $"{participantId}-{logCollections.Count}"
-                : latestLog.ParticipantId;
+            return _events.NextParticipantId(instanceId, participantId);
         }
 
-        public IEnumerable<Models.ParticipantEvent> List(int instanceId, string participantId)
+        /// <summary>
+        /// List all Events for a Participant
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance the Participant is in</param>
+        /// <param name="participantId">ID of the Participant to list Events for</param>
+        /// <returns></returns>
+        public IEnumerable<ParticipantEvent> List(int instanceId, string participantId)
         {
-            if (!_db.Surveys.GetCollection<SurveyInstance>(
-                    Collections.SurveyInstances)
-                .Exists(x => x.Id == instanceId))
+            if (!_instances.Exists(instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            return _List(instanceId, participantId);
+            return _events.List(instanceId, participantId);
         }
 
-        public Models.SurveyInstanceResults<Models.ParticipantEvents> Results(int instanceId)
+
+        public SurveyInstanceResults<ParticipantEvents> Results(int instanceId)
         {
-            var instance = _db.Surveys.GetCollection<SurveyInstance>(
-                Collections.SurveyInstances)
-                    .Include(x => x.Survey)
-                    .FindById(instanceId) ??
+            var instance = _instances.Find(instanceId) ??
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            // Get all participant collections for this instance
-            var logs = GetAllParticipantLogs(instanceId);
-
-            // Add each one
-            var participants = logs
-                .Select(collectionName =>
-                {
-                    var participantId = GetParticipantId(instanceId, collectionName);
-                    return new Models.ParticipantEvents(participantId)
+            var participants = _events.List(instanceId)
+                .Select(log =>
+                    new ParticipantEvents(log.Key)
                     {
-                        Events = _List(instanceId, participantId).ToList()
-                    };
-                })
+                        Events = log.Value
+                    })
                 .ToList();
 
-            var result = _mapper.Map<Models.SurveyInstanceResults<Models.ParticipantEvents>>(instance);
+            var result = _mapper.Map<SurveyInstanceResults<ParticipantEvents>>(instance);
             result.Participants = participants;
 
             return result;
@@ -137,18 +88,12 @@ namespace Decsys.Services
         /// <param name="participantId">Identifier for a Survey Instance Participant</param>
         /// <param name="e">An event model, containing the source and type of the event, and a payload</param>
         /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
-        public void Log(int instanceId, string participantId, Models.ParticipantEvent e)
+        public void Log(int instanceId, string participantId, ParticipantEvent e)
         {
-            if (!_db.Surveys.GetCollection<SurveyInstance>(
-                    Collections.SurveyInstances)
-                .Exists(x => x.Id == instanceId))
+            if (!_instances.Exists(instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var log = _db.InstanceEventLogs(instanceId)
-                .GetCollection<ParticipantEvent>(
-                    GetCollectionName(instanceId, participantId));
-
-            log.Insert(_mapper.Map<ParticipantEvent>(e));
+            _events.Create(instanceId, participantId, e);
         }
 
         /// <summary>
@@ -160,21 +105,12 @@ namespace Decsys.Services
         /// <param name="type">Type of the event (e.g. Results)</param>
         /// <returns>The Event Log entry, or null if there isn't one matching the criteria.</returns>
         /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
-        public Models.ParticipantEvent Last(int instanceId, string participantId, string source, string type)
+        public ParticipantEvent? Last(int instanceId, string participantId, string source, string type)
         {
-            if (!_db.Surveys.GetCollection<SurveyInstance>(
-                    Collections.SurveyInstances)
-                .Exists(x => x.Id == instanceId))
+            if (!_instances.Exists(instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var log = _db.InstanceEventLogs(instanceId)
-                .GetCollection<ParticipantEvent>(
-                    GetCollectionName(instanceId, participantId));
-
-            return _mapper.Map<Models.ParticipantEvent>(
-                log.Find(x => x.Source == source && x.Type == type)
-                    .OrderByDescending(x => x.Timestamp)
-                    .FirstOrDefault());
+            return FindLast(instanceId, participantId, source, type);
         }
 
         /// <summary>
@@ -185,95 +121,60 @@ namespace Decsys.Services
         /// <param name="type">Type of the event (e.g. Results)</param>
         /// <returns>The Event Log entry, or null if there isn't one matching the criteria.</returns>
         /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
-        public Models.ParticipantEvent Last(int instanceId, string participantId, string type)
+        public ParticipantEvent? Last(int instanceId, string participantId, string type)
         {
-            if (!_db.Surveys.GetCollection<SurveyInstance>(
-                    Collections.SurveyInstances)
-                .Exists(x => x.Id == instanceId))
+            if (!_instances.Exists(instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var log = _db.InstanceEventLogs(instanceId)
-                .GetCollection<ParticipantEvent>(
-                    GetCollectionName(instanceId, participantId));
-
-            return _mapper.Map<Models.ParticipantEvent>(
-                log.Find(x => x.Type == type)
-                    .OrderByDescending(x => x.Timestamp)
-                    .FirstOrDefault());
+            return FindLast(instanceId, participantId, source: null, type);
         }
 
-        public Models.SurveyInstanceResults<Models.ParticipantResultsSummary> ResultsSummary(int instanceId)
+        private ParticipantEvent? FindLast(int instanceId, string participantId, string? source, string? type)
+            => _events.List(instanceId, participantId, source: null, type).LastOrDefault();
+
+        public SurveyInstanceResults<ParticipantResultsSummary> ResultsSummary(int instanceId)
         {
-            var instance = _db.Surveys.GetCollection<SurveyInstance>(
-                Collections.SurveyInstances)
-                    .Include(x => x.Survey)
-                    .FindById(instanceId) ??
+            var instance = _instances.Find(instanceId) ??
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            // Get all participant collections for this instance
-            var logs = GetAllParticipantLogs(instanceId);
-
             // summarize each one
-            var participants = logs
-                .Select(collectionName =>
-                    ParticipantResultsSummary(instance, GetParticipantId(instanceId, collectionName)))
+            var participants = _events
+                .List(instanceId).Keys
+                .Select(participantId =>
+                    ParticipantResultsSummary(instance, participantId))
                 .ToList();
 
-            var result = _mapper.Map<Models.SurveyInstanceResults<Models.ParticipantResultsSummary>>(instance);
+            var result = _mapper.Map<SurveyInstanceResults<ParticipantResultsSummary>>(instance);
             result.Participants = participants;
 
             return result;
         }
 
-        /// <summary>
-        /// Get all participant collections for this instance
-        /// </summary>
-        /// <param name="instanceId"></param>
-        /// <returns></returns>
-        private List<string> GetAllParticipantLogs(int instanceId)
+        public ParticipantResultsSummary ResultsSummary(int instanceId, string participantId)
         {
-            return _db.InstanceEventLogs(instanceId)
-                .GetCollectionNames()
-                .Where(x => x.StartsWith(Collections.EventLog))
-                .ToList();
-        }
-
-        public Models.ParticipantResultsSummary ResultsSummary(int instanceId, string participantId)
-        {
-            var instance = _db.Surveys.GetCollection<SurveyInstance>(
-                Collections.SurveyInstances)
-                    .Include(x => x.Survey)
-                    .FindById(instanceId) ??
+            var instance = _instances.Find(instanceId) ??
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
             return ParticipantResultsSummary(instance, participantId);
         }
 
-        private Models.ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
+        private ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
         {
-            var resultsSummary = new Models.ParticipantResultsSummary(participantId);
-
-            var log = _db.InstanceEventLogs(instance.Id)
-                .GetCollection<ParticipantEvent>(
-                    GetCollectionName(instance.Id, participantId));
-
-            var orderLog = log.Find(x =>
-                        x.Source == instance.Survey.Id.ToString()
-                        && x.Type == EventTypes.PAGE_RANDOMIZE)
-                    .OrderByDescending(x => x.Timestamp)
-                    .FirstOrDefault();
-            if (orderLog is null)
+            var resultsSummary = new ParticipantResultsSummary(participantId)
             {
-                resultsSummary.Responses = new List<Models.PageResponseSummary>();
-                return resultsSummary;
-            }
+                Responses = new List<PageResponseSummary>()
+            };
 
-            var order = ((JArray)
-                    ((dynamic)BsonJObjectConverter.Convert(orderLog.Payload))
-                    .order)
+            var orderEvent = FindLast(
+                    instance.Id,
+                    participantId,
+                    instance.Survey.Id.ToString(),
+                    EventTypes.PAGE_RANDOMIZE);
+            if (orderEvent is null) return resultsSummary;
+
+            var order = ((dynamic)orderEvent.Payload)
+                .order
                 .ToObject<IList<string>>();
-
-            var responses = new List<Models.PageResponseSummary>();
 
             foreach (var page in instance.Survey.Pages.OrderBy(x => x.Order))
             {
@@ -281,36 +182,32 @@ namespace Decsys.Services
                         x => x.Type != x.Type.ToLower(CultureInfo.InvariantCulture));
                 if (responseComponent is null) continue; // we don't care about pages without responses
 
-                var finalResponse = log.Find(x =>
-                        x.Source == responseComponent.Id.ToString()
-                        && x.Type == EventTypes.COMPONENT_RESULTS)
-                    .OrderByDescending(x => x.Timestamp)
-                    .FirstOrDefault();
-                var pageLoadEvent = log.Find(x =>
-                        x.Source == page.Id.ToString()
-                        && x.Type == EventTypes.PAGE_LOAD)
-                    .OrderByDescending(x => x.Timestamp)
-                    .FirstOrDefault();
+                var finalResponse = FindLast(
+                    instance.Id, participantId,
+                    responseComponent.Id.ToString(),
+                    EventTypes.COMPONENT_RESULTS);
+
+                var pageLoadEvent = FindLast(
+                    instance.Id, participantId,
+                    page.Id.ToString(),
+                    EventTypes.PAGE_LOAD);
 
                 // don't try to add responses for pages we've never visited.
                 // e.g. if the survey is still in progress
                 if (pageLoadEvent is null) continue;
 
-                responses.Add(new Models.PageResponseSummary
+                resultsSummary.Responses.Add(new PageResponseSummary
                 {
                     Page = page.Order,
                     ResponseType = responseComponent.Type,
                     PageLoad = pageLoadEvent.Timestamp,
                     ResponseRecorded = finalResponse?.Timestamp
                         ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
-                    Response = finalResponse is null
-                        ? null
-                        : BsonJObjectConverter.Convert(finalResponse.Payload),
+                    Response = finalResponse?.Payload,
                     Order = order.IndexOf(page.Id.ToString()) + 1
                 });
             }
 
-            resultsSummary.Responses = responses;
             return resultsSummary;
         }
     }

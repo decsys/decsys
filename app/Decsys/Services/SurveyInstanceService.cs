@@ -1,40 +1,44 @@
-using AutoMapper;
-using Decsys.Data;
-using Decsys.Data.Entities;
-using LiteDB;
 using System;
 using System.Collections.Generic;
+using AutoMapper;
+using Decsys.Models;
+using Decsys.Repositories.Contracts;
 
 namespace Decsys.Services
 {
-    // TODO: Doc Comments!
     public class SurveyInstanceService
     {
-        private readonly LiteDbFactory _db;
+        private readonly ISurveyInstanceRepository _instances;
+        private readonly ISurveyRepository _surveys;
+        private readonly IParticipantEventRepository _events;
         private readonly IMapper _mapper;
 
-        public SurveyInstanceService(LiteDbFactory db, IMapper mapper)
+        public SurveyInstanceService(
+            ISurveyInstanceRepository instances,
+            ISurveyRepository surveys,
+            IParticipantEventRepository events,
+            IMapper mapper)
         {
-            _db = db;
+            _instances = instances;
+            _surveys = surveys;
+            _events = events;
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Create a new SurveyInstance
+        /// </summary>
+        /// <param name="surveyId">ID of the Survey to create an Instance of</param>
         public int Create(int surveyId)
         {
-            var surveys = _db.Surveys.GetCollection<Survey>(Collections.Surveys);
-            if (!surveys.Exists(x => x.Id == surveyId))
-                throw new KeyNotFoundException();
+            var survey = _surveys.Find(surveyId) ?? throw new KeyNotFoundException();
 
-            var instances = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
-
-            if (instances.Exists(x => x.Closed == null && x.Survey.Id == surveyId))
+            if (_instances.HasActiveInstance(surveyId))
                 throw new ArgumentException(
                     $"The Survey with the id '{surveyId}' currently has an active Survey Instance.",
                     nameof(surveyId));
 
-            var survey = surveys.FindById(surveyId); // finally get the surey, now we definitely care
-
-            var instance = new SurveyInstance(surveyId)
+            var instance = new SurveyInstance(survey)
             {
                 // Preserve the Survey Config at the time of this Instance launch
                 OneTimeParticipants = survey.OneTimeParticipants,
@@ -42,72 +46,73 @@ namespace Decsys.Services
                 ValidIdentifiers = survey.ValidIdentifiers
             };
 
-            return instances.Insert(instance);
+            return _instances.Create(instance);
         }
 
-        public Models.SurveyInstance Get(int surveyId, int instanceId)
+        /// <summary>
+        /// Get a SurveyInstance
+        /// </summary>
+        /// <param name="surveyId">ID of the Survey</param>
+        /// <param name="instanceId">ID of the Instance</param>
+        public SurveyInstance Get(int surveyId, int instanceId)
         {
-            if (!_db.Surveys.GetCollection<Survey>(Collections.Surveys)
-                    .Exists(x => x.Id == surveyId))
+            if (!_surveys.Exists(surveyId))
                 throw new KeyNotFoundException();
 
-            var instance = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances)
-                .Include(x => x.Survey)
-                .Include(x => x.Survey.Pages)
-                .FindById(instanceId);
+            var instance = _instances.Find(instanceId);
 
             if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();
 
-            return _mapper.Map<Models.SurveyInstance>(instance);
+            return instance;
         }
 
-        public IEnumerable<Models.SurveyInstance> List(int surveyId)
+        /// <summary>
+        /// List all Instances of a Survey
+        /// </summary>
+        /// <param name="surveyId">ID of the Survey</param>
+        public IEnumerable<SurveyInstance> List(int surveyId)
         {
-            if (!_db.Surveys.GetCollection<Survey>(Collections.Surveys)
-                    .Exists(x => x.Id == surveyId))
+            if (!_surveys.Exists(surveyId))
                 throw new KeyNotFoundException();
 
-            return _mapper.Map<IEnumerable<Models.SurveyInstance>>(
-                _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances)
-                    .Find(x => x.Survey.Id == surveyId));
+            return _instances.List(surveyId);
         }
 
+        /// <summary>
+        /// Close an Instance of a Survey
+        /// </summary>
+        /// <param name="surveyId">ID of the Survey</param>
+        /// <param name="instanceId">ID of the Instance to close</param>
         public void Close(int surveyId, int instanceId)
         {
-            if (!_db.Surveys.GetCollection<Survey>(Collections.Surveys)
-                    .Exists(x => x.Id == surveyId))
+            if (!_surveys.Exists(surveyId))
                 throw new KeyNotFoundException();
 
-            var instances = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
-            var instance = instances.FindById(instanceId);
+            var instance = _instances.Find(instanceId);
+            if (instance?.Survey.Id != surveyId) throw new KeyNotFoundException();
 
-            if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();
-
-            instance.Closed = DateTimeOffset.UtcNow;
-            instances.Update(instance);
+            _instances.Close(instanceId);
         }
 
-        public void Import(IList<Models.SurveyInstanceResults<Models.ParticipantEvents>> instanceModels, int targetSurveyId)
+        /// <summary>
+        /// Import Instances to a target Survey
+        /// </summary>
+        /// <param name="instances">Instance data to import</param>
+        /// <param name="targetSurveyId">ID of the Survey to import to</param>
+        public void Import(IList<SurveyInstanceResults<ParticipantEvents>> instances, int targetSurveyId)
         {
-            var instances = _db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
-            var survey = _db.Surveys.GetCollection<Survey>(Collections.Surveys).FindById(targetSurveyId);
+            var survey = _surveys.Find(targetSurveyId);
+            if (survey is null) throw new KeyNotFoundException();
 
-            foreach (var instanceModel in instanceModels)
+            foreach (var instanceImport in instances)
             {
-                var instance = _mapper.Map<SurveyInstance>(instanceModel);
+                var instance = _mapper.Map<SurveyInstance>(instanceImport);
                 instance.Survey = survey;
-                var instanceId = instances.Insert(instance);
+                var instanceId = _instances.Create(instance);
 
-                foreach(var participant in instanceModel.Participants)
-                {
-                    var log = _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(
-                    ParticipantEventService.GetCollectionName(participant.Id, _db.InstanceEventLogs(instanceId)));
-
-                    foreach(var e in participant.Events)
-                    {
-                        log.Insert(_mapper.Map<ParticipantEvent>(e));
-                    }
-                }
+                foreach (var participant in instanceImport.Participants)
+                    foreach (var e in participant.Events)
+                        _events.Create(instanceId, participant.Id, e);
             }
         }
     }

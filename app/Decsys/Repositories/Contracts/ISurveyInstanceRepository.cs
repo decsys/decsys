@@ -1,18 +1,45 @@
-﻿using Decsys.Models;
-using System;
+using Decsys.Models;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Decsys.Repositories.Contracts
 {
-    interface ISurveyInstanceRepository
+    public interface ISurveyInstanceRepository
     {
-        int Create(int surveyId);
-        SurveyInstance Get(int surveyId, int instanceId);
-        IEnumerable<SurveyInstance> List(int surveyId);
-        void Close(int surveyId, int instanceId);
+        /// <summary>
+        /// Check if a Survey has an active Instance
+        /// </summary>
+        /// <param name="surveyId">ID of the Survey to check</param>
+        bool HasActiveInstance(int surveyId);
 
-        void Import(IList<SurveyInstanceResults<ParticipantEvents>> instanceModels, int targetSurveyId);
+        /// <summary>
+        /// Create a new Instance from a provided model
+        /// </summary>
+        /// <param name="instance">Instance model to create from</param>
+        int Create(SurveyInstance instance);
+
+        /// <summary>
+        /// Find a SurveyInstance
+        /// </summary>
+        /// <param name="id">ID of the Instance to find</param>
+        SurveyInstance Find(int id);
+
+        /// <summary>
+        /// List all the Instances belonging to a Survey
+        /// </summary>
+        /// <param name="surveyId">ID of the Survey to list Instances of</param>
+        List<SurveyInstance> List(int surveyId);
+
+        /// <summary>
+        /// Close a SurveyInstance
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance to close</param>
+        void Close(int instanceId);
+
+        /// <summary>
+        /// Check if a SurveyInstance exists
+        /// </summary>
+        /// <param name="id">The ID of the Instance to look for</param>
+        bool Exists(int id);
     }
 }

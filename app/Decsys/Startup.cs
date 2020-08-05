@@ -5,7 +5,8 @@ using ClacksMiddleware.Extensions;
 using Decsys.Auth;
 using Decsys.Data;
 using Decsys.Services;
-
+using Decsys.Repositories.Contracts;
+using Decsys.Repositories.LiteDb;
 using LiteDB;
 
 using Microsoft.AspNetCore.Authorization;
@@ -103,6 +104,11 @@ namespace Decsys
                         FileOptional = true
                     }));
 
+            services.AddTransient<ISurveyRepository, LiteDbSurveyRepository>();
+            services.AddTransient<IPageRepository, LiteDbPageRepository>();
+            services.AddTransient<IComponentRepository, LiteDbComponentRepository>();
+            services.AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>();
+            services.AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>();
             services.AddTransient<SurveyService>();
             services.AddTransient<PageService>();
             services.AddTransient<ComponentService>();
@@ -111,7 +117,7 @@ namespace Decsys
             services.AddTransient<ParticipantEventService>();
             services.AddTransient(svc => new ImageService(
                 _localPaths["SurveyImages"],
-                svc.GetRequiredService<LiteDbFactory>().Surveys));
+                svc.GetRequiredService<IComponentRepository>()));
 
             services.AddSwaggerGen(c =>
             {
