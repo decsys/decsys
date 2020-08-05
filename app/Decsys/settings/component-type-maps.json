@@ -1,0 +1,14 @@
+{
+  "ComponentTypeMaps": {
+    "v1": {
+      "13484d8e-fd9e-4e48-99ac-5657c9df30dc": "Ellipse",
+      "8f07de7a-c9b2-4dbe-afa2-1e3beabf4d3d": "Discrete",
+      "ff6eb986-2124-4e65-83b0-ddf8b67ffc77": "FreeText"
+    },
+    "v2": {
+      "13484d8e-fd9e-4e48-99ac-5657c9df30dc": "Ellipse Scale",
+      "8f07de7a-c9b2-4dbe-afa2-1e3beabf4d3d": "Discrete Scale",
+      "ff6eb986-2124-4e65-83b0-ddf8b67ffc77": "Free Text"
+    }
+  }
+}

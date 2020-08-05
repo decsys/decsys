@@ -3,6 +3,10 @@ using System.Threading.Tasks;
 
 using Decsys.Repositories.Contracts;
 using Decsys.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Decsys.Config;
+using System.Linq;
 
 namespace Decsys.Services
 {
@@ -14,12 +18,17 @@ namespace Decsys.Services
 
         private readonly ISurveyRepository _surveys;
         private readonly ImageService _images;
+        private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;
 
         /// <summary>DI Constructor</summary>
-        public SurveyService(ISurveyRepository surveys, ImageService images)
+        public SurveyService(
+            ISurveyRepository surveys,
+            ImageService images,
+            IOptionsSnapshot<ComponentTypeMap> componentTypeMaps)
         {
             _surveys = surveys;
             _images = images;
+            _componentTypeMaps = componentTypeMaps;
         }
 
         /// <summary>
@@ -73,12 +82,34 @@ namespace Decsys.Services
         /// <param name="images">List of Survey Images to import</param>
         public async Task<int> Import(Survey survey, List<(string filename, byte[] data)> images)
         {
+            // any validation, or mapping to account for version changes
+            MigrateUpComponentTypes(ref survey);
+
             int id = _surveys.Create(survey);
 
             if (images.Count > 0)
                 await _images.Import(id, images).ConfigureAwait(false);
 
             return id;
+        }
+
+        private void MigrateUpComponentTypes(ref Survey survey)
+        {
+            // this is very simplistic right now from 1.x to 2.x
+            // but in future there may be complex version based migration
+            var v1map = _componentTypeMaps.Get(Versions.v1).Types;
+            var v2map = _componentTypeMaps.Get(Versions.v2).Types;
+            foreach (var page in survey.Pages)
+            {
+                foreach (var component in page.Components)
+                {
+                    if (v1map.ContainsValue(component.Type))
+                    {
+                        var key = v1map.Single(item => item.Value == component.Type).Key;
+                        component.Type = v2map[key];
+                    }
+                }
+            }
         }
 
         /// <summary>

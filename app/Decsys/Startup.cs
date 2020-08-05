@@ -29,6 +29,7 @@ using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
 using UoN.VersionInformation.Providers;
+using Decsys.Config;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -75,6 +76,12 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            foreach (var v in Versions.All)
+                services.Configure<ComponentTypeMap>(v,
+                    c => _config
+                        .GetSection($"ComponentTypeMaps:{v}")
+                        .Bind(c.Types));
+
             services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
 
             services.AddResponseCompression();
