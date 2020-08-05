@@ -153,10 +153,10 @@ const ResultsTable = ({ columns, data }) => {
     prepareRow,
   } = useTable({ columns, data }, useSortBy);
 
-  const { colors, shadows } = useTheme();
+  const { colors } = useTheme();
 
   return (
-    <Flex mx={2} overflowY="auto" boxShadow="callout">
+    <Flex overflowY="auto">
       <table
         css={{
           position: "relative",
@@ -187,6 +187,7 @@ const ResultsTable = ({ columns, data }) => {
                       color: colors.white,
                       textAlign: "center",
                       borderLeft: "thin solid white",
+                      borderRight: "thin solid white",
                     }}
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                   >
@@ -370,8 +371,6 @@ const ResultsTables = ({ results }) => {
       </Stack>
 
       <ResultsTable data={selectedParticipant.responses} columns={columns} />
-
-      <Flex>Pagination</Flex>
     </>
   );
 };
@@ -422,7 +421,7 @@ const Results = ({ id }) => {
       {results?.participants.length ? (
         <ResultsTables results={results} />
       ) : (
-        <Flex mt={4} gridRow="span 3">
+        <Flex mt={4} gridRow="span 2">
           <EmptyState message="There are no results available for this Survey Instance" />
         </Flex>
       )}
