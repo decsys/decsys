@@ -20,6 +20,7 @@ import {
   MenuButton,
   MenuList,
   Grid,
+  useTheme,
 } from "@chakra-ui/core";
 import { Page, EmptyState } from "components/core";
 import { navigate } from "@reach/router";
@@ -152,25 +153,22 @@ const ResultsTable = ({ columns, data }) => {
     prepareRow,
   } = useTable({ columns, data });
 
+  const { colors } = useTheme();
+
   return (
-    <Flex mx={2}>
+    <Flex mx={2} overflowY="auto" boxShadow="callout">
       <table
         css={{
+          position: "relative",
           tableLayout: "fixed",
           width: "100%",
           borderCollapse: "collapse",
-          boxShadow: themes.shadows.callout,
         }}
         {...getTableProps()}
       >
         <thead>
           {headerGroups.map((group) => (
-            <tr
-              css={{
-                background: "#575757",
-              }}
-              {...group.getHeaderGroupProps()}
-            >
+            <tr {...group.getHeaderGroupProps()}>
               {group.headers.map((column) => {
                 const width =
                   {
@@ -182,8 +180,11 @@ const ResultsTable = ({ columns, data }) => {
                 return (
                   <th
                     css={{
+                      background: colors.gray[600],
+                      position: "sticky",
+                      top: 0,
                       width,
-                      color: "#FFFFFF",
+                      color: colors.white,
                       textAlign: "center",
                     }}
                     {...column.getHeaderProps()}
@@ -202,14 +203,15 @@ const ResultsTable = ({ columns, data }) => {
               <tr
                 css={{
                   ":nth-of-type(2n)": {
-                    background: "#eeeeee",
+                    background: colors.gray[200],
                     "& td:nth-of-type(2n)": {
-                      background: "#dddddd",
+                      background: colors.gray[300],
                     },
                   },
                   ":nth-of-type(2n+1)": {
+                    background: colors.gray[100],
                     "& td:nth-of-type(2n)": {
-                      background: "#eeeeee",
+                      background: colors.gray[200],
                     },
                   },
                 }}
@@ -219,7 +221,6 @@ const ResultsTable = ({ columns, data }) => {
                   <td
                     css={{
                       padding: "0 8px",
-                      //border: "thin solid #bbb",
                     }}
                     {...cell.getCellProps()}
                   >
@@ -263,6 +264,10 @@ const ResultsTables = ({ results }) => {
         Header: "Page Loaded (UTC)",
         accessor: (d) => Date.parse(d.pageLoad),
         Cell: DateTimeCellRender,
+      },
+      {
+        Header: "Response Type",
+        accessor: "responseType",
       },
       {
         id: "nullableResponse",
