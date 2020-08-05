@@ -21,14 +21,14 @@ import {
   MenuList,
   Grid,
   useTheme,
+  Icon,
 } from "@chakra-ui/core";
 import { Page, EmptyState } from "components/core";
 import { navigate } from "@reach/router";
 import { encode } from "services/instance-id";
-import { FaChevronDown } from "react-icons/fa";
-import { useTable } from "react-table";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useTable, useSortBy } from "react-table";
 import { isEmpty } from "services/data-structures";
-import themes from "themes";
 
 const exportMime = "application/json";
 
@@ -151,9 +151,9 @@ const ResultsTable = ({ columns, data }) => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data });
+  } = useTable({ columns, data }, useSortBy);
 
-  const { colors } = useTheme();
+  const { colors, shadows } = useTheme();
 
   return (
     <Flex mx={2} overflowY="auto" boxShadow="callout">
@@ -172,8 +172,8 @@ const ResultsTable = ({ columns, data }) => {
               {group.headers.map((column) => {
                 const width =
                   {
-                    Page: "60px",
-                    Order: "60px",
+                    Page: "100px",
+                    Order: "100px",
                     "Page Loaded (UTC)": "200px",
                     "Recorded (UTC)": "200px",
                   }[column.Header] ?? "auto";
@@ -186,10 +186,26 @@ const ResultsTable = ({ columns, data }) => {
                       width,
                       color: colors.white,
                       textAlign: "center",
+                      borderLeft: "thin solid white",
                     }}
-                    {...column.getHeaderProps()}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
                   >
                     {column.render("Header")}
+                    {column.isSorted && (
+                      <Flex
+                        w="100%"
+                        justify="flex-end"
+                        position="absolute"
+                        top={0}
+                        left={0}
+                        py={1}
+                        px={2}
+                      >
+                        <Icon
+                          as={column.isSortedDesc ? FaChevronDown : FaChevronUp}
+                        />
+                      </Flex>
+                    )}
                   </th>
                 );
               })}
