@@ -43,7 +43,9 @@ const b64toByteArrays = (b64Data, sliceSize = 512) => {
  * Download survey structure as a json file
  */
 export const surveyExport = async (id, name, type) => {
-  const filename = `Survey-${name}_${exportDateFormat(new Date())}_${type}`;
+  const filename = `Survey-${name}_${
+    exportDateFormat(new Date()).flat
+  }_${type}`;
   const mime = "application/zip";
   const { data } = await api.getSurveyExport(id, type);
   return downloadFile(b64toByteArrays(data), `${filename}.zip`, mime);

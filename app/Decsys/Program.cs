@@ -1,4 +1,6 @@
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace Decsys
@@ -10,7 +12,13 @@ namespace Decsys
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(b =>
-                    b.UseStartup<Startup>());
+            .ConfigureAppConfiguration((context, b) =>
+                b.AddJsonFile(
+                    Path.Combine(
+                        context.HostingEnvironment.ContentRootPath,
+                        "settings/component-type-maps.json"),
+                    optional: false))
+            .ConfigureWebHostDefaults(b =>
+                b.UseStartup<Startup>());
     }
 }
