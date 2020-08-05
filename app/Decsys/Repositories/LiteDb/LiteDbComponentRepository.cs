@@ -16,9 +16,9 @@ namespace Decsys.Repositories.LiteDb
     public class LiteDbComponentRepository : IComponentRepository
     {
         private readonly ILiteCollection<Survey> _surveys;
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
 
-        public LiteDbComponentRepository(LiteDbFactory db, Mapper mapper)
+        public LiteDbComponentRepository(LiteDbFactory db, IMapper mapper)
         {
             _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _mapper = mapper;
@@ -32,11 +32,10 @@ namespace Decsys.Repositories.LiteDb
 
             var component = new Component(type)
             {
-                Order = page.Components.Count
+                Order = page.Components.Count + 1
             };
 
-            page.Components.Add(new Component(type));
-
+            page.Components.Add(component);
             _surveys.Update(survey);
             return _mapper.Map<Models.Component>(component);
         }

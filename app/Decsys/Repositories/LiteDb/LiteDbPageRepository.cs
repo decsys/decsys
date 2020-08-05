@@ -31,7 +31,7 @@ namespace Decsys.Repositories.LiteDb
 
             var page = new Page()
             {
-                Order = survey.Pages.Count()
+                Order = survey.Pages.Count + 1
             };
 
             survey.Pages.Add(page);

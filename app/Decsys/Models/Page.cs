@@ -5,7 +5,7 @@ namespace Decsys.Models
 {
     public class Page
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public int Order { get; set; }
 

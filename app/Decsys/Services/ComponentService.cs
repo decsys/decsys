@@ -162,7 +162,6 @@ namespace Decsys.Services
             // manual deep copy
             var dupe = new Component(component.Type)
             {
-                Id = Guid.NewGuid(),
                 Order = components.Count + 1,
                 Params = component.Params
             };
