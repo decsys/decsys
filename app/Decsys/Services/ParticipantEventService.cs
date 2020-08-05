@@ -130,7 +130,7 @@ namespace Decsys.Services
         }
 
         private ParticipantEvent? FindLast(int instanceId, string participantId, string? source, string? type)
-            => _events.List(instanceId, participantId, source: null, type).LastOrDefault();
+            => _events.List(instanceId, participantId, source, type).LastOrDefault();
 
         public SurveyInstanceResults<ParticipantResultsSummary> ResultsSummary(int instanceId)
         {

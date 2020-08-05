@@ -21,7 +21,7 @@ import {
   MenuList,
   Grid,
 } from "@chakra-ui/core";
-import { Page, EmptyState, LoadingIndicator } from "components/core";
+import { Page, EmptyState } from "components/core";
 import { navigate } from "@reach/router";
 import { encode } from "services/instance-id";
 import { FaChevronDown } from "react-icons/fa";
@@ -90,25 +90,32 @@ const DashboardButton = ({ surveyId, instanceId }) => (
 );
 
 const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
+  const filename = useMemo(
+    () =>
+      results &&
+      resultsFilename(
+        results.survey,
+        results.published,
+        results.exportGenerated
+      ),
+    [results]
+  );
+
   const handleExportCsvClick = async () => {
     const data = getResultsCsvData(results);
-    download(data, `${resultsFilename()}_Summary.csv`, "text/csv");
+    download(data, `${filename}_Summary.csv`, "text/csv");
   };
 
   const handleExportSummaryClick = () =>
     downloadFile(
       [JSON.stringify(results)],
-      `${resultsFilename()}_Summary.json`,
+      `${filename}_Summary.json`,
       exportMime
     );
 
   const handleExportFullClick = async () => {
     const { data } = await getInstanceResultsFull(surveyId, instanceId);
-    downloadFile(
-      [JSON.stringify(data)],
-      `${resultsFilename()}_Full.json`,
-      exportMime
-    );
+    downloadFile([JSON.stringify(data)], `${filename}_Full.json`, exportMime);
   };
 
   return (
