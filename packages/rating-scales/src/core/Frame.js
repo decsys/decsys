@@ -10,6 +10,7 @@ import PropTypes from "prop-types";
 const Frame = ({ frameHeight, ...p }) => (
   <div
     css={{
+      minHeight: frameHeight,
       height: frameHeight,
       width: "100%",
       position: "relative",

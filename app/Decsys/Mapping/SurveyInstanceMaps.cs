@@ -8,6 +8,16 @@ namespace Decsys.Mapping
     {
         public SurveyInstanceMaps()
         {
+            CreateMap<SurveyInstance, Models.SurveyInstance>()
+                .ConstructUsing(src =>
+                    // a dummy one at construction, as we map it anyway
+                    new Models.SurveyInstance(new Models.Survey("")));
+
+            CreateMap<Models.SurveyInstance, SurveyInstance>()
+                .ConstructUsing(src =>
+                    new SurveyInstance(src.Survey.Id));
+
+            // Export
             CreateMap<Models.SurveyInstance, Models.BaseSurveyInstanceResults>()
                 .ForMember(dest => dest.ExportGenerated, opt => opt.MapFrom(_ => DateTime.UtcNow))
                 .ForMember(dest => dest.Survey, opt => opt.MapFrom(src => src.Survey.Name));

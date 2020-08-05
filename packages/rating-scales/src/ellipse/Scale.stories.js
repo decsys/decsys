@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import EllipseScale from "./Scale";
+import { action } from "@storybook/addon-actions";
 import { text } from "@storybook/addon-knobs";
 
 export default {
   title: "Rating Scales/Ellipse",
   component: EllipseScale,
+  decorators: [
+    (s) => (
+      <EventHandler onEvent={action("Ellipse Completed")}>{s()}</EventHandler>
+    ),
+  ],
+};
+
+const EventHandler = ({ onEvent, children }) => {
+  const handle = ({ detail }) => {
+    onEvent(detail);
+  };
+
+  useEffect(() => {
+    document.addEventListener("EllipseCompleted", handle);
+    return () => document.removeEventListener("EllipseCompleted", handle);
+  }, []);
+
+  return children;
 };
 
 export const Basic = () => <EllipseScale />;

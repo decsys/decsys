@@ -136,13 +136,7 @@ const EllipseScale = ({
     const max = Math.max(...hits);
 
     // Convert and apply them
-    const { values, xPos } = convertRange(
-      min,
-      max,
-      barOptions.minValue,
-      barOptions.maxValue,
-      bar
-    );
+    const { values, xPos } = convertRange(min, max, minValue, maxValue, bar);
 
     setMinMarkerX(xPos.min);
     setMaxMarkerX(xPos.max);
@@ -270,6 +264,8 @@ EllipseScale.defaultProps = {
   penOptions: {},
   questionOptions: {},
   barOptions: {
+    minValue: 0,
+    maxValue: 100,
     // we depend on this one for calculations
     thickness: scaleBarDefaultProps.thickness,
   },

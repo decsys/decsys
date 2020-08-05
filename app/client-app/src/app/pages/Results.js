@@ -20,14 +20,15 @@ import {
   MenuButton,
   MenuList,
   Grid,
+  useTheme,
+  Icon,
 } from "@chakra-ui/core";
-import { Page, EmptyState, LoadingIndicator } from "components/core";
+import { Page, EmptyState } from "components/core";
 import { navigate } from "@reach/router";
 import { encode } from "services/instance-id";
-import { FaChevronDown } from "react-icons/fa";
-import { useTable } from "react-table";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { useTable, useSortBy } from "react-table";
 import { isEmpty } from "services/data-structures";
-import themes from "themes";
 
 const exportMime = "application/json";
 
@@ -90,25 +91,32 @@ const DashboardButton = ({ surveyId, instanceId }) => (
 );
 
 const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
+  const filename = useMemo(
+    () =>
+      results &&
+      resultsFilename(
+        results.survey,
+        results.published,
+        results.exportGenerated
+      ),
+    [results]
+  );
+
   const handleExportCsvClick = async () => {
     const data = getResultsCsvData(results);
-    download(data, `${resultsFilename()}_Summary.csv`, "text/csv");
+    download(data, `${filename}_Summary.csv`, "text/csv");
   };
 
   const handleExportSummaryClick = () =>
     downloadFile(
       [JSON.stringify(results)],
-      `${resultsFilename()}_Summary.json`,
+      `${filename}_Summary.json`,
       exportMime
     );
 
   const handleExportFullClick = async () => {
     const { data } = await getInstanceResultsFull(surveyId, instanceId);
-    downloadFile(
-      [JSON.stringify(data)],
-      `${resultsFilename()}_Full.json`,
-      exportMime
-    );
+    downloadFile([JSON.stringify(data)], `${filename}_Full.json`, exportMime);
   };
 
   return (
@@ -143,45 +151,62 @@ const ResultsTable = ({ columns, data }) => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data });
+  } = useTable({ columns, data }, useSortBy);
+
+  const { colors } = useTheme();
 
   return (
-    <Flex mx={2}>
+    <Flex overflowY="auto">
       <table
         css={{
+          position: "relative",
           tableLayout: "fixed",
           width: "100%",
           borderCollapse: "collapse",
-          boxShadow: themes.shadows.callout,
         }}
         {...getTableProps()}
       >
         <thead>
           {headerGroups.map((group) => (
-            <tr
-              css={{
-                background: "#575757",
-              }}
-              {...group.getHeaderGroupProps()}
-            >
+            <tr {...group.getHeaderGroupProps()}>
               {group.headers.map((column) => {
                 const width =
                   {
-                    Page: "60px",
-                    Order: "60px",
+                    Page: "100px",
+                    Order: "100px",
                     "Page Loaded (UTC)": "200px",
                     "Recorded (UTC)": "200px",
                   }[column.Header] ?? "auto";
                 return (
                   <th
                     css={{
+                      background: colors.gray[600],
+                      position: "sticky",
+                      top: 0,
                       width,
-                      color: "#FFFFFF",
+                      color: colors.white,
                       textAlign: "center",
+                      borderLeft: "thin solid white",
+                      borderRight: "thin solid white",
                     }}
-                    {...column.getHeaderProps()}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
                   >
                     {column.render("Header")}
+                    {column.isSorted && (
+                      <Flex
+                        w="100%"
+                        justify="flex-end"
+                        position="absolute"
+                        top={0}
+                        left={0}
+                        py={1}
+                        px={2}
+                      >
+                        <Icon
+                          as={column.isSortedDesc ? FaChevronDown : FaChevronUp}
+                        />
+                      </Flex>
+                    )}
                   </th>
                 );
               })}
@@ -195,14 +220,15 @@ const ResultsTable = ({ columns, data }) => {
               <tr
                 css={{
                   ":nth-of-type(2n)": {
-                    background: "#eeeeee",
+                    background: colors.gray[200],
                     "& td:nth-of-type(2n)": {
-                      background: "#dddddd",
+                      background: colors.gray[300],
                     },
                   },
                   ":nth-of-type(2n+1)": {
+                    background: colors.gray[100],
                     "& td:nth-of-type(2n)": {
-                      background: "#eeeeee",
+                      background: colors.gray[200],
                     },
                   },
                 }}
@@ -212,7 +238,6 @@ const ResultsTable = ({ columns, data }) => {
                   <td
                     css={{
                       padding: "0 8px",
-                      //border: "thin solid #bbb",
                     }}
                     {...cell.getCellProps()}
                   >
@@ -256,6 +281,10 @@ const ResultsTables = ({ results }) => {
         Header: "Page Loaded (UTC)",
         accessor: (d) => Date.parse(d.pageLoad),
         Cell: DateTimeCellRender,
+      },
+      {
+        Header: "Response Type",
+        accessor: "responseType",
       },
       {
         id: "nullableResponse",
@@ -342,8 +371,6 @@ const ResultsTables = ({ results }) => {
       </Stack>
 
       <ResultsTable data={selectedParticipant.responses} columns={columns} />
-
-      <Flex>Pagination</Flex>
     </>
   );
 };
@@ -394,7 +421,7 @@ const Results = ({ id }) => {
       {results?.participants.length ? (
         <ResultsTables results={results} />
       ) : (
-        <Flex mt={4} gridRow="span 3">
+        <Flex mt={4} gridRow="span 2">
           <EmptyState message="There are no results available for this Survey Instance" />
         </Flex>
       )}
