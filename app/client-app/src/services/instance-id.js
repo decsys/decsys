@@ -3,8 +3,10 @@
  * - Add 10 so 0-9 are skipped for low numbers :) (purely visual)
  * - convert to base 35 (with the map [0-9][a-y])
  */
-const encodeId = n =>
-  typeof n === "number" ? (parseInt(n) + 10).toString(35) : "";
+const encodeId = (n) =>
+  typeof n === "number" || typeof n === "string"
+    ? (parseInt(n) + 10).toString(35)
+    : "";
 
 /**
  * Decode an encoded ID as follows:
@@ -13,7 +15,7 @@ const encodeId = n =>
  *
  * @param {*} id Input ID (expect a valid base35 number)
  */
-const decodeId = id => parseInt(id, 35) - 10;
+const decodeId = (id) => parseInt(id, 35) - 10;
 
 /**
  * Encode a Survey ID and Instance ID pair as follows:
@@ -33,4 +35,4 @@ export const encode = (surveyId, instanceId) =>
  * @param {*} id An ID previously encoded by `encode()`
  * @returns The Survey ID and Instance ID which generated the input ID.
  */
-export const decode = id => id.split("z").map(x => decodeId(x));
+export const decode = (id) => id.split("z").map((x) => decodeId(x));
