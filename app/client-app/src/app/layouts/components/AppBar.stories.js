@@ -1,11 +1,11 @@
 import React from "react";
-import { Button } from "@smooth-ui/core-sc";
+import { Button } from "@chakra-ui/core";
 import { action } from "@storybook/addon-actions";
 import AppBar, { AppBarLink } from "./AppBar";
 
 export default {
   title: "AppBar",
-  component: AppBar
+  component: AppBar,
 };
 
 export const Basic = () => <AppBar />;

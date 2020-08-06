@@ -1,7 +1,7 @@
 import { exportDateFormat } from "services/date-formats";
 import download from "downloadjs";
-import * as api from "api";
 import { parse } from "json2csv";
+import { getSurveyExport } from "api/surveys";
 
 /**
  * Helper for Client-Side file downloads
@@ -47,7 +47,7 @@ export const surveyExport = async (id, name, type) => {
     exportDateFormat(new Date()).flat
   }_${type}`;
   const mime = "application/zip";
-  const { data } = await api.getSurveyExport(id, type);
+  const { data } = await getSurveyExport(id, type);
   return downloadFile(b64toByteArrays(data), `${filename}.zip`, mime);
 };
 

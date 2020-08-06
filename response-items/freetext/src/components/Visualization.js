@@ -1,19 +1,10 @@
-import React, { useRef, useState, useMemo, useEffect } from "react";
+import React, { memo } from "react";
 import ReactWordCloud from "react-wordcloud";
 
-const Visualization = ({ values }) => {
-  const previous = useRef(values);
-  const [results, setResults] = useState(values);
-  useEffect(() => {
-    if (JSON.stringify(previous.current) !== JSON.stringify(values)) {
-      previous.current = values;
-      setResults(values);
-    }
-  }, [values]);
-
-  const wordCloud = useMemo(() => {
+const Visualization = memo(
+  ({ values }) => {
     // a value is the whole freetext value submitted
-    const weightedWords = results.reduce((a, { text }) => {
+    const weightedWords = values.reduce((a, { text }) => {
       // split the text into single words
       const words = text.split(/\s+/);
 
@@ -41,9 +32,9 @@ const Visualization = ({ values }) => {
         words={data}
       />
     );
-  }, [results]);
-
-  return wordCloud;
-};
+  },
+  ({ values: oldValues }, { values }) =>
+    JSON.stringify(oldValues) === JSON.stringify(values)
+);
 
 export default Visualization;

@@ -1,5 +1,4 @@
-import { setSurveyName, duplicateSurvey } from "api/surveys";
-import { deleteSurvey } from "api";
+import { setSurveyName, duplicateSurvey, deleteSurvey } from "api/surveys";
 
 export default (id, navigate, mutate, setNameState) => ({
   saveName: async (newName) => {

@@ -22,7 +22,7 @@ const ResponseItem = ({
   useEffect(() => {
     setValue(text);
     setNextEnabled(true);
-  }, [text]);
+  }, [text, setNextEnabled]);
 
   const handleInput = ({ target }) => {
     setValue(target.value);

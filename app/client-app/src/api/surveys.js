@@ -6,7 +6,7 @@ import { toDictionary } from "services/data-structures";
 export const useSurveysList = () =>
   useSWR(
     "/api/surveys",
-    async url => {
+    async (url) => {
       const surveys = await defaultFetcher(url);
       return toDictionary(surveys);
     },
@@ -18,7 +18,7 @@ export const useSurveysList = () =>
  * @param {*} id The ID of the Survey to fetch
  * @returns `{data, mutate}`
  */
-export const useSurvey = id =>
+export const useSurvey = (id) =>
   useSWR(`/api/surveys/${id}`, defaultFetcher, { suspense: true });
 
 export const createSurvey = async () => await axios.post("/api/surveys");
@@ -26,16 +26,16 @@ export const createSurvey = async () => await axios.post("/api/surveys");
 export const uploadSurveyImport = async (file, importData = false) =>
   await uploadFile(`/api/surveys/import?importData=${importData}`, file);
 
-export const loadInternalSurvey = async type =>
+export const loadInternalSurvey = async (type) =>
   await axios.post(`/api/surveys/internal/${type}`);
 
-export const deleteSurvey = async id =>
+export const deleteSurvey = async (id) =>
   await axios.delete(`/api/surveys/${id}`);
 
-export const duplicateSurvey = async id =>
+export const duplicateSurvey = async (id) =>
   await axios.post(`/api/surveys/${id}/duplicate`);
 
-export const launchSurvey = async id =>
+export const launchSurvey = async (id) =>
   await axios.post(`/api/surveys/${id}/instances`);
 
 export const setSurveyName = async (id, name) =>
@@ -44,3 +44,6 @@ export const setSurveyName = async (id, name) =>
     JSON.stringify(name),
     appJsonHeaderOptions
   );
+
+export const getSurveyExport = async (surveyId, type) =>
+  await axios.get(`/api/surveys/${surveyId}/export?type=${type}`);

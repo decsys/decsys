@@ -24,6 +24,17 @@ const overrides = {
     "section-h": "0 2px 10px 0 rgba(0,0,0,.2), 0 1px 3px 0 rgba(0,0,0,.5)",
     "section-v": "2px 0 10px 0 rgba(0,0,0,.2), 1px 0 3px 0 rgba(0,0,0,.5)",
   },
+  sharedStyles: {
+    card: (() => {
+      const base = {
+        borderBottom: "thin solid",
+      };
+      return {
+        light: { ...base, borderColor: "gray.300", bg: "gray.100" },
+        dark: { ...base, borderColor: "gray.600", bg: "gray.700" },
+      };
+    })(),
+  },
 };
 
 export default merge(theme, overrides);
