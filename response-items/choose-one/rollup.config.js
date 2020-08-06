@@ -13,6 +13,9 @@ const footer = `
 export const name = DecsysResponseItem.displayName;
 export default DecsysResponseItem;
 `;
+const banner = `/* @preserve ${
+  pkg.responseItemName
+} - ${new Date().toISOString()} */`;
 
 export default {
   input: path.join(__dirname, "src/index.js"),
@@ -23,6 +26,7 @@ export default {
     sourcemap: true,
     preferConst: true,
     compact: true,
+    banner,
     footer,
     globals: {
       react: "React",
