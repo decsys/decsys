@@ -1,19 +1,21 @@
 import React from "react";
-import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import PageLayout from "../components/PageLayout";
+import { Flex, Heading } from "@chakra-ui/core";
 
 function Home() {
-  const context = useDocusaurusContext();
-  const { siteConfig = {} } = context;
   return (
-    <Layout
-      title={`Hello from ${siteConfig.title}`}
+    <PageLayout
+      title="Home"
       description="Description will go into a meta tag in <head />"
     >
-      <div>DECSYS</div>
-    </Layout>
+      <Flex w="100%" justify="center">
+        <Heading mt="72px" as="h1" fontSize="72px">
+          DECSYS
+        </Heading>
+      </Flex>
+    </PageLayout>
   );
 }
 

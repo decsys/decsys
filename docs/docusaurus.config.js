@@ -16,12 +16,59 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/",
-          activeBasePath: "docs",
-          label: "Docs",
+          activeBaseRegex: "docs/users",
+          to: "docs/users/overview",
+          label: "User Guide",
           position: "left",
         },
-        { to: "docs/", activeBasePath: "docs", label: "Ham", position: "left" },
+        {
+          activeBasePath: "docs/devs",
+          to: "/",
+          label: "Developers",
+          position: "left",
+          items: [
+            {
+              activeBasePath: "docs/custom-responses",
+              to: "docs/devs/custom-responses",
+              label: "Creating Custom Responses",
+            },
+            {
+              activeBasePath: "docs/devs/contributing",
+              to: "docs/devs/contributing/source-code",
+              label: "Contributing to DECSYS",
+            },
+            {
+              activeBasePath: "docs/devs/technical",
+              to: "docs/devs/technical/architecture",
+              label: "Technical Reference",
+            },
+          ],
+        },
+        {
+          activeBasePath: "docs/pkg",
+          label: "Packages",
+          position: "left",
+          items: [
+            {
+              to: "docs/pkg/param-types",
+              label: "Param Types",
+            },
+            {
+              to: "docs/pkg/rating-scales",
+              label: "Rating Scales",
+            },
+            {
+              label: "Response Items",
+              items: [
+                {
+                  to: "docs/pkg/response-items",
+                  label: "test",
+                },
+              ],
+            },
+          ],
+        },
+
         {
           href: "https://github.com/decsys/decsys",
           label: "GitHub",
@@ -85,7 +132,7 @@ module.exports = {
       {
         docs: {
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: "doc1",
+          //homePageId: "users/overview",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl:

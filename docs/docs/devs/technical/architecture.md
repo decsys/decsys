@@ -1,3 +1,6 @@
+---
+title: High Level Overview
+---
 The Survey Platform Application is a single application designed to run self-contained on an "**Admin**" machine.
 
 Once running, the user of the **Admin** machine can create and configure **Surveys**, and then launch them. They do this by accessing the running application via a web browser.

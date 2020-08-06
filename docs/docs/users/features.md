@@ -1,3 +1,7 @@
+---
+title: Features
+---
+
 The Survey Platform, and the various pieces that come together to make it what it is, are considered version `1.0`.
 
 That is to say, they are feature complete, and stable, for the first version.

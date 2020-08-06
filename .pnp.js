@@ -23851,6 +23851,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageDependencies: [
                   ["docs", "workspace:docs"],
                   [
+                    "@chakra-ui/core",
+                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:1.0.0-rc.0",
+                  ],
+                  [
+                    "@chakra-ui/system",
+                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:1.0.0-rc.0",
+                  ],
+                  [
+                    "@chakra-ui/theme",
+                    "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#npm:1.0.0-rc.0",
+                  ],
+                  [
                     "@docusaurus/core",
                     "virtual:b5b5dfb1662b30d0d5b62f084f8b8fddd0eee56dd8737572197395ab6309e644fa76525392b1d0250ce3c07c5eeeb90901439953af682fc76f8ab38f71b8b09d#npm:2.0.0-alpha.61",
                   ],
@@ -23862,7 +23874,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     "@mdx-js/react",
                     "virtual:b5b5dfb1662b30d0d5b62f084f8b8fddd0eee56dd8737572197395ab6309e644fa76525392b1d0250ce3c07c5eeeb90901439953af682fc76f8ab38f71b8b09d#npm:1.6.16",
                   ],
-                  ["clsx", "npm:1.1.1"],
                   ["react", "npm:16.13.1"],
                   [
                     "react-dom",

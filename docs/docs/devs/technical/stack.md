@@ -1,3 +1,6 @@
+---
+title: Tech Stack
+---
 The Survey Platform application consists of the following parts:
 
 - A NoSQL database

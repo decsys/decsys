@@ -1,3 +1,7 @@
+---
+title: Source Code
+---
+
 !!! info
     All the Code for every aspect of the DECSYS Project can be found on [GitHub](https://github.com/decsys)
 

@@ -1,3 +1,7 @@
+---
+title: Supported Platforms
+---
+
 There are two aspects to the supported platforms for the Survey Platform:
 
 - Supported platforms for **running** the application (as an **Admin**)

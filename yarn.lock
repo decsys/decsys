@@ -11365,10 +11365,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "docs@workspace:docs"
   dependencies:
+    "@chakra-ui/core": 1.0.0-rc.0
+    "@chakra-ui/system": 1.0.0-rc.0
+    "@chakra-ui/theme": 1.0.0-rc.0
     "@docusaurus/core": ^2.0.0-alpha.61
     "@docusaurus/preset-classic": ^2.0.0-alpha.61
     "@mdx-js/react": ^1.5.8
-    clsx: ^1.1.1
     react: ^16.8.4
     react-dom: ^16.8.4
   languageName: unknown
