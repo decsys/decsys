@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useLayoutEffect } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
@@ -6,6 +6,7 @@ import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/core";
 import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import VisibilitySensor from "react-visibility-sensor";
+import { usePrevious } from "hooks/usePrevious";
 
 export const Body = ({ page, renderContext }) => {
   return page.components.map((item) => {
@@ -32,21 +33,24 @@ const SurveyPage = ({
   page,
   lastPage,
   handleNextClick,
-  logEvent,
+  logEvent: logEventProp,
 }) => {
   // need to ensure this doesn't change often as an effect depends on it
-  const nop = useCallback(() => () => {}, []);
-  logEvent = logEvent || nop;
-
+  const logEvent = useCallback(() => logEventProp || (() => {}), [
+    logEventProp,
+  ]);
   const [nextEnabled, setNextEnabled] = useState(false);
+  const previousPageId = usePrevious(page.id);
 
-  useEffect(() => {
-    logEvent(page.id, PAGE_LOAD, {});
-    // check if the page has any Response Items
-    // and set Next Button appropriately
-    if (!getPageResponseItem(page.components)) setNextEnabled(true);
-    else setNextEnabled(false);
-  }, [page, logEvent]);
+  useLayoutEffect(() => {
+    if (page.id !== previousPageId) {
+      logEvent(page.id, PAGE_LOAD, {});
+      // check if the page has any Response Items
+      // and set Next Button appropriately
+      if (!getPageResponseItem(page.components)) setNextEnabled(true);
+      else setNextEnabled(false);
+    }
+  }, [previousPageId, page, logEvent]);
 
   const renderContext = {
     pageId: page.id,
