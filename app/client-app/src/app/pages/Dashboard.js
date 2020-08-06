@@ -3,11 +3,28 @@ import { Page, StandardModal, ProgressCard } from "components/core";
 import { decode } from "services/instance-id";
 import { useSurvey } from "api/surveys";
 import { useSurveyInstanceResultsSummary } from "api/survey-instances";
-import { Alert, AlertIcon, Flex, Stack, useDisclosure } from "@chakra-ui/core";
+import {
+  Alert,
+  AlertIcon,
+  Flex,
+  Stack,
+  useDisclosure,
+  Tab,
+  Tabs,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Stat,
+  StatLabel,
+  StatNumber,
+  SimpleGrid,
+  useTheme,
+  useColorMode,
+} from "@chakra-ui/core";
 import { getComponent, getPageResponseItem } from "services/page-items";
-import SurveyPage from "components/shared/SurveyPage";
-import { useTable } from "react-table";
+import { Body as SurveyPageBody } from "components/shared/SurveyPage";
 import LightHeading from "components/core/LightHeading";
+import { exportDateFormat as formatDate } from "services/date-formats";
 
 const getDataByPage = (survey, results) => {
   const resultsByPage = results.participants.reduce((a, p) => {
@@ -31,75 +48,33 @@ const getDataByPage = (survey, results) => {
   };
 };
 
-const StatsTable = ({ details, results, stats }) => {
-  const columns = useMemo(
-    () => [
-      {
-        accessor: "name",
-        Cell: ({ value }) => (
-          <span
-            style={{
-              fontWeight: "bold",
-              textAlign: "right",
-            }}
-          >
-            {value}
-          </span>
-        ),
-      },
-      {
-        accessor: "value",
-      },
-    ],
-    []
-  );
-
-  const data = useMemo(
-    () => [
-      { name: "Response Type", value: details.type },
-      {
-        name: "Participants",
-        value: Object.keys(results).length,
-      },
-      ...Object.keys(stats.stats).map((name) => ({
-        name,
-        value: stats.stats[name],
-      })),
-    ],
-    [details, results, stats]
-  );
-
-  const { getTableProps, getTableBodyProps, rows, prepareRow } = useTable({
-    columns,
-    data,
-  });
-
+const StatCard = ({ label, value }) => {
+  const { colorMode } = useColorMode();
+  const {
+    sharedStyles: { card },
+  } = useTheme();
   return (
-    <table
-      css={{
-        tableLayout: "fixed",
-        width: "100%",
-        borderCollapse: "collapse",
-      }}
-      {...getTableProps()}
-    >
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => (
-                <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-              ))}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <Flex p={4} {...card[colorMode]}>
+      <Stat>
+        <StatLabel>{label}</StatLabel>
+        <StatNumber>{value}</StatNumber>
+      </Stat>
+    </Flex>
   );
 };
 
-const Stats = ({ page, results }) => {
+const StatsGrid = ({ details, results, stats }) => (
+  <SimpleGrid minChildWidth="200px" spacing={4}>
+    <StatCard label="Response Type" value={details.type} />
+    <StatCard label="Participants" value={Object.keys(results).length} />
+
+    {Object.keys(stats.stats).map((name) => (
+      <StatCard label={name} value={stats.stats[name]} />
+    ))}
+  </SimpleGrid>
+);
+
+const Stats = ({ surveyId, page, results }) => {
   if (!page) return null;
 
   if (!results || !Object.keys(results).length) {
@@ -122,22 +97,40 @@ const Stats = ({ page, results }) => {
     Object.keys(results).map((pid) => results[pid])
   );
 
+  const nop = () => {};
+  const renderContext = {
+    pageId: page.id,
+    surveyId,
+    setNextEnabled: nop,
+    logEvent: nop,
+  };
+
   return (
-    <Flex w="100%" align="center" direction="column">
-      {/* TODO: maybe we should tab these? */}
-      <Flex w="100%">
-        {/* Page Preview */}
-        <Flex w="50%">
-          {/* TODO: props */}
-          <SurveyPage />
-        </Flex>
-        {/* Response Visualisation */}
-        <Flex w="50%">{stats.visualizations[0].component}</Flex>
-      </Flex>
-      <Flex w="100%">
-        <StatsTable details={details} results={results} stats={stats} />
-      </Flex>
-    </Flex>
+    <Tabs w="100%">
+      <TabList>
+        <Tab>Stats</Tab>
+        {stats.visualizations[0].component && <Tab>Visualisation</Tab>}
+        <Tab>Page Preview</Tab>
+      </TabList>
+
+      <TabPanels>
+        <TabPanel>
+          <StatsGrid details={details} results={results} stats={stats} />
+        </TabPanel>
+
+        {stats.visualizations[0].component && (
+          <TabPanel d="flex" w="100%" justifyContent="center">
+            <Flex w="70%">{stats.visualizations[0].component}</Flex>
+          </TabPanel>
+        )}
+
+        <TabPanel>
+          <Stack>
+            <SurveyPageBody page={page} renderContext={renderContext} />
+          </Stack>
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };
 
@@ -165,45 +158,58 @@ const Dashboard = ({ combinedId }) => {
 
   return (
     <Page>
-      <LightHeading as="h2" size="lg">
-        {survey.name}
-      </LightHeading>
-      <LightHeading as="h3" size="md">
-        Dashboard for {results.published}
-      </LightHeading>
-      <Flex justify="space-between">
-        <LightHeading as="h5" size="sm"></LightHeading>
-        <Alert status="info">
-          <AlertIcon />
-          Click a Question's card for more details.
-        </Alert>
-      </Flex>
-      {completionByPage?.length && (
-        <Stack boxShadow="callout" spacing={0}>
-          {survey.pages.map(
-            (p, i) =>
-              !!getPageResponseItem(p.components) && (
-                <ProgressCard
-                  key={i}
-                  title={`Q${i + 1}`}
-                  total={results.participants.length}
-                  progressData={Object.keys(completionByPage[i]).map((id) => ({
-                    complete: completionByPage[i][id],
-                  }))}
-                  onClick={() => handleCardClick(i)}
-                />
-              )
-          )}
-        </Stack>
-      )}
+      <Stack>
+        <LightHeading py={2} as="h2" size="lg">
+          {survey.name}
+        </LightHeading>
+        <LightHeading as="h3" size="md">
+          Dashboard for{" "}
+          {results && formatDate(Date.parse(results.published)).flat}
+        </LightHeading>
+        <Flex justify="space-between" align="center">
+          <LightHeading as="h5" size="md">
+            Participant progress by Question
+          </LightHeading>
+          <Alert status="info" w="inherit">
+            <AlertIcon />
+            Click a Question's card for more details.
+          </Alert>
+        </Flex>
+        {completionByPage?.length && (
+          <Stack boxShadow="callout" spacing={0}>
+            {survey.pages.map(
+              (p, i) =>
+                !!getPageResponseItem(p.components) && (
+                  <ProgressCard
+                    key={i}
+                    title={`Q${i + 1}`}
+                    cardHeaderWidth="50px"
+                    total={results.participants.length}
+                    progressData={Object.keys(completionByPage[i]).map(
+                      (id) => ({
+                        complete: completionByPage[i][id],
+                      })
+                    )}
+                    onClick={() => handleCardClick(i)}
+                  />
+                )
+            )}
+          </Stack>
+        )}
+      </Stack>
 
       {statsPage && (
         <StandardModal
           {...statsModal}
+          size="6xl"
           header={`Q${statsPage.order} Stats`}
           cancelButton={false}
         >
-          TODO
+          <Stats
+            surveyId={surveyId}
+            page={statsPage}
+            results={resultsByPage[statsPage.order]}
+          />
         </StandardModal>
       )}
     </Page>

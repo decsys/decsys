@@ -7,7 +7,7 @@ import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import VisibilitySensor from "react-visibility-sensor";
 
-const Body = ({ page, renderContext }) => {
+export const Body = ({ page, renderContext }) => {
   return page.components.map((item) => {
     const renderComponent = getComponent(item.type);
 
