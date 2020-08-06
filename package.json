@@ -9,6 +9,7 @@
   "private": true,
   "workspaces": [
     "app/*",
+    "docs",
     "packages/*",
     "response-items/*"
   ],
