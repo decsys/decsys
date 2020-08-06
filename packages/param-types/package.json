@@ -19,5 +19,8 @@
   "homepage": "https://github.com/decsys/decsys#readme",
   "peerDependencies": {
     "prop-types": "~15"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5"
   }
 }

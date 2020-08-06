@@ -7521,6 +7521,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     "@decsys/param-types",
                     "virtual:60203f255efced93270cf4f455e1cd6c0825f94070c4bf40adaf9a64e4b841e4828ea178d3d671c4112186128b99efad40583d2d70249ecf18355b604992d59e#workspace:packages/param-types",
                   ],
+                  ["core-js", "npm:3.6.5"],
                   ["prop-types", "npm:15.7.2"],
                 ],
                 packagePeers: ["prop-types"],
@@ -7533,6 +7534,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                 packageLocation: "./packages/param-types/",
                 packageDependencies: [
                   ["@decsys/param-types", "workspace:packages/param-types"],
+                  ["core-js", "npm:3.6.5"],
                 ],
                 linkType: "SOFT",
               },

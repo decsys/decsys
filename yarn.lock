@@ -2659,6 +2659,8 @@ __metadata:
 "@decsys/param-types@2.0.0-alpha.1, @decsys/param-types@^2.0.0-alpha.1, @decsys/param-types@workspace:packages/param-types":
   version: 0.0.0-use.local
   resolution: "@decsys/param-types@workspace:packages/param-types"
+  dependencies:
+    core-js: ^3.6.5
   peerDependencies:
     prop-types: ~15
   languageName: unknown
