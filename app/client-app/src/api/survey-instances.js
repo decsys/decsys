@@ -17,9 +17,15 @@ export const useSurveyInstancesList = (surveyId) =>
     suspense: true,
   });
 
+/**
+ * Fetch SurveyInstance Results Summary using SWR, and re-polling every 10 seconds
+ * @param {*} surveyId
+ * @param {*} instanceId
+ */
 export const useSurveyInstanceResultsSummary = (surveyId, instanceId) =>
   useSWR(urls.instanceResultsSummary(surveyId, instanceId), defaultFetcher, {
     suspense: true,
+    refreshInterval: 10000,
   });
 
 export const closeSurveyInstance = async (surveyId, instanceId) =>

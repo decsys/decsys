@@ -69,12 +69,14 @@ const StatsGrid = ({ details, results, stats }) => (
     <StatCard label="Participants" value={Object.keys(results).length} />
 
     {Object.keys(stats.stats).map((name) => (
-      <StatCard label={name} value={stats.stats[name]} />
+      <StatCard key={name} label={name} value={stats.stats[name]} />
     ))}
   </SimpleGrid>
 );
 
 const Stats = ({ surveyId, page, results }) => {
+  const [vizTab, setVizTab] = useState(false);
+
   if (!page) return null;
 
   if (!results || !Object.keys(results).length) {
@@ -105,11 +107,15 @@ const Stats = ({ surveyId, page, results }) => {
     logEvent: nop,
   };
 
+  // Don't bother showing a Viz Tab if there's no Viz to render
+  const hasViz = !!stats.visualizations[0].component;
+
   return (
-    <Tabs w="100%">
+    // Take care that the onChange tab index lines up with the Viz Tab ;)
+    <Tabs w="100%" onChange={(i) => setVizTab(i === 1)}>
       <TabList>
         <Tab>Stats</Tab>
-        {stats.visualizations[0].component && <Tab>Visualisation</Tab>}
+        {hasViz && <Tab>Visualization</Tab>}
         <Tab>Page Preview</Tab>
       </TabList>
 
@@ -118,9 +124,14 @@ const Stats = ({ surveyId, page, results }) => {
           <StatsGrid details={details} results={results} stats={stats} />
         </TabPanel>
 
-        {stats.visualizations[0].component && (
+        {hasViz && (
           <TabPanel d="flex" w="100%" justifyContent="center">
-            <Flex w="70%">{stats.visualizations[0].component}</Flex>
+            {
+              // We deliberately re-mount if this is the selected tab
+              // as some Viz components are unhappy with the way
+              // Chakra tabs show and hide panel content (e.g. react-wordcloud)
+              vizTab && <Flex w="70%">{stats.visualizations[0].component}</Flex>
+            }
           </TabPanel>
         )}
 
@@ -138,7 +149,6 @@ const Dashboard = ({ combinedId }) => {
   const [surveyId, instanceId] = decode(combinedId);
   const { data: survey } = useSurvey(surveyId);
   const { data: results } = useSurveyInstanceResultsSummary(
-    // TODO: make sure this polls every 10 seconds, using SWR
     surveyId,
     instanceId
   );

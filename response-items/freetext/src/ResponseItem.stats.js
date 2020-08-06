@@ -15,11 +15,11 @@ const stats = (_, results) => {
       },
     ],
     stats: {
-      ["Word Count - Min, Max"]: `${fixed(Math.min, ...wordCounts)}, ${fixed(
+      "Word Count - Min, Max": `${fixed(Math.min, ...wordCounts)}, ${fixed(
         Math.max,
         ...wordCounts
       )}`,
-      ["Word Count - Mean"]: fixed(math.mean, wordCounts),
+      "Word Count - Mean": fixed(math.mean, wordCounts),
     },
   };
 };
