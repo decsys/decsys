@@ -8,13 +8,11 @@ import { encode } from "services/instance-id";
 import ManageSurveyMenu from "./ManageSurveyMenu";
 import ActiveInstanceLine from "./ActiveInstanceLine";
 import { useSurvey } from "../../../../contexts/Survey";
+import themes from "themes";
 
 const SurveyCard = () => {
   const { colorMode } = useColorMode();
-  const style = {
-    light: { borderColor: "gray.300", bg: "gray.100" },
-    dark: { borderColor: "gray.600", bg: "gray.700" },
-  };
+  const style = themes.sharedStyles.card;
   const survey = useSurvey();
   const { id, activeInstanceId, runCount } = survey;
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
@@ -22,12 +20,7 @@ const SurveyCard = () => {
   const actionButtons = getActionButtons(survey);
 
   return (
-    <Stack
-      direction="row"
-      spacing={0}
-      borderBottom={"thin solid"}
-      {...style[colorMode]}
-    >
+    <Stack direction="row" spacing={0} {...style[colorMode]}>
       <ActiveIndicator active={!!activeInstanceId} />
 
       <Stack spacing={0} w="100%">

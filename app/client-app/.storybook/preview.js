@@ -2,11 +2,11 @@ import React from "react";
 import { addDecorator } from "@storybook/react";
 import { withKnobs } from "@storybook/addon-knobs";
 import { ChakraProvider, CSSReset } from "@chakra-ui/core";
-import theme from "@chakra-ui/theme";
+import themes from "themes";
 
 addDecorator((s) => (
   <>
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={themes}>
       <CSSReset />
       {s()}
     </ChakraProvider>
