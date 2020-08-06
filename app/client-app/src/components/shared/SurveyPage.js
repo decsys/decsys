@@ -33,12 +33,12 @@ const SurveyPage = ({
   page,
   lastPage,
   handleNextClick,
-  logEvent: logEventProp,
+  logEvent,
 }) => {
   // need to ensure this doesn't change often as an effect depends on it
-  const logEvent = useCallback(() => logEventProp || (() => {}), [
-    logEventProp,
-  ]);
+  const nop = useCallback(() => () => {}, []);
+  logEvent = logEvent || nop;
+
   const [nextEnabled, setNextEnabled] = useState(false);
   const previousPageId = usePrevious(page.id);
 
