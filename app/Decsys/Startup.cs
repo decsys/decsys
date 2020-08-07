@@ -20,6 +20,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
@@ -71,17 +72,25 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var isWorkshopMode = _config.GetValue<bool>("WorkshopMode");
+            services.Configure<AppMode>(c => c.IsWorkshop = isWorkshopMode);
+
             foreach (var v in Versions.All)
+            {
                 services.Configure<ComponentTypeMap>(v,
                     c => _config
                         .GetSection($"ComponentTypeMaps:{v}")
                         .Bind(c.Types));
+            }
 
             services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
 
-            services.AddIdentityServer()
-                .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
-                .AddInMemoryClients(IdentityServerConfig.Clients);
+            if (!isWorkshopMode)
+            {
+                services.AddIdentityServer()
+                    .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
+                    .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]));
+            }
 
             services.AddResponseCompression();
 
@@ -135,8 +144,10 @@ namespace Decsys
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, VersionInformationService version)
+        public void Configure(IApplicationBuilder app, VersionInformationService version, IOptions<AppMode> modeAccessor)
         {
+            var mode = modeAccessor.Value;
+
             app.UseResponseCompression();
 
             app.GnuTerryPratchett();
@@ -186,7 +197,9 @@ namespace Decsys
             });
 
             app.UseRouting();
-            app.UseIdentityServer();
+
+            if(mode.IsHosted) app.UseIdentityServer();
+
             app.UseAuthorization();
 
             app.UseEndpoints(e =>

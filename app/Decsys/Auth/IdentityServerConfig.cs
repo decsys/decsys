@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AutoMapper.Configuration;
 using IdentityServer4.Models;
 
 namespace Decsys.Auth
@@ -8,27 +9,22 @@ namespace Decsys.Auth
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
-                new ApiScope("api1", "My API")
+                new ApiScope("backend-app", "DECSYS Backend API")
             };
 
-        public static IEnumerable<Client> Clients =>
+        public static IEnumerable<Client> Clients(string origin) =>
             new List<Client>
             {
                 new Client
                 {
-                    ClientId = "client",
-
-                    // no interactive user, use the clientid/secret for authentication
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
-                    AllowedScopes = { "api1" }
+                    ClientId = "client-app",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireClientSecret = false,
+                    RequireConsent = false,
+                    RequirePkce = true,
+                    AllowedScopes = { "backend-app" },
+                    RedirectUris = { $"{origin}/auth/signin-oidc" },
+                    PostLogoutRedirectUris = { $"{origin}/auth/signout-callback-oidc" },
                 }
             };
     }
