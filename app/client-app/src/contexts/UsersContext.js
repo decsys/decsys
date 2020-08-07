@@ -1,8 +1,11 @@
 import React from "react";
 import { createContext, useContext, useState, useEffect } from "react";
 import produce from "immer";
+import { useDecsysAppMode } from "api/config";
+import { WORKSHOP } from "constants/app-modes";
 
 const UsersContext = createContext({
+  mode: WORKSHOP,
   user: {},
   users: {
     storeInstanceParticipantId: () => {},
@@ -12,8 +15,11 @@ const UsersContext = createContext({
 export const useUsers = () => useContext(UsersContext);
 
 const UsersContextProvider = ({ children }) => {
+  const { data: mode } = useDecsysAppMode();
   const [user, setUser] = useState({
-    roles: { admin: window.location.hostname === "localhost" },
+    roles: {
+      admin: mode === WORKSHOP && window.location.hostname === "localhost",
+    },
     instances: JSON.parse(localStorage.getItem("instances")) || {},
   });
 
@@ -36,6 +42,7 @@ const UsersContextProvider = ({ children }) => {
   }, [user.instances]);
 
   const value = {
+    mode,
     user,
     users: { storeInstanceParticipantId, clearInstanceParticipantId },
   };
