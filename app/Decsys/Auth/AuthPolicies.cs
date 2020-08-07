@@ -21,7 +21,10 @@ namespace Decsys.Auth
                     // switch to a requirement with multiple handlers
                     context =>
                         // localhost access == admin (TODO: Workshop only?)
-                        // ((DefaultHttpContext?)context.Resource)?.Request.Host.Host == "localhost" ||
+                        (mode.IsWorkshop &&
+                            ((DefaultHttpContext?)context.Resource)?
+                                .Request.Host.Host == "localhost")
+                        ||
                         // having the claim obviously fulfills the role
                         context.User.HasClaim(ClaimTypes.Role, "survey-admin"))
                 .Build();

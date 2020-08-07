@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,7 @@ namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/surveys/{id}/pages/{pageId}/components")]
+    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
     public class ComponentsController : ControllerBase
     {
         private readonly ComponentService _components;
@@ -41,6 +44,7 @@ namespace Decsys.Controllers
             description: "Returns a dyamically generated JavaScript file " +
             "which imports all custom component modules " +
             "and adds them by name to a global dictionary of available components.")]
+        [AllowAnonymous]
         public FileResult GetComponentModules()
         {
             // TODO: Move the hard work to a service?

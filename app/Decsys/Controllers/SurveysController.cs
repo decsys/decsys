@@ -5,8 +5,10 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,7 @@ namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
     public class SurveysController : ControllerBase
     {
         private readonly SurveyService _surveys;

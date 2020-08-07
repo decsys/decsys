@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Decsys.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Decsys.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     public class IdentityController : ControllerBase
     {
         private readonly ParticipantEventService _events;
