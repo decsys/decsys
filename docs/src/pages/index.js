@@ -44,7 +44,7 @@ const Home = () => (
           size="lg"
           variant="outline"
         >
-          Build Custom Responses
+          Create Custom Responses
         </LinkButton>
         <LinkButton
           to={useBaseUrl("/docs/devs/contributing/source-code")}

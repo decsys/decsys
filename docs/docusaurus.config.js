@@ -80,45 +80,58 @@ module.exports = {
       style: "dark",
       links: [
         {
-          title: "Docs",
+          title: "User Guide",
           items: [
             {
-              label: "Style Guide",
-              to: "docs/",
+              label: "Overview",
+              to: "docs/users/overview",
             },
             {
-              label: "Second Doc",
-              to: "docs/doc2/",
+              label: "Getting Started",
+              to: "docs/users/installation",
             },
           ],
         },
         {
-          title: "Community",
+          title: "Developer Guide",
           items: [
             {
-              label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/docusaurus",
+              label: "Create Custom Responses",
+              to: "docs/devs/custom-responses",
             },
             {
-              label: "Discord",
-              href: "https://discordapp.com/invite/docusaurus",
+              label: "Contributing to DECSYS",
+              to: "docs/devs/contributing/source-code",
             },
             {
-              label: "Twitter",
-              href: "https://twitter.com/docusaurus",
+              label: "Platform Technical Reference",
+              to: "docs/devs/technical/architecture",
             },
           ],
         },
         {
-          title: "More",
+          title: "Packages Reference",
           items: [
             {
-              label: "Blog",
-              to: "blog",
+              label: "Param Types",
+              to: "docs/pkg/param-types",
+            },
+            {
+              label: "Rating Scales",
+              to: "docs/pkg/rating-scales",
+            },
+          ],
+        },
+        {
+          title: "Information",
+          items: [
+            {
+              label: "LUCID",
+              href: "https://www.lucidresearch.org/decsys.html",
             },
             {
               label: "GitHub",
-              href: "https://github.com/facebook/docusaurus",
+              href: "https://github.com/decsys/decsys",
             },
           ],
         },
@@ -135,8 +148,7 @@ module.exports = {
           //homePageId: "users/overview",
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
-          editUrl:
-            "https://github.com/facebook/docusaurus/edit/master/website/",
+          editUrl: "https://github.com/decsys/decsys/edit/master/docs/",
         },
       },
     ],
