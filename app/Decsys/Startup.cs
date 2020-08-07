@@ -21,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
@@ -72,8 +73,8 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var isWorkshopMode = _config.GetValue<bool>("WorkshopMode");
-            services.Configure<AppMode>(c => c.IsWorkshop = isWorkshopMode);
+            var mode = new AppMode { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
+            services.Configure<AppMode>(c => c = mode);
 
             foreach (var v in Versions.All)
             {
@@ -85,7 +86,7 @@ namespace Decsys
 
             services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
 
-            if (!isWorkshopMode)
+            if (mode.IsHosted)
             {
                 services.AddIdentityServer()
                     .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
@@ -95,17 +96,28 @@ namespace Decsys
             services.AddResponseCompression();
 
             services.AddAuthorization(opts => opts.AddPolicy(
-                nameof(AuthPolicies.LocalHost),
-                AuthPolicies.LocalHost()));
-
-            services.AddSingleton<IAuthorizationHandler, LocalMachineHandler>();
+                nameof(AuthPolicies.IsSurveyAdmin),
+                AuthPolicies.IsSurveyAdmin(mode)));
 
             services.AddControllers()
-                // we used JSON.NET back in 2.x
+                // we used JSON.NET back in .NET Core 2.x
                 // for ViewModel Property shenanigans so component params can be dynamic
                 // it doesn't really make sense to change this
                 // (if System.Text.Json even does what we need)
                 .AddNewtonsoftJson();
+
+            if (mode.IsHosted)
+            {
+                services.AddAuthentication("Bearer")
+                    .AddJwtBearer("Bearer", opts =>
+                    {
+                        opts.Authority = _config["Hosted:Origin"];
+                        opts.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateAudience = false
+                        };
+                    });
+            }
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(o => o.RootPath = "ClientApp");
@@ -139,8 +151,6 @@ namespace Decsys
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DECSYS API", Version = "v1" });
                 c.EnableAnnotations();
             }).AddSwaggerGenNewtonsoftSupport();
-
-            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -198,14 +208,17 @@ namespace Decsys
 
             app.UseRouting();
 
-            if(mode.IsHosted) app.UseIdentityServer();
+            if (mode.IsHosted)
+            {
+                app.UseIdentityServer();
+                app.UseAuthentication();
+            }
 
             app.UseAuthorization();
 
-            app.UseEndpoints(e =>
-            {
-                e.MapControllers();
-            });
+            app.UseEndpoints(e => e
+                .MapControllers()
+                .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin)));
 
             app.UseSpa(spa =>
             {
