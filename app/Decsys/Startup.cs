@@ -1,14 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using AutoMapper;
-
 using ClacksMiddleware.Extensions;
-
 using Decsys.Auth;
+using Decsys.Config;
 using Decsys.Data;
-using Decsys.Services;
 using Decsys.Repositories.Contracts;
 using Decsys.Repositories.LiteDb;
+using Decsys.Services;
 using LiteDB;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,17 +21,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
 using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
 using UoN.VersionInformation.Providers;
-using Decsys.Config;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -84,6 +79,10 @@ namespace Decsys
 
             services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
 
+            services.AddIdentityServer()
+                .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
+                .AddInMemoryClients(IdentityServerConfig.Clients);
+
             services.AddResponseCompression();
 
             services.AddAuthorization(opts => opts.AddPolicy(
@@ -131,6 +130,8 @@ namespace Decsys
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DECSYS API", Version = "v1" });
                 c.EnableAnnotations();
             }).AddSwaggerGenNewtonsoftSupport();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -155,7 +156,7 @@ namespace Decsys
 
             app.UseVersion(GetVersionInfo(version));
 
-            app.UseDefaultFiles().UseStaticFiles();
+            app.UseStaticFiles();
 
             // components' static files
             // serve static files but only those we can validly map
@@ -185,6 +186,7 @@ namespace Decsys
             });
 
             app.UseRouting();
+            app.UseIdentityServer();
             app.UseAuthorization();
 
             app.UseEndpoints(e =>
