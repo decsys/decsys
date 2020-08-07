@@ -23874,6 +23874,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
                     "@mdx-js/react",
                     "virtual:b5b5dfb1662b30d0d5b62f084f8b8fddd0eee56dd8737572197395ab6309e644fa76525392b1d0250ce3c07c5eeeb90901439953af682fc76f8ab38f71b8b09d#npm:1.6.16",
                   ],
+                  ["lodash-es", "npm:4.17.15"],
                   ["react", "npm:16.13.1"],
                   [
                     "react-dom",
