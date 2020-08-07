@@ -1,23 +1,19 @@
 # The sln is in the repo root, so .vs goes here too
 .vs
 
-# built docs output
-docs/site/
-
 # traditional npm
 node_modules
 
 # yarn 2
 .yarn/*
-!.yarn/cache
 !.yarn/releases
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
 yarn-error.log
-
-# yarn 1 pnp
-.pnp/*
+# for "zero-install" mode, commit .yarn/cache and .pnp.*
+# !.yarn/cache
+.pnp.*
 
 # lerna
 lerna-debug.log
