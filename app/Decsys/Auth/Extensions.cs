@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using IdentityServer4.Stores;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Decsys.Auth
 {
@@ -17,5 +19,12 @@ namespace Decsys.Auth
             return (await store.FindEnabledClientByIdAsync(client_id))?
                 .RequirePkce ?? false;
         }
+
+        /// <summary>
+        /// Encode a UTF8 string as a Base64Url string
+        /// </summary>
+        /// <param name="input"></param>
+        public static string Utf8ToBase64Url(this string input)
+            => WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(input));
     }
 }

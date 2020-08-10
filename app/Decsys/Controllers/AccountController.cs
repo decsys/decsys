@@ -1,19 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Threading.Tasks;
+using Decsys.Auth;
 using IdentityServer4.Events;
-using IdentityServer4.Services;
 using IdentityServer4.Extensions;
+using IdentityServer4.Models;
+using IdentityServer4.Services;
+using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using IdentityServer4.Stores;
-using IdentityServer4.Models;
-using Decsys.Auth;
-using System.ComponentModel.DataAnnotations;
-using System;
-using System.Linq;
-using System.Net;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
 
 namespace Decsys.Controllers
 {
@@ -160,9 +157,9 @@ namespace Decsys.Controllers
             // redirect back to the login form in the event of failure
             return Redirect(
                 $"/auth/login?ReturnUrl={WebUtility.UrlEncode(model.ReturnUrl)}" +
-                $"&Username={model.Username}" +
+                $"&Username={model.Username.Utf8ToBase64Url()}" +
                 (!string.IsNullOrWhiteSpace(friendlyError)
-                    ? $"&Error={WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(friendlyError))}"
+                    ? $"&Error={friendlyError.Utf8ToBase64Url()}"
                     : ""));
         }
 

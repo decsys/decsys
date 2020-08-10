@@ -10,10 +10,14 @@ import { useLocation } from "@reach/router";
 import queryString from "query-string";
 import base64url from "base64url";
 
+// decode base64url or return falsey
+const Base64UrlToUtf8 = (input) => (!!input && base64url.decode(input)) || null;
+
 const Login = () => {
   const { search } = useLocation();
   const queryParams = queryString.parse(search);
-  const error = queryParams.Error && base64url.decode(queryParams.Error);
+  const error = Base64UrlToUtf8(queryParams.Error);
+  const username = Base64UrlToUtf8(queryParams.Username);
 
   const post = (values) => {
     postObjectAsFormData("/Account/Login", {
@@ -43,7 +47,7 @@ const Login = () => {
 
           <Formik
             initialValues={{
-              Username: queryParams.Username ?? "",
+              Username: username ?? "",
               Password: "",
             }}
             onSubmit={handleSubmit}
