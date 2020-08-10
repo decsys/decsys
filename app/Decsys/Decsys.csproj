@@ -22,6 +22,7 @@
   <PropertyGroup>
     <!-- Don't show built SPA files in VS if they are present locally -->
     <DefaultItemExcludes>$(DefaultItemExcludes);ClientApp/**</DefaultItemExcludes>
+    <UserSecretsId>0cc2d989-e3a6-48a0-b877-fd5ba6a886aa</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
