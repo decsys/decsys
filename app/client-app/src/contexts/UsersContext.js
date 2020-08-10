@@ -3,11 +3,15 @@ import { createContext, useContext, useState, useEffect } from "react";
 import produce from "immer";
 import { useDecsysAppMode } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
+import { UserManager } from "oidc-client";
+import config from "auth/config";
+
+const users = new UserManager(config.oidc);
 
 const UsersContext = createContext({
   mode: WORKSHOP,
-  user: {},
-  users: {
+  users,
+  instances: {
     storeInstanceParticipantId: () => {},
     clearInstanceParticipantId: () => {},
   },
@@ -43,8 +47,11 @@ const UsersContextProvider = ({ children }) => {
 
   const value = {
     mode,
-    user,
-    users: { storeInstanceParticipantId, clearInstanceParticipantId },
+    users,
+    instances: {
+      storeInstanceParticipantId,
+      clearInstanceParticipantId,
+    },
   };
 
   return (

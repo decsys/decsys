@@ -104,7 +104,8 @@ namespace Decsys
                     .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
                     .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
                     .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]))
-                    .AddAspNetIdentity<IdentityUser>();
+                    .AddAspNetIdentity<IdentityUser>()
+                    .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
 
                 services.AddAuthentication(IdentityConstants.ApplicationScheme)
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>

@@ -1,27 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Router } from "@reach/router";
 import Root from "./routes/root";
-import UsersContextProvider from "contexts/UsersContext";
+import UsersContextProvider, { useUsers } from "contexts/UsersContext";
 import Admin from "./routes/admin.routes";
 import { LayoutProvider } from "components/core/LayoutPage";
 import layouts from "./layouts";
 import Participant from "./routes/participant.routes";
 import Auth from "./routes/auth.routes";
 import { Paths } from "auth/constants";
-import { UserManager } from "oidc-client";
 import axios from "axios";
-import config from "auth/config";
 import { Button, Stack } from "@chakra-ui/core";
 
 const ErrorPage = React.lazy(() => import("app/pages/Error"));
 
-const users = new UserManager(config.oidc);
-
 // AUTH test routes
 const Test = () => {
+  const { users } = useUsers();
   const [logContent, setLogContent] = useState();
 
-  const log = (...args) => {
+  const log = useCallback((...args) => {
     setLogContent(
       args
         .map((msg) => {
@@ -34,22 +31,27 @@ const Test = () => {
         })
         .join("\r\n")
     );
-  };
+  }, []);
 
-  users.getUser().then((user) => {
-    if (user) {
-      log("User logged in", user.profile);
-    } else {
-      log("User not logged in");
-    }
-  });
+  useEffect(() => {
+    (async () => {
+      if (users?.getUser) {
+        const user = await users.getUser();
+        if (user) {
+          log("User logged in", user.profile);
+        } else {
+          log("User not logged in");
+        }
+      }
+    })();
+  }, [users, log]);
 
   const handleLoginClick = () => users.signinRedirect();
   const handleLogoutClick = () => users.signoutRedirect();
   const handleApiCallClick = async () => {
     const user = await users.getUser();
     const { data } = await axios.get("/api/surveys", {
-      headers: { Authorization: `Bearer ${user.access_token}` },
+      headers: { Authorization: `Bearer ${user?.access_token}` },
     });
     log(data);
   };

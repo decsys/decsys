@@ -200,16 +200,13 @@ namespace Decsys.Controllers
         {
             var url = returnUrl ?? "~/";
 
-            if (await _clients.IsPkceClientAsync(context.Client.ClientId))
-            {
-                // if the client is PKCE then we assume it's native, so this change in how to
-                // return the response is for better UX for the end user.
-
-                //RedirectUrl = url;
-                // TODO: how to pass on returnUrl?
-                // query param presumably
-                return Redirect(context?.RedirectUri);
-            }
+            //if (await _clients.IsPkceClientAsync(context.Client.ClientId))
+            //{
+            //    // if the client is PKCE then we assume it's native, so this change in how to
+            //    // return the response is for better UX for the end user.
+            //    return Redirect($"{context?.RedirectUri}?" +
+            //        $"ReturnUrl={WebUtility.UrlEncode(returnUrl)}");
+            //}
 
             // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
             return Redirect(url);

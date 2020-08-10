@@ -2669,6 +2669,7 @@ __metadata:
     prop-types: ^15.7.2
     query-string: ^6.13.1
     react: ^16.13.1
+    react-async: ^10.0.1
     react-beautiful-dnd: ^13.0.0
     react-dev-utils: ^10.2.1
     react-dom: ^16.13.1
@@ -21147,6 +21148,15 @@ fsevents@~2.1.2:
     regenerator-runtime: ^0.13.3
     whatwg-fetch: ^3.0.0
   checksum: 94d24bf1d69a0cbb26d8adbb14ba600b29c7c5adc06c9f9c8337d0f8ee7358ee2c443d806f8ca96fdf002d7f37c1a5fae6a796f63164df44a4fc3996aeb2d71f
+  languageName: node
+  linkType: hard
+
+"react-async@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "react-async@npm:10.0.1"
+  peerDependencies:
+    react: ">=16.3.1"
+  checksum: dd7e80d975290d84fc257b278584189ca54f838f7b401bf8ee5b8de065c258f25f9eb8375c74ae941baf3eed99f9189fcd0ec601e3785a758cecd3017f0a3118
   languageName: node
   linkType: hard
 
