@@ -11,11 +11,13 @@ using Decsys.Repositories.Contracts;
 using Decsys.Repositories.LiteDb;
 using Decsys.Services;
 using LiteDB;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -88,9 +90,34 @@ namespace Decsys
 
             if (mode.IsHosted)
             {
-                services.AddIdentityServer()
+                // TODO: EF Core can go when we switch to mongo
+                services.AddDbContext<MemoryDbContext>(
+                    opts => opts.UseInMemoryDatabase("MemoryIdentityDb"));
+
+                services.AddIdentityCore<IdentityUser>()
+                    .AddDefaultTokenProviders()
+                    .AddEntityFrameworkStores<MemoryDbContext>() // TODO: mongo
+                    .AddUserManager<UserManager<IdentityUser>>()
+                    .AddSignInManager<SignInManager<IdentityUser>>();
+
+                services.AddIdentityServer(opts => opts.UserInteraction.ErrorUrl = "/error")
+                    .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
                     .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
-                    .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]));
+                    .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]))
+                    .AddAspNetIdentity<IdentityUser>();
+
+                services.AddAuthentication(IdentityConstants.ApplicationScheme)
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+                    {
+                        opts.Authority = _config["Hosted:Origin"];
+                        opts.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateAudience = false
+                        };
+                    })
+                    .AddIdentityCookies(opts =>
+                        opts.ApplicationCookie.Configure(
+                            config => config.LoginPath = "/auth/login"));
             }
 
             services.AddResponseCompression();
@@ -105,19 +132,6 @@ namespace Decsys
                 // it doesn't really make sense to change this
                 // (if System.Text.Json even does what we need)
                 .AddNewtonsoftJson();
-
-            if (mode.IsHosted)
-            {
-                services.AddAuthentication("Bearer")
-                    .AddJwtBearer("Bearer", opts =>
-                    {
-                        opts.Authority = _config["Hosted:Origin"];
-                        opts.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateAudience = false
-                        };
-                    });
-            }
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(o => o.RootPath = "ClientApp");

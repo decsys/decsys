@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Decsys.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
     [AllowAnonymous]
     public class ConfigController : ControllerBase
