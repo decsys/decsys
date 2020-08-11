@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Router } from "@reach/router";
+import { Router, navigate } from "@reach/router";
 import Root from "./routes/root";
 import UsersContextProvider, { useUsers } from "contexts/UsersContext";
 import Admin from "./routes/admin.routes";
@@ -15,8 +15,9 @@ const ErrorPage = React.lazy(() => import("app/pages/Error"));
 
 // AUTH test routes
 const Test = () => {
-  const { users } = useUsers();
+  const { users, isAdmin } = useUsers();
   const [logContent, setLogContent] = useState();
+  const [adminStatus, setAdminStatus] = useState(false);
 
   const log = useCallback((...args) => {
     setLogContent(
@@ -35,19 +36,21 @@ const Test = () => {
 
   useEffect(() => {
     (async () => {
-      if (users?.getUser) {
-        const user = await users.getUser();
-        if (user) {
-          log("User logged in", user.profile);
-        } else {
-          log("User not logged in");
-        }
+      const user = await users.getUser();
+      if (user) {
+        log("User logged in", user.profile);
+      } else {
+        log("User not logged in");
       }
     })();
   }, [users, log]);
 
-  const handleLoginClick = () => users.signinRedirect();
-  const handleLogoutClick = () => users.signoutRedirect();
+  useEffect(() => {
+    (async () => setAdminStatus(await isAdmin()))();
+  }, [isAdmin]);
+
+  const handleLoginClick = () => navigate("/auth/request-signin");
+  const handleLogoutClick = () => navigate("/auth/request-signout");
   const handleApiCallClick = async () => {
     const user = await users.getUser();
     const { data } = await axios.get("/api/surveys", {
@@ -62,6 +65,9 @@ const Test = () => {
       <Button onClick={handleApiCallClick}>Call API</Button>
       <Button onClick={handleLogoutClick}>Logout</Button>
 
+      <ul>
+        <li>{JSON.stringify(adminStatus)}</li>
+      </ul>
       <pre>{logContent}</pre>
     </Stack>
   );

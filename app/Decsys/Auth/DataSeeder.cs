@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,8 @@ or the environment variable DOTNET_SuperAdminSeedPassword");
                 user.PasswordHash = passwords.HashPassword(user, pwd);
 
                 await users.CreateAsync(user);
+                await users.AddClaimAsync(user,
+                    new Claim(ClaimTypes.Role, "survey.admin"));
             }
         }
     }

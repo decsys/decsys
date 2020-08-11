@@ -34,3 +34,11 @@ export const Results = {
 export const QueryParams = {
   ReturnUrl: "returnUrl",
 };
+
+export const ClaimTypes = {
+  Role: "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+};
+
+export const Roles = {
+  SurveyAdmin: "survey.admin",
+};

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Security.Claims;
 using IdentityServer4;
 using IdentityServer4.Models;
 
@@ -11,7 +12,8 @@ namespace Decsys.Auth
             => new List<IdentityResource>
             {
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                new IdentityResources.Profile(),
+                new IdentityResource("roles", new [] { ClaimTypes.Role })
                 // Add other / custom IdentityResources here
                 // e.g. new IdentityResource("my-resource", "My Resource", new Claim(CustomClaimTypes.MyResource, "value"))
             };
@@ -20,7 +22,8 @@ namespace Decsys.Auth
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
-                new ApiScope("survey.admin", "Survey Administration")
+                new ApiScope("survey.admin", "Survey Administration",
+                    new [] { ClaimTypes.Role })
             };
 
         // Pre-configured clients - i.e. the DECSYS frontend only
@@ -38,6 +41,7 @@ namespace Decsys.Auth
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
+                        "roles",
                         "survey.admin"
                     },
                     RedirectUris = { $"{origin}/auth/oidc-complete-signin" },

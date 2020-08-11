@@ -2,12 +2,9 @@ import React from "react";
 import { Router } from "@reach/router";
 import { Paths } from "auth/constants";
 import Login from "app/pages/Login/Login";
-import CompleteSignIn from "./auth/CompleteSignIn";
-
-// Dummy login routes
-const RequestSignIn = () => <div>SignIn Requested</div>;
-const RequestSignOut = () => <div>SignOut Requested</div>;
-const CompleteSignOut = () => <div>Completing SignOut</div>;
+import { CompleteSignIn, CompleteSignOut } from "./auth/CompleteAuth";
+import RequestSignIn from "./auth/RequestSignIn";
+import RequestSignOut from "./auth/RequestSignOut";
 
 const Auth = () => (
   <Router>

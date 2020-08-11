@@ -26,7 +26,7 @@ namespace Decsys.Auth
                                 .Request.Host.Host == "localhost")
                         ||
                         // having the claim obviously fulfills the role
-                        context.User.HasClaim(ClaimTypes.Role, "survey-admin"))
+                        context.User.HasClaim(ClaimTypes.Role, "survey.admin"))
                 .Build();
     }
 }
