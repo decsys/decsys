@@ -8,10 +8,7 @@ import FormikInput from "components/core/FormikInput";
 import validationSchema from "./validation";
 import { useLocation } from "@reach/router";
 import queryString from "query-string";
-import base64url from "base64url";
-
-// decode base64url or return falsey
-const Base64UrlToUtf8 = (input) => (!!input && base64url.decode(input)) || null;
+import { Base64UrlToUtf8 } from "services/data-structures";
 
 const Login = () => {
   const { search } = useLocation();

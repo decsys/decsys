@@ -14,16 +14,8 @@ const Auth = () => (
     <Login path={Paths.LoginForm()} />
     <RequestSignIn path={Paths.RequestSignIn()} />
     <CompleteSignIn path={Paths.CompleteSignIn()} />
-    {/* <AuthCallback
-      path={Paths.LoginCallback()}
-      callbackType={CallbackTypes.Login}
-    /> */}
     <RequestSignOut path={Paths.RequestSignOut()} />
     <CompleteSignOut path={Paths.CompleteSignOut()} />
-    {/* <AuthCallback
-      path={Paths.LogoutCallback()}
-      callbackType={CallbackTypes.Logout}
-    /> */}
   </Router>
 );
 

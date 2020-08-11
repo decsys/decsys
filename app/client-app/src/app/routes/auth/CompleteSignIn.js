@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IfFulfilled, IfRejected, useAsync } from "react-async";
 import { Results } from "auth/constants";
 import Error from "app/pages/Error";
@@ -8,8 +8,8 @@ import { useUsers } from "contexts/UsersContext";
 const CompleteSignIn = () => {
   const url = window.location.href;
   const { users } = useUsers();
-  const state = useAsync({
-    promiseFn: async () => {
+  const { run, ...state } = useAsync({
+    deferFn: async () => {
       try {
         const user = await users.signinCallback(url);
         return {
@@ -18,7 +18,7 @@ const CompleteSignIn = () => {
         };
       } catch (error) {
         const generalError = "There was an error signing in";
-        console.log(generalError, ": ", error);
+        console.error(generalError, ": ", error);
         return {
           status: Results.Fail,
           message: `${generalError}.`,
@@ -27,6 +27,11 @@ const CompleteSignIn = () => {
     },
     suspense: true,
   });
+
+  useEffect(() => {
+    run();
+  }, []);
+
   return (
     <>
       <IfFulfilled state={state}>

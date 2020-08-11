@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Decsys.Auth;
@@ -11,6 +12,7 @@ using IdentityServer4.Stores;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace Decsys.Controllers
 {
@@ -39,19 +41,22 @@ namespace Decsys.Controllers
         private readonly IEventService _events;
         private readonly SignInManager<IdentityUser> _signIn;
         private readonly UserManager<IdentityUser> _users;
+        private readonly IConfiguration _config;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clients,
             IEventService events,
             UserManager<IdentityUser> users,
-            SignInManager<IdentityUser> signIn)
+            SignInManager<IdentityUser> signIn,
+            IConfiguration config)
         {
             _interaction = interaction;
             _clients = clients;
             _events = events;
             _signIn = signIn;
             _users = users;
+            _config = config;
         }
 
         // GET: Login
@@ -91,7 +96,12 @@ namespace Decsys.Controllers
                 // denied the consent (even if this client does not require consent).
                 // this will send back an access denied OIDC error response to the client.
                 await _interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
-                return await ContextAwareRedirect(context, model.ReturnUrl);
+                return model.ReturnUrl switch
+                {
+                    var url when Url.IsLocalUrl(url) => Redirect(model.ReturnUrl),
+                    var url when string.IsNullOrEmpty(url) => Redirect("~/"),
+                    _ => throw new InvalidOperationException("Invalid Return URL")
+                };
             }
 
             string friendlyError = "";
@@ -110,8 +120,6 @@ namespace Decsys.Controllers
                         user.Id,
                         user.UserName, // TODO: store actual name of users?
                         clientId: context?.Client.ClientId));
-
-                    if (context is { }) return await ContextAwareRedirect(context, model.ReturnUrl);
 
                     return model.ReturnUrl switch
                     {
@@ -155,6 +163,7 @@ namespace Decsys.Controllers
             }
 
             // redirect back to the login form in the event of failure
+            // chuck some useful "model" data in the query string while we're here
             return Redirect(
                 $"/auth/login?ReturnUrl={WebUtility.UrlEncode(model.ReturnUrl)}" +
                 $"&Username={model.Username.Utf8ToBase64Url()}" +
@@ -193,23 +202,12 @@ namespace Decsys.Controllers
             // SignOutIframeUrl = logout?.SignOutIFrameUrl;
 
             // we do a simple redirect here
-            return Redirect(logout?.PostLogoutRedirectUri);
-        }
-
-        private async Task<IActionResult> ContextAwareRedirect(AuthorizationRequest context, string? returnUrl)
-        {
-            var url = returnUrl ?? "~/";
-
-            //if (await _clients.IsPkceClientAsync(context.Client.ClientId))
-            //{
-            //    // if the client is PKCE then we assume it's native, so this change in how to
-            //    // return the response is for better UX for the end user.
-            //    return Redirect($"{context?.RedirectUri}?" +
-            //        $"ReturnUrl={WebUtility.UrlEncode(returnUrl)}");
-            //}
-
-            // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-            return Redirect(url);
+            // we're fortunate in knowing we only have one client
+            // so we can use its config directly
+            return Redirect(IdentityServerConfig
+                .Clients(_config["Hosted:Origin"]).Single()
+                .PostLogoutRedirectUris.FirstOrDefault()
+                ?? "~/");
         }
     }
 }

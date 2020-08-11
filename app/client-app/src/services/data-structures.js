@@ -1,3 +1,5 @@
+import base64url from "base64url";
+
 /**
  * Returns an array of keys which have truthy, or falsey values in an object
  * @param {Object} o the object to find truthy or falsey keys in
@@ -37,3 +39,6 @@ export const isEmpty = (obj) => {
   }
   return true;
 };
+
+export const Base64UrlToUtf8 = (input) =>
+  (!!input && base64url.decode(input)) || null;
