@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Decsys.Auth;
@@ -29,6 +30,7 @@ using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
 using UoN.VersionInformation.Providers;
+using static IdentityServer4.IdentityServerConstants;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -100,12 +102,16 @@ namespace Decsys
                     .AddUserManager<UserManager<IdentityUser>>()
                     .AddSignInManager<SignInManager<IdentityUser>>();
 
-                services.AddIdentityServer(opts => opts.UserInteraction.ErrorUrl = "/error")
+                var idsBuilder = services.AddIdentityServer(opts => opts.UserInteraction.ErrorUrl = "/error")
                     .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
                     .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
                     .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]))
-                    .AddAspNetIdentity<IdentityUser>()
-                    .AddDeveloperSigningCredential(); // TODO: Configure non-dev signing
+                    .AddAspNetIdentity<IdentityUser>();
+
+                // Sort out Signing Keys
+                if (_env.IsDevelopment())
+                    idsBuilder.AddDeveloperSigningCredential();
+                else idsBuilder.AddSigningCredential(RsaKeyService.GetRsaKey(_config), RsaSigningAlgorithm.RS256);
 
                 services.AddAuthentication(IdentityConstants.ApplicationScheme)
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
