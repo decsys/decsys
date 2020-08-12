@@ -1,11 +1,13 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Decsys.Config;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace Decsys
 {
@@ -49,11 +51,15 @@ namespace Decsys
         /// <param name="services">The service provider configured by ConfigureServices()</param>
         public static async Task Init(IServiceProvider services)
         {
-            // Seed the SuperAdmin user according to configuration
-            await Auth.DataSeeder.Seed(
-                services.GetRequiredService<UserManager<IdentityUser>>(),
-                services.GetRequiredService<IPasswordHasher<IdentityUser>>(),
-                services.GetRequiredService<IConfiguration>());
+            var mode = services.GetRequiredService<IOptions<AppMode>>().Value;
+            if (mode.IsHosted)
+            {
+                // Seed the SuperAdmin user according to configuration
+                await Auth.DataSeeder.Seed(
+                    services.GetRequiredService<UserManager<IdentityUser>>(),
+                    services.GetRequiredService<IPasswordHasher<IdentityUser>>(),
+                    services.GetRequiredService<IConfiguration>());
+            }
         }
     }
 }

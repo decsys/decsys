@@ -77,7 +77,7 @@ namespace Decsys
         public void ConfigureServices(IServiceCollection services)
         {
             var mode = new AppMode { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
-            services.Configure<AppMode>(c => c = mode);
+            services.Configure<AppMode>(c => c.IsWorkshop = mode.IsWorkshop);
 
             foreach (var v in Versions.All)
             {
