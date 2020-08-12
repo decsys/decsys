@@ -1,35 +1,35 @@
-using AutoMapper;
-
-using ClacksMiddleware.Extensions;
-
-using Decsys.Auth;
-using Decsys.Data;
-using Decsys.Services;
-using Decsys.Repositories.Contracts;
-using Decsys.Repositories.LiteDb;
-using LiteDB;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using AutoMapper;
+using ClacksMiddleware.Extensions;
+using Decsys.Auth;
+using Decsys.Config;
+using Decsys.Data;
+using Decsys.Repositories.Contracts;
+using Decsys.Repositories.LiteDb;
+using Decsys.Services;
+using LiteDB;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
 using UoN.VersionInformation.Providers;
-using Decsys.Config;
+using static IdentityServer4.IdentityServerConstants;
 
 #pragma warning disable 1591
 namespace Decsys
@@ -76,24 +76,64 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var mode = new AppMode { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
+            services.Configure<AppMode>(c => c.IsWorkshop = mode.IsWorkshop);
+
             foreach (var v in Versions.All)
+            {
                 services.Configure<ComponentTypeMap>(v,
                     c => _config
                         .GetSection($"ComponentTypeMaps:{v}")
                         .Bind(c.Types));
+            }
 
             services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
+
+            if (mode.IsHosted)
+            {
+                // TODO: EF Core can go when we switch to mongo
+                services.AddDbContext<MemoryDbContext>(
+                    opts => opts.UseInMemoryDatabase("MemoryIdentityDb"));
+
+                services.AddIdentityCore<IdentityUser>()
+                    .AddDefaultTokenProviders()
+                    .AddEntityFrameworkStores<MemoryDbContext>() // TODO: mongo
+                    .AddUserManager<UserManager<IdentityUser>>()
+                    .AddSignInManager<SignInManager<IdentityUser>>();
+
+                var idsBuilder = services.AddIdentityServer(opts => opts.UserInteraction.ErrorUrl = "/error")
+                    .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
+                    .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
+                    .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]))
+                    .AddAspNetIdentity<IdentityUser>();
+
+                // Sort out Signing Keys
+                if (_env.IsDevelopment())
+                    idsBuilder.AddDeveloperSigningCredential();
+                else idsBuilder.AddSigningCredential(RsaKeyService.GetRsaKey(_config), RsaSigningAlgorithm.RS256);
+
+                services.AddAuthentication(IdentityConstants.ApplicationScheme)
+                    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
+                    {
+                        opts.Authority = _config["Hosted:Origin"];
+                        opts.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateAudience = false
+                        };
+                    })
+                    .AddIdentityCookies(opts =>
+                        opts.ApplicationCookie.Configure(
+                            config => config.LoginPath = "/auth/login"));
+            }
 
             services.AddResponseCompression();
 
             services.AddAuthorization(opts => opts.AddPolicy(
-                nameof(AuthPolicies.LocalHost),
-                AuthPolicies.LocalHost()));
-
-            services.AddSingleton<IAuthorizationHandler, LocalMachineHandler>();
+                nameof(AuthPolicies.IsSurveyAdmin),
+                AuthPolicies.IsSurveyAdmin(mode)));
 
             services.AddControllers()
-                // we used JSON.NET back in 2.x
+                // we used JSON.NET back in .NET Core 2.x
                 // for ViewModel Property shenanigans so component params can be dynamic
                 // it doesn't really make sense to change this
                 // (if System.Text.Json even does what we need)
@@ -134,8 +174,10 @@ namespace Decsys
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, VersionInformationService version)
+        public void Configure(IApplicationBuilder app, VersionInformationService version, IOptions<AppMode> modeAccessor)
         {
+            var mode = modeAccessor.Value;
+
             app.UseResponseCompression();
 
             app.GnuTerryPratchett();
@@ -155,7 +197,7 @@ namespace Decsys
 
             app.UseVersion(GetVersionInfo(version));
 
-            app.UseDefaultFiles().UseStaticFiles();
+            app.UseStaticFiles();
 
             // components' static files
             // serve static files but only those we can validly map
@@ -185,12 +227,18 @@ namespace Decsys
             });
 
             app.UseRouting();
+
+            if (mode.IsHosted)
+            {
+                app.UseIdentityServer();
+                app.UseAuthentication();
+            }
+
             app.UseAuthorization();
 
-            app.UseEndpoints(e =>
-            {
-                e.MapControllers();
-            });
+            app.UseEndpoints(e => e
+                .MapControllers()
+                .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin)));
 
             app.UseSpa(spa =>
             {

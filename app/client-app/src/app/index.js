@@ -1,13 +1,15 @@
 import React from "react";
 import { Router } from "@reach/router";
 import Root from "./routes/root";
-import UsersContextProvider from "contexts/UsersContext";
+import UsersContextProvider from "auth/UsersContext";
 import Admin from "./routes/admin.routes";
 import { LayoutProvider } from "components/core/LayoutPage";
 import layouts from "./layouts";
 import Participant from "./routes/participant.routes";
+import Auth from "./routes/auth.routes";
+import { Paths } from "auth/constants";
 
-const Error = React.lazy(() => import("app/pages/Error"));
+const ErrorPage = React.lazy(() => import("app/pages/Error"));
 
 const App = () => (
   <UsersContextProvider>
@@ -16,7 +18,8 @@ const App = () => (
         <Root path="/" />
         <Admin path="admin/*" />
         <Participant path="/survey/*" />
-        <Error message="404: Not Found" default />
+        <Auth path={`${Paths.Prefix(true)}/*`} />
+        <ErrorPage message="404: Not Found" default />
       </Router>
     </LayoutProvider>
   </UsersContextProvider>

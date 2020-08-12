@@ -1,5 +1,9 @@
 import useSWR from "swr";
-import { defaultFetcher } from "./helpers";
+import {
+  defaultFetcher,
+  withHeaders,
+  authorization_BearerToken,
+} from "./helpers";
 import axios from "axios";
 
 const urls = {
@@ -8,12 +12,12 @@ const urls = {
 };
 
 export const useSurveyInstance = (surveyId, instanceId) =>
-  useSWR(`/api/surveys/${surveyId}/instances/${instanceId}`, defaultFetcher, {
+  useSWR(`/api/surveys/${surveyId}/instances/${instanceId}`, defaultFetcher(), {
     suspense: true,
   });
 
 export const useSurveyInstancesList = (surveyId) =>
-  useSWR(`/api/surveys/${surveyId}/instances`, defaultFetcher, {
+  useSWR(`/api/surveys/${surveyId}/instances`, defaultFetcher(true), {
     suspense: true,
   });
 
@@ -23,18 +27,30 @@ export const useSurveyInstancesList = (surveyId) =>
  * @param {*} instanceId
  */
 export const useSurveyInstanceResultsSummary = (surveyId, instanceId) =>
-  useSWR(urls.instanceResultsSummary(surveyId, instanceId), defaultFetcher, {
-    suspense: true,
-    refreshInterval: 10000,
-  });
+  useSWR(
+    urls.instanceResultsSummary(surveyId, instanceId),
+    defaultFetcher(true),
+    {
+      suspense: true,
+      refreshInterval: 10000,
+    }
+  );
 
 export const closeSurveyInstance = async (surveyId, instanceId) =>
-  await axios.post(`/api/surveys/${surveyId}/instances/${instanceId}/close`);
+  await axios.post(
+    `/api/surveys/${surveyId}/instances/${instanceId}/close`,
+    null,
+    withHeaders(await authorization_BearerToken())
+  );
 
-export const getInstanceResultsSummary = (surveyId, instanceId) =>
-  axios.get(urls.instanceResultsSummary(surveyId, instanceId));
+export const getInstanceResultsSummary = async (surveyId, instanceId) =>
+  await axios.get(
+    urls.instanceResultsSummary(surveyId, instanceId),
+    withHeaders(await authorization_BearerToken())
+  );
 
-export const getInstanceResultsFull = (surveyId, instanceId) =>
-  axios.get(
-    `/api/surveys/${surveyId}/instances/${instanceId}/results?type=full`
+export const getInstanceResultsFull = async (surveyId, instanceId) =>
+  await axios.get(
+    `/api/surveys/${surveyId}/instances/${instanceId}/results?type=full`,
+    withHeaders(await authorization_BearerToken())
   );

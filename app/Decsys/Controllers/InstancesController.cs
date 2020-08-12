@@ -1,5 +1,7 @@
+using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -9,6 +11,7 @@ namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/surveys/{id}/[controller]")]
+    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
     public class InstancesController : ControllerBase
     {
         private readonly SurveyInstanceService _instances;
@@ -72,6 +75,7 @@ namespace Decsys.Controllers
         [SwaggerOperation("Get a single Survey Instance by ID.")]
         [SwaggerResponse(200, "The Survey Instance.", Type = typeof(SurveyInstance))]
         [SwaggerResponse(404, "No Survey Instance, or Survey, was found with the provided ID.")]
+        [AllowAnonymous]
         public IActionResult Get(int id, int instanceId)
         {
             try

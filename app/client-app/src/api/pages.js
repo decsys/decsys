@@ -1,32 +1,47 @@
 import axios from "axios";
-import { appJsonHeaderOptions } from "./helpers";
+import {
+  withHeaders,
+  contentType_AppJson,
+  authorization_BearerToken,
+} from "./helpers";
 
-export const createSurveyPage = async id =>
-  await axios.post(`/api/surveys/${id}/pages`);
+export const createSurveyPage = async (id) =>
+  await axios.post(
+    `/api/surveys/${id}/pages`,
+    null,
+    withHeaders(await authorization_BearerToken())
+  );
 
 export const setSurveyPageOrder = async (surveyId, pageId, newOrder) =>
   await axios.put(
     `/api/surveys/${surveyId}/pages/${pageId}/order`,
     newOrder,
-    appJsonHeaderOptions
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
   );
 
 export const deleteSurveyPage = async (surveyId, pageId) =>
-  await axios.delete(`/api/surveys/${surveyId}/pages/${pageId}`);
+  await axios.delete(
+    `/api/surveys/${surveyId}/pages/${pageId}`,
+    withHeaders(await authorization_BearerToken())
+  );
 
 export const duplicateSurveyPage = async (surveyId, pageId) =>
-  await axios.post(`/api/surveys/${surveyId}/pages/${pageId}/duplicate`);
+  await axios.post(
+    `/api/surveys/${surveyId}/pages/${pageId}/duplicate`,
+    null,
+    withHeaders(await authorization_BearerToken())
+  );
 
 export const setPageRandomize = async (surveyId, pageId, randomize) =>
   await axios.put(
     `/api/surveys/${surveyId}/pages/${pageId}/randomize`,
     randomize,
-    appJsonHeaderOptions
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
   );
 
 export const addSurveyPageItem = async (surveyId, pageId, type) =>
   await axios.post(
     `/api/surveys/${surveyId}/pages/${pageId}/components`,
     JSON.stringify(type),
-    appJsonHeaderOptions
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
   );

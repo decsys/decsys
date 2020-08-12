@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/surveys/{id}/pages")]
+    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
     public class PagesController : ControllerBase
     {
         private readonly PageService _pages;

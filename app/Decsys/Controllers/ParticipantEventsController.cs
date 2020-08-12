@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Decsys.Models;
 using Decsys.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.Annotations;
@@ -8,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Decsys.Controllers
 {
     [Route("api/log/{instanceId}/{participantId}")]
+    [AllowAnonymous] // TODO: perhaps restrict this to `client-app` (but no user) in future?
     public class ParticipantEventsController : ControllerBase
     {
         private readonly ParticipantEventService _participantEvents;

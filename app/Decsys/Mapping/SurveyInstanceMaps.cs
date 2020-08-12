@@ -19,7 +19,7 @@ namespace Decsys.Mapping
 
             // Export
             CreateMap<Models.SurveyInstance, Models.BaseSurveyInstanceResults>()
-                .ForMember(dest => dest.ExportGenerated, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.ExportGenerated, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.Survey, opt => opt.MapFrom(src => src.Survey.Name));
 
             CreateMap(typeof(Models.SurveyInstance), typeof(Models.SurveyInstanceResults<>))

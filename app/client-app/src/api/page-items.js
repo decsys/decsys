@@ -1,31 +1,46 @@
 import axios from "axios";
-import { appJsonHeaderOptions } from "./helpers";
+import {
+  withHeaders,
+  contentType_AppJson,
+  authorization_BearerToken,
+} from "./helpers";
 
-export const deleteSurveyPageItem = (surveyId, pageId, itemId) =>
-  axios.delete(`/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}`);
-
-export const duplicateSurveyPageItem = (surveyId, pageId, itemId) =>
-  axios.post(
-    `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}/duplicate`
+export const deleteSurveyPageItem = async (surveyId, pageId, itemId) =>
+  await axios.delete(
+    `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}`,
+    withHeaders(await authorization_BearerToken())
   );
 
-export const setSurveyPageItemOrder = (surveyId, pageId, itemId, newOrder) =>
-  axios.put(
+export const duplicateSurveyPageItem = async (surveyId, pageId, itemId) =>
+  await axios.post(
+    `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}/duplicate`,
+    null,
+    withHeaders(await authorization_BearerToken())
+  );
+
+export const setSurveyPageItemOrder = async (
+  surveyId,
+  pageId,
+  itemId,
+  newOrder
+) =>
+  await axios.put(
     `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}/order`,
     newOrder,
-    appJsonHeaderOptions
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
   );
 
-export const setSurveyPageItemParam = (
+export const setSurveyPageItemParam = async (
   surveyId,
   pageId,
   componentId,
   paramKey,
   value
 ) =>
-  axios.patch(
+  await axios.patch(
     `/api/surveys/${surveyId}/pages/${pageId}/components/${componentId}/params`,
     {
-      [paramKey]: value
-    }
+      [paramKey]: value,
+    },
+    withHeaders(await authorization_BearerToken())
   );

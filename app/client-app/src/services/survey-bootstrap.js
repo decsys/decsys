@@ -70,14 +70,14 @@ export const routes = {
  * @param {*} user
  * @param {*} users
  */
-export const bootstrapSurvey = async (id, instance, user, users) => {
+export const bootstrapSurvey = async (id, instance, userInstances) => {
   //validate instance
   if (!instance || instance.closed) return { route: routes.INSTANCE_404 };
   if (!instance.survey.pages.length) return { route: routes.SURVEY_EMPTY };
 
   // get / generate user ID
   let userId;
-  userId = user.instances[id];
+  userId = userInstances[id];
   if (!userId) {
     if (instance.useParticipantIdentifiers)
       return { route: routes.PARTICIPANT_ID_ENTRY };
