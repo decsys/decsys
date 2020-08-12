@@ -7,7 +7,7 @@ import { UserManager } from "oidc-client";
 import config from "auth/config";
 import { ClaimTypes, Roles } from "auth/constants";
 
-const users = new UserManager(config.oidc);
+export const users = new UserManager(config.oidc);
 users.events.addUserSignedOut(async () => {
   await users.removeUser();
 });
@@ -15,8 +15,10 @@ users.events.addUserSignedOut(async () => {
 
 const UsersContext = createContext({
   mode: WORKSHOP,
-  getUser: () => {},
-  isAdmin: () => {},
+  users: {
+    getUser: async () => {},
+  },
+  isAdmin: async () => {},
   storeInstanceParticipantId: (combinedSurveyInstanceId, participantId) => {},
   clearInstanceParticipantId: (combinedSurveyInstanceId) => {},
   instances: [],

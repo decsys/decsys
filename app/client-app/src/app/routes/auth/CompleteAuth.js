@@ -3,7 +3,7 @@ import { IfFulfilled, IfRejected, useAsync } from "react-async";
 import { Results } from "auth/constants";
 import ErrorPage from "app/pages/Error";
 import { getReturnUrl } from "auth/helpers";
-import { useUsers } from "contexts/UsersContext";
+import { useUsers } from "auth/UsersContext";
 
 const completeSignIn = async (users, url) => {
   try {

@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { getReturnUrl } from "auth/helpers";
 import { IfFulfilled, IfRejected, useAsync } from "react-async";
 import { Results } from "auth/constants";
 import ErrorPage from "app/pages/Error";
-import { useUsers } from "contexts/UsersContext";
+import { useUsers } from "auth/UsersContext";
 import Loading from "app/pages/Loading";
 
-const signIn = async (users, returnUrl) => {
+const signIn = async ({ users, returnUrl }) => {
   try {
     // We try to see if we can authenticate the user silently.
     // This happens when the user is already logged in on the IdP
@@ -39,14 +39,11 @@ const signIn = async (users, returnUrl) => {
 const RequestSignIn = () => {
   const returnUrl = getReturnUrl();
   const { users } = useUsers();
-  const { run, ...state } = useAsync({
-    deferFn: () => signIn(users, returnUrl),
+  const { run, ...state } = useAsync(signIn, {
+    users,
+    returnUrl,
     suspense: true,
   });
-
-  useEffect(() => {
-    run();
-  }, []); // eslint-disable-line
 
   return (
     <>

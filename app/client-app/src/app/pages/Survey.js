@@ -12,7 +12,7 @@ import { navigate } from "@reach/router";
 import { decode } from "services/instance-id";
 import { useSurveyInstance } from "api/survey-instances";
 import Error from "./Error";
-import { useUsers } from "contexts/UsersContext";
+import { useUsers } from "auth/UsersContext";
 import { PAGE_RANDOMIZE, SURVEY_COMPLETE } from "constants/event-types";
 import {
   getLastLogEntry,

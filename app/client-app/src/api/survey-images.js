@@ -1,5 +1,5 @@
 import axios from "axios";
-import { uploadFile } from "./helpers";
+import { uploadFile, withHeaders, authorization_BearerToken } from "./helpers";
 
 export const uploadPageItemImage = async (surveyId, pageId, itemId, file) =>
   uploadFile(
@@ -10,5 +10,6 @@ export const uploadPageItemImage = async (surveyId, pageId, itemId, file) =>
 
 export const deletePageItemImage = async (surveyId, pageId, itemId) =>
   await axios.delete(
-    `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}/image`
+    `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}/image`,
+    withHeaders(await authorization_BearerToken())
   );

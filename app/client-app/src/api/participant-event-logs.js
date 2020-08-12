@@ -1,5 +1,5 @@
 import axios from "axios";
-import { appJsonHeaderOptions } from "./helpers";
+import { withHeaders, contentType_AppJson } from "./helpers";
 
 export const logParticipantEvent = async (
   instanceId,
@@ -11,7 +11,7 @@ export const logParticipantEvent = async (
   await axios.post(
     `/api/log/${instanceId}/${participantId}/${source}/${type}`,
     payload,
-    appJsonHeaderOptions
+    withHeaders(contentType_AppJson)
   );
 
 export const getLastLogEntry = async (

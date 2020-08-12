@@ -6,7 +6,7 @@ import { useSurveyInstance } from "api/survey-instances";
 import { decode } from "services/instance-id";
 import ErrorBoundary from "components/ErrorBoundary";
 import SurveyNotFoundError from "./SurveyNotFoundError";
-import { useUsers } from "contexts/UsersContext";
+import { useUsers } from "auth/UsersContext";
 
 const SurveyComplete = ({ id }) => {
   // if Participants enter Identifiers,

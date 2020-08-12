@@ -3,7 +3,7 @@ import { getReturnUrl } from "auth/helpers";
 import { IfFulfilled, IfRejected, useAsync } from "react-async";
 import { Results } from "auth/constants";
 import ErrorPage from "app/pages/Error";
-import { useUsers } from "contexts/UsersContext";
+import { useUsers } from "auth/UsersContext";
 
 const signOut = async (users, returnUrl) => {
   const isAuthenticated = !!users.getUser()?.profile;
