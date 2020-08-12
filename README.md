@@ -14,7 +14,7 @@ DECSYS is a tool that enables the creation and administration of digital surveys
 
 | Location | Description |
 | - | - |
-| [`app/Decsys`](app/Decsys)         | The core DECSYS backend app.<br>An ASP.NET Core 3.1 API.                     |
+| [`app/Decsys`](app/Decsys)         | The core DECSYS backend app.<br>An ASP.NET Core 5.0 API.                     |
 | [`app/client-app`](app/client-app) | The core DECSYS frontend app.<br>A React app, hosted by the backend process. |
 
 ## Published Packages
@@ -22,53 +22,70 @@ DECSYS is a tool that enables the creation and administration of digital surveys
 | Location | Description |
 | - | - |
 | [`packages/param-types`](packages/param-types) | A utility package for specifying and handling Response Item parameters. |
+| [`packages/rating-scales`](packages/rating-scales) | Reusable React Components for Rating Scales:<br>- Ellipse Scale<br>- Discrete Scale |
 
 ## First Party Response Items
 
 | Location | Description |
 | - | - |
+| [`response-items/choose-one`](response-items/choose-one) | The Choose One Response Item that ships with DECSYS. |
 | [`response-items/confirmation`](response-items/confirmation) | The Confirmation Response Item that ships with DECSYS. |
+| [`response-items/discrete-scale`](response-items/discrete-scale) | The Discrete Scale Response Item that ships with DECSYS. |
+| [`response-items/ellipse-scale`](response-items/ellipse-scale) | The Ellipse Scale Response Item that ships with DECSYS. |
 | [`response-items/freetext`](response-items/freetext) | The Free Text Response Item that ships with DECSYS. |
+
 
 ## Other
 
 | Location | Description |
 | - | - |
-| [`docs`](docs) | The documentation site.<br>Built by mkdocs. |
+| [`docs`](docs) | The documentation site.<br>🏗 Built by [Docusaurus](https://v2.docusaurus.io/). |
 
 Most of the above Project Areas each have their own README with some details on getting started, and further details can be found in the Developer Guide.
 
 # 🚝 Monorepo notes
 
-This monorepo uses a possibly slightly unorthodox approach to managing some of its contents (at least compared to repos full of only javascript packages, such as Babel).
+This monorepo uses Yarn 2 Workspaces for managing dependencies / running scripts across several javascript projects.
 
-This is for three reasons:
+This means the following:
+- Non javascript projects are managed as normal, relative to their project directories.
+- The .NET app is a slight exception to the above
+  - Because it hosts a javascript project (`client-app`), its debug build process has similar environment expectations to `client-app`
+  - `DECSYS.sln` is actually in the root of the repo, not the project directory.
+- Javascript projects have some environment prerequisites.
 
-- The repo contents are cross stack (Dotnet, JS, python...)
-- We have a Create-React-App application (`app/client-app`)
-- We have javascript packages that are both depended on elsewhere in the repo, *and* published to public registries.
+## Prerequisites for Javascript projects
 
-The result of all of this is as follows:
+- Have node.js (`10.x` or newer, so it comes with `npm`)
+- Have yarn globally installed.
+  - the recommended way today is to install from npm:
+    - `npm i -g yarn`
+  - this global installation will then use the repo's local version in `.yarn/releases`
 
-- Non Javascript projects are managed local to themselves, as normal.
-  - Really this is because they aren't interdependent.
-  - But regardless, work with them as you normally would: from their own project roots.
-  - The semi-exception to this is the Visual Studio Solution file in the root of the repo.
-- All javascript in `packages/` or `response-items/` use Lerna, npm, and the npm `file:` protocol for local dependencies.
-  - Don't use `lerna bootstrap`; this is a `lerna link convert` repo.
-  - Shared dev dependencies are in the top level `package.json`
-  - `npm install` at the top level; `npm run` top level scripts only.
-  - There are no project local `node_modules`.
-- The CRA app (`appp/client-app`) is sort of a hybrid.
-  - It isn't a Lerna package.
-  - `npm install` locally - gives a local `node_modules` directory.
-  - `npm run` local scripts. This is necessary so `react-scripts` works properly.
-  - However, it still uses the top-level shared dependencies, to ensure version consistency in the repo.
-    - so `devDependencies` can be either in the local `package.json` or the top-level one, depending if they're shared.
-    - This works due to node module resolution, without worrying about Lerna.
-    - technically, all `dependencies` are `devDependencies` because it's a built app not a package.
-    - therefore its ok to hoist `dependencies` like `@chakra-ui/core` to the top-level `devDependencies`.
-  - This app isn't a published package, so we don't have to resolve the `file:` links; we only distribute the built version.
+## Yarn 2 / Workspaces notes
+
+Some notes on our usage of Yarn 2 in this repo:
+
+- We use **Plug n' Play** mode.
+  - no `node_modules` folders.
+  - better dependency integrity
+  - stricter dependency rules
+    - this can have side effects that may require temporary workarounds
+- We use **Workspaces**
+  - packages installed and cached at the top level of the repo, not per project
+  - one `yarn.lock` for the whole repo
+  - many `package.json` manifests - one per project.
+  - one `.yarnrc.yml` config file for the repo.
+  - `yarn` cli commands can be run against a workspace as follows:
+    - `yarn workspace <package_name> <command>`
+    - e.g. `yarn workspace @decsys/client-app add some-package`
+  - scripts can be run against a workspace as above
+    - `yarn workspace <package_name> <script_name>`
+    - e.g. `yarn workspace @decsys/client-app build`
+  - scripts can be run relative to a project directory
+    - e.g. `/app/client-app> yarn build`
+  - many `yarn` commands are workspace-wide:
+    - e.g. `yarn up my-package@latest` will upgrade `my-package` in any package that depends on it.
 
 # ⚖ Licensing
 

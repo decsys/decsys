@@ -1,30 +1,20 @@
-# ✅ DECSYS Ellipse Scale Component
+# ✅ DECSYS Ellipse Scale Response
 
 This is a component that allows a Survey Participant to provide a ranged answer on an Ellipse Scale.
 
-# 🎉 Installation
+# 📝 Documentation
 
-- Acquire a distributable version:
-  - Download a distributable version from Github Releases
-  - Build from source (see below)
-- Copy the `.js` file in into the Survey Platform's `components/` folder
+For usage and reference refer to the DECSYS Documentation.
 
-# 🏗 Building
+# 📜 Scripts
 
-## Pre-requisites
+## 🚝 Read the monorepo notes in the repository root!
 
-- Node `10.x` or newer
-  - comes with an appropriate version of npm
+| command | notes |
+|-|-|
+| `yarn storybook` | Run Storybook for testing |
+| `yarn build` | Build the DECSYS Response Item.<br>Output to `./dist/` |
 
-## Build steps
-
-In the **root** of the repo:
-
-- `npm i`
-- `npm run ellipse-scale:build`
-
-The build outputs to the local `./dist` directory.
-
-### Troubleshooting
+# ⚠ Troubleshooting
 
 At this time, it may be necessary to ensure `packages/rating-scales` is built locally before trying to build / storybook this project.
