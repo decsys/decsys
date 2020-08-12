@@ -16,12 +16,11 @@ const SurveyComplete = ({ id }) => {
   // We don't clear auto-generated ID's, to ensure we can track non-repeatable completion.
 
   const { data: instance } = useSurveyInstance(...decode(id));
-  const { users } = useUsers();
+  const { clearInstanceParticipantId } = useUsers();
 
   useEffect(() => {
-    if (instance.useParticipantIdentifiers)
-      users.clearInstanceParticipantId(id);
-  }, [id, instance, users]);
+    if (instance.useParticipantIdentifiers) clearInstanceParticipantId(id);
+  }, [id, instance, clearInstanceParticipantId]);
 
   return (
     <Page brandLink="">

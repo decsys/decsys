@@ -10,20 +10,21 @@ import Dashboard from "app/pages/Dashboard";
 import { Paths } from "auth/constants";
 import { IfFulfilled, useAsync } from "react-async";
 import Loading from "app/pages/Loading";
+import { WORKSHOP } from "constants/app-modes";
 
 const Admin = () => {
-  const { isAdmin } = useUsers();
+  const { isAdmin, mode } = useUsers();
   const { run, ...state } = useAsync({
     promiseFn: isAdmin,
-    onResolve: (isAdmin) => !isAdmin && navigate(Paths.RequestSignIn("true")),
+    onResolve: (isAdmin) =>
+      !isAdmin && mode !== WORKSHOP && navigate(Paths.RequestSignIn("true")),
     suspense: true,
   });
 
   return (
     <IfFulfilled state={state}>
-      {(isAdmin) => {
-        console.log(isAdmin);
-        return isAdmin ? (
+      {(isAdmin) =>
+        isAdmin ? (
           <Router>
             <Surveys path="/" />
             <Editor path="/survey/:id" />
@@ -32,10 +33,12 @@ const Admin = () => {
             <Dashboard path="/survey/dashboard/:combinedId" />
             <Error message="404: Not Found" default />
           </Router>
+        ) : mode === WORKSHOP ? (
+          <Error message="401: Not Authorized" default />
         ) : (
           <Loading />
-        );
-      }}
+        )
+      }
     </IfFulfilled>
   );
 };

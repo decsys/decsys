@@ -5,10 +5,10 @@ import { FaList } from "react-icons/fa";
 import LightHeading from "components/core/LightHeading";
 import { useUsers } from "auth/UsersContext";
 
-const ParticipantIdEntry = ({ setUserId, combinedId, validIdentifiers }) => {
+const ParticipantIdEntry = ({ combinedId, validIdentifiers }) => {
   const [id, setId] = useState();
   const [validationError, setValidationError] = useState("");
-  const { users } = useUsers();
+  const { storeInstanceParticipantId } = useUsers();
 
   const handleChange = ({ target: { value } }) => setId(value);
 
@@ -19,7 +19,7 @@ const ParticipantIdEntry = ({ setUserId, combinedId, validIdentifiers }) => {
       );
       return;
     }
-    users.storeInstanceParticipantId(combinedId, id);
+    storeInstanceParticipantId(combinedId, id);
   };
 
   return (

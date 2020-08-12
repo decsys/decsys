@@ -32,21 +32,21 @@ const useInstance = () => useContext(InstanceContext);
 // Do all the data fetching and validation ahead of rendering the survey
 const SurveyBootstrapper = ({ id }) => {
   const { data: instance } = useSurveyInstance(...decode(id));
-  const { user, users } = useUsers();
+  const { instances, storeInstanceParticipantId } = useUsers();
   const [route, setRoute] = useState();
   const [userId, setUserId] = useState();
   const [progress, setProgress] = useState({});
 
   useLayoutEffect(() => {
-    bootstrapSurvey(id, instance, user, users).then(
+    bootstrapSurvey(id, instance, instances).then(
       ({ route, userId, progress }) => {
         setRoute(route);
         setUserId(userId);
         setProgress(progress || {});
-        users.storeInstanceParticipantId(id, userId);
+        storeInstanceParticipantId(id, userId);
       }
     );
-  }, [id, instance, user, users]);
+  }, [id, instance, instances, storeInstanceParticipantId]);
 
   // render appropriately based on
   // the route arrived at during the above render
