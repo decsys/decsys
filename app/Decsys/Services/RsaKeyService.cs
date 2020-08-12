@@ -26,7 +26,7 @@ namespace Decsys.Services
         public static RsaSecurityKey GetRsaKey(IConfiguration config)
         {
             var key = new Dictionary<string, string>();
-            config.GetSection("JwtSigningKey").Bind(key);
+            config.GetSection("Hosted:JwtSigningKey").Bind(key);
 
             // here we convert from a JSON Web Key
             // in which all the RSA params are specified

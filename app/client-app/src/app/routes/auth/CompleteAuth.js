@@ -30,7 +30,7 @@ const completeSignOut = async (users, url) => {
       state: response && response.data,
     };
   } catch (error) {
-    console.log("There was an error signing out:", error);
+    console.error("There was an error signing out:", error);
     return { status: Results.Fail, error };
   }
 };

@@ -17,7 +17,7 @@ const signOut = async (users, returnUrl) => {
     });
     return { status: Results.Redirect };
   } catch (signOutError) {
-    console.log("Sign Out Error: ", signOutError);
+    console.error("Sign Out Error: ", signOutError);
     return { status: Results.Fail, signOutError };
   }
 };

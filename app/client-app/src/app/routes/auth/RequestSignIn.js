@@ -30,7 +30,7 @@ const signIn = async ({ users, returnUrl }) => {
       });
       return { status: Results.Redirect };
     } catch (signInError) {
-      console.log("Sign In Error: ", signInError);
+      console.error("Sign In Error: ", signInError);
       return { status: Results.Fail, signInError };
     }
   }

@@ -1,16 +1,13 @@
 import axios from "axios";
 import { users } from "auth/UsersContext";
 
-export const defaultFetcher = (withToken) => async (url) => {
-  console.log(withToken);
-  console.log(withHeaders(await authorization_BearerToken()));
-  return (
+export const defaultFetcher = (withToken) => async (url) =>
+  (
     await axios.get(
       url,
       withToken ? withHeaders(await authorization_BearerToken()) : {}
     )
   ).data;
-};
 
 export const uploadFile = async (url, file, method = "post") => {
   const formData = new FormData();

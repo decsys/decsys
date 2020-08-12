@@ -14,22 +14,23 @@ namespace Decsys.Auth
             IConfiguration config)
         {
             // Seed an initial super user to use for setup
-            if (await users.FindByNameAsync("superadmin@localhost") is null)
+            var username = "admin@localhost";
+            if (await users.FindByNameAsync(username) is null)
             {
                 // check an actual password has been configured
-                var pwd = config["SuperAdminSeedPassword"];
+                var pwd = config["Hosted:AdminPassword"];
                 if (string.IsNullOrEmpty(pwd))
                 {
                     throw new ApplicationException(@"
-A non-empty password must be configured for seeding the inital SuperAdmin User.
-Please set SuperAdminSeedPassword in a user secrets file,
-or the environment variable DOTNET_SuperAdminSeedPassword");
+A non-empty password must be configured for seeding the initial Admin User.
+Please set Hosted:AdminPassword in a settings or user secrets file,
+or the environment variable DOTNET_Hosted_AdminPassword");
                 }
 
                 var user = new IdentityUser
                 {
-                    UserName = "superadmin@localhost",
-                    Email = "superadmin@localhost",
+                    UserName = username,
+                    Email = username,
                     EmailConfirmed = true
                 };
 
