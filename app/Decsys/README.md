@@ -4,7 +4,11 @@ The DECSYS Survey Platform aims to be a flexible cross-platform web-based survey
 
 It is used to showcase the DECSYS Ellipse Rating Scale.
 
-For usage guidance, please refer to the Documentation.
+# 📝 Documentation
+
+For usage and reference refer to the DECSYS Documentation.
+
+
 
 ## Running as a service
 
@@ -19,11 +23,12 @@ For Windows, we recommend using [NSSM](https://nssm.cc/) to do so.
 
 # 🏗 Building the Survey Platform
 
+## 🚝 Read the monorepo notes in the repository root!
+
 ## Prerequisites
 
-- `dotnet` SDK `3.1` or newer
-  - either independently or part of Visual Studio 2019 or newer
-- node.js `10.x` or newer (including `npm`)
+- `dotnet` SDK `5.0-preview7` or newer
+  - either independently or part of Visual Studio 2019 `16.7` or newer
 
 ## Build steps
 
