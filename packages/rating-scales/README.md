@@ -60,12 +60,14 @@ The following complete ratings scale components are available:
   - commonjs (node): `const EllipseScale = require("@decsys/rating-scales/cjs/ellipse");`
   - browser (umd): `DECSYS.EllipseScale`
 
-# 🏗 Building
+# 📜 Scripts
 
-At the top level of the repo:
+## 🚝 Read the monorepo notes in the repository root!
 
-- `npm i`
-- `npm run rating-scales:build`
+| command | notes |
+|-|-|
+| `yarn storybook` | Run Storybook for testing |
+| `yarn build` | Builds the CommonJS distributable undle.<br>Output to `./dist/` |
 
 [react]: https://reactjs.org/
 [rating scales]: https://en.wikipedia.org/wiki/Rating_scale

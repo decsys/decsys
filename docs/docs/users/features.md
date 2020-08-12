@@ -2,12 +2,25 @@
 title: Features
 ---
 
-The Survey Platform, and the various pieces that come together to make it what it is, are considered version `1.0`.
+### Run Surveys from your local computer
 
-That is to say, they are feature complete, and stable, for the first version.
+Great for use as part of a Workshop, where the survey can be taken by participants in realtime over a local network
 
-There are planned future features and extended capabilities for the platform that will follow in later versions, but you can use it today, and there's enough in it to be useful.
+### Capture responses using an Ellipse-based Scale
 
-The first major example is that today, in `1.0`, you can run the application locally, as a sole **Admin**, and have users on your local network participate in your **Surveys**. To make this easy, the application runs everything it needs in a single process.
+Instead of forcing people to choose 7 or 8 on a Discrete Scale, when they're really a 7.5, or somewhere between 5 and 9, why not let them draw an ellipse on the screen, to accurately record both where on the scale they are, and how confident.
 
-In future, it will be possible to optionally connect to an external database server, or to host the backend and frontend on different machines - perhaps in containers.
+### Capture custom responses
+
+Need a stroop test as a survey question? Easily build one using React and integrate it with DECSYS.
+
+Got an idea for an unorthodox new approach to capturing data? Build that and use DECSYS to trial it, comparing with the current  approach.
+
+### Host your own online Survey service
+
+:::info 🚧 Coming soon!
+:::
+
+## Roadmap
+
+See the [roadmap](./roadmap) for our future plans.

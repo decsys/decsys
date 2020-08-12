@@ -1,26 +1,16 @@
-# ✅ DECSYS FreeText Component
+# ✅ DECSYS Free Text Response
 
 This is a simple component that provides a Free Textarea for Survey Participants to enter any response they wish.
 
-# 🎉 Installation
+# 📝 Documentation
 
-- Acquire a distributable version:
-  - Download a distributable version from Github Releases
-  - Build from source (see below)
-- Copy the `.js` file in into the Survey Platform's `components/` folder
+For usage and reference refer to the DECSYS Documentation.
 
-# 🏗 Building
+# 📜 Scripts
 
-## Pre-requisites
+## 🚝 Read the monorepo notes in the repository root!
 
-- Node `10.x` or newer
-  - comes with an appropriate version of npm
-
-## Build steps
-
-In the **root** of the repo:
-
-- `npm i`
-- `npm run freetext:build`
-
-The build outputs to the local `./dist` directory.
+| command | notes |
+|-|-|
+| `yarn storybook` | Run Storybook for testing |
+| `yarn build` | Build the DECSYS Response Item.<br>Output to `./dist/` |

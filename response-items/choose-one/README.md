@@ -1,32 +1,22 @@
-# ✅ DECSYS Choose One Component
+# ✅ DECSYS Choose One Response
 
 This is a component that allows a Survey Participant to select only one item from multiple choices.
 
-# 🎉 Installation
+# 📝 Documentation
 
-- Acquire a distributable version:
-  - Download a distributable version from Github Releases
-  - Build from source (see below)
-- Copy the `.js` file in into the Survey Platform's `components/` folder
+For usage and reference refer to the DECSYS Documentation.
 
-# 🏗 Building
+# 📜 Scripts
 
-## Pre-requisites
+## 🚝 Read the monorepo notes in the repository root!
 
-- Node `10.x` or newer
-  - comes with an appropriate version of npm
+| command | notes |
+|-|-|
+| `yarn storybook` | Run Storybook for testing |
+| `yarn build` | Build the DECSYS Response Item.<br>Output to `./dist/` |
 
-## Build steps
+# ⚠ Troubleshooting
 
-In the **root** of the repo:
-
-- `npm i`
-- `npm run choose-one:build`
-
-The build outputs to the local `./dist` directory.
-
-### Troubleshooting
-
-More just a note: this package very carefully uses the depcrecated `rollup-plugin-commonjs` becuase its successor `@rollup/plugin-commonjs` does something (?) differently, and builds `react-input-autosize` wrong, resulting in a bundle that DECSYS can't run.
+More just a note: this package very carefully uses the deprecated `rollup-plugin-commonjs` because its successor `@rollup/plugin-commonjs` does something (?) differently, and builds `react-input-autosize` wrong, resulting in a bundle that DECSYS can't run.
 
 **Please don't upgrade `rollup-plugin-commonjs` for this package (until `react-input-autosize` is available as esm)!**
