@@ -48,6 +48,8 @@ namespace Decsys.Mapping
             // Page
             CreateMap<Data.Entities.LiteDb.Page, Page>();
             CreateMap<Page, Data.Entities.LiteDb.Page>();
+            CreateMap<Data.Entities.Mongo.Page, Page>();
+            CreateMap<Page, Data.Entities.Mongo.Page>();
 
             // Component
             CreateMap<Data.Entities.LiteDb.Component, Component>()
