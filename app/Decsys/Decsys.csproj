@@ -63,7 +63,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Entities\Mongo\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
