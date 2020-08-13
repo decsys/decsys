@@ -92,6 +92,7 @@ namespace Decsys
             // mode conditional configuration
             if(mode.IsHosted)
             {
+                // TODO: Document settings
                 services.Configure<HostedDbSettings>(c => _config.GetSection("Hosted").Bind(c));
             }
 

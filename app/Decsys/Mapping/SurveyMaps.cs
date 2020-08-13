@@ -55,10 +55,19 @@ namespace Decsys.Mapping
             CreateMap<Data.Entities.LiteDb.Component, Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new BsonJObjectConverter()));
-
             CreateMap<Component, Data.Entities.LiteDb.Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new JObjectBsonConverter()));
+
+            CreateMap<Data.Entities.Mongo.Component, Component>();
+                // TODO: does this work?
+                //.ForMember(dest => dest.Params,
+                //    opt => opt.ConvertUsing(new BsonJObjectConverter()));
+
+            CreateMap<Component, Data.Entities.Mongo.Component>();
+                // TODO: does this work?
+                //.ForMember(dest => dest.Params,
+                //    opt => opt.ConvertUsing(new JObjectBsonConverter()));
         }
 
         private int? MapActiveInstanceToId(Data.Entities.BaseSurveyInstance? instance)
