@@ -1,7 +1,7 @@
-using AutoMapper;
-using Decsys.Data.Entities.LiteDb;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using Decsys.Models;
 
 namespace Decsys.Mapping
 {
@@ -10,12 +10,25 @@ namespace Decsys.Mapping
         public SurveyMaps()
         {
             // SurveySummary
-            CreateMap<Survey, Models.SurveySummary>()
-                .ConstructUsing(src => new Models.SurveySummary(src.Name))
+            CreateMap<Data.Entities.LiteDb.Survey, SurveySummary>()
+                .ConstructUsing(src => new SurveySummary(src.Name))
                 .ForSourceMember(src => src.Pages, opt => opt.DoNotValidate());
 
-            CreateMap<IEnumerable<SurveyInstance>, Models.SurveySummary>()
-                .ConstructUsing(_ => new Models.SurveySummary(string.Empty))
+            CreateMap<IEnumerable<Data.Entities.LiteDb.SurveyInstance>, SurveySummary>()
+                .ConstructUsing(_ => new SurveySummary(string.Empty))
+                .ForMember(dest => dest.RunCount,
+                    opt => opt.MapFrom(src => src.Count()))
+                .ForMember(dest => dest.ActiveInstanceId,
+                    opt => opt.MapFrom(src => MapActiveInstanceToId(
+                        src.SingleOrDefault(x => x.Closed == null))))
+                .ForAllOtherMembers(opt => opt.Ignore());
+
+            CreateMap<Data.Entities.Mongo.Survey, SurveySummary>()
+                .ConstructUsing(src => new SurveySummary(src.Name))
+                .ForSourceMember(src => src.Pages, opt => opt.DoNotValidate());
+
+            CreateMap<IEnumerable<Data.Entities.Mongo.SurveyInstance>, SurveySummary>()
+                .ConstructUsing(_ => new SurveySummary(string.Empty))
                 .ForMember(dest => dest.RunCount,
                     opt => opt.MapFrom(src => src.Count()))
                 .ForMember(dest => dest.ActiveInstanceId,
@@ -25,25 +38,28 @@ namespace Decsys.Mapping
 
 
             // Survey
-            CreateMap<Survey, Models.Survey>()
-                .ConstructUsing(src => new Models.Survey(src.Name));
-            CreateMap<Models.Survey, Survey>();
+            CreateMap<Data.Entities.LiteDb.Survey, Survey>()
+                .ConstructUsing(src => new Survey(src.Name));
+            CreateMap<Survey, Data.Entities.LiteDb.Survey>();
+            CreateMap<Data.Entities.Mongo.Survey, Survey>()
+                .ConstructUsing(src => new Survey(src.Name));
+            CreateMap<Survey, Data.Entities.Mongo.Survey>();
 
             // Page
-            CreateMap<Page, Models.Page>();
-            CreateMap<Models.Page, Page>();
+            CreateMap<Data.Entities.LiteDb.Page, Page>();
+            CreateMap<Page, Data.Entities.LiteDb.Page>();
 
             // Component
-            CreateMap<Component, Models.Component>()
+            CreateMap<Data.Entities.LiteDb.Component, Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new BsonJObjectConverter()));
 
-            CreateMap<Models.Component, Component>()
+            CreateMap<Component, Data.Entities.LiteDb.Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new JObjectBsonConverter()));
         }
 
-        private int? MapActiveInstanceToId(SurveyInstance? instance)
+        private int? MapActiveInstanceToId(Data.Entities.BaseSurveyInstance? instance)
             => instance?.Id; // Necessary because Expression Trees are limited
     }
 }

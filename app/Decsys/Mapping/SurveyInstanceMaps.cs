@@ -1,5 +1,5 @@
 using AutoMapper;
-using Decsys.Data.Entities;
+using Decsys.Models;
 using System;
 
 namespace Decsys.Mapping
@@ -8,31 +8,40 @@ namespace Decsys.Mapping
     {
         public SurveyInstanceMaps()
         {
-            CreateMap<SurveyInstance, Models.SurveyInstance>()
-                .ConstructUsing(src =>
+            CreateMap<Data.Entities.LiteDb.SurveyInstance, SurveyInstance>()
+                .ConstructUsing(_ =>
                     // a dummy one at construction, as we map it anyway
-                    new Models.SurveyInstance(new Models.Survey("")));
+                    new SurveyInstance(new Survey("")));
 
-            CreateMap<Models.SurveyInstance, SurveyInstance>()
+            CreateMap<SurveyInstance, Data.Entities.LiteDb.SurveyInstance>()
                 .ConstructUsing(src =>
-                    new SurveyInstance(src.Survey.Id));
+                    new Data.Entities.LiteDb.SurveyInstance(src.Survey.Id));
+
+            CreateMap<Data.Entities.Mongo.SurveyInstance, SurveyInstance>()
+                .ConstructUsing(_ =>
+                    // a dummy one at construction, as we map it anyway
+                    new SurveyInstance(new Survey("")));
+
+            CreateMap<SurveyInstance, Data.Entities.Mongo.SurveyInstance>()
+                .ConstructUsing(src =>
+                    new Data.Entities.Mongo.SurveyInstance(src.Survey.Id));
 
             // Export
-            CreateMap<Models.SurveyInstance, Models.BaseSurveyInstanceResults>()
+            CreateMap<SurveyInstance, BaseSurveyInstanceResults>()
                 .ForMember(dest => dest.ExportGenerated, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.Survey, opt => opt.MapFrom(src => src.Survey.Name));
 
-            CreateMap(typeof(Models.SurveyInstance), typeof(Models.SurveyInstanceResults<>))
-                .IncludeBase(typeof(Models.SurveyInstance), typeof(Models.BaseSurveyInstanceResults))
+            CreateMap(typeof(SurveyInstance), typeof(SurveyInstanceResults<>))
+                .IncludeBase(typeof(SurveyInstance), typeof(BaseSurveyInstanceResults))
                 .ForMember("Participants", opt => opt.Ignore());
 
             // These are only used for imports! // TODO: gonna need to fix these
-            CreateMap<Models.BaseSurveyInstanceResults, SurveyInstance>()
+            CreateMap<BaseSurveyInstanceResults, Data.Entities.LiteDb.SurveyInstance>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => 0))// always set to 0; we are inserting new instances
                 .ForMember(dest => dest.Survey, opt => opt.Ignore()); // do this manually as we don't export the id
 
-            CreateMap(typeof(Models.SurveyInstanceResults<>), typeof(SurveyInstance))
-                .IncludeBase(typeof(Models.BaseSurveyInstanceResults), typeof(SurveyInstance));
+            CreateMap(typeof(SurveyInstanceResults<>), typeof(Data.Entities.LiteDb.SurveyInstance))
+                .IncludeBase(typeof(BaseSurveyInstanceResults), typeof(Data.Entities.LiteDb.SurveyInstance));
         }
     }
 }

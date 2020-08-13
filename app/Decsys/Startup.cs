@@ -76,9 +76,11 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // configure app mode
             var mode = new AppMode { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
             services.Configure<AppMode>(c => c.IsWorkshop = mode.IsWorkshop);
 
+            // configure version mappings
             foreach (var v in Versions.All)
             {
                 services.Configure<ComponentTypeMap>(v,
@@ -87,8 +89,13 @@ namespace Decsys
                         .Bind(c.Types));
             }
 
-            services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
+            // mode conditional configuration
+            if(mode.IsHosted)
+            {
+                services.Configure<HostedDbSettings>(c => _config.GetSection("Hosted").Bind(c));
+            }
 
+            // mode conditional bits
             if (mode.IsHosted)
             {
                 // TODO: EF Core can go when we switch to mongo
@@ -126,6 +133,10 @@ namespace Decsys
                             config => config.LoginPath = "/auth/login"));
             }
 
+            // TODO: configure and add workshop only bits
+            services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
+
+            // add all other services
             services.AddResponseCompression();
 
             services.AddAuthorization(opts => opts.AddPolicy(
