@@ -1,10 +1,8 @@
+using System;
 using Decsys.Constants;
-
 using LiteDB;
 
-using System;
-
-namespace Decsys.Data.Entities
+namespace Decsys.Data.Entities.LiteDb
 {
     public class SurveyInstance : BaseSurveyInstance
     {
@@ -21,11 +19,10 @@ namespace Decsys.Data.Entities
 
         public SurveyInstance(int surveyId)
         {
-            Survey  = new Survey { Id = surveyId };
+            Survey = new Survey { Id = surveyId };
         }
 
         [BsonRef(Collections.Surveys)]
         public Survey Survey { get; set; } = new Survey { Id = 0 };
-
     }
 }

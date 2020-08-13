@@ -1,7 +1,7 @@
 using System;
 using LiteDB;
 
-namespace Decsys.Data.Entities
+namespace Decsys.Data.Entities.LiteDb
 {
     public class Component : BaseComponent
     {

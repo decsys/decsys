@@ -6,6 +6,7 @@ using AutoMapper;
 using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities;
+using Decsys.Data.Entities.LiteDb;
 using Decsys.Repositories.Contracts;
 
 using LiteDB;

@@ -1,5 +1,5 @@
 using AutoMapper;
-using Decsys.Models;
+using Decsys.Data.Entities.LiteDb;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,13 +10,12 @@ namespace Decsys.Mapping
         public SurveyMaps()
         {
             // SurveySummary
-
-            CreateMap<Data.Entities.Survey, SurveySummary>()
-                .ConstructUsing(src => new SurveySummary(src.Name))
+            CreateMap<Survey, Models.SurveySummary>()
+                .ConstructUsing(src => new Models.SurveySummary(src.Name))
                 .ForSourceMember(src => src.Pages, opt => opt.DoNotValidate());
 
-            CreateMap<IEnumerable<Data.Entities.SurveyInstance>, SurveySummary>()
-                .ConstructUsing(src => new SurveySummary(string.Empty))
+            CreateMap<IEnumerable<SurveyInstance>, Models.SurveySummary>()
+                .ConstructUsing(_ => new Models.SurveySummary(string.Empty))
                 .ForMember(dest => dest.RunCount,
                     opt => opt.MapFrom(src => src.Count()))
                 .ForMember(dest => dest.ActiveInstanceId,
@@ -26,27 +25,25 @@ namespace Decsys.Mapping
 
 
             // Survey
-            CreateMap<Data.Entities.Survey, Survey>()
-                .ConstructUsing(src => new Survey(src.Name));
-            CreateMap<Survey, Data.Entities.Survey>();
-
+            CreateMap<Survey, Models.Survey>()
+                .ConstructUsing(src => new Models.Survey(src.Name));
+            CreateMap<Models.Survey, Survey>();
 
             // Page
-            CreateMap<Data.Entities.Page, Page>();
-
-            CreateMap<Page, Data.Entities.Page>();
+            CreateMap<Page, Models.Page>();
+            CreateMap<Models.Page, Page>();
 
             // Component
-            CreateMap<Data.Entities.Component, Component>()
+            CreateMap<Component, Models.Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new BsonJObjectConverter()));
 
-            CreateMap<Component, Data.Entities.Component>()
+            CreateMap<Models.Component, Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new JObjectBsonConverter()));
         }
 
-        private int? MapActiveInstanceToId(Data.Entities.SurveyInstance? instance)
+        private int? MapActiveInstanceToId(SurveyInstance? instance)
             => instance?.Id; // Necessary because Expression Trees are limited
     }
 }
