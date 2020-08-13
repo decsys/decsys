@@ -18,10 +18,10 @@ namespace Decsys.Repositories.Mongo
 
         public ComponentRepository(
             IOptions<HostedDbSettings> config,
-            IMongoClient db,
+            IMongoClient mongo,
             IMapper mapper)
         {
-            _surveys = db.GetDatabase(config.Value.DatabaseName)
+            _surveys = mongo.GetDatabase(config.Value.DatabaseName)
                 .GetCollection<Survey>(Collections.Surveys);
             _mapper = mapper;
         }

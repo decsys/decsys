@@ -11,14 +11,11 @@ namespace Decsys.Repositories.LiteDb
 {
     public class LiteDbSurveyInstanceRepository : ISurveyInstanceRepository
     {
-        private readonly ILiteCollection<Survey> _surveys;
         private readonly ILiteCollection<SurveyInstance> _instances;
-
         private readonly IMapper _mapper;
 
         public LiteDbSurveyInstanceRepository(LiteDbFactory db, IMapper mapper)
         {
-            _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _instances = db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
             _mapper = mapper;
         }

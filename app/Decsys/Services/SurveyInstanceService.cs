@@ -61,7 +61,7 @@ namespace Decsys.Services
 
             var instance = _instances.Find(instanceId);
 
-            if (instance.Survey.Id != surveyId) throw new KeyNotFoundException();
+            if (instance?.Survey.Id != surveyId) throw new KeyNotFoundException();
 
             return instance;
         }

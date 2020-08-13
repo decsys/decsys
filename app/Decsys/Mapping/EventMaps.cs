@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Decsys.Data.Entities;
+using Decsys.Models;
 
 namespace Decsys.Mapping
 {
@@ -7,11 +7,11 @@ namespace Decsys.Mapping
     {
         public EventMaps()
         {
-            CreateMap<Models.ParticipantEvent, ParticipantEvent>()
+            CreateMap<ParticipantEvent, Data.Entities.LiteDb.ParticipantEvent>()
                 .ForMember(dest => dest.Payload,
                     opt => opt.ConvertUsing(new JObjectBsonConverter()));
 
-            CreateMap<ParticipantEvent, Models.ParticipantEvent>()
+            CreateMap<Data.Entities.LiteDb.ParticipantEvent, ParticipantEvent>()
                 .ForMember(dest => dest.Payload,
                     opt => opt.ConvertUsing(new BsonJObjectConverter()));
         }

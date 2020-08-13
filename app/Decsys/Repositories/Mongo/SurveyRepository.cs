@@ -95,11 +95,9 @@ namespace Decsys.Repositories.Mongo
                 x => x.Id == survey.Id,
                 _mapper.Map<Survey>(survey));
 
-
         public void UpdateName(int id, string name) =>
-            _surveys.FindOneAndUpdate(
+            _surveys.UpdateOne(
                 x => x.Id == id,
                 Builders<Survey>.Update.Set(x => x.Name, name));
-
     }
 }
