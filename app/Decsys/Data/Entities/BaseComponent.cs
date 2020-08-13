@@ -17,7 +17,7 @@ namespace Decsys.Data.Entities
         public BaseComponent(string type)
         {
             Type = type;
-        } 
+        }
 
         public Guid Id { get; set; } = Guid.NewGuid();
 

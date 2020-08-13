@@ -1,6 +1,4 @@
 using System;
-using Decsys.Constants;
-using LiteDB;
 
 namespace Decsys.Data.Entities.Mongo
 {
@@ -19,10 +17,9 @@ namespace Decsys.Data.Entities.Mongo
 
         public SurveyInstance(int surveyId)
         {
-            Survey = new Survey { Id = surveyId };
+            SurveyId = surveyId;
         }
 
-        [BsonRef(Collections.Surveys)]
-        public Survey Survey { get; set; } = new Survey { Id = 0 };
+        public int SurveyId { get; set; }
     }
 }
