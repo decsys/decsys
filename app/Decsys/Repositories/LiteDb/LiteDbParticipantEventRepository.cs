@@ -83,6 +83,9 @@ namespace Decsys.Repositories.LiteDb
 
         #endregion
 
+        public void Delete(int instanceId)
+            => _db.DropInstanceEventLog(instanceId);
+
         public List<Models.ParticipantEvent> List(
             int instanceId,
             string participantId,

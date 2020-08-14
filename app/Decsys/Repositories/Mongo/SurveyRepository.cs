@@ -15,17 +15,19 @@ namespace Decsys.Repositories.Mongo
     {
         private readonly IMongoCollection<Survey> _surveys;
         private readonly IMongoCollection<SurveyInstance> _instances;
+        private readonly IParticipantEventRepository _events;
         private readonly IMapper _mapper;
 
         public SurveyRepository(
             IOptions<HostedDbSettings> config,
             IMongoClient mongo,
+            IParticipantEventRepository events,
             IMapper mapper)
         {
             var db = mongo.GetDatabase(config.Value.DatabaseName);
             _surveys = db.GetCollection<Survey>(Collections.Surveys);
             _instances = db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
-
+            _events = events;
             _mapper = mapper;
         }
 
@@ -66,7 +68,16 @@ namespace Decsys.Repositories.Mongo
 
         public void Delete(int id)
         {
+            // Delete all Instance Event Logs
+            _instances.Find(x => x.SurveyId == id)
+                .Project(x => x.Id)
+                .ToList()
+                .ForEach(_events.Delete);
+
+            // Delete all Instances
             _instances.DeleteMany(x => x.SurveyId == id);
+
+            // Delete the Survey
             _surveys.DeleteOne(x => x.Id == id);
         }
 

@@ -25,8 +25,11 @@ namespace Decsys.Data
         private static string InstanceEventLogsFile(int instanceId)
             => $"{Collections.EventLogDb}{instanceId}.db";
 
+        private string AbsoluteFilePath(string file)
+            => Path.Combine(_localDbPath, file);
+
         private string BuildConnectionString(string file)
-            => $"Filename={Path.Combine(_localDbPath, file)};Connection=direct;";
+            => $"Filename={AbsoluteFilePath(file)};Connection=direct;";
 
         private IDictionary<string, LiteDatabase> _connections = new Dictionary<string, LiteDatabase>();
 
@@ -36,6 +39,22 @@ namespace Decsys.Data
                 _connections[connectionString] = new LiteDatabase(connectionString);
             return _connections[connectionString];
         }
+
+        private void CloseConnection(string connectionString)
+        {
+            var connection = _connections[connectionString];
+            _connections.Remove(connectionString);
+            connection.Dispose();
+        }
+
+        public void Drop(string filename)
+        {
+            CloseConnection(BuildConnectionString(filename));
+            File.Delete(AbsoluteFilePath(filename));
+        }
+
+        public void DropInstanceEventLog(int instanceId)
+            => Drop(InstanceEventLogsFile(instanceId));
 
         public LiteDatabase Surveys => Connect(BuildConnectionString(SurveysFile));
 

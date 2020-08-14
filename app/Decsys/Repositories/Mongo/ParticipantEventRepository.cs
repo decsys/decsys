@@ -51,9 +51,6 @@ namespace Decsys.Repositories.Mongo
         {
             // mongo has no integer id generator
             // so we set integer id's at insert
-            // TODO: this has the same issue as LiteDb
-            // in that it will restart from 1
-            // if all records are deleted
             var lastId = log.Find(new BsonDocument())
                 .SortByDescending(x => x.Id)
                 .FirstOrDefault()?
@@ -109,6 +106,12 @@ namespace Decsys.Repositories.Mongo
             return log.Find(x => x.Type == EventTypes.SURVEY_COMPLETE).Any()
                 ? $"{participantIdPrefix}-{logCollections.Count}"
                 : latestPid;
+        }
+
+        public void Delete(int instanceId)
+        {
+            var db = EventLogDb(instanceId);
+            db.Client.DropDatabase(db.DatabaseNamespace.DatabaseName);
         }
     }
 }
