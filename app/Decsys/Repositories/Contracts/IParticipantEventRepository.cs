@@ -40,6 +40,12 @@ namespace Decsys.Repositories.Contracts
         /// <param name="participantId">ID of the Participant to create the Event for</param>
         /// <param name="e">Event model to create from</param>
         void Create(int instanceId, string participantId, ParticipantEvent e);
+
+        /// <summary>
+        /// Delete all event logs for this instance.
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance to delete Logs for</param>
+        void Delete(int instanceId);
     }
 }
 

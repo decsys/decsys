@@ -5,7 +5,7 @@ using AutoMapper;
 
 using Decsys.Constants;
 using Decsys.Data;
-using Decsys.Data.Entities;
+using Decsys.Data.Entities.LiteDb;
 using Decsys.Repositories.Contracts;
 
 using LiteDB;
@@ -18,12 +18,17 @@ namespace Decsys.Repositories.LiteDb
         private readonly ILiteCollection<Survey> _surveys;
         private readonly ILiteCollection<SurveyInstance> _instances;
         private readonly IMapper _mapper;
+        private readonly IParticipantEventRepository _events;
 
-        public LiteDbSurveyRepository(LiteDbFactory db, IMapper mapper)
+        public LiteDbSurveyRepository(
+            LiteDbFactory db,
+            IParticipantEventRepository events,
+            IMapper mapper)
         {
             _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _instances = db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
             _mapper = mapper;
+            _events = events;
         }
 
         public bool Exists(int id) =>
@@ -59,7 +64,16 @@ namespace Decsys.Repositories.LiteDb
 
         public void Delete(int id)
         {
+            // Delete all Instance Event Logs
+            _instances.Find(x => x.Survey.Id == id)
+                .Select(x => x.Id)
+                .ToList()
+                .ForEach(_events.Delete);
+
+            // Delete all Instances
             _instances.DeleteMany(x => x.Survey.Id == id);
+
+            // Delete the Survey
             _surveys.Delete(id);
         }
 

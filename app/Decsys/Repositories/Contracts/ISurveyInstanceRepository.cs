@@ -22,7 +22,7 @@ namespace Decsys.Repositories.Contracts
         /// Find a SurveyInstance
         /// </summary>
         /// <param name="id">ID of the Instance to find</param>
-        SurveyInstance Find(int id);
+        SurveyInstance? Find(int id);
 
         /// <summary>
         /// List all the Instances belonging to a Survey

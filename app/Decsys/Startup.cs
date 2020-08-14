@@ -25,6 +25,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
@@ -76,9 +77,11 @@ namespace Decsys
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // configure app mode
             var mode = new AppMode { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
             services.Configure<AppMode>(c => c.IsWorkshop = mode.IsWorkshop);
 
+            // configure version mappings
             foreach (var v in Versions.All)
             {
                 services.Configure<ComponentTypeMap>(v,
@@ -87,17 +90,25 @@ namespace Decsys
                         .Bind(c.Types));
             }
 
-            services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
+            // mode conditional configuration
+            if (mode.IsHosted)
+            {
+                // TODO: Document settings
+                services.Configure<HostedDbSettings>(c => _config.GetSection("Hosted").Bind(c));
+            }
 
             if (mode.IsHosted)
             {
-                // TODO: EF Core can go when we switch to mongo
+                services.AddSingleton<IMongoClient, MongoClient>(
+                    _ => new MongoClient(_config.GetConnectionString("mongo")));
+
+                // TODO: EF Core can go when we switch to mongo / for when users can register
                 services.AddDbContext<MemoryDbContext>(
                     opts => opts.UseInMemoryDatabase("MemoryIdentityDb"));
 
                 services.AddIdentityCore<IdentityUser>()
                     .AddDefaultTokenProviders()
-                    .AddEntityFrameworkStores<MemoryDbContext>() // TODO: mongo
+                    .AddEntityFrameworkStores<MemoryDbContext>() // TODO: mongo in future
                     .AddUserManager<UserManager<IdentityUser>>()
                     .AddSignInManager<SignInManager<IdentityUser>>();
 
@@ -125,6 +136,10 @@ namespace Decsys
                         opts.ApplicationCookie.Configure(
                             config => config.LoginPath = "/auth/login"));
             }
+            if (mode.IsWorkshop)
+            {
+                services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
+            }
 
             services.AddResponseCompression();
 
@@ -151,11 +166,33 @@ namespace Decsys
                         FileOptional = true
                     }));
 
-            services.AddTransient<ISurveyRepository, LiteDbSurveyRepository>();
-            services.AddTransient<IPageRepository, LiteDbPageRepository>();
-            services.AddTransient<IComponentRepository, LiteDbComponentRepository>();
-            services.AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>();
-            services.AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>();
+            if (mode.IsHosted)
+            {
+                services.AddTransient<
+                    ISurveyRepository,
+                    Repositories.Mongo.SurveyRepository>();
+                services.AddTransient<
+                    IPageRepository,
+                    Repositories.Mongo.PageRepository>();
+                services.AddTransient<
+                    IComponentRepository,
+                    Repositories.Mongo.ComponentRepository>();
+                services.AddTransient<
+                    ISurveyInstanceRepository,
+                    Repositories.Mongo.SurveyInstanceRepository>();
+                services.AddTransient<
+                    IParticipantEventRepository,
+                    Repositories.Mongo.ParticipantEventRepository>();
+            }
+            if (mode.IsWorkshop)
+            {
+                services.AddTransient<ISurveyRepository, LiteDbSurveyRepository>();
+                services.AddTransient<IPageRepository, LiteDbPageRepository>();
+                services.AddTransient<IComponentRepository, LiteDbComponentRepository>();
+                services.AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>();
+                services.AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>();
+            }
+
             services.AddTransient<SurveyService>();
             services.AddTransient<PageService>();
             services.AddTransient<ComponentService>();

@@ -1,7 +1,7 @@
 using System;
-using LiteDB;
+using MongoDB.Bson;
 
-namespace Decsys.Data.Entities
+namespace Decsys.Data.Entities.Mongo
 {
     public class Component : BaseComponent
     {

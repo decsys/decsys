@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Decsys.Data.Entities
+namespace Decsys.Data.Entities.LiteDb
 {
     public class Survey : BaseSurvey
     {

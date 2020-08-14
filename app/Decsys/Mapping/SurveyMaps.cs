@@ -1,7 +1,7 @@
-using AutoMapper;
-using Decsys.Models;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using Decsys.Models;
 
 namespace Decsys.Mapping
 {
@@ -10,13 +10,25 @@ namespace Decsys.Mapping
         public SurveyMaps()
         {
             // SurveySummary
-
-            CreateMap<Data.Entities.Survey, SurveySummary>()
+            CreateMap<Data.Entities.LiteDb.Survey, SurveySummary>()
                 .ConstructUsing(src => new SurveySummary(src.Name))
                 .ForSourceMember(src => src.Pages, opt => opt.DoNotValidate());
 
-            CreateMap<IEnumerable<Data.Entities.SurveyInstance>, SurveySummary>()
-                .ConstructUsing(src => new SurveySummary(string.Empty))
+            CreateMap<IEnumerable<Data.Entities.LiteDb.SurveyInstance>, SurveySummary>()
+                .ConstructUsing(_ => new SurveySummary(string.Empty))
+                .ForMember(dest => dest.RunCount,
+                    opt => opt.MapFrom(src => src.Count()))
+                .ForMember(dest => dest.ActiveInstanceId,
+                    opt => opt.MapFrom(src => MapActiveInstanceToId(
+                        src.SingleOrDefault(x => x.Closed == null))))
+                .ForAllOtherMembers(opt => opt.Ignore());
+
+            CreateMap<Data.Entities.Mongo.Survey, SurveySummary>()
+                .ConstructUsing(src => new SurveySummary(src.Name))
+                .ForSourceMember(src => src.Pages, opt => opt.DoNotValidate());
+
+            CreateMap<IEnumerable<Data.Entities.Mongo.SurveyInstance>, SurveySummary>()
+                .ConstructUsing(_ => new SurveySummary(string.Empty))
                 .ForMember(dest => dest.RunCount,
                     opt => opt.MapFrom(src => src.Count()))
                 .ForMember(dest => dest.ActiveInstanceId,
@@ -26,27 +38,37 @@ namespace Decsys.Mapping
 
 
             // Survey
-            CreateMap<Data.Entities.Survey, Survey>()
+            CreateMap<Data.Entities.LiteDb.Survey, Survey>()
                 .ConstructUsing(src => new Survey(src.Name));
-            CreateMap<Survey, Data.Entities.Survey>();
-
+            CreateMap<Survey, Data.Entities.LiteDb.Survey>();
+            CreateMap<Data.Entities.Mongo.Survey, Survey>()
+                .ConstructUsing(src => new Survey(src.Name));
+            CreateMap<Survey, Data.Entities.Mongo.Survey>();
 
             // Page
-            CreateMap<Data.Entities.Page, Page>();
-
-            CreateMap<Page, Data.Entities.Page>();
+            CreateMap<Data.Entities.LiteDb.Page, Page>();
+            CreateMap<Page, Data.Entities.LiteDb.Page>();
+            CreateMap<Data.Entities.Mongo.Page, Page>();
+            CreateMap<Page, Data.Entities.Mongo.Page>();
 
             // Component
-            CreateMap<Data.Entities.Component, Component>()
+            CreateMap<Data.Entities.LiteDb.Component, Component>()
                 .ForMember(dest => dest.Params,
-                    opt => opt.ConvertUsing(new BsonJObjectConverter()));
+                    opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()));
+            CreateMap<Component, Data.Entities.LiteDb.Component>()
+                .ForMember(dest => dest.Params,
+                    opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()));
 
-            CreateMap<Component, Data.Entities.Component>()
+            CreateMap<Data.Entities.Mongo.Component, Component>()
+               .ForMember(dest => dest.Params,
+                   opt => opt.ConvertUsing(new MongoBsonJObjectConverter()));
+
+            CreateMap<Component, Data.Entities.Mongo.Component>()
                 .ForMember(dest => dest.Params,
-                    opt => opt.ConvertUsing(new JObjectBsonConverter()));
+                    opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
         }
 
-        private int? MapActiveInstanceToId(Data.Entities.SurveyInstance? instance)
+        private int? MapActiveInstanceToId(Data.Entities.BaseSurveyInstance? instance)
             => instance?.Id; // Necessary because Expression Trees are limited
     }
 }

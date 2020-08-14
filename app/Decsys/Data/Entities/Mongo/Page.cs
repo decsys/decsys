@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Decsys.Data.Entities
+namespace Decsys.Data.Entities.Mongo
 {
     public class Page : BasePage
     {

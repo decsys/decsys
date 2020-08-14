@@ -15,7 +15,7 @@ export const uploadFile = async (url, file, method = "post") => {
   await axios[method](url, formData, {
     headers: {
       "content-type": "multipart/form-data",
-      ...authorization_BearerToken(),
+      ...(await authorization_BearerToken()),
     },
   });
 };

@@ -6,6 +6,7 @@ using AutoMapper;
 using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities;
+using Decsys.Data.Entities.LiteDb;
 using Decsys.Repositories.Contracts;
 
 using LiteDB;
@@ -81,6 +82,9 @@ namespace Decsys.Repositories.LiteDb
                     $"for the specified Survey Instance (id: {instanceId})");
 
         #endregion
+
+        public void Delete(int instanceId)
+            => _db.DropInstanceEventLog(instanceId);
 
         public List<Models.ParticipantEvent> List(
             int instanceId,
