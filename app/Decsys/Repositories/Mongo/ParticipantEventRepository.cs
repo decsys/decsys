@@ -79,7 +79,8 @@ namespace Decsys.Repositories.Mongo
                     .Find(x =>
                         (source == null || x.Source == source) &&
                         (type == null || x.Type == type))
-                    .SortBy(x => x.Timestamp));
+                    .SortBy(x => x.Timestamp)
+                    .ToList());
 
         public Dictionary<string, List<Models.ParticipantEvent>> List(int instanceId)
             => ListLogs(instanceId)
@@ -88,7 +89,8 @@ namespace Decsys.Repositories.Mongo
                     x => _mapper.Map<List<Models.ParticipantEvent>>(
                         GetLog(instanceId, x)
                             .Find(new BsonDocument())
-                            .SortBy(x => x.Timestamp)));
+                            .SortBy(x => x.Timestamp)
+                            .ToList()));
 
         public string NextParticipantId(int instanceId, string participantIdPrefix)
         {

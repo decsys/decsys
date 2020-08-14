@@ -9,21 +9,19 @@ namespace Decsys.Mapping
         {
             CreateMap<ParticipantEvent, Data.Entities.LiteDb.ParticipantEvent>()
                 .ForMember(dest => dest.Payload,
-                    opt => opt.ConvertUsing(new JObjectBsonConverter()));
+                    opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()));
 
             CreateMap<Data.Entities.LiteDb.ParticipantEvent, ParticipantEvent>()
                 .ForMember(dest => dest.Payload,
-                    opt => opt.ConvertUsing(new BsonJObjectConverter()));
+                    opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()));
 
-            CreateMap<ParticipantEvent, Data.Entities.Mongo.ParticipantEvent>();
-            // TODO: does this work?
-            //.ForMember(dest => dest.Payload,
-            //    opt => opt.ConvertUsing(new JObjectBsonConverter()));
+            CreateMap<ParticipantEvent, Data.Entities.Mongo.ParticipantEvent>()
+               .ForMember(dest => dest.Payload,
+                   opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
 
-            CreateMap<Data.Entities.Mongo.ParticipantEvent, ParticipantEvent>();
-            // TODO: does this work?
-            //.ForMember(dest => dest.Payload,
-            //    opt => opt.ConvertUsing(new BsonJObjectConverter()));
+            CreateMap<Data.Entities.Mongo.ParticipantEvent, ParticipantEvent>()
+               .ForMember(dest => dest.Payload,
+                   opt => opt.ConvertUsing(new MongoBsonJObjectConverter()));
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Decsys.Repositories.Mongo
         public List<Models.SurveySummary> List()
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.Find(new BsonDocument()));
+                _surveys.Find(new BsonDocument()).ToList());
 
             return summaries
                 .Select(survey =>

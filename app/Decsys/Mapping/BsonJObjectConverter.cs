@@ -2,16 +2,17 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AutoMapper;
 using LiteDB;
+using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
 
 namespace Decsys.Mapping
 {
-    public class BsonJObjectConverter : IValueConverter<BsonDocument, JObject>
+    public class LiteDbBsonJObjectConverter : IValueConverter<LiteDB.BsonDocument, JObject>
     {
-        public JObject Convert(BsonDocument sourceMember, ResolutionContext context)
+        public JObject Convert(LiteDB.BsonDocument sourceMember, ResolutionContext context)
             => Convert(sourceMember);
 
-        public static JObject Convert(BsonDocument bson)
+        public static JObject Convert(LiteDB.BsonDocument bson)
         {
             var extendedJson = JsonSerializer.Serialize(bson);
 
@@ -35,5 +36,14 @@ namespace Decsys.Mapping
 
             //return JObject.FromObject(sourceMember); // this just returns extended json
         }
+    }
+
+    public class MongoBsonJObjectConverter : IValueConverter<MongoDB.Bson.BsonDocument, JObject>
+    {
+        public JObject Convert(MongoDB.Bson.BsonDocument sourceMember, ResolutionContext context)
+            => Convert(sourceMember);
+
+        public static JObject Convert(MongoDB.Bson.BsonDocument bson)
+            => JObject.Parse(bson.ToJson());
     }
 }

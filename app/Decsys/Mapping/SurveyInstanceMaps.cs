@@ -35,13 +35,14 @@ namespace Decsys.Mapping
                 .IncludeBase(typeof(SurveyInstance), typeof(BaseSurveyInstanceResults))
                 .ForMember("Participants", opt => opt.Ignore());
 
-            // These are only used for imports! // TODO: gonna need to fix these
-            CreateMap<BaseSurveyInstanceResults, Data.Entities.LiteDb.SurveyInstance>()
+            // Import
+            CreateMap<BaseSurveyInstanceResults, SurveyInstance>()
+                .IncludeAllDerived()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => 0))// always set to 0; we are inserting new instances
                 .ForMember(dest => dest.Survey, opt => opt.Ignore()); // do this manually as we don't export the id
 
-            CreateMap(typeof(SurveyInstanceResults<>), typeof(Data.Entities.LiteDb.SurveyInstance))
-                .IncludeBase(typeof(BaseSurveyInstanceResults), typeof(Data.Entities.LiteDb.SurveyInstance));
+            CreateMap<string, Survey>()
+                .ConstructUsing(src => new Survey(src));
         }
     }
 }
