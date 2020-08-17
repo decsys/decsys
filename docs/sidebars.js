@@ -7,6 +7,11 @@ module.exports = {
     "Getting Started": ["devs/contributing/source-code"],
   },
   technical: {
-    Architecture: ["devs/technical/architecture", "devs/technical/stack"],
+    Architecture: [
+      "devs/technical/architecture",
+      "devs/technical/stack",
+      "devs/technical/workshop",
+      "devs/technical/hosted",
+    ],
   },
 };

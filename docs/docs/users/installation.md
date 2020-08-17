@@ -37,25 +37,92 @@ In **Hosted** mode, DECSYS is hosted on the internet, and requires some addition
 
 ## Hosted mode setup
 
-### Prerequisites
-
 :::info 🚧 Under construction
 This section is under construction and may change.
 :::
 
-By 2.0, Hosted DECSYS will require a mongodb server to connect to.
+
+:::tip 🙋🏾‍♀️ Hosted mode Admin Username
+`admin@localhost`
+:::
+
+### Prerequisites
+
+- A MongoDB Server (`4.x` or newer)
 
 ### Setup Steps
 First follow the Workshop mode steps, to get a copy of DECSYS running on the host machine.
 
-Then, you'll need to make some configuration changes:
+Then, you'll need to make some configuration changes as follows:
 
+- Set `ConnectionStrings:mongo` to your MongoDB Server's connection string.
 - Set `WorkshopMode` to `false`
-- Set `Hosted:Origin` to the scheme, hostname/ip and port that DECSYS will be bound on
+- Set `Hosted:Origin` to the scheme, hostname/ip and optionally port that DECSYS will be bound on
   - e.g. `https://my-decsys-server.com:5001`
+  - port `80` (http) or `443` (https) may be ommitted for those schemes.
 - Set `Hosted:AdminPassword` to the password for your admin user.
 - Set `Hosted:JwtSigningKey` to a [JSON Web Key](https://mkjwk.org)
 
-:::info ✏ //TODO
-More JWK details
+#### DECSYS JSON Web Key Parameters
+
+| Parameter | Values | Notes |
+|-|-|-|
+| Type (`kty`) | `RSA` | No validation occurs, but other values will fail. |
+| Use (`use`) | `Signature` | DECSYS doesn't validate this at this time but may in future. |
+| Algorithm (`alg`) | `RS256` | No validation occurs, but other values will fail.<br />Other values will be accepted in future. |
+
+### How to configure DECSYS
+
+:::tip Simple configuration
+Just add an `appsettings.Production.json` in the DECSYS application directory.
 :::
+
+DECSYS reads configuration from the following locations:
+- `appsettings.json`
+- `appsettings.<Environment>.json`
+  - `<environment>` defaults to `Production`
+- Specific JSON files inside `settings/`
+- Environment variables
+
+#### Configuring with JSON
+
+When using JSON files to configure .NET apps, the colons (`:`) in keys represent a level of hierarchy.
+
+Example:
+```json
+{
+  "ConnectionStrings": {
+    "mongo": "mongodb://localhost:27017"
+  },
+  "WorkshopMode": false,
+  "Hosted": {
+    "Origin": "https://my-decsys-server.com:5001",
+    "AdminPassword": "hunter2",
+    "JwtSigningKey": {
+      // ... JSON Web Key
+    }
+  }
+}
+```
+
+#### Configuring with Environment Variables
+
+Configuring .NET apps with Environment Variables is [documented here](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-5.0#environment-variables).
+
+However, all you really need to know is the following:
+- in general:
+  - prefix environment variables with `DOTNET_`
+  - replace `:` with `__` (*double* underscore) in the keys above
+- for connection strings:
+  - use the prefix `CUSTOMCONNSTR_` instead of `ConnectionStrings:`
+    - [as documented here](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-5.0#connection-string-prefixes)
+
+Example:
+```
+CUSTOMCONNSTR_mongo=mongodb://localhost:27017
+DOTNET_WorkshopMode=false
+DOTNET_Hosted__Origin=https://my-decsys-server.com:5001
+DOTNET_Hosted__AdminPassword=hunter2
+DOTNET_Hosted__JwtSigningKey=<JSON Web Key>
+```
+

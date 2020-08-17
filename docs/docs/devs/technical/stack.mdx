@@ -1,0 +1,101 @@
+---
+title: Tech Stack
+---
+
+import { Stack, Center, Grid } from "@chakra-ui/core";
+
+This document describes the general technology stack, and in particular the technologies used for the Application layer, which do not change between modes.
+
+<Stack>
+    <Stack p={8} bg="#235" color="white">
+      <div>Application layer</div>
+      <Center p={8} bg="#586">
+
+React Frontend Web App
+
+</Center>
+    <Grid templateColumns="auto 1fr" gap={8}>
+      <Center p={8} bg="#76a" color="white">
+
+Custom Response Items
+
+</Center>
+<Center p={8} bg="#579">
+
+ASP.NET Core Backend API
+
+</Center>
+    </Grid>
+  </Stack>
+  <Stack bg="#235" color="white" p={8}>
+    <div>Data layer</div>
+    <Stack direction="row">
+      <Center p={8} bg="#884" w="50%">
+        NoSQL Database(s)
+      </Center>
+      <Center p={8} bg="#844" w="50%">
+        Image store
+      </Center>
+    </Stack>
+  </Stack>
+</Stack>
+
+## Application layer
+
+### Frontend
+
+The Frontend application is a Client Side [React] Single Page Application.
+
+- It's pure JavaScript
+  - It is however modern ECMAScript, so is transpiled using Babel.
+- It uses a very popular component driven framework: [React]
+  - This should be beneficial for developer accessibility
+  - It really helped enable the ability to dynamically load custom response items
+- It's served by the Backend application process.
+
+### Custom Response Items
+
+Custom Response Items are written as [React] Components, with some additional metadata.
+
+Refer to the [`component-boilerplate` wiki](https://github.com/decsys/component-boilerplate/wiki) for detailed information on the structure of Response Components and how to write them.
+
+- They're [React], the same as the Frontend app.
+  - They use [Emotion] so they can be bundled into a single JavaScript file, but still be styled.
+- They're modern ECMAScript, using the ES Modules standard
+- They're discovered and served by the Backend app at runtime
+  - You can drop new components into the `components/` folder locally, and only a page refresh is required to load them.
+- They're loaded by the frontend as ES Modules at runtime.
+- Using a NoSQL datastore allows us to store response data with flexible schema defined by the Response Items, not the Platform.
+- [React] allows Components to use PropTypes to define Parameter and Response schema that the Platform can validate or interact with (e.g. providing a rich editor UI).
+
+### Backend
+
+The Backend application is an ASP.NET Core MVC REST API.
+
+- It's [.NET] so it's cross-platform for Linux, macOS and Windows.
+- It's self-hosting - it doesn't require a reverse proxy in front of it.
+- It's capable of hosting different content at different routes
+  - in the case of the Survey Platform:
+    - there are some custom routes which bypass the MVC framework (e.g. `/version`)
+    - there are routes to the Client Side application
+    - there are routes to MVC controllers (e.g. `/api/...`)
+
+The above points allow keeping with the single-process design for **Workshop** mode while being flexible enough to support running an online service in **Hosted** mode.
+
+Users can just run the backend and everything comes up, or they run an online service in a typical hosting setup.
+
+- The backend can be published as a platform binary which can run anywhere the platform ([.NET]) runtime is available.
+- It can also be published as a native executable binary for supported platforms (e.g. `decsys.exe` for Windows).
+
+## Data layer
+
+The architectural approach and data layer technology differs somewhat between operating modes, and this is explained in their own documents:
+
+- [Workshop](workshop) mode
+- [Hosted](hosted) mode
+
+However any text datastores (i.e. not for files such as Images) are always a form of NoSQL (or Document based) Database.
+
+[.net]: https://dotnet.microsoft.com/
+[react]: https://reactjs.org/
+[emotion]: https://emotion.sh/docs/introduction
