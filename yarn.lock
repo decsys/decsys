@@ -2589,7 +2589,7 @@ __metadata:
     "@chakra-ui/core": next
     "@chakra-ui/system": next
     "@chakra-ui/theme": next
-    "@decsys/param-types": 2.0.0-alpha.1
+    "@decsys/param-types": "workspace:*"
     "@emotion/babel-preset-css-prop": ^10.0.27
     "@emotion/core": ^10.0.28
     "@emotion/css": ^10.0.27
@@ -2867,7 +2867,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@decsys/param-types@2.0.0-alpha.1, @decsys/param-types@^2.0.0-alpha.1, @decsys/param-types@workspace:*, @decsys/param-types@workspace:packages/param-types":
+"@decsys/param-types@^2.0.0-alpha.1, @decsys/param-types@workspace:*, @decsys/param-types@workspace:packages/param-types":
   version: 0.0.0-use.local
   resolution: "@decsys/param-types@workspace:packages/param-types"
   dependencies:
