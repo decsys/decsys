@@ -2734,8 +2734,8 @@ __metadata:
     "@chakra-ui/core": next
     "@chakra-ui/system": next
     "@chakra-ui/theme": next
-    "@decsys/param-types": 2.0.0-alpha.1
-    "@decsys/rating-scales": 2.0.0-alpha.1
+    "@decsys/param-types": "workspace:*"
+    "@decsys/rating-scales": "workspace:*"
     "@rollup/plugin-babel": ^5.1.0
     "@rollup/plugin-commonjs": ^14.0.0
     "@rollup/plugin-json": ^4.1.0
@@ -2877,7 +2877,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@decsys/rating-scales@2.0.0-alpha.1, @decsys/rating-scales@workspace:*, @decsys/rating-scales@workspace:packages/rating-scales":
+"@decsys/rating-scales@workspace:*, @decsys/rating-scales@workspace:packages/rating-scales":
   version: 0.0.0-use.local
   resolution: "@decsys/rating-scales@workspace:packages/rating-scales"
   dependencies:
