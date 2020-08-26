@@ -6,23 +6,27 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <IsPackable>false</IsPackable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CS8618;CS8600;CS8602;CS8603</WarningsAsErrors>
 
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-
-    <IsPackable>false</IsPackable>
-    <SpaSource>../client-app/</SpaSource>
-    <SpaDist>ClientApp/</SpaDist>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <UserSecretsId>0cc2d989-e3a6-48a0-b877-fd5ba6a886aa</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- SPA paths used throughout this file -->
+    <SpaSource>../client-app/</SpaSource>
+    <SpaDist>ClientApp/</SpaDist>
+
     <!-- Don't show built SPA files in VS if they are present locally -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);ClientApp/**</DefaultItemExcludes>
-    <UserSecretsId>0cc2d989-e3a6-48a0-b877-fd5ba6a886aa</UserSecretsId>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaDist)**</DefaultItemExcludes>
+
+    <!-- Tell VS never to build any ts/js it finds -->
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <ItemGroup>
