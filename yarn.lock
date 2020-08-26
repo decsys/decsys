@@ -2693,7 +2693,7 @@ __metadata:
     "@chakra-ui/core": next
     "@chakra-ui/system": next
     "@chakra-ui/theme": next
-    "@decsys/param-types": 2.0.0-alpha.1
+    "@decsys/param-types": "workspace:*"
     "@rollup/plugin-babel": ^5.1.0
     "@rollup/plugin-commonjs": ^14.0.0
     "@rollup/plugin-json": ^4.1.0
