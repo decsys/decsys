@@ -19,7 +19,7 @@
     "@chakra-ui/core": "next",
     "@chakra-ui/system": "next",
     "@chakra-ui/theme": "next",
-    "@decsys/param-types": "^2.0.0-alpha.1",
+    "@decsys/param-types": "workspace:*",
     "@emotion/core": "^10.0.28",
     "@emotion/css": "^10.0.27",
     "@reach/router": "^1.3.3",
