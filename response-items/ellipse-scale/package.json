@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@decsys/iaa": "^1.0.2",
-    "@decsys/param-types": "2.0.0-alpha.1",
-    "@decsys/rating-scales": "2.0.0-alpha.1"
+    "@decsys/param-types": "workspace:*",
+    "@decsys/rating-scales": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
