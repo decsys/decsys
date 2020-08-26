@@ -9,6 +9,7 @@
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <IsPackable>false</IsPackable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
 
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CS8618;CS8600;CS8602;CS8603</WarningsAsErrors>
