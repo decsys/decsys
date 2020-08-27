@@ -9,9 +9,9 @@ The DECSYS Survey Platform aims to be a flexible cross-platform web-based survey
 
 ### Run Surveys with DECSYS
 
-[Start with installing](./installation.md#workshop-mode-setup) and using DECSYS in **Workshop** mode to get a feel for it!
+[Start with installing](./installation#workshop-mode-setup) and using DECSYS in **Workshop** mode to get a feel for it!
 
-If you want to host DECSYS online, there's [instructions for that](./installation.md#hosted-mode-setup) too.
+If you want to host DECSYS online, there's [instructions for that](./installation#hosted-mode-setup) too.
 
 ### Create Custom Responses
 
@@ -21,7 +21,7 @@ If you have an interesting idea for capturing survey responses, or simply want t
 
 ### Contribute to DECSYS
 
-The [Developer Guide](../devs/contributing/source-code.md) and [Technical Reference](../devs/technical/architecture.md) contain all the information about DECSYS' inner workings.
+The [Developer Guide](../devs/contributing/source-code) and [Technical Reference](../devs/technical/architecture) contain all the information about DECSYS' inner workings.
 
 ## Where else can I find information?
 There are also other places you can find specific information about aspects of the wider DECSYS Project:

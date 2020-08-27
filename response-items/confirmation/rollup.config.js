@@ -59,4 +59,10 @@ export default {
     json(),
     terser(),
   ],
+  onwarn: (warning) => {
+    // we actually want builds to FAIL on warnings
+    // not make spurious decisions for us
+    // like adding unresolved dependencies to externals
+    throw new Error(warning.message);
+  },
 };

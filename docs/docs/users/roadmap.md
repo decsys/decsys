@@ -6,8 +6,9 @@ title: Roadmap
 - [ ] Hosted Mode
     - [x] Remote Admin Login
     - [ ] Remote Database
-        - mongodb
-        - possible CosmosDB support (via the mongo API)
+        - [x] MongoDB
+        - [ ] Investigate CosmosDB support (via the Mongo API)
+    - [ ] Remote Image Uploads
 
 ## 2.x Future
 

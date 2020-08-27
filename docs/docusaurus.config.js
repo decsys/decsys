@@ -29,7 +29,7 @@ module.exports = {
           items: [
             {
               activeBasePath: "docs/custom-responses",
-              to: "docs/devs/custom-responses",
+              to: "docs/devs/custom-responses/getting-started",
               label: "Creating Custom Responses",
             },
             {
@@ -46,25 +46,21 @@ module.exports = {
         },
         {
           activeBasePath: "docs/pkg",
+          to: "/",
           label: "Packages",
           position: "left",
           items: [
             {
-              to: "docs/pkg/param-types",
+              to: "docs/pkg/param-types/overview",
               label: "Param Types",
             },
             {
-              to: "docs/pkg/rating-scales",
+              to: "docs/pkg/rating-scales/overview",
               label: "Rating Scales",
             },
             {
               label: "Response Items",
-              items: [
-                {
-                  to: "docs/pkg/response-items",
-                  label: "test",
-                },
-              ],
+              to: "docs/pkg/response-items/overview",
             },
           ],
         },
@@ -97,7 +93,7 @@ module.exports = {
           items: [
             {
               label: "Create Custom Responses",
-              to: "docs/devs/custom-responses",
+              to: "docs/devs/custom-responses/getting-started",
             },
             {
               label: "Contributing to DECSYS",
@@ -114,11 +110,15 @@ module.exports = {
           items: [
             {
               label: "Param Types",
-              to: "docs/pkg/param-types",
+              to: "docs/pkg/param-types/overview",
             },
             {
               label: "Rating Scales",
-              to: "docs/pkg/rating-scales",
+              to: "docs/pkg/rating-scales/overview",
+            },
+            {
+              label: "Response Items",
+              to: "docs/pkg/response-items/overview",
             },
           ],
         },
@@ -136,7 +136,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} DECSYS. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} DECSYS.`,
     },
   },
   presets: [

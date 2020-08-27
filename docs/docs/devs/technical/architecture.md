@@ -1,22 +1,51 @@
 ---
 title: High Level Overview
 ---
-The Survey Platform Application is a single application designed to run self-contained on an "**Admin**" machine.
 
-Once running, the user of the **Admin** machine can create and configure **Surveys**, and then launch them. They do this by accessing the running application via a web browser.
+DECSYS is a straight foward client/server web application.
 
-The data is stored locally on the **Admin** machine in a lightweight database.
+Running a Survey makes sense in a client/server model:
+- The Server is the source of the Survey material, and records the results.
+    - The app that is connected to to take a Survey
+    - In the real world, the person handing out the Survey papers, and collecting them at the end of the session
+- The clients are each participant
+    - They fill out the Survey from their own computer
+    - Or from their own seat with their own pen.
 
-Because the application runs a web server, other machines on the same network as the **Admin** machine can then connect to the machine as **Participants**, wherein they can take **Surveys** that have been launched by the **Admin**.
+DECSYS is a web app for two main reasons:
+- It's desirable to be able to run Surveys online.
+- The Web, and its use of HTTP, is probably the single best understood application of a client/server model in the world.
 
-## Why a web app?
+## General Architecture
 
-Web applications are a very straightforward way to produce a client/server application (in this case with multiple client **Participants** accessing one **Survey** server) using existing standard technology that is well understood. Users are also comfortable using their favourite web browser.
+![High Level Overview](i/hi-level_overview.png)
 
-This approach allows the Platform to meet its original requirements of running on a local network with multiple **Participant** devices connecting. It also paves the way for producing an online hostable version of the application that could be used as a multi-user service. In that future scenario, multiple people with accounts could create and manage their own **Surveys** as **Admins**, and could invite **Participants** to complete them.
+DESCSYS consists architecturally of 2 main elements:
 
-## Why all in a single process?
+1. The Web Server
+1. Data Storage
 
-Although this is a web application with a database, and separate server and client parts, it is all currently run in a single process: You just run the one application and everything else is taken care of. This approach aids in the original intended local use of the Platform - on one physical **Admin** machine on a local network only. It means an easy zero-configuration approach to getting started making and running **Surveys**.
+Each of these breaks down a little further, and the implementation may differ in different environments, such as between **Workshop** and **Hosted** modes. But at its heart, there is always a web accessible service, and a means of data storage.
 
-For future use in a hosted online service environment, it will be desirable to split up some parts of the application into separate processes - for example connecting to a separate database server instead of storing the data locally. It is intended to achieve this as an optional approach, to retain the best of both worlds for use in either scenario.
+While the diagram shows these elements as separate, that's really a logical separation for categorisation; they may or may not be physically separated, and their contained areas may or may not also be physically separated (e.g. different data storage locations).
+
+### The Web Server
+
+The Web  is really DECSYS itself.
+
+It consists technically of 2 applications:
+- A Backend API
+- A Frontend Interface
+
+### Data Storage
+
+There are three main types of data that DECSYS stores currently:
+- Surveys
+    - Survey configuration data
+    - Instances of Surveys
+- Images
+    - Image uploads used in Surveys.
+        - As binary data rather than text these are likely to want to be stored differently in practice
+        - (i.e. not in a database)
+- Participant Event Logs
+    - Every event recorded by each participant of a Survey Instance.

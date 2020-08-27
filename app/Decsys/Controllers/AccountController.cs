@@ -98,8 +98,8 @@ namespace Decsys.Controllers
                 await _interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
                 return model.ReturnUrl switch
                 {
-                    var url when Url.IsLocalUrl(url) => Redirect(model.ReturnUrl),
                     var url when string.IsNullOrEmpty(url) => Redirect("~/"),
+                    var url when Url.IsLocalUrl(url!) => Redirect(model.ReturnUrl),
                     _ => throw new InvalidOperationException("Invalid Return URL")
                 };
             }
@@ -123,8 +123,8 @@ namespace Decsys.Controllers
 
                     return model.ReturnUrl switch
                     {
-                        var url when Url.IsLocalUrl(url) => Redirect(model.ReturnUrl),
                         var url when string.IsNullOrEmpty(url) => Redirect("~/"),
+                        var url when Url.IsLocalUrl(url!) => Redirect(model.ReturnUrl),
                         _ => throw new InvalidOperationException("Invalid Return URL")
                     };
                 }
