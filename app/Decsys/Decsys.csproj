@@ -7,9 +7,12 @@
   <PropertyGroup>
     <TargetFramework>net50</TargetFramework>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+
     <IsPackable>false</IsPackable>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+
+    <DebugType>embedded</DebugType>
 
     <Nullable>enable</Nullable>
     <WarningsAsErrors>CS8618;CS8600;CS8602;CS8603</WarningsAsErrors>
@@ -55,15 +58,18 @@
   <ItemGroup>
     <None Update="components\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
     <None Update="surveys\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="version.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
     </None>
   </ItemGroup>
 
@@ -92,11 +98,11 @@
   </Target>
 
   <Target Name="PublishIncludeSpaBuild" AfterTargets="ComputeFilesToPublish">
-    <!-- 
+    <!--
     Unlike the ASP.NET Core Template, which runs the Webpack build on publish,
     we do the client app build independently in parallel during CI.
     So this process appears more manual (but is automated in CI instead).
-    
+
     The resulting publish steps are therefore:
     1. `yarn build` in `$(SpaSource)`
     2. Copy the built output from `$(SpaSource)/build` to `$(SpaDist)`
@@ -104,7 +110,7 @@
            being downloaded to $(SpaDist) in the working directory for step 3
     3. `dotnet publish`, which will run this Target
        and include the files from `$(SpaDist)` in the publish output
-       
+
     CI should therefore take care of the build steps, and copying the output
     to the right place before publishing.
     -->

@@ -1,2 +1,2 @@
 cd decsys
-decsys.exe --server.urls http://0.0.0.0:80
+decsys.exe --workshopmode=true --urls="http://*:80"
