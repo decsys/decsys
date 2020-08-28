@@ -62,7 +62,7 @@ namespace Decsys.Services
         /// <returns>The ID of the newly created duplicate Survey.</returns>
         /// <exception cref="KeyNotFoundException">Thrown if a Survey could not be found with the specified ID.</exception>
 
-        public int Duplicate(int id)
+        public async Task<int> Duplicate(int id)
         {
             var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             var oldId = survey.Id;
@@ -70,7 +70,7 @@ namespace Decsys.Services
             survey.Name = $"{survey.Name} (Copy)";
             var newId = _surveys.Create(survey);
 
-            _images.CopyAllSurveyFiles(oldId, newId);
+            await _images.CopyAllSurveyImages(oldId, newId);
 
             return newId;
         }
@@ -116,13 +116,11 @@ namespace Decsys.Services
         /// Attempt to delete a Survey by ID.
         /// </summary>
         /// <param name="id">The ID of the Survey to delete.</param>
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            _images.RemoveAllSurveyFiles(id); // delete images on disk for built-in image Page Items
+            await _images.RemoveAllSurveyImages(id); // delete stored images for built-in image Page Items
             _surveys.Delete(id);
         }
-
-
 
         /// <summary>
         /// Edit the name of a Survey.
@@ -130,16 +128,13 @@ namespace Decsys.Services
         /// <param name="id">The ID of the Survey to edit.</param>
         /// <param name="name">The new name for the Survey.</param>
         /// <exception cref="KeyNotFoundException">If the Survey cannot be found.</exception>
-
         public void EditName(int id, string name) => _surveys.UpdateName(id, name);
-
 
         /// <summary>
         /// Configure a Survey for the next Instance run
         /// </summary>
         /// <param name="id">The ID of the Survey to Configure.</param>
         /// <param name="config">A model of configuration values</param>
-
         public void Configure(int id, ConfigureSurveyModel config)
         {
             var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();

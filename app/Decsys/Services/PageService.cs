@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using Decsys.Models;
 using Decsys.Repositories.Contracts;
 
@@ -82,18 +82,18 @@ namespace Decsys.Services
         /// <param name="pageId">The ID of the Page.</param>
         /// <returns>True if the deletion was successful, false if the Survey or Page could not be found.</returns>
 
-        public bool Delete(int surveyId, Guid pageId)
+        public async Task<bool> Delete(int surveyId, Guid pageId)
         {
             try
             {
                 var page = _pages.Find(surveyId, pageId);
                 if (page is null) return false;
 
-                page.Components.ForEach(component =>
+                foreach(var component in page.Components)
                 {
                     if (component.Type == "image")
-                        _images.RemoveFile(surveyId, pageId, component.Id);
-                });
+                        await _images.RemoveImage(surveyId, pageId, component.Id);
+                }
 
                 _pages.Delete(surveyId, pageId);
                 return true;
@@ -111,7 +111,7 @@ namespace Decsys.Services
         /// <param name="pageId">The ID of the Page.</param>
         /// <returns>The newly duplicated Page</returns>
         /// <exception cref="KeyNotFoundException">The Page, or Survey, could not be found.</exception>
-        public Page Duplicate(int surveyId, Guid pageId)
+        public async Task<Page> Duplicate(int surveyId, Guid pageId)
         {
             var pages = _pages.List(surveyId);
             var iPage = pages.FindIndex(x => x.Id == pageId);
@@ -142,7 +142,7 @@ namespace Decsys.Services
             for (var i = 0; i < srcComponents.Count; i++)
             {
                 if (srcComponents[i].Type == "image")
-                    _images.CopyFile(surveyId, pageId, srcComponents[i].Id, destComponents[i].Id);
+                    await _images.CopyImage(surveyId, pageId, srcComponents[i].Id, destComponents[i].Id);
             }
 
             return dupe;

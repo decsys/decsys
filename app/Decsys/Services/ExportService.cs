@@ -38,9 +38,10 @@ namespace Decsys.Services
                     "structure.json");
 
             // if this survey has any images uploaded, add them
-            if (_images.HasImages(surveyId))
-                zipBuilder = zipBuilder.AddDirectoryShallow(
-                    _images.SurveyImagesPath(surveyId), "images");
+            // TODO: fix
+            //if (await _images.HasImages(surveyId))
+            //    zipBuilder = zipBuilder.AddDirectoryShallow(
+            //        _images.SurveyImagesPath(surveyId), "images");
 
             return zipBuilder;
         }

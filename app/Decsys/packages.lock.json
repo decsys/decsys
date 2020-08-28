@@ -107,12 +107,12 @@
       },
       "MongoDB.Driver": {
         "type": "Direct",
-        "requested": "[2.11.0, )",
-        "resolved": "2.11.0",
-        "contentHash": "Wr/UWKtbD7hpcEG9iywzG7fqUM8Oxxsv47C+VGQMU/AXQGe8n9yxUfwfgN2djnT8hbqrd1GOR+9iZZiR1Il/LQ==",
+        "requested": "[2.11.1, )",
+        "resolved": "2.11.1",
+        "contentHash": "BTj3bFBXpXDD7iSnpOnlxnLb9nDe2qixF2YxhOPyVtzVOtPnE8wefL0fZebSUZhEsHor0muSBKWLznvHshzxAg==",
         "dependencies": {
-          "MongoDB.Bson": "2.11.0",
-          "MongoDB.Driver.Core": "2.11.0",
+          "MongoDB.Bson": "2.11.1",
+          "MongoDB.Driver.Core": "2.11.1",
           "MongoDB.Libmongocrypt": "1.0.0"
         }
       },

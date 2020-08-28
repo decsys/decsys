@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
@@ -44,12 +45,12 @@ namespace Decsys.Controllers
         [SwaggerOperation("Delete a Page from a Survey.")]
         [SwaggerResponse(204, "The Page was deleted successfully.")]
         [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
-        public IActionResult Delete(
+        public async Task<IActionResult> Delete(
             [SwaggerParameter("ID of the Survey to delete a Page from.")]
             int id,
             [SwaggerParameter("ID of the Page to delete.")]
             Guid pageId)
-            => _pages.Delete(id, pageId)
+            => await _pages.Delete(id, pageId)
                 ? (ActionResult)NoContent()
                 : NotFound();
 
@@ -107,7 +108,7 @@ namespace Decsys.Controllers
         [SwaggerOperation("Duplicates a Page in a Survey.")]
         [SwaggerResponse(200, "The Page was duplicated successfully and the new page is returned.", Type = typeof(Page))]
         [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
-        public IActionResult Duplicate(
+        public async Task<IActionResult> Duplicate(
             [SwaggerParameter("ID of the Survey to duplicate the Page in.")]
             int id,
             [SwaggerParameter("ID of the Page to duplicate.")]
@@ -115,7 +116,7 @@ namespace Decsys.Controllers
         {
             try
             {
-                return Ok(_pages.Duplicate(id, pageId));
+                return Ok(await _pages.Duplicate(id, pageId));
             }
             catch (KeyNotFoundException e)
             {
