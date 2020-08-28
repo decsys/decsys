@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Decsys.Auth;
@@ -15,6 +16,7 @@ using LiteDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
@@ -253,13 +255,17 @@ namespace Decsys
                 ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
             });
 
-            // Survey Images folder
-            // TODO: different middleware for mongo? or controller?
-            app.UseStaticFiles(new StaticFileOptions
+            // Survey Images
+            if (mode.IsWorkshop)
             {
-                FileProvider = new PhysicalFileProvider(_localPaths["SurveyImages"]),
-                RequestPath = "/surveys/images"
-            });
+                // simply serve static files from disk
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(_localPaths["SurveyImages"]),
+                    RequestPath = "/surveys/images"
+                });
+            } // else we map an endpoint later
+
 
             app.UseSpaStaticFiles();
 
@@ -281,9 +287,33 @@ namespace Decsys
 
             app.UseAuthorization();
 
-            app.UseEndpoints(e => e
-                .MapControllers()
-                .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin)));
+            app.UseEndpoints(e =>
+            {
+                e.MapControllers()
+                    .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin));
+
+                // TODO: move this to formal middleware
+                e.MapGet("/surveys/images/{surveyId:int}/{filename}", async context =>
+                {
+                    var surveyId = int.Parse(context.Request.RouteValues["surveyId"]?.ToString() ?? "0");
+                    var filename = context.Request.RouteValues["filename"]?.ToString();
+                    if (filename is null)
+                    {
+                        context.Response.StatusCode = 404;
+                        return;
+                    }
+                    var images = context.RequestServices.GetRequiredService<IImageService>();
+                    var bytes = await images.GetImage(surveyId, filename);
+
+                    if (new FileExtensionContentTypeProvider()
+                        .TryGetContentType(filename, out var contentType))
+                    {
+                        context.Response.ContentType = contentType;
+                    }
+
+                    await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
+                });
+            });
 
             app.UseSpa(spa =>
             {

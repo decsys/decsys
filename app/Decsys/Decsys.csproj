@@ -52,8 +52,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.5.1" />
     <PackageReference Include="UoN.AspNetCore.VersionMiddleware" Version="1.1.1" />
     <PackageReference Include="UoN.VersionInformation.DependencyInjection" Version="1.0.0" />
-    <PackageReference Include="UoN.ZipBuilder" Version="1.0.0" />
     <PackageReference Include="IdentityServer4" Version="4.0.4" />
+    <PackageReference Include="UoN.ZipBuilder" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -139,12 +139,12 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{id}/export")]
-        public ActionResult<byte[]> Export(int id, string? type = "structure")
+        public async Task<ActionResult<byte[]>> Export(int id, string? type = "structure")
         {
             switch (type)
             {
-                case "structure": return _export.Structure(id);
-                case "full": return _export.Full(id);
+                case "structure": return await _export.Structure(id);
+                case "full": return await _export.Full(id);
                 default:
                     return BadRequest(
                $"Unexpected type '{type}'. Expected one of: full, structure");

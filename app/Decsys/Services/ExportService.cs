@@ -1,4 +1,6 @@
-﻿using Decsys.Services.Contracts;
+﻿using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Decsys.Services.Contracts;
 using Newtonsoft.Json;
 using UoN.ZipBuilder;
 
@@ -23,11 +25,10 @@ namespace Decsys.Services
             _images = images;
         }
 
-        public byte[] Structure(int surveyId)
-            => ExportStructure(surveyId).AsByteArray();
+        public async Task<byte[]> Structure(int surveyId)
+            => (await ExportStructure(surveyId)).AsByteArray();
 
-
-        private ZipBuilder ExportStructure(int surveyId)
+        private async Task<ZipBuilder> ExportStructure(int surveyId)
         {
             var surveyData = _surveys.Get(surveyId);
 
@@ -39,18 +40,16 @@ namespace Decsys.Services
                     "structure.json");
 
             // if this survey has any images uploaded, add them
-            // TODO: fix
-            //if (await _images.HasImages(surveyId))
-            //    zipBuilder = zipBuilder.AddDirectoryShallow(
-            //        _images.SurveyImagesPath(surveyId), "images");
+            foreach(var (filename, bytes) in await _images.ListSurveyImages(surveyId))
+                zipBuilder = zipBuilder.AddBytes(bytes, filename);
 
             return zipBuilder;
         }
 
-        public byte[] Full(int surveyId)
+        public async Task<byte[]> Full(int surveyId)
         {
             // Get the structure zip contents (json and images)
-            var zip = ExportStructure(surveyId);
+            var zip = await ExportStructure(surveyId);
 
             // add full json exports for each instance
             foreach (var instance in _instances.List(surveyId))

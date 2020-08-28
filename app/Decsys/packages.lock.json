@@ -189,9 +189,9 @@
       },
       "UoN.ZipBuilder": {
         "type": "Direct",
-        "requested": "[1.0.0, )",
-        "resolved": "1.0.0",
-        "contentHash": "a5lJkvDGY52aRxq72u1n3utJge66SdTY4lQy/KUlp2W2GVvfNGNe74bwE3nJH52mUDE1n916rYt0DeXRPgNZ8A==",
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "k24P2jg7SG2AcqkKQNwE7kTDKVWxDBy+VPkMmF6O8d1/hV9q8bScZQ1zBGLLifrKLRTzTWXttsA17+2zDxDnLQ==",
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "SharpZipLib": "1.0.0-alpha2"

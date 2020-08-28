@@ -21,18 +21,19 @@ namespace Decsys.Services
             _components = components;
         }
 
+        private string GetImageFilename(Guid componentId, string extension)
+            => $"{componentId}{extension}";
+
         private string SurveyImagesPath(int id) =>
             Path.Combine(_imagesPath, id.ToString());
 
         public async Task StoreImage(int surveyId, Guid componentId, (string extension, byte[] bytes) file)
         {
-            var filename = $"{componentId}{file.extension}";
-
             var dir = SurveyImagesPath(surveyId);
 
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-            var path = Path.Combine(dir, filename);
+            var path = Path.Combine(dir, GetImageFilename(componentId, file.extension));
 
             using var stream = File.Create(path);
             await stream.WriteAsync(file.bytes, 0, file.bytes.Length);
@@ -45,7 +46,7 @@ namespace Decsys.Services
 
             var path = Path.Combine(
                 SurveyImagesPath(surveyId),
-                componentId.ToString() + extension);
+                GetImageFilename(componentId, extension));
 
             if (File.Exists(path)) File.Delete(path);
 
@@ -116,5 +117,30 @@ namespace Decsys.Services
         private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
             _components.Find(surveyId, pageId, componentId)
                 .Params.Value<string>("extension");
+
+        public async Task<byte[]> GetImage(int surveyId, string filename)
+        => await File.ReadAllBytesAsync(
+                    Path.Combine(
+                        SurveyImagesPath(surveyId),
+                        filename));
+
+        public async Task<byte[]> GetImage(int surveyId, Guid componentId, string extension)
+            => await GetImage(surveyId, GetImageFilename(componentId, extension));
+
+
+        public async Task<List<(string filename, byte[] bytes)>> ListSurveyImages(int surveyId)
+        {
+            List<(string filename, byte[] bytes)> images = new();
+            var files = await Enumerate(surveyId);
+
+            foreach (var filename in files)
+            {
+                var bytes = await File.ReadAllBytesAsync(
+                    Path.Combine(SurveyImagesPath(surveyId), filename));
+                images.Add((filename, bytes));
+            }
+
+            return images;
+        }
     }
 }

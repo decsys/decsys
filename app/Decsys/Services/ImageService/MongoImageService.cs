@@ -7,6 +7,7 @@ using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
@@ -36,11 +37,26 @@ namespace Decsys.Services
         private string GetImageFilename(Guid componentId, string extension)
             => $"{componentId}{extension}";
 
-        // TODO: Get Image? might work for export too
-        // how about GetAllSurveyImages too?
+        public async Task<List<(string filename, byte[] bytes)>> ListSurveyImages(int surveyId)
+        {
+            List<(string filename, byte[] bytes)> images = new();
+            var files = await Enumerate(surveyId);
+
+            foreach (var filename in files)
+            {
+                var bytes = await ImageBucket(surveyId).DownloadAsBytesByNameAsync(filename);
+                images.Add((filename, bytes));
+            }
+
+            return images;
+        }
+
+        public async Task<byte[]> GetImage(int surveyId, string filename)
+            => await ImageBucket(surveyId)
+                .DownloadAsBytesByNameAsync(filename);
+
         public async Task<byte[]> GetImage(int surveyId, Guid componentId, string extension)
-            => await ImageBucket(surveyId).DownloadAsBytesByNameAsync(
-                GetImageFilename(componentId, extension));
+            => await GetImage(surveyId, GetImageFilename(componentId, extension));
 
         public async Task StoreImage(int surveyId, Guid componentId, (string extension, byte[] bytes) file)
             => await ImageBucket(surveyId).UploadFromBytesAsync(
