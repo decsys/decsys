@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Decsys.Models;
 using Decsys.Repositories.Contracts;
-
+using Decsys.Services.Contracts;
 using LiteDB;
 
 namespace Decsys.Services
@@ -16,10 +16,10 @@ namespace Decsys.Services
     {
         private readonly ISurveyRepository _surveys;
         private readonly IPageRepository _pages;
-        private readonly LocalFileImageService _images;
+        private readonly IImageService _images;
 
 
-        public PageService(ISurveyRepository surveys, IPageRepository pages, LocalFileImageService images)
+        public PageService(ISurveyRepository surveys, IPageRepository pages, IImageService images)
         {
             _surveys = surveys;
             _pages = pages;

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Decsys.Services.Contracts;
+using Newtonsoft.Json;
 using UoN.ZipBuilder;
 
 namespace Decsys.Services
@@ -8,13 +9,13 @@ namespace Decsys.Services
         private readonly SurveyService _surveys;
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _events;
-        private readonly LocalFileImageService _images;
+        private readonly IImageService _images;
 
         public ExportService(
             SurveyService surveys,
             SurveyInstanceService instances,
             ParticipantEventService events,
-            LocalFileImageService images)
+            IImageService images)
         {
             _surveys = surveys;
             _instances = instances;

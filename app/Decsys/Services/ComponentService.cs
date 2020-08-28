@@ -9,6 +9,7 @@ using LiteDB;
 
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using Decsys.Services.Contracts;
 
 namespace Decsys.Services
 {
@@ -19,9 +20,9 @@ namespace Decsys.Services
     {
         private readonly IComponentRepository _components;
         private readonly ISurveyRepository _surveys;
-        private readonly LocalFileImageService _images;
+        private readonly IImageService _images;
 
-        public ComponentService(IComponentRepository components, ISurveyRepository surveys, LocalFileImageService images)
+        public ComponentService(IComponentRepository components, ISurveyRepository surveys, IImageService images)
         {
             _components = components;
             _surveys = surveys;

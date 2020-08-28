@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
+using Decsys.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,14 +24,15 @@ namespace Decsys.Controllers
     public class ComponentsController : ControllerBase
     {
         private readonly ComponentService _components;
-        private readonly LocalFileImageService _images;
+        private readonly IImageService _images;
         private readonly IConfiguration _config;
         private readonly IFileProvider _fileProvider;
 
         public ComponentsController(
             IWebHostEnvironment env,
             IConfiguration config,
-            ComponentService components, LocalFileImageService images)
+            ComponentService components,
+            IImageService images)
         {
             _components = components;
             _images = images;

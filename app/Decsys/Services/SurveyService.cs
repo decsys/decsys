@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Decsys.Config;
 using System.Linq;
+using Decsys.Services.Contracts;
 
 namespace Decsys.Services
 {
@@ -17,13 +18,13 @@ namespace Decsys.Services
     {
 
         private readonly ISurveyRepository _surveys;
-        private readonly LocalFileImageService _images;
+        private readonly IImageService _images;
         private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;
 
         /// <summary>DI Constructor</summary>
         public SurveyService(
             ISurveyRepository surveys,
-            LocalFileImageService images,
+            IImageService images,
             IOptionsSnapshot<ComponentTypeMap> componentTypeMaps)
         {
             _surveys = surveys;
