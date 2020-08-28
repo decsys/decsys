@@ -69,11 +69,11 @@ namespace Decsys.Controllers
         [HttpDelete("{id}")]
         [SwaggerOperation("Delete a single Survey by ID.")]
         [SwaggerResponse(204, "The Survey, with its associated data, was succesfully deleted.")]
-        public IActionResult Delete(
+        public async Task<IActionResult> Delete(
             [SwaggerParameter("ID of the Survey to delete.")]
             int id)
         {
-            _surveys.Delete(id);
+            await _surveys.Delete(id);
             return NoContent();
         }
 
@@ -99,11 +99,11 @@ namespace Decsys.Controllers
         [SwaggerOperation("Duplicate a single Survey with the provided ID.")]
         [SwaggerResponse(200, "The Survey was duplicated successfully and the new copy has the returned ID.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
-        public ActionResult<int> Duplicate(int id)
+        public async Task<ActionResult<int>> Duplicate(int id)
         {
             try
             {
-                return _surveys.Duplicate(id);
+                return await _surveys.Duplicate(id);
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }
@@ -139,12 +139,12 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{id}/export")]
-        public ActionResult<byte[]> Export(int id, string? type = "structure")
+        public async Task<ActionResult<byte[]>> Export(int id, string? type = "structure")
         {
             switch (type)
             {
-                case "structure": return _export.Structure(id);
-                case "full": return _export.Full(id);
+                case "structure": return await _export.Structure(id);
+                case "full": return await _export.Full(id);
                 default:
                     return BadRequest(
                $"Unexpected type '{type}'. Expected one of: full, structure");

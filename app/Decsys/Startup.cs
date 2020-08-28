@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Decsys.Auth;
@@ -10,10 +11,12 @@ using Decsys.Data;
 using Decsys.Repositories.Contracts;
 using Decsys.Repositories.LiteDb;
 using Decsys.Services;
+using Decsys.Services.Contracts;
 using LiteDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
@@ -40,9 +43,9 @@ namespace Decsys
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _config;
 
-        private readonly IDictionary<string, string> _localPaths;
+        private readonly Dictionary<string, string> _localPaths;
 
-        private IDictionary<string, string> PrepLocalDataPaths(string localDataPath)
+        private Dictionary<string, string> PrepLocalDataPaths(string localDataPath)
         {
             // relative to contentRootPath if not absolute
             localDataPath = Path.IsPathRooted(localDataPath)
@@ -71,7 +74,9 @@ namespace Decsys
             _env = env;
             _config = config;
 
-            _localPaths = PrepLocalDataPaths(_config["Paths:LocalData"]);
+            if (_config.GetValue<bool>("WorkshopMode"))
+                _localPaths = PrepLocalDataPaths(_config["Paths:LocalData"]);
+            else _localPaths = new();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -183,6 +188,8 @@ namespace Decsys
                 services.AddTransient<
                     IParticipantEventRepository,
                     Repositories.Mongo.ParticipantEventRepository>();
+
+                services.AddTransient<IImageService, MongoImageService>();
             }
             if (mode.IsWorkshop)
             {
@@ -191,6 +198,11 @@ namespace Decsys
                 services.AddTransient<IComponentRepository, LiteDbComponentRepository>();
                 services.AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>();
                 services.AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>();
+
+                services.AddTransient<IImageService>(svc =>
+                    new LocalFileImageService(
+                        _localPaths["SurveyImages"],
+                        svc.GetRequiredService<IComponentRepository>()));
             }
 
             services.AddTransient<SurveyService>();
@@ -199,9 +211,6 @@ namespace Decsys
             services.AddTransient<SurveyInstanceService>();
             services.AddTransient<ExportService>();
             services.AddTransient<ParticipantEventService>();
-            services.AddTransient(svc => new ImageService(
-                _localPaths["SurveyImages"],
-                svc.GetRequiredService<IComponentRepository>()));
 
             services.AddSwaggerGen(c =>
             {
@@ -246,12 +255,17 @@ namespace Decsys
                 ContentTypeProvider = new FileExtensionContentTypeProvider(GetValidMappings())
             });
 
-            // Survey Images folder
-            app.UseStaticFiles(new StaticFileOptions
+            // Survey Images
+            if (mode.IsWorkshop)
             {
-                FileProvider = new PhysicalFileProvider(_localPaths["SurveyImages"]),
-                RequestPath = "/surveys/images"
-            });
+                // simply serve static files from disk
+                app.UseStaticFiles(new StaticFileOptions
+                {
+                    FileProvider = new PhysicalFileProvider(_localPaths["SurveyImages"]),
+                    RequestPath = "/surveys/images"
+                });
+            } // else we map an endpoint later
+
 
             app.UseSpaStaticFiles();
 
@@ -273,9 +287,33 @@ namespace Decsys
 
             app.UseAuthorization();
 
-            app.UseEndpoints(e => e
-                .MapControllers()
-                .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin)));
+            app.UseEndpoints(e =>
+            {
+                e.MapControllers()
+                    .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin));
+
+                // TODO: move this to formal middleware
+                e.MapGet("/surveys/images/{surveyId:int}/{filename}", async context =>
+                {
+                    var surveyId = int.Parse(context.Request.RouteValues["surveyId"]?.ToString() ?? "0");
+                    var filename = context.Request.RouteValues["filename"]?.ToString();
+                    if (filename is null)
+                    {
+                        context.Response.StatusCode = 404;
+                        return;
+                    }
+                    var images = context.RequestServices.GetRequiredService<IImageService>();
+                    var bytes = await images.GetImage(surveyId, filename);
+
+                    if (new FileExtensionContentTypeProvider()
+                        .TryGetContentType(filename, out var contentType))
+                    {
+                        context.Response.ContentType = contentType;
+                    }
+
+                    await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
+                });
+            });
 
             app.UseSpa(spa =>
             {

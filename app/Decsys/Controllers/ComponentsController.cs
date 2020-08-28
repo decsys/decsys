@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
+using Decsys.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,14 +24,15 @@ namespace Decsys.Controllers
     public class ComponentsController : ControllerBase
     {
         private readonly ComponentService _components;
-        private readonly ImageService _images;
+        private readonly IImageService _images;
         private readonly IConfiguration _config;
         private readonly IFileProvider _fileProvider;
 
         public ComponentsController(
             IWebHostEnvironment env,
             IConfiguration config,
-            ComponentService components, ImageService images)
+            ComponentService components,
+            IImageService images)
         {
             _components = components;
             _images = images;
@@ -117,14 +119,14 @@ namespace Decsys.Controllers
         [SwaggerOperation("Delete a Component from a Survey Page.")]
         [SwaggerResponse(204, "The Component was deleted successfully.")]
         [SwaggerResponse(404, "No Component, Page, or Survey, was found with the provided ID.")]
-        public IActionResult Delete(
+        public async Task<IActionResult> Delete(
             [SwaggerParameter("ID of the Survey to delete a Page from.")]
             int id,
             [SwaggerParameter("ID of the Page to add a Component to.")]
             Guid pageId,
             [SwaggerParameter("ID of the Component to delete.")]
             Guid componentId)
-            => _components.Delete(id, pageId, componentId)
+            => await _components.Delete(id, pageId, componentId)
                 ? (ActionResult)NoContent()
                 : NotFound();
 
@@ -214,7 +216,7 @@ namespace Decsys.Controllers
             "The Component was duplicated successfully and the new Component is returned.",
             Type = typeof(Component))]
         [SwaggerResponse(404, "No Component, Page, or Survey, was found with the provided ID.")]
-        public IActionResult Duplicate(
+        public async Task<IActionResult> Duplicate(
             [SwaggerParameter("ID of the Survey to duplicate the Component in.")]
             int id,
             [SwaggerParameter("ID of the Page to duplicate the Component in.")]
@@ -224,7 +226,7 @@ namespace Decsys.Controllers
         {
             try
             {
-                return Ok(_components.Duplicate(id, pageId, componentId));
+                return Ok(await _components.Duplicate(id, pageId, componentId));
             }
             catch (KeyNotFoundException e)
             {
@@ -253,7 +255,7 @@ namespace Decsys.Controllers
                 fileData = (Path.GetExtension(file.FileName), stream.ToArray());
             }
 
-            await _images.WriteFile(id, componentId, fileData);
+            await _images.StoreImage(id, componentId, fileData);
 
             try
             {
@@ -272,7 +274,7 @@ namespace Decsys.Controllers
         [SwaggerOperation("Removes the image for a given Image component.")]
         [SwaggerResponse(204, "The Image was removed successfully.")]
         [SwaggerResponse(404, "No Component, Page, or Survey, was found with the provided ID.")]
-        public IActionResult RemoveImage(
+        public async Task<IActionResult> RemoveImage(
             [SwaggerParameter("ID of the Survey the Component belongs to.")]
             int id,
             [SwaggerParameter("ID of the Page the Component belongs to.")]
@@ -283,7 +285,7 @@ namespace Decsys.Controllers
             try
             {
                 // remove the actual image file
-                _images.RemoveFile(id, pageId, componentId);
+                await _images.RemoveImage(id, pageId, componentId);
 
                 // update the component params
                 _components.ClearParam(id, pageId, componentId, "extension");

@@ -8,6 +8,8 @@ using Decsys.Models;
 using LiteDB;
 
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using Decsys.Services.Contracts;
 
 namespace Decsys.Services
 {
@@ -18,9 +20,9 @@ namespace Decsys.Services
     {
         private readonly IComponentRepository _components;
         private readonly ISurveyRepository _surveys;
-        private readonly ImageService _images;
+        private readonly IImageService _images;
 
-        public ComponentService(IComponentRepository components, ISurveyRepository surveys, ImageService images)
+        public ComponentService(IComponentRepository components, ISurveyRepository surveys, IImageService images)
         {
             _components = components;
             _surveys = surveys;
@@ -105,7 +107,7 @@ namespace Decsys.Services
         /// <param name="pageId">The ID of the Page to delete the Component from.</param>
         /// <param name="componentId">The ID of the Component.</param>
         /// <returns>True if the deletion was successful, false if the Survey, Page or Component could not be found.</returns>
-        public bool Delete(int surveyId, Guid pageId, Guid componentId)
+        public async Task<bool> Delete(int surveyId, Guid pageId, Guid componentId)
         {
             try
             {
@@ -113,7 +115,7 @@ namespace Decsys.Services
                 if (component is null) return false;
 
                 if (component.Type == "image")
-                    _images.RemoveFile(surveyId, pageId, componentId);
+                    await _images.RemoveImage(surveyId, pageId, componentId);
 
                 _components.Delete(surveyId, pageId, componentId);
 
@@ -151,7 +153,7 @@ namespace Decsys.Services
         /// <param name="pageId">The ID of the Page to duplicate the Component in.</param>
         /// <param name="componentId">The ID of the Component to duplicate.</param>
         /// <exception cref="KeyNotFoundException">The Component, Page, or Survey, could not be found.</exception>
-        public Component Duplicate(int surveyId, Guid pageId, Guid componentId)
+        public async Task<Component> Duplicate(int surveyId, Guid pageId, Guid componentId)
         {
             var components = _components.List(surveyId, pageId);
 
@@ -167,7 +169,7 @@ namespace Decsys.Services
             };
             components.Insert(i + 1, dupe);
 
-            _images.CopyFile(surveyId, pageId, componentId, dupe.Id);
+            await _images.CopyImage(surveyId, pageId, componentId, dupe.Id);
 
             _components.Replace(surveyId, pageId, components.Select((x, i) => { x.Order = i + 1; return x; }));
 
