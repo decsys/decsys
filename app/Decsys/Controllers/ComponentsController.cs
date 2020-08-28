@@ -23,14 +23,14 @@ namespace Decsys.Controllers
     public class ComponentsController : ControllerBase
     {
         private readonly ComponentService _components;
-        private readonly ImageService _images;
+        private readonly LocalFileImageService _images;
         private readonly IConfiguration _config;
         private readonly IFileProvider _fileProvider;
 
         public ComponentsController(
             IWebHostEnvironment env,
             IConfiguration config,
-            ComponentService components, ImageService images)
+            ComponentService components, LocalFileImageService images)
         {
             _components = components;
             _images = images;

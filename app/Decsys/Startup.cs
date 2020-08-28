@@ -10,6 +10,7 @@ using Decsys.Data;
 using Decsys.Repositories.Contracts;
 using Decsys.Repositories.LiteDb;
 using Decsys.Services;
+using Decsys.Services.Contracts;
 using LiteDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -40,9 +41,9 @@ namespace Decsys
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _config;
 
-        private readonly IDictionary<string, string> _localPaths;
+        private readonly Dictionary<string, string> _localPaths;
 
-        private IDictionary<string, string> PrepLocalDataPaths(string localDataPath)
+        private Dictionary<string, string> PrepLocalDataPaths(string localDataPath)
         {
             // relative to contentRootPath if not absolute
             localDataPath = Path.IsPathRooted(localDataPath)
@@ -71,7 +72,9 @@ namespace Decsys
             _env = env;
             _config = config;
 
-            _localPaths = PrepLocalDataPaths(_config["Paths:LocalData"]);
+            if (_config.GetValue<bool>("WorkshopMode"))
+                _localPaths = PrepLocalDataPaths(_config["Paths:LocalData"]);
+            else _localPaths = new();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -183,6 +186,8 @@ namespace Decsys
                 services.AddTransient<
                     IParticipantEventRepository,
                     Repositories.Mongo.ParticipantEventRepository>();
+
+                services.AddTransient<IImageService, MongoImageService>();
             }
             if (mode.IsWorkshop)
             {
@@ -191,6 +196,11 @@ namespace Decsys
                 services.AddTransient<IComponentRepository, LiteDbComponentRepository>();
                 services.AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>();
                 services.AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>();
+
+                services.AddTransient<IImageService>(svc =>
+                    new LocalFileImageService(
+                        _localPaths["SurveyImages"],
+                        svc.GetRequiredService<IComponentRepository>()));
             }
 
             services.AddTransient<SurveyService>();
@@ -199,9 +209,6 @@ namespace Decsys
             services.AddTransient<SurveyInstanceService>();
             services.AddTransient<ExportService>();
             services.AddTransient<ParticipantEventService>();
-            services.AddTransient(svc => new ImageService(
-                _localPaths["SurveyImages"],
-                svc.GetRequiredService<IComponentRepository>()));
 
             services.AddSwaggerGen(c =>
             {
@@ -247,6 +254,7 @@ namespace Decsys
             });
 
             // Survey Images folder
+            // TODO: different middleware for mongo? or controller?
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(_localPaths["SurveyImages"]),

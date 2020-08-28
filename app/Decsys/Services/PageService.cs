@@ -16,10 +16,10 @@ namespace Decsys.Services
     {
         private readonly ISurveyRepository _surveys;
         private readonly IPageRepository _pages;
-        private readonly ImageService _images;
+        private readonly LocalFileImageService _images;
 
 
-        public PageService(ISurveyRepository surveys, IPageRepository pages, ImageService images)
+        public PageService(ISurveyRepository surveys, IPageRepository pages, LocalFileImageService images)
         {
             _surveys = surveys;
             _pages = pages;

@@ -18,9 +18,9 @@ namespace Decsys.Services
     {
         private readonly IComponentRepository _components;
         private readonly ISurveyRepository _surveys;
-        private readonly ImageService _images;
+        private readonly LocalFileImageService _images;
 
-        public ComponentService(IComponentRepository components, ISurveyRepository surveys, ImageService images)
+        public ComponentService(IComponentRepository components, ISurveyRepository surveys, LocalFileImageService images)
         {
             _components = components;
             _surveys = surveys;

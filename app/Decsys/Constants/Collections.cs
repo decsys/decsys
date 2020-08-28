@@ -11,5 +11,7 @@ namespace Decsys.Constants
         public const string EventLog = "e";
 
         public const string EventLogLookup = "l";
+
+        public const string Images = "images_";
     }
 }

@@ -17,13 +17,13 @@ namespace Decsys.Services
     {
 
         private readonly ISurveyRepository _surveys;
-        private readonly ImageService _images;
+        private readonly LocalFileImageService _images;
         private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;
 
         /// <summary>DI Constructor</summary>
         public SurveyService(
             ISurveyRepository surveys,
-            ImageService images,
+            LocalFileImageService images,
             IOptionsSnapshot<ComponentTypeMap> componentTypeMaps)
         {
             _surveys = surveys;

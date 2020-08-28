@@ -116,6 +116,17 @@
           "MongoDB.Libmongocrypt": "1.0.0"
         }
       },
+      "MongoDB.Driver.GridFS": {
+        "type": "Direct",
+        "requested": "[2.11.1, )",
+        "resolved": "2.11.1",
+        "contentHash": "KoT0m723omOF7c1dULRCL908XOFzajTlh8qCUeGUyeNTrs7GvknOcdGwIQbOcEewKuZrpk8I5hteI6mfk8jyXA==",
+        "dependencies": {
+          "MongoDB.Bson": "2.11.1",
+          "MongoDB.Driver": "2.11.1",
+          "MongoDB.Driver.Core": "2.11.1"
+        }
+      },
       "Newtonsoft.Json.Bson": {
         "type": "Direct",
         "requested": "[1.0.2, )",
@@ -881,16 +892,16 @@
       },
       "MongoDB.Bson": {
         "type": "Transitive",
-        "resolved": "2.11.0",
-        "contentHash": "mrmEJaxej5DYu4OFosja1nn9nep2UL38pWvzyyZbDo735pgbOPDEsQJ9v0uSkNK1uywdDHMp1gc0cDA6gFivvg=="
+        "resolved": "2.11.1",
+        "contentHash": "HlSksNZHP71lPJmVPwZwDheN85GYzQDecq/hLr6ARFcnmoz2WR2Tdk3vcfCNEaXIQnkpE5ai0nTOJ/206mOTrQ=="
       },
       "MongoDB.Driver.Core": {
         "type": "Transitive",
-        "resolved": "2.11.0",
-        "contentHash": "2QvanNbk0ZR0vFx9YISoy404x/n6hZ8bK59SmqTdx/YUs3psvjq0fHTxGCXrY9pgjgAmbQCs+9s+Ldag3zvA/Q==",
+        "resolved": "2.11.1",
+        "contentHash": "eWo4s68ifXVeaOsdg/gbNWjpg2RVbGhrWEzEc6tYFhJPjmmqENF3dmP8XyjmO50G8YIeVmdMAh4DUaQy9vnVTw==",
         "dependencies": {
           "DnsClient": "1.3.1",
-          "MongoDB.Bson": "2.11.0",
+          "MongoDB.Bson": "2.11.1",
           "MongoDB.Libmongocrypt": "1.0.0",
           "SharpCompress": "0.23.0",
           "System.Buffers": "4.4.0"
@@ -1872,11 +1883,11 @@
       },
       "MongoDB.Driver.Core": {
         "type": "Transitive",
-        "resolved": "2.11.0",
-        "contentHash": "2QvanNbk0ZR0vFx9YISoy404x/n6hZ8bK59SmqTdx/YUs3psvjq0fHTxGCXrY9pgjgAmbQCs+9s+Ldag3zvA/Q==",
+        "resolved": "2.11.1",
+        "contentHash": "eWo4s68ifXVeaOsdg/gbNWjpg2RVbGhrWEzEc6tYFhJPjmmqENF3dmP8XyjmO50G8YIeVmdMAh4DUaQy9vnVTw==",
         "dependencies": {
           "DnsClient": "1.3.1",
-          "MongoDB.Bson": "2.11.0",
+          "MongoDB.Bson": "2.11.1",
           "MongoDB.Libmongocrypt": "1.0.0",
           "SharpCompress": "0.23.0",
           "System.Buffers": "4.4.0"

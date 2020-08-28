@@ -5,25 +5,26 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Decsys.Repositories.Contracts;
+using Decsys.Services.Contracts;
 
 namespace Decsys.Services
 {
-    public class ImageService
+    public class LocalFileImageService : IImageService
     {
         private readonly IComponentRepository _components;
 
-        public string ImagesPath { get; }
+        private readonly string _imagesPath;
 
-        public ImageService(string imagesPath, IComponentRepository components)
+        public LocalFileImageService(string imagesPath, IComponentRepository components)
         {
-            ImagesPath = imagesPath;
+            _imagesPath = imagesPath;
             _components = components;
         }
 
-        public string SurveyImagesPath(int id) =>
-            Path.Combine(ImagesPath, id.ToString());
+        private string SurveyImagesPath(int id) =>
+            Path.Combine(_imagesPath, id.ToString());
 
-        public async Task WriteFile(int surveyId, Guid componentId, (string extension, byte[] bytes) file)
+        public async Task StoreImage(int surveyId, Guid componentId, (string extension, byte[] bytes) file)
         {
             var filename = $"{componentId}{file.extension}";
 
@@ -37,31 +38,35 @@ namespace Decsys.Services
             await stream.WriteAsync(file.bytes, 0, file.bytes.Length);
         }
 
-        public void RemoveFile(int surveyId, Guid pageId, Guid componentId)
+        public Task RemoveImage(int surveyId, Guid pageId, Guid componentId)
         {
             var extension = GetStoredFileExtension(surveyId, pageId, componentId);
-            if (extension is null) return; // no image currently stored; job done
+            if (extension is null) return Task.CompletedTask; // no image currently stored; job done
 
             var path = Path.Combine(
                 SurveyImagesPath(surveyId),
                 componentId.ToString() + extension);
 
             if (File.Exists(path)) File.Delete(path);
+
+            return Task.CompletedTask;
         }
 
-        public void RemoveAllSurveyFiles(int id)
+        public Task RemoveAllSurveyImages(int id)
         {
             var path = SurveyImagesPath(id);
 
-            if (!Directory.Exists(path)) return;
+            if (!Directory.Exists(path)) return Task.CompletedTask;
 
             Directory.Delete(path, true);
+
+            return Task.CompletedTask;
         }
 
-        public void CopyFile(int surveyId, Guid pageId, Guid srcId, Guid destId)
+        public Task CopyImage(int surveyId, Guid pageId, Guid srcId, Guid destId)
         {
             var extension = GetStoredFileExtension(surveyId, pageId, srcId);
-            if (extension is null) return; // For whatever reason, an image item with no image has been duplicated
+            if (extension is null) return Task.CompletedTask; // For whatever reason, an image item with no image has been duplicated
 
             var path = Path.Combine(
                 SurveyImagesPath(surveyId), srcId.ToString() + extension);
@@ -71,14 +76,16 @@ namespace Decsys.Services
                 File.Copy(path, Path.Combine(
                 SurveyImagesPath(surveyId), destId.ToString() + extension));
             }
+
+            return Task.CompletedTask;
         }
 
-        public void CopyAllSurveyFiles(int oldId, int newId)
+        public async Task CopyAllSurveyImages(int oldId, int newId)
         {
             var dest = SurveyImagesPath(newId); ;
 
             Directory.CreateDirectory(dest);
-            foreach (var f in Enumerate(oldId))
+            foreach (var f in await Enumerate(oldId))
                 File.Copy(f, Path.Combine(dest, Path.GetFileName(f)));
         }
 
@@ -90,20 +97,21 @@ namespace Decsys.Services
             foreach (var (filename, data) in images)
             {
                 using var stream = File.Create(Path.Combine(dest, filename));
-                await stream.WriteAsync(data, 0, data.Length).ConfigureAwait(false);
+                await stream.WriteAsync(data.AsMemory(0, data.Length)).ConfigureAwait(false);
             }
         }
 
-        public IEnumerable<string> Enumerate(int surveyId)
+        public Task<IEnumerable<string>> Enumerate(int surveyId)
         {
             var dir = SurveyImagesPath(surveyId);
-            return Directory.Exists(dir)
+            var result = Directory.Exists(dir)
                 ? Directory.EnumerateFiles(dir)
                 : new List<string>();
+            return Task.FromResult(result);
         }
 
-        public bool HasImages(int surveyId)
-            => Enumerate(surveyId).Any();
+        public async Task<bool> HasImages(int surveyId)
+            => (await Enumerate(surveyId)).Any();
 
         private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
             _components.Find(surveyId, pageId, componentId)

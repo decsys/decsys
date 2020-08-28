@@ -8,13 +8,13 @@ namespace Decsys.Services
         private readonly SurveyService _surveys;
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _events;
-        private readonly ImageService _images;
+        private readonly LocalFileImageService _images;
 
         public ExportService(
             SurveyService surveys,
             SurveyInstanceService instances,
             ParticipantEventService events,
-            ImageService images)
+            LocalFileImageService images)
         {
             _surveys = surveys;
             _instances = instances;
