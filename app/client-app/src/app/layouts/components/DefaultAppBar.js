@@ -6,9 +6,7 @@ import { Link } from "@reach/router";
 
 const DefaultAppBar = ({ brandLink }) => (
   <AppBar brand="DECSYS" brandLink={brandLink}>
-    <AppBarLink as={Link} to="/docs">
-      Documentation
-    </AppBarLink>
+    <AppBarLink href="/docs">Documentation</AppBarLink>
     <AppBarLink as={Link} to="/admin">
       Admin
     </AppBarLink>
