@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -269,6 +270,9 @@ namespace Decsys
 
             app.UseSpaStaticFiles();
 
+            app.UseRewriter(new RewriteOptions()
+                .AddRedirect("docs", "docs/index.html"));
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -313,6 +317,8 @@ namespace Decsys
 
                     await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
                 });
+
+                
             });
 
             app.UseSpa(spa =>
