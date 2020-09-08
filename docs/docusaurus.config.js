@@ -1,7 +1,7 @@
-module.exports = {
+const baseConfig = {
   title: "DECSYS",
   tagline: "DISCRETE AND ELLIPSE-BASED RESPONSE CAPTURE SYSTEM",
-  url: "https://your-docusaurus-test-site.com",
+  url: "https://decsys.github.io",
   baseUrl: "/",
   onBrokenLinks: "throw",
   favicon: "img/favicon.ico",
@@ -153,4 +153,18 @@ module.exports = {
       },
     ],
   ],
+};
+
+const targetConfigs = {
+  ghPages: {
+    //url: "https://decsys.github.io",
+  },
+  selfHosted: {
+    baseUrl: "/docs/",
+  },
+};
+
+module.exports = {
+  ...baseConfig,
+  ...targetConfigs[process.env.TARGET],
 };
