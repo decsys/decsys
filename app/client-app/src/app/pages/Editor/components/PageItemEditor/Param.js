@@ -86,20 +86,6 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
               </option>
             ))}
           </Select>
-
-          // <RadioGroup
-          //   onChange={handleValueChange}
-          //   value={value}
-          //   name={`${paramKey}_radio`}
-          // >
-          //   <Stack direction="row">
-          //     {oneOf.map((x) => (
-          //       <Radio key={`${paramKey}_radio_${x}`} value={x}>
-          //         {x}
-          //       </Radio>
-          //     ))}
-          //   </Stack>
-          // </RadioGroup>
         );
       case types.number:
         return (
