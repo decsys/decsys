@@ -3,6 +3,7 @@ import { Flex, useColorMode, Icon } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import { FaGripVertical } from "react-icons/fa";
 import PageActionButtons from "./PageActionButtons";
+import { defaultColorMode } from "themes";
 
 const PageHeader = ({ page, order, dragHandleProps }) => {
   const { colorMode } = useColorMode();
@@ -12,7 +13,7 @@ const PageHeader = ({ page, order, dragHandleProps }) => {
       borderTopRadius={5}
       align="center"
       justify="space-between"
-      {...headerStyle[colorMode]}
+      {...headerStyle[colorMode || defaultColorMode]}
       role="group"
     >
       <Flex {...dragHandleProps} p={2} align="center" width="100%">

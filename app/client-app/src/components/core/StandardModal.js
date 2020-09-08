@@ -24,8 +24,8 @@ const StandardModal = ({
 }) => {
   return (
     <Modal preserveScrollBarGap onClose={onClose} {...p}>
-      <ModalOverlay zIndex={555555}>
-        <ModalContent zIndex={777777}>
+      <ModalOverlay>
+        <ModalContent>
           <ModalHeader pb={2}>{header}</ModalHeader>
           {header && <Divider m={0} />}
           {showCloseButton && <ModalCloseButton />}

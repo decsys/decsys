@@ -18,6 +18,7 @@ import { usePageListContext } from "../../contexts/PageList";
 import AddContentItemMenu from "./AddContentItemMenu";
 import { some } from "services/flags";
 import PlaceholderDot from "components/core/PlaceholderDot";
+import { defaultColorMode } from "themes";
 
 const RandomTooltip = ({ isRandom }) => {
   const { colorMode } = useColorMode();
@@ -39,7 +40,7 @@ const RandomTooltip = ({ isRandom }) => {
         for this Page.
       </Flex>
       <Divider />
-      <Flex align="center" {...warningStyle[colorMode]}>
+      <Flex align="center" {...warningStyle[colorMode || defaultColorMode]}>
         <Icon ml={2} as={FaExclamationTriangle} />
         <Flex textAlign="center">
           Random Pages are only randomised *between* Fixed Pages.
@@ -56,21 +57,11 @@ const ActionButtons = ({ id }) => {
     <>
       <AddContentItemMenu id={id} />
 
-      <Tooltip
-        zIndex={999999}
-        placement="top"
-        hasArrow
-        label="Duplicate this page"
-      >
+      <Tooltip placement="top" hasArrow label="Duplicate this page">
         <DotHoverIconButton icon={FaCopy} onClick={() => duplicatePage(id)} />
       </Tooltip>
 
-      <Tooltip
-        zIndex={999999}
-        placement="top"
-        hasArrow
-        label="Delete this page"
-      >
+      <Tooltip placement="top" hasArrow label="Delete this page">
         <DotHoverIconButton
           colorScheme="red"
           icon={FaTrash}
@@ -100,7 +91,6 @@ const PageActionButtons = ({ id, randomize, isLoading }) => {
   return (
     <Flex align="center">
       <Tooltip
-        zIndex={999999}
         maxW="auto"
         placement="top"
         hasArrow

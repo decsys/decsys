@@ -9,6 +9,7 @@ import PagePreview from "./components/PagePreview";
 import { FaFileAlt } from "react-icons/fa";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import PageItemEditor from "./components/PageItemEditor";
+import { defaultColorMode } from "themes";
 
 const NoPages = ({ addPage }) => (
   <EmptyState
@@ -70,7 +71,7 @@ const Editor = ({ id, navigate }) => {
               <Flex boxShadow="section-v" overflowY="auto" zIndex={1}>
                 <PagePreview />
               </Flex>
-              <Flex overflowY="auto" bg={bg[colorMode]}>
+              <Flex overflowY="auto" bg={bg[colorMode || defaultColorMode]}>
                 <PageItemEditor />
               </Flex>
             </>

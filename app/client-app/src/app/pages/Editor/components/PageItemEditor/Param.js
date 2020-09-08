@@ -10,7 +10,7 @@ import {
   Checkbox,
   RadioGroup,
   Stack,
-  Radio,
+  Select,
 } from "@chakra-ui/core";
 
 const useDelayedChangeHandler = (paramKey, init, onChange) => {
@@ -59,8 +59,9 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
     e.persist();
     onChange(paramKey, e.target.checked);
   };
-  const handleValueChange = (value) => {
-    onChange(paramKey, value);
+  const handleValueChange = (e) => {
+    e.persist();
+    onChange(paramKey, e.target.value);
   };
 
   const input = ((type) => {
@@ -78,19 +79,27 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
         return <Checkbox isChecked={value} onChange={handleCheckedChange} />;
       case types.oneOf:
         return (
-          <RadioGroup onChange={handleValueChange} value={value}>
-            <Stack direction="row">
-              {oneOf.map((x) => (
-                <Radio
-                  key={`${paramKey}_radio_${x}`}
-                  name={`${paramKey}_radio`}
-                  value={x}
-                >
-                  {x}
-                </Radio>
-              ))}
-            </Stack>
-          </RadioGroup>
+          <Select size="sm" onChange={handleValueChange} value={value}>
+            {oneOf.map((x) => (
+              <option key={`${paramKey}_radio_${x}`} value={x}>
+                {x}
+              </option>
+            ))}
+          </Select>
+
+          // <RadioGroup
+          //   onChange={handleValueChange}
+          //   value={value}
+          //   name={`${paramKey}_radio`}
+          // >
+          //   <Stack direction="row">
+          //     {oneOf.map((x) => (
+          //       <Radio key={`${paramKey}_radio_${x}`} value={x}>
+          //         {x}
+          //       </Radio>
+          //     ))}
+          //   </Stack>
+          // </RadioGroup>
         );
       case types.number:
         return (

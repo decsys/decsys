@@ -16,10 +16,14 @@ import {
 import ExportModal from "components/shared/ExportModal";
 import DeleteSurveyModal from "components/shared/DeleteSurveyModal";
 import { useEditorBarContext } from "../../contexts/EditorBar";
+import { defaultColorMode } from "themes";
 
 const BarButton = (p) => {
   const { colorMode } = useColorMode();
-  const scheme = p.colorScheme || colorMode === "light" ? "dark-gray" : "gray";
+  const scheme =
+    p.colorScheme || (colorMode || defaultColorMode) === "light"
+      ? "dark-gray"
+      : "gray";
   return (
     <Button
       colorScheme={scheme}
@@ -81,7 +85,6 @@ export const DeleteButton = ({ name }) => {
       </LightMode>
 
       <DeleteSurveyModal
-        zIndex={999999}
         name={name}
         onConfirm={deleteSurvey}
         modalState={modal}

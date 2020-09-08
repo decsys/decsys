@@ -5,7 +5,7 @@ import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 const LoadInternalSurveys = ({ closeModal }) => {
   const { loadInternal } = useAddSurveyActions();
 
-  const handleClick = type => {
+  const handleClick = (type) => {
     loadInternal(type);
     closeModal();
   };
@@ -15,7 +15,6 @@ const LoadInternalSurveys = ({ closeModal }) => {
   return (
     <>
       <Tooltip
-        zIndex={999999}
         hasArrow
         label="This Survey demonstrates the features of the DECSYS
             Survey Platform."
@@ -26,7 +25,6 @@ const LoadInternalSurveys = ({ closeModal }) => {
       </Tooltip>
 
       <Tooltip
-        zIndex={999999}
         hasArrow
         label="This Survey shows the Platform using the Ellipse Rating Scale in a Research context."
       >

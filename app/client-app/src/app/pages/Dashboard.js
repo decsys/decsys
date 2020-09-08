@@ -25,6 +25,7 @@ import { getComponent, getPageResponseItem } from "services/page-items";
 import { Body as SurveyPageBody } from "components/shared/SurveyPage";
 import LightHeading from "components/core/LightHeading";
 import { exportDateFormat as formatDate } from "services/date-formats";
+import { defaultColorMode } from "themes";
 
 const getDataByPage = (survey, results) => {
   const resultsByPage = results.participants.reduce((a, p) => {
@@ -54,7 +55,7 @@ const StatCard = ({ label, value }) => {
     sharedStyles: { card },
   } = useTheme();
   return (
-    <Flex p={4} {...card[colorMode]}>
+    <Flex p={4} {...card[colorMode || defaultColorMode]}>
       <Stat>
         <StatLabel>{label}</StatLabel>
         <StatNumber>{value}</StatNumber>
