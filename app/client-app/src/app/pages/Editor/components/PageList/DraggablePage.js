@@ -6,6 +6,7 @@ import DraggablePageItem, { PageItem } from "./DraggablePageItem";
 import { LoadingIndicator } from "components/core";
 import { usePageListContext } from "../../contexts/PageList";
 import { getPageResponseItem } from "services/page-items";
+import { defaultColorMode } from "themes";
 
 const DroppableItemList = ({ page }) => {
   return (
@@ -84,7 +85,7 @@ export const Page = ({
       direction="column"
       mb={2}
       borderRadius={5}
-      {...cardStyle[colorMode]}
+      {...cardStyle[colorMode || defaultColorMode]}
       ref={innerRef}
       boxShadow={isDragging ? "outline" : "none"}
       transition="box-shadow .2s ease"

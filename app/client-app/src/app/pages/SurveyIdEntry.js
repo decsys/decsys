@@ -10,7 +10,10 @@ const SurveyIdEntry = () => {
 
   const handleChange = ({ target: { value } }) => setId(value);
 
-  const handleClick = () => navigate(`/survey/${id}`);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate(`/survey/${id}`);
+  };
 
   return (
     <Page brandLink="">
@@ -28,17 +31,19 @@ const SurveyIdEntry = () => {
         <LightHeading as="h2" size="lg" mb={3}>
           Please enter a Survey ID to participate
         </LightHeading>
-        <Flex>
-          <Input
-            size="lg"
-            placeholder="Survey ID"
-            onChange={handleChange}
-            mr={2}
-          />
-          <Button colorScheme="blue" size="lg" onClick={handleClick}>
-            Submit
-          </Button>
-        </Flex>
+        <form onSubmit={handleSubmit}>
+          <Flex>
+            <Input
+              size="lg"
+              placeholder="Survey ID"
+              onChange={handleChange}
+              mr={2}
+            />
+            <Button colorScheme="blue" size="lg" type="submit">
+              Submit
+            </Button>
+          </Flex>
+        </form>
       </Flex>
     </Page>
   );

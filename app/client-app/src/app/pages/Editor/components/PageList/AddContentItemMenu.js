@@ -27,7 +27,6 @@ const AddContentItemMenu = ({ id }) => {
   return (
     <Menu>
       <Tooltip
-        zIndex={999999}
         placement="top"
         hasArrow
         label="Add Page Content items to this page"

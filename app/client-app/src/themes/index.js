@@ -1,9 +1,10 @@
-import theme from "@chakra-ui/theme";
-import merge from "lodash-es/merge";
+import { extendTheme } from "@chakra-ui/core";
+
+export const defaultColorMode = "light"; // dark mode is wip
 
 const overrides = {
   config: {
-    initialColorMode: "light", // dark mode is wip
+    initialColorMode: defaultColorMode,
   },
   colors: {
     "dark-gray": {
@@ -37,4 +38,4 @@ const overrides = {
   },
 };
 
-export default merge(theme, overrides);
+export default extendTheme(overrides);

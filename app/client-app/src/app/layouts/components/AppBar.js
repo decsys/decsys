@@ -2,6 +2,7 @@ import React from "react";
 import { Flex, Link, Grid, useColorMode } from "@chakra-ui/core";
 import { Link as RouterLink } from "@reach/router";
 import LightHeading from "components/core/LightHeading";
+import { defaultColorMode } from "themes";
 
 export const AppBarLink = (p) => (
   <Link
@@ -20,7 +21,12 @@ const AppBar = ({ brand, children, brandLink }) => {
   const { colorMode } = useColorMode();
   const bg = { light: "gray.800", dark: "gray.700" };
   return (
-    <Flex w="100%" justify="center" bg={bg[colorMode]} boxShadow="section-h">
+    <Flex
+      w="100%"
+      justify="center"
+      bg={bg[colorMode || defaultColorMode]}
+      boxShadow="section-h"
+    >
       <Flex
         w={{ base: "100%", lg: "1140px" }}
         px={{ base: 2, xl: 0 }}

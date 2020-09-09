@@ -22,6 +22,7 @@ import {
   listLoadedResponseItemTypes,
   getComponent,
 } from "services/page-items";
+import { defaultColorMode } from "themes";
 
 const builtInIcons = {
   heading: FaHeading,
@@ -160,8 +161,14 @@ export const PageItem = ({
   return (
     <Grid
       ref={innerRef}
-      bg={isDragging || isSelected ? selectStyle[colorMode].bg : "inherit"}
-      _hover={!item || isBusy ? {} : { ...hoverStyle[colorMode] }}
+      bg={
+        isDragging || isSelected
+          ? selectStyle[colorMode || defaultColorMode].bg
+          : "inherit"
+      }
+      _hover={
+        !item || isBusy ? {} : { ...hoverStyle[colorMode || defaultColorMode] }
+      }
       transition="background-color .1s ease"
       {...draggableProps}
       role="group"

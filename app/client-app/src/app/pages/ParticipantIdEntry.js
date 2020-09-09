@@ -12,7 +12,8 @@ const ParticipantIdEntry = ({ combinedId, validIdentifiers }) => {
 
   const handleChange = ({ target: { value } }) => setId(value);
 
-  const handleClick = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (validIdentifiers.length > 0 && !validIdentifiers.includes(id)) {
       setValidationError(
         "The Participant ID entered was not accepted for accessing this Survey."
@@ -45,17 +46,19 @@ const ParticipantIdEntry = ({ combinedId, validIdentifiers }) => {
         <LightHeading as="h2" size="lg" mb={3}>
           Please enter a Participant ID to participate
         </LightHeading>
-        <Flex>
-          <Input
-            size="lg"
-            placeholder="Survey ID"
-            onChange={handleChange}
-            mr={2}
-          />
-          <Button colorScheme="blue" size="lg" onClick={handleClick}>
-            Submit
-          </Button>
-        </Flex>
+        <form onSubmit={handleSubmit}>
+          <Flex>
+            <Input
+              size="lg"
+              placeholder="Participant ID"
+              onChange={handleChange}
+              mr={2}
+            />
+            <Button colorScheme="blue" size="lg" type="submit">
+              Submit
+            </Button>
+          </Flex>
+        </form>
       </Flex>
     </Page>
   );

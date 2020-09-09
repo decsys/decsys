@@ -9,6 +9,7 @@ import {
 } from "./Buttons";
 import NameInput from "./NameInput";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
+import { defaultColorMode } from "themes";
 
 const EditorBar = () => {
   const { id, name } = useFetchSurvey();
@@ -20,7 +21,7 @@ const EditorBar = () => {
       width="100%"
       gap={0}
       templateColumns="auto 1fr auto auto auto auto auto"
-      bg={bg[colorMode]}
+      bg={bg[colorMode || defaultColorMode]}
     >
       <BackButton />
 

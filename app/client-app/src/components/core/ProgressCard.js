@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Flex, Text, Grid, useColorMode, useTheme } from "@chakra-ui/core";
 import { ActiveIndicator } from ".";
 import LightHeading from "./LightHeading";
+import { defaultColorMode } from "themes";
 
 const ProgressCard = ({
   title,
@@ -23,7 +24,7 @@ const ProgressCard = ({
   return (
     <Grid
       onClick={onClick}
-      {...style[colorMode]}
+      {...style[colorMode || defaultColorMode]}
       templateColumns={`${cardHeaderWidth} 1fr`}
       alignItems="center"
       p={2}

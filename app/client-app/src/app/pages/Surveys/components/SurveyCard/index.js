@@ -8,7 +8,7 @@ import { encode } from "services/instance-id";
 import ManageSurveyMenu from "./ManageSurveyMenu";
 import ActiveInstanceLine from "./ActiveInstanceLine";
 import { useSurvey } from "../../../../contexts/Survey";
-import themes from "themes";
+import themes, { defaultColorMode } from "themes";
 
 const SurveyCard = () => {
   const { colorMode } = useColorMode();
@@ -20,13 +20,17 @@ const SurveyCard = () => {
   const actionButtons = getActionButtons(survey);
 
   return (
-    <Stack direction="row" spacing={0} {...style[colorMode]}>
+    <Stack
+      direction="row"
+      spacing={0}
+      {...style[colorMode || defaultColorMode]}
+    >
       <ActiveIndicator active={!!activeInstanceId} />
 
       <Stack spacing={0} w="100%">
         <Grid
           borderBottom={activeInstanceId ? "thin solid" : "none"}
-          borderColor={style[colorMode].borderColor}
+          borderColor={style[colorMode || defaultColorMode].borderColor}
           gap={2}
           templateColumns={`80px 1fr ${Array(
             listMatchingKeys(actionButtons).length
