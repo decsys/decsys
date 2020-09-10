@@ -28,12 +28,12 @@ const AppBar = ({ brand, children, brandLink }) => {
       boxShadow="section-h"
     >
       <Flex
-        w={{ base: "100%", lg: "1140px" }}
-        px={{ base: 2, xl: 0 }}
+        w={{ base: "100%", xl: "1140px" }}
+        px={{ base: 4, xl: 0 }}
         align="center"
         justify="space-between"
       >
-        <LightHeading size="lg" p={2}>
+        <LightHeading size="lg" py={2}>
           <AppBarLink as={RouterLink} to={brandLink}>
             {brand}
           </AppBarLink>
