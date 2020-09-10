@@ -10,7 +10,7 @@ const AddSurveyModal = ({ modalState }) => {
     <StandardModal {...modalState} header="Add a Survey" cancelButton={false}>
       <Stack w="100%" spacing={1} mb={3}>
         <CreateBlankSurveyButton />
-        <ImportSurvey />
+        <ImportSurvey modalState={modalState} />
         <LoadInternalSurveys closeModal={modalState.onClose} />
       </Stack>
     </StandardModal>
