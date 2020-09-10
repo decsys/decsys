@@ -8,13 +8,24 @@ namespace Decsys.Auth
 {
     public static class DataSeeder
     {
+        const string _defaultAdminUsername = "admin";
+        const string _adminEmail = "admin@localhost";
+
         public static async Task Seed(
             UserManager<IdentityUser> users,
             IPasswordHasher<IdentityUser> passwords,
             IConfiguration config)
         {
             // Seed an initial super user to use for setup
-            var username = "admin@localhost";
+
+            
+            var configuredUsername = config["Hosted:AdminUsername"];
+            var username = string.IsNullOrWhiteSpace(configuredUsername)
+                ? _defaultAdminUsername
+                : configuredUsername;
+
+            // Prefix the username to show it's not an email
+            username = $"@{username}";
             if (await users.FindByNameAsync(username) is null)
             {
                 // check an actual password has been configured
@@ -30,7 +41,7 @@ or the environment variable DOTNET_Hosted_AdminPassword");
                 var user = new IdentityUser
                 {
                     UserName = username,
-                    Email = username,
+                    Email = _adminEmail,
                     EmailConfirmed = true
                 };
 

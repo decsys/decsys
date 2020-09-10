@@ -42,8 +42,8 @@ This section is under construction and may change.
 :::
 
 
-:::tip 🙋🏾‍♀️ Hosted mode Admin Username
-`admin@localhost`
+:::tip 🙋🏾‍♀️ Default Hosted mode Admin Username
+`@admin`
 :::
 
 ### Prerequisites
@@ -62,6 +62,10 @@ Then, you'll need to make some configuration changes as follows:
   - port `80` (http) or `443` (https) may be ommitted for those schemes.
 - Set `Hosted:AdminPassword` to the password for your admin user.
 - Set `Hosted:JwtSigningKey` to a [JSON Web Key](https://mkjwk.org)
+- [Optional] set `Hosted:AdminUsername` to a username for your admin user.
+  - The app will prefix this username with `@` to identify it as the system admin.
+  - if you set this in the config as `decsys`, then you'll need to login with `@decsys`.
+  - defaults to `admin`.
 
 #### DECSYS JSON Web Key Parameters
 
