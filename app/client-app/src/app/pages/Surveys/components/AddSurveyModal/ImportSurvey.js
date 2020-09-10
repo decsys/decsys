@@ -13,7 +13,7 @@ import useToggle from "hooks/useToggle";
 import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 
-const ImportSurvey = () => {
+const ImportSurvey = (p) => {
   const [isExpanded, toggleExpanded] = useToggle();
   return (
     <>
@@ -21,7 +21,7 @@ const ImportSurvey = () => {
         Import an existing Survey...
       </Button>
       <Collapse isOpen={isExpanded}>
-        <ImportSurveyForm />
+        <ImportSurveyForm {...p} />
       </Collapse>
     </>
   );

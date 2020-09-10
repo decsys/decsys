@@ -82,7 +82,7 @@ namespace Decsys.Repositories.Mongo
         public List<Models.SurveyInstance> List(int surveyId)
         {
             var surveys = new Dictionary<int, Models.Survey>();
-            var instances = _instances.Find(new BsonDocument()).ToList();
+            var instances = _instances.Find(x => x.SurveyId == surveyId).ToList();
             return instances.Select(instance =>
             {
                 // make sure the dictionary has the survey, but only fetch it once
