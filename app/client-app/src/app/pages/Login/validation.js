@@ -8,9 +8,7 @@ export default object().shape({
       "Please enter a valid email address.",
       (v) =>
         string().email().isValidSync(v) ||
-        string()
-          .matches(/@localhost$/)
-          .isValidSync(v)
+        string().matches(/^\$/).isValidSync(v)
     )
     .required("Please enter your account email address."),
   Password: string().required("Please enter your account password."),
