@@ -7,8 +7,7 @@ export default object().shape({
       "valid-username",
       "Please enter a valid email address.",
       (v) =>
-        string().email().isValidSync(v) ||
-        string().matches(/^\$/).isValidSync(v)
+        string().email().isValidSync(v) || string().matches(/^@/).isValidSync(v)
     )
     .required("Please enter your account email address."),
   Password: string().required("Please enter your account password."),

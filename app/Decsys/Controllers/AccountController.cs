@@ -19,7 +19,6 @@ namespace Decsys.Controllers
     public class LoginModel
     {
         [Required]
-        [EmailAddress]
         public string Username { get; set; } = string.Empty;
 
         [Required]
