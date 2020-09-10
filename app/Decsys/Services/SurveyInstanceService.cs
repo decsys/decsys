@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AutoMapper;
+using Decsys.Constants;
 using Decsys.Models;
 using Decsys.Repositories.Contracts;
 
@@ -112,7 +113,21 @@ namespace Decsys.Services
 
                 foreach (var participant in instanceImport.Participants)
                     foreach (var e in participant.Events)
+                    {
+                        // any event data we need to massage?
+                        // sources are usually guids which remain the same (e.g. pages and page items)
+                        // but some events use survey as source, and surveyId has changed
+
+                        switch (e.Type)
+                        {
+                            case EventTypes.PAGE_RANDOMIZE:
+                            case EventTypes.SURVEY_COMPLETE:
+                                e.Source = targetSurveyId.ToString();
+                                break;
+                        }
+
                         _events.Create(instanceId, participant.Id, e);
+                    }
             }
         }
     }
