@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
@@ -11,9 +11,82 @@ import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useServerConfig } from "api/config";
 import Error from "../Error";
 
+// TODO: this will later want to be reusable for email change
+const EmailFieldGroup = ({ initialHidden }) => {
+  const [hidden, setHidden] = useState(initialHidden);
+  const handleFocus = () => setHidden(false);
+
+  return (
+    <>
+      <Field name="Email">
+        {(rp) => (
+          <FormikInput
+            {...rp}
+            label="Email Address"
+            placeholder="john.smith@example.com"
+            isRequired
+            onFocus={handleFocus}
+          />
+        )}
+      </Field>
+
+      <Flex hidden={hidden}>
+        <Field name="EmailConfirm">
+          {(rp) => (
+            <FormikInput
+              {...rp}
+              label="Confirm Email Address"
+              placeholder="john.smith@example.com"
+              isRequired
+            />
+          )}
+        </Field>
+      </Flex>
+    </>
+  );
+};
+
+// TODO: this will later want to be reusable for password reset
+const PasswordFieldGroup = ({ initialHidden }) => {
+  const [hidden, setHidden] = useState(initialHidden);
+  const handleFocus = () => setHidden(false);
+
+  return (
+    <>
+      <Field name="Password">
+        {(rp) => (
+          <FormikInput
+            {...rp}
+            label={rp.field.name}
+            placeholder={rp.field.name}
+            isRequired
+            isPassword
+            onFocus={handleFocus}
+          />
+        )}
+      </Field>
+
+      <Flex hidden={hidden}>
+        <Field name="PasswordConfirm">
+          {(rp) => (
+            <FormikInput
+              {...rp}
+              label="Confirm Password"
+              placeholder="Password"
+              isRequired
+              isPassword
+            />
+          )}
+        </Field>
+      </Flex>
+    </>
+  );
+};
+
 const Register = () => {
-  const { error, username, fullname } = useQueryStringViewModel();
+  const { error, email, emailConfirm, fullname } = useQueryStringViewModel();
   const { allowRegistration } = useServerConfig();
+
   if (!allowRegistration)
     return <Error message="Account Registration is not enabled" />;
 
@@ -45,8 +118,10 @@ const Register = () => {
           <Formik
             initialValues={{
               Fullname: fullname ?? "",
-              Username: username ?? "",
+              Email: email ?? "",
+              EmailConfirm: emailConfirm ?? "",
               Password: "",
+              PasswordConfirm: "",
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
@@ -65,28 +140,9 @@ const Register = () => {
                     )}
                   </Field>
 
-                  <Field name="Username">
-                    {(rp) => (
-                      <FormikInput
-                        {...rp}
-                        label="Email Address"
-                        placeholder="john.smith@example.com"
-                        isRequired
-                      />
-                    )}
-                  </Field>
+                  <EmailFieldGroup initialHidden={!error} />
 
-                  <Field name="Password">
-                    {(rp) => (
-                      <FormikInput
-                        {...rp}
-                        label={rp.field.name}
-                        placeholder={rp.field.name}
-                        isRequired
-                        isPassword
-                      />
-                    )}
-                  </Field>
+                  <PasswordFieldGroup initialHidden={!error} />
 
                   <Flex justify="space-between">
                     <Button
