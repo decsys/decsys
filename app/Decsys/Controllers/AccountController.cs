@@ -162,13 +162,16 @@ namespace Decsys.Controllers
             }
 
             // redirect back to the login form in the event of failure
-            // chuck some useful "model" data in the query string while we're here
+            // chuck some useful "viewmodel" data in the query string while we're here
+            var vm = Newtonsoft.Json.JsonConvert.SerializeObject(new
+            {
+                error = string.IsNullOrWhiteSpace(friendlyError) ? "" : friendlyError,
+                username = model.Username
+            });
+
             return Redirect(
                 $"/auth/login?ReturnUrl={WebUtility.UrlEncode(model.ReturnUrl)}" +
-                $"&Username={model.Username.Utf8ToBase64Url()}" +
-                (!string.IsNullOrWhiteSpace(friendlyError)
-                    ? $"&Error={friendlyError.Utf8ToBase64Url()}"
-                    : ""));
+                $"&ViewModel={vm.Utf8ToBase64Url()}");
         }
 
         [HttpGet("logout")]

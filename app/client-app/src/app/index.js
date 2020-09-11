@@ -7,6 +7,7 @@ import { LayoutProvider } from "components/core/LayoutPage";
 import layouts from "./layouts";
 import Participant from "./routes/participant.routes";
 import Auth from "./routes/auth.routes";
+import Account from "./routes/account.routes";
 import { Paths } from "auth/constants";
 
 const ErrorPage = React.lazy(() => import("app/pages/Error"));
@@ -19,6 +20,7 @@ const App = () => (
         <Admin path="admin/*" />
         <Participant path="/survey/*" />
         <Auth path={`${Paths.Prefix(true)}/*`} />
+        <Account path={`/account/*`} />
         <ErrorPage message="404: Not Found" default />
       </Router>
     </LayoutProvider>

@@ -1,7 +1,7 @@
 import React from "react";
 import { createContext, useContext, useState, useEffect } from "react";
 import produce from "immer";
-import { useDecsysAppMode } from "api/config";
+import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
 import { UserManager } from "oidc-client";
 import config from "auth/config";
@@ -26,7 +26,7 @@ const UsersContext = createContext({
 export const useUsers = () => useContext(UsersContext);
 
 const UsersContextProvider = ({ children }) => {
-  const { data: mode } = useDecsysAppMode();
+  const { mode } = useServerConfig();
   const [instances, setInstances] = useState(
     JSON.parse(localStorage.getItem("instances")) || {}
   );

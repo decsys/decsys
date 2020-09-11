@@ -2,37 +2,28 @@ import React from "react";
 import { Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
-import {
-  Stack,
-  Button,
-  Flex,
-  Alert,
-  AlertIcon,
-  Link,
-  Text,
-} from "@chakra-ui/core";
+import { Stack, Button, Flex, Alert, AlertIcon } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import FormikInput from "components/core/FormikInput";
 import validationSchema from "./validation";
-import { Link as RouterLink } from "@reach/router";
-import { useQueryString } from "hooks/useQueryString";
-import { Base64UrlToJson } from "services/data-structures";
+import { navigate } from "@reach/router";
+import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useServerConfig } from "api/config";
+import Error from "../Error";
 
-const Login = () => {
-  const { ReturnUrl, ViewModel } = useQueryString();
-  const { error, username } = Base64UrlToJson(ViewModel) ?? {};
+const Register = () => {
+  const { error, username, fullname } = useQueryStringViewModel();
   const { allowRegistration } = useServerConfig();
-  console.log(useServerConfig());
+  if (!allowRegistration)
+    return <Error message="Account Registration is not enabled" />;
 
   const post = (values) => {
-    postObjectAsFormData("/Account/Login", {
+    postObjectAsFormData("/Account/Register", {
       ...values,
-      returnUrl: ReturnUrl,
     });
   };
 
-  const handleCancel = () => post({ button: "" });
+  const handleCancel = () => navigate(-1);
   const handleSubmit = (values, actions) => {
     post({ ...values, button: "login" });
     actions.setSubmitting(false);
@@ -42,7 +33,7 @@ const Login = () => {
     <Page>
       <Flex w="100%" justify="center">
         <Stack mt={4} w="70%" spacing={4}>
-          <LightHeading>Login</LightHeading>
+          <LightHeading>Register</LightHeading>
 
           {error && (
             <Alert status="error">
@@ -53,6 +44,7 @@ const Login = () => {
 
           <Formik
             initialValues={{
+              Fullname: fullname ?? "",
               Username: username ?? "",
               Password: "",
             }}
@@ -62,6 +54,17 @@ const Login = () => {
             {({ isSubmitting }) => (
               <Form noValidate>
                 <Stack spacing={4}>
+                  <Field name="Fullname">
+                    {(rp) => (
+                      <FormikInput
+                        {...rp}
+                        label="Full Name"
+                        placeholder="John Smith"
+                        isRequired
+                      />
+                    )}
+                  </Field>
+
                   <Field name="Username">
                     {(rp) => (
                       <FormikInput
@@ -92,7 +95,7 @@ const Login = () => {
                       type="submit"
                       disabled={isSubmitting}
                     >
-                      Login
+                      Register
                     </Button>
                     <Button width="3xs" onClick={handleCancel}>
                       Cancel
@@ -102,19 +105,10 @@ const Login = () => {
               </Form>
             )}
           </Formik>
-
-          {allowRegistration && (
-            <Stack direction="row">
-              <Text>Don't have an account yet?</Text>
-              <Link color="blue.500" as={RouterLink} to="/account/register">
-                Register
-              </Link>
-            </Stack>
-          )}
         </Stack>
       </Flex>
     </Page>
   );
 };
 
-export default Login;
+export default Register;
