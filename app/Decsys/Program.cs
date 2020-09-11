@@ -3,12 +3,14 @@ using System.IO;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Mongo.Model;
 using Decsys.Config;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization;
 
 namespace Decsys
 {
@@ -60,6 +62,13 @@ namespace Decsys
                     services.GetRequiredService<UserManager<MongoUser>>(),
                     services.GetRequiredService<IPasswordHasher<MongoUser>>(),
                     services.GetRequiredService<IConfiguration>());
+
+                // Some mongo driver config for Identity Server
+                BsonClassMap.RegisterClassMap<PersistedGrant>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.SetIgnoreExtraElements(true);
+                });
             }
         }
     }

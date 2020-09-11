@@ -138,6 +138,7 @@ namespace Decsys
                     .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
                     .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
                     .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]))
+                    .AddPersistedGrantStore<MongoPersistedGrantStore>()
                     .AddAspNetIdentity<MongoUser>();
 
                 // Sort out Signing Keys
@@ -333,8 +334,6 @@ namespace Decsys
 
                     await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
                 });
-
-
             });
 
             app.UseSpa(spa =>
