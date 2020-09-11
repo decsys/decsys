@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AspNetCore.Identity.Mongo.Model;
 using Decsys.Auth;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
@@ -38,16 +39,16 @@ namespace Decsys.Controllers
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clients;
         private readonly IEventService _events;
-        private readonly SignInManager<IdentityUser> _signIn;
-        private readonly UserManager<IdentityUser> _users;
+        private readonly SignInManager<MongoUser> _signIn;
+        private readonly UserManager<MongoUser> _users;
         private readonly IConfiguration _config;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clients,
             IEventService events,
-            UserManager<IdentityUser> users,
-            SignInManager<IdentityUser> signIn,
+            UserManager<MongoUser> users,
+            SignInManager<MongoUser> signIn,
             IConfiguration config)
         {
             _interaction = interaction;
@@ -116,7 +117,7 @@ namespace Decsys.Controllers
                 {
                     await _events.RaiseAsync(new UserLoginSuccessEvent(
                         user.UserName,
-                        user.Id,
+                        user.Id.ToString(),
                         user.UserName, // TODO: store actual name of users?
                         clientId: context?.Client.ClientId));
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AspNetCore.Identity.Mongo.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -12,8 +13,8 @@ namespace Decsys.Auth
         const string _adminEmail = "admin@localhost";
 
         public static async Task Seed(
-            UserManager<IdentityUser> users,
-            IPasswordHasher<IdentityUser> passwords,
+            UserManager<MongoUser> users,
+            IPasswordHasher<MongoUser> passwords,
             IConfiguration config)
         {
             // Seed an initial super user to use for setup
@@ -38,7 +39,7 @@ Please set Hosted:AdminPassword in a settings or user secrets file,
 or the environment variable DOTNET_Hosted_AdminPassword");
                 }
 
-                var user = new IdentityUser
+                var user = new MongoUser
                 {
                     UserName = username,
                     Email = _adminEmail,

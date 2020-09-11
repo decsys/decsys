@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using AspNetCore.Identity.Mongo.Model;
 using Decsys.Config;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -56,8 +57,8 @@ namespace Decsys
             {
                 // Seed the SuperAdmin user according to configuration
                 await Auth.DataSeeder.Seed(
-                    services.GetRequiredService<UserManager<IdentityUser>>(),
-                    services.GetRequiredService<IPasswordHasher<IdentityUser>>(),
+                    services.GetRequiredService<UserManager<MongoUser>>(),
+                    services.GetRequiredService<IPasswordHasher<MongoUser>>(),
                     services.GetRequiredService<IConfiguration>());
             }
         }
