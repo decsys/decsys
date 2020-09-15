@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
-import { Stack, Button, Flex, Alert, AlertIcon } from "@chakra-ui/core";
+import { Stack, Button, Flex } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import FormikInput from "components/core/FormikInput";
 import validationSchema from "./validation";
@@ -10,6 +10,7 @@ import { navigate } from "@reach/router";
 import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useServerConfig } from "api/config";
 import Error from "../Error";
+import ErrorsAlert from "components/core/ErrorsAlert";
 
 // TODO: this will later want to be reusable for email change
 const EmailFieldGroup = ({ initialHidden }) => {
@@ -84,7 +85,7 @@ const PasswordFieldGroup = ({ initialHidden }) => {
 };
 
 const Register = () => {
-  const { error, email, emailConfirm, fullname } = useQueryStringViewModel();
+  const { error, Email, EmailConfirm, Fullname } = useQueryStringViewModel();
   const { allowRegistration } = useServerConfig();
 
   if (!allowRegistration)
@@ -108,20 +109,17 @@ const Register = () => {
         <Stack mt={4} w="70%" spacing={4}>
           <LightHeading>Register</LightHeading>
 
-          {error && (
-            <Alert status="error">
-              <AlertIcon />
-              {error}
-            </Alert>
-          )}
+          <ErrorsAlert
+            errors={error}
+            title="There was an error with your form submission:"
+            shouldCollapseSingles
+          />
 
           <Formik
             initialValues={{
-              Fullname: fullname ?? "",
-              Email: email ?? "",
-              EmailConfirm: emailConfirm ?? "",
-              Password: "",
-              PasswordConfirm: "",
+              Fullname,
+              Email,
+              EmailConfirm,
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
