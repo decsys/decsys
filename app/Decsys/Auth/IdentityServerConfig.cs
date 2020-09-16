@@ -45,7 +45,7 @@ namespace Decsys.Auth
                         "survey.admin"
                     },
                     RedirectUris = { $"{origin}/auth/oidc-complete-signin" },
-                    PostLogoutRedirectUris = { $"{origin}/auth/oidc-complete-signout" },
+                    PostLogoutRedirectUris = { origin },
                 }
             };
     }

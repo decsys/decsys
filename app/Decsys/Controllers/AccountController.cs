@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using AspNetCore.Identity.Mongo.Model;
 using Decsys.Auth;
 using Decsys.Models.Account;
 using IdentityServer4.Events;
@@ -177,10 +176,13 @@ namespace Decsys.Controllers
 
         #region Logout
 
-        [HttpGet("logout")]
         // We don't use logout confirmation
         // Since no third party clients
         // So this is a GET request only, which OIDC makes
+        [HttpGet("logout")]
+        // Logout actually cares about our Cookie auth scheme, so it can sign it out correctly
+        // Since its the only route in the app that does, we just decorate it here
+        [Authorize(AuthenticationSchemes = "Identity.Application")]
         public async Task<IActionResult> Logout(string? logoutId)
         {
             var logout = await _interaction.GetLogoutContextAsync(logoutId);
