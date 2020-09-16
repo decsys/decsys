@@ -10,6 +10,7 @@ using Decsys.Auth;
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data;
+using Decsys.Data.Entities;
 using Decsys.Repositories.Contracts;
 using Decsys.Repositories.LiteDb;
 using Decsys.Services;
@@ -106,13 +107,13 @@ namespace Decsys
                 services.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient);
 
                 // Identity
-                services.AddIdentityCore<MongoUser>()
+                services.AddIdentityCore<DecsysUser>()
                     .AddRoles<MongoRole>()
                     .AddRoleStore<RoleStore<MongoRole>>()
-                    .AddUserStore<UserStore<MongoUser, MongoRole>>()
+                    .AddUserStore<UserStore<DecsysUser, MongoRole>>()
                     .AddRoleManager<RoleManager<MongoRole>>()
-                    .AddUserManager<UserManager<MongoUser>>()
-                    .AddSignInManager<SignInManager<MongoUser>>()
+                    .AddUserManager<UserManager<DecsysUser>>()
+                    .AddSignInManager<SignInManager<DecsysUser>>()
                     .AddDefaultTokenProviders();
 
                 // Additional Mongo Identity Store setup
@@ -121,14 +122,14 @@ namespace Decsys
                     .GetCollection<MongoRole>(Collections.Roles);
                 var userCollection = mongoClient
                     .GetDatabase(hostedDbSettings.DatabaseName)
-                    .GetCollection<MongoUser>(Collections.Users);
+                    .GetCollection<DecsysUser>(Collections.Users);
 
                 services.AddSingleton(_ => roleCollection);
                 services.AddSingleton(_ => userCollection);
 
                 services.AddTransient<IRoleStore<MongoRole>>(_ => new RoleStore<MongoRole>(roleCollection));
-                services.AddTransient<IUserStore<MongoUser>>(x =>
-                    new UserStore<MongoUser, MongoRole>(
+                services.AddTransient<IUserStore<DecsysUser>>(x =>
+                    new UserStore<DecsysUser, MongoRole>(
                         userCollection,
                         new RoleStore<MongoRole>(roleCollection),
                         x.GetService<ILookupNormalizer>()));
@@ -139,7 +140,7 @@ namespace Decsys
                     .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
                     .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]))
                     .AddPersistedGrantStore<MongoPersistedGrantStore>()
-                    .AddAspNetIdentity<MongoUser>();
+                    .AddAspNetIdentity<DecsysUser>();
 
                 // Sort out Signing Keys
                 if (_env.IsDevelopment())

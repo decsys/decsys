@@ -3,9 +3,12 @@ import { createContext, useContext, useState, useEffect } from "react";
 import produce from "immer";
 import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
-import { UserManager } from "oidc-client";
+import { UserManager, Log } from "oidc-client";
 import config from "auth/config";
 import { ClaimTypes, Roles } from "auth/constants";
+
+// TODO: debug flag this?
+Log.logger = console;
 
 export const users = new UserManager(config.oidc);
 users.events.addUserSignedOut(async () => {
@@ -15,10 +18,8 @@ users.events.addUserSignedOut(async () => {
 
 const UsersContext = createContext({
   mode: WORKSHOP,
-  users: {
-    getUser: async () => {},
-  },
-  isAdmin: async () => {},
+  users,
+  isAdmin: async (user) => {},
   storeInstanceParticipantId: (combinedSurveyInstanceId, participantId) => {},
   clearInstanceParticipantId: (combinedSurveyInstanceId) => {},
   instances: [],
@@ -45,10 +46,11 @@ const UsersContextProvider = ({ children }) => {
   const clearInstanceParticipantId = (combinedSurveyInstanceId) =>
     storeInstanceParticipantId(combinedSurveyInstanceId, null);
 
-  const isAdmin = async () => {
+  const isAdmin = async (user) => {
     if (mode === WORKSHOP) return window.location.hostname === "localhost";
-    const { profile: { [ClaimTypes.Role]: roles } = {} } =
-      (await users.getUser()) ?? {};
+    if (!user) user = await users.getUser();
+
+    const { profile: { [ClaimTypes.Role]: roles } = {} } = user;
     if (!roles) return false;
     if (typeof roles === "string") return roles === Roles.SurveyAdmin;
     return roles.includes(Roles.SurveyAdmin);

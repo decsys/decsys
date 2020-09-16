@@ -14,7 +14,7 @@ import ErrorsAlert from "components/core/ErrorsAlert";
 
 const Login = () => {
   const { ReturnUrl, ViewModel } = useQueryString();
-  const { error, Username } = Base64UrlToJson(ViewModel) ?? {};
+  const { errors, Username } = Base64UrlToJson(ViewModel) ?? {};
   const { allowRegistration } = useServerConfig();
 
   const post = (values) => {
@@ -37,7 +37,7 @@ const Login = () => {
           <LightHeading>Login</LightHeading>
 
           <ErrorsAlert
-            errors={error}
+            errors={errors}
             title="There was an error with your form submission:"
             shouldCollapseSingles
           />
@@ -94,7 +94,7 @@ const Login = () => {
           {allowRegistration && (
             <Stack direction="row">
               <Text>Don't have an account yet?</Text>
-              <Link color="blue.500" as={RouterLink} to="/account/register">
+              <Link color="blue.500" as={RouterLink} to="/user/register">
                 Register
               </Link>
             </Stack>

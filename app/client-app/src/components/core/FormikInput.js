@@ -4,6 +4,7 @@ import {
   FormLabel,
   Input,
   FormErrorMessage,
+  Flex,
 } from "@chakra-ui/core";
 
 /**
@@ -14,6 +15,7 @@ import {
  * - Allows text or password fields
  * - Uses placeholder text
  * - Displays validation errors
+ * - Allows an optional `fieldTip` (e.g. a Popover)
  * - forwards all other props to <Input />
  *
  * @param {*} props render props from Formik Field, and additional props
@@ -25,13 +27,17 @@ const FormikInput = ({
   placeholder,
   isPassword = false,
   isRequired = false,
+  fieldTip,
   ...p
 }) => (
   <FormControl
     isRequired={isRequired}
     isInvalid={errors[field.name] && touched[field.name]}
   >
-    <FormLabel htmlFor={field.name}>{label}</FormLabel>
+    <Flex justify="space-between">
+      <FormLabel htmlFor={field.name}>{label}</FormLabel>
+      {fieldTip}
+    </Flex>
     <Input
       {...field}
       id={field.name}

@@ -7,20 +7,24 @@ import { LayoutProvider } from "components/core/LayoutPage";
 import layouts from "./layouts";
 import Participant from "./routes/participant.routes";
 import Auth from "./routes/auth.routes";
-import Account from "./routes/account.routes";
+import User from "./routes/user.routes";
 import { Paths } from "auth/constants";
 
 const ErrorPage = React.lazy(() => import("app/pages/Error"));
+
+const AuthTest = () => {
+  return <div>TODO</div>;
+};
 
 const App = () => (
   <UsersContextProvider>
     <LayoutProvider layouts={layouts}>
       <Router>
-        <Root path="/" />
+        <AuthTest path="/" />
         <Admin path="admin/*" />
         <Participant path="/survey/*" />
         <Auth path={`${Paths.Prefix(true)}/*`} />
-        <Account path={`/account/*`} />
+        <User path={`/user/*`} />
         <ErrorPage message="404: Not Found" default />
       </Router>
     </LayoutProvider>

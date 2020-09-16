@@ -2,7 +2,17 @@ import React, { useState } from "react";
 import { Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
-import { Stack, Button, Flex } from "@chakra-ui/core";
+import {
+  Stack,
+  Button,
+  Flex,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Link,
+} from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import FormikInput from "components/core/FormikInput";
 import validationSchema from "./validation";
@@ -52,6 +62,29 @@ const PasswordFieldGroup = ({ initialHidden }) => {
   const [hidden, setHidden] = useState(initialHidden);
   const handleFocus = () => setHidden(false);
 
+  const tip = (
+    <Popover returnFocusOnClose={false} usePortal>
+      <PopoverTrigger>
+        <Link color="blue.500" href="#">
+          Password Requirements
+        </Link>
+      </PopoverTrigger>
+      <PopoverContent bg="gray.300" borderColor="gray.400">
+        <PopoverArrow />
+        <PopoverBody pl={8}>
+          <ul>
+            <li>Passwords must be at least 6 characters.</li>
+            <li>Passwords must have at least one digit ('0' - '9').</li>
+            <li>Passwords must have at least one uppercase ('A' - 'Z').</li>
+            <li>
+              Passwords must have at least one non alphanumeric character.
+            </li>
+          </ul>
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
+  );
+
   return (
     <>
       <Field name="Password">
@@ -62,6 +95,7 @@ const PasswordFieldGroup = ({ initialHidden }) => {
             placeholder={rp.field.name}
             isRequired
             isPassword
+            fieldTip={tip}
             onFocus={handleFocus}
           />
         )}
@@ -85,21 +119,19 @@ const PasswordFieldGroup = ({ initialHidden }) => {
 };
 
 const Register = () => {
-  const { error, Email, EmailConfirm, Fullname } = useQueryStringViewModel();
+  const { errors, Email, EmailConfirm, Fullname } = useQueryStringViewModel();
   const { allowRegistration } = useServerConfig();
 
   if (!allowRegistration)
     return <Error message="Account Registration is not enabled" />;
 
   const post = (values) => {
-    postObjectAsFormData("/Account/Register", {
-      ...values,
-    });
+    postObjectAsFormData("/Account/Register", values);
   };
 
   const handleCancel = () => navigate(-1);
   const handleSubmit = (values, actions) => {
-    post({ ...values, button: "login" });
+    post(values);
     actions.setSubmitting(false);
   };
 
@@ -110,7 +142,7 @@ const Register = () => {
           <LightHeading>Register</LightHeading>
 
           <ErrorsAlert
-            errors={error}
+            errors={errors}
             title="There was an error with your form submission:"
             shouldCollapseSingles
           />
@@ -138,9 +170,9 @@ const Register = () => {
                     )}
                   </Field>
 
-                  <EmailFieldGroup initialHidden={!error} />
+                  <EmailFieldGroup initialHidden={!errors} />
 
-                  <PasswordFieldGroup initialHidden={!error} />
+                  <PasswordFieldGroup initialHidden={!errors} />
 
                   <Flex justify="space-between">
                     <Button

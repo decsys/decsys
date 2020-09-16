@@ -2,7 +2,7 @@ import React from "react";
 import { Alert, AlertIcon, Stack, Flex, Grid } from "@chakra-ui/core";
 
 const ErrorsAlert = ({ title, errors, shouldCollapseSingles }) => {
-  if (!errors) return;
+  if (!errors) return null;
 
   const shouldCollapse = !title;
   shouldCollapseSingles = shouldCollapseSingles || shouldCollapse;

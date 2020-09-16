@@ -1,10 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Mongo.Model;
 using Decsys.Auth;
+using Decsys.Models.Account;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
@@ -14,23 +15,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Decsys.Data.Entities;
 
 namespace Decsys.Controllers
 {
-    public class LoginModel
-    {
-        [Required]
-        public string Username { get; set; } = string.Empty;
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
-
-        public string Button { get; set; } = string.Empty;
-
-        public string? ReturnUrl { get; set; }
-    }
-
     [ApiController]
     [Route("[controller]")]
     [AllowAnonymous]
@@ -39,16 +29,16 @@ namespace Decsys.Controllers
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clients;
         private readonly IEventService _events;
-        private readonly SignInManager<MongoUser> _signIn;
-        private readonly UserManager<MongoUser> _users;
+        private readonly SignInManager<DecsysUser> _signIn;
+        private readonly UserManager<DecsysUser> _users;
         private readonly IConfiguration _config;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clients,
             IEventService events,
-            UserManager<MongoUser> users,
-            SignInManager<MongoUser> signIn,
+            UserManager<DecsysUser> users,
+            SignInManager<DecsysUser> signIn,
             IConfiguration config)
         {
             _interaction = interaction;
@@ -58,6 +48,17 @@ namespace Decsys.Controllers
             _users = users;
             _config = config;
         }
+
+        private List<string> CollapseModelStateErrors(ModelStateDictionary modelState)
+            => modelState.Keys
+                .SelectMany(k => modelState[k].Errors
+                    .Select(x => !string.IsNullOrWhiteSpace(k)
+                        ? $"{k}: {x.ErrorMessage}"
+                        : x.ErrorMessage))
+                .ToList();
+
+
+        #region Login
 
         // GET: Login
         // Right now we do nothing before loading the login form client-side
@@ -83,7 +84,7 @@ namespace Decsys.Controllers
         [HttpPost("login")]
         // This purely handles the server side sign in
         // it's posted to by the frontend client
-        public async Task<IActionResult> Login([FromForm] LoginModel model)
+        public async Task<IActionResult> Login([FromForm] Login model)
         {
             // Check that we're in the context of an autho request
             var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
@@ -103,8 +104,6 @@ namespace Decsys.Controllers
                     _ => throw new InvalidOperationException("Invalid Return URL")
                 };
             }
-
-            string friendlyError = "";
 
             if (ModelState.IsValid)
             {
@@ -132,7 +131,7 @@ namespace Decsys.Controllers
                 // handle various failure scenarios appropriately
 
                 string eventError = "Login failure";
-                friendlyError = "The username and/or password are invalid, or otherwise not allowed.";
+                var friendlyError = "The username and/or password are invalid, or otherwise not allowed.";
 
                 if (result.IsLockedOut)
                 {
@@ -162,18 +161,21 @@ namespace Decsys.Controllers
                 ModelState.AddModelError(string.Empty, friendlyError);
             }
 
-            // redirect back to the login form in the event of failure
-            // chuck some useful "viewmodel" data in the query string while we're here
-            var vm = Newtonsoft.Json.JsonConvert.SerializeObject(new
+            var vm = new
             {
-                error = string.IsNullOrWhiteSpace(friendlyError) ? "" : friendlyError,
-                username = model.Username
-            });
+                model.Username,
+                errors = CollapseModelStateErrors(ModelState)
+            };
 
+            // redirect back to the login form in the event of failure
             return Redirect(
                 $"/auth/login?ReturnUrl={WebUtility.UrlEncode(model.ReturnUrl)}" +
-                $"&ViewModel={vm.Utf8ToBase64Url()}");
+                $"&ViewModel={JsonConvert.SerializeObject(vm).Utf8ToBase64Url()}");
         }
+
+        #endregion
+
+        #region Logout
 
         [HttpGet("logout")]
         // We don't use logout confirmation
@@ -212,5 +214,62 @@ namespace Decsys.Controllers
                 .PostLogoutRedirectUris.FirstOrDefault()
                 ?? "~/");
         }
+
+        #endregion
+
+        #region Register
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromForm] Register model)
+        {
+            if (ModelState.IsValid) // Perform additional Model validation
+            {
+                // Client side should catch these, but we should be on the safe side.
+                if (model.Email != model.EmailConfirm)
+                    ModelState.AddModelError(string.Empty, "The email addresses entered do not match.");
+                if (model.Password != model.PasswordConfirm)
+                    ModelState.AddModelError(string.Empty, "The passwords entered do not match.");
+            }
+
+            if (ModelState.IsValid) // Actual success route
+            {
+                var user = new DecsysUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    Fullname = model.Fullname
+                };
+
+                var result = await _users.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    //await _tokens.WithUrlHelper(Url).SendAccountConfirmation(user);
+                    return Redirect("/user/registered");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    //if (error.Code == "DuplicateEmail")
+                    //{
+                    //    var existingUser = await _users.FindByEmailAsync(model.Email);
+                    //    if (!existingUser.EmailConfirmed) allowResend = true;
+                    //}
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            var vm = new
+            {
+                model.Email,
+                model.EmailConfirm,
+                model.Fullname,
+                errors = CollapseModelStateErrors(ModelState)
+            };
+            return Redirect(
+                "/user/register" +
+                $"?ViewModel={JsonConvert.SerializeObject(vm).Utf8ToBase64Url()}");
+        }
+
+        #endregion
     }
 }

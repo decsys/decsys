@@ -13,11 +13,22 @@ import Loading from "app/pages/Loading";
 import { WORKSHOP } from "constants/app-modes";
 
 const Admin = () => {
-  const { isAdmin, mode } = useUsers();
+  const {
+    isAdmin,
+    mode,
+    users: { getUser },
+  } = useUsers();
+
   const { run, ...state } = useAsync({
-    promiseFn: isAdmin,
-    onResolve: (isAdmin) =>
-      !isAdmin && mode !== WORKSHOP && navigate(Paths.RequestSignIn("true")),
+    promiseFn: getUser,
+    onResolve: (user) => {
+      console.log(user);
+      return (
+        !isAdmin(user) &&
+        mode !== WORKSHOP &&
+        navigate(Paths.RequestSignIn("true"))
+      );
+    },
     suspense: true,
   });
 

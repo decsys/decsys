@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AspNetCore.Identity.Mongo.Model;
+using Decsys.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -13,8 +14,8 @@ namespace Decsys.Auth
         const string _adminEmail = "admin@localhost";
 
         public static async Task Seed(
-            UserManager<MongoUser> users,
-            IPasswordHasher<MongoUser> passwords,
+            UserManager<DecsysUser> users,
+            IPasswordHasher<DecsysUser> passwords,
             IConfiguration config)
         {
             // Seed an initial super user to use for setup
@@ -42,9 +43,10 @@ or the environment variable DOTNET_Hosted_AdminPassword");
             var superAdmin = await users.FindByEmailAsync(_adminEmail);
             if (superAdmin is null)
             {
-                var user = new MongoUser
+                var user = new DecsysUser
                 {
                     UserName = username,
+                    Fullname = "Super Admin",
                     Email = _adminEmail,
                     EmailConfirmed = true
                 };
