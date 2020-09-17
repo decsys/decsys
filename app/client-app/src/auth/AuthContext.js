@@ -5,11 +5,35 @@ import { isWorkshopAdmin, isOidcAdmin } from "./helpers";
 import { UserManager, Log } from "oidc-client";
 import config from "./config";
 
-// User Manager
+//#region User Manager singleton init
 Log.logger = console;
 export const users = new UserManager(config.oidc);
+//#endregion
 
-// Auth Context
+//#region Static Methods
+const login = async () => {
+  try {
+    await users.signinSilent({ useReplaceToNavigate: true });
+  } catch {
+    try {
+      await users.signinRedirect({
+        useReplaceToNavigate: true,
+        state: { returnUrl: window.location.href },
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+};
+
+const logout = () =>
+  users.signoutRedirect({
+    useReplaceToNavigate: true,
+  });
+//#endregion
+
+//#region Auth Context
 const AuthContext = createContext({});
 export const useAuth = () => useContext(AuthContext);
 
@@ -19,11 +43,6 @@ export const AuthContextProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(
     mode === WORKSHOP ? isWorkshopAdmin : false
   );
-
-  useEffect(() => {
-    if (mode === WORKSHOP) return;
-    setIsAdmin(isOidcAdmin(user));
-  }, [user, mode]);
 
   // Init the context
   useEffect(() => {
@@ -55,28 +74,19 @@ export const AuthContextProvider = ({ children }) => {
     };
   }, [mode]);
 
+  // Update `isAdmin`
+  useEffect(() => {
+    if (mode === WORKSHOP) return;
+    setIsAdmin(isOidcAdmin(user));
+  }, [user, mode]);
+
   const value = {
     user,
     isAdmin,
-    login: async () => {
-      try {
-        await users.signinSilent({ useReplaceToNavigate: true });
-      } catch {
-        try {
-          await users.signinRedirect({
-            useReplaceToNavigate: true,
-            state: { returnUrl: window.location.href },
-          });
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      }
-    },
-    logout: () => {
-      users.signoutRedirect({ useReplaceToNavigate: true });
-    },
+    login,
+    logout,
   };
 
   return <AuthContext.Provider value={value} children={children} />;
 };
+//#endregion

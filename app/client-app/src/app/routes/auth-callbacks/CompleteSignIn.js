@@ -5,7 +5,7 @@ import ErrorPage from "app/pages/Error";
 import { getReturnUrl } from "auth/helpers";
 import { users } from "auth/AuthContext";
 
-const completeSignIn = async (users, url) => {
+const completeSignIn = async (url) => {
   try {
     const user = await users.signinCallback(url);
     return {
@@ -22,10 +22,10 @@ const completeSignIn = async (users, url) => {
   }
 };
 
-const CompleteAuth = ({ completionFn }) => {
+const CompleteSignIn = () => {
   const url = window.location.href;
   const { run, ...state } = useAsync({
-    deferFn: () => completionFn(users, url),
+    deferFn: () => completeSignIn(url),
     suspense: true,
   });
 
@@ -60,6 +60,4 @@ const CompleteAuth = ({ completionFn }) => {
   );
 };
 
-export const CompleteSignIn = () => (
-  <CompleteAuth completionFn={completeSignIn} />
-);
+export default CompleteSignIn;

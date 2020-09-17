@@ -3,10 +3,7 @@ export const ApplicationName = "DECSYS";
 const localPaths = {
   LoginForm: "login",
   LogoutIFrame: "logout",
-  RequestSignIn: "request-signin",
   CompleteSignIn: "oidc-complete-signin",
-  RequestSignOut: "request-signout",
-  CompleteSignOut: "oidc-complete-signout",
 };
 export const Paths = {
   Origin: window.location.origin,
