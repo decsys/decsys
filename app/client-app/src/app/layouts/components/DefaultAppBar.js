@@ -25,6 +25,7 @@ import {
 } from "react-icons/fa";
 import { Link } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
+import { useServerConfig } from "api/config";
 
 const HelpMenu = () => (
   <Menu>
@@ -56,6 +57,7 @@ const HelpMenu = () => (
 );
 
 const UserMenu = () => {
+  const { allowRegistration } = useServerConfig();
   const { user, login, logout } = useAuth();
 
   let menuItems = null;
@@ -68,12 +70,14 @@ const UserMenu = () => {
             <Text>Login</Text>
           </Stack>
         </MenuItem>
-        <MenuItem as={Link} to="/user/register">
-          <Stack direction="row" align="center" spacing={1}>
-            <Icon as={FaUserPlus} />
-            <Text>Register</Text>
-          </Stack>
-        </MenuItem>
+        {allowRegistration && (
+          <MenuItem as={Link} to="/user/register">
+            <Stack direction="row" align="center" spacing={1}>
+              <Icon as={FaUserPlus} />
+              <Text>Register</Text>
+            </Stack>
+          </MenuItem>
+        )}
       </>
     );
   } else {

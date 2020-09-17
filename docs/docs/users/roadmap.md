@@ -7,8 +7,11 @@ title: Roadmap
     - [x] Remote Admin Login
     - [ ] Remote Database
         - [x] MongoDB
-        - [ ] Investigate CosmosDB support (via the Mongo API)
-    - [ ] Remote Image Uploads
+        - [x] Investigate CosmosDB support (via the Mongo API)
+          - CosmosDB works for the data store, but not the image store
+    - [x] Remote Image Uploads
+        - [x] MongoDB as a store
+        - [ ] Azure StorageAccount store
 
 ## 2.x Future
 
