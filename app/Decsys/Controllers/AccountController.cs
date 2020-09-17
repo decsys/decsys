@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Decsys.Data.Entities;
+using System.Security.Claims;
 
 namespace Decsys.Controllers
 {
@@ -245,6 +246,11 @@ namespace Decsys.Controllers
                 var result = await _users.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    // for now we add them to admins immediately
+                    // TODO: make approval dependent
+                    await _users.AddClaimAsync(user,
+                        new Claim(ClaimTypes.Role, "survey.admin"));
+
                     //await _tokens.WithUrlHelper(Url).SendAccountConfirmation(user);
                     return Redirect("/user/registered");
                 }

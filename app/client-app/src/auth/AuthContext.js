@@ -11,14 +11,23 @@ export const users = new UserManager(config.oidc);
 //#endregion
 
 //#region Static Methods
-const login = async () => {
+
+/**
+ * @typedef {object} LoginOptions
+ * @property {string} [options.returnUrl]
+ * Specify a custom URL to go to after the login completes.
+ * - nullish will try and return to the route that requested the login
+ * - Use an empty string (`""`) to return to the homepage
+ */
+/** @param {LoginOptions} [param] */
+const login = async ({ returnUrl } = {}) => {
   try {
     await users.signinSilent({ useReplaceToNavigate: true });
   } catch {
     try {
       await users.signinRedirect({
         useReplaceToNavigate: true,
-        state: { returnUrl: window.location.href },
+        state: { returnUrl: returnUrl ?? window.location.href },
       });
     } catch (error) {
       console.error(error);
@@ -34,7 +43,12 @@ const logout = () =>
 //#endregion
 
 //#region Auth Context
-const AuthContext = createContext({});
+const AuthContext = createContext({
+  user: null,
+  isAdmin: false,
+  login,
+  logout,
+});
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }) => {
