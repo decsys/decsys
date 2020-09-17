@@ -15,7 +15,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }) => {
   const { mode } = useServerConfig();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(mode === WORKSHOP ? {} : null);
   const [isAdmin, setIsAdmin] = useState(
     mode === WORKSHOP ? isWorkshopAdmin : false
   );
