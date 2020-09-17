@@ -1,4 +1,4 @@
-import { QueryParams } from "./constants";
+import { QueryParams, ClaimTypes, Roles } from "./constants";
 
 /**
  * Get a return URL from the query string, or the passed `state`.
@@ -18,4 +18,13 @@ export const getReturnUrl = (state) => {
   return (
     (state && state.returnUrl) || fromQuery || `${window.location.origin}/`
   );
+};
+
+export const isWorkshopAdmin = window.location.hostname === "localhost";
+export const isOidcAdmin = (user) => {
+  if (!user) return false;
+  const { profile: { [ClaimTypes.Role]: roles } = {} } = user;
+  if (!roles) return false;
+  if (typeof roles === "string") return roles === Roles.SurveyAdmin;
+  return roles.includes(Roles.SurveyAdmin);
 };

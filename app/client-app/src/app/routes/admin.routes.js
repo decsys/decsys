@@ -13,6 +13,17 @@ import Loading from "app/pages/Loading";
 import { WORKSHOP } from "constants/app-modes";
 
 const Admin = () => {
+  return (
+    <Router>
+      <Surveys path="/" />
+      <Editor path="/survey/:id" />
+      <Preview path="/survey/:id/preview" />
+      <Results path="/survey/:id/results" />
+      <Dashboard path="/survey/dashboard/:combinedId" />
+      <Error message="404: Not Found" default />
+    </Router>
+  );
+
   const {
     isAdmin,
     mode,

@@ -67,7 +67,6 @@ const UsersContextProvider = ({ children }) => {
     clearInstanceParticipantId,
     instances,
     users,
-    unauthorized_uri: config.unauthorized_uri,
   };
 
   return (

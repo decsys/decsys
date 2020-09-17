@@ -3,7 +3,7 @@ import { IfFulfilled, IfRejected, useAsync } from "react-async";
 import { Results } from "auth/constants";
 import ErrorPage from "app/pages/Error";
 import { getReturnUrl } from "auth/helpers";
-import { useUsers } from "auth/UsersContext";
+import { users } from "auth/AuthContext";
 
 const completeSignIn = async (users, url) => {
   try {
@@ -24,6 +24,7 @@ const completeSignIn = async (users, url) => {
 
 const completeSignOut = async (users, url) => {
   try {
+    console.log("signout completion triggered");
     const response = await users.signoutCallback(url);
     return {
       status: Results.Success,
@@ -37,7 +38,6 @@ const completeSignOut = async (users, url) => {
 
 const CompleteAuth = ({ completionFn }) => {
   const url = window.location.href;
-  const { users } = useUsers();
   const { run, ...state } = useAsync({
     deferFn: () => completionFn(users, url),
     suspense: true,
