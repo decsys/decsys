@@ -53,7 +53,11 @@ This section is under construction and may change.
 ### Setup Steps
 First follow the Workshop mode steps, to get a copy of DECSYS running on the host machine.
 
-Then, you'll need to make some configuration changes as follows:
+Then, you'll need to make some configuration changes.
+
+Refer to [Configuration](configuration) for general information on Configuring DECSYS.
+
+The following are **required** configuration for using **Hosted** mode:
 
 - Set `ConnectionStrings:mongo` to your MongoDB Server's connection string.
 - Set `WorkshopMode` to `false`
@@ -74,59 +78,3 @@ Then, you'll need to make some configuration changes as follows:
 | Type (`kty`) | `RSA` | No validation occurs, but other values will fail. |
 | Use (`use`) | `Signature` | DECSYS doesn't validate this at this time but may in future. |
 | Algorithm (`alg`) | `RS256` | No validation occurs, but other values will fail.<br />Other values will be accepted in future. |
-
-### How to configure DECSYS
-
-:::tip Simple configuration
-Just add an `appsettings.Production.json` in the DECSYS application directory.
-:::
-
-DECSYS reads configuration from the following locations:
-- `appsettings.json`
-- `appsettings.<Environment>.json`
-  - `<environment>` defaults to `Production`
-- Specific JSON files inside `settings/`
-- Environment variables
-
-#### Configuring with JSON
-
-When using JSON files to configure .NET apps, the colons (`:`) in keys represent a level of hierarchy.
-
-Example:
-```json
-{
-  "ConnectionStrings": {
-    "mongo": "mongodb://localhost:27017"
-  },
-  "WorkshopMode": false,
-  "Hosted": {
-    "Origin": "https://my-decsys-server.com:5001",
-    "AdminPassword": "hunter2",
-    "JwtSigningKey": {
-      // ... JSON Web Key
-    }
-  }
-}
-```
-
-#### Configuring with Environment Variables
-
-Configuring .NET apps with Environment Variables is [documented here](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-5.0#environment-variables).
-
-However, all you really need to know is the following:
-- in general:
-  - prefix environment variables with `DOTNET_`
-  - replace `:` with `__` (*double* underscore) in the keys above
-- for connection strings:
-  - use the prefix `CUSTOMCONNSTR_` instead of `ConnectionStrings:`
-    - [as documented here](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-5.0#connection-string-prefixes)
-
-Example:
-```
-CUSTOMCONNSTR_mongo=mongodb://localhost:27017
-DOTNET_WorkshopMode=false
-DOTNET_Hosted__Origin=https://my-decsys-server.com:5001
-DOTNET_Hosted__AdminPassword=hunter2
-DOTNET_Hosted__JwtSigningKey=<JSON Web Key>
-```
-

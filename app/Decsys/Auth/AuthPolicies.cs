@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using Decsys.Config;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Decsys.Auth
 {
@@ -15,7 +17,7 @@ namespace Decsys.Auth
             var b = new AuthorizationPolicyBuilder();
 
             if (mode.IsHosted)
-                b.AddAuthenticationSchemes("Bearer");
+                b.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
 
             b.RequireAssertion(context =>
                 {

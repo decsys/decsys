@@ -1,13 +1,17 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using AspNetCore.Identity.Mongo.Model;
 using Decsys.Config;
+using Decsys.Data.Entities;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson.Serialization;
 
 namespace Decsys
 {
@@ -56,9 +60,16 @@ namespace Decsys
             {
                 // Seed the SuperAdmin user according to configuration
                 await Auth.DataSeeder.Seed(
-                    services.GetRequiredService<UserManager<IdentityUser>>(),
-                    services.GetRequiredService<IPasswordHasher<IdentityUser>>(),
+                    services.GetRequiredService<UserManager<DecsysUser>>(),
+                    services.GetRequiredService<IPasswordHasher<DecsysUser>>(),
                     services.GetRequiredService<IConfiguration>());
+
+                // Some mongo driver config for Identity Server
+                BsonClassMap.RegisterClassMap<PersistedGrant>(cm =>
+                {
+                    cm.AutoMap();
+                    cm.SetIgnoreExtraElements(true);
+                });
             }
         }
     }

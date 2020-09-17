@@ -16,7 +16,7 @@ const SurveyIdEntry = () => {
   };
 
   return (
-    <Page brandLink="">
+    <Page>
       <Flex
         direction="column"
         w="100%"

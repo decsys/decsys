@@ -9,12 +9,10 @@ export default {
     response_type: "code",
     response_mode: "query",
     scope: "openid profile roles survey.admin",
-    post_logout_redirect_uri: `${Paths.Origin}${Paths.CompleteSignOut(true)}`,
     automaticSilentRenew: true,
     includeIdTokenInSilentRenew: true,
     userStore: new WebStorageStateStore({
       prefix: `${ApplicationName}.`,
     }),
   },
-  unauthorized_uri: Paths.RequestSignIn(true),
 };

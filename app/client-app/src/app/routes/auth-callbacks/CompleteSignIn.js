@@ -1,32 +1,31 @@
 import React, { useEffect } from "react";
-import { getReturnUrl } from "auth/helpers";
 import { IfFulfilled, IfRejected, useAsync } from "react-async";
 import { Results } from "auth/constants";
 import ErrorPage from "app/pages/Error";
-import { useUsers } from "auth/UsersContext";
+import { getReturnUrl } from "auth/helpers";
+import { users } from "auth/AuthContext";
 
-const signOut = async (users, returnUrl) => {
-  const isAuthenticated = !!users.getUser()?.profile;
-  if (isAuthenticated) return { status: Results.Success };
-
-  // PopUp SignOut is an option here, but we don't do it.
+const completeSignIn = async (url) => {
   try {
-    await users.signoutRedirect({
-      useReplaceToNavigate: true,
-      data: { returnUrl },
-    });
-    return { status: Results.Redirect };
-  } catch (signOutError) {
-    console.error("Sign Out Error: ", signOutError);
-    return { status: Results.Fail, signOutError };
+    const user = await users.signinCallback(url);
+    return {
+      status: Results.Success,
+      state: user && user.state,
+    };
+  } catch (error) {
+    const generalError = "There was an error signing in";
+    console.error(generalError, ": ", error);
+    return {
+      status: Results.Fail,
+      message: `${generalError}.`,
+    };
   }
 };
 
-const RequestSignOut = () => {
-  const returnUrl = getReturnUrl();
-  const { users } = useUsers();
+const CompleteSignIn = () => {
+  const url = window.location.href;
   const { run, ...state } = useAsync({
-    deferFn: () => signOut(users, returnUrl),
+    deferFn: () => completeSignIn(url),
     suspense: true,
   });
 
@@ -37,12 +36,12 @@ const RequestSignOut = () => {
   return (
     <>
       <IfFulfilled state={state}>
-        {({ status, message }) => {
+        {({ status, state, message }) => {
           switch (status) {
             case Results.Redirect:
-              break;
+              throw new Error(`Invalid Auth Result for this flow: ${status}`);
             case Results.Success:
-              window.location.replace(returnUrl);
+              window.location.replace(getReturnUrl(state));
               break;
             case Results.Fail:
               return <ErrorPage message={message} />;
@@ -61,4 +60,4 @@ const RequestSignOut = () => {
   );
 };
 
-export default RequestSignOut;
+export default CompleteSignIn;

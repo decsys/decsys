@@ -1,7 +1,11 @@
 module.exports = {
   users: {
     "User Guide": ["users/overview", "users/features", "users/roadmap"],
-    "Getting Started": ["users/installation", "users/platforms"],
+    "Getting Started": [
+      "users/installation",
+      "users/configuration",
+      "users/platforms",
+    ],
   },
   contributing: {
     "Developer Guide": ["devs/contributing/source-code"],

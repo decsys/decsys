@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
+using AspNetCore.Identity.Mongo.Model;
+using AspNetCore.Identity.Mongo.Stores;
 using AutoMapper;
 using ClacksMiddleware.Extensions;
 using Decsys.Auth;
 using Decsys.Config;
+using Decsys.Constants;
 using Decsys.Data;
+using Decsys.Data.Entities;
 using Decsys.Repositories.Contracts;
 using Decsys.Repositories.LiteDb;
 using Decsys.Services;
@@ -16,12 +19,10 @@ using LiteDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -36,7 +37,6 @@ using UoN.VersionInformation.DependencyInjection;
 using UoN.VersionInformation.Providers;
 using static IdentityServer4.IdentityServerConstants;
 
-#pragma warning disable 1591
 namespace Decsys
 {
     public class Startup
@@ -85,7 +85,12 @@ namespace Decsys
         {
             // configure app mode
             var mode = new AppMode { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
-            services.Configure<AppMode>(c => c.IsWorkshop = mode.IsWorkshop);
+            services.Configure<AppMode>(c => c = mode);
+
+            var hostedDbSettings = new HostedDbSettings();
+            _config.GetSection("Hosted").Bind(hostedDbSettings);
+            services.Configure<HostedDbSettings>(c => c = hostedDbSettings);
+
 
             // configure version mappings
             foreach (var v in Versions.All)
@@ -96,40 +101,53 @@ namespace Decsys
                         .Bind(c.Types));
             }
 
-            // mode conditional configuration
             if (mode.IsHosted)
             {
-                // TODO: Document settings
-                services.Configure<HostedDbSettings>(c => _config.GetSection("Hosted").Bind(c));
-            }
+                var mongoClient = new MongoClient(_config.GetConnectionString("mongo"));
+                services.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient);
 
-            if (mode.IsHosted)
-            {
-                services.AddSingleton<IMongoClient, MongoClient>(
-                    _ => new MongoClient(_config.GetConnectionString("mongo")));
+                // Identity
+                services.AddIdentityCore<DecsysUser>()
+                    .AddRoles<MongoRole>()
+                    .AddRoleStore<RoleStore<MongoRole>>()
+                    .AddUserStore<UserStore<DecsysUser, MongoRole>>()
+                    .AddRoleManager<RoleManager<MongoRole>>()
+                    .AddUserManager<UserManager<DecsysUser>>()
+                    .AddSignInManager<SignInManager<DecsysUser>>()
+                    .AddDefaultTokenProviders();
 
-                // TODO: EF Core can go when we switch to mongo / for when users can register
-                services.AddDbContext<MemoryDbContext>(
-                    opts => opts.UseInMemoryDatabase("MemoryIdentityDb"));
+                // Additional Mongo Identity Store setup
+                var roleCollection = mongoClient
+                    .GetDatabase(hostedDbSettings.DatabaseName)
+                    .GetCollection<MongoRole>(Collections.Roles);
+                var userCollection = mongoClient
+                    .GetDatabase(hostedDbSettings.DatabaseName)
+                    .GetCollection<DecsysUser>(Collections.Users);
 
-                services.AddIdentityCore<IdentityUser>()
-                    .AddDefaultTokenProviders()
-                    .AddEntityFrameworkStores<MemoryDbContext>() // TODO: mongo in future
-                    .AddUserManager<UserManager<IdentityUser>>()
-                    .AddSignInManager<SignInManager<IdentityUser>>();
+                services.AddSingleton(_ => roleCollection);
+                services.AddSingleton(_ => userCollection);
 
+                services.AddTransient<IRoleStore<MongoRole>>(_ => new RoleStore<MongoRole>(roleCollection));
+                services.AddTransient<IUserStore<DecsysUser>>(x =>
+                    new UserStore<DecsysUser, MongoRole>(
+                        userCollection,
+                        new RoleStore<MongoRole>(roleCollection),
+                        x.GetService<ILookupNormalizer>()));
+
+                // Identity Server
                 var idsBuilder = services.AddIdentityServer(opts => opts.UserInteraction.ErrorUrl = "/error")
                     .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
                     .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
                     .AddInMemoryClients(IdentityServerConfig.Clients(_config["Hosted:Origin"]))
-                    .AddAspNetIdentity<IdentityUser>();
+                    .AddPersistedGrantStore<MongoPersistedGrantStore>()
+                    .AddAspNetIdentity<DecsysUser>();
 
                 // Sort out Signing Keys
                 if (_env.IsDevelopment())
                     idsBuilder.AddDeveloperSigningCredential();
                 else idsBuilder.AddSigningCredential(RsaKeyService.GetRsaKey(_config), RsaSigningAlgorithm.RS256);
 
-                services.AddAuthentication(IdentityConstants.ApplicationScheme)
+                services.AddAuthentication()
                     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opts =>
                     {
                         opts.Authority = _config["Hosted:Origin"];
@@ -317,8 +335,6 @@ namespace Decsys
 
                     await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
                 });
-
-                
             });
 
             app.UseSpa(spa =>
@@ -357,4 +373,3 @@ namespace Decsys
         }
     }
 }
-#pragma warning restore 1591

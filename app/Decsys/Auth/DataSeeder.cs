@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AspNetCore.Identity.Mongo.Model;
+using Decsys.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -12,35 +14,39 @@ namespace Decsys.Auth
         const string _adminEmail = "admin@localhost";
 
         public static async Task Seed(
-            UserManager<IdentityUser> users,
-            IPasswordHasher<IdentityUser> passwords,
+            UserManager<DecsysUser> users,
+            IPasswordHasher<DecsysUser> passwords,
             IConfiguration config)
         {
             // Seed an initial super user to use for setup
 
-            
+
+            // prep username
             var configuredUsername = config["Hosted:AdminUsername"];
             var username = string.IsNullOrWhiteSpace(configuredUsername)
                 ? _defaultAdminUsername
                 : configuredUsername;
+            username = $"@{username}"; // Prefix the username to show it's not an email
 
-            // Prefix the username to show it's not an email
-            username = $"@{username}";
-            if (await users.FindByNameAsync(username) is null)
+
+            // check an actual password has been configured
+            var pwd = config["Hosted:AdminPassword"];
+            if (string.IsNullOrEmpty(pwd))
             {
-                // check an actual password has been configured
-                var pwd = config["Hosted:AdminPassword"];
-                if (string.IsNullOrEmpty(pwd))
-                {
-                    throw new ApplicationException(@"
+                throw new ApplicationException(@"
 A non-empty password must be configured for seeding the initial Admin User.
 Please set Hosted:AdminPassword in a settings or user secrets file,
 or the environment variable DOTNET_Hosted_AdminPassword");
-                }
+            }
 
-                var user = new IdentityUser
+            // Add the user if they don't exist, else update them,
+            var superAdmin = await users.FindByEmailAsync(_adminEmail);
+            if (superAdmin is null)
+            {
+                var user = new DecsysUser
                 {
                     UserName = username,
+                    Fullname = "Super Admin",
                     Email = _adminEmail,
                     EmailConfirmed = true
                 };
@@ -50,6 +56,12 @@ or the environment variable DOTNET_Hosted_AdminPassword");
                 await users.CreateAsync(user);
                 await users.AddClaimAsync(user,
                     new Claim(ClaimTypes.Role, "survey.admin"));
+            } else
+            {
+                // update username / password
+                superAdmin.UserName = username;
+                superAdmin.PasswordHash = passwords.HashPassword(superAdmin, pwd);
+                await users.UpdateAsync(superAdmin);
             }
         }
     }
