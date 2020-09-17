@@ -1,5 +1,5 @@
 import axios from "axios";
-import { users } from "auth/UsersContext";
+import { users } from "auth/AuthContext";
 
 export const defaultFetcher = (withToken) => async (url) =>
   (

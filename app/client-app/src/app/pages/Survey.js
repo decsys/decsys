@@ -12,7 +12,7 @@ import { navigate } from "@reach/router";
 import { decode } from "services/instance-id";
 import { useSurveyInstance } from "api/survey-instances";
 import Error from "./Error";
-import { useUsers } from "auth/UsersContext";
+import { useLocalInstances } from "app/contexts/LocalInstances";
 import { PAGE_RANDOMIZE, SURVEY_COMPLETE } from "constants/event-types";
 import {
   getLastLogEntry,
@@ -32,7 +32,7 @@ const useInstance = () => useContext(InstanceContext);
 // Do all the data fetching and validation ahead of rendering the survey
 const SurveyBootstrapper = ({ id }) => {
   const { data: instance } = useSurveyInstance(...decode(id));
-  const { instances, storeInstanceParticipantId } = useUsers();
+  const { instances, storeInstanceParticipantId } = useLocalInstances();
   const [route, setRoute] = useState();
   const [userId, setUserId] = useState();
   const [progress, setProgress] = useState({});
