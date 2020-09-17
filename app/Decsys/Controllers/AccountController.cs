@@ -117,7 +117,7 @@ namespace Decsys.Controllers
                     await _events.RaiseAsync(new UserLoginSuccessEvent(
                         user.UserName,
                         user.Id.ToString(),
-                        user.UserName, // TODO: store actual name of users?
+                        user.Fullname,
                         clientId: context?.Client.ClientId));
 
                     return model.ReturnUrl switch
