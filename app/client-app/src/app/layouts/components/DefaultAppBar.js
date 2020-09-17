@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import AppBar from "./AppBar";
 import {
   Icon,
@@ -12,6 +12,7 @@ import {
   Button,
   Stack,
   MenuGroup,
+  Spinner,
 } from "@chakra-ui/core";
 import {
   FaExternalLinkAlt,
@@ -121,7 +122,11 @@ const DefaultAppBar = ({ brandLink }) => {
           </Button>
         </DarkMode>
       )}
-      <UserMenu />
+
+      <Suspense fallback={<Spinner />}>
+        <UserMenu />
+      </Suspense>
+
       <HelpMenu />
     </AppBar>
   );
