@@ -24,7 +24,8 @@ const Login = () => {
     });
   };
 
-  const handleCancel = () => post({ button: "" });
+  const handleCancel = () =>
+    post({ button: "cancel", Username: "x", Password: "x" }); // gotta pass model validation
   const handleSubmit = (values, actions) => {
     post({ ...values, button: "login" });
     actions.setSubmitting(false);
