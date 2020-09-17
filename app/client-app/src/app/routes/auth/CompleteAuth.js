@@ -22,20 +22,6 @@ const completeSignIn = async (users, url) => {
   }
 };
 
-const completeSignOut = async (users, url) => {
-  try {
-    console.log("signout completion triggered");
-    const response = await users.signoutCallback(url);
-    return {
-      status: Results.Success,
-      state: response && response.data,
-    };
-  } catch (error) {
-    console.error("There was an error signing out:", error);
-    return { status: Results.Fail, error };
-  }
-};
-
 const CompleteAuth = ({ completionFn }) => {
   const url = window.location.href;
   const { run, ...state } = useAsync({
@@ -76,7 +62,4 @@ const CompleteAuth = ({ completionFn }) => {
 
 export const CompleteSignIn = () => (
   <CompleteAuth completionFn={completeSignIn} />
-);
-export const CompleteSignOut = () => (
-  <CompleteAuth completionFn={completeSignOut} />
 );

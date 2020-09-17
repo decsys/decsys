@@ -63,8 +63,10 @@ export const AuthContextProvider = ({ children }) => {
         await users.signinSilent({ useReplaceToNavigate: true });
       } catch {
         try {
-          // TODO: returnUrl
-          await users.signinRedirect({ useReplaceToNavigate: true });
+          await users.signinRedirect({
+            useReplaceToNavigate: true,
+            state: { returnUrl: window.location.href },
+          });
         } catch (error) {
           console.error(error);
           throw error;
