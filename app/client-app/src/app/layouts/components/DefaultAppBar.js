@@ -122,6 +122,5 @@ const DefaultAppBar = ({ brandLink }) => {
     </AppBar>
   );
 };
-DefaultAppBar.defaultProps = { brandLink: "/admin" };
 
 export default DefaultAppBar;

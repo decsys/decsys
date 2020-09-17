@@ -23,7 +23,7 @@ const SurveyComplete = ({ id }) => {
   }, [id, instance, clearInstanceParticipantId]);
 
   return (
-    <Page brandLink="">
+    <Page>
       <Flex mt={5}>
         <EmptyState message="Survey Complete!" splash={FaCheck} />
       </Flex>

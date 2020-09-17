@@ -24,7 +24,7 @@ const ParticipantIdEntry = ({ combinedId, validIdentifiers }) => {
   };
 
   return (
-    <Page brandLink="">
+    <Page>
       <Flex
         direction="column"
         w="100%"

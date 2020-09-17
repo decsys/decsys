@@ -7,7 +7,7 @@ const Error = ({ error, splash, message, callToAction }) => {
   if (error) console.error(error);
 
   return (
-    <Default brandLink="">
+    <Default>
       <Flex mt={5}>
         <EmptyState
           message={message}
