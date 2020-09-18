@@ -21,6 +21,7 @@ import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useServerConfig } from "api/config";
 import Error from "../Error";
 import ErrorsAlert from "components/core/ErrorsAlert";
+import { EmailConfirmationRequired } from "./alerts";
 
 // TODO: this will later want to be reusable for email change
 const EmailFieldGroup = ({ initialHidden }) => {
@@ -118,8 +119,28 @@ const PasswordFieldGroup = ({ initialHidden }) => {
   );
 };
 
+const Feedback = ({ errors, accountState = {}, Email }) => {
+  // Meaningful `accountState` properties take precedence over errors
+  if (accountState.RequiresEmailConfirmation)
+    return <EmailConfirmationRequired Email={Email} />;
+
+  return (
+    <ErrorsAlert
+      errors={errors}
+      title="There was an error with your form submission:"
+      shouldCollapseSingles
+    />
+  );
+};
+
 const Register = () => {
-  const { errors, Email, EmailConfirm, Fullname } = useQueryStringViewModel();
+  const {
+    errors,
+    Email,
+    EmailConfirm,
+    Fullname,
+    ...vmFeedback
+  } = useQueryStringViewModel();
   const { allowRegistration } = useServerConfig();
 
   if (!allowRegistration)
@@ -141,11 +162,7 @@ const Register = () => {
         <Stack mt={4} w="70%" spacing={4}>
           <LightHeading>Register</LightHeading>
 
-          <ErrorsAlert
-            errors={errors}
-            title="There was an error with your form submission:"
-            shouldCollapseSingles
-          />
+          <Feedback {...vmFeedback} errors={errors} Email={Email} />
 
           <Formik
             initialValues={{

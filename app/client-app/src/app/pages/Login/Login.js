@@ -2,15 +2,7 @@ import React from "react";
 import { Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
-import {
-  Stack,
-  Button,
-  Flex,
-  Link,
-  Text,
-  Alert,
-  AlertIcon,
-} from "@chakra-ui/core";
+import { Stack, Button, Flex, Link, Text } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import FormikInput from "components/core/FormikInput";
 import validationSchema from "./validation";
@@ -19,28 +11,20 @@ import { useQueryString } from "hooks/useQueryString";
 import { Base64UrlToJson } from "services/data-structures";
 import { useServerConfig } from "api/config";
 import ErrorsAlert from "components/core/ErrorsAlert";
+import { EmailConfirmationRequired } from "./alerts";
 
-const ConfirmEmailAlert = () => (
-  <Alert status="warning">
-    <AlertIcon /> Your email address requires confirmation.
-  </Alert>
-);
-
-const Feedback = ({ errors, accountState = {} }) => {
+const Feedback = ({ errors, accountState = {}, Email }) => {
   // Meaningful `accountState` properties take precedence over errors
+  if (accountState.RequiresEmailConfirmation)
+    return <EmailConfirmationRequired Email={Email} />;
 
-  if (accountState.RequiresEmailConfirmation) return <ConfirmEmailAlert />;
-
-  if (errors)
-    return (
-      <ErrorsAlert
-        errors={errors}
-        title="There was an error with your form submission:"
-        shouldCollapseSingles
-      />
-    );
-
-  return null;
+  return (
+    <ErrorsAlert
+      errors={errors}
+      title="There was an error with your form submission:"
+      shouldCollapseSingles
+    />
+  );
 };
 
 const Login = () => {
@@ -68,7 +52,7 @@ const Login = () => {
         <Stack mt={4} w="70%" spacing={4}>
           <LightHeading>Login</LightHeading>
 
-          <Feedback {...vmFeedback} />
+          <Feedback {...vmFeedback} Email={Username} />
 
           <Formik
             initialValues={{ Username }}

@@ -122,7 +122,7 @@ namespace Decsys.Controllers
                 };
             }
 
-            // allow us to inform the login form of detailed states we care about
+            // allow us to inform the form of detailed states we care about
             AccountState accountState = new();
 
             if (ModelState.IsValid)
@@ -169,8 +169,10 @@ namespace Decsys.Controllers
                     // Distinguish some specific cases we care about
                     // So the login form can behave accordingly
 
-                    if (user is { } && !user.EmailConfirmed)
-                        accountState.RequiresEmailConfirmation = true;
+                    if (user is { })
+                    {
+                        accountState.RequiresEmailConfirmation = !user.EmailConfirmed;
+                    }
 
                     eventError = "Credentials not allowed";
                 }
@@ -193,7 +195,7 @@ namespace Decsys.Controllers
             // redirect back to the login form in the event of failure
             return Redirect(
                 $"/auth/login?ReturnUrl={WebUtility.UrlEncode(model.ReturnUrl)}" +
-                $"&ViewModel={JsonConvert.SerializeObject(vm).Utf8ToBase64Url()}");
+                $"&ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
         #endregion
@@ -257,6 +259,9 @@ namespace Decsys.Controllers
                     ModelState.AddModelError(string.Empty, "The passwords entered do not match.");
             }
 
+            // allow us to inform the form of detailed states we care about
+            AccountState accountState = new();
+
             if (ModelState.IsValid) // Actual success route
             {
                 var user = new DecsysUser
@@ -278,19 +283,19 @@ namespace Decsys.Controllers
 
                     var successVm = new
                     {
-                        stage = "confirmation"
+                        accountState = new AccountState { RequiresEmailConfirmation = true }
                     };
-                    return Redirect("/user/registered" +
-                        $"?ViewModel={JsonConvert.SerializeObject(successVm).Utf8ToBase64Url()}");
+                    return Redirect("/user/feedback" +
+                        $"?ViewModel={successVm.ObjectToBase64UrlJson()}");
                 }
 
                 foreach (var error in result.Errors)
                 {
-                    //if (error.Code == "DuplicateEmail")
-                    //{
-                    //    var existingUser = await _users.FindByEmailAsync(model.Email);
-                    //    if (!existingUser.EmailConfirmed) allowResend = true;
-                    //}
+                    if (new[] { "DuplicateEmail", "DuplicateUserName" }.Contains(error.Code))
+                    {
+                        var existingUser = await _users.FindByEmailAsync(model.Email);
+                        accountState.RequiresEmailConfirmation = !existingUser.EmailConfirmed;
+                    }
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
@@ -300,17 +305,38 @@ namespace Decsys.Controllers
                 model.Email,
                 model.EmailConfirm,
                 model.Fullname,
-                errors = CollapseModelStateErrors(ModelState)
+                errors = CollapseModelStateErrors(ModelState),
+                accountState
             };
             return Redirect(
                 "/user/register" +
-                $"?ViewModel={JsonConvert.SerializeObject(vm).Utf8ToBase64Url()}");
+                $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
         [HttpGet("confirm")]
         public IActionResult Confirm()
         {
             throw new NotImplementedException();
+        }
+
+        [HttpGet("confirm/resend/{b64email}")]
+        public async Task<IActionResult> ConfirmResend(string b64email)
+        {
+            var email = b64email.Base64UrltoUtf8();
+
+            var user = await _users.FindByEmailAsync(email);
+            if (user is null)
+                ModelState.AddModelError(string.Empty, "Couldn't find the specified user.");
+            else
+                await _tokens.SendAccountConfirmation(user);
+
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState),
+                accountState = new AccountState { RequiresEmailConfirmation = true }
+            };
+            return Redirect("/user/feedback"
+                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
         #endregion

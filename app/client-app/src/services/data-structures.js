@@ -44,3 +44,6 @@ export const Base64UrlToUtf8 = (input) =>
   (!!input && base64url.decode(input)) || null;
 
 export const Base64UrlToJson = (input) => JSON.parse(Base64UrlToUtf8(input));
+
+export const Utf8ToBase64Url = (input) =>
+  (!!input && base64url.encode(input)) || "";
