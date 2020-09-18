@@ -36,7 +36,22 @@ Refer to the [Hosted mode Installation Guide](installation#hosted-mode-setup) fo
 | `AdminPassword` | `string` | Password to set for the default Admin user |
 | `AdminUsername` | `string` | Username for the default Admin user. Add `@` to the start of this string when logging in. |
 | `JwtSigningKey` | `object` | A JSON Web Key to use for signing Auth tokens. Generate one at `https://mkjwk.org`. |
-| `AllowRegistration` | `bool` | Can people register User Accounts? If `false` the default Admin user as configured above will be the only Survey Admin |
+| `AllowRegistration` | `bool` | Can people register User Accounts? <br /> If `false` the default Admin user as configured above will be the only Survey Admin <br /> If `true`, Outbound Email settings must be configured to allow user account functionality. |
+
+### Outbound Email
+
+Prefix keys with `Hosted:OutboundEmail`.
+
+Some settings relate to specific providers only.
+
+| Key | Type | Provider | Description |
+|-|-|-|-|
+| `Provider` | `string` | - | Which email provider to use. <br /> One of: `local` `sendgrid` <br /> Defaults to `local` |
+| `FromAddress` | `string` | * | The Email Address to send mail from. <br /> For **SendGrid** this **must** match a [Verified Sender](https://sendgrid.com/docs/for-developers/sending-email/sender-identity/) on the SendGrid account. <br /> Defaults to `noreply@example.com` |
+| `FromName` | `string` | * | The Name for the email's From field. |
+| `ReplyToAddress` | `string` | * | The Email Address for the ReplyTo field. <br /> Defaults to the same as `FromAddress`. |
+| `LocalPath` | `string` | `local` | The path on disk that `.eml` files should be written to. <br /> Please ensure the path exists. <br /> Defaults to `/temp` |
+| `SendGridApiKey` | `string` | `sendgrid` | Your SendGrid API Key. Must be allowed to send mail.
 
 ## How to configure DECSYS
 
