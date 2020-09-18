@@ -31,8 +31,8 @@ namespace Decsys.Controllers
         // This shouldn't hinder the frontend,
         // but it shouldn't be assumed this is
         // a complete snapshot of state at any given time.
-        public bool? RequiresEmailConfirmation {get;set;}
-        public bool? RequiresApproval {get;set;}
+        public bool? RequiresEmailConfirmation { get; set; }
+        public bool? RequiresApproval { get; set; }
     }
 
     [ApiController]
@@ -152,7 +152,7 @@ namespace Decsys.Controllers
 
                 string eventError = "Login failure";
                 var friendlyError = "The username and/or password are invalid, or otherwise not allowed.";
-                
+
                 if (result.IsLockedOut)
                 {
                     eventError = "Account locked out";
@@ -313,10 +313,46 @@ namespace Decsys.Controllers
                 $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
-        [HttpGet("confirm")]
-        public IActionResult Confirm()
+        [HttpGet("confirm/{userId}/{code}")]
+        public async Task<IActionResult> Confirm(string userId, string code)
         {
-            throw new NotImplementedException();
+            var generalError = "The User ID or Token is invalid or has expired.";
+
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
+                ModelState.AddModelError(string.Empty, generalError);
+
+            if (ModelState.IsValid)
+            {
+                code = code.Base64UrltoUtf8();
+
+                var user = await _users.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty, generalError);
+                }
+                else
+                {
+                    var result = await _users.ConfirmEmailAsync(user, code);
+
+                    if (result.Errors.Any())
+                    {
+                        ModelState.AddModelError(string.Empty, generalError);
+                    }
+                    else
+                    {
+                        // TODO: remove the auto sign-in when approval is required
+                        await _signIn.SignInAsync(user, false);
+                    }
+                }
+            }
+
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState),
+            };
+
+            return Redirect("/user/feedback"
+                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
         [HttpGet("confirm/resend/{b64email}")]

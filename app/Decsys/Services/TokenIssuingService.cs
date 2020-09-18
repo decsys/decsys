@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using Decsys.Auth;
 using Decsys.Data.Entities;
 using Decsys.Services.EmailServices;
 using Microsoft.AspNetCore.Identity;
@@ -46,7 +47,7 @@ namespace Decsys.Services
                     values: new
                     {
                         userId = user.Id,
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code))
+                        code = code.Utf8ToBase64Url()
                     },
                     protocol: _scheme));
         }

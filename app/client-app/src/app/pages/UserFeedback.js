@@ -44,16 +44,15 @@ const EmailConfirmationSent = () => (
       <div>
         <AlertIcon boxSize="40px" />
       </div>
-      <AlertTitle>Account Confirmation</AlertTitle>
+      <AlertTitle>Email Address Confirmation</AlertTitle>
       <AlertDescription>
         <Stack spacing={2} align="center" w="100%">
           <Text>
-            An account confirmation email has been sent to the registered email
-            address.
+            An confirmation email has been sent to the registered email address.
           </Text>
           <Text>
-            Please check your email, and click the link within to confirm yuor
-            account.
+            Please check your email, and click the link within to confirm your
+            email address.
           </Text>
         </Stack>
       </AlertDescription>
@@ -62,11 +61,11 @@ const EmailConfirmationSent = () => (
 );
 
 const UserFeedback = () => {
-  const { errors, accountState } = useQueryStringViewModel();
+  const { errors, accountState = {} } = useQueryStringViewModel();
   // Unlike on some forms, errors take precedence over `accountState`
 
   let content;
-  if (errors)
+  if (errors && errors.length)
     content = (
       <ErrorsAlert
         title="One or more errors occurred:"
