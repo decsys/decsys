@@ -15,22 +15,28 @@ using Decsys.Repositories.Contracts;
 using Decsys.Repositories.LiteDb;
 using Decsys.Services;
 using Decsys.Services.Contracts;
+using Decsys.Services.EmailSender;
+using Decsys.Services.EmailServices;
 using LiteDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using UoN.AspNetCore.RazorViewRenderer;
 using UoN.AspNetCore.VersionMiddleware;
 using UoN.VersionInformation;
 using UoN.VersionInformation.DependencyInjection;
@@ -101,13 +107,20 @@ namespace Decsys
                         .Bind(c.Types));
             }
 
+            var useSendGrid = _config["Hosted:OutboundEmail:Provider"]
+                .Equals("sendgrid", StringComparison.InvariantCultureIgnoreCase);
+            if (useSendGrid) services.Configure<SendGridOptions>(_config.GetSection("Hosted:OutboundEmail"));
+            else services.Configure<LocalDiskEmailOptions>(_config.GetSection("Hosted:OutboundEmail"));
+
             if (mode.IsHosted)
             {
                 var mongoClient = new MongoClient(_config.GetConnectionString("mongo"));
                 services.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient);
 
                 // Identity
-                services.AddIdentityCore<DecsysUser>()
+                services.AddIdentityCore<DecsysUser>(opts =>
+                        opts.SignIn.RequireConfirmedAccount = true // TODO: config dependent IUserConfirmation?
+                    )
                     .AddRoles<MongoRole>()
                     .AddRoleStore<RoleStore<MongoRole>>()
                     .AddUserStore<UserStore<DecsysUser, MongoRole>>()
@@ -171,7 +184,7 @@ namespace Decsys
                 nameof(AuthPolicies.IsSurveyAdmin),
                 AuthPolicies.IsSurveyAdmin(mode)));
 
-            services.AddControllers()
+            services.AddControllersWithViews()
                 // we used JSON.NET back in .NET Core 2.x
                 // for ViewModel Property shenanigans so component params can be dynamic
                 // it doesn't really make sense to change this
@@ -209,6 +222,14 @@ namespace Decsys
                     Repositories.Mongo.ParticipantEventRepository>();
 
                 services.AddTransient<IImageService, MongoImageService>();
+
+                // Email related
+                services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+                services.AddTransient<TokenIssuingService>();
+                services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
+                services.AddTransient<AccountEmailService>();
+                if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
+                else services.AddTransient<IEmailSender, LocalDiskEmailSender>();
             }
             if (mode.IsWorkshop)
             {

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 
 namespace Decsys.Auth
 {
@@ -26,5 +27,15 @@ namespace Decsys.Auth
         /// <param name="input"></param>
         public static string Utf8ToBase64Url(this string input)
             => WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(input));
+
+        /// <summary>
+        /// Decode a Base64Url string to a UT8 string
+        /// </summary>
+        /// <param name="input"></param>
+        public static string Base64UrltoUtf8(this string input)
+            => Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(input));
+
+        public static object ObjectToBase64UrlJson(this object input)
+            => JsonConvert.SerializeObject(input).Utf8ToBase64Url();
     }
 }

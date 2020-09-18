@@ -1,7 +1,7 @@
 import React from "react";
 import { Router } from "@reach/router";
 import Register from "app/pages/Register/Register";
-import Registered from "app/pages/Register/Registered";
+import UserFeedback from "app/pages/UserFeedback";
 import { useServerConfig } from "api/config";
 
 const User = () => {
@@ -11,7 +11,7 @@ const User = () => {
       {allowRegistration && (
         <>
           <Register path="register" />
-          <Registered path="registered" />
+          <UserFeedback path="feedback" />
         </>
       )}
     </Router>

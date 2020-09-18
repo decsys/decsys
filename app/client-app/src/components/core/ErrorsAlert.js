@@ -1,8 +1,8 @@
 import React from "react";
 import { Alert, AlertIcon, Stack, Flex, Grid } from "@chakra-ui/core";
 
-const ErrorsAlert = ({ title, errors, shouldCollapseSingles }) => {
-  if (!errors) return null;
+const ErrorsAlert = ({ title, errors, shouldCollapseSingles, ...p }) => {
+  if (!errors || !errors.length) return null;
 
   const shouldCollapse = !title;
   shouldCollapseSingles = shouldCollapseSingles || shouldCollapse;
@@ -25,7 +25,7 @@ const ErrorsAlert = ({ title, errors, shouldCollapseSingles }) => {
   }
 
   return (
-    <Alert status="error">
+    <Alert status="error" {...p}>
       <Grid templateColumns="32px auto">
         <Flex>
           <AlertIcon boxSize="24px" />
