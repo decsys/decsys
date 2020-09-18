@@ -107,9 +107,10 @@ namespace Decsys
                         .Bind(c.Types));
             }
 
-            //if (useSendGrid) services.Configure<SendGridOptions>(_config.GetSection("Hosted:OutboundEmail"));
-            //else
-            services.Configure<LocalDiskEmailOptions>(_config.GetSection("Hosted:OutboundEmail"));
+            var useSendGrid = _config["Hosted:OutboundEmail:Provider"]
+                .Equals("sendgrid", StringComparison.InvariantCultureIgnoreCase);
+            if (useSendGrid) services.Configure<SendGridOptions>(_config.GetSection("Hosted:OutboundEmail"));
+            else services.Configure<LocalDiskEmailOptions>(_config.GetSection("Hosted:OutboundEmail"));
 
             if (mode.IsHosted)
             {
@@ -223,13 +224,12 @@ namespace Decsys
                 services.AddTransient<IImageService, MongoImageService>();
 
                 // Email related
-                services.TryAddSingleton<IActionContextAccessor,ActionContextAccessor>();
+                services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
                 services.AddTransient<TokenIssuingService>();
                 services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
                 services.AddTransient<AccountEmailService>();
-                //if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
-                //else
-                services.AddTransient<IEmailSender, LocalDiskEmailSender>();
+                if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
+                else services.AddTransient<IEmailSender, LocalDiskEmailSender>();
             }
             if (mode.IsWorkshop)
             {

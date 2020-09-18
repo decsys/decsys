@@ -30,6 +30,7 @@ namespace Decsys.Services.EmailSender
                 ? new MailboxAddress(toName, toAddress)
                 : MailboxAddress.Parse(toAddress));
             message.From.Add(new MailboxAddress(_config.FromName, _config.FromAddress));
+            message.ReplyTo.Add(MailboxAddress.Parse(_config.ReplyToAddress));
             message.Subject = subject;
             message.Body = new TextPart(TextFormat.Html)
             {

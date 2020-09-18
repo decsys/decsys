@@ -138,6 +138,16 @@
           "Newtonsoft.Json": "12.0.1"
         }
       },
+      "SendGrid": {
+        "type": "Direct",
+        "requested": "[9.21.0, )",
+        "resolved": "9.21.0",
+        "contentHash": "GY7NZcS0K4WjepDZhs5XxORqZDC1FmTz6iT/j9crCSCMBG4Y/9I/ia9b6ws8209Yv1uVjnDcNr0gf54ibIxIsw==",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1",
+          "starkbank-ecdsa": "[1.2.0, 2.0.0)"
+        }
+      },
       "Swashbuckle.AspNetCore": {
         "type": "Direct",
         "requested": "[5.6.1, )",
@@ -1401,6 +1411,11 @@
         "dependencies": {
           "NETStandard.Library": "1.6.1"
         }
+      },
+      "starkbank-ecdsa": {
+        "type": "Transitive",
+        "resolved": "1.2.0",
+        "contentHash": "hP53QPYOOEIR44EK9phz+DYliM6DEieDZxpb8GZzE+++qyrWqUscKcyHCC6L9yu/ehllYtqxtT4qrjWDsuQlUQ=="
       },
       "Swashbuckle.AspNetCore.Swagger": {
         "type": "Transitive",
