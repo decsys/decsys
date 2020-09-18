@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Decsys.Auth;
 using Decsys.Data.Entities;
+using Decsys.Models.Emails;
 using Decsys.Services.EmailServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +40,10 @@ namespace Decsys.Services
             var code = await _users.GenerateEmailConfirmationTokenAsync(user);
 
             await _accountEmail.SendAccountConfirmation(
-                user.Email,
-                user.Fullname,
+                new EmailAddress(user.Email)
+                {
+                    Name = user.Fullname
+                },
                 link: _url.ActionLink(
                     action: "Confirm",
                     controller: "Account",

@@ -5,4 +5,6 @@
         where T : class;
 
     public record AccountConfirmationModel(string Name, string Link);
+
+    public record AccountApprovalRequestModel(EmailAddress AccountEmail, string ApproveLink, string RejectLink);
 }

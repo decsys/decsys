@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Decsys.Config;
 using Decsys.Services.Contracts;
@@ -28,8 +29,21 @@ namespace Decsys.Services.EmailSender
             _logger = logger;
             _sendGrid = new SendGridClient(_config.SendGridApiKey);
         }
+        public async Task SendEmail<TModel>(
+            Models.Emails.EmailAddress toAddress,
+            string subject,
+            string viewName,
+            TModel model)
+            where TModel : class
+            => await SendEmail(
+                new List<Models.Emails.EmailAddress>() { toAddress },
+                subject, viewName, model);
 
-        public async Task SendEmail<TModel>(string toAddress, string subject, string viewName, TModel model, string? toName = null)
+        public async Task SendEmail<TModel>(
+            List<Models.Emails.EmailAddress> toAddresses,
+            string subject,
+            string viewName,
+            TModel model)
             where TModel : class
         {
             var message = new SendGridMessage
@@ -41,7 +55,10 @@ namespace Decsys.Services.EmailSender
                     viewName,
                     model)
             };
-            message.AddTo(toAddress, toName);
+
+            foreach(var address in toAddresses)
+                message.AddTo(address.Address, address.Name);
+
             var response = await _sendGrid.SendEmailAsync(message);
             var success = ((int)response.StatusCode).ToString().StartsWith("2");
             if (!success)
