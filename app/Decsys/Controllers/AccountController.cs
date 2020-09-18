@@ -18,9 +18,23 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Decsys.Data.Entities;
 using System.Security.Claims;
+using Decsys.Services;
 
 namespace Decsys.Controllers
 {
+    // Detailed AccountState data for ViewModels
+    public class AccountState
+    {
+        // Many of these are mutually exclusive
+        // or we shortcut when setting them
+        // so only the most pertinent value is set.
+        // This shouldn't hinder the frontend,
+        // but it shouldn't be assumed this is
+        // a complete snapshot of state at any given time.
+        public bool? RequiresEmailConfirmation {get;set;}
+        public bool? RequiresApproval {get;set;}
+    }
+
     [ApiController]
     [Route("[controller]")]
     [AllowAnonymous]
@@ -32,6 +46,7 @@ namespace Decsys.Controllers
         private readonly SignInManager<DecsysUser> _signIn;
         private readonly UserManager<DecsysUser> _users;
         private readonly IConfiguration _config;
+        private readonly TokenIssuingService _tokens;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -39,7 +54,8 @@ namespace Decsys.Controllers
             IEventService events,
             UserManager<DecsysUser> users,
             SignInManager<DecsysUser> signIn,
-            IConfiguration config)
+            IConfiguration config,
+            TokenIssuingService tokens)
         {
             _interaction = interaction;
             _clients = clients;
@@ -47,6 +63,7 @@ namespace Decsys.Controllers
             _signIn = signIn;
             _users = users;
             _config = config;
+            _tokens = tokens;
         }
 
         private List<string> CollapseModelStateErrors(ModelStateDictionary modelState)
@@ -105,6 +122,9 @@ namespace Decsys.Controllers
                 };
             }
 
+            // allow us to inform the login form of detailed states we care about
+            AccountState accountState = new();
+
             if (ModelState.IsValid)
             {
                 // Validate credentials
@@ -132,7 +152,7 @@ namespace Decsys.Controllers
 
                 string eventError = "Login failure";
                 var friendlyError = "The username and/or password are invalid, or otherwise not allowed.";
-
+                
                 if (result.IsLockedOut)
                 {
                     eventError = "Account locked out";
@@ -145,10 +165,12 @@ namespace Decsys.Controllers
                 // all other disallowed cases
                 if (result.IsNotAllowed)
                 {
-                    // TODO: handle resending confirmation email
-                    // but we don't have account confirmations (yet)
-                    //if (user is { } && !user.EmailConfirmed)
-                    //    AllowResend = true;
+                    // But WHY was it disallowed?
+                    // Distinguish some specific cases we care about
+                    // So the login form can behave accordingly
+
+                    if (user is { } && !user.EmailConfirmed)
+                        accountState.RequiresEmailConfirmation = true;
 
                     eventError = "Credentials not allowed";
                 }
@@ -164,7 +186,8 @@ namespace Decsys.Controllers
             var vm = new
             {
                 model.Username,
-                errors = CollapseModelStateErrors(ModelState)
+                errors = CollapseModelStateErrors(ModelState),
+                accountState
             };
 
             // redirect back to the login form in the event of failure
@@ -251,8 +274,14 @@ namespace Decsys.Controllers
                     await _users.AddClaimAsync(user,
                         new Claim(ClaimTypes.Role, "survey.admin"));
 
-                    //await _tokens.WithUrlHelper(Url).SendAccountConfirmation(user);
-                    return Redirect("/user/registered");
+                    await _tokens.SendAccountConfirmation(user);
+
+                    var successVm = new
+                    {
+                        stage = "confirmation"
+                    };
+                    return Redirect("/user/registered" +
+                        $"?ViewModel={JsonConvert.SerializeObject(successVm).Utf8ToBase64Url()}");
                 }
 
                 foreach (var error in result.Errors)
@@ -276,6 +305,12 @@ namespace Decsys.Controllers
             return Redirect(
                 "/user/register" +
                 $"?ViewModel={JsonConvert.SerializeObject(vm).Utf8ToBase64Url()}");
+        }
+
+        [HttpGet("confirm")]
+        public IActionResult Confirm()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
