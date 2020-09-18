@@ -48,6 +48,8 @@ namespace Decsys.Controllers
         private readonly IConfiguration _config;
         private readonly TokenIssuingService _tokens;
 
+        private readonly bool _approvalRequired;
+
         public AccountController(
             IIdentityServerInteractionService interaction,
             IClientStore clients,
@@ -64,6 +66,9 @@ namespace Decsys.Controllers
             _users = users;
             _config = config;
             _tokens = tokens;
+
+            // shortcut some config
+            _approvalRequired = _config.GetValue<bool>("Hosted:AccountApprovalRequired");
         }
 
         private List<string> CollapseModelStateErrors(ModelStateDictionary modelState)
@@ -274,11 +279,6 @@ namespace Decsys.Controllers
                 var result = await _users.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // for now we add them to admins immediately
-                    // TODO: make approval dependent
-                    await _users.AddClaimAsync(user,
-                        new Claim(ClaimTypes.Role, "survey.admin"));
-
                     await _tokens.SendAccountConfirmation(user);
 
                     var successVm = new
@@ -313,6 +313,10 @@ namespace Decsys.Controllers
                 $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
+        #endregion
+
+        #region Email Address Confirmation
+
         [HttpGet("confirm/{userId}/{code}")]
         public async Task<IActionResult> Confirm(string userId, string code)
         {
@@ -320,6 +324,8 @@ namespace Decsys.Controllers
 
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
                 ModelState.AddModelError(string.Empty, generalError);
+
+            AccountState accountState = new();
 
             if (ModelState.IsValid)
             {
@@ -340,8 +346,26 @@ namespace Decsys.Controllers
                     }
                     else
                     {
-                        // TODO: remove the auto sign-in when approval is required
-                        await _signIn.SignInAsync(user, false);
+                        if (_approvalRequired)
+                        {
+                            // TODO: Send approval email
+
+                            accountState.RequiresApproval =
+                                user.ApprovalDate is null && user.RejectionDate is null;
+
+                            if (user.RejectionDate.HasValue)
+                                ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
+                        }
+                        else
+                        {
+                            // No Approval required
+                            // Make them an admin
+                            await _users.AddClaimAsync(user,
+                                new Claim(ClaimTypes.Role, "survey.admin"));
+
+                            // and sign them in!
+                            await _signIn.SignInAsync(user, false);
+                        }
                     }
                 }
             }
@@ -349,6 +373,7 @@ namespace Decsys.Controllers
             var vm = new
             {
                 errors = CollapseModelStateErrors(ModelState),
+                accountState
             };
 
             return Redirect("/user/feedback"

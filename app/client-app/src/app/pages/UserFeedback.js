@@ -60,6 +60,23 @@ const EmailConfirmationSent = () => (
   </Alert>
 );
 
+const AwaitingApproval = () => {
+  <Alert boxShadow="callout" status="info" borderRadius={5} p={4}>
+    <Stack spacing={2} align="center" w="100%">
+      <div>
+        <AlertIcon boxSize="40px" />
+      </div>
+      <AlertTitle>Awaiting Approval</AlertTitle>
+      <AlertDescription>
+        <Stack spacing={2} align="center" w="100%">
+          <Text>New accounts require approval.</Text>
+          <Text>You will be notified via email of the approval outcome.</Text>
+        </Stack>
+      </AlertDescription>
+    </Stack>
+  </Alert>;
+};
+
 const UserFeedback = () => {
   const { errors, accountState = {} } = useQueryStringViewModel();
   // Unlike on some forms, errors take precedence over `accountState`
@@ -75,7 +92,9 @@ const UserFeedback = () => {
     );
   else if (accountState.RequiresEmailConfirmation)
     content = <EmailConfirmationSent />;
+  else if (accountState.RequiresApproval) content = <AwaitingApproval />;
   else content = <RegistrationComplete />;
+
   return (
     <Page>
       <DefaultContainer mt={4}>
