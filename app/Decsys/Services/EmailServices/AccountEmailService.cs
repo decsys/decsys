@@ -18,7 +18,7 @@ namespace Decsys.Services.EmailServices
         public async Task SendAccountConfirmation(string to, string name, string link)
             => await _emails.SendEmail(
                 to,
-                "DECSYS Account Confirmation",
+                $"{_serviceName} Account Confirmation",
                 "Emails/AccountConfirmation",
                 new AccountEmailModel<AccountConfirmationModel>(
                     _serviceName,
