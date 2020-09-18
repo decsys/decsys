@@ -5,19 +5,20 @@ using System.Threading.Tasks;
 using Decsys.Config;
 using Decsys.Models.Emails;
 using Decsys.Services.Contracts;
+using Decsys.Services.EmailServices;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using MimeKit.Text;
-using UoN.AspNetCore.RazorViewRenderer;
 
 namespace Decsys.Services.EmailSender
 {
     public class LocalDiskEmailSender : IEmailSender
     {
         private readonly LocalDiskEmailOptions _config;
-        private readonly IRazorViewRenderer _emailViews;
+        private readonly RazorViewService _emailViews;
 
-        public LocalDiskEmailSender(IOptions<LocalDiskEmailOptions> options, IRazorViewRenderer emailViews)
+        public LocalDiskEmailSender(
+            IOptions<LocalDiskEmailOptions> options,
+            RazorViewService emailViews)
         {
             _config = options.Value;
             _emailViews = emailViews;
@@ -29,7 +30,7 @@ namespace Decsys.Services.EmailSender
         {
             var message = new MimeMessage();
 
-            foreach(var address in toAddresses)
+            foreach (var address in toAddresses)
                 message.To.Add(!string.IsNullOrEmpty(address.Name)
                     ? new MailboxAddress(address.Name, address.Address)
                     : MailboxAddress.Parse(address.Address));
@@ -37,10 +38,16 @@ namespace Decsys.Services.EmailSender
             message.From.Add(new MailboxAddress(_config.FromName, _config.FromAddress));
             message.ReplyTo.Add(MailboxAddress.Parse(_config.ReplyToAddress));
             message.Subject = subject;
-            message.Body = new TextPart(TextFormat.Html)
+
+            var bodyBuilder = new BodyBuilder
             {
-                Text = await _emailViews.AsString(viewName, model)
+                TextBody = await _emailViews.ViewAsString(viewName, model),
             };
+
+            if (_emailViews.ViewExists($"{viewName}Html"))
+                bodyBuilder.HtmlBody = await _emailViews.ViewAsString($"{viewName}Html", model);
+
+            message.Body = bodyBuilder.ToMessageBody();
 
             await message.WriteToAsync(
                 Path.Combine(_config.LocalPath,

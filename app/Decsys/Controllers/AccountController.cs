@@ -411,5 +411,87 @@ namespace Decsys.Controllers
         }
 
         #endregion
+
+        #region Account Approval
+
+        private enum AccountApprovalOutcomes { Approved, Rejected }
+        private async Task<IActionResult> AccountApprovalResult(AccountApprovalOutcomes outcome, string userId, string code)
+        {
+            var generalError = "The User ID or Token is invalid or has expired.";
+
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
+                ModelState.AddModelError(string.Empty, generalError);
+
+            if (ModelState.IsValid)
+            {
+                code = code.Base64UrltoUtf8();
+
+                var user = await _users.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty, generalError);
+                }
+                else
+                {
+                    var result = await _users.VerifyUserTokenAsync(
+                        user, "Default", TokenPurpose.AccountApproval, code);
+
+                    if (!result)
+                    {
+                        ModelState.AddModelError(string.Empty, generalError);
+                    }
+                    else
+                    {
+                        // Update them with the outcome
+                        switch (outcome)
+                        {
+                            case AccountApprovalOutcomes.Approved:
+                                user.ApprovalDate = DateTimeOffset.UtcNow;
+                                break;
+                            case AccountApprovalOutcomes.Rejected:
+                                user.RejectionDate = DateTimeOffset.UtcNow;
+                                break;
+                        }
+                        await _users.UpdateAsync(user);
+
+                        if (outcome == AccountApprovalOutcomes.Approved)
+                        {
+                            // Make them an admin
+                            await _users.AddClaimAsync(user,
+                                new Claim(ClaimTypes.Role, "survey.admin"));
+
+                            // and sign them in!
+                            await _signIn.SignInAsync(user, false);
+                        } else
+                        {
+                            ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
+                        }
+
+                        // TODO: Email the user to notify them
+                    }
+                }
+            }
+
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            };
+
+            // TODO: feedback routes for the approver to tell them what they did!
+            // This probably shouldn't use `accountState` or else it'll need some new states.
+            return Redirect("/user/feedback"
+                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
+        }
+
+        [HttpGet("approve/{userId}/{code}")]
+        public async Task<IActionResult> Approve(string userId, string code)
+            => await AccountApprovalResult(AccountApprovalOutcomes.Approved, userId, code);
+        
+
+        [HttpGet("reject/{userId}/{code}")]
+        public async Task<IActionResult> Reject(string userId, string code)
+        => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
+
+        #endregion
     }
 }

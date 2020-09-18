@@ -1,0 +1,10 @@
+﻿@using Decsys.Models.Emails;
+@model AccountEmailModel<AccountConfirmationModel>
+
+<p>Dear @Html.Raw(Model.EmailModel.Name)</p>
+
+<p>Thank you for registering a @Model.ServiceName User Account.</p>
+
+<p>To complete your registration please <a href="@Html.Raw(Model.EmailModel.Link)">click here to confirm your email address</a>.</p>
+
+<p>@(await Html.PartialAsync("_Signature", Model))</p>

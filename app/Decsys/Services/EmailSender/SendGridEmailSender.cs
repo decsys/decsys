@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Decsys.Config;
 using Decsys.Services.Contracts;
+using Decsys.Services.EmailServices;
 using DnsClient.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using UoN.AspNetCore.RazorViewRenderer;
 
 namespace Decsys.Services.EmailSender
 {
     public class SendGridEmailSender : IEmailSender
     {
         private readonly SendGridOptions _config;
-        private readonly IRazorViewRenderer _emailViews;
+        private readonly RazorViewService _emailViews;
         private readonly ILogger<SendGridEmailSender> _logger;
         private readonly SendGridClient _sendGrid;
 
         public SendGridEmailSender(
             IOptions<SendGridOptions> options,
-            IRazorViewRenderer emailViews,
+            RazorViewService emailViews,
             ILogger<SendGridEmailSender> logger)
         {
             _config = options.Value;
@@ -51,12 +51,15 @@ namespace Decsys.Services.EmailSender
                 From = new EmailAddress(_config.FromAddress, _config.FromName),
                 ReplyTo = new EmailAddress(_config.ReplyToAddress),
                 Subject = subject,
-                PlainTextContent = await _emailViews.AsString(
+                PlainTextContent = await _emailViews.ViewAsString(
                     viewName,
                     model)
             };
 
-            foreach(var address in toAddresses)
+            if (_emailViews.ViewExists($"{viewName}Html"))
+                message.HtmlContent = await _emailViews.ViewAsString($"{viewName}Html", model);
+
+            foreach (var address in toAddresses)
                 message.AddTo(address.Address, address.Name);
 
             var response = await _sendGrid.SendEmailAsync(message);

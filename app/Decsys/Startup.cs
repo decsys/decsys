@@ -226,6 +226,7 @@ namespace Decsys
                 services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
                 services.AddTransient<TokenIssuingService>();
                 services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
+                services.AddTransient<RazorViewService>();
                 services.AddTransient<AccountEmailService>();
                 if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
                 else services.AddTransient<IEmailSender, LocalDiskEmailSender>();

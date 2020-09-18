@@ -1,0 +1,21 @@
+﻿@using Decsys.Models.Emails;
+@model AccountEmailModel<AccountApprovalRequestModel>
+FAO Approvers
+
+A new @Model.ServiceName User Account has been registered with the following details:
+
+Name: @Model.EmailModel.AccountEmail.Name
+Email Address: @Model.EmailModel.AccountEmail.Address
+
+
+Please Approve or Reject this account with the following links:
+
+Approve
+
+@Html.Raw(Model.EmailModel.ApproveLink)
+
+Reject
+
+@Html.Raw(Model.EmailModel.RejectLink)
+
+@(await Html.PartialAsync("_Signature", Model))
