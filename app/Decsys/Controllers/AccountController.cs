@@ -177,6 +177,10 @@ namespace Decsys.Controllers
                     if (user is { })
                     {
                         accountState.RequiresEmailConfirmation = !user.EmailConfirmed;
+                        accountState.RequiresApproval = _approvalRequired && user.ApprovalDate is null;
+
+                        if (_approvalRequired && user.RejectionDate.HasValue)
+                            friendlyError = "This account has been rejected for approval.";
                     }
 
                     eventError = "Credentials not allowed";
@@ -291,12 +295,18 @@ namespace Decsys.Controllers
 
                 foreach (var error in result.Errors)
                 {
+                    ModelState.AddModelError(string.Empty, error.Description);
+
                     if (new[] { "DuplicateEmail", "DuplicateUserName" }.Contains(error.Code))
                     {
                         var existingUser = await _users.FindByEmailAsync(model.Email);
+
                         accountState.RequiresEmailConfirmation = !existingUser.EmailConfirmed;
+                        accountState.RequiresApproval = _approvalRequired && existingUser.ApprovalDate is null;
+
+                        if (_approvalRequired && existingUser.RejectionDate.HasValue)
+                            ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
                     }
-                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 

@@ -117,9 +117,9 @@ namespace Decsys
                 services.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient);
 
                 // Identity
+                services.AddSingleton<IUserConfirmation<DecsysUser>, DecsysUserConfirmation>();
                 services.AddIdentityCore<DecsysUser>(opts =>
-                        opts.SignIn.RequireConfirmedAccount = true // TODO: config dependent IUserConfirmation?
-                    )
+                        opts.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<MongoRole>()
                     .AddRoleStore<RoleStore<MongoRole>>()
                     .AddUserStore<UserStore<DecsysUser, MongoRole>>()

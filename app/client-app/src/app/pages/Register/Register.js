@@ -21,7 +21,7 @@ import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useServerConfig } from "api/config";
 import Error from "../Error";
 import ErrorsAlert from "components/core/ErrorsAlert";
-import { EmailConfirmationRequired } from "./alerts";
+import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
 
 // TODO: this will later want to be reusable for email change
 const EmailFieldGroup = ({ initialHidden }) => {
@@ -123,6 +123,8 @@ const Feedback = ({ errors, accountState = {}, Email }) => {
   // Meaningful `accountState` properties take precedence over errors
   if (accountState.RequiresEmailConfirmation)
     return <EmailConfirmationRequired Email={Email} />;
+
+  if (accountState.RequiresApproval) return <ApprovalRequired />;
 
   return (
     <ErrorsAlert

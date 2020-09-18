@@ -11,12 +11,14 @@ import { useQueryString } from "hooks/useQueryString";
 import { Base64UrlToJson } from "services/data-structures";
 import { useServerConfig } from "api/config";
 import ErrorsAlert from "components/core/ErrorsAlert";
-import { EmailConfirmationRequired } from "./alerts";
+import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
 
 const Feedback = ({ errors, accountState = {}, Email }) => {
   // Meaningful `accountState` properties take precedence over errors
   if (accountState.RequiresEmailConfirmation)
     return <EmailConfirmationRequired Email={Email} />;
+
+  if (accountState.RequiresApproval) return <ApprovalRequired />;
 
   return (
     <ErrorsAlert

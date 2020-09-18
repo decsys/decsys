@@ -60,7 +60,7 @@ const EmailConfirmationSent = () => (
   </Alert>
 );
 
-const AwaitingApproval = () => {
+const AwaitingApproval = () => (
   <Alert boxShadow="callout" status="info" borderRadius={5} p={4}>
     <Stack spacing={2} align="center" w="100%">
       <div>
@@ -74,8 +74,8 @@ const AwaitingApproval = () => {
         </Stack>
       </AlertDescription>
     </Stack>
-  </Alert>;
-};
+  </Alert>
+);
 
 const UserFeedback = () => {
   const { errors, accountState = {} } = useQueryStringViewModel();
