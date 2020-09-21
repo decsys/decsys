@@ -12,6 +12,8 @@ import {
   PopoverContent,
   PopoverTrigger,
   Link,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import FormikInput from "components/core/FormikInput";
@@ -143,7 +145,7 @@ const Register = () => {
     Fullname,
     ...vmFeedback
   } = useQueryStringViewModel();
-  const { allowRegistration } = useServerConfig();
+  const { allowRegistration, accountApprovalRequired } = useServerConfig();
 
   if (!allowRegistration)
     return <Error message="Account Registration is not enabled" />;
@@ -165,6 +167,13 @@ const Register = () => {
           <LightHeading>Register</LightHeading>
 
           <Feedback {...vmFeedback} errors={errors} Email={Email} />
+
+          {accountApprovalRequired && (
+            <Alert status="info">
+              <AlertIcon />
+              Account registrations are subject to approval.
+            </Alert>
+          )}
 
           <Formik
             initialValues={{
