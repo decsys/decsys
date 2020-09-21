@@ -16,7 +16,7 @@ title: Roadmap
       - [x] New account registration supported
       - [x] Registration requires email confirmation
       - [ ] Each account has their own distinct Surveys collection
-      - [ ] Registration requires optional approval
+      - [x] Registration requires optional approval
 
 ## 2.x Future
 
