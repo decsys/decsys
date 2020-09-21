@@ -12,6 +12,8 @@ import {
   PopoverContent,
   PopoverTrigger,
   Link,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import FormikInput from "components/core/FormikInput";
@@ -21,7 +23,7 @@ import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useServerConfig } from "api/config";
 import Error from "../Error";
 import ErrorsAlert from "components/core/ErrorsAlert";
-import { EmailConfirmationRequired } from "./alerts";
+import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
 
 // TODO: this will later want to be reusable for email change
 const EmailFieldGroup = ({ initialHidden }) => {
@@ -124,6 +126,8 @@ const Feedback = ({ errors, accountState = {}, Email }) => {
   if (accountState.RequiresEmailConfirmation)
     return <EmailConfirmationRequired Email={Email} />;
 
+  if (accountState.RequiresApproval) return <ApprovalRequired />;
+
   return (
     <ErrorsAlert
       errors={errors}
@@ -141,7 +145,7 @@ const Register = () => {
     Fullname,
     ...vmFeedback
   } = useQueryStringViewModel();
-  const { allowRegistration } = useServerConfig();
+  const { allowRegistration, accountApprovalRequired } = useServerConfig();
 
   if (!allowRegistration)
     return <Error message="Account Registration is not enabled" />;
@@ -163,6 +167,13 @@ const Register = () => {
           <LightHeading>Register</LightHeading>
 
           <Feedback {...vmFeedback} errors={errors} Email={Email} />
+
+          {accountApprovalRequired && (
+            <Alert status="info">
+              <AlertIcon />
+              Account registrations are subject to approval.
+            </Alert>
+          )}
 
           <Formik
             initialValues={{

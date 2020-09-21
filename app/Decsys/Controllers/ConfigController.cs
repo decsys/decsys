@@ -24,7 +24,8 @@ namespace Decsys.Controllers
         public IActionResult Index() => new JsonResult(new
         {
             mode = _mode.IsWorkshop ? "workshop" : "hosted",
-            allowRegistration = _config.GetValue<bool>("Hosted:AllowRegistration")
+            allowRegistration = _config.GetValue<bool>("Hosted:AllowRegistration"),
+            accountApprovalRequired = _config.GetValue<bool>("Hosted:AccountApprovalRequired")
         });
     }
 }

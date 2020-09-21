@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -19,6 +18,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Decsys.Data.Entities;
 using System.Security.Claims;
 using Decsys.Services;
+using Decsys.Services.EmailServices;
+using Decsys.Models.Emails;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Decsys.Controllers
 {
@@ -31,8 +33,15 @@ namespace Decsys.Controllers
         // This shouldn't hinder the frontend,
         // but it shouldn't be assumed this is
         // a complete snapshot of state at any given time.
+
+        // Account Registration Stages
         public bool? RequiresEmailConfirmation { get; set; }
         public bool? RequiresApproval { get; set; }
+        public bool? RegistrationComplete { get; set; }
+
+        // Account Approval
+        public bool? AccountApproved { get; set; }
+        public bool? AccountRejected { get; set; }
     }
 
     [ApiController]
@@ -47,6 +56,8 @@ namespace Decsys.Controllers
         private readonly UserManager<DecsysUser> _users;
         private readonly IConfiguration _config;
         private readonly TokenIssuingService _tokens;
+        private readonly AccountEmailService _emails;
+        private readonly bool _approvalRequired;
 
         public AccountController(
             IIdentityServerInteractionService interaction,
@@ -55,7 +66,8 @@ namespace Decsys.Controllers
             UserManager<DecsysUser> users,
             SignInManager<DecsysUser> signIn,
             IConfiguration config,
-            TokenIssuingService tokens)
+            TokenIssuingService tokens,
+            AccountEmailService emails)
         {
             _interaction = interaction;
             _clients = clients;
@@ -64,6 +76,10 @@ namespace Decsys.Controllers
             _users = users;
             _config = config;
             _tokens = tokens;
+            _emails = emails;
+
+            // shortcut some config
+            _approvalRequired = _config.GetValue<bool>("Hosted:AccountApprovalRequired");
         }
 
         private List<string> CollapseModelStateErrors(ModelStateDictionary modelState)
@@ -172,6 +188,11 @@ namespace Decsys.Controllers
                     if (user is { })
                     {
                         accountState.RequiresEmailConfirmation = !user.EmailConfirmed;
+                        accountState.RequiresApproval =
+                            _approvalRequired && user.ApprovalDate is null && user.RejectionDate is null;
+
+                        if (_approvalRequired && user.RejectionDate.HasValue)
+                            friendlyError = "This account has been rejected for approval.";
                     }
 
                     eventError = "Credentials not allowed";
@@ -274,11 +295,6 @@ namespace Decsys.Controllers
                 var result = await _users.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // for now we add them to admins immediately
-                    // TODO: make approval dependent
-                    await _users.AddClaimAsync(user,
-                        new Claim(ClaimTypes.Role, "survey.admin"));
-
                     await _tokens.SendAccountConfirmation(user);
 
                     var successVm = new
@@ -291,12 +307,18 @@ namespace Decsys.Controllers
 
                 foreach (var error in result.Errors)
                 {
+                    ModelState.AddModelError(string.Empty, error.Description);
+
                     if (new[] { "DuplicateEmail", "DuplicateUserName" }.Contains(error.Code))
                     {
                         var existingUser = await _users.FindByEmailAsync(model.Email);
+
                         accountState.RequiresEmailConfirmation = !existingUser.EmailConfirmed;
+                        accountState.RequiresApproval = _approvalRequired && existingUser.ApprovalDate is null;
+
+                        if (_approvalRequired && existingUser.RejectionDate.HasValue)
+                            ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
                     }
-                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
@@ -313,6 +335,10 @@ namespace Decsys.Controllers
                 $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
+        #endregion
+
+        #region Email Address Confirmation
+
         [HttpGet("confirm/{userId}/{code}")]
         public async Task<IActionResult> Confirm(string userId, string code)
         {
@@ -320,6 +346,8 @@ namespace Decsys.Controllers
 
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
                 ModelState.AddModelError(string.Empty, generalError);
+
+            AccountState accountState = new();
 
             if (ModelState.IsValid)
             {
@@ -340,8 +368,29 @@ namespace Decsys.Controllers
                     }
                     else
                     {
-                        // TODO: remove the auto sign-in when approval is required
-                        await _signIn.SignInAsync(user, false);
+                        if (_approvalRequired)
+                        {
+                            if (user.ApprovalDate is null && user.RejectionDate is null)
+                            {
+                                accountState.RequiresApproval = true;
+                                await _tokens.SendAccountApprovalRequest(user);
+                            }
+
+                            if (user.RejectionDate.HasValue)
+                                ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
+                        }
+                        else
+                        {
+                            // No Approval required
+                            // Make them an admin
+                            await _users.AddClaimAsync(user,
+                                new Claim(ClaimTypes.Role, "survey.admin"));
+
+                            // and sign them in!
+                            await _signIn.SignInAsync(user, false);
+
+                            accountState.RegistrationComplete = true;
+                        }
                     }
                 }
             }
@@ -349,6 +398,7 @@ namespace Decsys.Controllers
             var vm = new
             {
                 errors = CollapseModelStateErrors(ModelState),
+                accountState
             };
 
             return Redirect("/user/feedback"
@@ -374,6 +424,94 @@ namespace Decsys.Controllers
             return Redirect("/user/feedback"
                 + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
+
+        #endregion
+
+        #region Account Approval
+
+        private enum AccountApprovalOutcomes { Approved, Rejected }
+        private async Task<IActionResult> AccountApprovalResult(AccountApprovalOutcomes outcome, string userId, string code)
+        {
+            var generalError = "The User ID or Token is invalid or has expired.";
+
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
+                ModelState.AddModelError(string.Empty, generalError);
+
+            AccountState accountState = new();
+            string Email = "";
+
+            if (ModelState.IsValid)
+            {
+                code = code.Base64UrltoUtf8();
+
+                var user = await _users.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty, generalError);
+                }
+                else
+                {
+                    Email = user.Email;
+
+                    var result = await _users.VerifyUserTokenAsync(
+                        user, "Default", TokenPurpose.AccountApproval, code);
+
+                    if (!result)
+                    {
+                        ModelState.AddModelError(string.Empty, generalError);
+                    }
+                    else
+                    {
+                        // Update them with the outcome
+                        switch (outcome)
+                        {
+                            case AccountApprovalOutcomes.Approved:
+                                user.ApprovalDate = DateTimeOffset.UtcNow;
+                                accountState.AccountApproved = true;
+                                break;
+                            case AccountApprovalOutcomes.Rejected:
+                                user.RejectionDate = DateTimeOffset.UtcNow;
+                                accountState.AccountRejected = true;
+                                break;
+                        }
+                        await _users.UpdateAsync(user);
+
+                        if (outcome == AccountApprovalOutcomes.Approved)
+                        {
+                            // Make them an admin
+                            await _users.AddClaimAsync(user,
+                                new Claim(ClaimTypes.Role, "survey.admin"));
+                        }
+
+                        // Email the user to notify them
+                        await _emails.SendAccountApprovalResult(
+                            new EmailAddress(user.Email) { Name = user.Fullname },
+                            outcome == AccountApprovalOutcomes.Approved,
+                            $"{Request.Scheme}://{Request.Host}/auth/login");
+                    }
+                }
+            }
+
+            var vm = new
+            {
+                Email,
+                errors = CollapseModelStateErrors(ModelState),
+                accountState,
+                source = ViewModelSources.AccountApproval
+            };
+
+            return Redirect("/user/feedback"
+                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
+        }
+
+        [HttpGet("approve/{userId}/{code}")]
+        public async Task<IActionResult> Approve(string userId, string code)
+            => await AccountApprovalResult(AccountApprovalOutcomes.Approved, userId, code);
+
+
+        [HttpGet("reject/{userId}/{code}")]
+        public async Task<IActionResult> Reject(string userId, string code)
+            => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
 
         #endregion
     }

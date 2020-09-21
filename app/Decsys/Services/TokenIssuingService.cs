@@ -1,13 +1,12 @@
-﻿using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Decsys.Auth;
 using Decsys.Data.Entities;
+using Decsys.Models.Emails;
 using Decsys.Services.EmailServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.WebUtilities;
 
 namespace Decsys.Services
 {
@@ -39,10 +38,44 @@ namespace Decsys.Services
             var code = await _users.GenerateEmailConfirmationTokenAsync(user);
 
             await _accountEmail.SendAccountConfirmation(
-                user.Email,
-                user.Fullname,
+                new EmailAddress(user.Email)
+                {
+                    Name = user.Fullname
+                },
                 link: _url.ActionLink(
                     action: "Confirm",
+                    controller: "Account",
+                    values: new
+                    {
+                        userId = user.Id,
+                        code = code.Utf8ToBase64Url()
+                    },
+                    protocol: _scheme));
+        }
+
+        public async Task SendAccountApprovalRequest(DecsysUser user)
+        {
+            var code = await _users.GenerateUserTokenAsync(
+                user,
+                "Default",
+                TokenPurpose.AccountApproval);
+
+            await _accountEmail.SendAccountApprovalRequest(
+                new EmailAddress(user.Email)
+                {
+                    Name = user.Fullname
+                },
+                approveLink: _url.ActionLink(
+                    action: "Approve",
+                    controller: "Account",
+                    values: new
+                    {
+                        userId = user.Id,
+                        code = code.Utf8ToBase64Url()
+                    },
+                    protocol: _scheme),
+                rejectLink: _url.ActionLink(
+                    action: "Reject",
                     controller: "Account",
                     values: new
                     {

@@ -1,0 +1,13 @@
+﻿@using Decsys.Models.Emails;
+@model AccountEmailModel<AccountApprovalResultModel>
+
+<p>Dear @Html.Raw(Model.EmailModel.Name)</p>
+
+<p>Your @Model.ServiceName User Account request has been @(Model.EmailModel.IsApproved ? "approved" : "rejected").</p>
+
+@if (Model.EmailModel.IsApproved)
+{
+<p>You may now <a href="@Model.EmailModel.LoginLink">login to your account</a>.</p>
+}
+
+<p>@(await Html.PartialAsync("_Signature", Model))</p>

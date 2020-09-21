@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -118,9 +117,9 @@ namespace Decsys
                 services.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient);
 
                 // Identity
+                services.AddSingleton<IUserConfirmation<DecsysUser>, DecsysUserConfirmation>();
                 services.AddIdentityCore<DecsysUser>(opts =>
-                        opts.SignIn.RequireConfirmedAccount = true // TODO: config dependent IUserConfirmation?
-                    )
+                        opts.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<MongoRole>()
                     .AddRoleStore<RoleStore<MongoRole>>()
                     .AddUserStore<UserStore<DecsysUser, MongoRole>>()
@@ -227,6 +226,7 @@ namespace Decsys
                 services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
                 services.AddTransient<TokenIssuingService>();
                 services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
+                services.AddTransient<RazorViewService>();
                 services.AddTransient<AccountEmailService>();
                 if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
                 else services.AddTransient<IEmailSender, LocalDiskEmailSender>();

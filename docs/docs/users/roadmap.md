@@ -5,7 +5,7 @@ title: Roadmap
 ## 2.0
 - [ ] Hosted Mode
     - [x] Remote Admin Login
-    - [ ] Remote Database
+    - [x] Remote Database
         - [x] MongoDB
         - [x] Investigate CosmosDB support (via the Mongo API)
           - CosmosDB works for the data store, but not the image store
@@ -14,9 +14,9 @@ title: Roadmap
         - [ ] Azure StorageAccount store
     - [ ] Multiple Admin User Accounts
       - [x] New account registration supported
-      - [ ] Registration requires email confirmation
+      - [x] Registration requires email confirmation
       - [ ] Each account has their own distinct Surveys collection
-      - [ ] Registration requires optional approval
+      - [x] Registration requires optional approval
 
 ## 2.x Future
 
@@ -30,3 +30,4 @@ title: Roadmap
   - Requiring accounts to take surveys
   - Limit accounts / Invite usernames to take surveys
 - Sharing Survey Administration between accounts
+- new Params Editor / ParamTypes
