@@ -37,6 +37,8 @@ Refer to the [Hosted mode Installation Guide](installation#hosted-mode-setup) fo
 | `AdminUsername` | `string` | Username for the default Admin user. Add `@` to the start of this string when logging in. |
 | `JwtSigningKey` | `object` | A JSON Web Key to use for signing Auth tokens. Generate one at `https://mkjwk.org`. |
 | `AllowRegistration` | `bool` | Can people register User Accounts? <br /> If `false` the default Admin user as configured above will be the only Survey Admin <br /> If `true`, Outbound Email settings must be configured to allow user account functionality. |
+| `AccountApprovalRequired` | `bool` | Are User Accounts subject to approval before use? <br /> Irrelevant if `AllowRegistration` is `false`. <br /> If `true` then Approvers will be emailed upon new User Account creation, with links to approve or reject the account. |
+| `AccountApprovers` | `string` | Comma separated list of email addresses for Account Approvers who will receive the approval links noted above. <br /> At least one email address is required here if `AccountApprovalRequired` is `true`. |
 
 ### Outbound Email
 
