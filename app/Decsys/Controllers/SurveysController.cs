@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Decsys.Auth;
+using Decsys.Config;
 using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -22,6 +25,7 @@ namespace Decsys.Controllers
     [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
     public class SurveysController : ControllerBase
     {
+        private readonly AppMode _mode;
         private readonly SurveyService _surveys;
         private readonly SurveyInstanceService _instances;
         private readonly ExportService _export;
@@ -29,11 +33,13 @@ namespace Decsys.Controllers
         private readonly string _internalSurveysPath;
 
         public SurveysController(
+            IOptions<AppMode> mode,
             SurveyService surveys,
             ExportService export,
             SurveyInstanceService instances,
             IWebHostEnvironment env)
         {
+            _mode = mode.Value;
             _surveys = surveys;
             _export = export;
             _instances = instances;
@@ -41,8 +47,9 @@ namespace Decsys.Controllers
         }
 
         [HttpGet]
-        [SwaggerOperation("List summary data for all Surveys.")]
-        public IEnumerable<SurveySummary> List() => _surveys.List();
+        [SwaggerOperation("List summary data for all Surveys the authenticated User can access.")]
+        public IEnumerable<SurveySummary> List()
+            => _surveys.List(User.GetUserId(), User.IsSuperUser());
 
         [HttpGet("{id}")]
         [SwaggerOperation("Get a single Survey by ID.")]

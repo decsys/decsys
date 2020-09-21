@@ -31,14 +31,14 @@ namespace Decsys.Repositories.LiteDb
             _events = events;
         }
 
-        public bool Exists(int id) =>
+        public bool Exists(int id, string? userId = null, bool includeOwnerless = false) =>
             _surveys.Exists(x => x.Id == id);
 
         public Models.Survey Find(int id) =>
             _mapper.Map<Models.Survey>(
                 _surveys.FindById(id));
 
-        public List<Models.SurveySummary> List()
+        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
                 _surveys.FindAll());
@@ -50,7 +50,7 @@ namespace Decsys.Repositories.LiteDb
                     survey)).ToList();
         }
 
-        public int Create(string? name = null) =>
+        public int Create(string? name = null, string? ownerId = null) =>
             _surveys.Insert(
                 name is null
                     ? new Survey()

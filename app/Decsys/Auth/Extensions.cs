@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.WebUtilities;
@@ -37,5 +39,13 @@ namespace Decsys.Auth
 
         public static object ObjectToBase64UrlJson(this object input)
             => JsonConvert.SerializeObject(input).Utf8ToBase64Url();
+
+
+        public static bool IsSuperUser(this ClaimsPrincipal user)
+            => user.FindFirstValue(ClaimTypes.Email) == SuperUser.EmailAddress;
+
+        public static string GetUserId(this ClaimsPrincipal user)
+            =>user.FindFirstValue(ClaimTypes.NameIdentifier)
+                ?? throw new InvalidOperationException("The current user has no NameIdentifier claim!");
     }
 }

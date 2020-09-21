@@ -20,7 +20,6 @@ using System.Security.Claims;
 using Decsys.Services;
 using Decsys.Services.EmailServices;
 using Decsys.Models.Emails;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Decsys.Controllers
 {

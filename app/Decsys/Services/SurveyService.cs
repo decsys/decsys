@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using Decsys.Repositories.Contracts;
-using Decsys.Models;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Decsys.Config;
 using System.Linq;
+using System.Threading.Tasks;
+using Decsys.Config;
+using Decsys.Models;
+using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
+using Microsoft.Extensions.Options;
 
 namespace Decsys.Services
 {
@@ -43,17 +41,23 @@ namespace Decsys.Services
         /// <summary>
         /// List summary data for all Surveys.
         /// </summary>
+        /// <param name="userId">Optional Owner of the new Survey</param>
+        /// <param name="includeOwnerless">
+        /// Even if a User ID is specified, still additionally include Surveys with no Owner
+        /// </param>
         /// <returns>All surveys summarised.</returns>
-        public IEnumerable<SurveySummary> List() => _surveys.List();
+        public IEnumerable<SurveySummary> List(string? userId = null, bool includeOwnerless = false)
+            => _surveys.List(userId, includeOwnerless);
 
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
         /// </summary>
         /// <param name="name">The name to give the new Survey.</param>
+        /// <param name="ownerId">Optional Owner of the new Survey</param>
         /// <returns>The ID of the newly created Survey.</returns>
-
-        public int Create(string? name = null) => _surveys.Create(name);
+        public int Create(string? name = null, string? ownerId = null)
+            => _surveys.Create(name, ownerId);
 
 
         /// <summary>

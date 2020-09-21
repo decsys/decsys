@@ -46,11 +46,11 @@ namespace Decsys.Repositories.Mongo
             return ++lastId;
         }
 
-        public int Create(string? name = null)
+        public int Create(string? name = null, string? ownerId = null)
         {
             var id = GetNextSurveyId();
 
-            var survey = new Survey { Id = id };
+            var survey = new Survey { Id = id, Owner = ownerId };
             if (!string.IsNullOrWhiteSpace(name))
                 survey.Name = name;
 
@@ -81,17 +81,28 @@ namespace Decsys.Repositories.Mongo
             _surveys.DeleteOne(x => x.Id == id);
         }
 
-        public bool Exists(int id)
-            => _surveys.CountDocuments(x => x.Id == id) > 0;
+        public bool Exists(int id, string? userId = null, bool includeOwnerless = false)
+            => _surveys.CountDocuments(
+                    x => x.Id == id &&
+                    (userId == null ||
+                        (x.Owner == userId ||
+                        (includeOwnerless && x.Owner == null))))
+                > 0;
 
         public Models.Survey Find(int id) =>
             _mapper.Map<Models.Survey>(
                 _surveys.Find(x => x.Id == id).SingleOrDefault());
 
-        public List<Models.SurveySummary> List()
+        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
         {
-            var summaries = _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.Find(new BsonDocument()).ToList());
+            var surveys = userId is null
+                ? _surveys.Find(new BsonDocument()).ToList()
+                : _surveys.Find(
+                        x => x.Owner == userId ||
+                        (includeOwnerless && x.Owner == null))
+                    .ToList();
+
+            var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
 
             return summaries
                 .Select(survey =>

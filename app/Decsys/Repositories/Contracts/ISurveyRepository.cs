@@ -13,15 +13,21 @@ namespace Decsys.Repositories.Contracts
         Survey Find(int id);
 
         /// <summary>
-        /// List Summaries of all Surveys
+        /// List Summaries of all Surveys,
+        /// or all Surveys accessible by the specified user, if any.
         /// </summary>
-        List<SurveySummary> List();
+        /// <param name="userId">Optional User ID</param>
+        /// <param name="includeOwnerless">
+        /// Even if a User ID is specified, still additionally include Surveys with no Owner
+        /// </param>
+        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false);
 
         /// <summary>
-        /// Create a new empty Survey
+        /// Create a new empty Survey, optionally belonging to a specific user.
         /// </summary>
         /// <param name="name">Optional Survey name</param>
-        int Create(string? name = null);
+        /// <param name="ownerId">Optional Owner ID</param>
+        int Create(string? name = null, string? ownerId = null);
 
         /// <summary>
         /// Create a new Survey from a provided model
@@ -49,9 +55,14 @@ namespace Decsys.Repositories.Contracts
         void Update(Survey survey);
 
         /// <summary>
-        /// Check if a Survey exists
+        /// Check if a Survey exists,
+        /// and is accessible by the specified user, if any.
         /// </summary>
         /// <param name="id">The ID of the survey to look for</param>
-        bool Exists(int id);
+        /// <param name="userId">Optional User ID</param>
+        /// <param name="includeOwnerless">
+        /// If a User ID is specified, also consider them able to access Surveys with no Owner
+        /// </param>
+        bool Exists(int id, string? userId = null, bool includeOwnerless = false);
     }
 }
