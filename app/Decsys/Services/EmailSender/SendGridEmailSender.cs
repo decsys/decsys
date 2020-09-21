@@ -51,13 +51,10 @@ namespace Decsys.Services.EmailSender
                 From = new EmailAddress(_config.FromAddress, _config.FromName),
                 ReplyTo = new EmailAddress(_config.ReplyToAddress),
                 Subject = subject,
-                PlainTextContent = await _emailViews.ViewAsString(
+                HtmlContent = await _emailViews.ViewAsString(
                     viewName,
                     model)
             };
-
-            if (_emailViews.ViewExists($"{viewName}Html"))
-                message.HtmlContent = await _emailViews.ViewAsString($"{viewName}Html", model);
 
             foreach (var address in toAddresses)
                 message.AddTo(address.Address, address.Name);

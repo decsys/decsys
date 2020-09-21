@@ -39,15 +39,10 @@ namespace Decsys.Services.EmailSender
             message.ReplyTo.Add(MailboxAddress.Parse(_config.ReplyToAddress));
             message.Subject = subject;
 
-            var bodyBuilder = new BodyBuilder
+            message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
-                TextBody = await _emailViews.ViewAsString(viewName, model),
+                Text = await _emailViews.ViewAsString(viewName, model)
             };
-
-            if (_emailViews.ViewExists($"{viewName}Html"))
-                bodyBuilder.HtmlBody = await _emailViews.ViewAsString($"{viewName}Html", model);
-
-            message.Body = bodyBuilder.ToMessageBody();
 
             await message.WriteToAsync(
                 Path.Combine(_config.LocalPath,

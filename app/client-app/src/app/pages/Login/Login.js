@@ -12,6 +12,8 @@ import { Base64UrlToJson } from "services/data-structures";
 import { useServerConfig } from "api/config";
 import ErrorsAlert from "components/core/ErrorsAlert";
 import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
+import { useAuth } from "auth/AuthContext";
+import Loading from "../Loading";
 
 const Feedback = ({ errors, accountState = {}, Email }) => {
   // Meaningful `accountState` properties take precedence over errors
@@ -30,9 +32,17 @@ const Feedback = ({ errors, accountState = {}, Email }) => {
 };
 
 const Login = () => {
+  const { login } = useAuth();
   const { ReturnUrl, ViewModel } = useQueryString();
   const { Username, ...vmFeedback } = Base64UrlToJson(ViewModel) ?? {};
   const { allowRegistration } = useServerConfig();
+
+  // This form wasn't triggered though oidc-client?
+  // fix it by invoking oidc-client now
+  if (!ReturnUrl) {
+    login({ returnUrl: "" });
+    return <Loading />;
+  }
 
   const post = (values) => {
     postObjectAsFormData("/Account/Login", {

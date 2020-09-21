@@ -33,7 +33,7 @@ namespace Decsys.Services.EmailServices
 
         public async Task SendAccountApprovalRequest(EmailAddress accountEmail, string approveLink, string rejectLink)
         {
-            var approvers = _config["AccountApprovers"];
+            var approvers = _config["Hosted:AccountApprovers"];
             if (string.IsNullOrWhiteSpace(approvers))
                 throw new InvalidOperationException(
                     "Account Approval is required, but no approvers have been configured!");
@@ -48,6 +48,14 @@ namespace Decsys.Services.EmailServices
                     _serviceName,
                     new(accountEmail, approveLink, rejectLink)));
         }
+
+        public async Task SendAccountApprovalResult(EmailAddress to, bool isApproved, string loginLink)
+            => await _emails.SendEmail(to,
+                $"Your {_serviceName} Account Registration",
+                "Emails/AccountApprovalResult",
+                new AccountEmailModel<AccountApprovalResultModel>(
+                    _serviceName,
+                    new(to.Name!, isApproved, loginLink)));
 
         //public async Task SendPasswordReset(string to, string name, string link)
         //    => await _emails.SendEmail(

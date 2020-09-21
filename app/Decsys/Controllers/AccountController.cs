@@ -1,5 +1,4 @@
 ﻿using System;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -19,6 +18,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Decsys.Data.Entities;
 using System.Security.Claims;
 using Decsys.Services;
+using Decsys.Services.EmailServices;
+using Decsys.Models.Emails;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Decsys.Controllers
 {
@@ -31,8 +33,15 @@ namespace Decsys.Controllers
         // This shouldn't hinder the frontend,
         // but it shouldn't be assumed this is
         // a complete snapshot of state at any given time.
+
+        // Account Registration Stages
         public bool? RequiresEmailConfirmation { get; set; }
         public bool? RequiresApproval { get; set; }
+        public bool? RegistrationComplete { get; set; }
+
+        // Account Approval
+        public bool? AccountApproved { get; set; }
+        public bool? AccountRejected { get; set; }
     }
 
     [ApiController]
@@ -47,7 +56,7 @@ namespace Decsys.Controllers
         private readonly UserManager<DecsysUser> _users;
         private readonly IConfiguration _config;
         private readonly TokenIssuingService _tokens;
-
+        private readonly AccountEmailService _emails;
         private readonly bool _approvalRequired;
 
         public AccountController(
@@ -57,7 +66,8 @@ namespace Decsys.Controllers
             UserManager<DecsysUser> users,
             SignInManager<DecsysUser> signIn,
             IConfiguration config,
-            TokenIssuingService tokens)
+            TokenIssuingService tokens,
+            AccountEmailService emails)
         {
             _interaction = interaction;
             _clients = clients;
@@ -66,6 +76,7 @@ namespace Decsys.Controllers
             _users = users;
             _config = config;
             _tokens = tokens;
+            _emails = emails;
 
             // shortcut some config
             _approvalRequired = _config.GetValue<bool>("Hosted:AccountApprovalRequired");
@@ -177,7 +188,8 @@ namespace Decsys.Controllers
                     if (user is { })
                     {
                         accountState.RequiresEmailConfirmation = !user.EmailConfirmed;
-                        accountState.RequiresApproval = _approvalRequired && user.ApprovalDate is null;
+                        accountState.RequiresApproval =
+                            _approvalRequired && user.ApprovalDate is null && user.RejectionDate is null;
 
                         if (_approvalRequired && user.RejectionDate.HasValue)
                             friendlyError = "This account has been rejected for approval.";
@@ -358,10 +370,11 @@ namespace Decsys.Controllers
                     {
                         if (_approvalRequired)
                         {
-                            // TODO: Send approval email
-
-                            accountState.RequiresApproval =
-                                user.ApprovalDate is null && user.RejectionDate is null;
+                            if (user.ApprovalDate is null && user.RejectionDate is null)
+                            {
+                                accountState.RequiresApproval = true;
+                                await _tokens.SendAccountApprovalRequest(user);
+                            }
 
                             if (user.RejectionDate.HasValue)
                                 ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
@@ -375,6 +388,8 @@ namespace Decsys.Controllers
 
                             // and sign them in!
                             await _signIn.SignInAsync(user, false);
+
+                            accountState.RegistrationComplete = true;
                         }
                     }
                 }
@@ -422,6 +437,9 @@ namespace Decsys.Controllers
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
                 ModelState.AddModelError(string.Empty, generalError);
 
+            AccountState accountState = new();
+            string Email = "";
+
             if (ModelState.IsValid)
             {
                 code = code.Base64UrltoUtf8();
@@ -433,6 +451,8 @@ namespace Decsys.Controllers
                 }
                 else
                 {
+                    Email = user.Email;
+
                     var result = await _users.VerifyUserTokenAsync(
                         user, "Default", TokenPurpose.AccountApproval, code);
 
@@ -447,9 +467,11 @@ namespace Decsys.Controllers
                         {
                             case AccountApprovalOutcomes.Approved:
                                 user.ApprovalDate = DateTimeOffset.UtcNow;
+                                accountState.AccountApproved = true;
                                 break;
                             case AccountApprovalOutcomes.Rejected:
                                 user.RejectionDate = DateTimeOffset.UtcNow;
+                                accountState.AccountRejected = true;
                                 break;
                         }
                         await _users.UpdateAsync(user);
@@ -459,26 +481,25 @@ namespace Decsys.Controllers
                             // Make them an admin
                             await _users.AddClaimAsync(user,
                                 new Claim(ClaimTypes.Role, "survey.admin"));
-
-                            // and sign them in!
-                            await _signIn.SignInAsync(user, false);
-                        } else
-                        {
-                            ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
                         }
 
-                        // TODO: Email the user to notify them
+                        // Email the user to notify them
+                        await _emails.SendAccountApprovalResult(
+                            new EmailAddress(user.Email) { Name = user.Fullname },
+                            outcome == AccountApprovalOutcomes.Approved,
+                            $"{Request.Scheme}://{Request.Host}/auth/login");
                     }
                 }
             }
 
             var vm = new
             {
-                errors = CollapseModelStateErrors(ModelState)
+                Email,
+                errors = CollapseModelStateErrors(ModelState),
+                accountState,
+                source = ViewModelSources.AccountApproval
             };
 
-            // TODO: feedback routes for the approver to tell them what they did!
-            // This probably shouldn't use `accountState` or else it'll need some new states.
             return Redirect("/user/feedback"
                 + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
@@ -486,11 +507,11 @@ namespace Decsys.Controllers
         [HttpGet("approve/{userId}/{code}")]
         public async Task<IActionResult> Approve(string userId, string code)
             => await AccountApprovalResult(AccountApprovalOutcomes.Approved, userId, code);
-        
+
 
         [HttpGet("reject/{userId}/{code}")]
         public async Task<IActionResult> Reject(string userId, string code)
-        => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
+            => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
 
         #endregion
     }
