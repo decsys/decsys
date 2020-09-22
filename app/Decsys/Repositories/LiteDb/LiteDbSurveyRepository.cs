@@ -6,6 +6,7 @@ using AutoMapper;
 using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities.LiteDb;
+using Decsys.Models.Results;
 using Decsys.Repositories.Contracts;
 
 using LiteDB;
@@ -31,7 +32,7 @@ namespace Decsys.Repositories.LiteDb
             _events = events;
         }
 
-        public bool Exists(int id, string? userId = null, bool includeOwnerless = false) =>
+        public bool Exists(int id) =>
             _surveys.Exists(x => x.Id == id);
 
         public Models.Survey Find(int id) =>
@@ -86,5 +87,11 @@ namespace Decsys.Repositories.LiteDb
 
         public void Update(Models.Survey survey) =>
             _surveys.Update(_mapper.Map<Survey>(survey));
+
+        public SurveyAccessResult TestSurveyAccess(int id, string userId, bool allowOwnerless = false)
+        {
+            if (!Exists(id)) return new(SurveyAccessStatus.NotFound);
+            return new(SurveyAccessStatus.Owned);
+        }
     }
 }

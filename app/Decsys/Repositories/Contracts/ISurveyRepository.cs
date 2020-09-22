@@ -1,5 +1,5 @@
 using Decsys.Models;
-
+using Decsys.Models.Results;
 using System.Collections.Generic;
 
 namespace Decsys.Repositories.Contracts
@@ -59,10 +59,15 @@ namespace Decsys.Repositories.Contracts
         /// and is accessible by the specified user, if any.
         /// </summary>
         /// <param name="id">The ID of the survey to look for</param>
-        /// <param name="userId">Optional User ID</param>
-        /// <param name="includeOwnerless">
-        /// If a User ID is specified, also consider them able to access Surveys with no Owner
-        /// </param>
-        bool Exists(int id, string? userId = null, bool includeOwnerless = false);
+        bool Exists(int id);
+
+        /// <summary>
+        /// Test whether a user has access to a given survey.
+        /// </summary>
+        /// <param name="id">ID of the Survey to test access to</param>
+        /// <param name="userId">ID of the User to test access for</param>
+        /// <param name="allowOwnerless">Treat Surveys with no Owner as owned by the specified User</param>
+        /// <returns></returns>
+        SurveyAccessResult TestSurveyAccess(int id, string userId, bool allowOwnerless = false);
     }
 }

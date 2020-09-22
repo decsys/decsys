@@ -49,7 +49,9 @@ namespace Decsys.Controllers
         [HttpGet]
         [SwaggerOperation("List summary data for all Surveys the authenticated User can access.")]
         public IEnumerable<SurveySummary> List()
-            => _surveys.List(User.GetUserId(), User.IsSuperUser());
+            => _surveys.List(
+                _mode.IsWorkshop ? null : User.GetUserId(),
+                User.IsSuperUser());
 
         [HttpGet("{id}")]
         [SwaggerOperation("Get a single Survey by ID.")]
@@ -69,7 +71,11 @@ namespace Decsys.Controllers
         [SwaggerResponse(201, "The Survey was successfully created with the returned ID.")]
         public IActionResult Create()
         {
-            var id = _surveys.Create();
+            var id = _surveys.Create(
+                name: null,
+                ownerId: _mode.IsWorkshop
+                    ? null
+                    : User.GetUserId());
             return Created(Url.Action("Get", new { id }), id);
         }
 

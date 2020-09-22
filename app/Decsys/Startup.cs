@@ -89,12 +89,11 @@ namespace Decsys
         public void ConfigureServices(IServiceCollection services)
         {
             // configure app mode
-            var mode = new AppMode { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
-            services.Configure<AppMode>(c => c = mode);
+            AppMode mode = new() { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
+            services.Configure<AppMode>(c => c.IsWorkshop = mode.IsWorkshop);
 
-            var hostedDbSettings = new HostedDbSettings();
-            _config.GetSection("Hosted").Bind(hostedDbSettings);
-            services.Configure<HostedDbSettings>(c => c = hostedDbSettings);
+            var hostedDbSettings = _config.GetSection("Hosted").Get<HostedDbSettings>();
+            services.Configure<HostedDbSettings>(_config.GetSection("Hosted"));
 
 
             // configure version mappings

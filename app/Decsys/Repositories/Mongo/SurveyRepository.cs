@@ -4,6 +4,7 @@ using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities.Mongo;
+using Decsys.Models.Results;
 using Decsys.Repositories.Contracts;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -81,13 +82,20 @@ namespace Decsys.Repositories.Mongo
             _surveys.DeleteOne(x => x.Id == id);
         }
 
-        public bool Exists(int id, string? userId = null, bool includeOwnerless = false)
-            => _surveys.CountDocuments(
-                    x => x.Id == id &&
-                    (userId == null ||
-                        (x.Owner == userId ||
-                        (includeOwnerless && x.Owner == null))))
-                > 0;
+        public bool Exists(int id)
+            => _surveys.CountDocuments(x => x.Id == id) > 0;
+
+        public SurveyAccessResult TestSurveyAccess(int id, string userId, bool allowOwnerless = false)
+        {
+            var survey = _surveys.Find(x => x.Id == id).SingleOrDefault();
+            if (survey is null) return new(SurveyAccessStatus.NotFound);
+
+            if (survey.Owner == userId) return new(SurveyAccessStatus.Owned);
+            if (survey.Owner is null && allowOwnerless) return new(SurveyAccessStatus.Owned);
+
+            return new(SurveyAccessStatus.AccessDenied);
+        }
+
 
         public Models.Survey Find(int id) =>
             _mapper.Map<Models.Survey>(

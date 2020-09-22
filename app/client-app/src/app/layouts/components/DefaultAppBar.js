@@ -27,6 +27,7 @@ import {
 import { Link } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
 import { useServerConfig } from "api/config";
+import { WORKSHOP } from "constants/app-modes";
 
 const HelpMenu = () => (
   <Menu>
@@ -112,6 +113,7 @@ const UserMenu = () => {
 };
 
 const DefaultAppBar = ({ brandLink }) => {
+  const { mode } = useServerConfig();
   const { isAdmin } = useAuth();
   return (
     <AppBar brand="DECSYS" brandLink={brandLink}>
@@ -123,9 +125,11 @@ const DefaultAppBar = ({ brandLink }) => {
         </DarkMode>
       )}
 
-      <Suspense fallback={<Spinner />}>
-        <UserMenu />
-      </Suspense>
+      {mode !== WORKSHOP && (
+        <Suspense fallback={<Spinner />}>
+          <UserMenu />
+        </Suspense>
+      )}
 
       <HelpMenu />
     </AppBar>

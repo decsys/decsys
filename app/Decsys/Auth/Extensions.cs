@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 
 namespace Decsys.Auth
@@ -45,7 +46,10 @@ namespace Decsys.Auth
             => user.FindFirstValue(ClaimTypes.Email) == SuperUser.EmailAddress;
 
         public static string GetUserId(this ClaimsPrincipal user)
-            =>user.FindFirstValue(ClaimTypes.NameIdentifier)
+            => user.GetUserIdOrDefault()
                 ?? throw new InvalidOperationException("The current user has no NameIdentifier claim!");
+
+        public static string GetUserIdOrDefault(this ClaimsPrincipal user)
+            => user.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 }
