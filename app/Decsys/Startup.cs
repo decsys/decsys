@@ -105,7 +105,7 @@ namespace Decsys
                         .Bind(c.Types));
             }
 
-            var useSendGrid = _config["Hosted:OutboundEmail:Provider"]
+            var useSendGrid = (_config["Hosted:OutboundEmail:Provider"] ?? string.Empty)
                 .Equals("sendgrid", StringComparison.InvariantCultureIgnoreCase);
             if (useSendGrid) services.Configure<SendGridOptions>(_config.GetSection("Hosted:OutboundEmail"));
             else services.Configure<LocalDiskEmailOptions>(_config.GetSection("Hosted:OutboundEmail"));
