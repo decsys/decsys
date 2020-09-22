@@ -11,12 +11,14 @@ title: Roadmap
           - CosmosDB works for the data store, but not the image store
     - [x] Remote Image Uploads
         - [x] MongoDB as a store
-        - [ ] Azure StorageAccount store
-    - [ ] Multiple Admin User Accounts
+    - [x] Multiple Admin User Accounts
       - [x] New account registration supported
       - [x] Registration requires email confirmation
-      - [ ] Each account has their own distinct Surveys collection
+      - [x] Each account has their own distinct Surveys collection
       - [x] Registration requires optional approval
+      - [ ] Password change / reset functionality
+      - [ ] Email address change
+      - [ ] General profile editing
 
 ## 2.x Future
 
@@ -29,5 +31,7 @@ title: Roadmap
 - Participant User Accounts
   - Requiring accounts to take surveys
   - Limit accounts / Invite usernames to take surveys
+- Remote Image Uploads
+  - Native Azure StorageAccount store (this will enable the use of CosmosDb for the main datastore)
 - Sharing Survey Administration between accounts
 - new Params Editor / ParamTypes
