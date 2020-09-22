@@ -178,9 +178,14 @@ namespace Decsys
 
             services.AddResponseCompression();
 
-            services.AddAuthorization(opts => opts.AddPolicy(
-                nameof(AuthPolicies.IsSurveyAdmin),
-                AuthPolicies.IsSurveyAdmin(mode)));
+            services.AddAuthorization(opts => {
+                opts.AddPolicy(
+                    nameof(AuthPolicies.IsSurveyAdmin),
+                    AuthPolicies.IsSurveyAdmin(mode));
+                opts.AddPolicy(
+                    nameof(AuthPolicies.CanManageSurvey),
+                    AuthPolicies.CanManageSurvey(mode));
+            });
 
             services.AddControllersWithViews()
                 // we used JSON.NET back in .NET Core 2.x

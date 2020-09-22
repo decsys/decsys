@@ -14,14 +14,12 @@ namespace Decsys.Services
     /// </summary>
     public class PageService
     {
-        private readonly ISurveyRepository _surveys;
         private readonly IPageRepository _pages;
         private readonly IImageService _images;
 
 
-        public PageService(ISurveyRepository surveys, IPageRepository pages, IImageService images)
+        public PageService(IPageRepository pages, IImageService images)
         {
-            _surveys = surveys;
             _pages = pages;
             _images = images;
         }

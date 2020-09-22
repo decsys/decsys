@@ -11,7 +11,7 @@ namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/surveys/{id}/[controller]")]
-    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+    [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
     public class InstancesController : ControllerBase
     {
         private readonly SurveyInstanceService _instances;
@@ -24,18 +24,17 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{instanceId}/results")]
-        public IActionResult Results(int id, int instanceId, string? type = "summary")
-        {
-            switch (type)
+        public IActionResult Results(int instanceId, string? type = "summary")
+            => type switch
             {
-                case "summary": return ResultsSummary(id, instanceId);
-                case "full": return ResultsFull(id, instanceId);
-                case "csv": return ResultsCsv(id, instanceId);
-                default: return BadRequest($"The specified results type '{type}' requested was invalid. Please specify one of: summary, full, csv");
-            }
-        }
+                "summary" => ResultsSummary(instanceId),
+                "full" => ResultsFull(instanceId),
+                _ => BadRequest(
+                    $"The specified results type '{type}' requested was invalid. " +
+                    "Please specify one of: summary, full"),
+            };
 
-        private IActionResult ResultsFull(int id, int instanceId)
+        private IActionResult ResultsFull(int instanceId)
         {
             try
             {
@@ -44,12 +43,7 @@ namespace Decsys.Controllers
             catch (KeyNotFoundException) { return NotFound(); }
         }
 
-        private IActionResult ResultsCsv(int id, int instanceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        private IActionResult ResultsSummary(int id, int instanceId)
+        private IActionResult ResultsSummary(int instanceId)
         {
             try
             {

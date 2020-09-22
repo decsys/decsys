@@ -49,7 +49,6 @@ namespace Decsys.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clients;
         private readonly IEventService _events;
         private readonly SignInManager<DecsysUser> _signIn;
         private readonly UserManager<DecsysUser> _users;
@@ -60,7 +59,6 @@ namespace Decsys.Controllers
 
         public AccountController(
             IIdentityServerInteractionService interaction,
-            IClientStore clients,
             IEventService events,
             UserManager<DecsysUser> users,
             SignInManager<DecsysUser> signIn,
@@ -69,7 +67,6 @@ namespace Decsys.Controllers
             AccountEmailService emails)
         {
             _interaction = interaction;
-            _clients = clients;
             _events = events;
             _signIn = signIn;
             _users = users;
@@ -81,7 +78,7 @@ namespace Decsys.Controllers
             _approvalRequired = _config.GetValue<bool>("Hosted:AccountApprovalRequired");
         }
 
-        private List<string> CollapseModelStateErrors(ModelStateDictionary modelState)
+        private static List<string> CollapseModelStateErrors(ModelStateDictionary modelState)
             => modelState.Keys
                 .SelectMany(k => modelState[k].Errors
                     .Select(x => !string.IsNullOrWhiteSpace(k)
@@ -229,10 +226,8 @@ namespace Decsys.Controllers
         // Logout actually cares about our Cookie auth scheme, so it can sign it out correctly
         // Since its the only route in the app that does, we just decorate it here
         [Authorize(AuthenticationSchemes = "Identity.Application")]
-        public async Task<IActionResult> Logout(string? logoutId)
+        public async Task<IActionResult> Logout()
         {
-            var logout = await _interaction.GetLogoutContextAsync(logoutId);
-
             // If external IdP's are supported, we should check the user
             // to see which providers/schemes we should be signing out of
             // but for now, we don't use this functionality

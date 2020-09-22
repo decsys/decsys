@@ -20,7 +20,7 @@ namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/surveys/{id}/pages/{pageId}/components")]
-    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+    [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
     public class ComponentsController : ControllerBase
     {
         private readonly ComponentService _components;

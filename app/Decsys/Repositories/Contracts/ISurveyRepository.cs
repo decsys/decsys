@@ -33,7 +33,8 @@ namespace Decsys.Repositories.Contracts
         /// Create a new Survey from a provided model
         /// </summary>
         /// <param name="survey">Survey model to import</param>
-        int Create(Survey survey);
+        /// <param name="ownerId">Optional Owner ID</param>
+        int Create(Survey survey, string? ownerId = null);
 
         /// <summary>
         /// Delete a Survey

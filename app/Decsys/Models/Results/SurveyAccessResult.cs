@@ -11,10 +11,10 @@ namespace Decsys.Models.Results
         Shared
     }
 
-    public record SurveyAccessResult(SurveyAccessStatus status)
+    public record SurveyAccessResult(SurveyAccessStatus Status)
     {
         public bool IsAccessible() =>
             new[] { SurveyAccessStatus.Owned, SurveyAccessStatus.Shared }
-            .Contains(status);
+            .Contains(Status);
     }
 }

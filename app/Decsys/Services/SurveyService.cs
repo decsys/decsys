@@ -85,12 +85,13 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="survey">Survey model to import</param>
         /// <param name="images">List of Survey Images to import</param>
-        public async Task<int> Import(Survey survey, List<(string filename, byte[] data)> images)
+        /// <param name="newOwnerId">ID of the User doing the import</param>
+        public async Task<int> Import(Survey survey, List<(string filename, byte[] data)> images, string? newOwnerId = null)
         {
             // any validation, or mapping to account for version changes
             MigrateUpComponentTypes(ref survey);
 
-            int id = _surveys.Create(survey);
+            int id = _surveys.Create(survey, newOwnerId);
 
             if (images.Count > 0)
                 await _images.Import(id, images).ConfigureAwait(false);

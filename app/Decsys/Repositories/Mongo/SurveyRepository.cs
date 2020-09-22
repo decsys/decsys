@@ -60,10 +60,14 @@ namespace Decsys.Repositories.Mongo
             return id;
         }
 
-        public int Create(Models.Survey survey)
+        public int Create(Models.Survey survey, string? ownerId = null)
         {
-            survey.Id = GetNextSurveyId();
-            _surveys.InsertOne(_mapper.Map<Survey>(survey));
+            var entity = _mapper.Map<Survey>(survey);
+
+            entity.Id = GetNextSurveyId();
+            entity.Owner = ownerId;
+
+            _surveys.InsertOne(entity);
             return survey.Id;
         }
 

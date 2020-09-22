@@ -57,7 +57,7 @@ namespace Decsys.Repositories.LiteDb
                     ? new Survey()
                     : new Survey { Name = name });
 
-        public int Create(Models.Survey survey)
+        public int Create(Models.Survey survey, string? ownerId = null)
         {
             survey.Id = 0;
             return _surveys.Insert(_mapper.Map<Survey>(survey));
