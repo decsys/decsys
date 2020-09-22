@@ -16,6 +16,12 @@ namespace Decsys.Auth
 
         public Task<bool> IsConfirmedAsync(UserManager<DecsysUser> manager, DecsysUser user)
         {
+            // SuperUser is always confirmed.
+            // This way we don't have to fix the seed data any time we change confirmation requirements
+            if (user.IsSuperUser()) return Task.FromResult(true);
+
+            // Other users' confirmation checks follow:
+
             var confirmed = user.EmailConfirmed;
 
             if (_approvalRequired)

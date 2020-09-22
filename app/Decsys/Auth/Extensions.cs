@@ -1,5 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using Decsys.Data.Entities;
 using IdentityServer4.Stores;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
@@ -8,6 +11,8 @@ namespace Decsys.Auth
 {
     public static class Extensions
     {
+        #region Identity Server
+
         /// <summary>
         /// Determines whether the client is configured to use PKCE.
         /// </summary>
@@ -20,6 +25,10 @@ namespace Decsys.Auth
             return (await store.FindEnabledClientByIdAsync(client_id))?
                 .RequirePkce ?? false;
         }
+
+        #endregion
+
+        #region Data Conversion
 
         /// <summary>
         /// Encode a UTF8 string as a Base64Url string
@@ -37,5 +46,24 @@ namespace Decsys.Auth
 
         public static object ObjectToBase64UrlJson(this object input)
             => JsonConvert.SerializeObject(input).Utf8ToBase64Url();
+
+        #endregion
+
+        #region User Claims
+
+        public static bool IsSuperUser(this ClaimsPrincipal user)
+            => user.FindFirstValue(ClaimTypes.Email) == SuperUser.EmailAddress;
+
+        public static bool IsSuperUser(this DecsysUser user)
+            => user.Email == SuperUser.EmailAddress;
+
+        public static string GetUserId(this ClaimsPrincipal user)
+            => user.GetUserIdOrDefault()
+                ?? throw new InvalidOperationException("The current user has no NameIdentifier claim!");
+
+        public static string GetUserIdOrDefault(this ClaimsPrincipal user)
+            => user.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        #endregion
     }
 }

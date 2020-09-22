@@ -12,7 +12,7 @@ namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/surveys/{id}/pages")]
-    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+    [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
     public class PagesController : ControllerBase
     {
         private readonly PageService _pages;

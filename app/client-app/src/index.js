@@ -1,10 +1,10 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-
 import AppWrapper from "./AppWrapper";
 import Loading from "app/pages/Loading";
 import ErrorBoundary from "components/ErrorBoundary";
 import Error from "app/pages/Error";
+import { LoadingIndicator } from "components/core";
 
 const root = document.getElementById("root");
 
@@ -12,7 +12,9 @@ const root = document.getElementById("root");
 // for "fast" first paint
 ReactDOM.render(
   <AppWrapper>
-    <Loading />
+    <Suspense fallback={<LoadingIndicator />}>
+      <Loading />
+    </Suspense>
   </AppWrapper>,
   root
 );

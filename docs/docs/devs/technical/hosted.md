@@ -21,17 +21,25 @@ Yuo can host it however you prefer:
 - You can put it behind a reverse proxy such as nginx, Apache, IIS etc.
 - You can run it in Docker. [Start here](https://hub.docker.com/_/microsoft-dotnet-nightly-aspnet/)
 - You can host it in the Cloud
-  - Specific Azure details to come...
+  - For example, in Azure:
+    - Deploy DECSYS to Azure App Service
+    - Use SendGrid in Azure for email
+    - Use MongoDB for the Database and Image Storage!
 
 ### Image Storage
 
 Images are served by the Backend API, but they may need to be stored differently, depending on your hosting approach.
 
-Currently, the Backend API always stores images locally on disk, but to enable Managed Cloud Hosting remote image storage options will soon be implemented.
+Currently, the Backend API stores images in the same MongoDB database as everything else, using GridFS. In future, using other stores may be possible (e.g. Azure StorageAccount).
 
 ### Identity
 
-Currently, the Backend API generates a single super user (`admin@localhost`) in memory, with a password configured on the hosting environment. That user has **Admin** access and can create **Surveys**.
+The Backend API stores all user details in the primary database `decsys`.
+It always ensures a single super user (`admin@localhost`) is present, with a username and password configured on the hosting environment.
+
+That user has **Admin** access and can create **Surveys**.
+
+Additional users can be registered, and will also be **Admin** users who can create **Surveys**.
 
 The Identity service is an Open ID Connect compliant Token provider, currently using only its own userstore, and supporting just a single client: the Frontend Web App.
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AspNetCore.Identity.Mongo.Model;
 using Decsys.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +10,6 @@ namespace Decsys.Auth
     public static class DataSeeder
     {
         const string _defaultAdminUsername = "admin";
-        const string _adminEmail = "admin@localhost";
 
         public static async Task Seed(
             UserManager<DecsysUser> users,
@@ -40,14 +38,14 @@ or the environment variable DOTNET_Hosted_AdminPassword");
             }
 
             // Add the user if they don't exist, else update them,
-            var superAdmin = await users.FindByEmailAsync(_adminEmail);
+            var superAdmin = await users.FindByEmailAsync(SuperUser.EmailAddress);
             if (superAdmin is null)
             {
                 var user = new DecsysUser
                 {
                     UserName = username,
                     Fullname = "Super Admin",
-                    Email = _adminEmail,
+                    Email = SuperUser.EmailAddress,
                     EmailConfirmed = true
                 };
 

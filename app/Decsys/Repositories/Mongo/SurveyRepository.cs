@@ -4,6 +4,7 @@ using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities.Mongo;
+using Decsys.Models.Results;
 using Decsys.Repositories.Contracts;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -46,11 +47,11 @@ namespace Decsys.Repositories.Mongo
             return ++lastId;
         }
 
-        public int Create(string? name = null)
+        public int Create(string? name = null, string? ownerId = null)
         {
             var id = GetNextSurveyId();
 
-            var survey = new Survey { Id = id };
+            var survey = new Survey { Id = id, Owner = ownerId };
             if (!string.IsNullOrWhiteSpace(name))
                 survey.Name = name;
 
@@ -59,10 +60,14 @@ namespace Decsys.Repositories.Mongo
             return id;
         }
 
-        public int Create(Models.Survey survey)
+        public int Create(Models.Survey survey, string? ownerId = null)
         {
-            survey.Id = GetNextSurveyId();
-            _surveys.InsertOne(_mapper.Map<Survey>(survey));
+            var entity = _mapper.Map<Survey>(survey);
+
+            entity.Id = GetNextSurveyId();
+            entity.Owner = ownerId;
+
+            _surveys.InsertOne(entity);
             return survey.Id;
         }
 
@@ -84,14 +89,32 @@ namespace Decsys.Repositories.Mongo
         public bool Exists(int id)
             => _surveys.CountDocuments(x => x.Id == id) > 0;
 
+        public SurveyAccessResult TestSurveyAccess(int id, string userId, bool allowOwnerless = false)
+        {
+            var survey = _surveys.Find(x => x.Id == id).SingleOrDefault();
+            if (survey is null) return new(SurveyAccessStatus.NotFound);
+
+            if (survey.Owner == userId) return new(SurveyAccessStatus.Owned);
+            if (survey.Owner is null && allowOwnerless) return new(SurveyAccessStatus.Owned);
+
+            return new(SurveyAccessStatus.AccessDenied);
+        }
+
+
         public Models.Survey Find(int id) =>
             _mapper.Map<Models.Survey>(
                 _surveys.Find(x => x.Id == id).SingleOrDefault());
 
-        public List<Models.SurveySummary> List()
+        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
         {
-            var summaries = _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.Find(new BsonDocument()).ToList());
+            var surveys = userId is null
+                ? _surveys.Find(new BsonDocument()).ToList()
+                : _surveys.Find(
+                        x => x.Owner == userId ||
+                        (includeOwnerless && x.Owner == null))
+                    .ToList();
+
+            var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
 
             return summaries
                 .Select(survey =>

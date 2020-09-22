@@ -6,6 +6,7 @@ using AutoMapper;
 using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities.LiteDb;
+using Decsys.Models.Results;
 using Decsys.Repositories.Contracts;
 
 using LiteDB;
@@ -38,7 +39,7 @@ namespace Decsys.Repositories.LiteDb
             _mapper.Map<Models.Survey>(
                 _surveys.FindById(id));
 
-        public List<Models.SurveySummary> List()
+        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
                 _surveys.FindAll());
@@ -50,13 +51,13 @@ namespace Decsys.Repositories.LiteDb
                     survey)).ToList();
         }
 
-        public int Create(string? name = null) =>
+        public int Create(string? name = null, string? ownerId = null) =>
             _surveys.Insert(
                 name is null
                     ? new Survey()
                     : new Survey { Name = name });
 
-        public int Create(Models.Survey survey)
+        public int Create(Models.Survey survey, string? ownerId = null)
         {
             survey.Id = 0;
             return _surveys.Insert(_mapper.Map<Survey>(survey));
@@ -86,5 +87,11 @@ namespace Decsys.Repositories.LiteDb
 
         public void Update(Models.Survey survey) =>
             _surveys.Update(_mapper.Map<Survey>(survey));
+
+        public SurveyAccessResult TestSurveyAccess(int id, string userId, bool allowOwnerless = false)
+        {
+            if (!Exists(id)) return new(SurveyAccessStatus.NotFound);
+            return new(SurveyAccessStatus.Owned);
+        }
     }
 }

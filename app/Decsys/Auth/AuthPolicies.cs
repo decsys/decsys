@@ -1,9 +1,12 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
 using Decsys.Config;
+using Decsys.Repositories.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Decsys.Auth
 {
@@ -37,5 +40,28 @@ namespace Decsys.Auth
 
             return b.Build();
         }
+
+        public static AuthorizationPolicy CanManageSurvey(AppMode mode)
+            => new AuthorizationPolicyBuilder()
+                .Combine(IsSurveyAdmin(mode))
+                .RequireAssertion(context =>
+                {
+                    var httpContext = (DefaultHttpContext?)context.Resource;
+
+                    var surveys = httpContext?.RequestServices.GetService<ISurveyRepository>();
+                    if (surveys is null) return false;
+
+                    if (!int.TryParse(
+                        (string?)httpContext?.Request.RouteValues.GetValueOrDefault("id") ?? string.Empty,
+                        out var surveyId))
+                        return false;
+
+                    var result = surveys.TestSurveyAccess(surveyId,
+                        mode.IsWorkshop ? string.Empty : context.User.GetUserId(),
+                        context.User.IsSuperUser());
+
+                    return result.IsAccessible();
+                })
+                .Build();
     }
 }

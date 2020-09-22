@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Decsys.Auth;
+using Decsys.Config;
 using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -22,6 +25,7 @@ namespace Decsys.Controllers
     [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
     public class SurveysController : ControllerBase
     {
+        private readonly AppMode _mode;
         private readonly SurveyService _surveys;
         private readonly SurveyInstanceService _instances;
         private readonly ExportService _export;
@@ -29,11 +33,13 @@ namespace Decsys.Controllers
         private readonly string _internalSurveysPath;
 
         public SurveysController(
+            IOptions<AppMode> mode,
             SurveyService surveys,
             ExportService export,
             SurveyInstanceService instances,
             IWebHostEnvironment env)
         {
+            _mode = mode.Value;
             _surveys = surveys;
             _export = export;
             _instances = instances;
@@ -41,10 +47,14 @@ namespace Decsys.Controllers
         }
 
         [HttpGet]
-        [SwaggerOperation("List summary data for all Surveys.")]
-        public IEnumerable<SurveySummary> List() => _surveys.List();
+        [SwaggerOperation("List summary data for all Surveys the authenticated User can access.")]
+        public IEnumerable<SurveySummary> List()
+            => _surveys.List(
+                _mode.IsWorkshop ? null : User.GetUserId(),
+                User.IsSuperUser());
 
         [HttpGet("{id}")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Get a single Survey by ID.")]
         [SwaggerResponse(200, "The Survey with the requested ID.", typeof(Survey))]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
@@ -62,11 +72,16 @@ namespace Decsys.Controllers
         [SwaggerResponse(201, "The Survey was successfully created with the returned ID.")]
         public IActionResult Create()
         {
-            var id = _surveys.Create();
+            var id = _surveys.Create(
+                name: null,
+                ownerId: _mode.IsWorkshop
+                    ? null
+                    : User.GetUserId());
             return Created(Url.Action("Get", new { id }), id);
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Delete a single Survey by ID.")]
         [SwaggerResponse(204, "The Survey, with its associated data, was succesfully deleted.")]
         public async Task<IActionResult> Delete(
@@ -78,6 +93,7 @@ namespace Decsys.Controllers
         }
 
         [HttpPut("{id}/name")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Edit the Name of a single Survey by ID.")]
         [SwaggerResponse(200, "The Survey Name was updated successfully.")]
         [SwaggerResponse(400, "No valid name was provided.")]
@@ -96,6 +112,7 @@ namespace Decsys.Controllers
         }
 
         [HttpPost("{id}/duplicate")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Duplicate a single Survey with the provided ID.")]
         [SwaggerResponse(200, "The Survey was duplicated successfully and the new copy has the returned ID.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
@@ -109,6 +126,7 @@ namespace Decsys.Controllers
         }
 
         [HttpPut("{id}/config")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Configure the Survey with the provided ID.")]
         [SwaggerResponse(204, "The Survey was configured successfully.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
@@ -123,6 +141,7 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{id}/config")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Get the current Config for the Survey with the provided ID.")]
         [SwaggerResponse(200, "The Survey configuration as requested.", typeof(ConfigureSurveyModel))]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
@@ -139,17 +158,15 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{id}/export")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         public async Task<ActionResult<byte[]>> Export(int id, string? type = "structure")
-        {
-            switch (type)
+            => type switch
             {
-                case "structure": return await _export.Structure(id);
-                case "full": return await _export.Full(id);
-                default:
-                    return BadRequest(
-               $"Unexpected type '{type}'. Expected one of: full, structure");
-            }
-        }
+                "structure" => await _export.Structure(id),
+                "full" => await _export.Full(id),
+                _ => BadRequest($"Unexpected type '{type}'. " +
+                    "Expected one of: full, structure"),
+            };
 
         [HttpPost("internal/{type}")]
         public async Task<ActionResult<int>> LoadInternal(string type)
@@ -224,7 +241,12 @@ namespace Decsys.Controllers
             List<(string filename, byte[] data)> images,
             List<SurveyInstanceResults<ParticipantEvents>> instances)
         {
-            var surveyId = await _surveys.Import(survey, images);
+            var surveyId = await _surveys.Import(
+                survey,
+                images,
+                _mode.IsWorkshop
+                    ? null
+                    : User.GetUserId());
 
             // attempt to import any instances
             if (instances.Count > 0)

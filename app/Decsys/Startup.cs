@@ -89,12 +89,11 @@ namespace Decsys
         public void ConfigureServices(IServiceCollection services)
         {
             // configure app mode
-            var mode = new AppMode { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
-            services.Configure<AppMode>(c => c = mode);
+            AppMode mode = new() { IsWorkshop = _config.GetValue<bool>("WorkshopMode") };
+            services.Configure<AppMode>(c => c.IsWorkshop = mode.IsWorkshop);
 
-            var hostedDbSettings = new HostedDbSettings();
-            _config.GetSection("Hosted").Bind(hostedDbSettings);
-            services.Configure<HostedDbSettings>(c => c = hostedDbSettings);
+            var hostedDbSettings = _config.GetSection("Hosted").Get<HostedDbSettings>();
+            services.Configure<HostedDbSettings>(_config.GetSection("Hosted"));
 
 
             // configure version mappings
@@ -106,7 +105,7 @@ namespace Decsys
                         .Bind(c.Types));
             }
 
-            var useSendGrid = _config["Hosted:OutboundEmail:Provider"]
+            var useSendGrid = (_config["Hosted:OutboundEmail:Provider"] ?? string.Empty)
                 .Equals("sendgrid", StringComparison.InvariantCultureIgnoreCase);
             if (useSendGrid) services.Configure<SendGridOptions>(_config.GetSection("Hosted:OutboundEmail"));
             else services.Configure<LocalDiskEmailOptions>(_config.GetSection("Hosted:OutboundEmail"));
@@ -179,9 +178,14 @@ namespace Decsys
 
             services.AddResponseCompression();
 
-            services.AddAuthorization(opts => opts.AddPolicy(
-                nameof(AuthPolicies.IsSurveyAdmin),
-                AuthPolicies.IsSurveyAdmin(mode)));
+            services.AddAuthorization(opts => {
+                opts.AddPolicy(
+                    nameof(AuthPolicies.IsSurveyAdmin),
+                    AuthPolicies.IsSurveyAdmin(mode));
+                opts.AddPolicy(
+                    nameof(AuthPolicies.CanManageSurvey),
+                    AuthPolicies.CanManageSurvey(mode));
+            });
 
             services.AddControllersWithViews()
                 // we used JSON.NET back in .NET Core 2.x
