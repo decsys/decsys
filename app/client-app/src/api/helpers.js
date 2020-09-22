@@ -28,7 +28,6 @@ export const contentType_AppJson = {
 };
 
 export const authorization_BearerToken = async () => {
-  console.log(await users.getUser());
   const token = (await users.getUser())?.access_token;
 
   return token
