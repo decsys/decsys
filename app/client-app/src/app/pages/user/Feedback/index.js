@@ -29,6 +29,12 @@ export const FeedbackAlert = ({ title, children, ...p }) => (
   </Alert>
 );
 
+const LinkError = () => (
+  <FeedbackAlert status="error" title="There was an error with the link.">
+    The User ID or Code is invalid.
+  </FeedbackAlert>
+);
+
 export const DefaultFeedback = () => {
   const { errors } = useQueryStringViewModel();
 
@@ -42,14 +48,17 @@ export const DefaultFeedback = () => {
       />
     );
 
-  // No errors? General success.
+  // For everything else, there's generic success
   return (
-    <FeedbackAlert title="Success!" status="success">
-      <Link color="blue.500" href="/">
-        Return home
-      </Link>
-      .
-    </FeedbackAlert>
+    <Router>
+      <LinkError path="linkerror" />
+      <FeedbackAlert title="Success!" status="success" default>
+        <Link color="blue.500" href="/">
+          Return home
+        </Link>
+        .
+      </FeedbackAlert>
+    </Router>
   );
 };
 

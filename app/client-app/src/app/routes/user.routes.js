@@ -5,6 +5,7 @@ import UserFeedback from "app/pages/user/Feedback";
 import { useServerConfig } from "api/config";
 import ForgotPassword from "app/pages/user/ForgotPassword";
 import Error from "app/pages/Error";
+import ResetPassword from "app/pages/user/ResetPassword";
 
 const User = () => {
   const { allowRegistration } = useServerConfig();
@@ -14,6 +15,7 @@ const User = () => {
         <>
           <Register path="register" />
           <ForgotPassword path="password/request" />
+          <ResetPassword path="password/reset" />
           <UserFeedback path="feedback/*" />
           <Error message="404: Not Found" default />
         </>
