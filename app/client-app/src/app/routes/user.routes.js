@@ -11,7 +11,7 @@ const User = () => {
       {allowRegistration && (
         <>
           <Register path="register" />
-          <UserFeedback path="feedback" />
+          <UserFeedback path="feedback/*" />
         </>
       )}
     </Router>

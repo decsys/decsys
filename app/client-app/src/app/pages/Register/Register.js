@@ -24,6 +24,10 @@ import { useServerConfig } from "api/config";
 import Error from "../Error";
 import ErrorsAlert from "components/core/ErrorsAlert";
 import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
+import {
+  REQUIRES_APPROVAL,
+  REQUIRES_EMAIL_CONFIRMATION,
+} from "constants/account-states";
 
 // TODO: this will later want to be reusable for email change
 const EmailFieldGroup = ({ initialHidden }) => {
@@ -121,20 +125,21 @@ const PasswordFieldGroup = ({ initialHidden }) => {
   );
 };
 
-const Feedback = ({ errors, accountState = {}, Email }) => {
-  // Meaningful `accountState` properties take precedence over errors
-  if (accountState.RequiresEmailConfirmation)
-    return <EmailConfirmationRequired Email={Email} />;
-
-  if (accountState.RequiresApproval) return <ApprovalRequired />;
-
-  return (
-    <ErrorsAlert
-      errors={errors}
-      title="There was an error with your form submission:"
-      shouldCollapseSingles
-    />
-  );
+const Feedback = ({ errors, accountState, Email }) => {
+  switch (accountState) {
+    case REQUIRES_EMAIL_CONFIRMATION:
+      return <EmailConfirmationRequired Email={Email} />;
+    case REQUIRES_APPROVAL:
+      return <ApprovalRequired />;
+    default:
+      return (
+        <ErrorsAlert
+          errors={errors}
+          title="There was an error with your form submission:"
+          shouldCollapseSingles
+        />
+      );
+  }
 };
 
 const Register = () => {
@@ -143,7 +148,7 @@ const Register = () => {
     Email,
     EmailConfirm,
     Fullname,
-    ...vmFeedback
+    accountState,
   } = useQueryStringViewModel();
   const { allowRegistration, accountApprovalRequired } = useServerConfig();
 
@@ -166,7 +171,7 @@ const Register = () => {
         <Stack mt={4} w="70%" spacing={4}>
           <LightHeading>Register</LightHeading>
 
-          <Feedback {...vmFeedback} errors={errors} Email={Email} />
+          <Feedback accountState={accountState} errors={errors} Email={Email} />
 
           {accountApprovalRequired && (
             <Alert status="info">

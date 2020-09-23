@@ -14,21 +14,26 @@ import ErrorsAlert from "components/core/ErrorsAlert";
 import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
 import { useAuth } from "auth/AuthContext";
 import Loading from "../Loading";
+import {
+  REQUIRES_APPROVAL,
+  REQUIRES_EMAIL_CONFIRMATION,
+} from "constants/account-states";
 
-const Feedback = ({ errors, accountState = {}, Email }) => {
-  // Meaningful `accountState` properties take precedence over errors
-  if (accountState.RequiresEmailConfirmation)
-    return <EmailConfirmationRequired Email={Email} />;
-
-  if (accountState.RequiresApproval) return <ApprovalRequired />;
-
-  return (
-    <ErrorsAlert
-      errors={errors}
-      title="There was an error with your form submission:"
-      shouldCollapseSingles
-    />
-  );
+const Feedback = ({ errors, accountState, Email }) => {
+  switch (accountState) {
+    case REQUIRES_EMAIL_CONFIRMATION:
+      return <EmailConfirmationRequired Email={Email} />;
+    case REQUIRES_APPROVAL:
+      return <ApprovalRequired />;
+    default:
+      return (
+        <ErrorsAlert
+          errors={errors}
+          title="There was an error with your form submission:"
+          shouldCollapseSingles
+        />
+      );
+  }
 };
 
 const Login = () => {

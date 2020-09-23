@@ -57,12 +57,13 @@ namespace Decsys.Services.EmailServices
                     _serviceName,
                     new(to.Name!, isApproved, loginLink)));
 
-        //public async Task SendPasswordReset(string to, string name, string link)
-        //    => await _emails.SendEmail(
-        //        to,
-        //        "UKCRC Tissue Directory Password Reset",
-        //        "Emails/PasswordReset",
-        //        new PasswordResetModel(name, link),
-        //        name);
+        public async Task SendPasswordReset(EmailAddress to, string link)
+            => await _emails.SendEmail(
+                to,
+                $"Reset your {_serviceName} Account Password",
+                "Emails/PasswordReset",
+                new AccountEmailModel<PasswordResetModel>(
+                    _serviceName,
+                    new(to.Name!, link)));
     }
 }

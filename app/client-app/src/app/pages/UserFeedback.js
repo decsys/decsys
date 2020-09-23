@@ -14,8 +14,8 @@ import { useAuth } from "auth/AuthContext";
 import { useQueryStringViewModel } from "hooks/useQueryString";
 import ErrorsAlert from "components/core/ErrorsAlert";
 import DefaultContainer from "components/shared/DefaultContainer";
+import { Router } from "@reach/router";
 
-// This is a catch all for the results feedback from many User actions
 const FeedbackAlert = ({ title, children, ...p }) => (
   <Alert status="info" boxShadow="callout" mt={4} borderRadius={5} p={4} {...p}>
     <Stack spacing={2} align="center" w="100%">
@@ -41,15 +41,6 @@ const RegistrationComplete = () => {
   );
 };
 
-const GeneralActionComplete = () => (
-  <FeedbackAlert title="Success!" status="success">
-    <Link color="blue.500" href="/">
-      Return home
-    </Link>
-    .
-  </FeedbackAlert>
-);
-
 const EmailConfirmationSent = () => (
   <FeedbackAlert title="Email Address Confirmation">
     <Stack spacing={2} align="center" w="100%">
@@ -59,6 +50,20 @@ const EmailConfirmationSent = () => (
       <Text>
         Please check your email, and click the link within to confirm your email
         address.
+      </Text>
+    </Stack>
+  </FeedbackAlert>
+);
+
+const PasswordResetLinkSent = () => (
+  <FeedbackAlert title="Email Address Confirmation">
+    <Stack spacing={2} align="center" w="100%">
+      <Text>
+        An password reset email has been sent to the registered email address.
+      </Text>
+      <Text>
+        Please check your email, and click the link within to reset your
+        password.
       </Text>
     </Stack>
   </FeedbackAlert>
@@ -86,19 +91,50 @@ const AccountApprovalComplete = ({ isApproved }) => {
   );
 };
 
-const AccountApprovalContent = () => {
-  const { accountState = {} } = useQueryStringViewModel();
+// Approval Category
+const AccountApprovalFeedback = () => {
+  const { errors } = useQueryStringViewModel();
+  if (errors && errors.length) return <DefaultFeedback />;
 
-  if (accountState.AccountApproved)
-    return <AccountApprovalComplete isApproved />;
-  if (accountState.AccountRejected) return <AccountApprovalComplete />;
-  return <DefaultContent />;
+  return (
+    <Router>
+      <AccountApprovalComplete isApproved path="approved" />
+      <AccountApprovalComplete path="rejected" />
+      <DefaultFeedback default />
+    </Router>
+  );
 };
 
-const DefaultContent = () => {
-  const { errors, accountState = {} } = useQueryStringViewModel();
+// Register Category
+const RegisterFeedback = () => {
+  const { errors } = useQueryStringViewModel();
+  if (errors && errors.length) return <DefaultFeedback />;
 
-  // Unlike on some forms, or for some sources, errors take precedence over `accountState`
+  return (
+    <Router>
+      <EmailConfirmationSent path="confirmemail" />
+      <AwaitingApproval path="approval" />
+      <RegistrationComplete path="complete" />
+      <DefaultFeedback default />
+    </Router>
+  );
+};
+
+const PasswordFeedback = () => {
+  const { errors } = useQueryStringViewModel();
+  if (errors && errors.length) return <DefaultFeedback />;
+
+  return (
+    <Router>
+      <PasswordResetLinkSent path="request" />
+    </Router>
+  );
+};
+
+const DefaultFeedback = () => {
+  const { errors } = useQueryStringViewModel();
+
+  // Errors?
   if (errors && errors.length)
     return (
       <ErrorsAlert
@@ -108,32 +144,31 @@ const DefaultContent = () => {
       />
     );
 
-  // TODO: probably should move these to their own source
-  if (accountState.RequiresEmailConfirmation) return <EmailConfirmationSent />;
-  if (accountState.RequiresApproval) return <AwaitingApproval />;
-  if (accountState.RegistrationComplete) return <RegistrationComplete />;
-
-  return <GeneralActionComplete />;
-};
-
-const UserFeedback = () => {
-  const { source } = useQueryStringViewModel();
-
+  // No errors? General success.
   return (
-    <Page>
-      <DefaultContainer mt={4}>
-        <Flex>
-          {(() => {
-            switch (source) {
-              case "AccountApproval":
-                return <AccountApprovalContent />;
-              default:
-                return <DefaultContent />;
-            }
-          })()}
-        </Flex>
-      </DefaultContainer>
-    </Page>
+    <FeedbackAlert title="Success!" status="success">
+      <Link color="blue.500" href="/">
+        Return home
+      </Link>
+      .
+    </FeedbackAlert>
   );
 };
+
+// This provides the page container
+// then just routes to categories, or a default
+const UserFeedback = () => (
+  <Page>
+    <DefaultContainer mt={4}>
+      <Flex>
+        <Router>
+          <AccountApprovalFeedback path="approval/*" />
+          <RegisterFeedback path="register/*" />
+          <PasswordFeedback path="password/*" />
+          <DefaultFeedback default />
+        </Router>
+      </Flex>
+    </DefaultContainer>
+  </Page>
+);
 export default UserFeedback;

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Decsys.Auth;
+using Decsys.Constants;
 using Decsys.Data.Entities;
 using Decsys.Models.Emails;
 using Decsys.Services.EmailServices;
@@ -12,6 +13,7 @@ namespace Decsys.Services
 {
     public class TokenIssuingService
     {
+        private readonly ActionContext _actionContext;
         private readonly UserManager<DecsysUser> _users;
         private readonly AccountEmailService _accountEmail;
         private readonly IUrlHelper _url;
@@ -21,13 +23,12 @@ namespace Decsys.Services
             UserManager<DecsysUser> users,
             AccountEmailService accountEmail)
         {
+            _actionContext = actionContextAccessor.ActionContext;
             _users = users;
             _accountEmail = accountEmail;
             _url = new UrlHelperFactory()
                 .GetUrlHelper(actionContextAccessor.ActionContext);
         }
-
-        private const string _scheme = "https";
 
         /// <summary>
         /// Issue an AccountConfirmation token, and email the user a link.
@@ -50,7 +51,7 @@ namespace Decsys.Services
                         userId = user.Id,
                         code = code.Utf8ToBase64Url()
                     },
-                    protocol: _scheme));
+                    protocol: _actionContext.HttpContext.Request.Scheme));
         }
 
         public async Task SendAccountApprovalRequest(DecsysUser user)
@@ -73,7 +74,7 @@ namespace Decsys.Services
                         userId = user.Id,
                         code = code.Utf8ToBase64Url()
                     },
-                    protocol: _scheme),
+                    protocol: _actionContext.HttpContext.Request.Scheme),
                 rejectLink: _url.ActionLink(
                     action: "Reject",
                     controller: "Account",
@@ -82,7 +83,26 @@ namespace Decsys.Services
                         userId = user.Id,
                         code = code.Utf8ToBase64Url()
                     },
-                    protocol: _scheme));
+                    protocol: _actionContext.HttpContext.Request.Scheme));
+        }
+
+        public async Task SendPasswordReset(DecsysUser user)
+        {
+            var code = await _users.GeneratePasswordResetTokenAsync(user);
+            var vm = new
+            {
+                userId = user.Id,
+                code = code.Utf8ToBase64Url()
+            };
+
+            await _accountEmail.SendPasswordReset(
+                new EmailAddress(user.Email)
+                {
+                    Name = user.Fullname
+                },
+                link: (ClientRoutes.ResetPasswordForm +
+                    $"?ViewModel={vm.ObjectToBase64UrlJson()}")
+                    .ToLocalUrlString(_actionContext.HttpContext.Request));
         }
     }
 }
