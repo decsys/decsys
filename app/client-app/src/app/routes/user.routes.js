@@ -1,8 +1,10 @@
 import React from "react";
 import { Router } from "@reach/router";
-import Register from "app/pages/Register/Register";
-import UserFeedback from "app/pages/UserFeedback";
+import Register from "app/pages/user/Register";
+import UserFeedback from "app/pages/user/Feedback";
 import { useServerConfig } from "api/config";
+import ForgotPassword from "app/pages/user/ForgotPassword";
+import Error from "app/pages/Error";
 
 const User = () => {
   const { allowRegistration } = useServerConfig();
@@ -11,7 +13,9 @@ const User = () => {
       {allowRegistration && (
         <>
           <Register path="register" />
+          <ForgotPassword path="password/request" />
           <UserFeedback path="feedback/*" />
+          <Error message="404: Not Found" default />
         </>
       )}
     </Router>

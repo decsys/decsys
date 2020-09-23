@@ -72,7 +72,7 @@ const Login = () => {
           <Feedback {...vmFeedback} Email={Username} />
 
           <Formik
-            initialValues={{ Username }}
+            initialValues={{ Username, Password: "" }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >

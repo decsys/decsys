@@ -511,7 +511,7 @@ namespace Decsys.Controllers
             string Email);
 
         [HttpPost("password/reset")]
-        public async Task<IActionResult> RequestPasswordReset(RequestPasswordResetModel model)
+        public async Task<IActionResult> RequestPasswordReset([FromForm] RequestPasswordResetModel model)
         {
             (string category, string state) route = ("password", "request");
 
