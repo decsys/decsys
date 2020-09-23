@@ -5,7 +5,7 @@ import { DefaultFeedback, FeedbackAlert } from "./index";
 import { useQueryStringViewModel } from "hooks/useQueryString";
 
 const PasswordResetLinkSent = () => (
-  <FeedbackAlert title="Email Address Confirmation">
+  <FeedbackAlert title="Password Reset Link Sent">
     <Stack spacing={2} align="center" w="100%">
       <Text>
         An password reset email has been sent to the registered email address.

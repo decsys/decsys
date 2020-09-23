@@ -121,10 +121,19 @@ const Login = () => {
           </Formik>
 
           {allowRegistration && (
-            <Stack direction="row">
-              <Text>Don't have an account yet?</Text>
-              <Link color="blue.500" as={RouterLink} to="/user/register">
-                Register
+            <Stack>
+              <Stack direction="row">
+                <Text>Don't have an account yet?</Text>
+                <Link color="blue.500" as={RouterLink} to="/user/register">
+                  Register
+                </Link>
+              </Stack>
+              <Link
+                color="blue.500"
+                as={RouterLink}
+                to="/user/password/request"
+              >
+                Forgotten password?
               </Link>
             </Stack>
           )}

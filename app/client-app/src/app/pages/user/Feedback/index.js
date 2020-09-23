@@ -59,7 +59,7 @@ const UserFeedback = () => (
   <Page>
     <DefaultContainer mt={4}>
       <Flex>
-        <Router>
+        <Router style={{ width: "100%" }}>
           <AccountApprovalFeedback path="approval/*" />
           <RegisterFeedback path="register/*" />
           <PasswordFeedback path="password/*" />
