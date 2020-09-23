@@ -19,6 +19,7 @@ using System.Security.Claims;
 using Decsys.Services;
 using Decsys.Services.EmailServices;
 using Decsys.Models.Emails;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Decsys.Controllers
 {
@@ -505,6 +506,57 @@ namespace Decsys.Controllers
         [HttpGet("reject/{userId}/{code}")]
         public async Task<IActionResult> Reject(string userId, string code)
             => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
+
+        #endregion
+
+        #region Edit Profile
+
+        // may break these into further regions
+
+        // Forgot/Reset Password
+        // AllowAnon, follow token flow like EmailConfirm
+        // Link needs to go to a React View though, with query string params?
+
+
+        // TODO: Authorize using bearer token
+        // as these are AJAX-y API routes
+        // don't require "survey.admin", just an authenticated user :)
+
+        // Change Password
+        // easy enough
+        [HttpPost()]
+
+        // Edit Profile
+        // easy enough, only fullname for now
+        // just UpdateUser <3
+
+        [HttpPost("profile")]
+        public IActionResult UpdateProfile()
+        {
+            throw new NotImplementedException();
+        }
+
+        // Change Email
+        // For this one, we receive the POST submission, generate a token and send email
+        // the confirmation link should include the new email address so we don't ahve to persist it anywhere
+        // but base64 encode it or something :)
+        // then AJAX return success (or fail)
+        [HttpPost("emailchange")]
+        public IActionResult RequestEmailChange()
+        {
+            // TODO: model frombody
+            throw new NotImplementedException();
+        }
+
+        // Then we need a token handling route.
+        // Basically functions like ConfirmEmail
+        // don't forget to update Username as well as Email, as we treat them as one and the same.
+        [HttpGet("emailchange/{userId}/{code}/{b64NewEmail}")]
+        public IActionResult ConfirmEmailChange(string userId, string code, string b64NewEmail)
+        {
+            //_users.ChangeEmailAsync()
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

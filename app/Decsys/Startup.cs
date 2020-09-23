@@ -180,6 +180,9 @@ namespace Decsys
 
             services.AddAuthorization(opts => {
                 opts.AddPolicy(
+                    nameof(AuthPolicies.IsAuthenticated),
+                    AuthPolicies.IsAuthenticated);
+                opts.AddPolicy(
                     nameof(AuthPolicies.IsSurveyAdmin),
                     AuthPolicies.IsSurveyAdmin(mode));
                 opts.AddPolicy(
