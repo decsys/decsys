@@ -603,6 +603,13 @@ namespace Decsys.Controllers
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(authorizer))
                 ModelState.AddModelError(string.Empty, useCode ? generalError : "Incorrect current password.");
 
+            if (ModelState.IsValid) // Perform additional Model validation
+            {
+                // Client side should catch these, but we should be on the safe side.
+                if (password != confirmPassword)
+                    ModelState.AddModelError(string.Empty, "The passwords entered do not match.");
+            }
+
             if (ModelState.IsValid)
             {
                 var user = await _users.FindByIdAsync(userId);
