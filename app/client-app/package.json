@@ -1,6 +1,6 @@
 {
-  "name": "@decsys/client-app",
-  "version": "2.0.0-alpha.1",
+  "name": "client-app",
+  "version": "2.0.0-beta.1",
   "private": true,
   "scripts": {
     "start": "craco start",

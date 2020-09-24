@@ -1,7 +1,7 @@
 {
-  "name": "@decsys/discrete-scale-response",
+  "name": "discrete-scale-response",
   "responseItemName": "Discrete Scale",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-beta.1",
   "description": "The Discrete Scale Page Response Item for the DECSYS Survey Platform",
   "private": true,
   "author": "Jonathan Couldridge <jon@jon.gg>",
