@@ -539,12 +539,35 @@ namespace Decsys.Controllers
                 route.category, route.state));
         }
 
+        public record PasswordResetModel(
+            [Required]
+            [DataType(DataType.Password)]
+            string Password,
+            [Required]
+            [DataType(DataType.Password)]
+            string PasswordConfirm);
+
         [HttpPost("password/{userId}/{code}")]
-        public IActionResult PasswordReset()
+        public async Task<IActionResult> PasswordReset(string userId, string code,
+            [FromForm] PasswordResetModel model)
         {
-            throw new NotImplementedException();
-            // perform reset
-            // return Redirect to user/feedback
+            code = code.Base64UrltoUtf8();
+
+            await SetNewPassword(
+                userId,
+                model.Password,
+                model.PasswordConfirm,
+                code,
+                useCode: true);
+
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            };
+
+            return Redirect(
+                ClientRoutes.UserFeedback("password", "reset") +
+                $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
         [HttpPost("password")]
@@ -568,14 +591,37 @@ namespace Decsys.Controllers
         /// <param name="authorizer">The authorization value: either the current Password, or a PasswordReset token</param>
         /// <param name="useCode">Is the <paramref name="authorizer"/> a PasswordReset token code?</param>
         /// <returns></returns>
-        private IActionResult SetNewPassword(
+        private async Task SetNewPassword(
             string userId,
             string password,
             string confirmPassword,
             string authorizer,
             bool useCode)
         {
-            throw new NotImplementedException();
+            var generalError = "The User ID or Token is invalid or has expired.";
+
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(authorizer))
+                ModelState.AddModelError(string.Empty, useCode ? generalError : "Incorrect current password.");
+
+            if (ModelState.IsValid)
+            {
+                var user = await _users.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty, generalError);
+                }
+                else
+                {
+                    var result = useCode
+                        ? await _users.ResetPasswordAsync(user, authorizer, password)
+                        : await _users.ChangePasswordAsync(user, authorizer, password);
+
+                    if (result.Errors.Any())
+                    {
+                        ModelState.AddModelError(string.Empty, generalError);
+                    }
+                }
+            }
         }
 
         #endregion
