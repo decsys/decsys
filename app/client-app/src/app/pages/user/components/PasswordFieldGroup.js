@@ -53,13 +53,14 @@ export const PasswordField = ({ name = "Password", ...p }) => (
   </Field>
 );
 
-const PasswordFieldGroup = ({ initialHidden }) => {
+const PasswordFieldGroup = ({ initialHidden, primaryName = "Password" }) => {
   const [hidden, setHidden] = useState(initialHidden);
   const handleFocus = () => setHidden(false);
 
   return (
     <>
       <PasswordField
+        name={primaryName}
         fieldTip={<PasswordRequirementsTip />}
         onFocus={handleFocus}
       />

@@ -9,6 +9,7 @@ import ResetPassword from "app/pages/user/ResetPassword";
 import Profile from "app/pages/user/Profile";
 import { useAuth } from "auth/AuthContext";
 import Loading from "app/pages/Loading";
+import ChangePassword from "app/pages/user/ChangePassword";
 
 const Protected = ({ as: SuccessRoute, ...p }) => {
   const { user, login, isSuperUser } = useAuth();
@@ -35,7 +36,7 @@ const User = () => {
           <ResetPassword path="password/reset" />
 
           <Protected as={Profile} path="profile" />
-          <Protected as={Profile} path="password" />
+          <Protected as={ChangePassword} path="password" />
           <Protected as={Profile} path="email" />
 
           <UserFeedback path="feedback/*" />

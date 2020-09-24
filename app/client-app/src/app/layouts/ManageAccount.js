@@ -32,7 +32,9 @@ const ManageAccount = ({ children }) => {
     <Default>
       <Grid templateColumns="250px 1fr">
         <Sidebar />
-        <Flex p={4}>{children}</Flex>
+        <Flex w="100%" p={4}>
+          {children}
+        </Flex>
       </Grid>
     </Default>
   );
