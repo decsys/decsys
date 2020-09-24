@@ -7,6 +7,7 @@ const layouts = {
   preview: lazy(() => import("./Preview")),
   survey: lazy(() => import("./Survey")),
   results: lazy(() => import("./Results")),
+  manageAccount: lazy(() => import("./ManageAccount")),
 };
 
 export default layouts;

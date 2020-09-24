@@ -23,6 +23,7 @@ import {
   FaSignInAlt,
   FaSignOutAlt,
   FaUserPlus,
+  FaUserCog,
 } from "react-icons/fa";
 import { Link } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
@@ -60,7 +61,7 @@ const HelpMenu = () => (
 
 const UserMenu = () => {
   const { allowRegistration } = useServerConfig();
-  const { user, login, logout } = useAuth();
+  const { user, login, logout, isSuperUser } = useAuth();
 
   let menuItems = null;
   if (!user) {
@@ -86,6 +87,14 @@ const UserMenu = () => {
     menuItems = (
       <>
         <MenuGroup title={user.profile.name}>
+          {!isSuperUser && (
+            <MenuItem as={Link} to="/user/profile">
+              <Stack direction="row" align="center" spacing={1}>
+                <Icon as={FaUserCog} />
+                <Text>Manage Account</Text>
+              </Stack>
+            </MenuItem>
+          )}
           <MenuItem onClick={logout}>
             <Stack direction="row" align="center" spacing={1}>
               <Icon as={FaSignOutAlt} />

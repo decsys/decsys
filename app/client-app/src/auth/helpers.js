@@ -28,3 +28,5 @@ export const isOidcAdmin = (user) => {
   if (typeof roles === "string") return roles === Roles.SurveyAdmin;
   return roles.includes(Roles.SurveyAdmin);
 };
+
+export const isSuperUser = (user) => user?.profile?.name?.[0] === "@";

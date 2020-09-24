@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
-import { isWorkshopAdmin, isOidcAdmin } from "./helpers";
+import * as helpers from "./helpers";
 import { UserManager, Log } from "oidc-client";
 import config from "./config";
+
+const { isWorkshopAdmin, isOidcAdmin } = helpers;
 
 //#region User Manager singleton init
 Log.logger = console;
@@ -57,6 +59,9 @@ export const AuthContextProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(
     mode === WORKSHOP ? isWorkshopAdmin : false
   );
+  const [isSuperUser, setIsSuperUser] = useState(
+    mode === WORKSHOP ? isWorkshopAdmin : false
+  );
 
   // Init the context
   useEffect(() => {
@@ -88,15 +93,17 @@ export const AuthContextProvider = ({ children }) => {
     };
   }, [mode]);
 
-  // Update `isAdmin`
+  // Update computed user state
   useEffect(() => {
     if (mode === WORKSHOP) return;
     setIsAdmin(isOidcAdmin(user));
+    setIsSuperUser(helpers.isSuperUser(user));
   }, [user, mode]);
 
   const value = {
     user,
     isAdmin,
+    isSuperUser,
     login,
     logout,
   };

@@ -15,8 +15,10 @@ namespace Decsys.Auth
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResource("roles", new [] { ClaimTypes.Role })
+                new IdentityResources.Email(),
                 // Add other / custom IdentityResources here
+                new IdentityResource("extended_profile",
+                    new [] { ClaimTypes.Role, CustomClaimTypes.FullName })
             };
 
         // Scopes of access to the DECSYS Backend API
@@ -44,7 +46,8 @@ namespace Decsys.Auth
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
-                        "roles",
+                        IdentityServerConstants.StandardScopes.Email,
+                        "extended_profile",
                         "survey.admin"
                     },
                     RedirectUris = { $"{origin}/auth/oidc-complete-signin" },

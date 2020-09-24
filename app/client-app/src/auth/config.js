@@ -8,7 +8,7 @@ export default {
     redirect_uri: `${Paths.Origin}${Paths.CompleteSignIn(true)}`,
     response_type: "code",
     response_mode: "query",
-    scope: "openid profile roles survey.admin",
+    scope: "openid profile email extended_profile survey.admin",
     automaticSilentRenew: true,
     includeIdTokenInSilentRenew: true,
     userStore: new WebStorageStateStore({

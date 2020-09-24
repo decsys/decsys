@@ -11,4 +11,6 @@
     public record AccountApprovalResultModel(string Name, bool IsApproved, string LoginLink);
 
     public record PasswordResetModel(string Name, string Link);
+
+    public record EmailChangeModel(string Name, string Link);
 }

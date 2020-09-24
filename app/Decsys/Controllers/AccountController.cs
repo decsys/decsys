@@ -18,8 +18,6 @@ using Decsys.Data.Entities;
 using System.Security.Claims;
 using Decsys.Services;
 using Decsys.Services.EmailServices;
-using Decsys.Models.Emails;
-using System.ComponentModel.DataAnnotations;
 using Decsys.Constants;
 
 namespace Decsys.Controllers
@@ -273,13 +271,7 @@ namespace Decsys.Controllers
                 if (result.Succeeded)
                 {
                     await _tokens.SendAccountConfirmation(user);
-
-                    var successVm = new
-                    {
-                        accountState = AccountState.RequiresEmailConfirmation
-                    };
-                    return Redirect("/user/feedback" +
-                        $"?ViewModel={successVm.ObjectToBase64UrlJson()}");
+                    return Redirect(ClientRoutes.UserFeedback("register", "confirmemail"));
                 }
 
                 foreach (var error in result.Errors)
@@ -474,7 +466,7 @@ namespace Decsys.Controllers
 
                         // Email the user to notify them
                         await _emails.SendAccountApprovalResult(
-                            new EmailAddress(user.Email) { Name = user.Fullname },
+                            new Models.Emails.EmailAddress(user.Email) { Name = user.Fullname },
                             outcome == AccountApprovalOutcomes.Approved,
                             ClientRoutes.LoginForm.ToLocalUrlString(Request));
                     }
@@ -505,11 +497,6 @@ namespace Decsys.Controllers
 
         #region Change / Reset Password
 
-        public record RequestPasswordResetModel(
-            [Required]
-            [EmailAddress]
-            string Email);
-
         [HttpPost("password/reset")]
         public async Task<IActionResult> RequestPasswordReset([FromForm] RequestPasswordResetModel model)
         {
@@ -539,16 +526,9 @@ namespace Decsys.Controllers
                 route.category, route.state));
         }
 
-        public record PasswordResetModel(
-            [Required]
-            [DataType(DataType.Password)]
-            string Password,
-            [Required]
-            [DataType(DataType.Password)]
-            string PasswordConfirm);
-
         [HttpPost("password/{userId}/{code}")]
-        public async Task<IActionResult> PasswordReset(string userId, string code,
+        public async Task<IActionResult> PasswordReset(
+            string userId, string code,
             [FromForm] PasswordResetModel model)
         {
             code = code.Base64UrltoUtf8();
@@ -572,12 +552,20 @@ namespace Decsys.Controllers
 
         [HttpPost("password")]
         [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
-        public IActionResult PasswordChange()
+        public async Task<IActionResult> PasswordChange(ChangePasswordModel model)
         {
-            throw new NotImplementedException();
-            // perform change
-            // return AJAX status
-            // Then React can just display feedback
+            var userId = User.GetUserId();
+
+            await SetNewPassword(
+                userId,
+                model.Password,
+                model.PasswordConfirm,
+                model.CurrentPassword);
+
+            return new JsonResult(new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            });
         }
 
         /// <summary>
@@ -596,7 +584,7 @@ namespace Decsys.Controllers
             string password,
             string confirmPassword,
             string authorizer,
-            bool useCode)
+            bool useCode = false)
         {
             var generalError = "The User ID or Token is invalid or has expired.";
 
@@ -625,7 +613,11 @@ namespace Decsys.Controllers
 
                     if (result.Errors.Any())
                     {
-                        ModelState.AddModelError(string.Empty, generalError);
+                        if (useCode)
+                            ModelState.AddModelError(string.Empty, generalError);
+                        else
+                            foreach (var error in result.Errors)
+                                ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
             }
@@ -635,28 +627,31 @@ namespace Decsys.Controllers
 
         #region Edit Profile
 
-        // may break these into further regions
-
-        // Forgot/Reset Password
-        // AllowAnon, follow token flow like EmailConfirm
-        // Link needs to go to a React View though, with query string params?
-
-
-        // TODO: Authorize using bearer token
-        // as these are AJAX-y API routes
-        // don't require "survey.admin", just an authenticated user :)
-
-        // Edit Profile
-        // easy enough, only fullname for now
-        // just UpdateUser <3
-
         [HttpPost("profile")]
         [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
-        public IActionResult UpdateProfile()
+        public async Task<IActionResult> EditProfile(EditProfileModel model)
         {
-            throw new NotImplementedException();
-            // return AJAX status
+            if (ModelState.IsValid)
+            {
+                var user = await _users.FindByIdAsync(User.GetUserId());
+                user.Fullname = model.FullName;
+                var result = await _users.UpdateAsync(user);
+                if (result.Errors.Any())
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return new JsonResult(new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            });
         }
+
+        #endregion
+
+        #region Change Email Address
 
         // Change Email
         // For this one, we receive the POST submission, generate a token and send email
@@ -665,20 +660,85 @@ namespace Decsys.Controllers
         // then AJAX return success (or fail)
         [HttpPost("email")]
         [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
-        public IActionResult RequestEmailChange()
+        public async Task<IActionResult> RequestEmailChange(RequestEmailChangeModel model)
         {
-            // TODO: model frombody
-            throw new NotImplementedException();
-            // return AJAX status
+            if (ModelState.IsValid) // Perform additional Model validation
+            {
+                // Client side should catch these, but we should be on the safe side.
+                if (model.Email != model.EmailConfirm)
+                    ModelState.AddModelError(string.Empty,
+                        "The email addresses entered do not match.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = await _users.FindByIdAsync(User.GetUserId());
+                var existingUser = await _users.FindByEmailAsync(model.Email);
+
+                if (existingUser is null)
+                    await _tokens.SendEmailChange(user, model.Email);
+                else ModelState.AddModelError(string.Empty,
+                    "A User Account already exists with that email address");
+            }
+
+            return new JsonResult(new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            });
         }
 
         [HttpGet("email/{userId}/{code}/{b64NewEmail}")]
-        public IActionResult ConfirmEmailChange(string userId, string code, string b64NewEmail)
+        public async Task<IActionResult> ConfirmEmailChange(string userId, string code, string b64NewEmail)
         {
-            //_users.ChangeEmailAsync()
-            // Change Username too!
-            throw new NotImplementedException();
-            // return redirect to user/feedback
+            var generalError = "The User ID or Token is invalid or has expired.";
+
+            if (new[] { userId, code, b64NewEmail }.Any(string.IsNullOrWhiteSpace))
+                ModelState.AddModelError(string.Empty, generalError);
+
+            if (ModelState.IsValid)
+            {
+                var user = await _users.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty, generalError);
+                }
+                else
+                {
+                    code = code.Base64UrltoUtf8();
+                    var email = b64NewEmail.Base64UrltoUtf8();
+
+                    var existingUser = await _users.FindByEmailAsync(email);
+                    if (existingUser is { })
+                        ModelState.AddModelError(string.Empty,
+                            "A User Account already exists with that email address");
+                    else
+                    {
+
+                        var emailResult = await _users.ChangeEmailAsync(user, email, code);
+                        if (emailResult.Errors.Any())
+                        {
+                            ModelState.AddModelError(string.Empty, generalError);
+                        }
+                        else
+                        {
+                            var usernameResult = await _users.SetUserNameAsync(user, email);
+                            if (usernameResult.Errors.Any())
+                            {
+                                ModelState.AddModelError(string.Empty, generalError);
+                            }
+                        }
+                    }
+                }
+            }
+
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            };
+
+            return Redirect(
+                ClientRoutes.UserFeedback("email", "changed")
+                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
         #endregion

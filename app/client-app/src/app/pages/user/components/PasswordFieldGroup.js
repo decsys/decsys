@@ -53,7 +53,11 @@ export const PasswordField = ({ name = "Password", ...p }) => (
   </Field>
 );
 
-const PasswordFieldGroup = ({ initialHidden }) => {
+const PasswordFieldGroup = ({
+  initialHidden,
+  primaryProps = {},
+  confirmProps = {},
+}) => {
   const [hidden, setHidden] = useState(initialHidden);
   const handleFocus = () => setHidden(false);
 
@@ -62,10 +66,15 @@ const PasswordFieldGroup = ({ initialHidden }) => {
       <PasswordField
         fieldTip={<PasswordRequirementsTip />}
         onFocus={handleFocus}
+        {...primaryProps}
       />
 
       <Flex hidden={hidden}>
-        <PasswordField name="PasswordConfirm" label="Confirm Password" />
+        <PasswordField
+          name="PasswordConfirm"
+          label="Confirm Password"
+          {...confirmProps}
+        />
       </Flex>
     </>
   );
