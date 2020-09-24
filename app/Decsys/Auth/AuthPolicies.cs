@@ -5,7 +5,6 @@ using Decsys.Repositories.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Decsys.Auth
@@ -15,6 +14,11 @@ namespace Decsys.Auth
     /// </summary>
     public static class AuthPolicies
     {
+        public static AuthorizationPolicy IsAuthenticated
+            => new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+
         public static AuthorizationPolicy IsSurveyAdmin(AppMode mode)
         {
             var b = new AuthorizationPolicyBuilder();

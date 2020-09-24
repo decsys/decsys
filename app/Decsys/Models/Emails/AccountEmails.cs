@@ -9,4 +9,6 @@
     public record AccountApprovalRequestModel(EmailAddress AccountEmail, string ApproveLink, string RejectLink);
 
     public record AccountApprovalResultModel(string Name, bool IsApproved, string LoginLink);
+
+    public record PasswordResetModel(string Name, string Link);
 }

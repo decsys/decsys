@@ -19,29 +19,11 @@ using System.Security.Claims;
 using Decsys.Services;
 using Decsys.Services.EmailServices;
 using Decsys.Models.Emails;
+using System.ComponentModel.DataAnnotations;
+using Decsys.Constants;
 
 namespace Decsys.Controllers
 {
-    // Detailed AccountState data for ViewModels
-    public class AccountState
-    {
-        // Many of these are mutually exclusive
-        // or we shortcut when setting them
-        // so only the most pertinent value is set.
-        // This shouldn't hinder the frontend,
-        // but it shouldn't be assumed this is
-        // a complete snapshot of state at any given time.
-
-        // Account Registration Stages
-        public bool? RequiresEmailConfirmation { get; set; }
-        public bool? RequiresApproval { get; set; }
-        public bool? RegistrationComplete { get; set; }
-
-        // Account Approval
-        public bool? AccountApproved { get; set; }
-        public bool? AccountRejected { get; set; }
-    }
-
     [ApiController]
     [Route("[controller]")]
     [AllowAnonymous]
@@ -133,9 +115,7 @@ namespace Decsys.Controllers
                 };
             }
 
-            // allow us to inform the form of detailed states we care about
             AccountState accountState = new();
-
             if (ModelState.IsValid)
             {
                 // Validate credentials
@@ -180,15 +160,20 @@ namespace Decsys.Controllers
                     // Distinguish some specific cases we care about
                     // So the login form can behave accordingly
 
-                    if (user is { })
+                    accountState = user switch
                     {
-                        accountState.RequiresEmailConfirmation = !user.EmailConfirmed;
-                        accountState.RequiresApproval =
-                            _approvalRequired && user.ApprovalDate is null && user.RejectionDate is null;
+                        { EmailConfirmed: false }
+                            => AccountState.RequiresEmailConfirmation,
+                        { ApprovalDate: null, RejectionDate: null } when _approvalRequired
+                            => AccountState.RequiresApproval,
+                        { RejectionDate: { } } when _approvalRequired
+                            => AccountState.Rejected,
+                        { } => AccountState.Valid,
+                        _ => AccountState.Unknown
+                    };
 
-                        if (_approvalRequired && user.RejectionDate.HasValue)
-                            friendlyError = "This account has been rejected for approval.";
-                    }
+                    if (accountState == AccountState.Rejected)
+                        friendlyError = "This account has been rejected for approval.";
 
                     eventError = "Credentials not allowed";
                 }
@@ -210,7 +195,8 @@ namespace Decsys.Controllers
 
             // redirect back to the login form in the event of failure
             return Redirect(
-                $"/auth/login?ReturnUrl={WebUtility.UrlEncode(model.ReturnUrl)}" +
+                ClientRoutes.LoginForm +
+                $"?ReturnUrl={WebUtility.UrlEncode(model.ReturnUrl)}" +
                 $"&ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
@@ -273,9 +259,7 @@ namespace Decsys.Controllers
                     ModelState.AddModelError(string.Empty, "The passwords entered do not match.");
             }
 
-            // allow us to inform the form of detailed states we care about
             AccountState accountState = new();
-
             if (ModelState.IsValid) // Actual success route
             {
                 var user = new DecsysUser
@@ -292,7 +276,7 @@ namespace Decsys.Controllers
 
                     var successVm = new
                     {
-                        accountState = new AccountState { RequiresEmailConfirmation = true }
+                        accountState = AccountState.RequiresEmailConfirmation
                     };
                     return Redirect("/user/feedback" +
                         $"?ViewModel={successVm.ObjectToBase64UrlJson()}");
@@ -306,11 +290,19 @@ namespace Decsys.Controllers
                     {
                         var existingUser = await _users.FindByEmailAsync(model.Email);
 
-                        accountState.RequiresEmailConfirmation = !existingUser.EmailConfirmed;
-                        accountState.RequiresApproval = _approvalRequired && existingUser.ApprovalDate is null;
+                        accountState = existingUser switch
+                        {
+                            { EmailConfirmed: false } => AccountState.RequiresEmailConfirmation,
+                            { ApprovalDate: null, RejectionDate: null } when _approvalRequired
+                                => AccountState.RequiresApproval,
+                            { RejectionDate: { } } when _approvalRequired
+                                => AccountState.Rejected,
+                            _ => AccountState.Valid
+                        };
 
-                        if (_approvalRequired && existingUser.RejectionDate.HasValue)
-                            ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
+                        if (accountState == AccountState.Rejected)
+                            ModelState.AddModelError(string.Empty,
+                                "This account registration has been rejected.");
                     }
                 }
             }
@@ -324,7 +316,7 @@ namespace Decsys.Controllers
                 accountState
             };
             return Redirect(
-                "/user/register" +
+                ClientRoutes.RegisterForm +
                 $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
@@ -340,8 +332,7 @@ namespace Decsys.Controllers
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
                 ModelState.AddModelError(string.Empty, generalError);
 
-            AccountState accountState = new();
-
+            (string category, string state) route = ("register", "error");
             if (ModelState.IsValid)
             {
                 code = code.Base64UrltoUtf8();
@@ -361,28 +352,33 @@ namespace Decsys.Controllers
                     }
                     else
                     {
-                        if (_approvalRequired)
+                        var accountState = user switch
                         {
-                            if (user.ApprovalDate is null && user.RejectionDate is null)
-                            {
-                                accountState.RequiresApproval = true;
+                            { ApprovalDate: null, RejectionDate: null } when _approvalRequired
+                                => AccountState.RequiresApproval,
+                            { RejectionDate: { } } when _approvalRequired
+                                => AccountState.Rejected,
+                            _ => AccountState.Valid
+                        };
+
+                        switch (accountState)
+                        {
+                            case AccountState.RequiresApproval:
                                 await _tokens.SendAccountApprovalRequest(user);
-                            }
+                                route = ("register", "approval");
+                                break;
+                            case AccountState.Rejected:
+                                ModelState.AddModelError(string.Empty, "This account registration has been rejected.");
+                                break;
+                            default:
+                                route = ("register", "complete");
+                                // Make them an admin
+                                await _users.AddClaimAsync(user,
+                                    new Claim(ClaimTypes.Role, "survey.admin"));
 
-                            if (user.RejectionDate.HasValue)
-                                ModelState.AddModelError(string.Empty, "This account has been rejected for approval.");
-                        }
-                        else
-                        {
-                            // No Approval required
-                            // Make them an admin
-                            await _users.AddClaimAsync(user,
-                                new Claim(ClaimTypes.Role, "survey.admin"));
-
-                            // and sign them in!
-                            await _signIn.SignInAsync(user, false);
-
-                            accountState.RegistrationComplete = true;
+                                // and sign them in!
+                                await _signIn.SignInAsync(user, false);
+                                break;
                         }
                     }
                 }
@@ -390,11 +386,11 @@ namespace Decsys.Controllers
 
             var vm = new
             {
-                errors = CollapseModelStateErrors(ModelState),
-                accountState
+                errors = CollapseModelStateErrors(ModelState)
             };
 
-            return Redirect("/user/feedback"
+            return Redirect(
+                ClientRoutes.UserFeedback(route.category, route.state)
                 + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
@@ -411,10 +407,10 @@ namespace Decsys.Controllers
 
             var vm = new
             {
-                errors = CollapseModelStateErrors(ModelState),
-                accountState = new AccountState { RequiresEmailConfirmation = true }
+                errors = CollapseModelStateErrors(ModelState)
             };
-            return Redirect("/user/feedback"
+            return Redirect(
+                ClientRoutes.UserFeedback("register", "confirmemail")
                 + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
@@ -430,7 +426,7 @@ namespace Decsys.Controllers
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
                 ModelState.AddModelError(string.Empty, generalError);
 
-            AccountState accountState = new();
+            (string category, string state) route = ("approval", "error");
             string Email = "";
 
             if (ModelState.IsValid)
@@ -460,11 +456,11 @@ namespace Decsys.Controllers
                         {
                             case AccountApprovalOutcomes.Approved:
                                 user.ApprovalDate = DateTimeOffset.UtcNow;
-                                accountState.AccountApproved = true;
+                                route = ("approval", "approved");
                                 break;
                             case AccountApprovalOutcomes.Rejected:
                                 user.RejectionDate = DateTimeOffset.UtcNow;
-                                accountState.AccountRejected = true;
+                                route = ("approval", "rejected");
                                 break;
                         }
                         await _users.UpdateAsync(user);
@@ -480,7 +476,7 @@ namespace Decsys.Controllers
                         await _emails.SendAccountApprovalResult(
                             new EmailAddress(user.Email) { Name = user.Fullname },
                             outcome == AccountApprovalOutcomes.Approved,
-                            $"{Request.Scheme}://{Request.Host}/auth/login");
+                            ClientRoutes.LoginForm.ToLocalUrlString(Request));
                     }
                 }
             }
@@ -488,12 +484,11 @@ namespace Decsys.Controllers
             var vm = new
             {
                 Email,
-                errors = CollapseModelStateErrors(ModelState),
-                accountState,
-                source = ViewModelSources.AccountApproval
+                errors = CollapseModelStateErrors(ModelState)
             };
 
-            return Redirect("/user/feedback"
+            return Redirect(
+                ClientRoutes.UserFeedback(route.category, route.state)
                 + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
@@ -505,6 +500,186 @@ namespace Decsys.Controllers
         [HttpGet("reject/{userId}/{code}")]
         public async Task<IActionResult> Reject(string userId, string code)
             => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
+
+        #endregion
+
+        #region Change / Reset Password
+
+        public record RequestPasswordResetModel(
+            [Required]
+            [EmailAddress]
+            string Email);
+
+        [HttpPost("password/reset")]
+        public async Task<IActionResult> RequestPasswordReset([FromForm] RequestPasswordResetModel model)
+        {
+            (string category, string state) route = ("password", "request");
+
+            if (ModelState.IsValid)
+            {
+                switch (await _users.FindByEmailAsync(model.Email))
+                {
+                    case { EmailConfirmed: false }:
+                        route = ("register", "confirmemail");
+                        break;
+                    case { ApprovalDate: null, RejectionDate: null } when _approvalRequired:
+                        route = ("register", "approval");
+                        break;
+                    case { RejectionDate: { } } when _approvalRequired:
+                        ModelState.AddModelError(string.Empty,
+                            "This account registration has been rejected.");
+                        break;
+                    case { } user:
+                        await _tokens.SendPasswordReset(user);
+                        break;
+                }
+            }
+
+            return Redirect(ClientRoutes.UserFeedback(
+                route.category, route.state));
+        }
+
+        public record PasswordResetModel(
+            [Required]
+            [DataType(DataType.Password)]
+            string Password,
+            [Required]
+            [DataType(DataType.Password)]
+            string PasswordConfirm);
+
+        [HttpPost("password/{userId}/{code}")]
+        public async Task<IActionResult> PasswordReset(string userId, string code,
+            [FromForm] PasswordResetModel model)
+        {
+            code = code.Base64UrltoUtf8();
+
+            await SetNewPassword(
+                userId,
+                model.Password,
+                model.PasswordConfirm,
+                code,
+                useCode: true);
+
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            };
+
+            return Redirect(
+                ClientRoutes.UserFeedback("password", "reset") +
+                $"?ViewModel={vm.ObjectToBase64UrlJson()}");
+        }
+
+        [HttpPost("password")]
+        [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
+        public IActionResult PasswordChange()
+        {
+            throw new NotImplementedException();
+            // perform change
+            // return AJAX status
+            // Then React can just display feedback
+        }
+
+        /// <summary>
+        /// Set a new Password for a User.
+        /// 
+        /// Authorize the action either with the user's current Password or a PasswordReset token.
+        /// </summary>
+        /// <param name="userId">ID of the User</param>
+        /// <param name="password">The new Password</param>
+        /// <param name="confirmPassword">The new Password</param>
+        /// <param name="authorizer">The authorization value: either the current Password, or a PasswordReset token</param>
+        /// <param name="useCode">Is the <paramref name="authorizer"/> a PasswordReset token code?</param>
+        /// <returns></returns>
+        private async Task SetNewPassword(
+            string userId,
+            string password,
+            string confirmPassword,
+            string authorizer,
+            bool useCode)
+        {
+            var generalError = "The User ID or Token is invalid or has expired.";
+
+            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(authorizer))
+                ModelState.AddModelError(string.Empty, useCode ? generalError : "Incorrect current password.");
+
+            if (ModelState.IsValid) // Perform additional Model validation
+            {
+                // Client side should catch these, but we should be on the safe side.
+                if (password != confirmPassword)
+                    ModelState.AddModelError(string.Empty, "The passwords entered do not match.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = await _users.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty, generalError);
+                }
+                else
+                {
+                    var result = useCode
+                        ? await _users.ResetPasswordAsync(user, authorizer, password)
+                        : await _users.ChangePasswordAsync(user, authorizer, password);
+
+                    if (result.Errors.Any())
+                    {
+                        ModelState.AddModelError(string.Empty, generalError);
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Edit Profile
+
+        // may break these into further regions
+
+        // Forgot/Reset Password
+        // AllowAnon, follow token flow like EmailConfirm
+        // Link needs to go to a React View though, with query string params?
+
+
+        // TODO: Authorize using bearer token
+        // as these are AJAX-y API routes
+        // don't require "survey.admin", just an authenticated user :)
+
+        // Edit Profile
+        // easy enough, only fullname for now
+        // just UpdateUser <3
+
+        [HttpPost("profile")]
+        [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
+        public IActionResult UpdateProfile()
+        {
+            throw new NotImplementedException();
+            // return AJAX status
+        }
+
+        // Change Email
+        // For this one, we receive the POST submission, generate a token and send email
+        // the confirmation link should include the new email address so we don't ahve to persist it anywhere
+        // but base64 encode it or something :)
+        // then AJAX return success (or fail)
+        [HttpPost("email")]
+        [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
+        public IActionResult RequestEmailChange()
+        {
+            // TODO: model frombody
+            throw new NotImplementedException();
+            // return AJAX status
+        }
+
+        [HttpGet("email/{userId}/{code}/{b64NewEmail}")]
+        public IActionResult ConfirmEmailChange(string userId, string code, string b64NewEmail)
+        {
+            //_users.ChangeEmailAsync()
+            // Change Username too!
+            throw new NotImplementedException();
+            // return redirect to user/feedback
+        }
 
         #endregion
     }

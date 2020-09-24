@@ -2,22 +2,22 @@ import React from "react";
 import { Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
-import { Stack, Button, Flex, Link, Text } from "@chakra-ui/core";
+import { Stack, Button, Flex, Alert, AlertIcon } from "@chakra-ui/core";
 import LightHeading from "components/core/LightHeading";
 import FormikInput from "components/core/FormikInput";
 import validationSchema from "./validation";
-import { Link as RouterLink } from "@reach/router";
-import { useQueryString } from "hooks/useQueryString";
-import { Base64UrlToJson } from "services/data-structures";
+import { navigate } from "@reach/router";
+import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useServerConfig } from "api/config";
+import Error from "app/pages/Error";
 import ErrorsAlert from "components/core/ErrorsAlert";
 import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
-import { useAuth } from "auth/AuthContext";
-import Loading from "../Loading";
 import {
   REQUIRES_APPROVAL,
   REQUIRES_EMAIL_CONFIRMATION,
 } from "constants/account-states";
+import EmailFieldGroup from "../components/EmailFieldGroup";
+import PasswordFieldGroup from "../components/PasswordFieldGroup";
 
 const Feedback = ({ errors, accountState, Email }) => {
   switch (accountState) {
@@ -36,30 +36,26 @@ const Feedback = ({ errors, accountState, Email }) => {
   }
 };
 
-const Login = () => {
-  const { login } = useAuth();
-  const { ReturnUrl, ViewModel } = useQueryString();
-  const { Username, ...vmFeedback } = Base64UrlToJson(ViewModel) ?? {};
-  const { allowRegistration } = useServerConfig();
+const Register = () => {
+  const {
+    errors,
+    Email,
+    EmailConfirm,
+    Fullname,
+    accountState,
+  } = useQueryStringViewModel();
+  const { allowRegistration, accountApprovalRequired } = useServerConfig();
 
-  // This form wasn't triggered though oidc-client?
-  // fix it by invoking oidc-client now
-  if (!ReturnUrl) {
-    login({ returnUrl: "" });
-    return <Loading />;
-  }
+  if (!allowRegistration)
+    return <Error message="Account Registration is not enabled" />;
 
   const post = (values) => {
-    postObjectAsFormData("/Account/Login", {
-      ...values,
-      returnUrl: ReturnUrl,
-    });
+    postObjectAsFormData("/Account/Register", values);
   };
 
-  const handleCancel = () =>
-    post({ button: "cancel", Username: "x", Password: "x" }); // gotta pass model validation
+  const handleCancel = () => navigate(-1);
   const handleSubmit = (values, actions) => {
-    post({ ...values, button: "login" });
+    post(values);
     actions.setSubmitting(false);
   };
 
@@ -67,40 +63,45 @@ const Login = () => {
     <Page>
       <Flex w="100%" justify="center">
         <Stack mt={4} w="70%" spacing={4}>
-          <LightHeading>Login</LightHeading>
+          <LightHeading>Register</LightHeading>
 
-          <Feedback {...vmFeedback} Email={Username} />
+          <Feedback accountState={accountState} errors={errors} Email={Email} />
+
+          {accountApprovalRequired && (
+            <Alert status="info">
+              <AlertIcon />
+              Account registrations are subject to approval.
+            </Alert>
+          )}
 
           <Formik
-            initialValues={{ Username, Password: "" }}
+            initialValues={{
+              Fullname,
+              Email,
+              EmailConfirm,
+              Password: "",
+              PasswordConfirm: "",
+            }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
             {({ isSubmitting }) => (
               <Form noValidate>
                 <Stack spacing={4}>
-                  <Field name="Username">
+                  <Field name="Fullname">
                     {(rp) => (
                       <FormikInput
                         {...rp}
-                        label="Email Address"
-                        placeholder="john.smith@example.com"
+                        label="Full Name"
+                        placeholder="John Smith"
                         isRequired
                       />
                     )}
                   </Field>
 
-                  <Field name="Password">
-                    {(rp) => (
-                      <FormikInput
-                        {...rp}
-                        label={rp.field.name}
-                        placeholder={rp.field.name}
-                        isRequired
-                        isPassword
-                      />
-                    )}
-                  </Field>
+                  <EmailFieldGroup initialHidden={!errors} />
+
+                  <PasswordFieldGroup initialHidden={!errors} />
 
                   <Flex justify="space-between">
                     <Button
@@ -109,7 +110,7 @@ const Login = () => {
                       type="submit"
                       disabled={isSubmitting}
                     >
-                      Login
+                      Register
                     </Button>
                     <Button width="3xs" onClick={handleCancel}>
                       Cancel
@@ -119,28 +120,10 @@ const Login = () => {
               </Form>
             )}
           </Formik>
-
-          {allowRegistration && (
-            <Stack>
-              <Stack direction="row">
-                <Text>Don't have an account yet?</Text>
-                <Link color="blue.500" as={RouterLink} to="/user/register">
-                  Register
-                </Link>
-              </Stack>
-              <Link
-                color="blue.500"
-                as={RouterLink}
-                to="/user/password/request"
-              >
-                Forgotten password?
-              </Link>
-            </Stack>
-          )}
         </Stack>
       </Flex>
     </Page>
   );
 };
 
-export default Login;
+export default Register;
