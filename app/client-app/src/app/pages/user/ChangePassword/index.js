@@ -6,7 +6,6 @@ import PasswordFieldGroup, {
   PasswordField,
 } from "../components/PasswordFieldGroup";
 import LightHeading from "components/core/LightHeading";
-import { navigate } from "@reach/router";
 import validationSchema from "./validation";
 import { changePassword } from "api/account";
 import ErrorsAlert from "components/core/ErrorsAlert";
@@ -15,7 +14,6 @@ const ChangePassword = () => {
   const toast = useToast();
   const [errors, setErrors] = useState(null);
 
-  const handleCancel = () => navigate(-1);
   const handleSubmit = async (values, actions) => {
     try {
       const { errors } = await changePassword(values);
@@ -23,7 +21,7 @@ const ChangePassword = () => {
       if (!errors?.length) {
         toast({
           position: "top",
-          title: "Pasword Changed.",
+          title: "Password changed.",
           status: "success",
           duration: 2500,
           isClosable: true,
@@ -67,7 +65,7 @@ const ChangePassword = () => {
 
                 <PasswordFieldGroup primaryProps={{ label: "New Password" }} />
 
-                <Flex justify="space-between">
+                <Flex justify="flex-start">
                   <Button
                     width="3xs"
                     colorScheme="blue"
@@ -75,9 +73,6 @@ const ChangePassword = () => {
                     disabled={isSubmitting}
                   >
                     Change Password
-                  </Button>
-                  <Button width="3xs" onClick={handleCancel}>
-                    Cancel
                   </Button>
                 </Flex>
               </Stack>

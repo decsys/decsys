@@ -125,8 +125,6 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const { user } = useAuth();
 
-  console.log(user.profile);
-
   return (
     <Page layout="manageAccount">
       <Stack mt={4} w="100%" spacing={4}>

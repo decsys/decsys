@@ -65,5 +65,14 @@ namespace Decsys.Services.EmailServices
                 new AccountEmailModel<PasswordResetModel>(
                     _serviceName,
                     new(to.Name!, link)));
+
+        public async Task SendEmailChange(EmailAddress to, string link)
+            => await _emails.SendEmail(
+                to,
+                $"Confirm your new {_serviceName} Email Address",
+                "Emails/EmailChange",
+                new AccountEmailModel<EmailChangeModel>(
+                    _serviceName,
+                    new(to.Name!, link)));
     }
 }

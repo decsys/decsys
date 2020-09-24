@@ -18,3 +18,12 @@ export const editProfile = async (data) =>
       withHeaders(await authorization_BearerToken())
     )
   ).data;
+
+export const requestEmailChange = async (data) =>
+  (
+    await axios.post(
+      `/account/email`,
+      data,
+      withHeaders(await authorization_BearerToken())
+    )
+  ).data;

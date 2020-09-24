@@ -10,6 +10,7 @@ import Profile from "app/pages/user/Profile";
 import { useAuth } from "auth/AuthContext";
 import Loading from "app/pages/Loading";
 import ChangePassword from "app/pages/user/ChangePassword";
+import ChangeEmail from "app/pages/user/ChangeEmail";
 
 const Protected = ({ as: SuccessRoute, ...p }) => {
   const { user, login, isSuperUser } = useAuth();
@@ -37,7 +38,7 @@ const User = () => {
 
           <Protected as={Profile} path="profile" />
           <Protected as={ChangePassword} path="password" />
-          <Protected as={Profile} path="email" />
+          <Protected as={ChangeEmail} path="email" />
 
           <UserFeedback path="feedback/*" />
         </>

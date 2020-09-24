@@ -104,5 +104,26 @@ namespace Decsys.Services
                     $"?ViewModel={vm.ObjectToBase64UrlJson()}")
                     .ToLocalUrlString(_actionContext.HttpContext.Request));
         }
+
+        public async Task SendEmailChange(DecsysUser user, string newEmail)
+        {
+            var code = await _users.GenerateChangeEmailTokenAsync(user, newEmail);
+
+            await _accountEmail.SendEmailChange(
+                new EmailAddress(newEmail)
+                {
+                    Name = user.Fullname
+                },
+                link: _url.ActionLink(
+                    action: "ConfirmEmailChange",
+                    controller: "Account",
+                    values: new
+                    {
+                        userId = user.Id,
+                        code = code.Utf8ToBase64Url(),
+                        b64NewEmail = newEmail.Utf8ToBase64Url()
+                    },
+                    protocol: _actionContext.HttpContext.Request.Scheme)); ;
+        }
     }
 }

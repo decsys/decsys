@@ -1,0 +1,19 @@
+﻿@using Decsys.Models.Emails;
+@model AccountEmailModel<EmailChangeModel>
+
+<p>Dear @Html.Raw(Model.EmailModel.Name)</p>
+
+<p>A change of email address has been requested for your @Model.ServiceName User Account.</p>
+
+<p>
+    If you wish to continue,
+    <a href="@Html.Raw(Model.EmailModel.Link)">click here to confirm the change to <strong>this email address.</strong></a>
+</p>
+
+<p>
+    Once confirmed, please use <strong>this email address</strong> to log in to your account in future.
+</p>
+
+<p>If you do not confirm this new email address, no change will occue, and you should continue to use your account's existing email address to log in.</p>
+
+<p>@(await Html.PartialAsync("_Signature", Model))</p>

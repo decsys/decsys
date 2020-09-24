@@ -16,6 +16,7 @@ import { Router } from "@reach/router";
 import AccountApprovalFeedback from "./Approval";
 import RegisterFeedback from "./Register";
 import PasswordFeedback from "./Password";
+import EmailFeedback from "./Email";
 
 export const FeedbackAlert = ({ title, children, ...p }) => (
   <Alert status="info" boxShadow="callout" mt={4} borderRadius={5} p={4} {...p}>
@@ -72,6 +73,7 @@ const UserFeedback = () => (
           <AccountApprovalFeedback path="approval/*" />
           <RegisterFeedback path="register/*" />
           <PasswordFeedback path="password/*" />
+          <EmailFeedback path="email/*" />
           <DefaultFeedback default />
         </Router>
       </Flex>

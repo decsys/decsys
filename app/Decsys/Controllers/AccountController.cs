@@ -271,13 +271,7 @@ namespace Decsys.Controllers
                 if (result.Succeeded)
                 {
                     await _tokens.SendAccountConfirmation(user);
-
-                    var successVm = new
-                    {
-                        accountState = AccountState.RequiresEmailConfirmation
-                    };
-                    return Redirect("/user/feedback" +
-                        $"?ViewModel={successVm.ObjectToBase64UrlJson()}");
+                    return Redirect(ClientRoutes.UserFeedback("register", "confirmemail"));
                 }
 
                 foreach (var error in result.Errors)
@@ -655,6 +649,10 @@ namespace Decsys.Controllers
             });
         }
 
+        #endregion
+
+        #region Change Email Address
+
         // Change Email
         // For this one, we receive the POST submission, generate a token and send email
         // the confirmation link should include the new email address so we don't ahve to persist it anywhere
@@ -662,20 +660,85 @@ namespace Decsys.Controllers
         // then AJAX return success (or fail)
         [HttpPost("email")]
         [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
-        public IActionResult RequestEmailChange()
+        public async Task<IActionResult> RequestEmailChange(RequestEmailChangeModel model)
         {
-            // TODO: model frombody
-            throw new NotImplementedException();
-            // return AJAX status
+            if (ModelState.IsValid) // Perform additional Model validation
+            {
+                // Client side should catch these, but we should be on the safe side.
+                if (model.Email != model.EmailConfirm)
+                    ModelState.AddModelError(string.Empty,
+                        "The email addresses entered do not match.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = await _users.FindByIdAsync(User.GetUserId());
+                var existingUser = await _users.FindByEmailAsync(model.Email);
+
+                if (existingUser is null)
+                    await _tokens.SendEmailChange(user, model.Email);
+                else ModelState.AddModelError(string.Empty,
+                    "A User Account already exists with that email address");
+            }
+
+            return new JsonResult(new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            });
         }
 
         [HttpGet("email/{userId}/{code}/{b64NewEmail}")]
-        public IActionResult ConfirmEmailChange(string userId, string code, string b64NewEmail)
+        public async Task<IActionResult> ConfirmEmailChange(string userId, string code, string b64NewEmail)
         {
-            //_users.ChangeEmailAsync()
-            // Change Username too!
-            throw new NotImplementedException();
-            // return redirect to user/feedback
+            var generalError = "The User ID or Token is invalid or has expired.";
+
+            if (new[] { userId, code, b64NewEmail }.Any(string.IsNullOrWhiteSpace))
+                ModelState.AddModelError(string.Empty, generalError);
+
+            if (ModelState.IsValid)
+            {
+                var user = await _users.FindByIdAsync(userId);
+                if (user is null)
+                {
+                    ModelState.AddModelError(string.Empty, generalError);
+                }
+                else
+                {
+                    code = code.Base64UrltoUtf8();
+                    var email = b64NewEmail.Base64UrltoUtf8();
+
+                    var existingUser = await _users.FindByEmailAsync(email);
+                    if (existingUser is { })
+                        ModelState.AddModelError(string.Empty,
+                            "A User Account already exists with that email address");
+                    else
+                    {
+
+                        var emailResult = await _users.ChangeEmailAsync(user, email, code);
+                        if (emailResult.Errors.Any())
+                        {
+                            ModelState.AddModelError(string.Empty, generalError);
+                        }
+                        else
+                        {
+                            var usernameResult = await _users.SetUserNameAsync(user, email);
+                            if (usernameResult.Errors.Any())
+                            {
+                                ModelState.AddModelError(string.Empty, generalError);
+                            }
+                        }
+                    }
+                }
+            }
+
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            };
+
+            return Redirect(
+                ClientRoutes.UserFeedback("email", "changed")
+                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
         }
 
         #endregion
