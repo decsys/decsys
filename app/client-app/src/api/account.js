@@ -9,3 +9,12 @@ export const changePassword = async (data) =>
       withHeaders(await authorization_BearerToken())
     )
   ).data;
+
+export const editProfile = async (data) =>
+  (
+    await axios.post(
+      `/account/profile`,
+      data,
+      withHeaders(await authorization_BearerToken())
+    )
+  ).data;

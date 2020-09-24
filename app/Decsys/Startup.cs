@@ -125,6 +125,7 @@ namespace Decsys
                     .AddRoleManager<RoleManager<MongoRole>>()
                     .AddUserManager<UserManager<DecsysUser>>()
                     .AddSignInManager<SignInManager<DecsysUser>>()
+                    .AddClaimsPrincipalFactory<DecsysUserClaimsPrincipalFactory>()
                     .AddDefaultTokenProviders();
 
                 // Additional Mongo Identity Store setup

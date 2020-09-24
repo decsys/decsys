@@ -32,14 +32,14 @@ const ChangePassword = () => {
       }
     } catch (e) {
       console.error(e);
-      setErrors([e]);
+      setErrors([e.message]);
     }
     actions.setSubmitting(false);
   };
 
   return (
     <Page layout="manageAccount">
-      <Stack mt={4} w="70%" spacing={4}>
+      <Stack mt={4} w="100%" spacing={4}>
         <LightHeading>Change Password</LightHeading>
 
         <ErrorsAlert
