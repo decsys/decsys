@@ -633,27 +633,26 @@ namespace Decsys.Controllers
 
         #region Edit Profile
 
-        // may break these into further regions
-
-        // Forgot/Reset Password
-        // AllowAnon, follow token flow like EmailConfirm
-        // Link needs to go to a React View though, with query string params?
-
-
-        // TODO: Authorize using bearer token
-        // as these are AJAX-y API routes
-        // don't require "survey.admin", just an authenticated user :)
-
-        // Edit Profile
-        // easy enough, only fullname for now
-        // just UpdateUser <3
-
         [HttpPost("profile")]
         [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
-        public IActionResult UpdateProfile()
+        public async Task<IActionResult> EditProfile(EditProfileModel model)
         {
-            throw new NotImplementedException();
-            // return AJAX status
+            if (ModelState.IsValid)
+            {
+                var user = await _users.FindByIdAsync(User.GetUserId());
+                user.Fullname = model.FullName;
+                var result = await _users.UpdateAsync(user);
+                if (result.Errors.Any())
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return new JsonResult(new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            });
         }
 
         // Change Email

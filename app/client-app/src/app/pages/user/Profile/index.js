@@ -11,6 +11,7 @@ import { editProfile } from "api/account";
 
 const ProfileForm = ({ profile, setIsEditing }) => {
   const toast = useToast();
+  const { login } = useAuth();
   const [errors, setErrors] = useState(null);
 
   const handleCancel = () => setIsEditing(false);
@@ -19,6 +20,7 @@ const ProfileForm = ({ profile, setIsEditing }) => {
       const { errors } = await editProfile(values);
       setErrors(errors);
       if (!errors?.length) {
+        await login(); // silent sign-in to update profile client-side
         toast({
           position: "top",
           title: "Profile updated.",
@@ -71,6 +73,8 @@ const ProfileForm = ({ profile, setIsEditing }) => {
                   colorScheme="blue"
                   type="submit"
                   disabled={isSubmitting}
+                  isLoading={isSubmitting}
+                  loadingText="Saving"
                 >
                   Save Changes
                 </Button>
