@@ -18,8 +18,6 @@ using Decsys.Data.Entities;
 using System.Security.Claims;
 using Decsys.Services;
 using Decsys.Services.EmailServices;
-using Decsys.Models.Emails;
-using System.ComponentModel.DataAnnotations;
 using Decsys.Constants;
 
 namespace Decsys.Controllers
@@ -474,7 +472,7 @@ namespace Decsys.Controllers
 
                         // Email the user to notify them
                         await _emails.SendAccountApprovalResult(
-                            new EmailAddress(user.Email) { Name = user.Fullname },
+                            new Models.Emails.EmailAddress(user.Email) { Name = user.Fullname },
                             outcome == AccountApprovalOutcomes.Approved,
                             ClientRoutes.LoginForm.ToLocalUrlString(Request));
                     }
@@ -505,11 +503,6 @@ namespace Decsys.Controllers
 
         #region Change / Reset Password
 
-        public record RequestPasswordResetModel(
-            [Required]
-            [EmailAddress]
-            string Email);
-
         [HttpPost("password/reset")]
         public async Task<IActionResult> RequestPasswordReset([FromForm] RequestPasswordResetModel model)
         {
@@ -539,16 +532,9 @@ namespace Decsys.Controllers
                 route.category, route.state));
         }
 
-        public record PasswordResetModel(
-            [Required]
-            [DataType(DataType.Password)]
-            string Password,
-            [Required]
-            [DataType(DataType.Password)]
-            string PasswordConfirm);
-
         [HttpPost("password/{userId}/{code}")]
-        public async Task<IActionResult> PasswordReset(string userId, string code,
+        public async Task<IActionResult> PasswordReset(
+            string userId, string code,
             [FromForm] PasswordResetModel model)
         {
             code = code.Base64UrltoUtf8();
@@ -572,12 +558,20 @@ namespace Decsys.Controllers
 
         [HttpPost("password")]
         [Authorize(Policy = nameof(AuthPolicies.IsAuthenticated))]
-        public IActionResult PasswordChange()
+        public async Task<IActionResult> PasswordChange(ChangePasswordModel model)
         {
-            throw new NotImplementedException();
-            // perform change
-            // return AJAX status
-            // Then React can just display feedback
+            var userId = User.GetUserId();
+
+            await SetNewPassword(
+                userId,
+                model.Password,
+                model.PasswordConfirm,
+                model.CurrentPassword);
+
+            return new JsonResult(new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            });
         }
 
         /// <summary>
@@ -596,7 +590,7 @@ namespace Decsys.Controllers
             string password,
             string confirmPassword,
             string authorizer,
-            bool useCode)
+            bool useCode = false)
         {
             var generalError = "The User ID or Token is invalid or has expired.";
 
@@ -625,7 +619,11 @@ namespace Decsys.Controllers
 
                     if (result.Errors.Any())
                     {
-                        ModelState.AddModelError(string.Empty, generalError);
+                        if (useCode)
+                            ModelState.AddModelError(string.Empty, generalError);
+                        else
+                            foreach (var error in result.Errors)
+                                ModelState.AddModelError(string.Empty, error.Description);
                     }
                 }
             }
