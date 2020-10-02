@@ -68,7 +68,7 @@ namespace Decsys.Repositories.Mongo
             entity.Owner = ownerId;
 
             _surveys.InsertOne(entity);
-            return survey.Id;
+            return entity.Id;
         }
 
         public void Delete(int id)
