@@ -9,16 +9,14 @@ import {
   Icon,
 } from "@chakra-ui/core";
 import { FaEdit } from "react-icons/fa";
-import { useEditorBarContext } from "../../contexts/EditorBar";
 import useFreshPropState from "hooks/useFreshPropState";
 import useDeferredAction from "hooks/useDeferredAction";
 
-const NameInput = ({ name }) => {
+const NameInput = ({ name, handleNameSave, nameState }) => {
   const toast = useToast();
-  const { saveName, nameState } = useEditorBarContext();
   const [value, setValue] = useFreshPropState(name);
 
-  const deferredSave = useDeferredAction(saveName);
+  const deferredSave = useDeferredAction(handleNameSave);
   const handleChange = ({ target: { value } }) => {
     setValue(value);
     deferredSave(value);
@@ -44,7 +42,7 @@ const NameInput = ({ name }) => {
         <Input
           variant="flushed"
           borderRadius={0}
-          size="lg"
+          // size="lg"
           fontSize="1.3rem"
           placeholder="Untitled Survey"
           value={value}
