@@ -42,7 +42,6 @@ const NameInput = ({ name, handleNameSave, nameState }) => {
         <Input
           variant="flushed"
           borderRadius={0}
-          // size="lg"
           fontSize="1.3rem"
           placeholder="Untitled Survey"
           value={value}
