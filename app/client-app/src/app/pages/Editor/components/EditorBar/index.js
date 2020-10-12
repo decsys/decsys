@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, useColorMode } from "@chakra-ui/core";
+import { Grid, Flex, useColorMode } from "@chakra-ui/core";
 import {
   BackButton,
   PreviewButton,
@@ -7,12 +7,14 @@ import {
   DuplicateButton,
   DeleteButton,
 } from "./Buttons";
-import NameInput from "./NameInput";
+import NameInput from "components/shared/NameInput";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { defaultColorMode } from "themes";
+import { useEditorBarContext } from "../../contexts/EditorBar";
 
 const EditorBar = () => {
   const { id, name } = useFetchSurvey();
+  const { saveName, nameState } = useEditorBarContext();
   const { colorMode } = useColorMode();
   const bg = { light: "gray.800" };
 
@@ -25,7 +27,13 @@ const EditorBar = () => {
     >
       <BackButton />
 
-      <NameInput name={name} />
+      <Flex bg="gray.100">
+        <NameInput
+          name={name}
+          handleNameSave={saveName}
+          nameState={nameState}
+        />
+      </Flex>
 
       <PreviewButton />
       <ExportButton id={id} name={name} />
