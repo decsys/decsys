@@ -8,7 +8,7 @@ import config from "./config";
 const { isWorkshopAdmin, isOidcAdmin } = helpers;
 
 //#region User Manager singleton init
-Log.logger = console;
+// Log.logger = console; // TODO: useful for debugging ;)
 export const users = new UserManager(config.oidc);
 //#endregion
 
