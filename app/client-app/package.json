@@ -39,6 +39,7 @@
     "react": "^16.13.1",
     "react-async": "^10.0.1",
     "react-beautiful-dnd": "^13.0.0",
+    "react-div-100vh": "^0.5.6",
     "react-dom": "^16.13.1",
     "react-icons": "^3.11.0",
     "react-markdown": "^4.3.1",
