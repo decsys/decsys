@@ -9399,6 +9399,7 @@ __metadata:
     react-async: ^10.0.1
     react-beautiful-dnd: ^13.0.0
     react-dev-utils: ^10.2.1
+    react-div-100vh: ^0.5.6
     react-dom: ^16.13.1
     react-icons: ^3.11.0
     react-markdown: ^4.3.1
@@ -21309,6 +21310,15 @@ fsevents@~2.1.2:
     strip-ansi: 6.0.0
     text-table: 0.2.0
   checksum: 658b918e96b6c17d369f7ae9b67694c1cf6a90ee7a10ffd3b3a06263ddea053faeface6e45961c8336f58f375ebac5ad3766dabc525d10882dd94466fc36e7eb
+  languageName: node
+  linkType: hard
+
+"react-div-100vh@npm:^0.5.6":
+  version: 0.5.6
+  resolution: "react-div-100vh@npm:0.5.6"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 9b30d309de8e42edc8f16a60d7f40c127e217cdf944a67fc56c343eee525f332f7cfb073ea57a00425b5ad77a5efaec39a89fd52c6bcb5185704897ab923e813
   languageName: node
   linkType: hard
 
