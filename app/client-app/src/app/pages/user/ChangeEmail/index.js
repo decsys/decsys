@@ -26,7 +26,6 @@ const ChangeEmail = () => {
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (values, actions) => {
-    console.log("muffins");
     try {
       const { errors } = await requestEmailChange(values);
       setErrors(errors);
