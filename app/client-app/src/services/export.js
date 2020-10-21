@@ -55,12 +55,16 @@ export const getResultsCsvData = (results) => {
   //figure out all the response columns we need
   const responseColumns = results.participants.reduce(
     (agg, p) => {
-      const responseColumns = p.responses.map((x) =>
-        Object.keys(x.response).map((r) => ({
-          label: `${x.responseType}_${r}`,
-          value: `responses.response.${r}`,
-        }))
-      );
+      const responseColumns = p.responses
+        .map((x) => {
+          return !x.response
+            ? null
+            : Object.keys(x.response).map((r) => ({
+                label: `${x.responseType}_${r}`,
+                value: `responses.response.${r}`,
+              }));
+        })
+        .filter((x) => !!x); // drop the null ones
 
       responseColumns.forEach((response) => {
         response.forEach((column) => {
