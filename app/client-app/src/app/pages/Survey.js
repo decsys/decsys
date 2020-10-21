@@ -145,22 +145,26 @@ const Survey = ({ combinedId, userId, progressStatus }) => {
     [instance.id, userId]
   );
 
-  // we set an initialPage value
-  // based on progressStatus provided to us
-  // about the current Participant ID
-  let initialPage;
-  if (progressStatus.completed && progressStatus.oneTimeParticipants)
-    initialPage = pages.length;
-  else if (progressStatus.inProgress)
-    initialPage = pages.findIndex(
-      (x) => x.id === progressStatus.lastPageLoaded
-    );
-  else initialPage = 0;
-
-  const [page, setPage] = useState(initialPage < 0 ? 0 : initialPage);
+  const [page, setPage] = useState(null);
+  useEffect(() => {
+    // we set an initialPage value
+    // based on progressStatus provided to us
+    // about the current Participant ID
+    let initialPage;
+    if (progressStatus.completed && progressStatus.oneTimeParticipants)
+      initialPage = pages.length;
+    else if (progressStatus.inProgress) {
+      initialPage = pages.findIndex(
+        (x) => x.id === progressStatus.lastPageLoaded
+      );
+    } else initialPage = 0;
+    setPage(initialPage < 0 ? 0 : initialPage);
+  }, [progressStatus, pages]);
 
   const [lastPage, setLastPage] = useState(false);
   useEffect(() => {
+    if (!page) return;
+
     if (pages.length) {
       // check if we are beyond lastPage
       // (e.g. resuming an already completed one time survey)
@@ -181,7 +185,7 @@ const Survey = ({ combinedId, userId, progressStatus }) => {
     setPage(page + 1);
   };
 
-  if (!pages.length || !pages[page]) return <Loading />;
+  if (page == null || !pages.length || !pages[page]) return <Loading />;
 
   return (
     <Page layout="survey">
