@@ -43,6 +43,8 @@ const getDataByPage = (survey, results) => {
     }, {})
   );
 
+  console.log(resultsByPage, completionByPage);
+
   return {
     resultsByPage,
     completionByPage,
@@ -188,23 +190,31 @@ const Dashboard = ({ combinedId }) => {
         </Flex>
         {completionByPage?.length && (
           <Stack boxShadow="callout" spacing={0}>
-            {survey.pages.map(
-              (p, i) =>
-                !!getPageResponseItem(p.components) && (
-                  <ProgressCard
-                    key={i}
-                    title={`Q${i + 1}`}
-                    cardHeaderWidth="50px"
-                    total={results.participants.length}
-                    progressData={Object.keys(completionByPage[i]).map(
-                      (id) => ({
-                        complete: completionByPage[i][id],
-                      })
-                    )}
-                    onClick={() => handleCardClick(i)}
-                  />
-                )
-            )}
+            {survey.pages.map((_, i) => {
+              const completionData = completionByPage[i];
+              // Pages without responses will be nullish in resultsByPage
+              // so we use that to distinguish
+              const hasResponses = !!resultsByPage[i];
+              return (
+                <ProgressCard
+                  key={i}
+                  title={`Page ${i + 1}`}
+                  cardHeaderWidth="100px"
+                  total={results.participants.length}
+                  progressData={
+                    hasResponses &&
+                    Object.keys(completionData).map((id) => ({
+                      complete: completionData[id],
+                    }))
+                  }
+                  message={
+                    !hasResponses && "This page doesn't gather reponses."
+                  }
+                  lowProfile={!hasResponses}
+                  onClick={hasResponses && (() => handleCardClick(i))}
+                />
+              );
+            })}
           </Stack>
         )}
       </Stack>
@@ -213,7 +223,7 @@ const Dashboard = ({ combinedId }) => {
         <StandardModal
           {...statsModal}
           size="6xl"
-          header={`Q${statsPage.order} Stats`}
+          header={`Page ${statsPage.order} Stats`}
           cancelButton={false}
         >
           <Stats
