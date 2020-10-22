@@ -5,7 +5,10 @@ import {
   getInstanceResultsSummary,
   getInstanceResultsFull,
 } from "api/survey-instances";
-import { exportDateFormat as formatDate } from "services/date-formats";
+import {
+  dateTimeOffsetStringComparer,
+  exportDateFormat as formatDate,
+} from "services/date-formats";
 import { getResultsCsvData, downloadFile } from "services/export";
 import download from "downloadjs";
 import LightHeading from "components/core/LightHeading";
@@ -388,6 +391,9 @@ const Results = ({ id }) => {
         const { data } = await getInstanceResultsSummary(
           currentInstance.survey.id,
           currentInstance.id
+        );
+        data.participants = data.participants.sort((a, b) =>
+          dateTimeOffsetStringComparer(a.surveyStarted, b.surveyStarted)
         );
         setResults(data);
       })();
