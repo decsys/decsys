@@ -16,3 +16,12 @@ export const exportDateFormat = (date) => {
   const [time, tz] = timeWithZone.split(" ");
   return { date: formattedDate, time, tz, flat: formattedDateTime };
 };
+
+export const dateTimeOffsetStringComparer = (a, b) => {
+  const ad = new Date(a).toISOString();
+  const bd = new Date(b).toISOString();
+
+  if (ad === bd) return 0;
+  if (ad > bd) return 1;
+  return -1;
+};
