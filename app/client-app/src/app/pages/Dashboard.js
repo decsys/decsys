@@ -24,10 +24,17 @@ import {
 import { getComponent, getPageResponseItem } from "services/page-items";
 import { Body as SurveyPageBody } from "components/shared/SurveyPage";
 import LightHeading from "components/core/LightHeading";
-import { exportDateFormat as formatDate } from "services/date-formats";
+import {
+  dateTimeOffsetStringComparer,
+  exportDateFormat as formatDate,
+} from "services/date-formats";
 import { defaultColorMode } from "themes";
 
 const getDataByPage = (survey, results) => {
+  results.participants = results.participants.sort((a, b) =>
+    dateTimeOffsetStringComparer(a.surveyStarted, b.surveyStarted)
+  );
+
   const resultsByPage = results.participants.reduce((a, p) => {
     p.responses.forEach((r) => {
       a[r.page] = a[r.page] || {};
@@ -42,8 +49,6 @@ const getDataByPage = (survey, results) => {
       return a;
     }, {})
   );
-
-  console.log(resultsByPage, completionByPage);
 
   return {
     resultsByPage,
