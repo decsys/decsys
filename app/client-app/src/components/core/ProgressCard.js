@@ -1,6 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Flex, Text, Grid, useColorMode, useTheme } from "@chakra-ui/core";
+import {
+  Flex,
+  Text,
+  Grid,
+  useColorMode,
+  useTheme,
+  Alert,
+  AlertIcon,
+} from "@chakra-ui/core";
 import { ActiveIndicator } from ".";
 import LightHeading from "./LightHeading";
 import { defaultColorMode } from "themes";
@@ -32,12 +40,14 @@ const ProgressCard = ({
       templateColumns={`${cardHeaderWidth} 1fr`}
       alignItems="center"
       p={lowProfile ? 0 : 2}
+      pl={2} // fix left padding for title alignment
       _hover={lowProfile ? null : { boxShadow: "callout", zIndex: 2 }}
     >
       <LightHeading
         p={lowProfile ? 1 : 2}
+        px={2} // fix x padding for alignment
         as="h5"
-        size={lowProfile ? "xs" : "sm"}
+        size="sm"
         textAlign="right"
       >
         {title}
@@ -45,7 +55,10 @@ const ProgressCard = ({
 
       {message ? (
         <Flex p={1}>
-          <Text>{message}</Text>
+          <Alert p={1} variant="left-accent">
+            <AlertIcon />
+            <Text>{message}</Text>
+          </Alert>
         </Flex>
       ) : (
         <Flex flexDirection="column">
