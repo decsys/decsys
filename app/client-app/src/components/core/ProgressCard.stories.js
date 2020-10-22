@@ -1,6 +1,8 @@
 import React from "react";
 import { ProgressCard } from "components/core";
 
+const title = "Page 1";
+
 const progressData = [
   { label: "1", complete: true },
   { label: "2", complete: true },
@@ -19,10 +21,31 @@ export default {
   component: ProgressCard,
 };
 
-export const Basic = () => <ProgressCard title="Question 1" total={10} />;
+export const Basic = () => <ProgressCard title={title} total={10} />;
 
 export const WithHeader = () => (
-  <ProgressCard title="Question 1" progressHeader="Participants" total={50} />
+  <ProgressCard title={title} progressHeader="Participants" total={50} />
+);
+
+export const WithMessage = () => (
+  <ProgressCard title={title} message="No progress data here" />
+);
+
+export const LowProfileBasic = () => (
+  <ProgressCard title={title} lowProfile total={10} />
+);
+
+export const LowProfileHeader = () => (
+  <ProgressCard
+    title={title}
+    lowProfile
+    progressHeader="Participants"
+    total={50}
+  />
+);
+
+export const LowProfileMessage = () => (
+  <ProgressCard title={title} message="No data" lowProfile />
 );
 
 export const WithData = () => (
