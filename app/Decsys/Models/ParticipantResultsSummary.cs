@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Decsys.Models
@@ -10,6 +11,8 @@ namespace Decsys.Models
         public ParticipantResultsSummary(string id) => Id = id;
 
         public string Id { get; set; }
+
+        public DateTimeOffset SurveyStarted { get; set; }
 
         /// <summary>
         /// The participant's reponse to each survey question
