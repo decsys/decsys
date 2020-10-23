@@ -26,11 +26,11 @@ import {
   useTheme,
   Icon,
 } from "@chakra-ui/core";
-import { Page, EmptyState } from "components/core";
+import { Page, EmptyState, LoadingIndicator } from "components/core";
 import { navigate } from "@reach/router";
 import { encode } from "services/instance-id";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { useTable, useSortBy } from "react-table";
+import { useTable, useSortBy, useFilters } from "react-table";
 import { isEmpty } from "services/data-structures";
 
 const exportMime = "application/json";
@@ -147,16 +147,52 @@ const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
   );
 };
 
-const ResultsTable = ({ columns, data }) => {
+const ResultsTable = ({ columns, data, page, participant }) => {
+  const filters = useMemo(() => {
+    const result = [];
+    if (page) result.push({ id: "page", value: page });
+    if (participant) result.push({ id: "participant", value: participant });
+    console.log(result);
+    return result;
+  }, [page, participant]);
+
+  const hiddenColumns = useMemo(() => {
+    const result = [];
+    if (page) result.push("page");
+    if (participant) result.push("participant");
+    return result;
+  }, [page, participant]);
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data }, useSortBy);
+    setHiddenColumns,
+    setAllFilters,
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: {
+        filters,
+        hiddenColumns,
+      },
+    },
+    useFilters,
+    useSortBy
+  );
 
   const { colors } = useTheme();
+
+  useEffect(() => {
+    setHiddenColumns(hiddenColumns);
+  }, [hiddenColumns, setHiddenColumns]);
+
+  useEffect(() => {
+    setAllFilters(filters);
+  }, [filters, setAllFilters]);
 
   return (
     <Flex overflowY="auto">
@@ -269,12 +305,20 @@ const DateTimeCellRender = ({ value }) => {
   );
 };
 
+const SELECT_ALL_KEY = "All";
+
 const ResultsTables = ({ results }) => {
   const columns = useMemo(
     () => [
       {
         Header: "Page",
         accessor: "page",
+        filter: "equals",
+      },
+      {
+        Header: "Participant",
+        accessor: "participant",
+        filter: "equals",
       },
       {
         Header: "Order",
@@ -330,17 +374,35 @@ const ResultsTables = ({ results }) => {
     []
   );
 
+  // we actually flatten the results data
+  // and let react-table do filtering based on the selection UI here
+  const tableData = useMemo(
+    () =>
+      results.participants.reduce(
+        (data, p) => [
+          ...data,
+          ...p.responses.map((r) => ({ participant: p.id, ...r })),
+        ],
+        []
+      ),
+    [results.participants]
+  );
+
+  const [selectedPage, setSelectedPage] = useState(null);
+
   const [selectedParticipant, setSelectedParticipant] = useState(
-    results.participants[0]
+    results.participants[0]?.id
   );
   useEffect(() => {
-    setSelectedParticipant(results.participants[0]);
+    setSelectedParticipant(results.participants[0]?.id);
+    setSelectedPage(null);
   }, [results.participants]);
 
-  const handleSelectionChange = (e) =>
+  const handleParticipantChange = (e) => {
     setSelectedParticipant(
-      results.participants.find((x) => x.id.toString() === e.target.value)
+      e.target.value === SELECT_ALL_KEY ? null : e.target.value
     );
+  };
 
   return (
     <>
@@ -359,9 +421,12 @@ const ResultsTables = ({ results }) => {
         <Flex w="350px">
           <Select
             size="sm"
-            value={selectedParticipant.id}
-            onChange={handleSelectionChange}
+            value={selectedParticipant ?? SELECT_ALL_KEY}
+            onChange={handleParticipantChange}
           >
+            <option key={`__${SELECT_ALL_KEY}__`} value={SELECT_ALL_KEY}>
+              {SELECT_ALL_KEY}
+            </option>
             {results.participants.map((x) => (
               <option key={x.id} value={x.id}>
                 {x.id}
@@ -373,7 +438,12 @@ const ResultsTables = ({ results }) => {
         <Text>({results.participants.length} total)</Text>
       </Stack>
 
-      <ResultsTable data={selectedParticipant.responses} columns={columns} />
+      <ResultsTable
+        data={tableData}
+        columns={columns}
+        participant={selectedParticipant}
+        page={selectedPage}
+      />
     </>
   );
 };
@@ -400,6 +470,18 @@ const Results = ({ id }) => {
     }
   }, [currentInstance]);
 
+  let resultsArea = <LoadingIndicator verb="Fetching" noun="results" />;
+  if (results) {
+    if (results.participants.length)
+      resultsArea = <ResultsTables results={results} />;
+    else
+      resultsArea = (
+        <Flex mt={4} gridRow="span 2">
+          <EmptyState message="There are no results available for this Survey Instance" />
+        </Flex>
+      );
+  }
+
   return (
     <Page layout="results">
       <Flex direction="column" p={2}>
@@ -424,13 +506,7 @@ const Results = ({ id }) => {
         </Flex>
       </Flex>
 
-      {results?.participants.length ? (
-        <ResultsTables results={results} />
-      ) : (
-        <Flex mt={4} gridRow="span 2">
-          <EmptyState message="There are no results available for this Survey Instance" />
-        </Flex>
-      )}
+      {resultsArea}
     </Page>
   );
 };
