@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  Suspense,
+  useCallback,
+} from "react";
 import { useSurvey } from "api/surveys";
 import {
   useSurveyInstancesList,
@@ -152,7 +158,6 @@ const ResultsTable = ({ columns, data, page, participant }) => {
     const result = [];
     if (page) result.push({ id: "page", value: page });
     if (participant) result.push({ id: "participant", value: participant });
-    console.log(result);
     return result;
   }, [page, participant]);
 
@@ -175,10 +180,10 @@ const ResultsTable = ({ columns, data, page, participant }) => {
     {
       columns,
       data,
-      initialState: {
-        filters,
-        hiddenColumns,
-      },
+      // initialState: {
+      //   filters,
+      //   hiddenColumns,
+      // },
     },
     useFilters,
     useSortBy
@@ -216,81 +221,89 @@ const ResultsTable = ({ columns, data, page, participant }) => {
                     "Page Loaded (UTC)": "200px",
                     "Recorded (UTC)": "200px",
                   }[column.Header] ?? "auto";
-                return (
-                  <th
-                    css={{
-                      background: colors.gray[600],
-                      position: "sticky",
-                      top: 0,
-                      width,
-                      color: colors.white,
-                      textAlign: "center",
-                      borderLeft: "thin solid white",
-                      borderRight: "thin solid white",
-                    }}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                  >
-                    {column.render("Header")}
-                    {column.isSorted && (
-                      <Flex
-                        w="100%"
-                        justify="flex-end"
-                        position="absolute"
-                        top={0}
-                        left={0}
-                        py={1}
-                        px={2}
-                      >
-                        <Icon
-                          as={column.isSortedDesc ? FaChevronDown : FaChevronUp}
-                        />
-                      </Flex>
-                    )}
-                  </th>
-                );
+                return <Header column={column} colors={colors} width={width} />;
               })}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <tr
-                css={{
-                  ":nth-of-type(2n)": {
-                    background: colors.gray[200],
-                    "& td:nth-of-type(2n)": {
-                      background: colors.gray[300],
-                    },
-                  },
-                  ":nth-of-type(2n+1)": {
-                    background: colors.gray[100],
-                    "& td:nth-of-type(2n)": {
-                      background: colors.gray[200],
-                    },
-                  },
-                }}
-                {...row.getRowProps()}
-              >
-                {row.cells.map((cell) => (
-                  <td
-                    css={{
-                      padding: "0 8px",
-                    }}
-                    {...cell.getCellProps()}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
+          {rows.map((row) => (
+            <Row row={row} colors={colors} prepareRow={prepareRow} />
+          ))}
         </tbody>
       </table>
     </Flex>
   );
 };
+
+const Header = React.memo(({ column, colors, width }) => (
+  <th
+    css={{
+      background: colors.gray[600],
+      position: "sticky",
+      top: 0,
+      width,
+      color: colors.white,
+      textAlign: "center",
+      borderLeft: "thin solid white",
+      borderRight: "thin solid white",
+    }}
+    {...column.getHeaderProps(column.getSortByToggleProps())}
+  >
+    {column.render("Header")}
+    {column.isSorted && (
+      <Flex
+        w="100%"
+        justify="flex-end"
+        position="absolute"
+        top={0}
+        left={0}
+        py={1}
+        px={2}
+      >
+        <Icon as={column.isSortedDesc ? FaChevronDown : FaChevronUp} />
+      </Flex>
+    )}
+  </th>
+));
+
+const Row = React.memo(({ row, colors, prepareRow }) => {
+  const prep = useCallback(() => prepareRow(row), [row, prepareRow]);
+  prep();
+  const Cell = React.memo(({ cell }) => (
+    <td
+      css={{
+        padding: "0 8px",
+      }}
+      {...cell.getCellProps()}
+    >
+      {cell.render("Cell")}
+    </td>
+  ));
+  return (
+    <tr
+      css={{
+        ":nth-of-type(2n)": {
+          background: colors.gray[200],
+          "& td:nth-of-type(2n)": {
+            background: colors.gray[300],
+          },
+        },
+        ":nth-of-type(2n+1)": {
+          background: colors.gray[100],
+          "& td:nth-of-type(2n)": {
+            background: colors.gray[200],
+          },
+        },
+      }}
+      {...row.getRowProps()}
+    >
+      {row.cells.map((cell) => (
+        <Cell cell={cell} />
+      ))}
+    </tr>
+  );
+});
 
 const DateTimeCellRender = ({ value }) => {
   const formatted = formatDate(value);
@@ -438,12 +451,17 @@ const ResultsTables = ({ results }) => {
         <Text>({results.participants.length} total)</Text>
       </Stack>
 
-      <ResultsTable
-        data={tableData}
-        columns={columns}
-        participant={selectedParticipant}
-        page={selectedPage}
-      />
+      <Suspense fallback={<LoadingIndicator />}>
+        <ResultsTable
+          // data={results.participants
+          //   .find((x) => x.id === selectedParticipant)
+          //   .responses.map((x) => ({ participant: selectedParticipant, ...x }))}
+          data={tableData}
+          columns={columns}
+          participant={selectedParticipant}
+          page={selectedPage}
+        />
+      </Suspense>
     </>
   );
 };
