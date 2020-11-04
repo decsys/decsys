@@ -45,7 +45,6 @@ const Banner = () => {
 };
 
 const ActionCard = ({ to, buttonText }) => {
-  const { colorMode } = useColorMode();
   return (
     <Stack align="center" width="300px" direction="row">
       <Image src={favicon} boxSize="50px" />

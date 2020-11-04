@@ -180,10 +180,6 @@ const ResultsTable = ({ columns, data, page, participant }) => {
     {
       columns,
       data,
-      // initialState: {
-      //   filters,
-      //   hiddenColumns,
-      // },
     },
     useFilters,
     useSortBy
@@ -320,6 +316,78 @@ const DateTimeCellRender = ({ value }) => {
 
 const SELECT_ALL_KEY = "All";
 
+const Selector = ({ label, items, selected, setSelected, showTotal }) => {
+  const handleChange = (e) => {
+    setSelected(e.target.value === SELECT_ALL_KEY ? null : e.target.value);
+  };
+
+  return (
+    <Stack direction="row" align="center">
+      {label && (
+        <LightHeading as="h5" size="sm">
+          {label}
+        </LightHeading>
+      )}
+
+      <Flex w="350px">
+        <Select
+          size="sm"
+          value={selected ?? SELECT_ALL_KEY}
+          onChange={handleChange}
+        >
+          <option key={`__${SELECT_ALL_KEY}__`} value={SELECT_ALL_KEY}>
+            {SELECT_ALL_KEY}
+          </option>
+          {items.map((x) => (
+            <option key={x} value={x}>
+              {x}
+            </option>
+          ))}
+        </Select>
+      </Flex>
+
+      {showTotal && <Text>({items.length} total)</Text>}
+    </Stack>
+  );
+};
+
+const PageSelector = ({ participants, selectedPage, setSelectedPage }) => {
+  const pages = useMemo(
+    () =>
+      Object.keys(
+        participants.reduce((pages, participant) => {
+          for (let response of participant.responses) {
+            pages[response.page] = true;
+          }
+          return pages;
+        }, {})
+      ),
+    [participants]
+  );
+  return (
+    <Selector
+      label="Select a Page:"
+      items={pages}
+      selected={selectedPage}
+      setSelected={setSelectedPage}
+    />
+  );
+};
+
+const ParticipantSelector = ({
+  participants,
+  selectedParticipant,
+  setSelectedParticipant,
+}) => (
+  <Selector
+    label="Select a Participant:"
+    items={participants.map((x) => x.id)}
+    selected={selectedParticipant}
+    setSelected={setSelectedParticipant}
+    showTotal
+  />
+);
+
 const ResultsTables = ({ results }) => {
   const columns = useMemo(
     () => [
@@ -411,51 +479,24 @@ const ResultsTables = ({ results }) => {
     setSelectedPage(null);
   }, [results.participants]);
 
-  const handleParticipantChange = (e) => {
-    setSelectedParticipant(
-      e.target.value === SELECT_ALL_KEY ? null : e.target.value
-    );
-  };
-
   return (
     <>
-      <Stack
-        mx={2}
-        direction="row"
-        align="center"
-        p={2}
-        bg="gray.200"
-        borderRadius={8}
-      >
-        <LightHeading as="h5" size="sm">
-          Select a Participant:
-        </LightHeading>
+      <Stack mx={2} p={2} bg="gray.200" borderRadius={8}>
+        <ParticipantSelector
+          participants={results.participants}
+          selectedParticipant={selectedParticipant}
+          setSelectedParticipant={setSelectedParticipant}
+        />
 
-        <Flex w="350px">
-          <Select
-            size="sm"
-            value={selectedParticipant ?? SELECT_ALL_KEY}
-            onChange={handleParticipantChange}
-          >
-            <option key={`__${SELECT_ALL_KEY}__`} value={SELECT_ALL_KEY}>
-              {SELECT_ALL_KEY}
-            </option>
-            {results.participants.map((x) => (
-              <option key={x.id} value={x.id}>
-                {x.id}
-              </option>
-            ))}
-          </Select>
-        </Flex>
-
-        <Text>({results.participants.length} total)</Text>
+        <PageSelector
+          participants={results.participants}
+          selectedPage={selectedPage}
+          setSelectedPage={setSelectedPage}
+        />
       </Stack>
 
       <Suspense fallback={<LoadingIndicator />}>
         <ResultsTable
-          // data={results.participants
-          //   .find((x) => x.id === selectedParticipant)
-          //   .responses.map((x) => ({ participant: selectedParticipant, ...x }))}
           data={tableData}
           columns={columns}
           participant={selectedParticipant}
