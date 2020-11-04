@@ -29,6 +29,8 @@ import {
   exportDateFormat as formatDate,
 } from "services/date-formats";
 import { defaultColorMode } from "themes";
+import Plot from "react-plotly.js";
+import { Text } from "@chakra-ui/core";
 
 const getDataByPage = (survey, results) => {
   results.participants = results.participants.sort((a, b) =>
@@ -82,9 +84,100 @@ const StatsGrid = ({ details, results, stats }) => (
   </SimpleGrid>
 );
 
-const Stats = ({ surveyId, page, results }) => {
-  const [vizTab, setVizTab] = useState(false);
+// we apply config to plotly visualizations, not the response item author.
+const plotlyConfig = {
+  scrollZoom: false,
+  displaylogo: false,
+  modeBarButtonsToRemove: [
+    //"zoom2d",
+    //"pan2d",
+    //"select2d",
+    //"lasso2d",
+    //"zoomIn2d",
+    //"zoomOut2d",
+    //"autoScale2d",
+    //"resetScale2d",
+    "zoom3d",
+    "pan3d",
+    "orbitRotation",
+    "tableRotation",
+    "handleDrag3d",
+    "resetCameraDefault3d",
+    "resetCameraLastSave3d",
+    "hoverClosest3d",
+    "hoverClosestCartesian",
+    "hoverCompareCartesian",
+    "zoomInGeo",
+    "zoomOutGeo",
+    "resetGeo",
+    "hoverClosestGeo",
+    "hoverClosestGl2d",
+    "hoverClosestPie",
+    "toggleHover",
+    "resetViews",
+    //"toImage",
+    "sendDataToCloud",
+    "toggleSpikelines",
+    "resetViewMapbox",
+  ],
+};
 
+const Visualizations = ({ visualizations = [] }) => {
+  const [tabIndex, setTabIndex] = useState(0);
+
+  return (
+    <Tabs
+      w="100%"
+      orientation="vertical"
+      display="grid"
+      gridTemplateColumns="auto 1fr"
+      variant="soft-rounded"
+      size="sm"
+      index={tabIndex}
+      onChange={setTabIndex}
+    >
+      <TabList>
+        <Text mb={2}>Visualizations:</Text>
+        <Tab>% Participants</Tab>
+        {visualizations.map((v, i) => (
+          <Tab key={i}>{v.name ?? `Visualisation ${i}`}</Tab>
+        ))}
+      </TabList>
+      <TabPanels w="100%">
+        <TabPanel>Hello</TabPanel>
+
+        {visualizations.map((v, i) => (
+          <TabPanel key={i}>
+            {i === tabIndex - 1 && (
+              // We deliberately re-mount if this is the selected tab
+              // as some Viz components are unhappy with the way
+              // Chakra tabs show and hide panel content (e.g. react-wordcloud)
+              <Flex>
+                <Visualization visualization={v} />
+              </Flex>
+            )}
+          </TabPanel>
+        ))}
+      </TabPanels>
+    </Tabs>
+  );
+};
+
+const Visualization = ({ visualization }) => {
+  switch (visualization?.type) {
+    case "plotly":
+      const { config, ...plotly } = visualization.plotly; // throw away the config, if any
+      // TODO: need to fix the 10s data refresh, like we did for wordcloud!
+      return <Plot {...plotly} config={plotlyConfig} />;
+
+    // TODO: make wordcloud an in-built? would be simpler!
+    default:
+      // render a component if there is one, or nothing
+      return visualization?.component ?? null;
+  }
+};
+
+const Stats = ({ surveyId, page, results }) => {
   if (!page) return null;
 
   if (!results || !Object.keys(results).length) {
@@ -115,15 +208,11 @@ const Stats = ({ surveyId, page, results }) => {
     logEvent: nop,
   };
 
-  // Don't bother showing a Viz Tab if there's no Viz to render
-  const hasViz = !!stats.visualizations[0].component;
-
   return (
-    // Take care that the onChange tab index lines up with the Viz Tab ;)
-    <Tabs w="100%" onChange={(i) => setVizTab(i === 1)}>
+    <Tabs w="100%">
       <TabList>
         <Tab>Stats</Tab>
-        {hasViz && <Tab>Visualization</Tab>}
+        <Tab>Visualizations</Tab>
         <Tab>Page Preview</Tab>
       </TabList>
 
@@ -132,16 +221,9 @@ const Stats = ({ surveyId, page, results }) => {
           <StatsGrid details={details} results={results} stats={stats} />
         </TabPanel>
 
-        {hasViz && (
-          <TabPanel d="flex" w="100%" justifyContent="center">
-            {
-              // We deliberately re-mount if this is the selected tab
-              // as some Viz components are unhappy with the way
-              // Chakra tabs show and hide panel content (e.g. react-wordcloud)
-              vizTab && <Flex w="70%">{stats.visualizations[0].component}</Flex>
-            }
-          </TabPanel>
-        )}
+        <TabPanel>
+          <Visualizations visualizations={stats.visualizations} />
+        </TabPanel>
 
         <TabPanel>
           <Stack>
