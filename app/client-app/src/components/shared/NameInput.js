@@ -9,12 +9,12 @@ import {
   Icon,
 } from "@chakra-ui/core";
 import { FaEdit } from "react-icons/fa";
-import useFreshPropState from "hooks/useFreshPropState";
+import { useDerivedState } from "hooks/useDerivedState";
 import useDeferredAction from "hooks/useDeferredAction";
 
 const NameInput = ({ name, handleNameSave, nameState }) => {
   const toast = useToast();
-  const [value, setValue] = useFreshPropState(name);
+  const [value, setValue] = useDerivedState(name);
 
   const deferredSave = useDeferredAction(handleNameSave);
   const handleChange = ({ target: { value } }) => {

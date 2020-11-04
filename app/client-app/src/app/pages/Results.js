@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  Suspense,
+  useCallback,
+} from "react";
 import { useSurvey } from "api/surveys";
 import {
   useSurveyInstancesList,
@@ -26,11 +32,11 @@ import {
   useTheme,
   Icon,
 } from "@chakra-ui/core";
-import { Page, EmptyState } from "components/core";
+import { Page, EmptyState, LoadingIndicator } from "components/core";
 import { navigate } from "@reach/router";
 import { encode } from "services/instance-id";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { useTable, useSortBy } from "react-table";
+import { useTable, useSortBy, useFilters } from "react-table";
 import { isEmpty } from "services/data-structures";
 
 const exportMime = "application/json";
@@ -147,16 +153,47 @@ const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
   );
 };
 
-const ResultsTable = ({ columns, data }) => {
+const ResultsTable = ({ columns, data, page, participant }) => {
+  const filters = useMemo(() => {
+    const result = [];
+    if (page) result.push({ id: "page", value: page });
+    if (participant) result.push({ id: "participant", value: participant });
+    return result;
+  }, [page, participant]);
+
+  const hiddenColumns = useMemo(() => {
+    const result = [];
+    if (page) result.push("page");
+    if (participant) result.push("participant");
+    return result;
+  }, [page, participant]);
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data }, useSortBy);
+    setHiddenColumns,
+    setAllFilters,
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    useFilters,
+    useSortBy
+  );
 
   const { colors } = useTheme();
+
+  useEffect(() => {
+    setHiddenColumns(hiddenColumns);
+  }, [hiddenColumns, setHiddenColumns]);
+
+  useEffect(() => {
+    setAllFilters(filters);
+  }, [filters, setAllFilters]);
 
   return (
     <Flex overflowY="auto">
@@ -180,81 +217,89 @@ const ResultsTable = ({ columns, data }) => {
                     "Page Loaded (UTC)": "200px",
                     "Recorded (UTC)": "200px",
                   }[column.Header] ?? "auto";
-                return (
-                  <th
-                    css={{
-                      background: colors.gray[600],
-                      position: "sticky",
-                      top: 0,
-                      width,
-                      color: colors.white,
-                      textAlign: "center",
-                      borderLeft: "thin solid white",
-                      borderRight: "thin solid white",
-                    }}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                  >
-                    {column.render("Header")}
-                    {column.isSorted && (
-                      <Flex
-                        w="100%"
-                        justify="flex-end"
-                        position="absolute"
-                        top={0}
-                        left={0}
-                        py={1}
-                        px={2}
-                      >
-                        <Icon
-                          as={column.isSortedDesc ? FaChevronDown : FaChevronUp}
-                        />
-                      </Flex>
-                    )}
-                  </th>
-                );
+                return <Header column={column} colors={colors} width={width} />;
               })}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <tr
-                css={{
-                  ":nth-of-type(2n)": {
-                    background: colors.gray[200],
-                    "& td:nth-of-type(2n)": {
-                      background: colors.gray[300],
-                    },
-                  },
-                  ":nth-of-type(2n+1)": {
-                    background: colors.gray[100],
-                    "& td:nth-of-type(2n)": {
-                      background: colors.gray[200],
-                    },
-                  },
-                }}
-                {...row.getRowProps()}
-              >
-                {row.cells.map((cell) => (
-                  <td
-                    css={{
-                      padding: "0 8px",
-                    }}
-                    {...cell.getCellProps()}
-                  >
-                    {cell.render("Cell")}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
+          {rows.map((row) => (
+            <Row row={row} colors={colors} prepareRow={prepareRow} />
+          ))}
         </tbody>
       </table>
     </Flex>
   );
 };
+
+const Header = React.memo(({ column, colors, width }) => (
+  <th
+    css={{
+      background: colors.gray[600],
+      position: "sticky",
+      top: 0,
+      width,
+      color: colors.white,
+      textAlign: "center",
+      borderLeft: "thin solid white",
+      borderRight: "thin solid white",
+    }}
+    {...column.getHeaderProps(column.getSortByToggleProps())}
+  >
+    {column.render("Header")}
+    {column.isSorted && (
+      <Flex
+        w="100%"
+        justify="flex-end"
+        position="absolute"
+        top={0}
+        left={0}
+        py={1}
+        px={2}
+      >
+        <Icon as={column.isSortedDesc ? FaChevronDown : FaChevronUp} />
+      </Flex>
+    )}
+  </th>
+));
+
+const Row = React.memo(({ row, colors, prepareRow }) => {
+  const prep = useCallback(() => prepareRow(row), [row, prepareRow]);
+  prep();
+  const Cell = React.memo(({ cell }) => (
+    <td
+      css={{
+        padding: "0 8px",
+      }}
+      {...cell.getCellProps()}
+    >
+      {cell.render("Cell")}
+    </td>
+  ));
+  return (
+    <tr
+      css={{
+        ":nth-of-type(2n)": {
+          background: colors.gray[200],
+          "& td:nth-of-type(2n)": {
+            background: colors.gray[300],
+          },
+        },
+        ":nth-of-type(2n+1)": {
+          background: colors.gray[100],
+          "& td:nth-of-type(2n)": {
+            background: colors.gray[200],
+          },
+        },
+      }}
+      {...row.getRowProps()}
+    >
+      {row.cells.map((cell) => (
+        <Cell cell={cell} />
+      ))}
+    </tr>
+  );
+});
 
 const DateTimeCellRender = ({ value }) => {
   const formatted = formatDate(value);
@@ -269,12 +314,92 @@ const DateTimeCellRender = ({ value }) => {
   );
 };
 
+const SELECT_ALL_KEY = "All";
+
+const Selector = ({ label, items, selected, setSelected, showTotal }) => {
+  const handleChange = (e) => {
+    setSelected(e.target.value === SELECT_ALL_KEY ? null : e.target.value);
+  };
+
+  return (
+    <Stack direction="row" align="center">
+      {label && (
+        <LightHeading as="h5" size="sm">
+          {label}
+        </LightHeading>
+      )}
+
+      <Flex w="350px">
+        <Select
+          size="sm"
+          value={selected ?? SELECT_ALL_KEY}
+          onChange={handleChange}
+        >
+          <option key={`__${SELECT_ALL_KEY}__`} value={SELECT_ALL_KEY}>
+            {SELECT_ALL_KEY}
+          </option>
+          {items.map((x) => (
+            <option key={x} value={x}>
+              {x}
+            </option>
+          ))}
+        </Select>
+      </Flex>
+
+      {showTotal && <Text>({items.length} total)</Text>}
+    </Stack>
+  );
+};
+
+const PageSelector = ({ participants, selectedPage, setSelectedPage }) => {
+  const pages = useMemo(
+    () =>
+      Object.keys(
+        participants.reduce((pages, participant) => {
+          for (let response of participant.responses) {
+            pages[response.page] = true;
+          }
+          return pages;
+        }, {})
+      ),
+    [participants]
+  );
+  return (
+    <Selector
+      label="Select a Page:"
+      items={pages}
+      selected={selectedPage}
+      setSelected={setSelectedPage}
+    />
+  );
+};
+
+const ParticipantSelector = ({
+  participants,
+  selectedParticipant,
+  setSelectedParticipant,
+}) => (
+  <Selector
+    label="Select a Participant:"
+    items={participants.map((x) => x.id)}
+    selected={selectedParticipant}
+    setSelected={setSelectedParticipant}
+    showTotal
+  />
+);
+
 const ResultsTables = ({ results }) => {
   const columns = useMemo(
     () => [
       {
         Header: "Page",
         accessor: "page",
+        filter: "equals",
+      },
+      {
+        Header: "Participant",
+        accessor: "participant",
+        filter: "equals",
       },
       {
         Header: "Order",
@@ -330,50 +455,54 @@ const ResultsTables = ({ results }) => {
     []
   );
 
+  // we actually flatten the results data
+  // and let react-table do filtering based on the selection UI here
+  const tableData = useMemo(
+    () =>
+      results.participants.reduce(
+        (data, p) => [
+          ...data,
+          ...p.responses.map((r) => ({ participant: p.id, ...r })),
+        ],
+        []
+      ),
+    [results.participants]
+  );
+
+  const [selectedPage, setSelectedPage] = useState(null);
+
   const [selectedParticipant, setSelectedParticipant] = useState(
-    results.participants[0]
+    results.participants[0]?.id
   );
   useEffect(() => {
-    setSelectedParticipant(results.participants[0]);
+    setSelectedParticipant(results.participants[0]?.id);
+    setSelectedPage(null);
   }, [results.participants]);
-
-  const handleSelectionChange = (e) =>
-    setSelectedParticipant(
-      results.participants.find((x) => x.id.toString() === e.target.value)
-    );
 
   return (
     <>
-      <Stack
-        mx={2}
-        direction="row"
-        align="center"
-        p={2}
-        bg="gray.200"
-        borderRadius={8}
-      >
-        <LightHeading as="h5" size="sm">
-          Select a Participant:
-        </LightHeading>
+      <Stack mx={2} p={2} bg="gray.200" borderRadius={8}>
+        <ParticipantSelector
+          participants={results.participants}
+          selectedParticipant={selectedParticipant}
+          setSelectedParticipant={setSelectedParticipant}
+        />
 
-        <Flex w="350px">
-          <Select
-            size="sm"
-            value={selectedParticipant.id}
-            onChange={handleSelectionChange}
-          >
-            {results.participants.map((x) => (
-              <option key={x.id} value={x.id}>
-                {x.id}
-              </option>
-            ))}
-          </Select>
-        </Flex>
-
-        <Text>({results.participants.length} total)</Text>
+        <PageSelector
+          participants={results.participants}
+          selectedPage={selectedPage}
+          setSelectedPage={setSelectedPage}
+        />
       </Stack>
 
-      <ResultsTable data={selectedParticipant.responses} columns={columns} />
+      <Suspense fallback={<LoadingIndicator />}>
+        <ResultsTable
+          data={tableData}
+          columns={columns}
+          participant={selectedParticipant}
+          page={selectedPage}
+        />
+      </Suspense>
     </>
   );
 };
@@ -400,6 +529,18 @@ const Results = ({ id }) => {
     }
   }, [currentInstance]);
 
+  let resultsArea = <LoadingIndicator verb="Fetching" noun="results" />;
+  if (results) {
+    if (results.participants.length)
+      resultsArea = <ResultsTables results={results} />;
+    else
+      resultsArea = (
+        <Flex mt={4} gridRow="span 2">
+          <EmptyState message="There are no results available for this Survey Instance" />
+        </Flex>
+      );
+  }
+
   return (
     <Page layout="results">
       <Flex direction="column" p={2}>
@@ -424,13 +565,7 @@ const Results = ({ id }) => {
         </Flex>
       </Flex>
 
-      {results?.participants.length ? (
-        <ResultsTables results={results} />
-      ) : (
-        <Flex mt={4} gridRow="span 2">
-          <EmptyState message="There are no results available for this Survey Instance" />
-        </Flex>
-      )}
+      {resultsArea}
     </Page>
   );
 };

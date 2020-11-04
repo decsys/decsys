@@ -17,7 +17,7 @@ If you want to host DECSYS online, there's [instructions for that](./installatio
 
 DECSYS was built to research and showcase an Ellipse-based Scale for capturing survey responses.
 
-If you have an interesting idea for capturing survey responses, or simply want to build a response approach DECSYS doesn't include yet, then [here is the information you need]() to build Response Items of your own.
+If you have an interesting idea for capturing survey responses, or simply want to build a response approach DECSYS doesn't include yet, then [here is the information you need](../devs/custom-responses/getting-started) to build Response Items of your own.
 
 ### Contribute to DECSYS
 

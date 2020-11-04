@@ -1,7 +1,14 @@
 import React from "react";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import PageLayout from "../components/PageLayout";
-import { Stack, Flex, Heading, useColorMode, Image } from "@chakra-ui/core";
+import {
+  Stack,
+  Flex,
+  Heading,
+  useColorMode,
+  Image,
+  Text,
+} from "@chakra-ui/core";
 import LinkButton from "../components/LinkButton";
 import { favicon } from "../../docusaurus.config";
 
@@ -39,9 +46,15 @@ const Banner = () => {
 
 const ActionCard = ({ to, buttonText }) => {
   return (
-    <Stack p={4} borderRadius={5} border="thin solid">
+    <Stack align="center" width="300px" direction="row">
       <Image src={favicon} boxSize="50px" />
-      <LinkButton to={to} colorScheme="blue" size="lg" variant="outline">
+      <LinkButton
+        width="300px"
+        to={to}
+        colorScheme="blue"
+        size="lg"
+        variant="outline"
+      >
         {buttonText}
       </LinkButton>
     </Stack>
@@ -55,29 +68,23 @@ const Home = () => (
   >
     <Banner />
 
-    <Stack p={8} w="100%" align="center" justify="center" spacing={8}>
-      <Stack direction="row">
+    <Stack p={8} w="100%" align="center" justify="center">
+      <Stack>
+        <Text>More information:</Text>
         <ActionCard
           to={useBaseUrl("/docs/devs/custom-responses/getting-started")}
           buttonText="Create Custom Responses"
         />
 
-        <LinkButton
-          to={useBaseUrl("/docs/devs/custom-responses/getting-started")}
-          colorScheme="blue"
-          size="lg"
-          variant="outline"
-        >
-          Create Custom Responses
-        </LinkButton>
-        <LinkButton
+        <ActionCard
+          to={useBaseUrl("/docs/devs/technical/architecture")}
+          buttonText="Technical Reference"
+        />
+
+        <ActionCard
           to={useBaseUrl("/docs/devs/contributing/source-code")}
-          colorScheme="blue"
-          size="lg"
-          variant="outline"
-        >
-          Contribute
-        </LinkButton>
+          buttonText="Contribute"
+        />
       </Stack>
     </Stack>
   </PageLayout>

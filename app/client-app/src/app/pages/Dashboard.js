@@ -99,11 +99,11 @@ const Stats = ({ surveyId, page, results }) => {
   const details = getPageResponseItem(page.components);
   const component = getComponent(details.type);
   const statsFn =
-    component.stats ||
+    component?.stats ||
     (() => ({ visualizations: [{ component: null }], stats: [] }));
 
   const stats = statsFn(
-    { ...component.defaultProps, ...details.params },
+    { ...(component?.defaultProps ?? {}), ...details.params },
     Object.keys(results).map((pid) => results[pid])
   );
 
@@ -207,16 +207,19 @@ const Dashboard = ({ combinedId }) => {
                   cardHeaderWidth="100px"
                   total={results.participants.length}
                   progressData={
-                    hasResponses &&
-                    Object.keys(completionData).map((id) => ({
-                      complete: completionData[id],
-                    }))
+                    hasResponses
+                      ? Object.keys(completionData).map((id) => ({
+                          complete: completionData[id],
+                        }))
+                      : []
                   }
                   message={
                     !hasResponses && "This page doesn't gather reponses."
                   }
                   lowProfile={!hasResponses}
-                  onClick={hasResponses && (() => handleCardClick(i))}
+                  onClick={() => {
+                    if (hasResponses) return handleCardClick(i);
+                  }}
                 />
               );
             })}
