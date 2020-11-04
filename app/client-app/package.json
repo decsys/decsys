@@ -24,6 +24,7 @@
     "base64url": "^3.0.1",
     "downloadjs": "^1.4.7",
     "formik": "^2.1.5",
+    "framer-motion": "^2.9.4",
     "gfycat-style-urls": "^1.0.3",
     "immer": "^6.0.9",
     "js-forms": "^2.0.0",
