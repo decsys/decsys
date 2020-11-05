@@ -1,22 +1,46 @@
-import React from "react";
 import * as math from "mathjs";
-import Visualization, { builtIn } from "./components/Visualization";
 
 const fixedVal = 3;
 const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
 
-const stats = (_, results) => {
+const getWordcloudProps = (values) => {
+  // a value is the whole freetext value submitted
+  const weightedWords = values.reduce((a, { text }) => {
+    // split the text into single words
+    const words = text.split(/\s+/);
+
+    words.forEach((w) => {
+      const word = w.toLowerCase();
+      a[word] = (a[word] || 0) + 1;
+    });
+
+    return a;
+  }, {});
+
+  const words = Object.keys(weightedWords).map((text) => ({
+    text,
+    value: weightedWords[text],
+  }));
+
+  return {
+    options: {
+      rotations: 0,
+      fontFamily: "Arial",
+      fontSizes: [10, 60],
+      scale: "sqrt",
+    },
+    words,
+  };
+};
+
+export const stats = (_, results) => {
   const wordCounts = results.map((x) => x.text.split(/\s+/).length);
   return {
     visualizations: [
       {
         name: "Word Cloud",
-        component: <Visualization values={results} />,
-      },
-      {
-        name: "Word Cloud Data",
         type: "wordcloud",
-        wordcloud: builtIn(results),
+        wordcloud: getWordcloudProps(results),
       },
     ],
     stats: {
@@ -28,5 +52,3 @@ const stats = (_, results) => {
     },
   };
 };
-
-export default stats;

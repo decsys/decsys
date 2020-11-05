@@ -33,10 +33,8 @@ const dummyResults = [
   },
 ];
 
-const visualization = (stats) => () => stats.visualizations[0].component;
-
-const builtin = (stats) => () => (
-  <ReactWordcloud {...stats.visualizations[1].wordcloud} />
+const visualization = (stats) => () => (
+  <ReactWordcloud {...stats.visualizations[0].wordcloud} />
 );
 
 const stats = (stats) => () => (
@@ -72,8 +70,6 @@ export const InitialText = () => (
 export const Visualisation = visualization(
   ResponseItem.stats({}, dummyResults)
 );
-
-export const BuiltInWordcloud = builtin(ResponseItem.stats({}, dummyResults));
 
 export const Stats = stats(ResponseItem.stats({}, dummyResults));
 
