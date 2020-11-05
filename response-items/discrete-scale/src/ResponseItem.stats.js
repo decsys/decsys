@@ -1,12 +1,26 @@
-import React from "react";
 import * as math from "mathjs";
-import Visualization, { plotlyVis } from "./components/Visualization";
 import { getRadioParams, getRadios } from "./utils/radio-params";
 
 const fixedVal = 3;
 const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
 
-const stats = (params, results) => {
+const getPlotlyProps = (resultValues, radioValues) => {
+  const aggregate = resultValues.reduce((agg, v) => {
+    agg[v] = (agg[v] || 0) + 1;
+    return agg;
+  }, {});
+  const data = radioValues.map((x) => ({ x, y: aggregate[x] || 0 }));
+
+  return {
+    data: [{ type: "bar", x: data.map((d) => d.x), y: data.map((d) => d.y) }],
+    layout: {
+      xaxis: { zeroline: false, title: "Discrete Value" },
+      yaxis: { zeroline: false, title: "Participants" },
+    },
+  };
+};
+
+export const stats = (params, results) => {
   const radioValues = getRadios(getRadioParams(params)).map(
     (r) => r[0] || r[1]
   );
@@ -22,15 +36,8 @@ const stats = (params, results) => {
     visualizations: [
       {
         name: "Discrete Results",
-        type: "custom",
-        component: (
-          <Visualization resultValues={values} radioValues={radioValues} />
-        ),
-      },
-      {
-        name: "Discrete Results Plotly",
         type: "plotly",
-        plotly: plotlyVis(values, radioValues),
+        plotly: getPlotlyProps(values, radioValues),
       },
     ],
     stats: {
@@ -44,5 +51,3 @@ const stats = (params, results) => {
     },
   };
 };
-
-export default stats;

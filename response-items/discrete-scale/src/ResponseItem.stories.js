@@ -59,12 +59,8 @@ const visProps = {
 };
 
 const visualization = (stats) => () => (
-  <div style={{ width: "40%" }}>{stats.visualizations[0].component}</div>
-);
-
-const plotly = (stats) => () => (
   <div style={{ width: "40%" }}>
-    <Plot {...stats.visualizations[1].plotly} />
+    <Plot {...stats.visualizations[0].plotly} />
   </div>
 );
 
@@ -102,10 +98,6 @@ export const Basic = () => (
 );
 
 export const NumericVisualisation = visualization(
-  ResponseItem.stats(visProps.numbers.params, visProps.numbers.results)
-);
-
-export const NumericPlotly = plotly(
   ResponseItem.stats(visProps.numbers.params, visProps.numbers.results)
 );
 

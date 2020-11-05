@@ -12041,14 +12041,12 @@ __metadata:
     rollup: ^2.32.1
     rollup-plugin-analyzer: ^3.3.0
     rollup-plugin-terser: ^7.0.2
-    victory: ^35.0.6
     webpack: ^4.44.0
   peerDependencies:
     mathjs: ~7
     prop-types: ~15
     react: ~17
     react-dom: ~17
-    victory: ~35
   languageName: unknown
   linkType: soft
 
