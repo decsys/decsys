@@ -1,33 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { text, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
 import { Icon } from "./metadata";
+import ReactWordcloud from "react-wordcloud";
 
 export default {
   title: "Free Text Response",
   component: ResponseItem,
 };
-
-function useInterval(callback, delay) {
-  const savedCallback = useRef();
-
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
 
 const dummyResults = [
   {
@@ -54,31 +35,9 @@ const dummyResults = [
 
 const visualization = (stats) => () => stats.visualizations[0].component;
 
-const Refresh = ({ initialData, onRefresh, changeData }) => {
-  const [toggle, setToggle] = useState(true);
-  const [data, setData] = useState(initialData);
-
-  // refresh the data, but it will either be the same
-  // each time, or different each time, based on
-  // `changeData`
-  useInterval(() => {
-    setToggle(!toggle);
-    setData(
-      changeData && toggle
-        ? [...initialData, { text: "extra data point" }]
-        : [...initialData]
-    );
-    onRefresh();
-  }, 5000);
-
-  // mimic the platform's stats renderer
-  const getStatsComponent = () => {
-    const stats = ResponseItem.stats({}, data);
-    return stats.visualizations[0].component;
-  };
-
-  return getStatsComponent();
-};
+const builtin = (stats) => () => (
+  <ReactWordcloud {...stats.visualizations[1].wordcloud} />
+);
 
 const stats = (stats) => () => (
   <div>
@@ -114,17 +73,7 @@ export const Visualisation = visualization(
   ResponseItem.stats({}, dummyResults)
 );
 
-export const StaticDataAutoRefresh = () => (
-  <Refresh initialData={dummyResults} onRefresh={action("refresh")} />
-);
-
-export const DynamicDataAutoRefresh = () => (
-  <Refresh
-    initialData={dummyResults}
-    onRefresh={action("refresh")}
-    changeData={true}
-  />
-);
+export const BuiltInWordcloud = builtin(ResponseItem.stats({}, dummyResults));
 
 export const Stats = stats(ResponseItem.stats({}, dummyResults));
 

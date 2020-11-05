@@ -9775,7 +9775,7 @@ __metadata:
     react-scripts: ^3.4.1
     react-table: ^7.3.3
     react-visibility-sensor: ^5.1.1
-    react-wordcloud: ^1.2.6
+    react-wordcloud: ^1.2.7
     swr: ^0.2.2
     uuid: ^8.1.0
     victory: ^35.0.6
@@ -24380,7 +24380,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"react-wordcloud@npm:^1.2.6":
+"react-wordcloud@npm:^1.2.6, react-wordcloud@npm:^1.2.7":
   version: 1.2.7
   resolution: "react-wordcloud@npm:1.2.7"
   dependencies:

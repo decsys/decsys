@@ -1,6 +1,6 @@
 import React from "react";
 import * as math from "mathjs";
-import Visualization from "./components/Visualization";
+import Visualization, { builtIn } from "./components/Visualization";
 
 const fixedVal = 3;
 const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
@@ -12,6 +12,11 @@ const stats = (_, results) => {
       {
         name: "Word Cloud",
         component: <Visualization values={results} />,
+      },
+      {
+        name: "Word Cloud Data",
+        type: "wordcloud",
+        wordcloud: builtIn(results),
       },
     ],
     stats: {

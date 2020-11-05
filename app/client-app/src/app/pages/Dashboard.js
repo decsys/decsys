@@ -31,6 +31,7 @@ import {
 import { defaultColorMode } from "themes";
 import Plot from "react-plotly.js";
 import { Text } from "@chakra-ui/core";
+import ReactWordcloud from "react-wordcloud";
 
 const getDataByPage = (survey, results) => {
   results.participants = results.participants.sort((a, b) =>
@@ -163,19 +164,20 @@ const Visualizations = ({ visualizations = [] }) => {
   );
 };
 
-const Visualization = ({ visualization }) => {
-  switch (visualization?.type) {
-    case "plotly":
-      const { config, ...plotly } = visualization.plotly; // throw away the config, if any
-      // TODO: need to fix the 10s data refresh, like we did for wordcloud!
-      return <Plot {...plotly} config={plotlyConfig} />;
-
-    // TODO: make wordcloud an in-built? would be simpler!
-    default:
-      // render a component if there is one, or nothing
-      return visualization?.component ?? null;
-  }
-};
+const Visualization = ({ visualization }) =>
+  useMemo(() => {
+    switch (visualization?.type) {
+      // TODO: Document the available built-in types
+      case "plotly":
+        const { config, ...plotly } = visualization.plotly; // throw away the config, if any
+        return <Plot {...plotly} config={plotlyConfig} />;
+      case "wordcloud":
+        return <ReactWordcloud {...visualization.wordcloud} />;
+      default:
+        // render a component if there is one, or nothing
+        return visualization?.component ?? null;
+    }
+  }, [visualization]);
 
 const Stats = ({ surveyId, page, results }) => {
   const details = useMemo(
