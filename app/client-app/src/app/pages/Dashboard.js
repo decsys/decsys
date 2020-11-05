@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Page, StandardModal, ProgressCard } from "components/core";
 import { decode } from "services/instance-id";
 import { useSurvey } from "api/surveys";
@@ -178,6 +178,29 @@ const Visualization = ({ visualization }) => {
 };
 
 const Stats = ({ surveyId, page, results }) => {
+  const details = useMemo(
+    () => (!!page ? getPageResponseItem(page.components) : null),
+    [page]
+  );
+
+  const stats = useMemo(
+    () => {
+      if (!results || !details) return null;
+      const component = getComponent(details.type);
+
+      if (!component?.stats)
+        return { visualizations: [{ component: null }], stats: [] };
+
+      return component.stats(
+        { ...(component?.defaultProps ?? {}), ...details.params },
+        Object.keys(results).map((pid) => results[pid])
+      );
+    },
+    // we use stringify to value compare instead of reference compare
+    // eslint-disable-next-line
+    [JSON.stringify(results), details]
+  );
+
   if (!page) return null;
 
   if (!results || !Object.keys(results).length) {
@@ -188,17 +211,6 @@ const Stats = ({ surveyId, page, results }) => {
       </Alert>
     );
   }
-
-  const details = getPageResponseItem(page.components);
-  const component = getComponent(details.type);
-  const statsFn =
-    component?.stats ||
-    (() => ({ visualizations: [{ component: null }], stats: [] }));
-
-  const stats = statsFn(
-    { ...(component?.defaultProps ?? {}), ...details.params },
-    Object.keys(results).map((pid) => results[pid])
-  );
 
   const nop = () => {};
   const renderContext = {
