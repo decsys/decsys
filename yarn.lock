@@ -9776,6 +9776,7 @@ __metadata:
     react-table: ^7.3.3
     react-visibility-sensor: ^5.1.1
     react-wordcloud: ^1.2.7
+    save-svg-as-png: ^1.4.17
     swr: ^0.2.2
     uuid: ^8.1.0
     victory: ^35.0.6
@@ -25820,6 +25821,13 @@ resolve@~1.17.0:
     sass:
       optional: true
   checksum: e23d9b308f0792fb9ca3ebe314d5c9c96dfa833f89f457e4fc9c5026dacbfbb81e65b1e9b924f6aa11d749e2ba033acf7d1767929d6f9628c45525535bceb889
+  languageName: node
+  linkType: hard
+
+"save-svg-as-png@npm:^1.4.17":
+  version: 1.4.17
+  resolution: "save-svg-as-png@npm:1.4.17"
+  checksum: 0236db473e3292d94cba8f7c329718bcbce9e28bf72f76f40d29e5bf763425fc52997a43abec9ec5be959542165d0b4d0b2a20af07b46481f3988875f4a5bd32
   languageName: node
   linkType: hard
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, createRef } from "react";
 import { Page, StandardModal, ProgressCard } from "components/core";
 import { decode } from "services/instance-id";
 import { useSurvey } from "api/surveys";
@@ -20,6 +20,8 @@ import {
   SimpleGrid,
   useTheme,
   useColorMode,
+  Text,
+  IconButton,
 } from "@chakra-ui/core";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import { Body as SurveyPageBody } from "components/shared/SurveyPage";
@@ -29,9 +31,11 @@ import {
   exportDateFormat as formatDate,
 } from "services/date-formats";
 import { defaultColorMode } from "themes";
+import Plotly from "plotly.js";
 import Plot from "react-plotly.js";
-import { Text } from "@chakra-ui/core";
 import ReactWordcloud from "react-wordcloud";
+import { saveSvgAsPng } from "save-svg-as-png";
+import { FaDownload } from "react-icons/fa";
 
 const getDataByPage = (survey, results) => {
   results.participants = results.participants.sort((a, b) =>
@@ -116,7 +120,7 @@ const plotlyConfig = {
     "hoverClosestPie",
     "toggleHover",
     "resetViews",
-    //"toImage",
+    "toImage", // we use our own save button for consistency with other visualisations
     "sendDataToCloud",
     "toggleSpikelines",
     "resetViewMapbox",
@@ -147,37 +151,105 @@ const Visualizations = ({ visualizations = [] }) => {
       <TabPanels w="100%">
         <TabPanel>Hello</TabPanel>
 
-        {visualizations.map((v, i) => (
-          <TabPanel key={i}>
-            {i === tabIndex - 1 && (
-              // We deliberately re-mount if this is the selected tab
-              // as some Viz components are unhappy with the way
-              // Chakra tabs show and hide panel content (e.g. react-wordcloud)
-              <Flex>
-                <Visualization visualization={v} />
-              </Flex>
-            )}
-          </TabPanel>
-        ))}
+        {visualizations.map((v, i) => {
+          const containerRef = createRef();
+          return (
+            <TabPanel key={i}>
+              {i === tabIndex - 1 && (
+                // We deliberately re-mount if this is the selected tab
+                // as some Viz components are unhappy with the way
+                // Chakra tabs show and hide panel content (e.g. react-wordcloud)
+                <Stack>
+                  {canSaveImage(v) && (
+                    <Flex justify="flex-end">
+                      <IconButton
+                        onClick={() => saveImage(i, v, containerRef)}
+                        title="Save this visualisation..."
+                        icon={<FaDownload />}
+                      />
+                    </Flex>
+                  )}
+                  <div ref={containerRef}>
+                    <Visualization visualization={v} index={i} />
+                  </div>
+                </Stack>
+              )}
+            </TabPanel>
+          );
+        })}
       </TabPanels>
     </Tabs>
   );
 };
 
-const Visualization = ({ visualization }) =>
+// look up for builtinVisualisations
+const builtinVis = {
+  plotly: "plotly",
+  wordcloud: "wordcloud",
+};
+
+/**
+ * Determine if a defined visualisation supports saving as an image
+ * @param {*} v The visualisation definition
+ */
+const canSaveImage = (v) => {
+  // all built-ins support saving
+  // if saveImage exists we assume saving is supported
+  return Object.values(builtinVis).includes(v?.type) || !!v?.saveImage;
+};
+
+/**
+ * Save a referenced DOM element's first SVG child as a PNG
+ * @param {*} ref The DOM ref
+ */
+const saveSvg = (ref) => {
+  const svg = ref.current.querySelector("svg");
+  saveSvgAsPng(svg, "visualization.png");
+};
+
+/**
+ * Save a visualisation as an image
+ * @param {*} index The index of the visualisation in the visualisations collection
+ * @param {*} visualization the visualisation itself
+ * @param {*} ref the DOM ref to the visualisation's containing div.
+ */
+const saveImage = (index, visualization, ref) => {
+  // TODO: document ability to allow saving
+  // using "svg" or custom fn
+  switch (visualization?.type) {
+    case builtinVis.plotly:
+      Plotly.downloadImage(`plotly-vis${index}`);
+      break;
+    case builtinVis.wordcloud:
+      saveSvg(ref);
+      break;
+    default:
+      if (typeof visualization?.saveImage === "function")
+        visualization.saveImage();
+      if (visualization.saveImage === "svg") saveSvg(ref);
+  }
+};
+
+const Visualization = ({ index, visualization }) =>
   useMemo(() => {
     switch (visualization?.type) {
       // TODO: Document the available built-in types
-      case "plotly":
+      case builtinVis.plotly:
         const { config, ...plotly } = visualization.plotly; // throw away the config, if any
-        return <Plot {...plotly} config={plotlyConfig} />;
-      case "wordcloud":
+        return (
+          <Plot
+            {...plotly}
+            config={plotlyConfig}
+            divId={`plotly-vis${index}`}
+          />
+        );
+      case builtinVis.wordcloud:
         return <ReactWordcloud {...visualization.wordcloud} />;
       default:
         // render a component if there is one, or nothing
         return visualization?.component ?? null;
     }
-  }, [visualization]);
+  }, [visualization, index]);
 
 const Stats = ({ surveyId, page, results }) => {
   const details = useMemo(
