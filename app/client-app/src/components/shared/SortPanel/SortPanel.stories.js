@@ -1,13 +1,23 @@
-import { action } from "@storybook/addon-actions";
-import { array } from "@storybook/addon-knobs";
 import SortPanel from "components/shared/SortPanel";
 
-export default { title: "Shared/SortPanel", component: SortPanel };
+export default {
+  title: "Shared/SortPanel",
+  component: SortPanel,
+  argTypes: {
+    onSortButtonClick: {
+      action: "Sort Button clicked",
+    },
+    keys: {
+      type: "array",
+    },
+    state: { type: "object" },
+  },
+  args: {
+    state: { key: "name" },
+  },
+};
 
-export const Basic = () => (
-  <SortPanel
-    keys={array("Sort Field Keys", ["Name", "Order"])}
-    state={{ key: "name" }}
-    onSortButtonClick={action("Sort Button clicked")}
-  />
-);
+export const Basic = (args) => <SortPanel {...args} />;
+Basic.args = {
+  keys: ["Name", "Order"],
+};

@@ -3,33 +3,23 @@
 // so we can't query information about the types after the fact
 // We can use the declarations here to inform PropTypes though,
 // to avoid repetition, which is what buildPropTypes does
-import * as builders from "./builders";
-import * as types from "./types";
 import {
   renderContextPropTypes,
   previewEditorContextPropTypes,
   paramsEditorContextPropTypes,
-} from "./ResponseItemContexts";
-import buildPropTypes from "./buildPropTypes";
+} from "./contexts";
+import * as ParamTypes from "./param-types";
 
 // named * exports
-export * from "./builders";
+export * from "./param-types";
+export * from "./contexts";
+export * from "./helpers";
 
 // other named exports
 export {
-  buildPropTypes,
-  types,
   renderContextPropTypes,
   previewEditorContextPropTypes,
   paramsEditorContextPropTypes,
 };
 
-// default export
-export default {
-  buildPropTypes,
-  ...builders,
-  types,
-  renderContextPropTypes,
-  previewEditorContextPropTypes,
-  paramsEditorContextPropTypes,
-};
+export default ParamTypes;

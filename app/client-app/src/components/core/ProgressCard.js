@@ -85,6 +85,7 @@ const ProgressCard = ({
 ProgressCard.propTypes = {
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func,
+  cardHeaderWidth: PropTypes.string,
   progressHeader: PropTypes.string,
   progressData: PropTypes.arrayOf(
     PropTypes.shape({

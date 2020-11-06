@@ -51,6 +51,7 @@ const AuthContext = createContext({
   login,
   logout,
 });
+
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }) => {

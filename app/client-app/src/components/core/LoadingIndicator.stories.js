@@ -1,14 +1,12 @@
-import { text } from "@storybook/addon-knobs";
 import LoadingIndicator from "./LoadingIndicator";
 
 export default {
   title: "Core UI/LoadingIndicator",
   component: LoadingIndicator,
+  args: {
+    verb: "Reticulating",
+    noun: "splines",
+  },
 };
 
-export const Basic = () => (
-  <LoadingIndicator
-    verb={text("Verb", "Reticulating")}
-    noun={text("Noun", "splines")}
-  />
-);
+export const Basic = (args) => <LoadingIndicator {...args} />;

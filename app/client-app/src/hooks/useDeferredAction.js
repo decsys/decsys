@@ -7,7 +7,7 @@ import { useState } from "react";
  * @param {*} f
  * @param {*} delay
  */
-const useDeferredAction = (f, delay = 1000) => {
+export const useDeferredAction = (f, delay = 1000) => {
   const [timer, setTimer] = useState();
 
   return (...args) => {
@@ -15,5 +15,3 @@ const useDeferredAction = (f, delay = 1000) => {
     setTimer(setTimeout(() => f(...args), delay));
   };
 };
-
-export default useDeferredAction;

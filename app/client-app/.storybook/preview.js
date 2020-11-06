@@ -9,5 +9,3 @@ addDecorator((s) => (
     {s()}
   </ChakraProvider>
 ));
-
-addDecorator(withKnobs({ escapeHTML: false }));

@@ -7,34 +7,45 @@ export default {
   component: AppBar,
 };
 
-export const Basic = () => <AppBar />;
+const Template = (args) => <AppBar {...args} />;
 
-export const Brand = () => <AppBar brand="My Brand" />;
+export const Basic = Template.bind({});
 
-export const OneChild = () => (
-  <AppBar>
+export const WithBrand = Template.bind({});
+WithBrand.args = { brand: "My Brand" };
+
+export const WithOneChild = Template.bind({});
+WithOneChild.args = {
+  children: (
     <AppBarLink onClick={action("Link clicked")}>Clicky time</AppBarLink>
-  </AppBar>
-);
+  ),
+};
 
-export const Children = () => (
-  <AppBar>
-    <AppBarLink onClick={action("Link clicked")}>A link</AppBarLink>
-    <AppBarLink onClick={action("Another Link clicked")}>
-      Another link
-    </AppBarLink>
-    <Button onClick={action("Button clicked")}>Button</Button>
-  </AppBar>
-);
+export const WithChildren = Template.bind({});
+WithChildren.args = {
+  children: (
+    <>
+      <AppBarLink onClick={action("Link clicked")}>A link</AppBarLink>
+      <AppBarLink onClick={action("Another Link clicked")}>
+        Another link
+      </AppBarLink>
+      <Button onClick={action("Button clicked")}>Button</Button>
+    </>
+  ),
+};
 
-export const BrandAndChildren = () => (
-  <AppBar brand="My Brand">
-    <AppBarLink onClick={action("Link clicked")}>A link</AppBarLink>
-    <AppBarLink color="yellow.500" onClick={action("Another Link clicked")}>
-      A custom colored link
-    </AppBarLink>
-    <Button variant="secondary" onClick={action("Button clicked")}>
-      Button
-    </Button>
-  </AppBar>
-);
+export const WithBrandAndChildren = Template.bind({});
+WithBrandAndChildren.args = {
+  ...WithBrand.args,
+  children: (
+    <>
+      <AppBarLink onClick={action("Link clicked")}>A link</AppBarLink>
+      <AppBarLink color="yellow.500" onClick={action("Another Link clicked")}>
+        A custom colored link
+      </AppBarLink>
+      <Button variant="secondary" onClick={action("Button clicked")}>
+        Button
+      </Button>
+    </>
+  ),
+};

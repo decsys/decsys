@@ -18,7 +18,7 @@ const SortButton = ({ active, asc, children, onClick, ...rest }) => (
 
 SortButton.propTypes = {
   asc: PropTypes.bool,
-  active: PropTypes.bool.isRequired,
+  active: PropTypes.bool,
   onClick: PropTypes.func.isRequired,
   children: PropTypes.any,
 };

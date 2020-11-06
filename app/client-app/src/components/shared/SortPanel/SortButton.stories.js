@@ -1,15 +1,13 @@
-import { action } from "@storybook/addon-actions";
-import { boolean, text } from "@storybook/addon-knobs";
 import SortButton from "components/shared/SortPanel/SortButton";
 
-export default { title: "Shared/SortButton", component: SortButton };
+export default {
+  title: "Shared/SortButton",
+  component: SortButton,
+  argTypes: {
+    onClick: { action: "SortButton clicked" },
+    children: { type: "string", name: "Sort Field Label" },
+  },
+};
 
-export const Basic = () => (
-  <SortButton
-    active={boolean("Active Sort Field", false)}
-    asc={boolean("Ascending", false)}
-    onClick={action("SortButton clicked")}
-  >
-    {text("Sort Field label", "Name")}
-  </SortButton>
-);
+export const Basic = (args) => <SortButton {...args} />;
+Basic.args = { children: "Name" };

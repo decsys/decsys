@@ -54,8 +54,8 @@ const PageItemEditor = () => {
   const component = getComponent(item.type);
 
   // item specific change handler, to simplify things for the editor(s)
-  const handleParamChange = (paramKey, paramValue) => {
-    setParamValue(item.id, paramKey, paramValue);
+  const handleParamChange = (paramPath, paramValue) => {
+    setParamValue(item.id, paramPath, paramValue);
   };
 
   return (
