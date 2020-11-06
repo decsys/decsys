@@ -47,7 +47,7 @@ const StatsGrid = ({ details, results, stats }) => (
   </SimpleGrid>
 );
 
-const DetailsModalBody = ({ surveyId, page, results }) => {
+const DetailsModalBody = ({ surveyId, page, results, completion }) => {
   const details = useMemo(
     () => (!!page ? getPageResponseItem(page.components) : null),
     [page]
@@ -104,7 +104,10 @@ const DetailsModalBody = ({ surveyId, page, results }) => {
         </TabPanel>
 
         <TabPanel>
-          <Visualizations visualizations={stats.visualizations} />
+          <Visualizations
+            visualizations={stats.visualizations}
+            completion={completion}
+          />
         </TabPanel>
 
         <TabPanel>

@@ -122,6 +122,7 @@ const Dashboard = ({ combinedId }) => {
             surveyId={surveyId}
             page={detailsPage}
             results={resultsByPage[detailsPage.order]}
+            completion={completionByPage[detailsPage.order - 1]}
           />
         </StandardModal>
       )}

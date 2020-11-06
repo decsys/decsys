@@ -16,6 +16,29 @@ import { FaDownload } from "react-icons/fa";
 import { visTypes, plotlyConfig } from "./constants";
 import { canSaveImage, saveImage } from "./helpers";
 
+const responseRatio = (completion) => {
+  const participantIds = Object.keys(completion);
+  const respondedCount = participantIds.filter((k) => !!completion[k]).length;
+  const remainingCount = participantIds.length - respondedCount;
+  console.log(completion, respondedCount, remainingCount);
+  return {
+    name: "Response Ratio",
+    type: visTypes.plotly,
+    plotly: {
+      data: [
+        {
+          type: "pie",
+          values: [respondedCount, remainingCount],
+          labels: ["Responded", "No Response"],
+        },
+      ],
+      layout: {
+        title: "Participant Response Ratio",
+      },
+    },
+  };
+};
+
 const Visualization = ({ index, visualization }) =>
   useMemo(() => {
     switch (visualization?.type) {
@@ -37,8 +60,11 @@ const Visualization = ({ index, visualization }) =>
     }
   }, [visualization, index]);
 
-const Visualizations = ({ visualizations = [] }) => {
+const Visualizations = ({ visualizations = [], completion }) => {
   const [tabIndex, setTabIndex] = useState(0);
+
+  // we inject some platform level visualisations before the response item's ones
+  const combinedVis = [responseRatio(completion), ...visualizations];
 
   return (
     <Tabs
@@ -53,19 +79,16 @@ const Visualizations = ({ visualizations = [] }) => {
     >
       <TabList>
         <Text mb={2}>Visualizations:</Text>
-        <Tab>% Participants</Tab>
-        {visualizations.map((v, i) => (
+        {combinedVis.map((v, i) => (
           <Tab key={i}>{v.name ?? `Visualisation ${i}`}</Tab>
         ))}
       </TabList>
       <TabPanels w="100%">
-        <TabPanel>Hello</TabPanel>
-
-        {visualizations.map((v, i) => {
+        {combinedVis.map((v, i) => {
           const containerRef = createRef();
           return (
             <TabPanel key={i}>
-              {i === tabIndex - 1 && (
+              {i === tabIndex && (
                 // We deliberately re-mount if this is the selected tab
                 // as some Viz components are unhappy with the way
                 // Chakra tabs show and hide panel content (e.g. react-wordcloud)
