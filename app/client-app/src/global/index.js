@@ -3,9 +3,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import * as Victory from "victory";
 import * as math from "mathjs";
-import ReactWordCloud from "react-wordcloud";
 import * as Chakra from "@chakra-ui/core";
 import * as EmotionCore from "@emotion/core";
 
@@ -16,9 +14,7 @@ window.__DECSYS__ = {}; // Register our global namespace
 window.React = React;
 window.ReactDOM = ReactDOM;
 window.PropTypes = PropTypes;
-window.Victory = Victory;
 window.math = math;
-window.reactWordCloud = ReactWordCloud;
 window.EmotionCore = EmotionCore;
 window.Chakra = Chakra;
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import EllipseScale from "@decsys/rating-scales/cjs/ellipse";
 import * as props from "./ResponseItem.props";
-import stats from "./ResponseItem.stats";
+import { stats } from "./ResponseItem.stats";
 
 const ResponseItem = ({
   barLeftMargin,

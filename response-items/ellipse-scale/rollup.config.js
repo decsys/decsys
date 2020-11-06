@@ -32,11 +32,10 @@ export default {
       react: "React",
       "react-dom": "ReactDOM",
       "prop-types": "PropTypes",
-      victory: "Victory",
       mathjs: "math",
     },
   },
-  external: ["react", "react-dom", "prop-types", "victory", "mathjs"],
+  external: ["react", "react-dom", "prop-types", "mathjs"],
   plugins: [
     replace({
       "process.env.NODE_ENV": JSON.stringify("production"),

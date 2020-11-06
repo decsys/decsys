@@ -2,6 +2,7 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
 import { Icon } from "./metadata";
+import Plot from "react-plotly.js";
 
 export default {
   title: "Discrete Scale Response",
@@ -58,7 +59,9 @@ const visProps = {
 };
 
 const visualization = (stats) => () => (
-  <div style={{ width: "40%" }}>{stats.visualizations[0].component}</div>
+  <div style={{ width: "40%" }}>
+    <Plot {...stats.visualizations[0].plotly} />
+  </div>
 );
 
 const stats = (stats) => () => (
@@ -97,6 +100,7 @@ export const Basic = () => (
 export const NumericVisualisation = visualization(
   ResponseItem.stats(visProps.numbers.params, visProps.numbers.results)
 );
+
 export const NumericStats = stats(
   ResponseItem.stats(visProps.numbers.params, visProps.numbers.results)
 );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as props from "./ResponseItem.props";
-import stats from "./ResponseItem.stats";
+import { stats } from "./ResponseItem.stats";
 import { Flex, Badge, Textarea, Text } from "@chakra-ui/core";
 
 const colorSchemes = {

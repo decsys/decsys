@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, createRef } from "react";
 import { Page, StandardModal, ProgressCard } from "components/core";
 import { decode } from "services/instance-id";
 import { useSurvey } from "api/surveys";
@@ -20,6 +20,8 @@ import {
   SimpleGrid,
   useTheme,
   useColorMode,
+  Text,
+  IconButton,
 } from "@chakra-ui/core";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import { Body as SurveyPageBody } from "components/shared/SurveyPage";
@@ -29,6 +31,11 @@ import {
   exportDateFormat as formatDate,
 } from "services/date-formats";
 import { defaultColorMode } from "themes";
+import Plotly from "plotly.js";
+import Plot from "react-plotly.js";
+import ReactWordcloud from "react-wordcloud";
+import { saveSvgAsPng } from "save-svg-as-png";
+import { FaDownload } from "react-icons/fa";
 
 const getDataByPage = (survey, results) => {
   results.participants = results.participants.sort((a, b) =>
@@ -82,8 +89,191 @@ const StatsGrid = ({ details, results, stats }) => (
   </SimpleGrid>
 );
 
+// we apply config to plotly visualizations, not the response item author.
+const plotlyConfig = {
+  scrollZoom: false,
+  displaylogo: false,
+  modeBarButtonsToRemove: [
+    //"zoom2d",
+    //"pan2d",
+    //"select2d",
+    //"lasso2d",
+    //"zoomIn2d",
+    //"zoomOut2d",
+    //"autoScale2d",
+    //"resetScale2d",
+    "zoom3d",
+    "pan3d",
+    "orbitRotation",
+    "tableRotation",
+    "handleDrag3d",
+    "resetCameraDefault3d",
+    "resetCameraLastSave3d",
+    "hoverClosest3d",
+    "hoverClosestCartesian",
+    "hoverCompareCartesian",
+    "zoomInGeo",
+    "zoomOutGeo",
+    "resetGeo",
+    "hoverClosestGeo",
+    "hoverClosestGl2d",
+    "hoverClosestPie",
+    "toggleHover",
+    "resetViews",
+    "toImage", // we use our own save button for consistency with other visualisations
+    "sendDataToCloud",
+    "toggleSpikelines",
+    "resetViewMapbox",
+  ],
+};
+
+const Visualizations = ({ visualizations = [] }) => {
+  const [tabIndex, setTabIndex] = useState(0);
+
+  return (
+    <Tabs
+      w="100%"
+      orientation="vertical"
+      display="grid"
+      gridTemplateColumns="auto 1fr"
+      variant="soft-rounded"
+      size="sm"
+      index={tabIndex}
+      onChange={setTabIndex}
+    >
+      <TabList>
+        <Text mb={2}>Visualizations:</Text>
+        <Tab>% Participants</Tab>
+        {visualizations.map((v, i) => (
+          <Tab key={i}>{v.name ?? `Visualisation ${i}`}</Tab>
+        ))}
+      </TabList>
+      <TabPanels w="100%">
+        <TabPanel>Hello</TabPanel>
+
+        {visualizations.map((v, i) => {
+          const containerRef = createRef();
+          return (
+            <TabPanel key={i}>
+              {i === tabIndex - 1 && (
+                // We deliberately re-mount if this is the selected tab
+                // as some Viz components are unhappy with the way
+                // Chakra tabs show and hide panel content (e.g. react-wordcloud)
+                <Stack>
+                  {canSaveImage(v) && (
+                    <Flex justify="flex-end">
+                      <IconButton
+                        onClick={() => saveImage(i, v, containerRef)}
+                        title="Save this visualisation..."
+                        icon={<FaDownload />}
+                      />
+                    </Flex>
+                  )}
+                  <div ref={containerRef}>
+                    <Visualization visualization={v} index={i} />
+                  </div>
+                </Stack>
+              )}
+            </TabPanel>
+          );
+        })}
+      </TabPanels>
+    </Tabs>
+  );
+};
+
+// look up for builtinVisualisations
+const builtinVis = {
+  plotly: "plotly",
+  wordcloud: "wordcloud",
+};
+
+/**
+ * Determine if a defined visualisation supports saving as an image
+ * @param {*} v The visualisation definition
+ */
+const canSaveImage = (v) => {
+  // all built-ins support saving
+  // if saveImage exists we assume saving is supported
+  return Object.values(builtinVis).includes(v?.type) || !!v?.saveImage;
+};
+
+/**
+ * Save a referenced DOM element's first SVG child as a PNG
+ * @param {*} ref The DOM ref
+ */
+const saveSvg = (ref) => {
+  const svg = ref.current.querySelector("svg");
+  saveSvgAsPng(svg, "visualization.png");
+};
+
+/**
+ * Save a visualisation as an image
+ * @param {*} index The index of the visualisation in the visualisations collection
+ * @param {*} visualization the visualisation itself
+ * @param {*} ref the DOM ref to the visualisation's containing div.
+ */
+const saveImage = (index, visualization, ref) => {
+  // TODO: document ability to allow saving
+  // using "svg" or custom fn
+  switch (visualization?.type) {
+    case builtinVis.plotly:
+      Plotly.downloadImage(`plotly-vis${index}`);
+      break;
+    case builtinVis.wordcloud:
+      saveSvg(ref);
+      break;
+    default:
+      if (typeof visualization?.saveImage === "function")
+        visualization.saveImage();
+      if (visualization.saveImage === "svg") saveSvg(ref);
+  }
+};
+
+const Visualization = ({ index, visualization }) =>
+  useMemo(() => {
+    switch (visualization?.type) {
+      // TODO: Document the available built-in types
+      case builtinVis.plotly:
+        const { config, ...plotly } = visualization.plotly; // throw away the config, if any
+        return (
+          <Plot
+            {...plotly}
+            config={plotlyConfig}
+            divId={`plotly-vis${index}`}
+          />
+        );
+      case builtinVis.wordcloud:
+        return <ReactWordcloud {...visualization.wordcloud} />;
+      default:
+        // render a component if there is one, or nothing
+        return visualization?.component ?? null;
+    }
+  }, [visualization, index]);
+
 const Stats = ({ surveyId, page, results }) => {
-  const [vizTab, setVizTab] = useState(false);
+  const details = useMemo(
+    () => (!!page ? getPageResponseItem(page.components) : null),
+    [page]
+  );
+
+  const stats = useMemo(
+    () => {
+      if (!results || !details) return null;
+      const component = getComponent(details.type);
+
+      if (!component?.stats)
+        return { visualizations: [{ component: null }], stats: [] };
+
+      return component.stats(
+        { ...(component?.defaultProps ?? {}), ...details.params },
+        Object.keys(results).map((pid) => results[pid])
+      );
+    },
+    // we use stringify to value compare instead of reference compare
+    // eslint-disable-next-line
+    [JSON.stringify(results), details]
+  );
 
   if (!page) return null;
 
@@ -96,17 +286,6 @@ const Stats = ({ surveyId, page, results }) => {
     );
   }
 
-  const details = getPageResponseItem(page.components);
-  const component = getComponent(details.type);
-  const statsFn =
-    component?.stats ||
-    (() => ({ visualizations: [{ component: null }], stats: [] }));
-
-  const stats = statsFn(
-    { ...(component?.defaultProps ?? {}), ...details.params },
-    Object.keys(results).map((pid) => results[pid])
-  );
-
   const nop = () => {};
   const renderContext = {
     pageId: page.id,
@@ -115,15 +294,11 @@ const Stats = ({ surveyId, page, results }) => {
     logEvent: nop,
   };
 
-  // Don't bother showing a Viz Tab if there's no Viz to render
-  const hasViz = !!stats.visualizations[0].component;
-
   return (
-    // Take care that the onChange tab index lines up with the Viz Tab ;)
-    <Tabs w="100%" onChange={(i) => setVizTab(i === 1)}>
+    <Tabs w="100%">
       <TabList>
         <Tab>Stats</Tab>
-        {hasViz && <Tab>Visualization</Tab>}
+        <Tab>Visualizations</Tab>
         <Tab>Page Preview</Tab>
       </TabList>
 
@@ -132,16 +307,9 @@ const Stats = ({ surveyId, page, results }) => {
           <StatsGrid details={details} results={results} stats={stats} />
         </TabPanel>
 
-        {hasViz && (
-          <TabPanel d="flex" w="100%" justifyContent="center">
-            {
-              // We deliberately re-mount if this is the selected tab
-              // as some Viz components are unhappy with the way
-              // Chakra tabs show and hide panel content (e.g. react-wordcloud)
-              vizTab && <Flex w="70%">{stats.visualizations[0].component}</Flex>
-            }
-          </TabPanel>
-        )}
+        <TabPanel>
+          <Visualizations visualizations={stats.visualizations} />
+        </TabPanel>
 
         <TabPanel>
           <Stack>

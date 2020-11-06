@@ -2,6 +2,7 @@ import React from "react";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
 import { Icon } from "./metadata";
+import Plot from "react-plotly.js";
 
 export default {
   title: "Ellipse Scale Response",
@@ -46,9 +47,7 @@ const dummyEllipseResults = [
 ];
 
 const visualization = (stats) => () => (
-  <div style={{ marginLeft: "3em", width: "40%" }}>
-    {stats.visualizations[0].component}
-  </div>
+  <Plot {...stats.visualizations[0].plotly} />
 );
 
 const stats = (stats) => () => (
