@@ -1,7 +1,7 @@
 {
   "name": "choose-one-response",
   "responseItemName": "Choose One",
-  "version": "2.0.0-beta.4",
+  "version": "2.0.0-beta.5",
   "description": "Choose one from a selection of qualitative answers",
   "private": true,
   "author": "James Fleming <jamesfleming91@gmail.com>",
