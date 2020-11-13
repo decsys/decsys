@@ -25,10 +25,20 @@ import {
   FaUserPlus,
   FaUserCog,
 } from "react-icons/fa";
-import { Link } from "@reach/router";
+import { Link, navigate } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
 import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
+
+// TODO: Chakra broke MenuItem as={a}
+// so we have to manually do plain anchors in onClick
+// REVERT THIS WHEN CHAKRA FIXES IT
+const onClickLink = (href, target) => {
+  const a = document.createElement("a");
+  a.href = href;
+  if (target) a.target = target;
+  a.click(); // don't even need to add it to the DOM to use this!
+};
 
 const HelpMenu = () => (
   <Menu>
@@ -36,16 +46,19 @@ const HelpMenu = () => (
       <MenuButton as={IconButton} variant="ghost" icon={<FaQuestionCircle />} />
     </DarkMode>
     <MenuList>
-      <MenuItem as="a" href="/docs">
+      <MenuItem onClick={() => onClickLink("/docs")}>
         <Stack direction="row" align="center" spacing={1}>
           <Icon as={FaBook} />
           <Text>Documentation</Text>
         </Stack>
       </MenuItem>
       <MenuItem
-        as="a"
-        href="http://www.lucidresearch.org/decsys.html"
-        target="_blank"
+        onClick={() =>
+          onClickLink("http://www.lucidresearch.org/decsys.html", "_blank")
+        }
+        // as="a"
+        // href="http://www.lucidresearch.org/decsys.html"
+        // target="_blank"
       >
         <Stack direction="row" align="center" spacing={1}>
           <Icon as={FaQuestion} />
@@ -74,7 +87,7 @@ const UserMenu = () => {
           </Stack>
         </MenuItem>
         {allowRegistration && (
-          <MenuItem as={Link} to="/user/register">
+          <MenuItem onClick={() => navigate("/user/register")}>
             <Stack direction="row" align="center" spacing={1}>
               <Icon as={FaUserPlus} />
               <Text>Register</Text>
@@ -88,7 +101,7 @@ const UserMenu = () => {
       <>
         <MenuGroup title={user.profile.name}>
           {!isSuperUser && (
-            <MenuItem as={Link} to="/user/profile">
+            <MenuItem onClick={() => navigate("/user/profile")}>
               <Stack direction="row" align="center" spacing={1}>
                 <Icon as={FaUserCog} />
                 <Text>Manage Account</Text>
