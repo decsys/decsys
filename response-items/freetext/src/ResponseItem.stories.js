@@ -1,4 +1,3 @@
-import React from "react";
 import { text, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";

@@ -42,17 +42,8 @@ export default {
       "process.env.NODE_ENV": JSON.stringify("production"),
     }),
     babel({
+      ...pkg.babel,
       exclude: "node_modules/**",
-      presets: [
-        [
-          "@babel/preset-env",
-          {
-            targets: "supports es6-module-dynamic-import",
-            modules: false,
-          },
-        ],
-        "@babel/preset-react",
-      ],
       babelHelpers: "bundled",
     }),
     resolve({ preferBuiltins: false }),

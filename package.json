@@ -8,7 +8,8 @@
   "license": "AGPL-3.0-only",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/param-types",
+    "response-items/freetext"
   ],
   "husky": {
     "hooks": {
