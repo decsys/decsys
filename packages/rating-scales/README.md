@@ -10,7 +10,10 @@ The DECSYS Project uses them for survey question components for its Survey Platf
 
 ## Installation
 
-`npm install @decsys/rating-scales`
+`npm install @decsys/rating-scales @emotion/react @emotion/css`
+
+- `@emotion/react` and `@emotion/css` are peer dependencies
+  - this reduces bundle size and is preferable or environments where emotion is already in use
 
 ## ES Modules / CommonJS (Node)
 
@@ -64,10 +67,10 @@ The following complete ratings scale components are available:
 
 ## 🚝 Read the monorepo notes in the repository root!
 
-| command | notes |
-|-|-|
-| `yarn storybook` | Run Storybook for testing |
-| `yarn build` | Builds the CommonJS distributable undle.<br>Output to `./dist/` |
+| command          | notes                                                           |
+| ---------------- | --------------------------------------------------------------- |
+| `yarn storybook` | Run Storybook for testing                                       |
+| `yarn build`     | Builds the CommonJS distributable undle.<br>Output to `./dist/` |
 
 [react]: https://reactjs.org/
 [rating scales]: https://en.wikipedia.org/wiki/Rating_scale

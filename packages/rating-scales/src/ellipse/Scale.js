@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import EllipseCanvas, { ellipseCanvasPropTypes } from "./Canvas";
 import Frame, { framePropTypes } from "../core/Frame";

@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import Frame from "../core/Frame";
 import ScaleBar, { FlexContainer } from "../core/ScaleBar";

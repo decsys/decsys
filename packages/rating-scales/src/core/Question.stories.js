@@ -1,4 +1,3 @@
-import React from "react";
 import Question from "./Question";
 import { text, optionsKnob } from "@storybook/addon-knobs";
 

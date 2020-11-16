@@ -1,3 +1,5 @@
+const babelConfig = require("../package.json").babel;
+
 module.exports = {
   stories: ["../src/**/*.stories.js"],
   addons: [
@@ -13,13 +15,10 @@ module.exports = {
     // 'PRODUCTION' is used when building the static version of storybook.
 
     // Make whatever fine-grained changes you need
-    config.module.rules[0].use[0].options.presets = [
-      require.resolve("@babel/preset-react"),
-      require.resolve("@babel/preset-env"),
-      // Emotion preset must run BEFORE reacts preset to properly convert css-prop.
-      // Babel preset-ordering runs reversed (from last to first). Emotion has to be after React preset.
-      require.resolve("@emotion/babel-preset-css-prop"),
-    ];
+    config.module.rules[0].use[0].options = {
+      ...config.module.rules[0].use[0].options,
+      ...babelConfig,
+    };
 
     // Return the altered config
     return config;

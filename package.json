@@ -8,10 +8,7 @@
   "license": "AGPL-3.0-only",
   "private": true,
   "workspaces": [
-    "app/*",
-    "docs",
-    "packages/*",
-    "response-items/*"
+    "packages/*"
   ],
   "husky": {
     "hooks": {

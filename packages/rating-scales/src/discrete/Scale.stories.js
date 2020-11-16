@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { text, object, optionsKnob, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import DiscreteScale from "./Scale";

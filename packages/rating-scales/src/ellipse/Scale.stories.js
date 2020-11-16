@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import EllipseScale from "./Scale";
 import { action } from "@storybook/addon-actions";
 import { text } from "@storybook/addon-knobs";
