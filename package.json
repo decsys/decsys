@@ -12,7 +12,8 @@
     "packages/*",
     "response-items/freetext",
     "response-items/confirmation",
-    "response-items/choose-one"
+    "response-items/choose-one",
+    "response-items/ellipse-scale"
   ],
   "husky": {
     "hooks": {
