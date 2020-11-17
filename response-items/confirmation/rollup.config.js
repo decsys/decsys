@@ -4,65 +4,35 @@ import replace from "@rollup/plugin-replace";
 import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
-import path from "path";
 
 const pkg = require("./package.json");
 
-// the actual module exports from the bundled IIFE
-const footer = `
-export const name = DecsysResponseItem.displayName;
-export default DecsysResponseItem;
-`;
-const banner = `/* @preserve ${
-  pkg.responseItemName
-} - ${new Date().toISOString()} */`;
+const {
+  pluginConfigs,
+  buildRollupConfig,
+} = require("@decsys/config").responseItemRollup;
+const config = buildRollupConfig(pkg.responseItemName, __dirname);
 
-export default {
-  input: path.join(__dirname, "src/index.js"),
-  output: {
-    format: "iife",
-    name: "DecsysResponseItem",
-    file: path.join(__dirname, `dist/${pkg.responseItemName}.js`),
-    sourcemap: true,
-    preferConst: true,
-    compact: true,
-    banner,
-    footer,
-    globals: {
-      react: "React",
-      "react-dom": "ReactDOM",
-      "prop-types": "PropTypes",
-      "@chakra-ui/core": "Chakra",
-    },
-  },
-  external: ["react", "react-dom", "prop-types", "@chakra-ui/core"],
-  plugins: [
-    replace({
-      "process.env.NODE_ENV": JSON.stringify("production"),
-    }),
-    babel({
-      exclude: "node_modules/**",
-      presets: [
-        [
-          "@babel/preset-env",
-          {
-            targets: "supports es6-module-dynamic-import",
-            modules: false,
-          },
-        ],
-        "@babel/preset-react",
-      ],
-      babelHelpers: "bundled",
-    }),
-    resolve({ preferBuiltins: false }),
-    cjs(),
-    json(),
-    terser(),
-  ],
-  onwarn: (warning) => {
-    // we actually want builds to FAIL on warnings
-    // not make spurious decisions for us
-    // like adding unresolved dependencies to externals
-    throw new Error(warning.message);
-  },
+// Add item specific globals
+config.output.globals = {
+  ...config.output.globals,
+  "@chakra-ui/react": "Chakra",
 };
+
+// Add item specific externals
+config.external = [...config.external, "@chakra-ui/react"];
+
+// Add plugins
+config.plugins = [
+  replace(pluginConfigs.replace),
+  babel({
+    ...pkg.babel,
+    ...pluginConfigs.babel,
+  }),
+  resolve(pluginConfigs.resolve),
+  cjs(),
+  json(),
+  terser(),
+];
+
+export default config;
