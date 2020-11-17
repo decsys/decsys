@@ -9,7 +9,7 @@ const params = {
   dropDown: ParamTypes.bool("Drop Down?", false),
 
   // Styling Options
-  width: ParamTypes.string("Width", "70%"),
+  width: ParamTypes.string("Dropdown Width", "70%"),
   alignment: ParamTypes.oneOf(
     "Alignment",
     ["left", "center", "right"],

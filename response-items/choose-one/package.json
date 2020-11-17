@@ -12,16 +12,17 @@
     "pack": "webpack"
   },
   "dependencies": {
-    "@decsys/param-types": "workspace:*",
-    "react-select": "^3.1.0"
+    "@decsys/param-types": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.10.4",
+    "@chakra-ui/react": "^1.0.0",
     "@decsys/config": "workspace:*",
     "@emotion/babel-plugin": "^11.0.0",
     "@emotion/react": "^11.1.0",
+    "@emotion/styled": "^11.0.0",
     "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
@@ -46,6 +47,7 @@
     "webpack": "^4.44.0"
   },
   "peerDependencies": {
+    "@chakra-ui/react": "~1",
     "prop-types": "~15",
     "react": "~17",
     "react-dom": "~17"
