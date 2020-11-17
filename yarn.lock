@@ -2174,6 +2174,63 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@decsys/rating-scales@workspace:packages/rating-scales":
+  version: 0.0.0-use.local
+  resolution: "@decsys/rating-scales@workspace:packages/rating-scales"
+  dependencies:
+    "@babel/core": ^7.12.3
+    "@babel/preset-env": ^7.12.1
+    "@babel/preset-react": ^7.12.5
+    "@chakra-ui/react": ^1.0.0
+    "@emotion/babel-plugin": ^11.0.0
+    "@emotion/css": ^11.0.0
+    "@emotion/react": ^11.0.0
+    "@emotion/styled": 11.0.0
+    "@pixi/app": ^5.3.2
+    "@pixi/constants": ^5.3.2
+    "@pixi/core": ^5.3.2
+    "@pixi/display": ^5.3.2
+    "@pixi/graphics": ^5.3.2
+    "@pixi/interaction": ^5.3.2
+    "@pixi/math": ^5.3.2
+    "@pixi/runner": ^5.3.2
+    "@pixi/settings": ^5.3.2
+    "@pixi/ticker": ^5.3.2
+    "@pixi/utils": ^5.3.2
+    "@rollup/plugin-babel": ^5.2.1
+    "@rollup/plugin-commonjs": ^15.1.0
+    "@rollup/plugin-json": ^4.1.0
+    "@rollup/plugin-node-resolve": ^9.0.0
+    "@rollup/plugin-replace": ^2.3.3
+    "@seznam/compose-react-refs": ^1.0.4
+    "@storybook/addon-actions": ^6.1.0-rc.3
+    "@storybook/addon-backgrounds": ^6.1.0-rc.3
+    "@storybook/addon-knobs": ^6.1.0-rc.3
+    "@storybook/addon-links": ^6.1.0-rc.3
+    "@storybook/addon-storysource": ^6.1.0-rc.3
+    "@storybook/addons": ^6.1.0-rc.3
+    "@storybook/react": ^6.1.0-rc.3
+    "@storybook/source-loader": ^6.1.0-rc.3
+    babel-loader: ^8.1.0
+    colornames: ^1.1.1
+    config: "workspace:*"
+    core-js: ^3.6.5
+    framer-motion: ^2.9.4
+    prop-types: ^15.7.2
+    react: ^17.0.1
+    react-dom: ^17.0.1
+    rollup: ^2.32.1
+    rollup-plugin-analyzer: ^3.3.0
+    rollup-plugin-terser: ^7.0.2
+    unit-value: ^1.0.1
+    webpack: ^4.44.0
+  peerDependencies:
+    "@emotion/css": ~11
+    "@emotion/react": ~11
+    react: ~17
+  languageName: unknown
+  linkType: soft
+
 "@emotion/babel-plugin@npm:^11.0.0":
   version: 11.0.0
   resolution: "@emotion/babel-plugin@npm:11.0.0"
@@ -2245,6 +2302,24 @@ __metadata:
     "@emotion/utils": 0.11.3
     babel-plugin-emotion: ^10.0.27
   checksum: 6c8246c63bcb83a1b77fe174c831255f1ba9dc6e040a529ac95e379c272a94b8fd3d207cc4b8e47982928d52a74b80e7389a0a1977c65105731f92bed814f6b7
+  languageName: node
+  linkType: hard
+
+"@emotion/css@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@emotion/css@npm:11.0.0"
+  dependencies:
+    "@emotion/babel-plugin": ^11.0.0
+    "@emotion/cache": ^11.0.0
+    "@emotion/serialize": ^1.0.0
+    "@emotion/sheet": ^1.0.0
+    "@emotion/utils": ^1.0.0
+  peerDependencies:
+    "@babel/core": ^7.0.0
+  peerDependenciesMeta:
+    "@babel/core":
+      optional: true
+  checksum: d09261487b8c04459ee25a5d00ecb4c66920f51ad46e7bbebbc6966290ef96f5d4fd225b6b4109b55db187f2c115ebff7625f795d9415e96e58eab8b0052e252
   languageName: node
   linkType: hard
 
@@ -2358,20 +2433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^10.0.23":
-  version: 10.0.27
-  resolution: "@emotion/styled@npm:10.0.27"
-  dependencies:
-    "@emotion/styled-base": ^10.0.27
-    babel-plugin-emotion: ^10.0.27
-  peerDependencies:
-    "@emotion/core": ^10.0.27
-    react: ">=16.3.0"
-  checksum: 5ae549cbe564482b9277f8f4f53b404270d9c4d826c5396ca62d7d8d07d4a69ba1826f262f506e326df6409b4dfff738d02c0c09f840b603d8cbfaf109634b3c
-  languageName: node
-  linkType: hard
-
-"@emotion/styled@npm:^11.0.0":
+"@emotion/styled@npm:11.0.0, @emotion/styled@npm:^11.0.0":
   version: 11.0.0
   resolution: "@emotion/styled@npm:11.0.0"
   dependencies:
@@ -2390,6 +2452,19 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 42d81040a5f593005516b68822278ca0130511881657bd8c791d265d30d6022374d07147b893439828343c99d2ba36c9609226ad7f0ee0eec2234424aea7cfa9
+  languageName: node
+  linkType: hard
+
+"@emotion/styled@npm:^10.0.23":
+  version: 10.0.27
+  resolution: "@emotion/styled@npm:10.0.27"
+  dependencies:
+    "@emotion/styled-base": ^10.0.27
+    babel-plugin-emotion: ^10.0.27
+  peerDependencies:
+    "@emotion/core": ^10.0.27
+    react: ">=16.3.0"
+  checksum: 5ae549cbe564482b9277f8f4f53b404270d9c4d826c5396ca62d7d8d07d4a69ba1826f262f506e326df6409b4dfff738d02c0c09f840b603d8cbfaf109634b3c
   languageName: node
   linkType: hard
 
@@ -2478,6 +2553,134 @@ __metadata:
   dependencies:
     mkdirp: ^1.0.4
   checksum: ed2cb75eefe218113794416fae43b5307f7c30476506942ed6c6c51f702713323842f81102ae1327f9134130bec0360312e6f858ddef143c21d9e269e90737ac
+  languageName: node
+  linkType: hard
+
+"@pixi/app@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/app@npm:5.3.3"
+  dependencies:
+    "@pixi/core": 5.3.3
+    "@pixi/display": 5.3.3
+  checksum: 2679db06f54dcd63ff3c4befaf16d6374b3e3e4542c5921fc972a38020ff9015a3fdd5643510d8497ef897697490a333f4a880b939f82d917ee9c86aa408f941
+  languageName: node
+  linkType: hard
+
+"@pixi/constants@npm:5.3.3, @pixi/constants@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/constants@npm:5.3.3"
+  checksum: f0bc10c18397eea7a9c2324491b65d97783d487528981a504723fa89abc86e71cf4c1aa320eb7b3bcc5d7156e82bfe8c1241f4d5ed9237989090e284480d148f
+  languageName: node
+  linkType: hard
+
+"@pixi/core@npm:5.3.3, @pixi/core@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/core@npm:5.3.3"
+  dependencies:
+    "@pixi/constants": 5.3.3
+    "@pixi/math": 5.3.3
+    "@pixi/runner": 5.3.3
+    "@pixi/settings": 5.3.3
+    "@pixi/ticker": 5.3.3
+    "@pixi/utils": 5.3.3
+  checksum: 6bac9a0629350e7aa5a6b6b72254b0f29e88393771e2ca30a640be88bb46e439ece5c8b5d2285975cda28bcbb0190fe98470643c6d74f467576bf55cb64ed9f3
+  languageName: node
+  linkType: hard
+
+"@pixi/display@npm:5.3.3, @pixi/display@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/display@npm:5.3.3"
+  dependencies:
+    "@pixi/math": 5.3.3
+    "@pixi/settings": 5.3.3
+    "@pixi/utils": 5.3.3
+  checksum: f00c011b90ef3baeabac014944ccc6dba7b454fa34be48f2b1c768d196f2b8aec2f169ee8c0dfca457605eb7a73beade4b892cbbf3bcec4cb977acfcaae7be0c
+  languageName: node
+  linkType: hard
+
+"@pixi/graphics@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/graphics@npm:5.3.3"
+  dependencies:
+    "@pixi/constants": 5.3.3
+    "@pixi/core": 5.3.3
+    "@pixi/display": 5.3.3
+    "@pixi/math": 5.3.3
+    "@pixi/sprite": 5.3.3
+    "@pixi/utils": 5.3.3
+  checksum: aa44450d90f8f1ff4b52db015e49e5fb314a32a062cc86465e301cc8cbd4eb1102a6336b369d8fbb9dce8e5c2c87a22e36c69154b41659571f0b552cc020c43f
+  languageName: node
+  linkType: hard
+
+"@pixi/interaction@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/interaction@npm:5.3.3"
+  dependencies:
+    "@pixi/core": 5.3.3
+    "@pixi/display": 5.3.3
+    "@pixi/math": 5.3.3
+    "@pixi/ticker": 5.3.3
+    "@pixi/utils": 5.3.3
+  checksum: 842cde95845a395fc8f577365c96a8cfa6ea91d6bc244f742b9b5bd22c377e95e4e87536d13c1f7b05e710f81c75c7bb00b644c87b1e046fdc4ed680b7736b7c
+  languageName: node
+  linkType: hard
+
+"@pixi/math@npm:5.3.3, @pixi/math@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/math@npm:5.3.3"
+  checksum: 29710688ab10b69362023f54b139c2233f07e4c7832612b8c0ae480aad559d5b6d14a13f3b497379039139f1b97494654b3b6ad86a5e4afdc581d945ca862181
+  languageName: node
+  linkType: hard
+
+"@pixi/runner@npm:5.3.3, @pixi/runner@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/runner@npm:5.3.3"
+  checksum: 82ac23b9e8b492e3768b4a8e73d533fe0b5da90fa9b631dad74b181469517abb5c9a6b929b640ef65dcb4a402a2342015ede2378470d081e56a5d25df86808e9
+  languageName: node
+  linkType: hard
+
+"@pixi/settings@npm:5.3.3, @pixi/settings@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/settings@npm:5.3.3"
+  dependencies:
+    ismobilejs: ^1.1.0
+  checksum: 49ed33f73c800643f28501a5b72b8acc2b6a3e4c6fe010e305c1b83a13d3c1e18ba724bca8c150f0085a1becbe8d9a52dc358ee92fa93ee57165e3c7c745bebb
+  languageName: node
+  linkType: hard
+
+"@pixi/sprite@npm:5.3.3":
+  version: 5.3.3
+  resolution: "@pixi/sprite@npm:5.3.3"
+  dependencies:
+    "@pixi/constants": 5.3.3
+    "@pixi/core": 5.3.3
+    "@pixi/display": 5.3.3
+    "@pixi/math": 5.3.3
+    "@pixi/settings": 5.3.3
+    "@pixi/utils": 5.3.3
+  checksum: 2428abe03c50634bf9914e40aa6f20bad6c326d04861fdeee46999a150b352692ff90af8ad74dc50fb7297c532b0f28bbe55c1d75c8a3ac967bafc19812b4e1a
+  languageName: node
+  linkType: hard
+
+"@pixi/ticker@npm:5.3.3, @pixi/ticker@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/ticker@npm:5.3.3"
+  dependencies:
+    "@pixi/settings": 5.3.3
+  checksum: 43ba4f2453ba7ab624f1038a523683b33f391baa9bc6159aeda8fb4f778a7df488328819964e6a6d8e7e7de6432c79130101259ee856abf55aea510dc60d395a
+  languageName: node
+  linkType: hard
+
+"@pixi/utils@npm:5.3.3, @pixi/utils@npm:^5.3.2":
+  version: 5.3.3
+  resolution: "@pixi/utils@npm:5.3.3"
+  dependencies:
+    "@pixi/constants": 5.3.3
+    "@pixi/settings": 5.3.3
+    earcut: ^2.1.5
+    eventemitter3: ^3.1.0
+    url: ^0.11.0
+  checksum: c1761dd41787de3ac11c8d893c448433ae704f038a4db24d53fc1928cff71d0b2579be429cde4c333fcf95ad97ed1d75c6b1e37f078e1b37796eed6eea07203e
   languageName: node
   linkType: hard
 
@@ -2683,6 +2886,13 @@ __metadata:
   peerDependencies:
     rollup: ^1.20.0||^2.0.0
   checksum: 45da6411e045d1b034242a8144f4a5e8c02ff1b68a2e0857807f5bb4b091c416f2015e075057f0f0dec200e7b35efe6ed4e301b43e365cedea09192f01a6839b
+  languageName: node
+  linkType: hard
+
+"@seznam/compose-react-refs@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@seznam/compose-react-refs@npm:1.0.4"
+  checksum: aab7a09bf4797f06b7f80ab16b048dfcb716d55c1d68ae58fd0a7947a030e4ccc6a773d22e016b941fc89b9a5a5de2a5a97ded1645b479be6a73c57c84e3a0c1
   languageName: node
   linkType: hard
 
@@ -5829,6 +6039,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"colornames@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "colornames@npm:1.1.1"
+  checksum: 3ec5d6bccd3246bf3575c50239b299ec1ffad3f52eebe02321220c1361d8b1b8bb069490b5e893864e31c5dd57a0c045e9a0a20735da340ec18ad96b49d3f5c6
+  languageName: node
+  linkType: hard
+
 "colors@npm:^1.1.2":
   version: 1.4.0
   resolution: "colors@npm:1.4.0"
@@ -6988,6 +7205,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"earcut@npm:^2.1.5":
+  version: 2.2.2
+  resolution: "earcut@npm:2.2.2"
+  checksum: 030e091437c4fae34c4538e0886a1d7c68f67c3ec3ba793210b280df24b329221ed81179e300742abf7aa2c394332a77395133c5163717b1806cebab6aa6c88c
+  languageName: node
+  linkType: hard
+
 "ecc-jsbn@npm:~0.1.1":
   version: 0.1.2
   resolution: "ecc-jsbn@npm:0.1.2"
@@ -7647,6 +7871,13 @@ __metadata:
   version: 1.8.1
   resolution: "etag@npm:1.8.1"
   checksum: f18341a3c12a554ec46c0d4756bc9cae177e92f25a4ebd9ceefebf0ee448b675972fc110879f22b1bf514174713921ae5de9ff77af2062d422b1085588465a57
+  languageName: node
+  linkType: hard
+
+"eventemitter3@npm:^3.1.0":
+  version: 3.1.2
+  resolution: "eventemitter3@npm:3.1.2"
+  checksum: fa1a206c4e4e8e427542f7fdfa10bd073a4ddf2510fb22e2f9a33b9aa7a0d5669bffba9b889e22d8c1c976af51a92dab274845e58d626ddb2d3563ed4d5d50dc
   languageName: node
   linkType: hard
 
@@ -9683,6 +9914,13 @@ fsevents@~2.1.2:
   version: 2.0.0
   resolution: "isexe@npm:2.0.0"
   checksum: 7b437980bb77881a146fba85cfbdf01edc2b148673e9c2722a1e49661fea73adf524430a80fdbfb8ce9f60d43224e682c657c45030482bd39e0c488fc29b4afe
+  languageName: node
+  linkType: hard
+
+"ismobilejs@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "ismobilejs@npm:1.1.1"
+  checksum: 9e189015021026d407536d2ce37479dcfcc0f7326a7f594a059784726313640c713e23e59c1e534280f6113610b8df2694b1d042236d4f96c0234793849df21c
   languageName: node
   linkType: hard
 
@@ -14454,6 +14692,13 @@ typescript@^4.0.3:
   dependencies:
     imurmurhash: ^0.1.4
   checksum: 3b17dabc13b3cc41897715e106d4403b88c225739e70bbb6d1142e0fb680261b20574cae133b0ac0eedcf514fc19766d6fa37411f9e9ee038daaa4ae83e7cd70
+  languageName: node
+  linkType: hard
+
+"unit-value@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "unit-value@npm:1.0.1"
+  checksum: 46c142285542e20e5bbb8d1b2207d2379e910e0d1ae65a7f053990f0ecc2cccfb83735a263a95d49807f993a6834eac62f69665036ea9341aeb5ae124ae2453b
   languageName: node
   linkType: hard
 

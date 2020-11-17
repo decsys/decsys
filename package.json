@@ -9,7 +9,7 @@
   "private": true,
   "workspaces": [
     "config",
-    "packages/param-types",
+    "packages/*",
     "response-items/freetext"
   ],
   "husky": {
