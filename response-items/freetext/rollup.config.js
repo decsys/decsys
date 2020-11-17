@@ -33,10 +33,10 @@ export default {
       "react-dom": "ReactDOM",
       "prop-types": "PropTypes",
       mathjs: "math",
-      "@chakra-ui/core": "Chakra",
+      "@chakra-ui/react": "Chakra",
     },
   },
-  external: ["react", "react-dom", "prop-types", "mathjs", "@chakra-ui/core"],
+  external: ["react", "react-dom", "prop-types", "mathjs", "@chakra-ui/react"],
   plugins: [
     replace({
       "process.env.NODE_ENV": JSON.stringify("production"),

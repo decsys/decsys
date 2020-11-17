@@ -76,6 +76,7 @@
     "@chakra-ui/react": "~1",
     "@emotion/react": "~11",
     "@emotion/styled": "~11",
+    "framer-motion": "~2.9",
     "mathjs": "~7",
     "prop-types": "~15",
     "react": "~17",
