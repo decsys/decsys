@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import * as props from "./ResponseItem.props";
 import DiscreteScale from "@decsys/rating-scales/cjs/discrete";
 import { stats } from "./ResponseItem.stats";

@@ -1,5 +1,3 @@
-import React from "react";
-
 // https://github.com/FortAwesome/Font-Awesome/blob/0d1f27efb836eb2ab994ba37221849ed64a73e5c/svgs/regular/dot-circle.svg?short_path=eacf9b7
 // FontAwesome Regular
 // dot-circle

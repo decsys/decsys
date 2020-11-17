@@ -10,10 +10,7 @@
   "workspaces": [
     "config",
     "packages/*",
-    "response-items/freetext",
-    "response-items/confirmation",
-    "response-items/choose-one",
-    "response-items/ellipse-scale"
+    "response-items/*"
   ],
   "husky": {
     "hooks": {

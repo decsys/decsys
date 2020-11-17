@@ -7903,6 +7903,51 @@ __metadata:
   languageName: node
   linkType: hard
 
+"discrete-scale-response@workspace:response-items/discrete-scale":
+  version: 0.0.0-use.local
+  resolution: "discrete-scale-response@workspace:response-items/discrete-scale"
+  dependencies:
+    "@babel/core": ^7.10.5
+    "@babel/preset-env": ^7.10.4
+    "@babel/preset-react": ^7.10.4
+    "@decsys/config": "workspace:*"
+    "@decsys/param-types": "workspace:*"
+    "@decsys/rating-scales": "workspace:*"
+    "@emotion/babel-plugin": ^11.0.0
+    "@emotion/react": ^11.1.1
+    "@rollup/plugin-babel": ^5.2.1
+    "@rollup/plugin-commonjs": ^15.1.0
+    "@rollup/plugin-json": ^4.1.0
+    "@rollup/plugin-node-resolve": ^9.0.0
+    "@rollup/plugin-replace": ^2.3.3
+    "@storybook/addon-actions": ^6.1.0-rc.3
+    "@storybook/addon-backgrounds": ^6.1.0-rc.3
+    "@storybook/addon-knobs": ^6.1.0-rc.3
+    "@storybook/addon-links": ^6.1.0-rc.3
+    "@storybook/addon-storysource": ^6.1.0-rc.3
+    "@storybook/addons": ^6.1.0-rc.3
+    "@storybook/react": ^6.1.0-rc.3
+    "@storybook/source-loader": ^6.1.0-rc.3
+    babel-loader: ^8.1.0
+    core-js: ^3.6.5
+    mathjs: ^7.1.0
+    plotly.js: ^1.57.1
+    prop-types: ^15.7.2
+    react: ^17.0.1
+    react-dom: ^17.0.1
+    react-plotly.js: ^2.5.0
+    rollup: ^2.32.1
+    rollup-plugin-analyzer: ^3.3.0
+    rollup-plugin-terser: ^7.0.2
+    webpack: ^4.44.0
+  peerDependencies:
+    mathjs: ~7
+    prop-types: ~15
+    react: ~17
+    react-dom: ~17
+  languageName: unknown
+  linkType: soft
+
 "doctrine@npm:1.5.0":
   version: 1.5.0
   resolution: "doctrine@npm:1.5.0"
