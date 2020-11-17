@@ -1,9 +1,9 @@
-const { storybook } = require("config");
+const { stories, addons, webpackConfig } = require("@decsys/config").storybook;
 
 const babelConfig = require("../package.json").babel;
 
 module.exports = {
-  stories: storybook.stories,
-  addons: storybook.addons,
-  webpackFinal: storybook.webpackConfig(babelConfig),
+  stories,
+  addons,
+  webpackFinal: webpackConfig(babelConfig),
 };

@@ -1,10 +1,8 @@
+const babelConfig = require("../package.json").babel;
+const { stories, addons, webpackConfig } = require("@decsys/config").storybook;
+
 module.exports = {
-  stories: ["../src/**/*.stories.js"],
-  addons: [
-    "@storybook/addon-actions",
-    "@storybook/addon-knobs",
-    "@storybook/addon-links",
-    "@storybook/addon-storysource",
-    "@storybook/addon-backgrounds",
-  ],
+  stories,
+  addons,
+  webpackFinal: webpackConfig(babelConfig),
 };

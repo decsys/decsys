@@ -10,7 +10,8 @@
   "workspaces": [
     "config",
     "packages/*",
-    "response-items/freetext"
+    "response-items/freetext",
+    "response-items/confirmation"
   ],
   "husky": {
     "hooks": {
@@ -18,7 +19,11 @@
     }
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off"
+    }
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.7.1",

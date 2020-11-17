@@ -10,7 +10,7 @@ const pkg = require("./package.json");
 const {
   pluginConfigs,
   buildRollupConfig,
-} = require("config").responseItemRollup;
+} = require("@decsys/config").responseItemRollup;
 const config = buildRollupConfig(pkg.responseItemName, __dirname);
 
 // Add item specific globals

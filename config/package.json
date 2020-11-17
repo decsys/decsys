@@ -1,5 +1,5 @@
 {
-  "name": "config",
+  "name": "@decsys/config",
   "version": "1.0.0",
   "private": true,
   "description": "Shared configuration used throughout the monorepo",
