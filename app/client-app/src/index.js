@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
 import AppWrapper from "./AppWrapper";
 import Loading from "app/pages/Loading";
@@ -23,7 +23,7 @@ ReactDOM.render(
 import("./global").then((g) => g.loadPageResponseComponents());
 
 // load the full app on demand
-const App = React.lazy(() => import("app"));
+const App = lazy(() => import("app"));
 
 // when that module finishes loading it fires an event
 // telling us we can bootstrap the full ClientApp

@@ -8816,7 +8816,7 @@ __metadata:
     react-icons: ^3.11.0
     react-markdown: ^4.3.1
     react-plotly.js: ^2.5.0
-    react-scripts: ^3.4.1
+    react-scripts: ^3.4.3
     react-table: ^7.3.3
     react-visibility-sensor: ^5.1.1
     react-wordcloud: ^1.2.7
@@ -22344,7 +22344,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"react-scripts@npm:^3.4.1":
+"react-scripts@npm:^3.4.3":
   version: 3.4.4
   resolution: "react-scripts@npm:3.4.4"
   dependencies:

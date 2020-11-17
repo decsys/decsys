@@ -83,6 +83,6 @@
     "@storybook/source-loader": "^6.1.0-rc.3",
     "core-js": "^3.6.5",
     "react-dev-utils": "^10.2.1",
-    "react-scripts": "^3.4.1"
+    "react-scripts": "^3.4.3"
   }
 }
