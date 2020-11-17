@@ -8,19 +8,19 @@ import {
   Checkbox,
   AlertIcon,
   Alert,
+  useDisclosure,
 } from "@chakra-ui/react";
-import useToggle from "hooks/useToggle";
 import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 
 const ImportSurvey = (p) => {
-  const [isExpanded, toggleExpanded] = useToggle();
+  const { isOpen, onToggle } = useDisclosure();
   return (
     <>
-      <Button mb={1} onClick={toggleExpanded}>
+      <Button mb={1} onClick={onToggle}>
         Import an existing Survey...
       </Button>
-      <Collapse isOpen={isExpanded}>
+      <Collapse in={isOpen} animateOpacity>
         <ImportSurveyForm {...p} />
       </Collapse>
     </>
