@@ -6,11 +6,8 @@ import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
 
 const pkg = require("./package.json");
-
-const {
-  pluginConfigs,
-  buildRollupConfig,
-} = require("@decsys/config").responseItemRollup;
+const sharedConfig = require("@decsys/config");
+const { pluginConfigs, buildRollupConfig } = sharedConfig.responseItemRollup;
 const config = buildRollupConfig(pkg.responseItemName, __dirname);
 
 // Add item specific globals
@@ -27,7 +24,7 @@ config.external = [...config.external, "mathjs", "@chakra-ui/react"];
 config.plugins = [
   replace(pluginConfigs.replace),
   babel({
-    ...pkg.babel,
+    ...sharedConfig.responseItemBabel,
     ...pluginConfigs.babel,
   }),
   resolve(pluginConfigs.resolve),

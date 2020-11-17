@@ -1,9 +1,8 @@
-const { stories, addons, webpackConfig } = require("@decsys/config").storybook;
-
-const babelConfig = require("../package.json").babel;
+const config = require("@decsys/config");
+const { stories, addons, webpackConfig } = config.storybook;
 
 module.exports = {
   stories,
   addons,
-  webpackFinal: webpackConfig(babelConfig),
+  webpackFinal: webpackConfig(config.responseItemBabel),
 };

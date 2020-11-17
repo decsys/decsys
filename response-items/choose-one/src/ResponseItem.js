@@ -1,4 +1,3 @@
-import React from "react";
 import * as props from "./ResponseItem.props";
 import FlexBox from "./components/FlexBox";
 import DropDownList from "./components/DropDownList";

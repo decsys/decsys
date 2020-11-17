@@ -11,7 +11,8 @@
     "config",
     "packages/*",
     "response-items/freetext",
-    "response-items/confirmation"
+    "response-items/confirmation",
+    "response-items/choose-one"
   ],
   "husky": {
     "hooks": {

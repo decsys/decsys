@@ -4,73 +4,32 @@ import replace from "@rollup/plugin-replace";
 import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
-import path from "path";
 
 const pkg = require("./package.json");
+const sharedConfig = require("@decsys/config");
+const { pluginConfigs, buildRollupConfig } = sharedConfig.responseItemRollup;
+const config = buildRollupConfig(pkg.responseItemName, __dirname);
 
-// the actual module exports from the bundled IIFE
-const footer = `
-export const name = DecsysResponseItem.displayName;
-export default DecsysResponseItem;
-`;
-const banner = `/* @preserve ${
-  pkg.responseItemName
-} - ${new Date().toISOString()} */`;
+// Add item specific globals
+// config.output.globals = {
+//   ...config.output.globals,
+//  @emotion/?
+// };
 
-export default {
-  input: path.join(__dirname, "src/index.js"),
-  output: {
-    format: "iife",
-    name: "DecsysResponseItem",
-    file: path.join(__dirname, `dist/${pkg.responseItemName}.js`),
-    sourcemap: true,
-    preferConst: true,
-    compact: true,
-    banner,
-    footer,
-    globals: {
-      react: "React",
-      "react-dom": "ReactDOM",
-      "prop-types": "PropTypes",
-      "@emotion/core": "EmotionCore",
-      "@emotion/css": "EmotionCore.css",
-    },
-  },
-  external: [
-    "react",
-    "react-dom",
-    "prop-types",
-    "@emotion/core",
-    "@emotion/css",
-  ],
-  plugins: [
-    babel({
-      exclude: "node_modules/**",
-      presets: [
-        [
-          "@babel/preset-env",
-          {
-            targets: "supports es6-module-dynamic-import",
-            modules: false,
-          },
-        ],
-        "@babel/preset-react",
-        "@emotion/babel-preset-css-prop",
-      ],
-      babelHelpers: "bundled",
-    }),
-    replace({
-      "process.env.NODE_ENV": JSON.stringify("production"),
-    }),
-    resolve({ preferBuiltins: false }),
-    cjs(),
-    json(),
-    terser(),
-  ],
-  onwarn: (warning) => {
-    // we actually want builds to FAIL on warnings
-    // not make spurious decisions for us
-    // like adding unresolved dependencies to externals
-    throw new Error(warning.message);
-  },
-};
+// Add item specific externals
+//config.external = [...config.external, "@emotion/?"];
+
+// Add plugins
+config.plugins = [
+  replace(pluginConfigs.replace),
+  babel({
+    ...sharedConfig.responseItemBabel,
+    ...pluginConfigs.babel,
+  }),
+  resolve(pluginConfigs.resolve),
+  cjs(),
+  json(),
+  terser(),
+];
+
+export default config;

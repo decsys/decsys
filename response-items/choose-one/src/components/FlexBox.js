@@ -1,5 +1,3 @@
-import React from "react";
-
 const FlexBox = ({ alignment, ...p }) => {
   const alignItems =
     {

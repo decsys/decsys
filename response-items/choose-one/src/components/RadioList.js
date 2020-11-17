@@ -1,4 +1,3 @@
-import React from "react";
 import FlexBox from "./FlexBox";
 import RadioListItem from "./RadioListItem";
 

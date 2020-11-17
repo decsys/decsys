@@ -1,5 +1,3 @@
-import React from "react";
-
 const StyledLabel = ({
   textColor = "black",
   fontSize = "1em",
