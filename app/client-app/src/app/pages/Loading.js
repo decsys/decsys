@@ -1,7 +1,7 @@
 import React from "react";
 import LoadingIndicator from "components/core/LoadingIndicator";
 import Layout from "app/layouts/Default";
-import { Flex, useColorMode } from "@chakra-ui/core";
+import { Flex, useColorMode } from "@chakra-ui/react";
 import { defaultColorMode } from "themes";
 
 const Loading = () => {

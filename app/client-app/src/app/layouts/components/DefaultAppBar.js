@@ -13,7 +13,7 @@ import {
   Stack,
   MenuGroup,
   Spinner,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import {
   FaExternalLinkAlt,
   FaUserCircle,

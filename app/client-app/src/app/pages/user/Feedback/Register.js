@@ -1,4 +1,4 @@
-import { Link, Stack, Text } from "@chakra-ui/core";
+import { Link, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { useAuth } from "auth/AuthContext";
 import { useQueryStringViewModel } from "hooks/useQueryString";

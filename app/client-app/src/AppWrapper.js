@@ -1,5 +1,5 @@
 import React, { StrictMode } from "react";
-import { ChakraProvider } from "@chakra-ui/core";
+import { ChakraProvider } from "@chakra-ui/react";
 import theme from "themes";
 
 const AppWrapper = ({ children }) => (

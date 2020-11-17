@@ -4,7 +4,7 @@ import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { usePageListContext } from "../../contexts/PageList";
 import { getComponent } from "services/page-items";
 import pageItemActions from "../../actions/pageItemActions";
-import { Flex } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/react";
 
 // TODO: Document this capability for components
 // with the api (props signature, _context etc...)

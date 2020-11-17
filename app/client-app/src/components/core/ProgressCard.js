@@ -8,7 +8,7 @@ import {
   useTheme,
   Alert,
   AlertIcon,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { ActiveIndicator } from ".";
 import LightHeading from "./LightHeading";
 import { defaultColorMode } from "themes";

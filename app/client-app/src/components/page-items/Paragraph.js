@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 import ReactMarkdown from "react-markdown";
-import { Text } from "@chakra-ui/core";
+import { Text } from "@chakra-ui/react";
 import PageParagraphEditor from "./Paragraph.PreviewEditor";
 
 const PageParagraph = ({ text, color, ...p }) => (

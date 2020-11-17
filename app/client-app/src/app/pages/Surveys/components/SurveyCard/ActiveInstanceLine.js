@@ -10,7 +10,7 @@ import {
   AlertIcon,
   Flex,
   Badge,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Link as RouterLink } from "@reach/router";
 import InstanceValidIdModal from "./InstanceValidIdModal";
 import { InstanceFriendlyIdProvider } from "../../contexts/InstanceFriendlyId";

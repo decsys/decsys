@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { navigate } from "@reach/router";
 import { Page } from "components/core";
-import { Flex, Icon, Input, Button } from "@chakra-ui/core";
+import { Flex, Icon, Input, Button } from "@chakra-ui/react";
 import { FaList } from "react-icons/fa";
 import LightHeading from "components/core/LightHeading";
 

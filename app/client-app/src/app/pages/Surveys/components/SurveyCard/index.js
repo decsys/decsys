@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Grid, useColorMode } from "@chakra-ui/core";
+import { Stack, Grid, useColorMode } from "@chakra-ui/react";
 import { ActiveIndicator } from "components/core";
 import SurveyInfoLine from "./SurveyInfoLine";
 import ActionButtons, { getActionButtons } from "./ActionButtons";

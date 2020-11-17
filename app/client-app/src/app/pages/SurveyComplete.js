@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Page, EmptyState } from "components/core";
-import { Flex } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/react";
 import { FaCheck } from "react-icons/fa";
 import { useSurveyInstance } from "api/survey-instances";
 import { decode } from "services/instance-id";

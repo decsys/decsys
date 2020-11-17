@@ -2,7 +2,7 @@ import React from "react";
 import { Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
-import { Stack, Button, Flex, Link, Text } from "@chakra-ui/core";
+import { Stack, Button, Flex, Link, Text } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import FormikInput from "components/core/FormikInput";
 import validationSchema from "./validation";

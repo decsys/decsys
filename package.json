@@ -10,6 +10,7 @@
   "workspaces": [
     "config",
     "docs",
+    "app/client-app",
     "packages/*",
     "response-items/*"
   ],

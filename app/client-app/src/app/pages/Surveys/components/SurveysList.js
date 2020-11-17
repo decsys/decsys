@@ -1,6 +1,6 @@
 import React from "react";
 import SurveyCard from "./SurveyCard";
-import { Stack, Box } from "@chakra-ui/core";
+import { Stack, Box } from "@chakra-ui/react";
 import { useSortingAndFiltering } from "components/shared/SortPanel";
 import SurveysSortingAndFiltering from "./SurveysSortingAndFiltering";
 import { SurveyProvider } from "../../../contexts/Survey";

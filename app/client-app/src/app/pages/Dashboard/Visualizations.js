@@ -9,7 +9,7 @@ import {
   TabPanels,
   Text,
   IconButton,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import Plot from "react-plotly.js";
 import ReactWordcloud from "react-wordcloud";
 import { FaDownload } from "react-icons/fa";

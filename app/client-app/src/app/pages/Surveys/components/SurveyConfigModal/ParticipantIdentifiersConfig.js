@@ -8,7 +8,7 @@ import {
   Textarea,
   Stack,
   Icon,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { generateCombination } from "gfycat-style-urls";
 import produce from "immer";
 

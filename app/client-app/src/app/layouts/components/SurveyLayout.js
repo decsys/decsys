@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid } from "@chakra-ui/core";
+import { Grid } from "@chakra-ui/react";
 import Div100vh from "react-div-100vh";
 
 const SurveyLayout = ({ children }) => (

@@ -8,7 +8,7 @@ import {
   Checkbox,
   AlertIcon,
   Alert,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import useToggle from "hooks/useToggle";
 import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";

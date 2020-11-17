@@ -1,6 +1,6 @@
 import React from "react";
 import Param from "./Param";
-import { Grid, Text } from "@chakra-ui/core";
+import { Grid, Text } from "@chakra-ui/react";
 
 const ParamsEditor = ({ component, params, handleParamChange }) => {
   if (!component) return null;

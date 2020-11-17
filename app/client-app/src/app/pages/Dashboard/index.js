@@ -3,7 +3,7 @@ import { Page, StandardModal, ProgressCard } from "components/core";
 import { decode } from "services/instance-id";
 import { useSurvey } from "api/surveys";
 import { useSurveyInstanceResultsSummary } from "api/survey-instances";
-import { Alert, AlertIcon, Flex, Stack, useDisclosure } from "@chakra-ui/core";
+import { Alert, AlertIcon, Flex, Stack, useDisclosure } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import {
   dateTimeOffsetStringComparer,

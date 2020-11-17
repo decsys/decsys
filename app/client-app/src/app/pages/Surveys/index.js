@@ -1,7 +1,7 @@
 import React from "react";
 import { Page, EmptyState } from "components/core";
 import SurveysList from "./components/SurveysList";
-import { useDisclosure, Box, Alert, AlertIcon } from "@chakra-ui/core";
+import { useDisclosure, Box, Alert, AlertIcon } from "@chakra-ui/react";
 import PageHeader from "./components/PageHeader";
 import AddSurveyModal from "./components/AddSurveyModal";
 import { useSurveysList } from "api/surveys";

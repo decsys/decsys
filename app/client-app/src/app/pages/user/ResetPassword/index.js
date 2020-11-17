@@ -3,7 +3,7 @@ import { useQueryStringViewModel } from "hooks/useQueryString";
 import React from "react";
 import PasswordFieldGroup from "../components/PasswordFieldGroup";
 import { postObjectAsFormData } from "js-forms";
-import { Flex, Stack, Button } from "@chakra-ui/core";
+import { Flex, Stack, Button } from "@chakra-ui/react";
 import { Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
 import { Formik, Form } from "formik";

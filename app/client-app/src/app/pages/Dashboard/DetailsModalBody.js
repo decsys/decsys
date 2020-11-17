@@ -15,7 +15,7 @@ import {
   SimpleGrid,
   useTheme,
   useColorMode,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import { Body as SurveyPageBody } from "components/shared/SurveyPage";
 import { defaultColorMode } from "themes";

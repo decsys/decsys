@@ -31,7 +31,7 @@ import {
   Grid,
   useTheme,
   Icon,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Page, EmptyState, LoadingIndicator } from "components/core";
 import { navigate } from "@reach/router";
 import { encode } from "services/instance-id";

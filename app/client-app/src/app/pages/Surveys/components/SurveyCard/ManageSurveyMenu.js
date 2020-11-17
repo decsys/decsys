@@ -6,7 +6,7 @@ import {
   MenuItem,
   IconButton,
   useDisclosure,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { FaEllipsisV } from "react-icons/fa";
 import DeleteSurveyModal from "../../../../../components/shared/DeleteSurveyModal";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";

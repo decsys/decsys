@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Flex, useColorMode } from "@chakra-ui/core";
+import { Grid, Flex, useColorMode } from "@chakra-ui/react";
 import PageList from "./components/PageList";
 import EditorBar from "./components/EditorBar";
 import { Page, EmptyState } from "components/core";

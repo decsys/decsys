@@ -7,7 +7,7 @@ import {
   Link,
   Stack,
   Flex,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import React from "react";
 import { useQueryStringViewModel } from "hooks/useQueryString";
 import ErrorsAlert from "components/core/ErrorsAlert";

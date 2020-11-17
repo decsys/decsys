@@ -1,7 +1,7 @@
 import React from "react";
 import DefaultAppBar from "./components/DefaultAppBar";
 import DefaultContainer from "../../components/shared/DefaultContainer";
-import { Grid } from "@chakra-ui/core";
+import { Grid } from "@chakra-ui/react";
 
 const Default = ({ children, brandLink }) => {
   return (

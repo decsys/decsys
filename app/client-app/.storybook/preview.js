@@ -1,16 +1,13 @@
 import React from "react";
 import { addDecorator } from "@storybook/react";
 import { withKnobs } from "@storybook/addon-knobs";
-import { ChakraProvider, CSSReset } from "@chakra-ui/core";
-import themes from "themes";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "themes";
 
 addDecorator((s) => (
-  <>
-    <ChakraProvider theme={themes}>
-      <CSSReset />
-      {s()}
-    </ChakraProvider>
-  </>
+  <ChakraProvider resetCss theme={theme}>
+    {s()}
+  </ChakraProvider>
 ));
 
 addDecorator(withKnobs({ escapeHTML: false }));

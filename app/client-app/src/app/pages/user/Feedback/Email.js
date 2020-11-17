@@ -1,6 +1,6 @@
 import React from "react";
 import { Router } from "@reach/router";
-import { Stack, Text, Link } from "@chakra-ui/core";
+import { Stack, Text, Link } from "@chakra-ui/react";
 import { DefaultFeedback, FeedbackAlert } from "./index";
 import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useAuth } from "auth/AuthContext";

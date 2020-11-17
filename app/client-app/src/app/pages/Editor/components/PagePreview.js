@@ -2,7 +2,7 @@ import React, { createElement } from "react";
 import { getComponent } from "services/page-items";
 import { usePageListContext } from "../contexts/PageList";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import { Stack } from "@chakra-ui/core";
+import { Stack } from "@chakra-ui/react";
 import PageItemRender from "components/shared/PageItemRender";
 import {
   usePageItemActions,

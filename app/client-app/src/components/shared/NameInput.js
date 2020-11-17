@@ -7,7 +7,7 @@ import {
   Spinner,
   useToast,
   Icon,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { FaEdit } from "react-icons/fa";
 import { useDerivedState } from "hooks/useDerivedState";
 import useDeferredAction from "hooks/useDeferredAction";

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Flex, Spinner, Text } from "@chakra-ui/core";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 
 const LoadingIndicator = ({ verb, noun }) => (
   <Flex justify="center">
@@ -17,11 +17,11 @@ const LoadingIndicator = ({ verb, noun }) => (
 
 LoadingIndicator.propTypes = {
   verb: PropTypes.string,
-  noun: PropTypes.string
+  noun: PropTypes.string,
 };
 
 LoadingIndicator.defaultProps = {
-  verb: "Loading"
+  verb: "Loading",
 };
 
 export default LoadingIndicator;

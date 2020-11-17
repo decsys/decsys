@@ -10,7 +10,7 @@ import {
   Link,
   Stack,
   Text,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { FaInfoCircle, FaExternalLinkAlt } from "react-icons/fa";
 
 const PageParagraphEditor = ({

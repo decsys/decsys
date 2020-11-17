@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Field } from "formik";
-import { Flex } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/react";
 import FormikInput from "components/core/FormikInput";
 
 export const EmailField = ({ name = "Email", ...p }) => (

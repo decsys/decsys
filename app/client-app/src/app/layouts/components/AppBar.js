@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Link, Grid, useColorMode } from "@chakra-ui/core";
+import { Flex, Link, Grid, useColorMode } from "@chakra-ui/react";
 import { Link as RouterLink } from "@reach/router";
 import LightHeading from "components/core/LightHeading";
 import { defaultColorMode } from "themes";
