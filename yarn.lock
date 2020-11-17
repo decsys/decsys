@@ -5927,6 +5927,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"config@workspace:*, config@workspace:config":
+  version: 0.0.0-use.local
+  resolution: "config@workspace:config"
+  languageName: unknown
+  linkType: soft
+
 "confusing-browser-globals@npm:^1.0.9":
   version: 1.0.10
   resolution: "confusing-browser-globals@npm:1.0.10"
@@ -8225,6 +8231,7 @@ __metadata:
     "@storybook/react": ^6.1.0-rc.3
     "@storybook/source-loader": ^6.1.0-rc.3
     babel-loader: ^8.1.0
+    config: "workspace:*"
     core-js: ^3.6.5
     framer-motion: ^2.9.4
     mathjs: ^7.1.0
@@ -8240,6 +8247,7 @@ __metadata:
     "@chakra-ui/react": ~1
     "@emotion/react": ~11
     "@emotion/styled": ~11
+    framer-motion: ~2.9
     mathjs: ~7
     prop-types: ~15
     react: ~17

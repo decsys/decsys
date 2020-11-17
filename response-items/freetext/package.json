@@ -60,6 +60,7 @@
     "@storybook/react": "^6.1.0-rc.3",
     "@storybook/source-loader": "^6.1.0-rc.3",
     "babel-loader": "^8.1.0",
+    "config": "workspace:*",
     "core-js": "^3.6.5",
     "framer-motion": "^2.9.4",
     "mathjs": "^7.1.0",
