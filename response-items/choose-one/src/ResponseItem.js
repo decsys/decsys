@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, createElement } from "react";
 import * as props from "./ResponseItem.props";
 import { filterOptions } from "./utils/option-params";
 import { Flex } from "@chakra-ui/react";
 import RadioList from "./components/RadioList";
+import DropDownList from "./components/DropDownList";
 
 // Main Component
 const ResponseItem = ({
@@ -26,6 +27,9 @@ const ResponseItem = ({
     fontFamily,
   };
 
+  const align =
+    { left: "flex-start", right: "flex-end" }[alignment] ?? "center";
+
   const handleSelection = (option) => {
     // keep our state consistent
     setSelectedOption(option);
@@ -35,24 +39,17 @@ const ResponseItem = ({
     logResults(JSON.parse(option));
   };
 
-  const align =
-    { left: "flex-start", right: "flex-end" }[alignment] ?? "center";
+  const listComponent = dropDown ? DropDownList : RadioList;
 
   return (
     <Flex w="100%" justify={align}>
-      <RadioList
-        selectedOption={selectedOption}
-        options={options}
-        onSelection={handleSelection}
-        {...styles}
-      />
+      {createElement(listComponent, {
+        selectedOption,
+        options,
+        onSelection: handleSelection,
+        ...styles,
+      })}
     </Flex>
-    // <FlexBox alignment={alignment}>
-    //   {dropDown ? (
-    //     <DropDownList options={options} onSelection={logOption} {...styles} />
-    //   ) : (
-    //   )}
-    // </FlexBox>
   );
 };
 

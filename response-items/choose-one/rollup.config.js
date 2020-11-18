@@ -1,5 +1,5 @@
 import resolve from "@rollup/plugin-node-resolve";
-import cjs from "rollup-plugin-commonjs";
+import cjs from "@rollup/plugin-commonjs";
 import replace from "@rollup/plugin-replace";
 import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
@@ -11,13 +11,13 @@ const { pluginConfigs, buildRollupConfig } = sharedConfig.responseItemRollup;
 const config = buildRollupConfig(pkg.responseItemName, __dirname);
 
 // Add item specific globals
-// config.output.globals = {
-//   ...config.output.globals,
-//  @emotion/?
-// };
+config.output.globals = {
+  ...config.output.globals,
+  "@chakra-ui/react": "Chakra",
+};
 
 // Add item specific externals
-//config.external = [...config.external, "@emotion/?"];
+config.external = [...config.external, "@chakra-ui/react"];
 
 // Add plugins
 config.plugins = [
