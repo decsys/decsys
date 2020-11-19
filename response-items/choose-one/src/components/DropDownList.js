@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useCombobox } from "downshift";
 import {
+  Box,
   Flex,
   Input,
   InputGroup,
   InputRightElement,
   List,
   ListItem,
+  Stack,
   Text,
 } from "@chakra-ui/react";
 
@@ -52,7 +54,7 @@ const DropDownList = ({
   });
 
   return (
-    <Flex w={width} {...getComboboxProps()}>
+    <Stack w={width} {...getComboboxProps()}>
       <InputGroup>
         <Input
           color={textColor}
@@ -75,38 +77,39 @@ const DropDownList = ({
         </InputRightElement>
       </InputGroup>
 
-      <List
-        {...getMenuProps()}
-        position="absolute"
-        top="60px"
-        w={width}
-        shadow="md"
-        backgroundColor="white"
-        borderColor="gray.200"
-        borderWidth={1}
-        borderRadius={3}
-        zIndex="dropdown"
-        py={2}
-        maxHeight="300px"
-        overflowY="auto"
-        hidden={!isOpen}
-      >
-        {inputItems.map((item, index) => (
-          <ListItem
-            key={item.value}
-            p={2}
-            bg={highlightedIndex === index ? "blue.400" : undefined}
-            color={highlightedIndex === index ? "gray.100" : textColor}
-            fontSize={fontSize}
-            fontFamily={fontFamily}
-            cursor="default"
-            {...getItemProps({ item, index })}
-          >
-            <Text>{item.label}</Text>
-          </ListItem>
-        ))}
-      </List>
-    </Flex>
+      <Box position="relative">
+        <List
+          {...getMenuProps()}
+          position="absolute"
+          width="100%"
+          shadow="md"
+          backgroundColor="white"
+          borderColor="gray.200"
+          borderWidth={1}
+          borderRadius={3}
+          zIndex="portal"
+          py={2}
+          maxHeight="300px"
+          overflowY="auto"
+          hidden={!isOpen}
+        >
+          {inputItems.map((item, index) => (
+            <ListItem
+              key={item.value}
+              p={2}
+              bg={highlightedIndex === index ? "blue.400" : undefined}
+              color={highlightedIndex === index ? "gray.100" : textColor}
+              fontSize={fontSize}
+              fontFamily={fontFamily}
+              cursor="default"
+              {...getItemProps({ item, index })}
+            >
+              <Text>{item.label}</Text>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </Stack>
   );
 };
 

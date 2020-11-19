@@ -55,7 +55,12 @@ export const WithKnobs = () => {
 };
 
 export const DropDown = () => {
-  return <ResponseItem dropDown={true} {...props()} />;
+  return (
+    <div style={{ marginTop: "50px" }}>
+      <ResponseItem dropDown={true} {...props()} />
+      <div style={{ height: "100px", width: "100%", backgroundColor: "red" }} />
+    </div>
+  );
 };
 
 export const RadioList = () => {
