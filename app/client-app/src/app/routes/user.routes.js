@@ -1,4 +1,3 @@
-import React from "react";
 import { Router } from "@reach/router";
 import Register from "app/pages/user/Register";
 import UserFeedback from "app/pages/user/Feedback";
@@ -8,15 +7,15 @@ import Error from "app/pages/Error";
 import ResetPassword from "app/pages/user/ResetPassword";
 import Profile from "app/pages/user/Profile";
 import { useAuth } from "auth/AuthContext";
-import Loading from "app/pages/Loading";
 import ChangePassword from "app/pages/user/ChangePassword";
 import ChangeEmail from "app/pages/user/ChangeEmail";
+import { LoadingIndicator } from "components/core";
 
 const Protected = ({ as: SuccessRoute, ...p }) => {
   const { user, login, isSuperUser } = useAuth();
   if (!user) {
     login();
-    return <Loading {...p} />;
+    return <LoadingIndicator {...p} />;
   }
 
   // NO `user` routes at this time are available to the SuperUser!

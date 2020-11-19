@@ -1,21 +1,19 @@
 import { navigate } from "@reach/router";
 import { useQueryStringViewModel } from "hooks/useQueryString";
-import React from "react";
 import PasswordFieldGroup from "../components/PasswordFieldGroup";
 import { postObjectAsFormData } from "js-forms";
 import { Flex, Stack, Button } from "@chakra-ui/react";
-import { Page } from "components/core";
+import { LoadingIndicator, Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
 import { Formik, Form } from "formik";
 import validationSchema from "./validation";
-import Loading from "app/pages/Loading";
 
 const ResetPassword = () => {
   const { userId, code } = useQueryStringViewModel();
 
   if (!userId || !code) {
     navigate("/user/feedback/linkerror");
-    return <Loading />;
+    return <LoadingIndicator />;
   }
 
   const handleCancel = () => navigate(-1);
