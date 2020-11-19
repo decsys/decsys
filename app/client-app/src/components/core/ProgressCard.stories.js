@@ -1,4 +1,3 @@
-import React from "react";
 import { ProgressCard } from "components/core";
 
 const title = "Page 1";

@@ -1,4 +1,4 @@
-import React, { createContext, Children, useContext } from "react";
+import { createContext, Children, useContext } from "react";
 import useLocationStateToast from "hooks/useLocationStateToast";
 
 const LayoutContext = createContext({ getLayout: () => "div" });

@@ -1,4 +1,3 @@
-import React from "react";
 import { Alert, AlertIcon, AlertDescription, Link } from "@chakra-ui/react";
 
 /**

@@ -1,4 +1,3 @@
-import React from "react";
 import ParamTypes, { buildPropTypes } from "@decsys/param-types";
 import { Box } from "@chakra-ui/react";
 

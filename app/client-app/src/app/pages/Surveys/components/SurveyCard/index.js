@@ -1,4 +1,3 @@
-import React from "react";
 import { Stack, Grid, useColorMode } from "@chakra-ui/react";
 import { ActiveIndicator } from "components/core";
 import SurveyInfoLine from "./SurveyInfoLine";

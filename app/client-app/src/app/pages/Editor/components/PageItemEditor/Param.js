@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { types } from "@decsys/param-types";
 import {
   Input,
@@ -8,8 +8,6 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Checkbox,
-  RadioGroup,
-  Stack,
   Select,
 } from "@chakra-ui/react";
 

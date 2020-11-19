@@ -1,4 +1,3 @@
-import React from "react";
 import { text, number, optionsKnob } from "@storybook/addon-knobs";
 import { Heading } from "components/page-items";
 

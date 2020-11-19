@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Flex } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import { FaPlus } from "react-icons/fa";

@@ -1,4 +1,3 @@
-import React from "react";
 import Param from "./Param";
 import { Grid, Text } from "@chakra-ui/react";
 

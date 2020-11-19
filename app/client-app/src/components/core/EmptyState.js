@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import { FaQuestion } from "react-icons/fa";
 import { Flex, Button, Icon } from "@chakra-ui/react";

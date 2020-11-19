@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { StandardModal, LoadingIndicator } from "components/core";
 import { Stack } from "@chakra-ui/react";
 import { useSurvey } from "../../../../contexts/Survey";

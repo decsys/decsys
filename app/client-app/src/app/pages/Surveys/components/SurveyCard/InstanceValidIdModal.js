@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { StandardModal, LoadingIndicator } from "components/core";
 import { Text, Flex, Textarea, Alert, AlertIcon } from "@chakra-ui/react";
 import { useSurveyInstance } from "api/survey-instances";

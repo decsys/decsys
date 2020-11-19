@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { IfFulfilled, IfRejected, useAsync } from "react-async";
 import { Results } from "auth/constants";
 import ErrorPage from "app/pages/Error";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import {
   Flex,

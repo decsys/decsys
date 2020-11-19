@@ -1,4 +1,3 @@
-import React from "react";
 import DefaultAppBar from "./components/DefaultAppBar";
 import SurveyLayout from "./components/SurveyLayout";
 

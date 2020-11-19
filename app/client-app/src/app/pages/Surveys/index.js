@@ -1,4 +1,3 @@
-import React from "react";
 import { Page, EmptyState } from "components/core";
 import SurveysList from "./components/SurveysList";
 import { useDisclosure, Box, Alert, AlertIcon } from "@chakra-ui/react";

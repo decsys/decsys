@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Field } from "formik";
 import { Flex } from "@chakra-ui/react";
 import FormikInput from "components/core/FormikInput";

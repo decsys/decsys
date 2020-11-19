@@ -1,4 +1,4 @@
-import React, { createElement } from "react";
+import { createElement } from "react";
 import { getComponent } from "services/page-items";
 import { usePageListContext } from "../contexts/PageList";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";

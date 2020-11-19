@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^1.0.0",
-    "@docusaurus/core": "next",
-    "@docusaurus/preset-classic": "next",
+    "@docusaurus/core": "^2.0.0-alpha.68",
+    "@docusaurus/preset-classic": "^2.0.0-alpha.68",
     "@emotion/babel-plugin": "^11.0.0",
     "@emotion/react": "^11.1.1",
     "@emotion/styled": "^11.0.0",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
 import { useSurvey } from "api/surveys";

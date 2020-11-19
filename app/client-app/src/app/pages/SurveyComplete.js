@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Page, EmptyState } from "components/core";
 import { Flex } from "@chakra-ui/react";
 import { FaCheck } from "react-icons/fa";

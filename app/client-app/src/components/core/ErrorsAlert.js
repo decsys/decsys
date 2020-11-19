@@ -1,4 +1,3 @@
-import React from "react";
 import { Alert, AlertIcon, Stack, Flex, Grid } from "@chakra-ui/react";
 
 const ErrorsAlert = ({ title, errors, shouldCollapseSingles, ...p }) => {

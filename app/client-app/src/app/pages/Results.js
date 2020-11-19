@@ -1,9 +1,10 @@
-import React, {
+import {
   useState,
   useEffect,
   useMemo,
   Suspense,
   useCallback,
+  memo,
 } from "react";
 import { useSurvey } from "api/surveys";
 import {
@@ -232,7 +233,7 @@ const ResultsTable = ({ columns, data, page, participant }) => {
   );
 };
 
-const Header = React.memo(({ column, colors, width }) => (
+const Header = memo(({ column, colors, width }) => (
   <th
     css={{
       background: colors.gray[600],
@@ -263,10 +264,10 @@ const Header = React.memo(({ column, colors, width }) => (
   </th>
 ));
 
-const Row = React.memo(({ row, colors, prepareRow }) => {
+const Row = memo(({ row, colors, prepareRow }) => {
   const prep = useCallback(() => prepareRow(row), [row, prepareRow]);
   prep();
-  const Cell = React.memo(({ cell }) => (
+  const Cell = memo(({ cell }) => (
     <td
       css={{
         padding: "0 8px",

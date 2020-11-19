@@ -1,7 +1,7 @@
 import { Stack, Flex, Button, Alert, AlertIcon, Text } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import { Page } from "components/core";
-import React, { useState } from "react";
+import { useState } from "react";
 import LightHeading from "components/core/LightHeading";
 import validationSchema from "./validation";
 import { requestEmailChange } from "api/account";

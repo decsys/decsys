@@ -1,4 +1,3 @@
-import React from "react";
 import { Flex, Switch, FormLabel } from "@chakra-ui/react";
 
 const UseParticipantIdentifiersSwitch = ({ data, mutate }) => (

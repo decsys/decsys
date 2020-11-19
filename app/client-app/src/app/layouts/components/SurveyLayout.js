@@ -1,4 +1,3 @@
-import React from "react";
 import { Grid } from "@chakra-ui/react";
 import Div100vh from "react-div-100vh";
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { Flex, useColorMode, Icon } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import { FaGripVertical } from "react-icons/fa";

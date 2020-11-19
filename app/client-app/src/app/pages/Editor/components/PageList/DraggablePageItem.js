@@ -1,4 +1,3 @@
-import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { Flex, Icon, useColorMode, Text, Grid, Select } from "@chakra-ui/react";
 import {
