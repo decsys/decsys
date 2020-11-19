@@ -4,7 +4,7 @@ import theme from "themes";
 
 const AppWrapper = ({ children }) => (
   <StrictMode>
-    <ChakraProvider resetCSS portalZIndex={999} theme={theme}>
+    <ChakraProvider resetCSS portalZIndex={theme.zIndices.portal} theme={theme}>
       {children}
     </ChakraProvider>
   </StrictMode>

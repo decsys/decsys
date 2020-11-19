@@ -61,7 +61,7 @@ const DroppablePageList = () => {
           ref={innerRef}
           {...droppableProps}
           height="100%"
-          style={{ overflowY: "scroll" }}
+          overflowY="scroll"
         >
           {pages.map((page, i) => (
             <Row key={page.id} data={{ page, getPageItemActions }} index={i} />

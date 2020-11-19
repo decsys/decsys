@@ -25,6 +25,9 @@ const overrides = {
     "section-h": "0 2px 10px 0 rgba(0,0,0,.2), 0 1px 3px 0 rgba(0,0,0,.5)",
     "section-v": "2px 0 10px 0 rgba(0,0,0,.2), 1px 0 3px 0 rgba(0,0,0,.5)",
   },
+  zIndices: {
+    portal: 999,
+  },
   sharedStyles: {
     card: (() => {
       const base = {
