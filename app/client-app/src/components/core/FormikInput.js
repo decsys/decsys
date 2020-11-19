@@ -5,7 +5,7 @@ import {
   Input,
   FormErrorMessage,
   Flex,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 
 /**
  * Should account for 90% of text inputs inside Formik Fields.

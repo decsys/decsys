@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Stack, Flex } from "@chakra-ui/core";
+import { Button, Input, Stack, Flex } from "@chakra-ui/react";
 import { uploadPageItemImage, deletePageItemImage } from "api/survey-images";
 
 const ImageParamsEditor = ({

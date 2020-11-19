@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Flex, useColorMode } from "@chakra-ui/core";
+import { Grid, Flex, useColorMode } from "@chakra-ui/react";
 import {
   BackButton,
   PreviewButton,

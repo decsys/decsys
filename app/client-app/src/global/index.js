@@ -4,8 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import * as math from "mathjs";
-import * as Chakra from "@chakra-ui/core";
-import * as EmotionCore from "@emotion/core";
+import * as Chakra from "@chakra-ui/react";
 
 window.__DECSYS__ = {}; // Register our global namespace
 
@@ -15,7 +14,6 @@ window.React = React;
 window.ReactDOM = ReactDOM;
 window.PropTypes = PropTypes;
 window.math = math;
-window.EmotionCore = EmotionCore;
 window.Chakra = Chakra;
 
 /**

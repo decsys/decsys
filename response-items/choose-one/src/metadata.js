@@ -1,5 +1,3 @@
-import React from "react";
-
 // https://reactsvgicons.com/ionicons
 // list-sharp
 export const Icon = (p) => (

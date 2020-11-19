@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
 import * as helpers from "./helpers";

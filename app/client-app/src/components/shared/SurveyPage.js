@@ -2,7 +2,7 @@ import React, { useState, useCallback, useLayoutEffect } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
-import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/core";
+import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import VisibilitySensor from "react-visibility-sensor";

@@ -1,8 +1,20 @@
 const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
+const babelConfig = require("./package.json").babel;
 
 module.exports = {
   babel: {
-    presets: ["@emotion/babel-preset-css-prop"],
+    presets: babelConfig.presets,
+    plugins: babelConfig.plugins,
+  },
+  eslint: {
+    configure: (config) => {
+      config.rules = {
+        ...config.rules,
+        "react/jsx-uses-react": "off",
+        "react/react-in-jsx-scope": "off",
+      };
+      return config;
+    },
   },
   webpack: {
     alias: {},

@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import AppBar from "./AppBar";
 import {
   Icon,
@@ -13,7 +13,7 @@ import {
   Stack,
   MenuGroup,
   Spinner,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import {
   FaExternalLinkAlt,
   FaUserCircle,

@@ -1,6 +1,6 @@
 import React from "react";
 import StandardModal from "components/core/StandardModal";
-import { Stack } from "@chakra-ui/core";
+import { Stack } from "@chakra-ui/react";
 import CreateBlankSurveyButton from "./CreateBlankSurveyButton";
 import LoadInternalSurveys from "./LoadInternalSurveys";
 import ImportSurvey from "./ImportSurvey";

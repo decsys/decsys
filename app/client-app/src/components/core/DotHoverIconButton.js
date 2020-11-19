@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { BsDot } from "react-icons/bs";
-import { Button, Box } from "@chakra-ui/core";
+import { Button, Box } from "@chakra-ui/react";
 
 const DotHoverIconButton = ({ icon, disableHover, ...p }, ref) => {
   const show = { display: "inherit" };

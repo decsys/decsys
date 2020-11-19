@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Flex, Tooltip, useTheme, Icon } from "@chakra-ui/core";
+import { Flex, Tooltip, useTheme, Icon } from "@chakra-ui/react";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { getContrastColor } from "services/colors";
 

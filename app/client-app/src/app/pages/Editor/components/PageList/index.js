@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex } from "@chakra-ui/core";
+import { Flex } from "@chakra-ui/react";
 import { DragDropContext } from "react-beautiful-dnd";
 import Header from "./Header";
 import DroppablePageList from "./DroppablePageList";

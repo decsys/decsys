@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Tooltip } from "@chakra-ui/core";
+import { Button, Tooltip } from "@chakra-ui/react";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 
 const LoadInternalSurveys = ({ closeModal }) => {

@@ -1,5 +1,3 @@
-import React from "react";
-
 // https://reactsvgicons.com/feathericons
 // align-left
 export const Icon = (p) => (

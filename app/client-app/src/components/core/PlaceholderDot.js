@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, useColorMode } from "@chakra-ui/core";
+import { Box, useColorMode } from "@chakra-ui/react";
 import { BsDot } from "react-icons/bs";
 import { defaultColorMode } from "themes";
 

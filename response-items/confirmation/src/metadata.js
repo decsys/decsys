@@ -1,5 +1,3 @@
-import React from "react";
-
 // https://reactsvgicons.com/ionicons
 // checkbox-outline
 export const Icon = (p) => (

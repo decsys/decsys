@@ -11,7 +11,7 @@ import {
   RadioGroup,
   Stack,
   Select,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 
 const useDelayedChangeHandler = (paramKey, init, onChange) => {
   const [timer, setTimer] = useState();

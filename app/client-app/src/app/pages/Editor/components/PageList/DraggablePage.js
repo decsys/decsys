@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, useColorMode } from "@chakra-ui/core";
+import { Flex, useColorMode } from "@chakra-ui/react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import PageHeader from "./PageHeader";
 import DraggablePageItem, { PageItem } from "./DraggablePageItem";

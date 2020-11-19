@@ -1,7 +1,7 @@
-import React, { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import EllipseCanvas from "./Canvas";
 import Frame from "../core/Frame";
-import { Button } from "@chakra-ui/core";
+import { Button } from "@chakra-ui/react";
 import { text, number } from "@storybook/addon-knobs";
 
 export default {

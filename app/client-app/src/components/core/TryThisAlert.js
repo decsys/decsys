@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, AlertIcon, AlertDescription, Link } from "@chakra-ui/core";
+import { Alert, AlertIcon, AlertDescription, Link } from "@chakra-ui/react";
 
 /**
  * Poses a question, and a link to try in response, in an alert

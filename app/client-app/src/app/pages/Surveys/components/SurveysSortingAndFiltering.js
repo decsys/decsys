@@ -1,18 +1,18 @@
 import React from "react";
-import { Flex, Input, Text } from "@chakra-ui/core";
+import { Flex, Input, Text } from "@chakra-ui/react";
 import SortPanel from "components/shared/SortPanel";
 
 const SurveysSortingAndFiltering = ({
   sorting,
   setSorting,
   filter,
-  setFilter
+  setFilter,
 }) => {
-  const handleSort = key => {
+  const handleSort = (key) => {
     setSorting({
       ...sorting,
       key,
-      [key]: sorting.key === key ? !sorting[key] : sorting[key]
+      [key]: sorting.key === key ? !sorting[key] : sorting[key],
     });
   };
 

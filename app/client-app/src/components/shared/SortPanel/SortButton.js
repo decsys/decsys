@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "@chakra-ui/core";
+import { Button } from "@chakra-ui/react";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 
 const SortButton = ({ active, asc, children, onClick, ...rest }) => (

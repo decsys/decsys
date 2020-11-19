@@ -1,10 +1,8 @@
+const config = require("@decsys/config");
+const { stories, addons, webpackConfig } = config.storybook;
+
 module.exports = {
-  stories: ["../src/**/*.stories.js"],
-  addons: [
-    "@storybook/addon-actions",
-    "@storybook/addon-knobs",
-    "@storybook/addon-links",
-    "@storybook/addon-storysource",
-    "@storybook/addon-backgrounds",
-  ],
+  stories,
+  addons,
+  webpackFinal: webpackConfig(config.responseItemBabel),
 };

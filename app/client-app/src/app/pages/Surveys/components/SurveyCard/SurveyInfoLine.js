@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Badge, Flex } from "@chakra-ui/core";
+import { Badge, Flex } from "@chakra-ui/react";
 import NameInput from "components/shared/NameInput";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 

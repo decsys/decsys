@@ -11,7 +11,7 @@ import {
   Grid,
   Divider,
   Flex,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 
 const StandardModal = ({
   header,

@@ -3,7 +3,7 @@ import ParamTypes, {
   buildPropTypes,
   renderContextPropTypes,
 } from "@decsys/param-types";
-import { Image, Flex } from "@chakra-ui/core";
+import { Image, Flex } from "@chakra-ui/react";
 import ImageParamsEditor from "./Image.ParamsEditor";
 
 const PageImage = ({ _context: { surveyId, itemId }, extension, width }) => {

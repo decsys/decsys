@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   Link,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import FormikInput from "components/core/FormikInput";
 
 const passwordRequirements = [

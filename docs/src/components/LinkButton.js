@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "@docusaurus/router";
-import { Button } from "@chakra-ui/core";
+import { Button } from "@chakra-ui/react";
 
 /** A Chakra Button for a Docusaurus internal (React Router) Link */
 const LinkButton = ({ to, ...p }) => {

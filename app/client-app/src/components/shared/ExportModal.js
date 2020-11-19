@@ -1,7 +1,7 @@
 import React from "react";
 import { surveyExport } from "services/export";
 import { StandardModal } from "components/core";
-import { Flex, Button } from "@chakra-ui/core";
+import { Flex, Button } from "@chakra-ui/react";
 
 const ExportModal = ({ modalState, id, name }) => {
   const handleExportStructure = () => surveyExport(id, name, "structure");

@@ -1,6 +1,6 @@
 import React from "react";
-import { Heading } from "@chakra-ui/core";
+import { Heading } from "@chakra-ui/react";
 
-const LightHeading = p => <Heading fontWeight="medium" {...p} />;
+const LightHeading = (p) => <Heading fontWeight="medium" {...p} />;
 
 export default LightHeading;

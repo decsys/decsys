@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Page } from "components/core";
-import { Flex, Icon, Input, Button, Alert, AlertIcon } from "@chakra-ui/core";
+import { Flex, Icon, Input, Button, Alert, AlertIcon } from "@chakra-ui/react";
 import { FaList } from "react-icons/fa";
 import LightHeading from "components/core/LightHeading";
 import { useLocalInstances } from "app/contexts/LocalInstances";

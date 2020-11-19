@@ -6,7 +6,7 @@ import {
   Text,
   useColorMode,
   Divider,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import {
   FaTrash,
   FaCopy,

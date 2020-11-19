@@ -4,7 +4,7 @@ import {
   useColorMode,
   useDisclosure,
   LightMode,
-} from "@chakra-ui/core";
+} from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import {
   FaChevronLeft,

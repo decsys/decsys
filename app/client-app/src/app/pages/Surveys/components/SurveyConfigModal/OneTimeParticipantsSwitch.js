@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Switch, FormLabel } from "@chakra-ui/core";
+import { Flex, Switch, FormLabel } from "@chakra-ui/react";
 
 const OneTimeParticipantsSwitch = ({ data, mutate }) => (
   <Flex align="center">

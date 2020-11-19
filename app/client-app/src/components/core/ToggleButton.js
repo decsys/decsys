@@ -1,8 +1,8 @@
 import React, { forwardRef } from "react";
-import { Button } from "@chakra-ui/core";
+import { Button } from "@chakra-ui/react";
 
 const ToggleButton = ({ checked, children, onClick, ...p }, ref) => {
-  const handleClick = e => {
+  const handleClick = (e) => {
     e.target.checked = !checked;
     onClick(e);
   };

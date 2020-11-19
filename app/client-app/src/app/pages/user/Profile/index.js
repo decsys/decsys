@@ -1,4 +1,4 @@
-import { Stack, Flex, Button, useToast, Grid, Text } from "@chakra-ui/core";
+import { Stack, Flex, Button, useToast, Grid, Text } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
 import { Page } from "components/core";
 import React, { useState } from "react";

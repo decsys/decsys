@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack, Text, Icon } from "@chakra-ui/core";
+import { Stack, Text, Icon } from "@chakra-ui/react";
 import StandardModal from "components/core/StandardModal";
 import { FaExclamationTriangle } from "react-icons/fa";
 

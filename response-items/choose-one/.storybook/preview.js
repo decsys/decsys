@@ -1,16 +1,13 @@
-import React from "react";
 import { addDecorator } from "@storybook/react";
 import { withKnobs } from "@storybook/addon-knobs";
-import { ChakraProvider, CSSReset } from "@chakra-ui/core";
-import theme from "@chakra-ui/theme";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+
+const theme = extendTheme({ zIndices: { portal: 999 } });
 
 addDecorator((s) => (
-  <>
-    <ChakraProvider theme={theme}>
-      <CSSReset />
-      {s()}
-    </ChakraProvider>
-  </>
+  <ChakraProvider resetCSS theme={theme}>
+    {s()}
+  </ChakraProvider>
 ));
 
 addDecorator(withKnobs());

@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, AlertIcon, Stack, Text } from "@chakra-ui/core";
+import { Alert, AlertIcon, Stack, Text } from "@chakra-ui/react";
 import TryThisAlert from "components/core/TryThisAlert";
 import { Utf8ToBase64Url } from "services/data-structures";
 

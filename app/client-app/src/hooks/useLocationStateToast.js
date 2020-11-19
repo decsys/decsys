@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useToast } from "@chakra-ui/core";
+import { useToast } from "@chakra-ui/react";
 import { useLocation } from "@reach/router";
 import merge from "lodash-es/merge";
 

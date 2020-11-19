@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import DraggablePage, { Page } from "./DraggablePage";
-import { Box } from "@chakra-ui/core";
+import { Box } from "@chakra-ui/react";
 import pageItemActions from "../../actions/pageItemActions";
 import { PageItemActionsProvider } from "../../contexts/PageItemActions";
 import { usePageListContext } from "../../contexts/PageList";
@@ -61,7 +61,7 @@ const DroppablePageList = () => {
           ref={innerRef}
           {...droppableProps}
           height="100%"
-          style={{ overflowY: "scroll" }}
+          overflowY="scroll"
         >
           {pages.map((page, i) => (
             <Row key={page.id} data={{ page, getPageItemActions }} index={i} />
