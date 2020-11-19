@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Grid, Flex, useColorMode } from "@chakra-ui/react";
 import PageList from "./components/PageList";
 import EditorBar from "./components/EditorBar";
@@ -10,6 +10,7 @@ import { FaFileAlt } from "react-icons/fa";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import PageItemEditor from "./components/PageItemEditor";
 import { defaultColorMode } from "themes";
+import { css, Global } from "@emotion/react";
 
 const NoPages = ({ addPage }) => (
   <EmptyState
@@ -42,6 +43,15 @@ const Editor = ({ id, navigate }) => {
 
   return (
     <Page layout={null}>
+      <Global
+        // Something (?) on the Editor page overflows the 100vh grid incorrectly
+        // so this just hides it; anywhere we expect to overflow is correctly set anyway.
+        styles={css`
+          body {
+            overflow: hidden;
+          }
+        `}
+      />
       <SurveyEditorContextProvider
         id={id}
         navigate={navigate}
