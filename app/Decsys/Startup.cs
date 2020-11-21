@@ -371,8 +371,8 @@ namespace Decsys
                 spa.Options.SourcePath = "../client-app";
                 spa.Options.PackageManagerCommand = "yarn";
 
-                if (_env.IsDevelopment())
-                    spa.UseReactDevelopmentServer(npmScript: "start");
+                //if (_env.IsDevelopment())
+                //    spa.UseReactDevelopmentServer(npmScript: "start");
             });
         }
 

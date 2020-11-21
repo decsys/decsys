@@ -12,7 +12,7 @@
     "serve": "docusaurus serve"
   },
   "dependencies": {
-    "@chakra-ui/react": "^1.0.0",
+    "@chakra-ui/react": "^1.0.1",
     "@docusaurus/core": "^2.0.0-alpha.68",
     "@docusaurus/preset-classic": "^2.0.0-alpha.68",
     "@emotion/babel-plugin": "^11.0.0",
