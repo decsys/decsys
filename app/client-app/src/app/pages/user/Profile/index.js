@@ -1,7 +1,7 @@
 import { Stack, Flex, Button, useToast, Grid, Text } from "@chakra-ui/react";
 import { Formik, Form, Field } from "formik";
 import { Page } from "components/core";
-import React, { useState } from "react";
+import { useState } from "react";
 import LightHeading from "components/core/LightHeading";
 import validationSchema from "./validation";
 import ErrorsAlert from "components/core/ErrorsAlert";

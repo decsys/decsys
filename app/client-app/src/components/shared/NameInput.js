@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Flex,
   Input,
   InputGroup,
   InputLeftElement,
-  Spinner,
   useToast,
   Icon,
 } from "@chakra-ui/react";
 import { FaEdit } from "react-icons/fa";
 import { useDerivedState } from "hooks/useDerivedState";
 import useDeferredAction from "hooks/useDeferredAction";
+import Spinner from "components/core/Spinner";
 
 const NameInput = ({ name, handleNameSave, nameState }) => {
   const toast = useToast();

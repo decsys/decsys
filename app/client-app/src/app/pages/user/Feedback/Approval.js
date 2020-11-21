@@ -1,6 +1,5 @@
 import { Router } from "@reach/router";
 import { useQueryStringViewModel } from "hooks/useQueryString";
-import React from "react";
 import { FeedbackAlert, DefaultFeedback } from "./index";
 
 const AccountApprovalComplete = ({ isApproved }) => {

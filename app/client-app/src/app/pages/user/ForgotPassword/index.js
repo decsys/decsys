@@ -1,7 +1,6 @@
 import { Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
 import { Flex, Stack, Button, Alert, AlertIcon } from "@chakra-ui/react";
-import React from "react";
 import { navigate } from "@reach/router";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form } from "formik";

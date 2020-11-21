@@ -1,4 +1,4 @@
-import React, { createElement } from "react";
+import { createElement } from "react";
 import { Button, Text } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import { listMatchingKeys } from "services/data-structures";

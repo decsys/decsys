@@ -1,6 +1,6 @@
-import React from "react";
 import PropTypes from "prop-types";
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
+import Spinner from "./Spinner";
 
 const LoadingIndicator = ({ verb, noun }) => (
   <Flex justify="center">

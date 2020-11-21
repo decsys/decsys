@@ -1,5 +1,4 @@
-import React from "react";
-import { Page } from "components/core";
+import { LoadingIndicator, Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
 import { Stack, Button, Flex, Link, Text } from "@chakra-ui/react";
@@ -13,7 +12,6 @@ import { useServerConfig } from "api/config";
 import ErrorsAlert from "components/core/ErrorsAlert";
 import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
 import { useAuth } from "auth/AuthContext";
-import Loading from "../Loading";
 import {
   REQUIRES_APPROVAL,
   REQUIRES_EMAIL_CONFIRMATION,
@@ -46,7 +44,7 @@ const Login = () => {
   // fix it by invoking oidc-client now
   if (!ReturnUrl) {
     login({ returnUrl: "" });
-    return <Loading />;
+    return <LoadingIndicator />;
   }
 
   const post = (values) => {

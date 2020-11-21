@@ -1,13 +1,15 @@
 import Default from "./Default";
-import { lazy } from "react";
+import preview from "./Preview";
+import survey from "./Survey";
+import results from "./Results";
+import manageAccount from "./ManageAccount";
 
 const layouts = {
   default: Default,
-  // LAZY load other layouts, but not default because our Suspense fallback uses it!
-  preview: lazy(() => import("./Preview")),
-  survey: lazy(() => import("./Survey")),
-  results: lazy(() => import("./Results")),
-  manageAccount: lazy(() => import("./ManageAccount")),
+  preview,
+  survey,
+  results,
+  manageAccount,
 };
 
 export default layouts;

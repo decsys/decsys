@@ -1,4 +1,3 @@
-import React from "react";
 import { action } from "@storybook/addon-actions";
 import StandardModal from "./StandardModal";
 import { Text, Flex } from "@chakra-ui/react";

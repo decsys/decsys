@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { Droppable } from "react-beautiful-dnd";
 import DraggablePage, { Page } from "./DraggablePage";
 import { Box } from "@chakra-ui/react";

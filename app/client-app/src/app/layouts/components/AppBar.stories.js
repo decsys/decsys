@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@chakra-ui/react";
 import { action } from "@storybook/addon-actions";
 import AppBar, { AppBarLink } from "./AppBar";

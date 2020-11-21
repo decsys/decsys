@@ -1,4 +1,3 @@
-import React from "react";
 import { EmptyState } from "components/core";
 import { Flex } from "@chakra-ui/react";
 import Default from "app/layouts/Default";

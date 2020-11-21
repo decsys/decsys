@@ -1,4 +1,4 @@
-import React, { createElement } from "react";
+import { createElement } from "react";
 import ParamsEditor from "./ParamsEditor";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { usePageListContext } from "../../contexts/PageList";

@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Tooltip } from "@chakra-ui/react";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 

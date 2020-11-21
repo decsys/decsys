@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useEffect,
   createContext,
@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useLayoutEffect,
 } from "react";
-import { Page } from "components/core";
+import { LoadingIndicator, Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
 import { navigate } from "@reach/router";
 import { decode } from "services/instance-id";
@@ -19,7 +19,6 @@ import {
   logParticipantEvent,
 } from "api/participant-event-logs";
 import { randomize } from "services/randomizer";
-import Loading from "./Loading";
 import { routes, bootstrapSurvey } from "services/survey-bootstrap";
 import ParticipantIdEntry from "./ParticipantIdEntry";
 import ErrorBoundary from "components/ErrorBoundary";
@@ -77,7 +76,7 @@ const SurveyBootstrapper = ({ id }) => {
         </InstanceContext.Provider>
       );
     default:
-      return <Loading />;
+      return <LoadingIndicator />;
   }
 };
 
@@ -185,7 +184,8 @@ const Survey = ({ combinedId, userId, progressStatus }) => {
     setPage(page + 1);
   };
 
-  if (page == null || !pages.length || !pages[page]) return <Loading />;
+  if (page == null || !pages.length || !pages[page])
+    return <LoadingIndicator />;
 
   return (
     <Page layout="survey">

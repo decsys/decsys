@@ -1,10 +1,9 @@
-import React from "react";
 import { text } from "@storybook/addon-knobs";
 import LoadingIndicator from "./LoadingIndicator";
 
 export default {
   title: "Core UI/LoadingIndicator",
-  component: LoadingIndicator
+  component: LoadingIndicator,
 };
 
 export const Basic = () => (

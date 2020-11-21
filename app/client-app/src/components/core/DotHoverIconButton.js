@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { BsDot } from "react-icons/bs";
 import { Button, Box } from "@chakra-ui/react";
 

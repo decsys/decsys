@@ -1,29 +1,17 @@
-import { Suspense, lazy } from "react";
+import { Suspense, StrictMode } from "react";
 import ReactDOM from "react-dom";
-import AppWrapper from "./AppWrapper";
-import Loading from "app/pages/Loading";
 import ErrorBoundary from "components/ErrorBoundary";
 import Error from "app/pages/Error";
-import { LoadingIndicator } from "components/core";
+import App from "app";
+import LoadingIndicator from "components/core/LoadingIndicator";
+import { ChakraProvider } from "@chakra-ui/react";
+import theme from "themes";
 
 const root = document.getElementById("root");
-
-// render our lightweight loading shell
-// for "fast" first paint
-ReactDOM.render(
-  <AppWrapper>
-    <Suspense fallback={<LoadingIndicator />}>
-      <Loading />
-    </Suspense>
-  </AppWrapper>,
-  root
-);
+ReactDOM.render(<LoadingIndicator />, root);
 
 // asynchronously ask the backend to provide the page response components module
 import("./global").then((g) => g.loadPageResponseComponents());
-
-// load the full app on demand
-const App = lazy(() => import("app"));
 
 // when that module finishes loading it fires an event
 // telling us we can bootstrap the full ClientApp
@@ -31,13 +19,19 @@ const App = lazy(() => import("app"));
 // instead have components that need DECSYS components suspend on them
 document.addEventListener("__DECSYS__ComponentsLoaded", () =>
   ReactDOM.render(
-    <AppWrapper>
-      <ErrorBoundary fallback={<Error message="Something went wrong!" />}>
-        <Suspense fallback={<Loading />}>
-          <App />
-        </Suspense>
-      </ErrorBoundary>
-    </AppWrapper>,
+    <StrictMode>
+      <ChakraProvider
+        resetCSS
+        portalZIndex={theme.zIndices.portal}
+        theme={theme}
+      >
+        <ErrorBoundary fallback={<Error message="Something went wrong!" />}>
+          <Suspense fallback={<LoadingIndicator />}>
+            <App />
+          </Suspense>
+        </ErrorBoundary>
+      </ChakraProvider>
+    </StrictMode>,
     root
   )
 );

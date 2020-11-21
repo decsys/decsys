@@ -1,9 +1,8 @@
-import React from "react";
 import ActiveIndicator from "./ActiveIndicator";
 
 export default {
   title: "Core UI/ActiveIndicator",
-  component: ActiveIndicator
+  component: ActiveIndicator,
 };
 
 export const Inactive = () => <ActiveIndicator />;

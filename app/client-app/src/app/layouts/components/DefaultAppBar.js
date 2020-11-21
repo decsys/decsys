@@ -12,7 +12,6 @@ import {
   Button,
   Stack,
   MenuGroup,
-  Spinner,
 } from "@chakra-ui/react";
 import {
   FaExternalLinkAlt,
@@ -29,6 +28,7 @@ import { Link } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
 import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
+import Spinner from "components/core/Spinner";
 
 const HelpMenu = () => (
   <Menu>

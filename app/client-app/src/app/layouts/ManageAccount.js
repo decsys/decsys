@@ -1,4 +1,3 @@
-import React from "react";
 import { Grid, Stack, Button, Flex, Divider } from "@chakra-ui/react";
 import Default from "./Default";
 import LightHeading from "components/core/LightHeading";

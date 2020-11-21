@@ -1,10 +1,10 @@
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import { useSurvey } from "api/surveys";
 import { surveyDefaults } from "./Survey";
 
 const FetchSurveyContext = createContext({
   ...surveyDefaults,
-  mutate: () => {}
+  mutate: () => {},
 });
 
 /**

@@ -1,4 +1,3 @@
-import React from "react";
 import { Router } from "@reach/router";
 import { Stack, Text, Link } from "@chakra-ui/react";
 import { DefaultFeedback, FeedbackAlert } from "./index";

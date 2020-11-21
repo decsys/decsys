@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Page } from "components/core";
 import { Flex, Icon, Input, Button, Alert, AlertIcon } from "@chakra-ui/react";
 import { FaList } from "react-icons/fa";
