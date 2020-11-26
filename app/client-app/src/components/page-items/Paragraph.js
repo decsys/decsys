@@ -9,7 +9,7 @@ const PageParagraph = ({ text, color, ...p }) => (
   // so that simple CSS color names work e.g. "red"
   // and we don't have to explain to users how chakra theme colors work e.g. "red.500"
   <Text as="div" {...p} style={{ color }}>
-    <ReactMarkdown source={text} />
+    <ReactMarkdown source={text} parserOptions={{ commonmark: true }} />
   </Text>
 );
 
