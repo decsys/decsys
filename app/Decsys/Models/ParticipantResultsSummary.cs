@@ -12,7 +12,7 @@ namespace Decsys.Models
 
         public string Id { get; set; }
 
-        public DateTimeOffset SurveyStarted { get; set; }
+        public DateTimeOffset? SurveyStarted { get; set; }
 
         /// <summary>
         /// The participant's reponse to each survey question
