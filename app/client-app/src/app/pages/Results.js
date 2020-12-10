@@ -210,7 +210,7 @@ const ResultsTable = ({ columns, data, page, participant }) => {
         <thead>
           {headerGroups.map((group) => (
             <tr {...group.getHeaderGroupProps()}>
-              {group.headers.map((column) => {
+              {group.headers.map((column, i) => {
                 const width =
                   {
                     Page: "100px",
@@ -218,14 +218,21 @@ const ResultsTable = ({ columns, data, page, participant }) => {
                     "Page Loaded (UTC)": "200px",
                     "Recorded (UTC)": "200px",
                   }[column.Header] ?? "auto";
-                return <Header column={column} colors={colors} width={width} />;
+                return (
+                  <Header
+                    key={i}
+                    column={column}
+                    colors={colors}
+                    width={width}
+                  />
+                );
               })}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => (
-            <Row row={row} colors={colors} prepareRow={prepareRow} />
+          {rows.map((row, i) => (
+            <Row key={i} row={row} colors={colors} prepareRow={prepareRow} />
           ))}
         </tbody>
       </table>
@@ -295,8 +302,8 @@ const Row = memo(({ row, colors, prepareRow }) => {
       }}
       {...row.getRowProps()}
     >
-      {row.cells.map((cell) => (
-        <Cell cell={cell} />
+      {row.cells.map((cell, i) => (
+        <Cell key={i} cell={cell} />
       ))}
     </tr>
   );

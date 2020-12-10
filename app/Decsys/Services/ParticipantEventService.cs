@@ -162,12 +162,12 @@ namespace Decsys.Services
         {
             var firstPageLoad = _events
                 .List(instance.Id, participantId, null, EventTypes.PAGE_LOAD)
-                .First();
+                .FirstOrDefault();
 
             var resultsSummary = new ParticipantResultsSummary(participantId)
             {
                 Responses = new List<PageResponseSummary>(),
-                SurveyStarted = firstPageLoad.Timestamp
+                SurveyStarted = firstPageLoad?.Timestamp
             };
 
             var orderEvent = FindLast(
