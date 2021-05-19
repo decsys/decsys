@@ -8,6 +8,10 @@ This is a simple component that requires a Survey Participant to check a labelle
 
 The typical intended use of this component is for asking a Participant to Accept terms or Confirm they have read instructions.
 
+# ✅ DECSYS Discrete Scale Response
+
+This is a component that allows a Survey Participant to provide a discrete answer on a Discrete Scale.
+
 # ✅ DECSYS Free Text Response
 
 This is a simple component that provides a Free Textarea for Survey Participants to enter any response they wish.
@@ -24,3 +28,7 @@ For usage and reference refer to the DECSYS Documentation.
 |-|-|
 | `yarn storybook` | Run Storybook for testing |
 | `yarn build` | Build the DECSYS Response Item.<br>Output to `./dist/` |
+
+# ⚠ Troubleshooting
+
+At this time, it may be necessary to ensure `packages/rating-scales` is built locally before trying to build / storybook this project.

@@ -1,6 +1,6 @@
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
-import { Icon } from "./metadata";
+import Icon from "./Icon";
 import Plot from "react-plotly.js";
 
 export default {
