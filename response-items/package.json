@@ -1,0 +1,15 @@
+{
+  "name": "response-items",
+  "version": "2.0.0",
+  "description": "All of the DECSYS Survey Platform built-in response items",
+  "private": true,
+  "author": "Jonathan Couldridge <jonathan.couldridge@nottingham.ac.uk>",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/decsys/decsys.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
