@@ -1,9 +1,9 @@
 import ResponseItem from "./ResponseItem";
-import { version, responseItemName } from "../package.json";
-import { Icon } from "./metadata";
+import { version } from "../package.json";
+import { Icon, responseItemName } from "./metadata";
 
 // Set Response Item Metadata
-ResponseItem.displayName = responseItemName;
+ResponseItem.displayName = responseItemNameame;
 ResponseItem.version = version;
 ResponseItem.icon = Icon;
 

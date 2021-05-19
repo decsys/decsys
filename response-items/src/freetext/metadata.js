@@ -1,3 +1,5 @@
+export const responseItemName = "Free Text";
+
 // https://reactsvgicons.com/feathericons
 // align-left
 export const Icon = (p) => (

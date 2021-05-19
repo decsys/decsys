@@ -1,3 +1,5 @@
+dist
+
 # The sln is in the repo root, so .vs goes here too
 .vs
 
