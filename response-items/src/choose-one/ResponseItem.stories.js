@@ -1,7 +1,7 @@
 import { text, radios, color, boolean } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
-import { Icon } from "./metadata";
+import Icon from "./Icon";
 
 export default {
   title: "Choose One Response",

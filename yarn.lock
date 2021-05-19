@@ -14777,7 +14777,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"downshift@npm:^6.0.15":
+"downshift@npm:^6.0.15, downshift@npm:^6.1.3":
   version: 6.1.3
   resolution: "downshift@npm:6.1.3"
   dependencies:
@@ -27707,6 +27707,7 @@ resolve@~1.17.0:
     "@storybook/addon-storysource": ^6.2.9
     "@storybook/react": ^6.2.9
     babel-loader: ^8.2.2
+    downshift: ^6.1.3
     framer-motion: ^4.1.17
     mathjs: ^9.4.0
     prop-types: ^15.7.2

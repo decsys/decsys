@@ -1,3 +1,7 @@
+# ✅ DECSYS Choose One Response
+
+This is a component that allows a Survey Participant to select only one item from multiple choices.
+
 # ✅ DECSYS Confirmation Response
 
 This is a simple component that requires a Survey Participant to check a labelled checkbox to proceed.

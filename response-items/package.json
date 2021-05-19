@@ -12,12 +12,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 6006",
+    "build:choose-one": "rollup -c .rollup/choose-one.js",
     "build:confirmation": "rollup -c .rollup/confirmation.js",
     "build:freetext": "rollup -c .rollup/freetext.js",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@decsys/param-types": "workspace:packages/param-types"
+    "@decsys/param-types": "workspace:packages/param-types",
+    "downshift": "^6.1.3"
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
