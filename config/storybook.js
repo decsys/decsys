@@ -1,3 +1,5 @@
+const path = require("path");
+
 const webpackConfig = (babelConfig) => async (config, { configType }) => {
   // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
   // You can change the configuration based on that.
@@ -10,10 +12,13 @@ const webpackConfig = (babelConfig) => async (config, { configType }) => {
   };
 
   // until storybook supports emotion 11 by itself, alias 10 to 11.
+  const emotionReactEleven = path.dirname(
+    require.resolve("@emotion/react/package.json")
+  );
   config.resolve.alias = {
     ...config.resolve.alias,
-    "@emotion/core": "@emotion/react",
-    "emotion-theming": "@emotion/react",
+    "@emotion/core": emotionReactEleven,
+    "emotion-theming": emotionReactEleven,
   };
 
   // Return the altered config

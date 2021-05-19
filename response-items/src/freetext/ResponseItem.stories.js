@@ -1,7 +1,7 @@
 import { text, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
-import { Icon } from "./Icon";
+import Icon from "./Icon";
 import ReactWordcloud from "react-wordcloud";
 
 export default {

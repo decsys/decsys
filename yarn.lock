@@ -4627,6 +4627,8 @@ __metadata:
 "@decsys/config@workspace:*, @decsys/config@workspace:config":
   version: 0.0.0-use.local
   resolution: "@decsys/config@workspace:config"
+  peerDependencies:
+    "@emotion/react": ^11.4.0
   languageName: unknown
   linkType: soft
 

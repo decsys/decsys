@@ -12,6 +12,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "storybook": "start-storybook -p 6006",
+    "build:confirmation": "rollup -c .rollup/confirmation.js",
     "build:freetext": "rollup -c .rollup/freetext.js",
     "build-storybook": "build-storybook"
   },

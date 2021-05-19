@@ -1,7 +1,7 @@
 import { text } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
-import { Icon } from "./metadata";
+import Icon from "./Icon";
 
 const _context = {
   surveyId: 0,
