@@ -4632,6 +4632,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@decsys/iaa@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@decsys/iaa@npm:1.0.2"
+  checksum: 88f333af58374d5e1f72569953c921e0c99413c76fd846ee4af45b157a45070526c20fda1a9f87b8584ec6ff6106ef719a453c9f340fd1b8bcfb927a80ab59d2
+  languageName: node
+  linkType: hard
+
 "@decsys/param-types@workspace:*, @decsys/param-types@workspace:packages/param-types":
   version: 0.0.0-use.local
   resolution: "@decsys/param-types@workspace:packages/param-types"
@@ -27776,6 +27783,7 @@ resolve@~1.17.0:
     "@babel/preset-react": ^7.13.13
     "@chakra-ui/react": ^1.6.2
     "@decsys/config": "workspace:config"
+    "@decsys/iaa": ^1.0.2
     "@decsys/param-types": "workspace:packages/param-types"
     "@decsys/rating-scales": "workspace:packages/rating-scales"
     "@emotion/babel-plugin": ^11.3.0

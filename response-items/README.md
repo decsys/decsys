@@ -12,6 +12,10 @@ The typical intended use of this component is for asking a Participant to Accept
 
 This is a component that allows a Survey Participant to provide a discrete answer on a Discrete Scale.
 
+# ✅ DECSYS Ellipse Scale Response
+
+This is a component that allows a Survey Participant to provide a ranged answer on an Ellipse Scale.
+
 # ✅ DECSYS Free Text Response
 
 This is a simple component that provides a Free Textarea for Survey Participants to enter any response they wish.

@@ -15,10 +15,12 @@
     "build:choose-one": "rollup -c .rollup/choose-one.js",
     "build:confirmation": "rollup -c .rollup/confirmation.js",
     "build:discrete-scale": "rollup -c .rollup/discrete-scale.js",
+    "build:ellipse-scale": "rollup -c .rollup/ellipse-scale.js",
     "build:freetext": "rollup -c .rollup/freetext.js",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@decsys/iaa": "^1.0.2",
     "@decsys/param-types": "workspace:packages/param-types",
     "@decsys/rating-scales": "workspace:packages/rating-scales",
     "downshift": "^6.1.3"

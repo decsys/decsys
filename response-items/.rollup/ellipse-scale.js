@@ -5,10 +5,14 @@ import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
 
-const pkg = require("./package.json");
+import { responseItemName } from "../src/ellipse-scale/metadata";
 const sharedConfig = require("@decsys/config");
 const { pluginConfigs, buildRollupConfig } = sharedConfig.responseItemRollup;
-const config = buildRollupConfig(pkg.responseItemName, __dirname);
+const config = buildRollupConfig(
+  responseItemName,
+  __dirname,
+  "../src/ellipse-scale"
+);
 
 // Add item specific globals
 config.output.globals = {
