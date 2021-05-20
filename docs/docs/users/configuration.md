@@ -28,7 +28,7 @@ Prefix keys with `ConnectionStrings:`
 
 Prefix keys with `Hosted:`
 
-Refer to the [Hosted mode Installation Guide](installation#hosted-mode-setup) for details on the required settings.
+Refer to the [Hosted mode Installation Guide](./installation.md#hosted-mode-setup) for details on the required settings.
 
 | Key | Type | Description |
 |-|-|-|

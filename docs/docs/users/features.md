@@ -22,4 +22,4 @@ DECSYS can run as an online hosted service, supporting registering multiple user
 
 ## Roadmap
 
-See the [roadmap](./roadmap) for our future plans.
+See the [roadmap](./roadmap.md) for our future plans.

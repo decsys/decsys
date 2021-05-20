@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"; // eslint-disable-line no-unused-vars
 import { useHistory } from "@docusaurus/router";
 import { Button } from "@chakra-ui/react";
 
