@@ -1,8 +1,9 @@
 const { buildNavbarConfig, buildFooterConfig } = require("./helpers");
 const config = require("./default.config");
 
-const finalConfig = {
+module.exports = {
   ...config,
+  onBrokenLinks: "warn", // we have some deliberate "broken" links (see "../" below) but warnings are good to look for real ones!
   baseUrl: "/docs/",
   themeConfig: {
     navbar: buildNavbarConfig({
@@ -26,7 +27,3 @@ const finalConfig = {
     ],
   ],
 };
-
-console.log(JSON.stringify(finalConfig, null, 2));
-
-module.exports = finalConfig;
