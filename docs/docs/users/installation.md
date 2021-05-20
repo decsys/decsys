@@ -55,7 +55,7 @@ First follow the Workshop mode steps, to get a copy of DECSYS running on the hos
 
 Then, you'll need to make some configuration changes.
 
-Refer to [Configuration](configuration) for general information on Configuring DECSYS.
+Refer to [Configuration](./configuration.md) for general information on Configuring DECSYS.
 
 The following are **required** configuration for using **Hosted** mode:
 

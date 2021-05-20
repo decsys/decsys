@@ -1,5 +1,4 @@
-import React from "react";
-import useBaseUrl from "@docusaurus/useBaseUrl";
+import React from "react"; // eslint-disable-line no-unused-vars
 import PageLayout from "../components/PageLayout";
 import {
   Stack,
@@ -10,7 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import LinkButton from "../components/LinkButton";
-import { favicon } from "../../docusaurus.config";
+import { favicon } from "../../config/default.config";
 
 const Banner = () => {
   const { colorMode } = useColorMode();
@@ -29,12 +28,7 @@ const Banner = () => {
           </Heading>
 
           <Flex>
-            <LinkButton
-              to={useBaseUrl("/docs/users/overview")}
-              colorScheme="blue"
-              size="lg"
-              p={8}
-            >
+            <LinkButton to="/docs/" colorScheme="blue" size="lg" p={8}>
               Get Started
             </LinkButton>
           </Flex>
@@ -72,17 +66,17 @@ const Home = () => (
       <Stack>
         <Text>More information:</Text>
         <ActionCard
-          to={useBaseUrl("/docs/devs/custom-responses/getting-started")}
+          to="/docs/devs/custom-responses/getting-started"
           buttonText="Create Custom Responses"
         />
 
         <ActionCard
-          to={useBaseUrl("/docs/devs/technical/architecture")}
+          to="/docs/devs/technical/architecture"
           buttonText="Technical Reference"
         />
 
         <ActionCard
-          to={useBaseUrl("/docs/devs/contributing/source-code")}
+          to="/docs/devs/contributing/source-code"
           buttonText="Contribute"
         />
       </Stack>

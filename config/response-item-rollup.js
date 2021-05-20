@@ -25,6 +25,7 @@ const banner = (responseItemName) =>
 const pluginConfigs = {
   replace: {
     "process.env.NODE_ENV": JSON.stringify("production"),
+    preventAssignment: true,
   },
   babel: {
     exclude: "node_modules/**",
@@ -35,15 +36,16 @@ const pluginConfigs = {
 
 /**
  * Default (shared) rollup config for response items
- * @param {*} responseItemName The name of the response item, usually from package.json
+ * @param {*} responseItemName The name of the response item
  * @param {*} dirname The `__dirname` value for the calling script
+ * @param {*} entryDir The path to the directory containing `index.js`, relative to `__dirname`
  */
-const buildRollupConfig = (responseItemName, dirname) => ({
-  input: path.join(dirname, "src/index.js"),
+const buildRollupConfig = (responseItemName, dirname, entryDir) => ({
+  input: path.join(dirname, entryDir, "index.js"),
   output: {
     format: "iife",
     name: "DecsysResponseItem",
-    file: path.join(dirname, `dist/${responseItemName}.js`),
+    file: path.join(dirname, `../dist/${responseItemName}.js`),
     sourcemap: true,
     preferConst: true,
     compact: true,
