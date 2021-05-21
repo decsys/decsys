@@ -1,4 +1,2 @@
-import DiscreteScale from "./discrete/Scale";
-import EllipseScale from "./ellipse/Scale";
-
-export { DiscreteScale, EllipseScale };
+export * from "./discrete/Scale";
+export * from "./ellipse/Scale";

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import * as props from "./ResponseItem.props";
-import DiscreteScale from "@decsys/rating-scales/cjs/discrete";
+import { DiscreteScale } from "@decsys/rating-scales";
 import { stats } from "./ResponseItem.stats";
 import { getRadios, getRadioParams } from "./utils/radio-params";
 

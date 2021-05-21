@@ -108,4 +108,4 @@ DiscreteScale.defaultProps = {
   radios: [["1"]],
 };
 
-export default DiscreteScale;
+export { DiscreteScale };

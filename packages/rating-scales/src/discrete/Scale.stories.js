@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { text, object, optionsKnob, number } from "@storybook/addon-knobs";
 import { action } from "@storybook/addon-actions";
-import DiscreteScale from "./Scale";
+import { DiscreteScale } from "./Scale";
 
 const EventHandler = ({ onEvent, children }) => {
   const handleDiscreteSelected = ({ detail }) => {

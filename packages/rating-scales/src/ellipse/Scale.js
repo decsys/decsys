@@ -275,4 +275,4 @@ EllipseScale.defaultProps = {
   scaleMarkerOptions: {},
 };
 
-export default EllipseScale;
+export { EllipseScale };
