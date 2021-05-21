@@ -1,9 +1,28 @@
 import { DragMarker } from "./DragMarker";
-import { action } from "@storybook/addon-actions";
 
 export default {
   title: "VAS/DragMarker",
   component: DragMarker,
 };
 
-export const Basic = () => <DragMarker yAnchor={100} />;
+const BoundMarker = ({ xPos }) => (
+  <div
+    style={{
+      position: "absolute",
+      minHeight: "50vh",
+      color: "red",
+      left: xPos,
+      borderLeft: "thin solid red",
+    }}
+  ></div>
+);
+
+export const Basic = () => <DragMarker yAnchor={100} xInit={20} />;
+
+export const WithBounds = () => (
+  <>
+    <BoundMarker xPos="200px" />
+    <BoundMarker xPos="400px" />
+    <DragMarker yAnchor={100} xMin={200} xMax={400} xInit={300} />
+  </>
+);

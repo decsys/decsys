@@ -14,48 +14,56 @@ const MarkerIcon = (p) => (
   </svg>
 );
 
-const DragMarker = ({ yAnchor = 0 }) => {
+/**
+ * Sets up state and event handling for the marker
+ * @param {*} xMin
+ * @param {*} xMax
+ * @returns
+ */
+const useDragMarker = (xMin, xMax, yAnchor) => {
   const [isActivated, setIsActivated] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const isDraggingRef = useRef(); // we need this so the handlers in useCallback can use the correct value
-  isDraggingRef.current = isDragging;
 
-  const handlePointerDown = () => {
-    setIsDragging(true);
-    markerRef.current.style.top = `${yAnchor}px`;
-    setIsActivated(true);
-  };
-
-  const handlePointerUp = () => {
-    setIsDragging(false);
-  };
-
-  const handlePointerMove = (e) => {
-    if (!isDraggingRef.current) return;
-    markerRef.current.style.left = `${e.pageX}px`;
-  };
-
-  const markerRef = useRef();
-  // we need this because we're adding event handlers baed on dom ref availability
-  const markerRefCb = useCallback((marker) => {
-    if (markerRef.current) {
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerUp);
-      markerRef.current.removeEventListener("pointerdown", handlePointerDown);
-    }
+  const ref = useRef();
+  // we need this because we're adding event handlers based on dom ref availability
+  const markerRef = useCallback((marker) => {
     if (!marker) return;
 
-    window.addEventListener("pointermove", handlePointerMove);
-    window.addEventListener("pointerup", handlePointerUp);
-    marker.addEventListener("pointerdown", handlePointerDown);
+    const handleMove = (e) => {
+      const clampedX = Math.min(Math.max(e.pageX, xMin ?? 0), xMax ?? e.pageX);
+      marker.style.left = `${clampedX}px`;
+    };
 
-    markerRef.current = marker;
+    marker.onpointerdown = (e) => {
+      setIsActivated(true);
+      setIsDragging(true);
+      marker.onpointermove = handleMove;
+      marker.setPointerCapture(e.pointerId);
+      marker.style.cursor = "grabbing";
+      marker.style.top = `${yAnchor}px`;
+    };
+
+    marker.onpointerup = (e) => {
+      setIsDragging(false);
+      marker.onpointermove = null;
+      marker.releasePointerCapture(e.pointerId);
+      marker.style.cursor = null;
+    };
+
+    ref.current = marker;
   }, []);
 
+  return { isDragging, isActivated, markerRef };
+};
+
+const getMarkerStyles = ({ isActivated, isDragging }) => {
+  const dropShadow = (dist) =>
+    `drop-shadow(${dist}px ${dist}px ${dist}px rgba(.2,.2,.2,.8))`;
+
   const inUseStyles = {
-    filter: "drop-shadow(5px 5px 5px rgba(.5,.5,.5,.5))",
-    top: "-34px",
-    left: "-18px",
+    filter: dropShadow(3),
+    top: "-36px",
+    cursor: "grab",
   };
   const mainStyles = {
     width: "32px",
@@ -63,24 +71,34 @@ const DragMarker = ({ yAnchor = 0 }) => {
     left: "-16px",
     position: "absolute",
     color: isActivated ? "black" : "grey",
-    "&:hover": inUseStyles,
+    "&:hover": { ...inUseStyles },
+    transition: "color .1s, top .1s, filter .1s",
   };
 
-  const markerStyles = isDragging
+  return isDragging
     ? { ...mainStyles, ...inUseStyles, color: "blue" }
     : mainStyles;
+};
+
+const DragMarker = ({ xInit = 0, yAnchor = 0, xMin, xMax }) => {
+  const { isActivated, isDragging, markerRef } = useDragMarker(
+    xMin,
+    xMax,
+    yAnchor
+  );
 
   return (
     <div
       css={{
         position: "absolute",
         top: `${yAnchor - 5}px`,
+        left: `${xInit}px`,
         width: 0,
         height: 0,
       }}
-      ref={markerRefCb}
+      ref={markerRef}
     >
-      <div css={markerStyles}>
+      <div css={getMarkerStyles({ isActivated, isDragging })}>
         <MarkerIcon />
       </div>
     </div>
