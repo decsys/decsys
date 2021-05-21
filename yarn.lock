@@ -2883,51 +2883,51 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@decsys/rating-scales@workspace:packages/rating-scales"
   dependencies:
-    "@babel/core": ^7.12.3
-    "@babel/preset-env": ^7.12.1
-    "@babel/preset-react": ^7.12.5
-    "@chakra-ui/react": ^1.0.1
+    "@babel/core": ^7.14.3
+    "@babel/preset-env": ^7.14.2
+    "@babel/preset-react": ^7.13.13
+    "@chakra-ui/react": ^1.6.2
     "@decsys/config": "workspace:*"
-    "@emotion/babel-plugin": ^11.0.0
-    "@emotion/react": ^11.1.1
-    "@emotion/styled": ^11.0.0
-    "@pixi/app": ^5.3.2
-    "@pixi/constants": ^5.3.2
-    "@pixi/core": ^5.3.2
-    "@pixi/display": ^5.3.2
-    "@pixi/graphics": ^5.3.2
-    "@pixi/interaction": ^5.3.2
-    "@pixi/math": ^5.3.2
-    "@pixi/runner": ^5.3.2
-    "@pixi/settings": ^5.3.2
-    "@pixi/ticker": ^5.3.2
-    "@pixi/utils": ^5.3.2
-    "@rollup/plugin-babel": ^5.2.1
-    "@rollup/plugin-commonjs": ^15.1.0
+    "@emotion/babel-plugin": ^11.3.0
+    "@emotion/react": ^11.4.0
+    "@emotion/styled": ^11.3.0
+    "@pixi/app": ^6.0.4
+    "@pixi/constants": ^6.0.4
+    "@pixi/core": ^6.0.4
+    "@pixi/display": ^6.0.4
+    "@pixi/graphics": ^6.0.4
+    "@pixi/interaction": ^6.0.4
+    "@pixi/math": ^6.0.4
+    "@pixi/runner": ^6.0.4
+    "@pixi/settings": ^6.0.4
+    "@pixi/ticker": ^6.0.4
+    "@pixi/utils": ^6.0.4
+    "@rollup/plugin-babel": ^5.3.0
+    "@rollup/plugin-commonjs": ^19.0.0
     "@rollup/plugin-json": ^4.1.0
-    "@rollup/plugin-node-resolve": ^9.0.0
-    "@rollup/plugin-replace": ^2.3.3
-    "@seznam/compose-react-refs": ^1.0.4
-    "@storybook/addon-actions": ^6.1.2
-    "@storybook/addon-backgrounds": ^6.1.2
-    "@storybook/addon-knobs": ^6.1.2
-    "@storybook/addon-links": ^6.1.2
-    "@storybook/addon-storysource": ^6.1.2
-    "@storybook/addons": ^6.1.2
-    "@storybook/react": ^6.1.2
-    "@storybook/source-loader": ^6.1.2
-    babel-loader: ^8.1.0
+    "@rollup/plugin-node-resolve": ^13.0.0
+    "@rollup/plugin-replace": ^2.4.2
+    "@seznam/compose-react-refs": ^1.0.6
+    "@storybook/addon-actions": ^6.2.9
+    "@storybook/addon-backgrounds": ^6.2.9
+    "@storybook/addon-knobs": ^6.2.9
+    "@storybook/addon-links": ^6.2.9
+    "@storybook/addon-storysource": ^6.2.9
+    "@storybook/addons": ^6.2.9
+    "@storybook/react": ^6.2.9
+    "@storybook/source-loader": ^6.2.9
+    babel-loader: ^8.2.2
     colornames: ^1.1.1
-    core-js: ^3.6.5
-    framer-motion: ^2.9.4
+    core-js: ^3.12.1
+    framer-motion: ^4.1.17
     prop-types: ^15.7.2
-    react: ^17.0.1
-    react-dom: ^17.0.1
-    rollup: ^2.32.1
-    rollup-plugin-analyzer: ^3.3.0
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    rollup: ^2.48.0
+    rollup-plugin-analyzer: ^4.0.0
     rollup-plugin-terser: ^7.0.2
     unit-value: ^1.0.1
-    webpack: ^4.44.0
+    webpack: ^5.37.1
   peerDependencies:
     "@emotion/react": ~11
     react: ~17
@@ -4114,131 +4114,132 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pixi/app@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/app@npm:5.3.9"
+"@pixi/app@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/app@npm:6.0.4"
   dependencies:
-    "@pixi/core": 5.3.9
-    "@pixi/display": 5.3.9
-  checksum: 03205e0b71b99efd9cb86cd9b1c42f0b666df8d6858cb3e8dec68f35e67f9a4d68ca129b8c3a869ccb6ac0dd9b9f10245d5219a3e47aad0264169683618b64b8
+    "@pixi/core": 6.0.4
+    "@pixi/display": 6.0.4
+  checksum: d1640f5c7ece0a74059e7b32c361c4f0490e2f5960b61a1115d25da997262393763eac5f7c8d27462e994222e8e6a9a548280514865849fec7adbdb6270238ac
   languageName: node
   linkType: hard
 
-"@pixi/constants@npm:5.3.9, @pixi/constants@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/constants@npm:5.3.9"
-  checksum: 2c895ae9049be1a43c5f5d8f9582506006f8ccf9e442b5768f199ebaf9d20b3f7a5b8a178c21ed2f0f5d3f42ce1a7c916b55ef9dd79feedd5bd3c60f82e158b9
+"@pixi/constants@npm:6.0.4, @pixi/constants@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/constants@npm:6.0.4"
+  checksum: 2a9ac7394dd1fb9fa6c64b0194286ebba2e9760e808a7cfd8f663a8f83fdbcc06e43ef327c60fbe75b885ca33338e0cab06c617d7035420c8b6b33a8066dd4a8
   languageName: node
   linkType: hard
 
-"@pixi/core@npm:5.3.9, @pixi/core@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/core@npm:5.3.9"
+"@pixi/core@npm:6.0.4, @pixi/core@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/core@npm:6.0.4"
   dependencies:
-    "@pixi/constants": 5.3.9
-    "@pixi/math": 5.3.9
-    "@pixi/runner": 5.3.9
-    "@pixi/settings": 5.3.9
-    "@pixi/ticker": 5.3.9
-    "@pixi/utils": 5.3.9
-  checksum: c625f9bab53b174c81c0def303a7d0ddf6fb216dcad6a165f72c646c2eadbf8391423cbabd329cf618e586181f6c30e3651a888b1494129861e416c3d41e9df9
+    "@pixi/constants": 6.0.4
+    "@pixi/math": 6.0.4
+    "@pixi/runner": 6.0.4
+    "@pixi/settings": 6.0.4
+    "@pixi/ticker": 6.0.4
+    "@pixi/utils": 6.0.4
+  checksum: 0956663af35f974b65f6fb2a86f1af882065ded71fc499ff8b9b65e03046ebaa8d8ff8507535149a3fb777275501db0baaff907babe2661c6ad597da1ea8a42b
   languageName: node
   linkType: hard
 
-"@pixi/display@npm:5.3.9, @pixi/display@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/display@npm:5.3.9"
+"@pixi/display@npm:6.0.4, @pixi/display@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/display@npm:6.0.4"
   dependencies:
-    "@pixi/math": 5.3.9
-    "@pixi/settings": 5.3.9
-    "@pixi/utils": 5.3.9
-  checksum: 5a473942f9a91daf55a89f7b7526eab2705167c75d6c75766bcd255b3885acdbbc5bc343a8fc2bdc33ffe9af6c814ece58c11c982c08ba311f6e6eacaf6b8b0f
+    "@pixi/math": 6.0.4
+    "@pixi/settings": 6.0.4
+    "@pixi/utils": 6.0.4
+  checksum: 304bc52b6747c2b9b594831d306883e140f4d2adbc2cd72f4c03baaa03908044374cde679a5b618e7851c02ca5b266d2b2de131c3a92a2a2d4f846f39ad6251b
   languageName: node
   linkType: hard
 
-"@pixi/graphics@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/graphics@npm:5.3.9"
+"@pixi/graphics@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/graphics@npm:6.0.4"
   dependencies:
-    "@pixi/constants": 5.3.9
-    "@pixi/core": 5.3.9
-    "@pixi/display": 5.3.9
-    "@pixi/math": 5.3.9
-    "@pixi/sprite": 5.3.9
-    "@pixi/utils": 5.3.9
-  checksum: 23d069e342faa6ef49c97a51f94974d74a4c60625da4febe429168cfcd3c6ff17a2a7f4c4668451017f1a01ddc7a6ba86fe283fda0760aa782c9d719cdf5f38c
+    "@pixi/constants": 6.0.4
+    "@pixi/core": 6.0.4
+    "@pixi/display": 6.0.4
+    "@pixi/math": 6.0.4
+    "@pixi/sprite": 6.0.4
+    "@pixi/utils": 6.0.4
+  checksum: e88abb7387b14973fb4cea5070d20efe7fe7121189dce1ef755c34924fabec946ed48f142b2cd0b33750bad918fcae8213890b96037b498f4d5f14934f0bdbcd
   languageName: node
   linkType: hard
 
-"@pixi/interaction@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/interaction@npm:5.3.9"
+"@pixi/interaction@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/interaction@npm:6.0.4"
   dependencies:
-    "@pixi/core": 5.3.9
-    "@pixi/display": 5.3.9
-    "@pixi/math": 5.3.9
-    "@pixi/ticker": 5.3.9
-    "@pixi/utils": 5.3.9
-  checksum: 648dfee7bb30f26fe5a94f8fbe060a6ae29d17fe524ce2eb8af436a00550aceac59a28c52d895b0ea880bf129a02e96fe81c54c160c86011cf59f6a8871b1ca7
+    "@pixi/core": 6.0.4
+    "@pixi/display": 6.0.4
+    "@pixi/math": 6.0.4
+    "@pixi/ticker": 6.0.4
+    "@pixi/utils": 6.0.4
+  checksum: 748e40c2d7e93cb4b80ca2243edbe7e46002af26b10a888e6ac95774d9bb3049586754167524d8048ba598fefe98d799bce7ec80d187ccf4e04725717644e568
   languageName: node
   linkType: hard
 
-"@pixi/math@npm:5.3.9, @pixi/math@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/math@npm:5.3.9"
-  checksum: 7bfd6393eb5197294a86713be00fa858faafc7e68627418c56595207d7615645a82e5e172cd9de915b21dce218e5fb75f75a9e33e2d893c815f8adf60ae7d65b
+"@pixi/math@npm:6.0.4, @pixi/math@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/math@npm:6.0.4"
+  checksum: 87861622f14f21ba0d2987d5c647dc769117c00e28b7072f6ec7e25628ebdfc58cc3549b4da9d7955a57d941dc7521113916db8b5050603fdd8f4a5a12140b43
   languageName: node
   linkType: hard
 
-"@pixi/runner@npm:5.3.9, @pixi/runner@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/runner@npm:5.3.9"
-  checksum: 3d51c1cf71b51dc4d12285af7ec9f3c7c2862960d66b8846f562b5f7b1c18309649b38e122a95746886ebacab02589c9d6ce38e8b406aee0de079f7087a2173b
+"@pixi/runner@npm:6.0.4, @pixi/runner@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/runner@npm:6.0.4"
+  checksum: 5ddfc89c19c965709af518d45ce66f27c6b86dc73c94077bc7307d13ec40c41978a2503a2919b5c6416999d6d0702a6c2e9bce19829a47a500577fbad5f5803d
   languageName: node
   linkType: hard
 
-"@pixi/settings@npm:5.3.9, @pixi/settings@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/settings@npm:5.3.9"
+"@pixi/settings@npm:6.0.4, @pixi/settings@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/settings@npm:6.0.4"
   dependencies:
     ismobilejs: ^1.1.0
-  checksum: 62b491fde7acff5a023b3f957728d63f095e3c38b48befdcd58228dc633623832398def1a53dc089b145b4a64ea506c2524d9272ab2d93d884ef98d2fa8ae1b1
+  checksum: da34f19fcaf9e338d61a78ae8237805aeb381fda18d72ee83e5429267cae8d45e98a3090893b9f9bec204db00f5c6c061e71f385c38681b93a1fcc669b0a893e
   languageName: node
   linkType: hard
 
-"@pixi/sprite@npm:5.3.9":
-  version: 5.3.9
-  resolution: "@pixi/sprite@npm:5.3.9"
+"@pixi/sprite@npm:6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/sprite@npm:6.0.4"
   dependencies:
-    "@pixi/constants": 5.3.9
-    "@pixi/core": 5.3.9
-    "@pixi/display": 5.3.9
-    "@pixi/math": 5.3.9
-    "@pixi/settings": 5.3.9
-    "@pixi/utils": 5.3.9
-  checksum: 0be865d477ded65e23421db58a622c21c0391f995f1f1593b17cbdba179c163120e98ae0bee27976d1ef9c96dec013817d80961c18b727ca975a0808eac93935
+    "@pixi/constants": 6.0.4
+    "@pixi/core": 6.0.4
+    "@pixi/display": 6.0.4
+    "@pixi/math": 6.0.4
+    "@pixi/settings": 6.0.4
+    "@pixi/utils": 6.0.4
+  checksum: d61684a7454fb8a269291edfb5ab74eb63c7bffbc33fb4f48237555da032fc1f059d6c0d819efb2b114e96e452d31ae907ffe7794fa75497eba89a6a87edc2da
   languageName: node
   linkType: hard
 
-"@pixi/ticker@npm:5.3.9, @pixi/ticker@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/ticker@npm:5.3.9"
+"@pixi/ticker@npm:6.0.4, @pixi/ticker@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/ticker@npm:6.0.4"
   dependencies:
-    "@pixi/settings": 5.3.9
-  checksum: 55438ef490540b087b89343daed0454c844aeb00e30a7a33e59bf030104d7d34a9db12b84a682b4a6576d47814b903a5c660aad4bff2b47ba8c53c8781f79f2a
+    "@pixi/settings": 6.0.4
+  checksum: cceec72956384365ba2533350b182530253af6f7b8d0bf83fd57a597936c0978ebcc49c41b5cd27f90993a93326a404c47f0bc986a2ea9537353cb3e68b7aa5a
   languageName: node
   linkType: hard
 
-"@pixi/utils@npm:5.3.9, @pixi/utils@npm:^5.3.2":
-  version: 5.3.9
-  resolution: "@pixi/utils@npm:5.3.9"
+"@pixi/utils@npm:6.0.4, @pixi/utils@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "@pixi/utils@npm:6.0.4"
   dependencies:
-    "@pixi/constants": 5.3.9
-    "@pixi/settings": 5.3.9
-    earcut: ^2.1.5
+    "@pixi/constants": 6.0.4
+    "@pixi/settings": 6.0.4
+    "@types/earcut": ^2.1.0
+    earcut: ^2.2.2
     eventemitter3: ^3.1.0
     url: ^0.11.0
-  checksum: 6e67ecc3a27e010ac318c1180c9cc1af526b7b411965a32535ea253c08df1fb679722bdfd8cee872e529d48d91a8da32729ba17e0afe6052bd6158cfe48e45c6
+  checksum: eead48252512a877c2e3b9433046276a4a70e85a7a9eb92e37bca04d130d1cc07b6a8a0ff38860087326e6d6b3adad8db7e73c696391fa2a1973c6bc53ca991b
   languageName: node
   linkType: hard
 
@@ -4397,7 +4398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-babel@npm:^5.2.1, @rollup/plugin-babel@npm:^5.3.0":
+"@rollup/plugin-babel@npm:^5.3.0":
   version: 5.3.0
   resolution: "@rollup/plugin-babel@npm:5.3.0"
   dependencies:
@@ -4411,23 +4412,6 @@ __metadata:
     "@types/babel__core":
       optional: true
   checksum: 44efa786f256b46bc4b51866278586306b12eba1b68738f4535ee013cd2fd3b6baed7a7adebf1f179019f054c5c10e9c202360b117851f612cd7e7f5cb4be3e7
-  languageName: node
-  linkType: hard
-
-"@rollup/plugin-commonjs@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "@rollup/plugin-commonjs@npm:15.1.0"
-  dependencies:
-    "@rollup/pluginutils": ^3.1.0
-    commondir: ^1.0.1
-    estree-walker: ^2.0.1
-    glob: ^7.1.6
-    is-reference: ^1.2.1
-    magic-string: ^0.25.7
-    resolve: ^1.17.0
-  peerDependencies:
-    rollup: ^2.22.0
-  checksum: 307bdc17f35807559ca5796137a1a620b6c9311a6f62166d38ce78f793cd10883843c4c13b7c39f547cefcc0d06e442fc8c746e003077b96df76ec0e6b1eaa4f
   languageName: node
   linkType: hard
 
@@ -4490,23 +4474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-node-resolve@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@rollup/plugin-node-resolve@npm:9.0.0"
-  dependencies:
-    "@rollup/pluginutils": ^3.1.0
-    "@types/resolve": 1.17.1
-    builtin-modules: ^3.1.0
-    deepmerge: ^4.2.2
-    is-module: ^1.0.0
-    resolve: ^1.17.0
-  peerDependencies:
-    rollup: ^1.20.0||^2.0.0
-  checksum: 34576bbd9cfb096ed6fcce256e9210995144ccfd352ef09134507a7c6b479cee20da2896525ebf8bf139d9a31e8eec4b6787ed9de3209ee6610a949dc9f7c268
-  languageName: node
-  linkType: hard
-
-"@rollup/plugin-replace@npm:^2.3.1, @rollup/plugin-replace@npm:^2.3.3, @rollup/plugin-replace@npm:^2.4.2":
+"@rollup/plugin-replace@npm:^2.3.1, @rollup/plugin-replace@npm:^2.4.2":
   version: 2.4.2
   resolution: "@rollup/plugin-replace@npm:2.4.2"
   dependencies:
@@ -4531,7 +4499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@seznam/compose-react-refs@npm:^1.0.4":
+"@seznam/compose-react-refs@npm:^1.0.6":
   version: 1.0.6
   resolution: "@seznam/compose-react-refs@npm:1.0.6"
   checksum: ec8b0f73ab4c30cdfaeee672a7f8a4eafb3a8261cba243b50a8692c4dc3016625b911b8bcbc9c9b3e639ded8b82a5595f7dad73b258b7f7f3a2f19ea2c2ed088
@@ -4586,7 +4554,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-actions@npm:6.2.9, @storybook/addon-actions@npm:^6.1.2, @storybook/addon-actions@npm:^6.2.9":
+"@storybook/addon-actions@npm:6.2.9, @storybook/addon-actions@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/addon-actions@npm:6.2.9"
   dependencies:
@@ -4619,7 +4587,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-backgrounds@npm:6.2.9, @storybook/addon-backgrounds@npm:^6.1.2, @storybook/addon-backgrounds@npm:^6.2.9":
+"@storybook/addon-backgrounds@npm:6.2.9, @storybook/addon-backgrounds@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/addon-backgrounds@npm:6.2.9"
   dependencies:
@@ -4788,7 +4756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-knobs@npm:^6.1.2, @storybook/addon-knobs@npm:^6.2.9":
+"@storybook/addon-knobs@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/addon-knobs@npm:6.2.9"
   dependencies:
@@ -4823,7 +4791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-links@npm:^6.1.2, @storybook/addon-links@npm:^6.2.9":
+"@storybook/addon-links@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/addon-links@npm:6.2.9"
   dependencies:
@@ -4851,7 +4819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-storysource@npm:^6.1.2, @storybook/addon-storysource@npm:^6.2.9":
+"@storybook/addon-storysource@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/addon-storysource@npm:6.2.9"
   dependencies:
@@ -4929,7 +4897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addons@npm:6.2.9, @storybook/addons@npm:^6.1.2":
+"@storybook/addons@npm:6.2.9, @storybook/addons@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/addons@npm:6.2.9"
   dependencies:
@@ -5364,7 +5332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/node-logger@npm:6.2.9, @storybook/node-logger@npm:^6.1.2":
+"@storybook/node-logger@npm:6.2.9, @storybook/node-logger@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/node-logger@npm:6.2.9"
   dependencies:
@@ -5386,7 +5354,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/preset-create-react-app@npm:^3.1.5":
+"@storybook/preset-create-react-app@npm:^3.1.7":
   version: 3.1.7
   resolution: "@storybook/preset-create-react-app@npm:3.1.7"
   dependencies:
@@ -5406,7 +5374,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/react@npm:^6.1.2, @storybook/react@npm:^6.2.9":
+"@storybook/react@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/react@npm:6.2.9"
   dependencies:
@@ -5483,7 +5451,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/source-loader@npm:6.2.9, @storybook/source-loader@npm:^6.1.2":
+"@storybook/source-loader@npm:6.2.9, @storybook/source-loader@npm:^6.2.9":
   version: 6.2.9
   resolution: "@storybook/source-loader@npm:6.2.9"
   dependencies:
@@ -5845,6 +5813,13 @@ __metadata:
   version: 1.1.1
   resolution: "@types/color-name@npm:1.1.1"
   checksum: 8311db94a9c4ecd247763b81e783ee49d87678b4ce6a7ee502e2bd5cea242b7357804a04855db009f713174bc654cc0c01c7303d40d757e5d710f5ac0368500f
+  languageName: node
+  linkType: hard
+
+"@types/earcut@npm:^2.1.0":
+  version: 2.1.1
+  resolution: "@types/earcut@npm:2.1.1"
+  checksum: ef87855eefa58dd8974208c73cca09b0f00fea27779e0dc2c22e94d696ac06d83930c20bee91db1a17d49d2369b64c64e9c1541810a9905608d52c62665b8001
   languageName: node
   linkType: hard
 
@@ -7796,7 +7771,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-loader@npm:^8.1.0, babel-loader@npm:^8.2.2":
+"babel-loader@npm:^8.2.2":
   version: 8.2.2
   resolution: "babel-loader@npm:8.2.2"
   dependencies:
@@ -9189,16 +9164,16 @@ __metadata:
     "@emotion/react": ^11.1.1
     "@emotion/styled": ^11.0.0
     "@reach/router": ^1.3.3
-    "@storybook/addon-actions": ^6.1.2
-    "@storybook/addon-backgrounds": ^6.1.2
-    "@storybook/addon-knobs": ^6.1.2
-    "@storybook/addon-links": ^6.1.2
-    "@storybook/addon-storysource": ^6.1.2
-    "@storybook/addons": ^6.1.2
-    "@storybook/node-logger": ^6.1.2
-    "@storybook/preset-create-react-app": ^3.1.5
-    "@storybook/react": ^6.1.2
-    "@storybook/source-loader": ^6.1.2
+    "@storybook/addon-actions": ^6.2.9
+    "@storybook/addon-backgrounds": ^6.2.9
+    "@storybook/addon-knobs": ^6.2.9
+    "@storybook/addon-links": ^6.2.9
+    "@storybook/addon-storysource": ^6.2.9
+    "@storybook/addons": ^6.2.9
+    "@storybook/node-logger": ^6.2.9
+    "@storybook/preset-create-react-app": ^3.1.7
+    "@storybook/react": ^6.2.9
+    "@storybook/source-loader": ^6.2.9
     axios: ^0.19.2
     base64url: ^3.0.1
     core-js: ^3.6.5
@@ -9970,7 +9945,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.0.4, core-js@npm:^3.6.5, core-js@npm:^3.8.2, core-js@npm:^3.8.3, core-js@npm:^3.9.1":
+"core-js@npm:^3.0.4, core-js@npm:^3.12.1, core-js@npm:^3.6.5, core-js@npm:^3.8.2, core-js@npm:^3.8.3, core-js@npm:^3.9.1":
   version: 3.12.1
   resolution: "core-js@npm:3.12.1"
   checksum: 8b1d05579e7ddeafcd390001cc893540275fa3e658a00ae57f88954411a25bdfe583debb1929c6a50e40631cc07f2092490ea2284b35ffb922b23d7677060f28
@@ -24509,13 +24484,6 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"rollup-plugin-analyzer@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "rollup-plugin-analyzer@npm:3.3.0"
-  checksum: 6db42b2200ec7cfda8a339080bb79ec87dae7917e017f2d2edfb0369e9416b517a6ef99c460cca51c0c6c5caf729a8d1b3fc4bbe7e381f32013f70b130f4a6c8
-  languageName: node
-  linkType: hard
-
 "rollup-plugin-analyzer@npm:^4.0.0":
   version: 4.0.0
   resolution: "rollup-plugin-analyzer@npm:4.0.0"
@@ -24587,7 +24555,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"rollup@npm:^2.32.1, rollup@npm:^2.48.0":
+"rollup@npm:^2.48.0":
   version: 2.48.0
   resolution: "rollup@npm:2.48.0"
   dependencies:
@@ -28353,7 +28321,7 @@ typescript@^4.0.3:
   languageName: node
   linkType: hard
 
-"webpack@npm:4, webpack@npm:^4.44.0":
+"webpack@npm:4":
   version: 4.46.0
   resolution: "webpack@npm:4.46.0"
   dependencies:
