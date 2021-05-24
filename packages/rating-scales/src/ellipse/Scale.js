@@ -3,17 +3,19 @@ import PropTypes from "prop-types";
 import EllipseCanvas, { ellipseCanvasPropTypes } from "./Canvas";
 import Frame, { framePropTypes } from "../core/Frame";
 import Question, { questionPropTypes } from "../core/Question";
-import ScaleBar, {
+import {
+  ScaleBar,
   scaleBarPropTypes,
   FlexContainer,
   scaleBarDefaultProps,
 } from "../core/ScaleBar";
-import ScaleLabel, { scaleLabelPropTypes } from "./ScaleLabel";
-import ScaleMarkerSet, {
+import ScaleLabel, { scaleLabelPropTypes } from "../core/ScaleLabel";
+import {
+  ScaleMarkerSet,
   scaleMarkerSetPropTypes,
   scaleMarkerPropTypes,
   RangeMarker,
-} from "./ScaleMarkerSet";
+} from "../core/ScaleMarkerSet";
 import UnitValue from "unit-value";
 import {
   getBounds,
@@ -21,7 +23,7 @@ import {
   getValueForX,
   getXPosForValue,
   getRelativeXPos,
-} from "./services/bar-coords";
+} from "../core/services/bar-coords";
 import { findIntersections } from "./services/collision";
 
 /**

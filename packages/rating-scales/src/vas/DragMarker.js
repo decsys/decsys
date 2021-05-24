@@ -20,38 +20,44 @@ const MarkerIcon = (p) => (
  * @param {*} xMax
  * @returns
  */
-const useDragMarker = (xMin, xMax, yAnchor) => {
+const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0) => {
   const [isActivated, setIsActivated] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
   const ref = useRef();
   // we need this because we're adding event handlers based on dom ref availability
-  const markerRef = useCallback((marker) => {
-    if (!marker) return;
+  const markerRef = useCallback(
+    (marker) => {
+      if (!marker) return;
 
-    const handleMove = (e) => {
-      const clampedX = Math.min(Math.max(e.pageX, xMin ?? 0), xMax ?? e.pageX);
-      marker.style.left = `${clampedX}px`;
-    };
+      const handleMove = (e) => {
+        const clampedX = Math.min(
+          Math.max(e.pageX, xMin ?? 0),
+          xMax ?? e.pageX
+        );
+        marker.style.left = `${clampedX - xOffset}px`;
+      };
 
-    marker.onpointerdown = (e) => {
-      setIsActivated(true);
-      setIsDragging(true);
-      marker.onpointermove = handleMove;
-      marker.setPointerCapture(e.pointerId);
-      marker.style.cursor = "grabbing";
-      marker.style.top = `${yAnchor}px`;
-    };
+      marker.onpointerdown = (e) => {
+        setIsActivated(true);
+        setIsDragging(true);
+        marker.onpointermove = handleMove;
+        marker.setPointerCapture(e.pointerId);
+        marker.style.cursor = "grabbing";
+        marker.style.top = `${yAnchor}px`;
+      };
 
-    marker.onpointerup = (e) => {
-      setIsDragging(false);
-      marker.onpointermove = null;
-      marker.releasePointerCapture(e.pointerId);
-      marker.style.cursor = null;
-    };
+      marker.onpointerup = (e) => {
+        setIsDragging(false);
+        marker.onpointermove = null;
+        marker.releasePointerCapture(e.pointerId);
+        marker.style.cursor = null;
+      };
 
-    ref.current = marker;
-  }, []);
+      ref.current = marker;
+    },
+    [xMax, xMin, yAnchor, xOffset]
+  );
 
   return { isDragging, isActivated, markerRef };
 };
@@ -62,12 +68,12 @@ const getMarkerStyles = ({ isActivated, isDragging }) => {
 
   const inUseStyles = {
     filter: dropShadow(3),
-    top: "-36px",
+    top: "-48px",
     cursor: "grab",
   };
   const mainStyles = {
     width: "32px",
-    top: "-32px",
+    top: "-43px",
     left: "-16px",
     position: "absolute",
     color: isActivated ? "black" : "grey",
@@ -80,12 +86,15 @@ const getMarkerStyles = ({ isActivated, isDragging }) => {
     : mainStyles;
 };
 
-const DragMarker = ({ xInit = 0, yAnchor = 0, xMin, xMax }) => {
+const DragMarker = ({ xInit, yAnchor = 0, xMin, xMax, xOffset = 0 }) => {
   const { isActivated, isDragging, markerRef } = useDragMarker(
     xMin,
     xMax,
-    yAnchor
+    yAnchor,
+    xOffset
   );
+
+  if (!xInit) return null; // don't render if we don't have positional information (e.g. the ScaleBar position isn't yet available)
 
   return (
     <div
