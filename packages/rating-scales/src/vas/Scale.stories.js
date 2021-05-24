@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { VisualAnalogScale } from "./Scale";
 import { action } from "@storybook/addon-actions";
-import { text } from "@storybook/addon-knobs";
 
 export default {
   title: "Rating Scales/VAS",
