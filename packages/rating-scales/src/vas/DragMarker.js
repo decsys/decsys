@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useRef, useCallback, useState } from "react";
 
 // https://github.com/FortAwesome/Font-Awesome/blob/0d1f27efb836eb2ab994ba37221849ed64a73e5c/svgs/solid/map-marker.svg
@@ -39,19 +40,19 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0) => {
       };
 
       marker.onpointerdown = (e) => {
-        setIsActivated(true);
         setIsDragging(true);
         marker.onpointermove = handleMove;
         marker.setPointerCapture(e.pointerId);
         marker.style.cursor = "grabbing";
-        marker.style.top = `${yAnchor}px`;
       };
 
       marker.onpointerup = (e) => {
+        setIsActivated(true);
         setIsDragging(false);
         marker.onpointermove = null;
         marker.releasePointerCapture(e.pointerId);
         marker.style.cursor = null;
+        marker.style.top = `${yAnchor}px`;
       };
 
       ref.current = marker;
@@ -62,9 +63,15 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0) => {
   return { isDragging, isActivated, markerRef };
 };
 
-const getMarkerStyles = ({ isActivated, isDragging }) => {
+const getMarkerStyles = ({
+  isActivated,
+  isDragging,
+  inactiveColor,
+  draggingColor,
+  color,
+}) => {
   const dropShadow = (dist) =>
-    `drop-shadow(${dist}px ${dist}px ${dist}px rgba(.2,.2,.2,.8))`;
+    `drop-shadow(${dist}px ${dist}px ${dist}px rgba(.3,.3,.3,.8))`;
 
   const inUseStyles = {
     filter: dropShadow(3),
@@ -72,21 +79,31 @@ const getMarkerStyles = ({ isActivated, isDragging }) => {
     cursor: "grab",
   };
   const mainStyles = {
+    zIndex: 100,
     width: "32px",
     top: "-43px",
     left: "-16px",
     position: "absolute",
-    color: isActivated ? "black" : "grey",
+    color: isActivated ? color : inactiveColor,
     "&:hover": { ...inUseStyles },
     transition: "color .1s, top .1s, filter .1s",
   };
 
   return isDragging
-    ? { ...mainStyles, ...inUseStyles, color: "blue" }
+    ? { ...mainStyles, ...inUseStyles, color: draggingColor }
     : mainStyles;
 };
 
-const DragMarker = ({ xInit, yAnchor = 0, xMin, xMax, xOffset = 0 }) => {
+const DragMarker = ({
+  xInit,
+  yAnchor = 0,
+  xMin,
+  xMax,
+  xOffset = 0,
+  inactiveColor = "#bbb",
+  draggingColor = "#69b",
+  color = "#000",
+}) => {
   const { isActivated, isDragging, markerRef } = useDragMarker(
     xMin,
     xMax,
@@ -107,11 +124,66 @@ const DragMarker = ({ xInit, yAnchor = 0, xMin, xMax, xOffset = 0 }) => {
       }}
       ref={markerRef}
     >
-      <div css={getMarkerStyles({ isActivated, isDragging })}>
+      <div
+        css={getMarkerStyles({
+          isActivated,
+          isDragging,
+          inactiveColor,
+          draggingColor,
+          color,
+        })}
+      >
         <MarkerIcon />
       </div>
     </div>
   );
+};
+
+export const dragMarkerPropTypes = {
+  /**
+   * absolute x position (px) the marker should start at, before any dragging has occurred
+   * Note that no value for this will cause the marker not to render (even if a dragged position has been set),
+   * allowing for preparing/rendering any relative parent on which x position may depend.
+   **/
+  xInit: PropTypes.number,
+
+  /** absolute y position (px) the marker is anchored at */
+  yAnchor: PropTypes.number,
+
+  /** optional minimum x position (px) the marker can reach. sensitive to parent margins / xOffset */
+  xMin: PropTypes.number,
+
+  /** optional maximum x position (px) the marker can reach. sensitive to parent margins / xOffset */
+  xMax: PropTypes.number,
+
+  /**
+   * due to CSS absolute position taking into account parent margins,
+   * an xOffset (px) may be desirable to negate this effect
+   * (and provide more accurate mouse position tracking).
+   * Typically the value of xOffset will be the relative parent's left margin.
+   * The offset is used to calculate position on mouse move,
+   * and to calculate the correct min/max position bounds in xMin/xMax.
+   **/
+  xOffset: PropTypes.number,
+
+  /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
+  inactiveColor: PropTypes.string,
+
+  /** Color of the marker while being actively dragged */
+  draggingColor: PropTypes.string,
+
+  /** Color of the marker at rest, when no other more specific color applies */
+  color: PropTypes.string,
+};
+
+DragMarker.propTypes = dragMarkerPropTypes;
+
+DragMarker.defaultProps = {
+  yAnchor: 0,
+  xOffset: 0,
+  inactiveColor: "#bbb",
+  draggingColor: "#69b",
+  color: "#000",
 };
 
 export { DragMarker };

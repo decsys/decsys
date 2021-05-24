@@ -7,6 +7,7 @@ import {
   ScaleBar,
   scaleBarDefaultProps,
 } from "../core/ScaleBar";
+import ScaleLabel from "../core/ScaleLabel";
 import { ScaleMarkerSet } from "../core/ScaleMarkerSet";
 import { getBounds } from "../core/services/bar-coords";
 import { DragMarker } from "./DragMarker";
@@ -16,11 +17,13 @@ const VisualAnalogScale = ({
   questionOptions,
   question,
   barOptions,
+  labels: { min, mid, max },
+  labelOptions,
   scaleMarkerOptions,
+  dragMarkerOptions,
 }) => {
   const [markerBounds, setMarkerBounds] = useState({});
 
-  // TODO: ref vs state for callback refs? (Ellipse uses State, DragMarker uses ref!)
   const [bar, setBar] = useState(null);
   const barRef = useCallback((bar) => {
     if (!bar) return;
@@ -37,6 +40,19 @@ const VisualAnalogScale = ({
     });
   }, []);
 
+  const labels = [];
+  const labelValues = [min, mid, max];
+  for (let i = 0; i < labelValues.length; i++) {
+    labels.push(
+      <ScaleLabel
+        key={i}
+        labelIndex={i}
+        {...{ ...labelOptions, yAlign: "below" }} // fix labels to below as the marker is above
+        value={labelValues[i]}
+      />
+    );
+  }
+
   return (
     <Frame frameHeight={frameHeight}>
       <Question {...questionOptions}>{question}</Question>
@@ -52,13 +68,16 @@ const VisualAnalogScale = ({
             }}
           />
         </FlexContainer>
+        <FlexContainer>{labels}</FlexContainer>
         <FlexContainer>
-          <DragMarker {...markerBounds} />
+          <DragMarker {...markerBounds} {...dragMarkerOptions} />
         </FlexContainer>
       </ScaleBar>
     </Frame>
   );
 };
+
+// TODO: PropTypes
 
 VisualAnalogScale.defaultProps = {
   questionOptions: {},
@@ -71,6 +90,7 @@ VisualAnalogScale.defaultProps = {
   labelOptions: {},
   labels: {},
   scaleMarkerOptions: {},
+  dragMarkerOptions: {},
 };
 
 export { VisualAnalogScale };
