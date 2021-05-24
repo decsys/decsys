@@ -1,30 +1,28 @@
-// import { useEffect } from "react";
+import { useEffect } from "react";
 import { VisualAnalogScale } from "./Scale";
-// import { action } from "@storybook/addon-actions";
+import { action } from "@storybook/addon-actions";
 import { text } from "@storybook/addon-knobs";
 
 export default {
   title: "Rating Scales/VAS",
   component: VisualAnalogScale,
-  // decorators: [
-  //   (s) => (
-  //     <EventHandler onEvent={action("Ellipse Completed")}>{s()}</EventHandler>
-  //   ),
-  // ],
+  decorators: [
+    (s) => <EventHandler onEvent={action("VAS Completed")}>{s()}</EventHandler>,
+  ],
 };
 
-// const EventHandler = ({ onEvent, children }) => {
-//   const handle = ({ detail }) => {
-//     onEvent(detail);
-//   };
+const EventHandler = ({ onEvent, children }) => {
+  const handle = ({ detail }) => {
+    onEvent(detail);
+  };
 
-//   useEffect(() => {
-//     document.addEventListener("EllipseCompleted", handle);
-//     return () => document.removeEventListener("EllipseCompleted", handle);
-//   }, []);
+  useEffect(() => {
+    document.addEventListener("VasCompleted", handle);
+    return () => document.removeEventListener("VasCompleted", handle);
+  }, []);
 
-//   return children;
-// };
+  return children;
+};
 
 export const Basic = () => <VisualAnalogScale />;
 

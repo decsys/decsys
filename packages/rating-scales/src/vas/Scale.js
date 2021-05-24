@@ -9,7 +9,7 @@ import {
 } from "../core/ScaleBar";
 import ScaleLabel from "../core/ScaleLabel";
 import { ScaleMarkerSet } from "../core/ScaleMarkerSet";
-import { getBounds } from "../core/services/bar-coords";
+import { getBounds, getValueForRelativeX } from "../core/services/bar-coords";
 import { DragMarker } from "./DragMarker";
 
 const VisualAnalogScale = ({
@@ -53,6 +53,16 @@ const VisualAnalogScale = ({
     );
   }
 
+  const handleMarkerDrop = (barRelativeX) => {
+    const value = getValueForRelativeX(
+      barRelativeX,
+      barOptions.minValue,
+      barOptions.maxValue,
+      bar
+    );
+    document.dispatchEvent(new CustomEvent("VasCompleted", { detail: value }));
+  };
+
   return (
     <Frame frameHeight={frameHeight}>
       <Question {...questionOptions}>{question}</Question>
@@ -70,7 +80,11 @@ const VisualAnalogScale = ({
         </FlexContainer>
         <FlexContainer>{labels}</FlexContainer>
         <FlexContainer>
-          <DragMarker {...markerBounds} {...dragMarkerOptions} />
+          <DragMarker
+            {...markerBounds}
+            {...dragMarkerOptions}
+            onDrop={handleMarkerDrop}
+          />
         </FlexContainer>
       </ScaleBar>
     </Frame>

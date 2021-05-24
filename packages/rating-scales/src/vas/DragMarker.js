@@ -21,7 +21,7 @@ const MarkerIcon = (p) => (
  * @param {*} xMax
  * @returns
  */
-const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0) => {
+const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0, onDrop) => {
   const [isActivated, setIsActivated] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -31,12 +31,17 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0) => {
     (marker) => {
       if (!marker) return;
 
+      let barRelativeX;
+
       const handleMove = (e) => {
+        // clamp x if necessary
         const clampedX = Math.min(
           Math.max(e.pageX, xMin ?? 0),
           xMax ?? e.pageX
         );
-        marker.style.left = `${clampedX - xOffset}px`;
+        //offset it for the CSS positioning
+        barRelativeX = clampedX - xOffset;
+        marker.style.left = `${barRelativeX}px`;
       };
 
       marker.onpointerdown = (e) => {
@@ -53,11 +58,12 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0) => {
         marker.releasePointerCapture(e.pointerId);
         marker.style.cursor = null;
         marker.style.top = `${yAnchor}px`;
+        onDrop(barRelativeX);
       };
 
       ref.current = marker;
     },
-    [xMax, xMin, yAnchor, xOffset]
+    [xMax, xMin, yAnchor, xOffset, onDrop]
   );
 
   return { isDragging, isActivated, markerRef };
@@ -102,12 +108,14 @@ const DragMarker = ({
   inactiveColor = "#bbb",
   interactColor = "#69b",
   color = "#000",
+  onDrop,
 }) => {
   const { isActivated, isDragging, markerRef } = useDragMarker(
     xMin,
     xMax,
     yAnchor,
-    xOffset
+    xOffset,
+    onDrop
   );
 
   if (!xInit) return null; // don't render if we don't have positional information (e.g. the ScaleBar position isn't yet available)
@@ -173,6 +181,9 @@ export const dragMarkerPropTypes = {
 
   /** Color of the marker at rest, when no other more specific color applies */
   color: PropTypes.string,
+
+  /** callback when the marker is dropped */
+  onDrop: PropTypes.func,
 };
 
 DragMarker.propTypes = dragMarkerPropTypes;
@@ -183,6 +194,7 @@ DragMarker.defaultProps = {
   inactiveColor: "#bbb",
   interactColor: "#69b",
   color: "#000",
+  onDrop: () => {},
 };
 
 export { DragMarker };
