@@ -67,15 +67,14 @@ const getMarkerStyles = ({
   isActivated,
   isDragging,
   inactiveColor,
-  draggingColor,
+  interactColor,
   color,
 }) => {
   const dropShadow = (dist) =>
     `drop-shadow(${dist}px ${dist}px ${dist}px rgba(.3,.3,.3,.8))`;
 
   const inUseStyles = {
-    filter: dropShadow(3),
-    top: "-48px",
+    color: interactColor,
     cursor: "grab",
   };
   const mainStyles = {
@@ -90,7 +89,7 @@ const getMarkerStyles = ({
   };
 
   return isDragging
-    ? { ...mainStyles, ...inUseStyles, color: draggingColor }
+    ? { ...mainStyles, ...inUseStyles, filter: dropShadow(3), top: "-48px" }
     : mainStyles;
 };
 
@@ -101,7 +100,7 @@ const DragMarker = ({
   xMax,
   xOffset = 0,
   inactiveColor = "#bbb",
-  draggingColor = "#69b",
+  interactColor = "#69b",
   color = "#000",
 }) => {
   const { isActivated, isDragging, markerRef } = useDragMarker(
@@ -129,7 +128,7 @@ const DragMarker = ({
           isActivated,
           isDragging,
           inactiveColor,
-          draggingColor,
+          interactColor,
           color,
         })}
       >
@@ -169,8 +168,8 @@ export const dragMarkerPropTypes = {
   /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
   inactiveColor: PropTypes.string,
 
-  /** Color of the marker while being actively dragged */
-  draggingColor: PropTypes.string,
+  /** Color of the marker to show interaction (hover/dragging) */
+  interactColor: PropTypes.string,
 
   /** Color of the marker at rest, when no other more specific color applies */
   color: PropTypes.string,
@@ -182,7 +181,7 @@ DragMarker.defaultProps = {
   yAnchor: 0,
   xOffset: 0,
   inactiveColor: "#bbb",
-  draggingColor: "#69b",
+  interactColor: "#69b",
   color: "#000",
 };
 
