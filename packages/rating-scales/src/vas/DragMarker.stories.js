@@ -26,3 +26,5 @@ export const WithBounds = () => (
     <DragMarker yAnchor={100} xMin={200} xMax={400} xInit={300} />
   </>
 );
+
+export const Labelled = () => <DragMarker label="L" yAnchor={100} xInit={20} />;
