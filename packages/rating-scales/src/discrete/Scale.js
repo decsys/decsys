@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import Frame from "../core/Frame";
-import ScaleBar, { FlexContainer } from "../core/ScaleBar";
+import { ScaleBar, FlexContainer } from "../core/ScaleBar";
 import Question from "../core/Question";
 import Radio from "./Radio";
 

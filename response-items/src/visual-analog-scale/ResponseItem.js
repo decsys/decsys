@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { EllipseScale } from "@decsys/rating-scales/ellipse";
+import { VisualAnalogScale } from "@decsys/rating-scales/vas";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 
@@ -18,13 +18,6 @@ const ResponseItem = ({
   minLabel,
   midLabel,
   maxLabel,
-  penColor,
-  penThickness,
-  minRangeValue,
-  maxRangeValue,
-  rangeMarkerColor,
-  rangeMarkerHeight,
-  rangeMarkerThickness,
   scaleMarkerColor,
   scaleMarkerThickness,
   scaleMarkerHeight,
@@ -33,21 +26,25 @@ const ResponseItem = ({
   scaleSubdivisionHeight,
   scaleMarkers,
   scaleSubdivisions,
+  dragMarkerColor,
+  dragMarkerInactiveColor,
+  dragMarkerInteractColor,
+  dragMarkerInitDistance,
   _context: { setNextEnabled, logResults },
 }) => {
-  const handleEllipseCompleted = (e) => {
-    logResults(e.detail);
+  const handleVasCompleted = (e) => {
+    logResults({ value: e.detail });
     setNextEnabled(true);
   };
 
   useEffect(() => {
-    document.addEventListener("EllipseCompleted", handleEllipseCompleted);
+    document.addEventListener("VasCompleted", handleVasCompleted);
     return () =>
-      document.removeEventListener("EllipseCompleted", handleEllipseCompleted);
+      document.removeEventListener("VasCompleted", handleVasCompleted);
   }, []);
 
   return (
-    <EllipseScale
+    <VisualAnalogScale
       barOptions={{
         minValue: barMinValue,
         maxValue: barMaxValue,
@@ -56,10 +53,6 @@ const ResponseItem = ({
         topMargin: `${barTopMargin}%`,
         barColor,
         thickness: `${barThickness}px`,
-      }}
-      penOptions={{
-        color: penColor,
-        thickness: penThickness,
       }}
       labels={{
         min: minLabel,
@@ -72,11 +65,6 @@ const ResponseItem = ({
         fontSize,
         yAlign: labelAlignment,
       }}
-      rangeMarkerOptions={{
-        markerColor: rangeMarkerColor,
-        length: `${rangeMarkerHeight}px`,
-        thickness: `${rangeMarkerThickness}px`,
-      }}
       scaleMarkerOptions={{
         markerColor: scaleMarkerColor,
         thickness: `${scaleMarkerThickness}px`,
@@ -87,8 +75,12 @@ const ResponseItem = ({
         markers: scaleMarkers,
         subdivisions: scaleSubdivisions,
       }}
-      minRangeValue={minRangeValue}
-      maxRangeValue={maxRangeValue}
+      dragMarkerOptions={{
+        color: dragMarkerColor,
+        inactiveColor: dragMarkerInactiveColor,
+        interactColor: dragMarkerInteractColor,
+        yInitDistance: dragMarkerInitDistance,
+      }}
       frameHeight="300px"
     />
   );

@@ -117,4 +117,4 @@ export const scaleMarkerSetPropTypes = {
 ScaleMarkerSet.propTypes = scaleMarkerSetPropTypes;
 ScaleMarkerSet.defaultProps = { subdivisions: 1 };
 
-export default ScaleMarkerSet;
+export { ScaleMarkerSet };

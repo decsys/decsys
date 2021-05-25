@@ -16,9 +16,13 @@ export const getBounds = (bar) => {
  * @returns {number} The converted value
  */
 export const getValueForX = (x, minValue, maxValue, bar) => {
-  const { width } = getBounds(bar);
   const relativeX = getRelativeXPos(x, bar);
-  return (maxValue - minValue) * (relativeX / width) + minValue;
+  return getValueForRelativeX(relativeX, minValue, maxValue, bar);
+};
+
+export const getValueForRelativeX = (x, minValue, maxValue, bar) => {
+  const { width } = getBounds(bar);
+  return (maxValue - minValue) * (x / width) + minValue;
 };
 
 /**

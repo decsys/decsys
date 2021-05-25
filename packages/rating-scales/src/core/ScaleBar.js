@@ -78,4 +78,4 @@ ForwardScaleBar.propTypes = scaleBarPropTypes;
 ForwardScaleBar.defaultProps = scaleBarDefaultProps;
 
 /** @component */
-export default ForwardScaleBar;
+export { ForwardScaleBar as ScaleBar };
