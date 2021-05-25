@@ -2479,7 +2479,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chakra-ui/react@npm:^1.0.1, @chakra-ui/react@npm:^1.6.2":
+"@chakra-ui/react@npm:^1.6.2":
   version: 1.6.2
   resolution: "@chakra-ui/react@npm:1.6.2"
   dependencies:
@@ -3483,7 +3483,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.1.1, @emotion/react@npm:^11.4.0":
+"@emotion/react@npm:^11.4.0":
   version: 11.4.0
   resolution: "@emotion/react@npm:11.4.0"
   dependencies:
@@ -3574,7 +3574,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.0.0, @emotion/styled@npm:^11.3.0":
+"@emotion/styled@npm:^11.3.0":
   version: 11.3.0
   resolution: "@emotion/styled@npm:11.3.0"
   dependencies:
@@ -9156,13 +9156,13 @@ __metadata:
     "@babel/core": ^7.10.5
     "@babel/preset-env": ^7.10.4
     "@babel/preset-react": ^7.10.4
-    "@chakra-ui/react": ^1.0.1
+    "@chakra-ui/react": ^1.6.2
     "@craco/craco": ^5.6.4
     "@decsys/config": "workspace:*"
     "@decsys/param-types": "workspace:*"
     "@emotion/babel-plugin": ^11.0.0
-    "@emotion/react": ^11.1.1
-    "@emotion/styled": ^11.0.0
+    "@emotion/react": ^11.4.0
+    "@emotion/styled": ^11.3.0
     "@reach/router": ^1.3.3
     "@storybook/addon-actions": ^6.2.9
     "@storybook/addon-backgrounds": ^6.2.9
@@ -9179,7 +9179,7 @@ __metadata:
     core-js: ^3.6.5
     downloadjs: ^1.4.7
     formik: ^2.1.5
-    framer-motion: ^2.9.4
+    framer-motion: ^4.1.17
     gfycat-style-urls: ^1.0.3
     github-markdown-css: ^4.0.0
     immer: ^6.0.9
@@ -9191,12 +9191,12 @@ __metadata:
     plotly.js: ^1.57.1
     prop-types: ^15.7.2
     query-string: ^6.13.1
-    react: ^17.0.1
+    react: ^17.0.2
     react-async: ^10.0.1
     react-beautiful-dnd: ^13.0.0
     react-dev-utils: ^11.0.0
     react-div-100vh: ^0.5.6
-    react-dom: ^17.0.1
+    react-dom: ^17.0.2
     react-icons: ^3.11.0
     react-markdown: ^5.0.3
     react-plotly.js: ^2.5.0
@@ -13531,26 +13531,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@npm:^2.9.4":
-  version: 2.9.5
-  resolution: "framer-motion@npm:2.9.5"
-  dependencies:
-    "@emotion/is-prop-valid": ^0.8.2
-    framesync: ^4.1.0
-    hey-listen: ^1.0.8
-    popmotion: 9.0.0-rc.20
-    style-value-types: ^3.1.9
-    tslib: ^1.10.0
-  peerDependencies:
-    react: ">=16.8"
-    react-dom: ">=16.8"
-  dependenciesMeta:
-    "@emotion/is-prop-valid":
-      optional: true
-  checksum: fbeee68c8e075401c700132add34cfe963c6a85e8e78f33968aa851d5980fbbcef97586c0d1c8972438e27fa044724735a6f1ffb3328a2cfa44ff217ba8f71da
-  languageName: node
-  linkType: hard
-
 "framer-motion@npm:^4.1.17":
   version: 4.1.17
   resolution: "framer-motion@npm:4.1.17"
@@ -13577,15 +13557,6 @@ __metadata:
   dependencies:
     tslib: ^2.1.0
   checksum: 14a6ed7d2a3c3af8f5b8f5aac6117f8e6b20990002e10e9b41c663997390a107ea8d904e4700041103fee551141b3cbac9e1d314b0cd0a16129e27ededa09bf4
-  languageName: node
-  linkType: hard
-
-"framesync@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "framesync@npm:4.1.0"
-  dependencies:
-    hey-listen: ^1.0.5
-  checksum: b2a2a06e28a4323848fd48f7c36b4bc01c203a282ec351955d931d440befdbe88dd29e6bb13b36f064e8b62986daeb6be59609ee5ab55114f711677755d5210e
   languageName: node
   linkType: hard
 
@@ -15134,7 +15105,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"hey-listen@npm:^1.0.5, hey-listen@npm:^1.0.8":
+"hey-listen@npm:^1.0.8":
   version: 1.0.8
   resolution: "hey-listen@npm:1.0.8"
   checksum: b9a3ed8d4851735d221a8c2ecf06fba598b0240d18e7ad46780e00af1d62471a40c65d5c6ec48b004fc86d96056cf7e3599d3ef8ee77a31df3cb9f4ce69721ce
@@ -20748,18 +20719,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"popmotion@npm:9.0.0-rc.20":
-  version: 9.0.0-rc.20
-  resolution: "popmotion@npm:9.0.0-rc.20"
-  dependencies:
-    framesync: ^4.1.0
-    hey-listen: ^1.0.8
-    style-value-types: ^3.1.9
-    tslib: ^1.10.0
-  checksum: 06839ddc16eb995bc5327aee5cd624d09db9d19effe1abb7078adc5c417965adea580bc73ff5bd512a6949a97fb98c4e3b1e9fda9dd8bc1df96cb0e4f0680c3b
-  languageName: node
-  linkType: hard
-
 "popmotion@npm:9.3.6":
   version: 9.3.6
   resolution: "popmotion@npm:9.3.6"
@@ -26080,16 +26039,6 @@ resolve@^2.0.0-next.3:
     hey-listen: ^1.0.8
     tslib: ^2.1.0
   checksum: aca49c70e6dc3e222c1db50b58fb4f339373d6b2583fcffed414888bdfc7bbb77dbcdc7530c730f5286282583ee891d97a84fd76f6273d1c7c2338b19ab740a9
-  languageName: node
-  linkType: hard
-
-"style-value-types@npm:^3.1.9":
-  version: 3.2.0
-  resolution: "style-value-types@npm:3.2.0"
-  dependencies:
-    hey-listen: ^1.0.8
-    tslib: ^1.10.0
-  checksum: 630a8011abc3c677339efc0782c12691b20b8eb616b49ad09ac49e7f1d18564489712225b501146d143b0f6eaa840caf64887b8f3ccdc9a5b0bb9bd4a60a0f0d
   languageName: node
   linkType: hard
 
