@@ -8,7 +8,8 @@
     ".": "./src/index.js",
     "./discrete": "./src/discrete/Scale.js",
     "./ellipse": "./src/ellipse/Scale.js",
-    "./vas": "./src/vas/Scale.js"
+    "./vas": "./src/vas/Scale.js",
+    "./mvas": "./src/vas/MultiScale.js"
   },
   "publishConfig": {
     "access": "public"

@@ -46,6 +46,23 @@ const params = {
     "Drag Marker Initial Distance from Bar (px)",
     20
   ),
+  leftDragMarkerColor: ParamTypes.string("Left Drag Marker Color", "red"),
+  leftDragMarkerLabel: ParamTypes.string("Left Drag Marker Label", "L"),
+  rightDragMarkerColor: ParamTypes.string("Right Drag Marker Color", "green"),
+  rightDragMarkerLabel: ParamTypes.string("Right Drag Marker Label", "R"),
+  centerDragMarkerColor: ParamTypes.string("Center Drag Marker Color", "blue"),
+  centerDragMarkerLabel: ParamTypes.string("Center Drag Marker Label", "C"),
+  confidenceText: ParamTypes.string(
+    "Confidence Input Text",
+    "How confident are you?"
+  ),
+  confidenceTextColor: ParamTypes.string(
+    "Confidence Input Text Color",
+    "black"
+  ),
+  confidenceTextFontFamily: ParamTypes.stringUndefined("Label Font Family"),
+
+  confidenceTextFontSize: ParamTypes.string("Label Font Size", "18pt"),
 };
 
 // Specify PropTypes for non-Configurable Props

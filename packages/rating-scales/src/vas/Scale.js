@@ -127,7 +127,6 @@ VisualAnalogScale.propTypes = {
       labelColor: scaleLabelPropTypes.labelColor,
       fontFamily: scaleLabelPropTypes.fontFamily,
       fontSize: scaleLabelPropTypes.fontSize,
-      yAlign: scaleLabelPropTypes.yAlign,
     }
   ),
 
@@ -148,9 +147,6 @@ VisualAnalogScale.propTypes = {
   dragMarkerOptions: PropTypes.shape(
     // we don't use all of DragMarker's props; some are calculated
     {
-      /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
-      inactiveColor: PropTypes.string,
-
       /** Color of the marker to show interaction (hover/dragging) */
       interactColor: PropTypes.string,
 
@@ -159,6 +155,12 @@ VisualAnalogScale.propTypes = {
 
       /** distance from yAnchor (px) the marker starts at */
       yInitDistance: PropTypes.number,
+
+      /** a text label for the marker, recommended no longer than 3 characters */
+      label: PropTypes.string,
+
+      /** Color for the marker label, if any is given */
+      labelColor: PropTypes.string,
     }
   ),
 };

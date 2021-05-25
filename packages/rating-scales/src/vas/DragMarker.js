@@ -49,6 +49,8 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0, onDrop) => {
         marker.onpointermove = handleMove;
         marker.setPointerCapture(e.pointerId);
         marker.style.cursor = "grabbing";
+
+        handleMove(e); // act as if we've moved the pointer to this position
       };
 
       marker.onpointerup = (e) => {
@@ -69,13 +71,7 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0, onDrop) => {
   return { isDragging, isActivated, markerRef };
 };
 
-const getMarkerStyles = ({
-  isActivated,
-  isDragging,
-  inactiveColor,
-  interactColor,
-  color,
-}) => {
+const getMarkerStyles = ({ isActivated, isDragging, interactColor, color }) => {
   const dropShadow = (dist) =>
     `drop-shadow(${dist}px ${dist}px ${dist}px rgba(.3,.3,.3,.8))`;
 
@@ -89,7 +85,8 @@ const getMarkerStyles = ({
     top: "-43px",
     left: "-16px",
     position: "absolute",
-    color: isActivated ? color : inactiveColor,
+    opacity: isActivated ? 1 : 0.5,
+    color,
     "&:hover": { ...inUseStyles },
     transition: "color .1s, top .1s, filter .1s",
   };
@@ -110,6 +107,8 @@ const DragMarker = ({
   interactColor = "#69b",
   color = "#000",
   onDrop,
+  label,
+  labelColor = "#fff",
 }) => {
   const { isActivated, isDragging, markerRef } = useDragMarker(
     xMin,
@@ -121,26 +120,36 @@ const DragMarker = ({
 
   if (!xInit) return null; // don't render if we don't have positional information (e.g. the ScaleBar position isn't yet available)
 
+  const containerStyles = {
+    position: "absolute",
+    top: `${yAnchor - yInitDistance}px`,
+    left: `${xInit}px`,
+    width: 0,
+    height: 0,
+  };
+  const markerStyles = getMarkerStyles({
+    isActivated,
+    isDragging,
+    interactColor,
+    color,
+  });
+  const labelStyles = {
+    position: "absolute",
+    userSelect: "none",
+    color: labelColor,
+    top: "-43px",
+    left: "-16px",
+    width: "32px",
+    textAlign: "center",
+    zIndex: 101,
+    fontWeight: "bold",
+    pointerEvents: "none",
+  };
+
   return (
-    <div
-      css={{
-        position: "absolute",
-        top: `${yAnchor - yInitDistance}px`,
-        left: `${xInit}px`,
-        width: 0,
-        height: 0,
-      }}
-      ref={markerRef}
-    >
-      <div
-        css={getMarkerStyles({
-          isActivated,
-          isDragging,
-          inactiveColor,
-          interactColor,
-          color,
-        })}
-      >
+    <div css={containerStyles} ref={markerRef}>
+      {label && <div css={labelStyles}>{label}</div>}
+      <div css={markerStyles}>
         <MarkerIcon />
       </div>
     </div>
@@ -177,9 +186,6 @@ export const dragMarkerPropTypes = {
    **/
   xOffset: PropTypes.number,
 
-  /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
-  inactiveColor: PropTypes.string,
-
   /** Color of the marker to show interaction (hover/dragging) */
   interactColor: PropTypes.string,
 
@@ -188,6 +194,12 @@ export const dragMarkerPropTypes = {
 
   /** callback when the marker is dropped */
   onDrop: PropTypes.func,
+
+  /** a text label for the marker, recommended no longer than 3 characters */
+  label: PropTypes.string,
+
+  /** Color for the marker label, if any is given */
+  labelColor: PropTypes.string,
 };
 
 DragMarker.propTypes = dragMarkerPropTypes;
@@ -196,9 +208,9 @@ DragMarker.defaultProps = {
   yAnchor: 0,
   yInitDistance: 20,
   xOffset: 0,
-  inactiveColor: "#bbb",
   interactColor: "#69b",
   color: "#000",
+  labelColor: "#fff",
   onDrop: () => {},
 };
 
