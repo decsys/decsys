@@ -4,7 +4,6 @@ import replace from "@rollup/plugin-replace";
 import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
 import { terser } from "rollup-plugin-terser";
-import analyze from "rollup-plugin-analyzer";
 
 import { responseItemName } from "../src/visual-analog-scale/metadata";
 const sharedConfig = require("@decsys/config");
@@ -35,7 +34,6 @@ config.plugins = [
   cjs(),
   json(),
   terser(),
-  analyze(),
 ];
 
 export default config;
