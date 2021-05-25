@@ -1,7 +1,6 @@
 import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
-import Plot from "react-plotly.js";
 
 export default {
   title: "Visual Analog Scale Response",
@@ -17,36 +16,23 @@ const props = {
   barMinValue: 0,
 };
 
-const dummyEllipseResults = [
+const dummyResults = [
   {
-    minRangeValue: 60,
-    maxRangeValue: 90,
-    completed: true,
+    value: 60,
   },
   {
-    minRangeValue: 0,
-    maxRangeValue: 100,
-    completed: true,
+    value: 0,
   },
   {
-    minRangeValue: 50,
-    maxRangeValue: 90,
-    completed: true,
+    value: 50,
   },
   {
-    minRangeValue: 40,
-    maxRangeValue: 90,
-    completed: true,
+    value: 40,
   },
   {
-    minRangeValue: 80,
-    maxRangeValue: 90,
-    completed: true,
+    value: 80,
   },
 ];
-
-const visualization = (stats) => () =>
-  <Plot {...stats.visualizations[0].plotly} />;
 
 const stats = (stats) => () =>
   (
@@ -67,18 +53,8 @@ const _context = {
 
 export const Basic = () => <ResponseItem _context={_context} />;
 
-export const NumericVisualisation = visualization(
-  ResponseItem.stats(
-    { ...ResponseItem.defaultProps, ...props },
-    dummyEllipseResults
-  )
-);
-
 export const NumericStats = stats(
-  ResponseItem.stats(
-    { ...ResponseItem.defaultProps, ...props },
-    dummyEllipseResults
-  )
+  ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)
 );
 
 export const MetadataIcon = () => <Icon width="24px" />;
