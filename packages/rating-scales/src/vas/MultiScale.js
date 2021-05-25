@@ -16,6 +16,15 @@ import {
 } from "../core/ScaleMarkerSet";
 import { getBounds, getValueForRelativeX } from "../core/services/bar-coords";
 import { DragMarker } from "./DragMarker";
+import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  InputGroup,
+  InputRightAddon,
+} from "@chakra-ui/react";
 
 const MultiVisualAnalogScale = ({
   frameHeight,
@@ -29,6 +38,8 @@ const MultiVisualAnalogScale = ({
   leftMarkerOptions = {},
   rightMarkerOptions = {},
   centerMarkerOptions = {},
+  confidenceTextOptions,
+  confidenceText,
 }) => {
   leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
   rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
@@ -139,44 +150,80 @@ const MultiVisualAnalogScale = ({
     setOutputs({ ...outputs, [`${markerId}Value`]: value });
   };
 
+  const handleConfidenceChange = (value) => {
+    value = Math.min(Math.max(value, 0), 100);
+    setOutputs({
+      ...outputs,
+      confidencePercentage: value,
+    });
+  };
+
   return (
-    <Frame frameHeight={frameHeight}>
-      <Question {...questionOptions}>{question}</Question>
-      <ScaleBar ref={barRef} {...barOptions}>
-        <FlexContainer>
-          <ScaleMarkerSet
-            {...{
-              // we compute some scale marker defaults
-              // if not explicitly provided
-              thickness: barOptions.thickness,
-              length: UnitValue.multiply(barOptions.thickness, 8).toString(),
-              ...scaleMarkerOptions,
-            }}
-          />
-        </FlexContainer>
-        <FlexContainer>{labels}</FlexContainer>
-        <FlexContainer>
-          <DragMarker
-            {...markerPositioning}
-            {...markerBounds.left}
-            {...leftMarkerOptions}
-            onDrop={handleMarkerDrop("left")}
-          />
-          <DragMarker
-            {...markerPositioning}
-            {...markerBounds.right}
-            {...rightMarkerOptions}
-            onDrop={handleMarkerDrop("right")}
-          />
-          <DragMarker
-            {...markerPositioning}
-            {...markerBounds.center}
-            {...centerMarkerOptions}
-            onDrop={handleMarkerDrop("center")}
-          />
-        </FlexContainer>
-      </ScaleBar>
-    </Frame>
+    <>
+      <Frame frameHeight={frameHeight}>
+        <Question {...questionOptions}>{question}</Question>
+        <ScaleBar ref={barRef} {...barOptions}>
+          <FlexContainer>
+            <ScaleMarkerSet
+              {...{
+                // we compute some scale marker defaults
+                // if not explicitly provided
+                thickness: barOptions.thickness,
+                length: UnitValue.multiply(barOptions.thickness, 8).toString(),
+                ...scaleMarkerOptions,
+              }}
+            />
+          </FlexContainer>
+          <FlexContainer>{labels}</FlexContainer>
+          <FlexContainer>
+            <DragMarker
+              {...markerPositioning}
+              {...markerBounds.left}
+              {...leftMarkerOptions}
+              onDrop={handleMarkerDrop("left")}
+            />
+            <DragMarker
+              {...markerPositioning}
+              {...markerBounds.right}
+              {...rightMarkerOptions}
+              onDrop={handleMarkerDrop("right")}
+            />
+            <DragMarker
+              {...markerPositioning}
+              {...markerBounds.center}
+              {...centerMarkerOptions}
+              onDrop={handleMarkerDrop("center")}
+            />
+          </FlexContainer>
+        </ScaleBar>
+
+        <Question {...confidenceTextOptions}>{confidenceText}</Question>
+        <div
+          css={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <InputGroup marginTop={frameHeight} width="120px">
+            <NumberInput
+              isDisabled={outputs.centerValue == null}
+              min={0}
+              max={100}
+              onChange={handleConfidenceChange}
+              value={outputs.confidencePercentage ?? ""}
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+            <InputRightAddon children="%" />
+          </InputGroup>
+        </div>
+      </Frame>
+    </>
   );
 };
 
@@ -261,9 +308,16 @@ MultiVisualAnalogScale.propTypes = {
 
   /** Options for Center Drag Marker */
   centerMarkerOptions: dragMarkerOptionsPropTypes,
+
+  /** Options for the Reponse Confidence text */
+  confidenceTextOptions: PropTypes.shape(questionPropTypes),
+
+  /** Response Confidence text to display */
+  confidenceText: PropTypes.string,
 };
 
 MultiVisualAnalogScale.defaultProps = {
+  frameHeight: "300px",
   questionOptions: {},
   barOptions: {
     minValue: 0,
@@ -278,6 +332,11 @@ MultiVisualAnalogScale.defaultProps = {
   leftMarkerOptions: { label: "L" },
   rightMarkerOptions: { label: "R" },
   centerMarkerOptions: { label: "C" },
+  confidenceText: "How confident are you?",
+  confidenceTextOptions: {
+    topMargin: "80%",
+    xAlign: "center",
+  },
 };
 
 export { MultiVisualAnalogScale };
