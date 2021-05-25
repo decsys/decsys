@@ -71,13 +71,7 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0, onDrop) => {
   return { isDragging, isActivated, markerRef };
 };
 
-const getMarkerStyles = ({
-  isActivated,
-  isDragging,
-  inactiveColor,
-  interactColor,
-  color,
-}) => {
+const getMarkerStyles = ({ isActivated, isDragging, interactColor, color }) => {
   const dropShadow = (dist) =>
     `drop-shadow(${dist}px ${dist}px ${dist}px rgba(.3,.3,.3,.8))`;
 
@@ -91,7 +85,8 @@ const getMarkerStyles = ({
     top: "-43px",
     left: "-16px",
     position: "absolute",
-    color: isActivated ? color : inactiveColor,
+    opacity: isActivated ? 1 : 0.5,
+    color,
     "&:hover": { ...inUseStyles },
     transition: "color .1s, top .1s, filter .1s",
   };

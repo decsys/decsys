@@ -25,10 +25,15 @@ const MultiVisualAnalogScale = ({
   labels: { min, mid, max },
   labelOptions,
   scaleMarkerOptions,
-  leftMarkerOptions,
-  rightMarkerOptions,
-  centerMarkerOptions,
+  dragMarkerDefaults,
+  leftMarkerOptions = {},
+  rightMarkerOptions = {},
+  centerMarkerOptions = {},
 }) => {
+  leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
+  rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
+  centerMarkerOptions = { ...dragMarkerDefaults, ...centerMarkerOptions };
+
   // marker state
   const [markerPositioning, setMarkerPositioning] = useState({});
   const [markerBounds, setMarkerBounds] = useState({});
@@ -152,21 +157,18 @@ const MultiVisualAnalogScale = ({
         <FlexContainer>{labels}</FlexContainer>
         <FlexContainer>
           <DragMarker
-            label="L"
             {...markerPositioning}
             {...markerBounds.left}
             {...leftMarkerOptions}
             onDrop={handleMarkerDrop("left")}
           />
           <DragMarker
-            label="R"
             {...markerPositioning}
             {...markerBounds.right}
             {...rightMarkerOptions}
             onDrop={handleMarkerDrop("right")}
           />
           <DragMarker
-            label="C"
             {...markerPositioning}
             {...markerBounds.center}
             {...centerMarkerOptions}
@@ -177,6 +179,29 @@ const MultiVisualAnalogScale = ({
     </Frame>
   );
 };
+
+const dragMarkerOptionsPropTypes = PropTypes.shape(
+  // we don't use all of DragMarker's props; some are calculated
+  {
+    /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
+    inactiveColor: PropTypes.string,
+
+    /** Color of the marker to show interaction (hover/dragging) */
+    interactColor: PropTypes.string,
+
+    /** Color of the marker at rest, when no other more specific color applies */
+    color: PropTypes.string,
+
+    /** distance from yAnchor (px) the marker starts at */
+    yInitDistance: PropTypes.number,
+
+    /** a text label for the marker, recommended no longer than 3 characters */
+    label: PropTypes.string,
+
+    /** Color for the marker label, if any is given */
+    labelColor: PropTypes.string,
+  }
+);
 
 MultiVisualAnalogScale.propTypes = {
   /** Options for the scale's question text */
@@ -225,29 +250,17 @@ MultiVisualAnalogScale.propTypes = {
   /** Options for the Scale Markers */
   scaleMarkerOptions: PropTypes.shape(scaleMarkerSetPropTypes),
 
-  /** Options for the Drag Marker */
-  dragMarkerOptions: PropTypes.shape(
-    // we don't use all of DragMarker's props; some are calculated
-    {
-      /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
-      inactiveColor: PropTypes.string,
+  /** Default options for all Drag Markers */
+  dragMarkerDefaults: dragMarkerOptionsPropTypes,
 
-      /** Color of the marker to show interaction (hover/dragging) */
-      interactColor: PropTypes.string,
+  /** Options for Left Drag Marker */
+  leftMarkerOptions: dragMarkerOptionsPropTypes,
 
-      /** Color of the marker at rest, when no other more specific color applies */
-      color: PropTypes.string,
+  /** Options for Right Drag Marker */
+  rightMarkerOptions: dragMarkerOptionsPropTypes,
 
-      /** distance from yAnchor (px) the marker starts at */
-      yInitDistance: PropTypes.number,
-
-      /** a text label for the marker, recommended no longer than 3 characters */
-      label: PropTypes.string,
-
-      /** Color for the marker label, if any is given */
-      labelColor: PropTypes.string,
-    }
-  ),
+  /** Options for Center Drag Marker */
+  centerMarkerOptions: dragMarkerOptionsPropTypes,
 };
 
 MultiVisualAnalogScale.defaultProps = {
@@ -262,6 +275,9 @@ MultiVisualAnalogScale.defaultProps = {
   labels: {},
   scaleMarkerOptions: {},
   dragMarkerOptions: {},
+  leftMarkerOptions: { label: "L" },
+  rightMarkerOptions: { label: "R" },
+  centerMarkerOptions: { label: "C" },
 };
 
 export { MultiVisualAnalogScale };

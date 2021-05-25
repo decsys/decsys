@@ -57,5 +57,12 @@ export const Sample = () => (
       subdivisions: 10,
     }}
     frameHeight="300px"
+    leftMarkerOptions={{
+      label: "X",
+      color: "#f71",
+    }}
+    rightMarkerOptions={{
+      color: "#1a4",
+    }}
   />
 );
