@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { EllipseScale } from "@decsys/rating-scales";
+import { EllipseScale } from "@decsys/rating-scales/ellipse";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { VisualAnalogScale } from "@decsys/rating-scales";
+import { VisualAnalogScale } from "@decsys/rating-scales/vas";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 
