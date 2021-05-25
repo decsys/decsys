@@ -5,6 +5,7 @@ module.exports = {
       {
         targets: "supports es6-module-dynamic-import",
         modules: false,
+        loose: true,
       },
     ],
     [
