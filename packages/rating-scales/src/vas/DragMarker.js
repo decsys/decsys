@@ -102,6 +102,7 @@ const getMarkerStyles = ({
 const DragMarker = ({
   xInit,
   yAnchor = 0,
+  yInitDistance = 20,
   xMin,
   xMax,
   xOffset = 0,
@@ -124,7 +125,7 @@ const DragMarker = ({
     <div
       css={{
         position: "absolute",
-        top: `${yAnchor - 5}px`,
+        top: `${yAnchor - yInitDistance}px`,
         left: `${xInit}px`,
         width: 0,
         height: 0,
@@ -156,6 +157,9 @@ export const dragMarkerPropTypes = {
 
   /** absolute y position (px) the marker is anchored at */
   yAnchor: PropTypes.number,
+
+  /** distance from yAnchor (px) the marker starts at */
+  yInitDistance: PropTypes.number,
 
   /** optional minimum x position (px) the marker can reach. sensitive to parent margins / xOffset */
   xMin: PropTypes.number,
@@ -190,6 +194,7 @@ DragMarker.propTypes = dragMarkerPropTypes;
 
 DragMarker.defaultProps = {
   yAnchor: 0,
+  yInitDistance: 20,
   xOffset: 0,
   inactiveColor: "#bbb",
   interactColor: "#69b",

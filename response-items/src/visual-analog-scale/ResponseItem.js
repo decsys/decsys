@@ -29,6 +29,7 @@ const ResponseItem = ({
   dragMarkerColor,
   dragMarkerInactiveColor,
   dragMarkerInteractColor,
+  dragMarkerInitDistance,
   _context: { setNextEnabled, logResults },
 }) => {
   const handleVasCompleted = (e) => {
@@ -78,6 +79,7 @@ const ResponseItem = ({
         color: dragMarkerColor,
         inactiveColor: dragMarkerInactiveColor,
         interactColor: dragMarkerInteractColor,
+        yInitDistance: dragMarkerInitDistance,
       }}
       frameHeight="300px"
     />

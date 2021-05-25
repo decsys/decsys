@@ -156,6 +156,9 @@ VisualAnalogScale.propTypes = {
 
       /** Color of the marker at rest, when no other more specific color applies */
       color: PropTypes.string,
+
+      /** distance from yAnchor (px) the marker starts at */
+      yInitDistance: PropTypes.number,
     }
   ),
 };

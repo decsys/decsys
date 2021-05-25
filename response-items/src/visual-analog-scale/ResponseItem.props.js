@@ -46,6 +46,10 @@ const params = {
     "Drag Marker Interaction Color",
     "#58d"
   ),
+  dragMarkerInitDistance: ParamTypes.number(
+    "Drag Marker Initial Distance from Bar (px)",
+    20
+  ),
 };
 
 // Specify PropTypes for non-Configurable Props
