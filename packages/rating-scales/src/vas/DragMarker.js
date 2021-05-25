@@ -49,6 +49,8 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0, onDrop) => {
         marker.onpointermove = handleMove;
         marker.setPointerCapture(e.pointerId);
         marker.style.cursor = "grabbing";
+
+        handleMove(e); // act as if we've moved the pointer to this position
       };
 
       marker.onpointerup = (e) => {

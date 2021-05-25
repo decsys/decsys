@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 import UnitValue from "unit-value/lib/unit-value";
 import Frame from "../core/Frame";
@@ -17,7 +17,7 @@ import {
 import { getBounds, getValueForRelativeX } from "../core/services/bar-coords";
 import { DragMarker } from "./DragMarker";
 
-const VisualAnalogScale = ({
+const MultiVisualAnalogScale = ({
   frameHeight,
   questionOptions,
   question,
@@ -25,10 +25,23 @@ const VisualAnalogScale = ({
   labels: { min, mid, max },
   labelOptions,
   scaleMarkerOptions,
-  dragMarkerOptions,
+  leftMarkerOptions,
+  rightMarkerOptions,
+  centerMarkerOptions,
 }) => {
+  // marker state
+  const [markerPositioning, setMarkerPositioning] = useState({});
   const [markerBounds, setMarkerBounds] = useState({});
+  const [markerX, setMarkerX] = useState({});
 
+  const [outputs, setOutputs] = useState({});
+  useEffect(() => {
+    document.dispatchEvent(
+      new CustomEvent("MvasCompleted", { detail: outputs })
+    );
+  }, [outputs]);
+
+  // mounting the bar / confuguring dom ref
   const [bar, setBar] = useState(null);
   const barRef = useCallback((bar) => {
     if (!bar) return;
@@ -36,15 +49,26 @@ const VisualAnalogScale = ({
 
     // initialise the dragmarker now the bar is available
     const { width, x } = getBounds(bar);
-    setMarkerBounds({
-      xInit: width / 2,
+    setMarkerPositioning({
       yAnchor: 0,
-      xMin: x,
-      xMax: width + x,
       xOffset: x,
+    });
+
+    // On Bar mount, set static bounds
+    // and enable the left marker only
+    setMarkerBounds({
+      left: {
+        xInit: width / 2,
+        xMin: x, // this will always be true
+        xMax: width + x,
+      },
+      right: {
+        xMax: width + x, // this will always be true
+      },
     });
   }, []);
 
+  // bar labels
   const labels = [];
   const labelValues = [min, mid, max];
   for (let i = 0; i < labelValues.length; i++) {
@@ -58,14 +82,56 @@ const VisualAnalogScale = ({
     );
   }
 
-  const handleMarkerDrop = (barRelativeX) => {
+  // update marker bounds based on new marker x positions
+  useEffect(() => {
+    console.log(markerX);
+    // no left marker position yet, nothing to do
+    if (markerX.left == null) return;
+
+    const { xOffset } = markerPositioning;
+
+    setMarkerBounds({
+      left: {
+        xInit: markerBounds.left.xInit,
+        xMin: markerBounds.left.xMin,
+        xMax:
+          // this one's annoying as the default (leftMax) already includes the offset
+          // but the recorded x positions dont
+          markerX.center ?? markerX.right != null
+            ? (markerX.center ?? markerX.right) + xOffset
+            : markerBounds.left.xMax,
+      },
+      right: {
+        // left + (rightMax - left) / 2 - (offset / 2)
+        xInit:
+          markerX.left +
+          (markerBounds.right.xMax - markerX.left) / 2 -
+          xOffset / 2,
+        xMin: (markerX.center ?? markerX.left) + xOffset,
+        xMax: markerBounds.right.xMax,
+      },
+      center: {
+        // left + (right - left) / 2
+        xInit:
+          markerX.right != null
+            ? markerX.left + (markerX.right - markerX.left) / 2
+            : undefined,
+        xMin: markerX.left + xOffset,
+        xMax: markerX.right + xOffset,
+      },
+    });
+  }, [markerX]);
+
+  const handleMarkerDrop = (markerId) => (barRelativeX) => {
     const value = getValueForRelativeX(
       barRelativeX,
       barOptions.minValue,
       barOptions.maxValue,
       bar
     );
-    document.dispatchEvent(new CustomEvent("VasCompleted", { detail: value }));
+
+    setMarkerX({ ...markerX, [markerId]: barRelativeX });
+    setOutputs({ ...outputs, [`${markerId}Value`]: value });
   };
 
   return (
@@ -86,9 +152,25 @@ const VisualAnalogScale = ({
         <FlexContainer>{labels}</FlexContainer>
         <FlexContainer>
           <DragMarker
-            {...markerBounds}
-            {...dragMarkerOptions}
-            onDrop={handleMarkerDrop}
+            label="L"
+            {...markerPositioning}
+            {...markerBounds.left}
+            {...leftMarkerOptions}
+            onDrop={handleMarkerDrop("left")}
+          />
+          <DragMarker
+            label="R"
+            {...markerPositioning}
+            {...markerBounds.right}
+            {...rightMarkerOptions}
+            onDrop={handleMarkerDrop("right")}
+          />
+          <DragMarker
+            label="C"
+            {...markerPositioning}
+            {...markerBounds.center}
+            {...centerMarkerOptions}
+            onDrop={handleMarkerDrop("center")}
           />
         </FlexContainer>
       </ScaleBar>
@@ -96,7 +178,7 @@ const VisualAnalogScale = ({
   );
 };
 
-VisualAnalogScale.propTypes = {
+MultiVisualAnalogScale.propTypes = {
   /** Options for the scale's question text */
   questionOptions: PropTypes.shape(questionPropTypes),
 
@@ -168,7 +250,7 @@ VisualAnalogScale.propTypes = {
   ),
 };
 
-VisualAnalogScale.defaultProps = {
+MultiVisualAnalogScale.defaultProps = {
   questionOptions: {},
   barOptions: {
     minValue: 0,
@@ -182,4 +264,4 @@ VisualAnalogScale.defaultProps = {
   dragMarkerOptions: {},
 };
 
-export { VisualAnalogScale };
+export { MultiVisualAnalogScale };

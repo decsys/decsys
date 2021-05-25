@@ -1,7 +1,7 @@
 import { DragMarker } from "./DragMarker";
 
 export default {
-  title: "VAS/DragMarker",
+  title: "VAS+MVAS/DragMarker",
   component: DragMarker,
 };
 
