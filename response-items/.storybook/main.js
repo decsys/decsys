@@ -17,6 +17,7 @@ module.exports = {
     // so the source uses the specific exports
     // while SB uses the general, aliased by this webpack config
     "@decsys/rating-scales/vas": ratingScalesMain,
+    "@decsys/rating-scales/mvas": ratingScalesMain,
     "@decsys/rating-scales/ellipse": ratingScalesMain,
     "@decsys/rating-scales/discrete": ratingScalesMain,
   }),

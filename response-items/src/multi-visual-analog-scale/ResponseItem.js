@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { VisualAnalogScale } from "@decsys/rating-scales/vas";
+import { MultiVisualAnalogScale } from "@decsys/rating-scales/mvas";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 
@@ -26,24 +26,33 @@ const ResponseItem = ({
   scaleSubdivisionHeight,
   scaleMarkers,
   scaleSubdivisions,
-  dragMarkerColor,
   dragMarkerInteractColor,
   dragMarkerInitDistance,
+  leftDragMarkerColor,
+  leftDragMarkerLabel,
+  rightDragMarkerColor,
+  rightDragMarkerLabel,
+  centerDragMarkerColor,
+  centerDragMarkerLabel,
+  confidenceText,
+  confidenceTextColor,
+  confidenceTextFontFamily,
+  confidenceTextFontSize,
   _context: { setNextEnabled, logResults },
 }) => {
-  const handleVasCompleted = (e) => {
+  const handleMvasCompleted = (e) => {
     logResults({ value: e.detail });
     setNextEnabled(true);
   };
 
   useEffect(() => {
-    document.addEventListener("VasCompleted", handleVasCompleted);
+    document.addEventListener("MvasCompleted", handleMvasCompleted);
     return () =>
-      document.removeEventListener("VasCompleted", handleVasCompleted);
+      document.removeEventListener("MvasCompleted", handleMvasCompleted);
   }, []);
 
   return (
-    <VisualAnalogScale
+    <MultiVisualAnalogScale
       barOptions={{
         minValue: barMinValue,
         maxValue: barMaxValue,
@@ -74,10 +83,29 @@ const ResponseItem = ({
         markers: scaleMarkers,
         subdivisions: scaleSubdivisions,
       }}
-      dragMarkerOptions={{
-        color: dragMarkerColor,
+      dragMarkerDefaults={{
         interactColor: dragMarkerInteractColor,
         yInitDistance: dragMarkerInitDistance,
+      }}
+      leftMarkerOptions={{
+        label: leftDragMarkerLabel,
+        color: leftDragMarkerColor,
+      }}
+      rightMarkerOptions={{
+        label: rightDragMarkerLabel,
+        color: rightDragMarkerColor,
+      }}
+      centerMarkerOptions={{
+        label: centerDragMarkerLabel,
+        color: centerDragMarkerColor,
+      }}
+      confidenceText={confidenceText}
+      confidenceTextOptions={{
+        topMargin: "80%",
+        xAlign: "center",
+        fontFamily: confidenceTextFontFamily,
+        fontSize: confidenceTextFontSize,
+        textColor: confidenceTextColor,
       }}
       frameHeight="300px"
     />

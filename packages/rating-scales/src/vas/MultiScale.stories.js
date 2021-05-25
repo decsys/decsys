@@ -6,9 +6,7 @@ export default {
   title: "Rating Scales/MVAS",
   component: MultiVisualAnalogScale,
   decorators: [
-    (s) => (
-      <EventHandler onEvent={action("MVAS Completed")}>{s()}</EventHandler>
-    ),
+    (s) => <EventHandler onEvent={action("MVAS Updated")}>{s()}</EventHandler>,
   ],
 };
 
@@ -18,8 +16,8 @@ const EventHandler = ({ onEvent, children }) => {
   };
 
   useEffect(() => {
-    document.addEventListener("MvasCompleted", handle);
-    return () => document.removeEventListener("MvasCompleted", handle);
+    document.addEventListener("MvasUpdated", handle);
+    return () => document.removeEventListener("MvasUpdated", handle);
   }, []);
 
   return children;

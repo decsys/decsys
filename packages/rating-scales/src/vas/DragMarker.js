@@ -130,7 +130,6 @@ const DragMarker = ({
   const markerStyles = getMarkerStyles({
     isActivated,
     isDragging,
-    inactiveColor,
     interactColor,
     color,
   });
@@ -187,9 +186,6 @@ export const dragMarkerPropTypes = {
    **/
   xOffset: PropTypes.number,
 
-  /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
-  inactiveColor: PropTypes.string,
-
   /** Color of the marker to show interaction (hover/dragging) */
   interactColor: PropTypes.string,
 
@@ -212,7 +208,6 @@ DragMarker.defaultProps = {
   yAnchor: 0,
   yInitDistance: 20,
   xOffset: 0,
-  inactiveColor: "#bbb",
   interactColor: "#69b",
   color: "#000",
   labelColor: "#fff",

@@ -147,9 +147,6 @@ VisualAnalogScale.propTypes = {
   dragMarkerOptions: PropTypes.shape(
     // we don't use all of DragMarker's props; some are calculated
     {
-      /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
-      inactiveColor: PropTypes.string,
-
       /** Color of the marker to show interaction (hover/dragging) */
       interactColor: PropTypes.string,
 

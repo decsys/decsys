@@ -52,9 +52,19 @@ const MultiVisualAnalogScale = ({
 
   const [outputs, setOutputs] = useState({});
   useEffect(() => {
-    document.dispatchEvent(
-      new CustomEvent("MvasCompleted", { detail: outputs })
-    );
+    const dispatch = (eventName) =>
+      document.dispatchEvent(
+        new CustomEvent(eventName, {
+          detail: outputs,
+        })
+      );
+
+    // Outputs updated
+    dispatch("MvasUpdated");
+
+    // If the last output to be entered has a value
+    // we can consider the response "completed"
+    if (outputs.confidence != null) dispatch("MvasCompleted");
   }, [outputs]);
 
   // mounting the bar / confuguring dom ref
@@ -100,7 +110,6 @@ const MultiVisualAnalogScale = ({
 
   // update marker bounds based on new marker x positions
   useEffect(() => {
-    console.log(markerX);
     // no left marker position yet, nothing to do
     if (markerX.left == null) return;
 
@@ -147,14 +156,19 @@ const MultiVisualAnalogScale = ({
     );
 
     setMarkerX({ ...markerX, [markerId]: barRelativeX });
-    setOutputs({ ...outputs, [`${markerId}Value`]: value });
+    const outputKey = {
+      left: "left",
+      right: "right",
+      center: "bestEstimate",
+    }[markerId];
+    setOutputs({ ...outputs, [outputKey]: value });
   };
 
   const handleConfidenceChange = (value) => {
     value = Math.min(Math.max(value, 0), 100);
     setOutputs({
       ...outputs,
-      confidencePercentage: value,
+      confidence: value,
     });
   };
 
@@ -207,11 +221,11 @@ const MultiVisualAnalogScale = ({
         >
           <InputGroup marginTop={frameHeight} width="120px">
             <NumberInput
-              isDisabled={outputs.centerValue == null}
+              isDisabled={outputs.bestEstimate == null}
               min={0}
               max={100}
               onChange={handleConfidenceChange}
-              value={outputs.confidencePercentage ?? ""}
+              value={outputs.confidence ?? ""}
             >
               <NumberInputField />
               <NumberInputStepper>
@@ -230,9 +244,6 @@ const MultiVisualAnalogScale = ({
 const dragMarkerOptionsPropTypes = PropTypes.shape(
   // we don't use all of DragMarker's props; some are calculated
   {
-    /** Color of the marker when incative (i.e. before ANY dragging has occurred, if no default value) */
-    inactiveColor: PropTypes.string,
-
     /** Color of the marker to show interaction (hover/dragging) */
     interactColor: PropTypes.string,
 
@@ -328,7 +339,7 @@ MultiVisualAnalogScale.defaultProps = {
   labelOptions: {},
   labels: {},
   scaleMarkerOptions: {},
-  dragMarkerOptions: {},
+  dragMarkerDefaults: {},
   leftMarkerOptions: { label: "L" },
   rightMarkerOptions: { label: "R" },
   centerMarkerOptions: { label: "C" },

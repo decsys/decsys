@@ -20,7 +20,6 @@ const responseRatio = (completion) => {
   const participantIds = Object.keys(completion);
   const respondedCount = participantIds.filter((k) => !!completion[k]).length;
   const remainingCount = participantIds.length - respondedCount;
-  console.log(completion, respondedCount, remainingCount);
   return {
     name: "Response Ratio",
     type: visTypes.plotly,
