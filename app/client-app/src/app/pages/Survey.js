@@ -27,6 +27,7 @@ import ParticipantIdEntry from "./ParticipantIdEntry";
 import ErrorBoundary from "components/ErrorBoundary";
 import SurveyNotFoundError, { errorCallToAction } from "./SurveyNotFoundError";
 import { useQueryString } from "hooks/useQueryString";
+import Preview from "./Preview";
 
 //Contexts all the way down?
 var InstanceContext = createContext();
@@ -38,7 +39,8 @@ const SurveyBootstrapper = ({ id }) => {
   const params = useQueryString();
   const { data: friendlyId } = useExternalSurveyAccess(id, params);
   console.log(friendlyId, id);
-  const { data: instance } = useSurveyInstance(...decode(friendlyId));
+  const [surveyId, instanceId] = decode(friendlyId);
+  const { data: instance } = useSurveyInstance(surveyId, instanceId);
   const { instances, storeInstanceParticipantId } = useLocalInstances();
   const [route, setRoute] = useState();
   const [userId, setUserId] = useState();
@@ -80,7 +82,11 @@ const SurveyBootstrapper = ({ id }) => {
     case routes.BOOTSTRAP_COMPLETE:
       return (
         <InstanceContext.Provider value={instance}>
-          <Survey combinedId={id} userId={userId} progressStatus={progress} />
+          {params.preview ? (
+            <Preview id={surveyId} />
+          ) : (
+            <Survey combinedId={id} userId={userId} progressStatus={progress} />
+          )}
         </InstanceContext.Provider>
       );
     default:
