@@ -71,7 +71,13 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0, onDrop) => {
   return { isDragging, isActivated, markerRef };
 };
 
-const getMarkerStyles = ({ isActivated, isDragging, interactColor, color }) => {
+const getMarkerStyles = ({
+  isActivated,
+  isDragging,
+  interactColor,
+  color,
+  baseZIndex,
+}) => {
   const dropShadow = (dist) =>
     `drop-shadow(${dist}px ${dist}px ${dist}px rgba(.3,.3,.3,.8))`;
 
@@ -80,7 +86,8 @@ const getMarkerStyles = ({ isActivated, isDragging, interactColor, color }) => {
     cursor: "grab",
   };
   const mainStyles = {
-    zIndex: 100,
+    touchAction: "none",
+    zIndex: baseZIndex + 100,
     width: "32px",
     top: "-43px",
     left: "-16px",
@@ -100,10 +107,10 @@ const DragMarker = ({
   xInit,
   yAnchor = 0,
   yInitDistance = 20,
+  baseZIndex = 0, // MVAS (and other things may) enforces marker order for usability
   xMin,
   xMax,
   xOffset = 0,
-  inactiveColor = "#bbb",
   interactColor = "#69b",
   color = "#000",
   onDrop,
@@ -118,20 +125,21 @@ const DragMarker = ({
     onDrop
   );
 
-  if (!xInit) return null; // don't render if we don't have positional information (e.g. the ScaleBar position isn't yet available)
+  if (xInit == null) return null; // don't render if we don't have positional information (e.g. the ScaleBar position isn't yet available)
 
   const containerStyles = {
     position: "absolute",
-    top: `${yAnchor - yInitDistance}px`,
-    left: `${xInit}px`,
+    top: `${isActivated ? yAnchor : yAnchor - yInitDistance}px`,
     width: 0,
     height: 0,
   };
+  if (!isActivated) containerStyles.left = `${xInit}px`;
   const markerStyles = getMarkerStyles({
     isActivated,
     isDragging,
     interactColor,
     color,
+    baseZIndex,
   });
   const labelStyles = {
     position: "absolute",
@@ -141,7 +149,7 @@ const DragMarker = ({
     left: "-16px",
     width: "32px",
     textAlign: "center",
-    zIndex: 101,
+    zIndex: baseZIndex + 101,
     fontWeight: "bold",
     pointerEvents: "none",
   };
