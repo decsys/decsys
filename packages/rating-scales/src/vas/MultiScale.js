@@ -115,18 +115,46 @@ const MultiVisualAnalogScale = ({
 
     const { xOffset } = markerPositioning;
 
+    // calculate relative z-index values
+    const markerZ = { left: 0, right: 0, center: 0 };
+    // we need to know
+    // a) how many markers are within a sensible overlap range (for center priority)
+    const nearPx = 20;
+    if (markerX.center != null) {
+      const isNear = (x1, x2) => Math.abs(x1 - x2) < nearPx;
+      let count = +isNear(markerX.left, markerX.center);
+      count += +isNear(markerX.right, markerX.center);
+
+      // if there's 1 marker nearby, center goes on top, so it can be moved away even at axis extremes
+      // otherwise center goes at bottom, as it either makes no difference, or L/R are more important
+      markerZ.center = count === 1 ? 50 : 0;
+    }
+    // b) if left marker is in the left or right half of the scale (for L/R priority)
+    // we do this irrespective of closeness of markers
+    // since it makes no difference at distance,
+    // but is correct if any are close
+    if (markerX.left < markerBounds.left.xInit) {
+      markerZ.left = 10;
+      markerZ.right = 20;
+    } else {
+      markerZ.left = 20;
+      markerZ.right = 10;
+    }
+
     setMarkerBounds({
       left: {
+        baseZIndex: markerZ.left,
         xInit: markerBounds.left.xInit,
         xMin: markerBounds.left.xMin,
         xMax:
           // this one's annoying as the default (leftMax) already includes the offset
           // but the recorded x positions dont
-          markerX.center ?? markerX.right != null
+          (markerX.center ?? markerX.right) != null
             ? (markerX.center ?? markerX.right) + xOffset
             : markerBounds.left.xMax,
       },
       right: {
+        baseZIndex: markerZ.right,
         // left + (rightMax - left) / 2 - (offset / 2)
         xInit:
           markerX.left +
@@ -136,6 +164,7 @@ const MultiVisualAnalogScale = ({
         xMax: markerBounds.right.xMax,
       },
       center: {
+        baseZIndex: markerZ.center,
         // left + (right - left) / 2
         xInit:
           markerX.right != null
@@ -145,7 +174,7 @@ const MultiVisualAnalogScale = ({
         xMax: markerX.right + xOffset,
       },
     });
-  }, [markerX]);
+  }, [markerX, markerPositioning]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
     const value = getValueForRelativeX(
