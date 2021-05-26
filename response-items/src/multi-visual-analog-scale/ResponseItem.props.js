@@ -60,9 +60,14 @@ const params = {
     "Confidence Input Text Color",
     "black"
   ),
-  confidenceTextFontFamily: ParamTypes.stringUndefined("Label Font Family"),
+  confidenceTextFontFamily: ParamTypes.stringUndefined(
+    "Confidence Input Text Font Family"
+  ),
 
-  confidenceTextFontSize: ParamTypes.string("Label Font Size", "18pt"),
+  confidenceTextFontSize: ParamTypes.string(
+    "Confidence Input Text Font Size",
+    "18pt"
+  ),
 };
 
 // Specify PropTypes for non-Configurable Props
