@@ -7650,15 +7650,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.19.2":
-  version: 0.19.2
-  resolution: "axios@npm:0.19.2"
-  dependencies:
-    follow-redirects: 1.5.10
-  checksum: bad346deea24050f9953ce09bb8015f85a99a7b8f016806adccfab0b8981827d1fbee9c77c0ef7c70cc48392c1af6bbc65e07c3e88221d17282d2d5fd0a191f6
-  languageName: node
-  linkType: hard
-
 "axios@npm:^0.21.1":
   version: 0.21.1
   resolution: "axios@npm:0.21.1"
@@ -9121,7 +9112,7 @@ __metadata:
     "@storybook/preset-create-react-app": ^3.1.7
     "@storybook/react": ^6.2.9
     "@storybook/source-loader": ^6.2.9
-    axios: ^0.19.2
+    axios: ^0.21.1
     base64url: ^3.0.1
     core-js: ^3.6.5
     downloadjs: ^1.4.7
@@ -9129,7 +9120,7 @@ __metadata:
     framer-motion: ^4.1.17
     gfycat-style-urls: ^1.0.3
     github-markdown-css: ^4.0.0
-    immer: ^6.0.9
+    immer: ^9.0.2
     js-forms: ^2.0.0
     json2csv: ^4.5.4
     lodash-es: ^4.17.15
@@ -10937,15 +10928,6 @@ __metadata:
     supports-color:
       optional: true
   checksum: 5543570879e2274f6725d4285a034d6e0822d35faefc6f55965933fb440e8c21eb3a0bef934e66f4b6b491f898ee2de37cab980e9d4fd61372136c19d3ce4527
-  languageName: node
-  linkType: hard
-
-"debug@npm:=3.1.0":
-  version: 3.1.0
-  resolution: "debug@npm:3.1.0"
-  dependencies:
-    ms: 2.0.0
-  checksum: 1295acd5e0531761255661d325cd0a80ac8c5f6de8942a53bb23c2197ccb97526972de662ed0e5d9393be83f3428a298a6e7185ecb02f0da6282019cd2ffb4a8
   languageName: node
   linkType: hard
 
@@ -13243,15 +13225,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:1.5.10":
-  version: 1.5.10
-  resolution: "follow-redirects@npm:1.5.10"
-  dependencies:
-    debug: =3.1.0
-  checksum: 6e58e02c31337b6b41ffc3d5f3d49920b7db428eddcf374537da00ef121fe473983e12d8557f4304287604168d3efcc288d1f009abaf4c9d61e5db0c0cee3c4a
-  languageName: node
-  linkType: hard
-
 "follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.10.0":
   version: 1.14.1
   resolution: "follow-redirects@npm:1.14.1"
@@ -15442,10 +15415,10 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"immer@npm:^6.0.9":
-  version: 6.0.9
-  resolution: "immer@npm:6.0.9"
-  checksum: e55b0d70c9e79203796ae11919ce0ce6943d97da83cb0b7ab6f63513dcdce01a5c2f8121ac895309a5b7be64661a61147562e146ed5e6fdde27e7d2719557b19
+"immer@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "immer@npm:9.0.2"
+  checksum: 71487285a890e6fb92ed8950ce3b5b0e2546321bb4dfe82a7395fbc3f24308b0481387b5939fd35681bac8e36161d903f2bcd99ac045acd25ed3a7f21c629bfd
   languageName: node
   linkType: hard
 
