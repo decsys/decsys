@@ -10,7 +10,10 @@ import { LoadingIndicator, Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
 import { navigate } from "@reach/router";
 import { decode } from "services/instance-id";
-import { useSurveyInstance } from "api/survey-instances";
+import {
+  useExternalSurveyAccess,
+  useSurveyInstance,
+} from "api/survey-instances";
 import Error from "./Error";
 import { useLocalInstances } from "app/contexts/LocalInstances";
 import { PAGE_RANDOMIZE, SURVEY_COMPLETE } from "constants/event-types";
@@ -23,6 +26,7 @@ import { routes, bootstrapSurvey } from "services/survey-bootstrap";
 import ParticipantIdEntry from "./ParticipantIdEntry";
 import ErrorBoundary from "components/ErrorBoundary";
 import SurveyNotFoundError, { errorCallToAction } from "./SurveyNotFoundError";
+import { useQueryString } from "hooks/useQueryString";
 
 //Contexts all the way down?
 var InstanceContext = createContext();
@@ -30,7 +34,11 @@ const useInstance = () => useContext(InstanceContext);
 
 // Do all the data fetching and validation ahead of rendering the survey
 const SurveyBootstrapper = ({ id }) => {
-  const { data: instance } = useSurveyInstance(...decode(id));
+  // Try and get friendly ID based on query string params if id indicates external access
+  const params = useQueryString();
+  const { data: friendlyId } = useExternalSurveyAccess(id, params);
+  console.log(friendlyId, id);
+  const { data: instance } = useSurveyInstance(...decode(friendlyId));
   const { instances, storeInstanceParticipantId } = useLocalInstances();
   const [route, setRoute] = useState();
   const [userId, setUserId] = useState();

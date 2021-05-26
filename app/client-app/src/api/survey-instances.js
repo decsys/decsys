@@ -11,6 +11,22 @@ const urls = {
     `/api/surveys/${surveyId}/instances/${instanceId}/results`,
 };
 
+export const useExternalSurveyAccess = (id, params) =>
+  useSWR(
+    `/api/surveys/params`,
+    async (url) => {
+      if (id !== "ext") return id;
+      return (
+        await axios.post(
+          url,
+          params,
+          withHeaders(await authorization_BearerToken())
+        )
+      ).data;
+    },
+    { suspense: true }
+  );
+
 export const useSurveyInstance = (surveyId, instanceId) =>
   useSWR(`/api/surveys/${surveyId}/instances/${instanceId}`, defaultFetcher(), {
     suspense: true,
