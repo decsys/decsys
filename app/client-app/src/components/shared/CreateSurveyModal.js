@@ -19,11 +19,24 @@ import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 import "github-markdown-css";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
+import { object, string } from "yup";
 
 // There are a number of ways to create a survey: Blank, Import, Duplicate etc.
 // But they also all require some common follow up information
 // This modal gathers that information and then executes a handler
 // that accepts the new information, and deals with the previously chosen type of creation
+
+const validationSchema = object().shape({
+  type: string().oneOf(["", "prolific"]),
+  prolificStudyId: string().when("type", {
+    is: (type) => type === "prolific",
+    then: string().required("Prolific Surveys require a Study ID."),
+  }),
+  prolificCompletionUrl: string().when("type", {
+    is: (type) => type === "prolific",
+    then: string().required("Prolific Surveys require a Completion URL."),
+  }),
+});
 
 const SetupGuide = ({ markdown }) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -77,13 +90,16 @@ const CreateSurveyModal = ({ name, onCreate, modalState }) => {
 
   const handleSubmit = (values, actions) => {
     let { name, type, ...settings } = values;
-    settings = Object.keys(settings).reduce(
-      (o, k) =>
-        settings[k] != null && settings[k] !== ""
-          ? { ...o, [k]: settings[k] }
-          : o,
-      {}
-    );
+    // filter settings by type to reduce confusing payloads
+    settings = !type
+      ? {}
+      : Object.keys(settings).reduce(
+          (o, k) =>
+            settings[k] != null && settings[k] !== "" && k.startsWith(type)
+              ? { ...o, [k]: settings[k] }
+              : o,
+          {}
+        );
     console.log(name, type, settings);
     actions.setSubmitting(false);
     return; // TODO: enable creation posting
@@ -96,14 +112,14 @@ const CreateSurveyModal = ({ name, onCreate, modalState }) => {
       initialValues={{
         name: defaultName,
         type: "",
-        studyId: "",
-        completionUrl: "",
+        prolificStudyId: "",
+        prolificCompletionUrl: "",
       }}
       enableReinitialize
       onSubmit={handleSubmit}
-      //validationSchema={validationSchema}
+      validationSchema={validationSchema}
     >
-      {({ isSubmitting, values, submitForm }) => (
+      {({ isSubmitting, values, submitForm, resetForm }) => (
         <StandardModal
           size="2xl"
           {...modalState}
@@ -114,6 +130,12 @@ const CreateSurveyModal = ({ name, onCreate, modalState }) => {
             onClick: submitForm,
             type: "submit",
             disabled: isSubmitting,
+          }}
+          cancelButton={{
+            onClick: () => {
+              resetForm();
+              modalState.onClose();
+            },
           }}
         >
           <Form noValidate css={{ width: "100%" }}>
@@ -167,10 +189,10 @@ const CreateSurveyModal = ({ name, onCreate, modalState }) => {
                     )}/ext`
                   )}
                 />
-                <Field name="studyId">
+                <Field name="prolificStudyId">
                   {(rp) => <FormikInput {...rp} label="Study ID" />}
                 </Field>
-                <Field name="completionUrl">
+                <Field name="prolificCompletionUrl">
                   {(rp) => <FormikInput {...rp} label="Completion URL" />}
                 </Field>
               </Stack>
