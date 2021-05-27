@@ -16,6 +16,7 @@ import ExportModal from "components/shared/ExportModal";
 import DeleteSurveyModal from "components/shared/DeleteSurveyModal";
 import { useEditorBarContext } from "../../contexts/EditorBar";
 import { defaultColorMode } from "themes";
+import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 
 const BarButton = (p) => {
   const { colorMode } = useColorMode();
@@ -60,11 +61,15 @@ export const ExportButton = ({ id, name }) => {
 };
 
 export const DuplicateButton = () => {
-  const { duplicate } = useEditorBarContext();
+  const { duplicate } = useEditorBarContext(); // TODO: name, type, settings
+  const createSurveyModal = useDisclosure();
   return (
-    <BarButton leftIcon={<FaCopy />} onClick={duplicate}>
-      Duplicate
-    </BarButton>
+    <>
+      <BarButton leftIcon={<FaCopy />} onClick={createSurveyModal.onOpen}>
+        Duplicate
+      </BarButton>
+      <CreateSurveyModal modalState={createSurveyModal} onCreate={duplicate} />
+    </>
   );
 };
 

@@ -5,18 +5,18 @@ import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 
 const LoadInternalSurveys = ({ closeModal }) => {
   const { loadInternal } = useAddSurveyActions();
-  const modalState = useDisclosure();
+  const createSurveyModal = useDisclosure();
   const [internalKey, setInternalKey] = useState();
 
   const doImport = (name, type, settings) => {
     loadInternal(internalKey); // TODO: name, type, settings
-    modalState.onClose();
+    createSurveyModal.onClose();
     closeModal();
   };
 
   const handleClick = (key) => {
     setInternalKey(key);
-    modalState.onOpen();
+    createSurveyModal.onOpen();
   };
   const handleDemoClick = () => handleClick("demo");
   const handleSampleClick = () => handleClick("sample");
@@ -41,7 +41,7 @@ const LoadInternalSurveys = ({ closeModal }) => {
           Load the Sample Research Survey
         </Button>
       </Tooltip>
-      <CreateSurveyModal modalState={modalState} onCreate={doImport} />
+      <CreateSurveyModal modalState={createSurveyModal} onCreate={doImport} />
     </>
   );
 };

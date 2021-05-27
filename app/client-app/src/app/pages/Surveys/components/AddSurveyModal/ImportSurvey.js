@@ -32,7 +32,7 @@ const isZip = (filename) => filename.split(".").pop().toLowerCase() === "zip";
 
 const ImportSurveyForm = ({ modalState }) => {
   const { importFile } = useAddSurveyActions();
-  const createSurveyModalState = useDisclosure();
+  const createSurveyModal = useDisclosure();
 
   const [state, setState] = useState({
     importData: false,
@@ -52,13 +52,13 @@ const ImportSurveyForm = ({ modalState }) => {
 
   const doImport = (name, type, settings) => {
     importFile(state.file, state.importData); // TODO: name, type, settings
-    createSurveyModalState.onClose();
+    createSurveyModal.onClose();
     modalState.onClose();
   };
 
   const handleImportClick = () => {
     if (!state.file || state.error) return;
-    createSurveyModalState.onOpen();
+    createSurveyModal.onOpen();
   };
 
   return (
@@ -89,10 +89,7 @@ const ImportSurveyForm = ({ modalState }) => {
           Import
         </Button>
       </Flex>
-      <CreateSurveyModal
-        modalState={createSurveyModalState}
-        onCreate={doImport}
-      />
+      <CreateSurveyModal modalState={createSurveyModal} onCreate={doImport} />
     </Stack>
   );
 };
