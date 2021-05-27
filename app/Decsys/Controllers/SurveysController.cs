@@ -6,16 +6,20 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+
 using Decsys.Auth;
 using Decsys.Config;
 using Decsys.Models;
 using Decsys.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
+
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
@@ -46,11 +50,13 @@ namespace Decsys.Controllers
             _internalSurveysPath = Path.Combine(env.ContentRootPath, "surveys");
         }
 
+        private string? OwnerId => _mode.IsWorkshop ? null : User.GetUserId();
+
         [HttpGet]
         [SwaggerOperation("List summary data for all Surveys the authenticated User can access.")]
         public IEnumerable<SurveySummary> List()
             => _surveys.List(
-                _mode.IsWorkshop ? null : User.GetUserId(),
+                OwnerId,
                 User.IsSuperUser());
 
         [HttpGet("{id}")]
@@ -74,9 +80,7 @@ namespace Decsys.Controllers
         {
             var id = _surveys.Create(
                 name: null,
-                ownerId: _mode.IsWorkshop
-                    ? null
-                    : User.GetUserId());
+                ownerId: OwnerId);
             return Created(Url.Action("Get", new { id }), id);
         }
 
@@ -120,7 +124,7 @@ namespace Decsys.Controllers
         {
             try
             {
-                return await _surveys.Duplicate(id);
+                return await _surveys.Duplicate(id, OwnerId);
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }
@@ -244,9 +248,7 @@ namespace Decsys.Controllers
             var surveyId = await _surveys.Import(
                 survey,
                 images,
-                _mode.IsWorkshop
-                    ? null
-                    : User.GetUserId());
+                OwnerId);
 
             // attempt to import any instances
             if (instances.Count > 0)
