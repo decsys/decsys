@@ -38,7 +38,6 @@ const SurveyBootstrapper = ({ id }) => {
   // Try and get friendly ID based on query string params if id indicates external access
   const params = useQueryString();
   const { data: friendlyId } = useExternalSurveyAccess(id, params);
-  console.log(friendlyId, id);
   const [surveyId, instanceId] = decode(friendlyId);
   const { data: instance } = useSurveyInstance(surveyId, instanceId);
   const { instances, storeInstanceParticipantId } = useLocalInstances();

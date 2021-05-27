@@ -36,7 +36,7 @@ const EditorBar = () => {
 
       <PreviewButton />
       <ExportButton id={id} name={name} />
-      <DuplicateButton />
+      <DuplicateButton name={name} />
       <DeleteButton name={name} />
     </Grid>
   );

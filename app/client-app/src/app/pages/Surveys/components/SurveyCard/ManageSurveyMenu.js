@@ -21,7 +21,6 @@ const ManageSurveyMenu = ({ id, editable, name }) => {
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions(); // TODO: name, type, settings
   const handleDuplicate = (name, type, settings) => {
-    console.log(name, type, settings);
     duplicate(id);
   };
   const handleDelete = () => deleteSurvey(id);
@@ -57,6 +56,7 @@ const ManageSurveyMenu = ({ id, editable, name }) => {
       <SurveyConfigModal id={id} name={name} modalState={configModal} />
       <ExportModal id={id} name={name} modalState={exportModal} />
       <CreateSurveyModal
+        name={`${name} (Copy)`} // we always use this modal for duplicating only
         modalState={createSurveyModal}
         onCreate={handleDuplicate}
       />

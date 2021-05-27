@@ -50,6 +50,7 @@
     "immer": "^9.0.2",
     "js-forms": "^2.0.0",
     "json2csv": "^4.5.4",
+    "jszip": "^3.6.0",
     "lodash-es": "^4.17.15",
     "mathjs": "^7.1.0",
     "oidc-client": "^1.10.1",

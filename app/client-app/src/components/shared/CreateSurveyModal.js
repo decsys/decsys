@@ -1,35 +1,57 @@
+import { Stack } from "@chakra-ui/react";
+import FormikInput from "components/core/FormikInput";
 import StandardModal from "components/core/StandardModal";
+import { Field, Form, Formik } from "formik";
 
 // There are a number of ways to create a survey: Blank, Import, Duplicate etc.
 // But they also all require some common follow up information
 // This modal gathers that information and then executes a handler
 // that accepts the new information, and deals with the previously chosen type of creation
-const CreateSurveyModal = ({ onCreate, modalState }) => {
-  // TODO: State/Form entry?
-  const name = "hello";
-  const type = "prolific";
-  const settings = {
-    studyId: "lol",
-  };
+const CreateSurveyModal = ({ name, onCreate, modalState }) => {
+  const defaultName = name ?? "";
 
-  const handleConfirm = () => {
+  const handleSubmit = (values, actions) => {
+    const { name, type, ...settings } = values;
     onCreate(name, type, settings);
-    modalState.onClose();
+    actions.setSubmitting(false);
   };
 
   return (
-    <StandardModal
-      size="lg"
-      {...modalState}
-      header="Delete Survey"
-      confirmButton={{
-        colorScheme: "red",
-        children: "Delete survey",
-        onClick: handleConfirm,
-      }}
+    <Formik
+      initialValues={{ name: defaultName }}
+      enableReinitialize
+      onSubmit={handleSubmit}
+      //validationSchema={validationSchema}
     >
-      Hello there
-    </StandardModal>
+      {({ isSubmitting }) => (
+        <StandardModal
+          size="lg"
+          {...modalState}
+          header="New Survey details"
+          confirmButton={{
+            colorScheme: "green",
+            children: "Create survey",
+            onClick: handleSubmit,
+            type: "submit",
+            disabled: isSubmitting,
+          }}
+        >
+          <Form noValidate>
+            <Stack spacing={4}>
+              <Field name="name">
+                {(rp) => (
+                  <FormikInput
+                    {...rp}
+                    label="Survey Name"
+                    placeholder="Untitled Survey"
+                  />
+                )}
+              </Field>
+            </Stack>
+          </Form>
+        </StandardModal>
+      )}
+    </Formik>
   );
 };
 

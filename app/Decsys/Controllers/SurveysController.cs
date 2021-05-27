@@ -235,7 +235,7 @@ namespace Decsys.Controllers
                         // TODO: Maybe someday we could report on the result of our attempted import ¯\_(ツ)_/¯
                     }
                 }
-            }
+            }                                                                                                                                                                                                                                                                                            
 
             return (survey, images, instances);
         }

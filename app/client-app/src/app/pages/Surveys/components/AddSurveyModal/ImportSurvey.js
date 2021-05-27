@@ -13,6 +13,8 @@ import {
 import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
+import JSZip from "jszip";
+import { stripBom } from "services/data-structures";
 
 const ImportSurvey = (p) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -31,6 +33,7 @@ const ImportSurvey = (p) => {
 const isZip = (filename) => filename.split(".").pop().toLowerCase() === "zip";
 
 const ImportSurveyForm = ({ modalState }) => {
+  const [surveyName, setSurveyName] = useState();
   const { importFile } = useAddSurveyActions();
   const createSurveyModal = useDisclosure();
 
@@ -56,8 +59,25 @@ const ImportSurveyForm = ({ modalState }) => {
     modalState.onClose();
   };
 
-  const handleImportClick = () => {
+  const handleImportClick = async () => {
     if (!state.file || state.error) return;
+
+    // get survey name from within the zip file locally :)
+    try {
+      var zip = new JSZip();
+      const zipFile = await zip.loadAsync(state.file);
+      const content = await zipFile.file("structure.json").async("string");
+      const name = JSON.parse(stripBom(content)).Name;
+
+      setSurveyName(name);
+    } catch {
+      setState({
+        ...state,
+        error:
+          "Couldn't read a valid a 'structure.json' within the provided .zip file",
+      });
+      return;
+    }
     createSurveyModal.onOpen();
   };
 
@@ -89,7 +109,11 @@ const ImportSurveyForm = ({ modalState }) => {
           Import
         </Button>
       </Flex>
-      <CreateSurveyModal modalState={createSurveyModal} onCreate={doImport} />
+      <CreateSurveyModal
+        name={surveyName}
+        modalState={createSurveyModal}
+        onCreate={doImport}
+      />
     </Stack>
   );
 };
