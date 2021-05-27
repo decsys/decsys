@@ -67,13 +67,13 @@ namespace Decsys.Services
         /// <returns>The ID of the newly created duplicate Survey.</returns>
         /// <exception cref="KeyNotFoundException">Thrown if a Survey could not be found with the specified ID.</exception>
 
-        public async Task<int> Duplicate(int id)
+        public async Task<int> Duplicate(int id, string? ownerId = null)
         {
             var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             var oldId = survey.Id;
 
             survey.Name = $"{survey.Name} (Copy)";
-            var newId = _surveys.Create(survey);
+            var newId = _surveys.Create(survey, ownerId);
 
             await _images.CopyAllSurveyImages(oldId, newId);
 
