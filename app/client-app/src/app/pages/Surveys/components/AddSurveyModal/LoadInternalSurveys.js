@@ -1,12 +1,22 @@
-import { Button, Tooltip } from "@chakra-ui/react";
+import { useState } from "react";
+import { Button, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 
 const LoadInternalSurveys = ({ closeModal }) => {
   const { loadInternal } = useAddSurveyActions();
+  const modalState = useDisclosure();
+  const [internalKey, setInternalKey] = useState();
 
-  const handleClick = (type) => {
-    loadInternal(type);
+  const doImport = (name, type, settings) => {
+    loadInternal(internalKey); // TODO: name, type, settings
+    modalState.onClose();
     closeModal();
+  };
+
+  const handleClick = (key) => {
+    setInternalKey(key);
+    modalState.onOpen();
   };
   const handleDemoClick = () => handleClick("demo");
   const handleSampleClick = () => handleClick("sample");
@@ -31,6 +41,7 @@ const LoadInternalSurveys = ({ closeModal }) => {
           Load the Sample Research Survey
         </Button>
       </Tooltip>
+      <CreateSurveyModal modalState={modalState} onCreate={doImport} />
     </>
   );
 };

@@ -16,13 +16,18 @@ export const useExternalSurveyAccess = (id, params) =>
     `/api/surveys/params`,
     async (url) => {
       if (id !== "ext") return id;
-      return (
+
+      const { combinedId, participantId } = (
         await axios.post(
           url,
           params,
           withHeaders(await authorization_BearerToken())
         )
       ).data;
+
+      // TODO: store Participant ID, if one provided
+
+      return combinedId;
     },
     { suspense: true }
   );

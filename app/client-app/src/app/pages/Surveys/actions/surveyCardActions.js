@@ -7,7 +7,7 @@ import {
 import { closeSurveyInstance } from "api/survey-instances";
 import produce from "immer";
 
-export default (navigate, mutateSurveys) => ({
+export const surveyCardActions = (navigate, mutateSurveys) => ({
   saveName: async (id, newName, setNameState) => {
     setNameState({ isSaving: true });
     const { data: name } = await setSurveyName(id, newName);

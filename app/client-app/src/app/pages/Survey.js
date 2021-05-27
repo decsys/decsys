@@ -183,7 +183,7 @@ const Survey = ({ combinedId, userId, progressStatus }) => {
       // (e.g. resuming an already completed one time survey)
       if (page >= pages.length) {
         logEvent(instance.survey.id, SURVEY_COMPLETE, {});
-        navigate(`/survey/${combinedId}/complete`);
+        navigate(`/survey/${combinedId}/complete`); // TODO: Optional Completion Redirect URL
         return;
       }
 

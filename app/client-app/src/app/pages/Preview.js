@@ -13,7 +13,7 @@ const Preview = ({ id }) => {
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
 
   const handleClick = () => {
-    if (lastPage) return navigate(-1);
+    if (lastPage) return navigate(-1); // TODO: Optional Completion Redirect URL
     setPage(page + 1);
   };
 

@@ -1,10 +1,10 @@
 import {
   createSurvey,
   uploadSurveyImport,
-  loadInternalSurvey
+  loadInternalSurvey,
 } from "api/surveys";
 
-export default (navigate, mutateSurveys) => ({
+export const addSurveyActions = (navigate, mutateSurveys) => ({
   create: async () => {
     const { data: id } = await createSurvey();
     navigate(`survey/${id}`);
@@ -13,8 +13,8 @@ export default (navigate, mutateSurveys) => ({
     await uploadSurveyImport(file, importData);
     mutateSurveys();
   },
-  loadInternal: async type => {
+  loadInternal: async (type) => {
     await loadInternalSurvey(type);
     mutateSurveys();
-  }
+  },
 });

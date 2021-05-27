@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Flex,
@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
+import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 
 const ImportSurvey = (p) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -31,6 +32,7 @@ const isZip = (filename) => filename.split(".").pop().toLowerCase() === "zip";
 
 const ImportSurveyForm = ({ modalState }) => {
   const { importFile } = useAddSurveyActions();
+  const createSurveyModalState = useDisclosure();
 
   const [state, setState] = useState({
     importData: false,
@@ -48,10 +50,15 @@ const ImportSurveyForm = ({ modalState }) => {
     setState({ ...state, importData: e.target.checked });
   };
 
+  const doImport = (name, type, settings) => {
+    importFile(state.file, state.importData); // TODO: name, type, settings
+    createSurveyModalState.onClose();
+    modalState.onClose();
+  };
+
   const handleImportClick = () => {
     if (!state.file || state.error) return;
-    importFile(state.file, state.importData);
-    modalState.onClose();
+    createSurveyModalState.onOpen();
   };
 
   return (
@@ -82,6 +89,10 @@ const ImportSurveyForm = ({ modalState }) => {
           Import
         </Button>
       </Flex>
+      <CreateSurveyModal
+        modalState={createSurveyModalState}
+        onCreate={doImport}
+      />
     </Stack>
   );
 };
