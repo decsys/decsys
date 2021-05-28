@@ -25,9 +25,9 @@ namespace Decsys.Repositories.Contracts
         /// <summary>
         /// Create a new empty Survey, optionally belonging to a specific user.
         /// </summary>
-        /// <param name="name">Optional Survey name</param>
+        /// <param name="model">Survey creation details</param>
         /// <param name="ownerId">Optional Owner ID</param>
-        int Create(string? name = null, string? ownerId = null);
+        int Create(CreateSurveyModel model, string? ownerId = null);
 
         /// <summary>
         /// Create a new Survey from a provided model

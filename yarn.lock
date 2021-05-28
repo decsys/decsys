@@ -6832,13 +6832,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zip.js/zip.js@npm:^2.2.38":
-  version: 2.2.38
-  resolution: "@zip.js/zip.js@npm:2.2.38"
-  checksum: 666f40f3e09f5fa9a36a891405873d28d3c7942852771117233b0c757945ce7416f20b036a6ef9c1aea8f6f4eba25171205b64cbd98c47a39e211ca801767970
-  languageName: node
-  linkType: hard
-
 "a-big-triangle@npm:^1.0.3":
   version: 1.0.3
   resolution: "a-big-triangle@npm:1.0.3"
@@ -9119,7 +9112,6 @@ __metadata:
     "@storybook/preset-create-react-app": ^3.1.7
     "@storybook/react": ^6.2.9
     "@storybook/source-loader": ^6.2.9
-    "@zip.js/zip.js": ^2.2.38
     axios: ^0.21.1
     base64url: ^3.0.1
     core-js: ^3.6.5

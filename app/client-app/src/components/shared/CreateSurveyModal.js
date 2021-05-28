@@ -90,19 +90,24 @@ const CreateSurveyModal = ({ name, onCreate, modalState }) => {
 
   const handleSubmit = (values, actions) => {
     let { name, type, ...settings } = values;
-    // filter settings by type to reduce confusing payloads
+
+    // we do some pre-submissions massaging of the form values
+
+    // coerce empty strings (used by formik for controlled inputs) to null
+    // as the backend uses nullness for defaults
+    name = name || null;
+    type = type || null;
+
+    // filter settings by type to simplify payloads
     settings = !type
       ? {}
       : Object.keys(settings).reduce(
           (o, k) =>
             settings[k] != null && settings[k] !== "" && k.startsWith(type)
-              ? { ...o, [k]: settings[k] }
+              ? { ...o, [k.replace(type, "")]: settings[k] } // also trim the type prefix
               : o,
           {}
         );
-    console.log(name, type, settings);
-    actions.setSubmitting(false);
-    return; // TODO: enable creation posting
     onCreate(name, type, settings);
     actions.setSubmitting(false);
   };

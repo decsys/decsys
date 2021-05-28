@@ -51,11 +51,36 @@ namespace Decsys.Repositories.LiteDb
                     survey)).ToList();
         }
 
-        public int Create(string? name = null, string? ownerId = null) =>
-            _surveys.Insert(
-                name is null
-                    ? new Survey()
-                    : new Survey { Name = name });
+        public int Create(Models.CreateSurveyModel model, string? ownerId = null)
+        {
+            var survey = new Survey();
+            if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
+
+            // Handle type settings
+            switch (model.Type)
+            {
+                case SurveyTypes.Prolific:
+                    survey.Type = model.Type;
+                    ApplyProlificSettings(model, ref survey);
+                    break;
+            }
+
+            return _surveys.Insert(survey);
+        }
+
+        private void ApplyProlificSettings(Models.CreateSurveyModel model, ref Survey survey)
+        {
+            // Fix some settings based on type
+            survey.OneTimeParticipants = true;
+            survey.UseParticipantIdentifiers = true;
+
+            // TODO: Validate type specific settings?
+
+            // add the type specific settings
+            _mapper.Map(model, survey);
+
+            // TODO: add / amend a lookup record for this survey type
+        }
 
         public int Create(Models.Survey survey, string? ownerId = null)
         {

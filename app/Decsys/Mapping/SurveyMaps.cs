@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+
 using AutoMapper;
+
 using Decsys.Models;
 
 namespace Decsys.Mapping
@@ -39,11 +41,25 @@ namespace Decsys.Mapping
 
             // Survey
             CreateMap<Data.Entities.LiteDb.Survey, Survey>()
-                .ConstructUsing(src => new Survey(src.Name));
-            CreateMap<Survey, Data.Entities.LiteDb.Survey>();
+                .ConstructUsing(src => new Survey(src.Name))
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()));
+            CreateMap<Survey, Data.Entities.LiteDb.Survey>()
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()));
             CreateMap<Data.Entities.Mongo.Survey, Survey>()
-                .ConstructUsing(src => new Survey(src.Name));
-            CreateMap<Survey, Data.Entities.Mongo.Survey>();
+                .ConstructUsing(src => new Survey(src.Name))
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new MongoBsonJObjectConverter()));
+            CreateMap<Survey, Data.Entities.Mongo.Survey>()
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
+
+            // Survey Type Settings only
+            // these will only be used to apply to existing Survey objects
+            CreateMap<CreateSurveyModel, Data.Entities.LiteDb.Survey>()
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()))
+                .ForAllOtherMembers(opt => opt.Ignore());
+            CreateMap<CreateSurveyModel, Data.Entities.Mongo.Survey>()
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()))
+                .ForAllOtherMembers(opt => opt.Ignore());
+
 
             // Page
             CreateMap<Data.Entities.LiteDb.Page, Page>();

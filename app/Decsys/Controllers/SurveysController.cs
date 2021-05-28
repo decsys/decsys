@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -69,18 +68,16 @@ namespace Decsys.Controllers
         {
             var survey = _surveys.Get(id);
             return survey is null
-                ? (ActionResult)NotFound()
+                ? NotFound()
                 : Ok(survey);
         }
 
         [HttpPost]
-        [SwaggerOperation("Create a new Survey with a default name.")]
+        [SwaggerOperation("Create a new Survey.")]
         [SwaggerResponse(201, "The Survey was successfully created with the returned ID.")]
-        public IActionResult Create()
+        public IActionResult Create(CreateSurveyModel model)
         {
-            var id = _surveys.Create(
-                name: null,
-                ownerId: OwnerId);
+            var id = _surveys.Create(model, OwnerId);
             return Created(Url.Action("Get", new { id }), id);
         }
 
@@ -235,7 +232,7 @@ namespace Decsys.Controllers
                         // TODO: Maybe someday we could report on the result of our attempted import ¯\_(ツ)_/¯
                     }
                 }
-            }                                                                                                                                                                                                                                                                                            
+            }
 
             return (survey, images, instances);
         }

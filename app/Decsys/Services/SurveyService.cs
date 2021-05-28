@@ -53,11 +53,11 @@ namespace Decsys.Services
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
         /// </summary>
-        /// <param name="name">The name to give the new Survey.</param>
+        /// <param name="model">The model of options to create the new Survey.</param>
         /// <param name="ownerId">Optional Owner of the new Survey</param>
         /// <returns>The ID of the newly created Survey.</returns>
-        public int Create(string? name = null, string? ownerId = null)
-            => _surveys.Create(name, ownerId);
+        public int Create(CreateSurveyModel model, string? ownerId = null)
+            => _surveys.Create(model, ownerId);
 
 
         /// <summary>

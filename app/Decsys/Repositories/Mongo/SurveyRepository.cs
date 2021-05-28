@@ -47,17 +47,40 @@ namespace Decsys.Repositories.Mongo
             return ++lastId;
         }
 
-        public int Create(string? name = null, string? ownerId = null)
+        public int Create(Models.CreateSurveyModel model, string? ownerId = null)
         {
             var id = GetNextSurveyId();
 
             var survey = new Survey { Id = id, Owner = ownerId };
-            if (!string.IsNullOrWhiteSpace(name))
-                survey.Name = name;
+            if (!string.IsNullOrWhiteSpace(model.Name))
+                survey.Name = model.Name;
+
+            // Handle type settings
+            switch (model.Type)
+            {
+                case SurveyTypes.Prolific:
+                    survey.Type = model.Type;
+                    ApplyProlificSettings(model, ref survey);
+                    break;
+            }
 
             _surveys.InsertOne(survey);
 
             return id;
+        }
+
+        private void ApplyProlificSettings(Models.CreateSurveyModel model, ref Survey survey)
+        {
+            // Fix some settings based on type
+            survey.OneTimeParticipants = true;
+            survey.UseParticipantIdentifiers = true;
+
+            // TODO: Validate type specific settings?
+
+            // add the type specific settings
+            _mapper.Map(model, survey);
+
+            // TODO: add / amend a lookup record for this survey type
         }
 
         public int Create(Models.Survey survey, string? ownerId = null)
