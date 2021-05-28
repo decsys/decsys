@@ -39,8 +39,8 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
       })
     );
   },
-  duplicate: async (id) => {
-    await duplicateSurvey(id);
+  duplicate: async (id, name, type, settings) => {
+    await duplicateSurvey(id, name, type, settings);
     mutateSurveys();
   },
   deleteSurvey: async (id) => {

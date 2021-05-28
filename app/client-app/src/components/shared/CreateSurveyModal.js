@@ -110,6 +110,7 @@ const CreateSurveyModal = ({ name, onCreate, modalState }) => {
         );
     onCreate(name, type, settings);
     actions.setSubmitting(false);
+    actions.resetForm();
   };
 
   return (

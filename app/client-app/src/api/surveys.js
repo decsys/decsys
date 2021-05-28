@@ -65,10 +65,10 @@ export const deleteSurvey = async (id) =>
     withHeaders(await authorization_BearerToken())
   );
 
-export const duplicateSurvey = async (id) =>
+export const duplicateSurvey = async (id, name, type, settings) =>
   await axios.post(
     `/api/surveys/${id}/duplicate`,
-    null,
+    { name, type, settings },
     withHeaders(await authorization_BearerToken())
   );
 

@@ -19,9 +19,10 @@ const ManageSurveyMenu = ({ id, editable, name }) => {
   const exportModal = useDisclosure();
   const createSurveyModal = useDisclosure();
 
-  const { duplicate, deleteSurvey, navigate } = useSurveyCardActions(); // TODO: name, type, settings
+  const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
   const handleDuplicate = (name, type, settings) => {
-    duplicate(id);
+    duplicate(id, name, type, settings);
+    createSurveyModal.onClose();
   };
   const handleDelete = () => deleteSurvey(id);
 

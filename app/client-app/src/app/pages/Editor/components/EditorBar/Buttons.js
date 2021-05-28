@@ -61,8 +61,12 @@ export const ExportButton = ({ id, name }) => {
 };
 
 export const DuplicateButton = ({ name }) => {
-  const { duplicate } = useEditorBarContext(); // TODO: name, type, settings
+  const { duplicate } = useEditorBarContext();
   const createSurveyModal = useDisclosure();
+  const handleDuplicate = (name, type, settings) => {
+    duplicate(name, type, settings);
+    createSurveyModal.onClose();
+  };
   return (
     <>
       <BarButton leftIcon={<FaCopy />} onClick={createSurveyModal.onOpen}>
@@ -71,7 +75,7 @@ export const DuplicateButton = ({ name }) => {
       <CreateSurveyModal
         name={`${name} (Copy)`} // we always use this modal for duplicating only
         modalState={createSurveyModal}
-        onCreate={duplicate}
+        onCreate={handleDuplicate}
       />
     </>
   );
