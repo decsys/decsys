@@ -34,13 +34,28 @@ export const createSurvey = async (name, type, settings) =>
     withHeaders(await authorization_BearerToken())
   );
 
-export const uploadSurveyImport = async (file, importData = false) =>
-  await uploadFile(`/api/surveys/import?importData=${importData}`, file);
+export const uploadSurveyImport = async (
+  file,
+  importData = false,
+  name,
+  type,
+  settings
+) =>
+  await uploadFile(
+    `/api/surveys/import?importData=${importData}`,
+    file,
+    "post",
+    {
+      name,
+      type,
+      settings,
+    }
+  );
 
-export const loadInternalSurvey = async (type) =>
+export const loadInternalSurvey = async (internalKey, name, type, settings) =>
   await axios.post(
-    `/api/surveys/internal/${type}`,
-    null,
+    `/api/surveys/internal/${internalKey}`,
+    { name, type, settings },
     withHeaders(await authorization_BearerToken())
   );
 

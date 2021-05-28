@@ -3,7 +3,7 @@ import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 
 const CreateBlankSurveyButton = () => {
-  const { create } = useAddSurveyActions(); // TODO: name, type, settings
+  const { create } = useAddSurveyActions();
   const createSurveyModal = useDisclosure();
   return (
     <>

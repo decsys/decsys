@@ -56,23 +56,29 @@ namespace Decsys.Repositories.LiteDb
             var survey = new Survey();
             if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
 
+            HandleSurveyTypeCreation(model, ref survey);
+
+            return _surveys.Insert(survey);
+        }
+
+        private void HandleSurveyTypeCreation(Models.CreateSurveyModel model, ref Survey survey)
+        {
             // Handle type settings
             switch (model.Type)
             {
                 case SurveyTypes.Prolific:
                     survey.Type = model.Type;
-                    ApplyProlificSettings(model, ref survey);
+                    HandleProlificSurveyCreation(model, ref survey);
                     break;
             }
-
-            return _surveys.Insert(survey);
         }
 
-        private void ApplyProlificSettings(Models.CreateSurveyModel model, ref Survey survey)
+        private void HandleProlificSurveyCreation(Models.CreateSurveyModel model, ref Survey survey)
         {
             // Fix some settings based on type
             survey.OneTimeParticipants = true;
             survey.UseParticipantIdentifiers = true;
+            survey.ValidIdentifiers = new();
 
             // TODO: Validate type specific settings?
 
@@ -82,10 +88,15 @@ namespace Decsys.Repositories.LiteDb
             // TODO: add / amend a lookup record for this survey type
         }
 
-        public int Create(Models.Survey survey, string? ownerId = null)
+        public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
         {
-            survey.Id = 0;
-            return _surveys.Insert(_mapper.Map<Survey>(survey));
+            var entity = _mapper.Map<Survey>(survey);
+            if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
+            HandleSurveyTypeCreation(model, ref entity);
+
+            entity.Id = 0;
+
+            return _surveys.Insert(entity);
         }
 
         public void Delete(int id)
@@ -98,6 +109,8 @@ namespace Decsys.Repositories.LiteDb
 
             // Delete all Instances
             _instances.DeleteMany(x => x.Survey.Id == id);
+
+            // TODO: delete external lookup records?
 
             // Delete the Survey
             _surveys.Delete(id);

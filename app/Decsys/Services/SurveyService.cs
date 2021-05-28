@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Decsys.Config;
 using Decsys.Models;
 using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
+
 using Microsoft.Extensions.Options;
 
 namespace Decsys.Services
@@ -64,16 +66,18 @@ namespace Decsys.Services
         /// Duplicate a Survey, but not any of its Instance data.
         /// </summary>
         /// <param name="id">The ID of the Survey to use a source.</param>
+        /// <param name="model">The model of options to create the new Survey.</param>
         /// <returns>The ID of the newly created duplicate Survey.</returns>
         /// <exception cref="KeyNotFoundException">Thrown if a Survey could not be found with the specified ID.</exception>
 
-        public async Task<int> Duplicate(int id, string? ownerId = null)
+        public async Task<int> Duplicate(int id, CreateSurveyModel model, string? ownerId = null)
         {
             var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             var oldId = survey.Id;
 
-            survey.Name = $"{survey.Name} (Copy)";
-            var newId = _surveys.Create(survey, ownerId);
+            survey.Name = model.Name ?? $"{survey.Name} (Copy)";
+
+            var newId = _surveys.Create(survey, model, ownerId);
 
             await _images.CopyAllSurveyImages(oldId, newId);
 
@@ -85,13 +89,18 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="survey">Survey model to import</param>
         /// <param name="images">List of Survey Images to import</param>
+        /// <param name="model">The model of options to create the new Survey.</param>
         /// <param name="newOwnerId">ID of the User doing the import</param>
-        public async Task<int> Import(Survey survey, List<(string filename, byte[] data)> images, string? newOwnerId = null)
+        public async Task<int> Import(
+            Survey survey,
+            List<(string filename, byte[] data)> images,
+            CreateSurveyModel model,
+            string? newOwnerId = null)
         {
             // any validation, or mapping to account for version changes
             MigrateUpComponentTypes(ref survey);
 
-            int id = _surveys.Create(survey, newOwnerId);
+            int id = _surveys.Create(survey, model, newOwnerId);
 
             if (images.Count > 0)
                 await _images.Import(id, images).ConfigureAwait(false);

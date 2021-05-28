@@ -54,7 +54,7 @@ const ImportSurveyForm = ({ modalState }) => {
   };
 
   const doImport = (name, type, settings) => {
-    importFile(state.file, state.importData); // TODO: name, type, settings
+    importFile(state.file, state.importData, name, type, settings);
     createSurveyModal.onClose();
     modalState.onClose();
   };

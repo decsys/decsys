@@ -9,12 +9,12 @@ export const addSurveyActions = (navigate, mutateSurveys) => ({
     const { data: id } = await createSurvey(name, type, settings);
     navigate(`survey/${id}`);
   },
-  importFile: async (file, importData) => {
-    await uploadSurveyImport(file, importData);
+  importFile: async (file, importData, name, type, settings) => {
+    await uploadSurveyImport(file, importData, name, type, settings);
     mutateSurveys();
   },
-  loadInternal: async (type) => {
-    await loadInternalSurvey(type);
+  loadInternal: async (internalKey, name, type, settings) => {
+    await loadInternalSurvey(internalKey, name, type, settings);
     mutateSurveys();
   },
 });

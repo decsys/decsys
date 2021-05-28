@@ -117,11 +117,11 @@ namespace Decsys.Controllers
         [SwaggerOperation("Duplicate a single Survey with the provided ID.")]
         [SwaggerResponse(200, "The Survey was duplicated successfully and the new copy has the returned ID.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
-        public async Task<ActionResult<int>> Duplicate(int id)
+        public async Task<ActionResult<int>> Duplicate(int id, CreateSurveyModel model)
         {
             try
             {
-                return await _surveys.Duplicate(id, OwnerId);
+                return await _surveys.Duplicate(id, model, OwnerId);
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }
@@ -170,7 +170,7 @@ namespace Decsys.Controllers
             };
 
         [HttpPost("internal/{type}")]
-        public async Task<ActionResult<int>> LoadInternal(string type)
+        public async Task<ActionResult<int>> LoadInternal(string type, CreateSurveyModel model)
         {
             if (!new string[] { "demo", "sample" }.Contains(type))
                 return BadRequest("Unrecognised type requested. Expected 'demo' or 'sample'.");
@@ -182,7 +182,7 @@ namespace Decsys.Controllers
             if (survey is null)
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
-            return await HandleImport(survey, images, instances);
+            return await HandleImport(survey, images, instances, model);
         }
 
         private static (
@@ -240,11 +240,13 @@ namespace Decsys.Controllers
         private async Task<int> HandleImport(
             Survey survey,
             List<(string filename, byte[] data)> images,
-            List<SurveyInstanceResults<ParticipantEvents>> instances)
+            List<SurveyInstanceResults<ParticipantEvents>> instances,
+            CreateSurveyModel model)
         {
             var surveyId = await _surveys.Import(
                 survey,
                 images,
+                model,
                 OwnerId);
 
             // attempt to import any instances
@@ -257,18 +259,24 @@ namespace Decsys.Controllers
         [HttpPost("import")]
         public async Task<ActionResult<int>> Import(
             bool importData,
-            [SwaggerParameter("The survey export file")]
-            IFormFile file)
+            ImportSurveyModel model)
         {
+            if (model.File is null) return BadRequest("Missing uploaded file to import");
+
             using var stream = new MemoryStream();
-            await file.CopyToAsync(stream).ConfigureAwait(false);
+            await model.File.CopyToAsync(stream).ConfigureAwait(false);
             var zip = new ZipArchive(stream);
 
             var (survey, images, instances) = ProcessImportZip(zip, importData);
             if (survey is null)
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
-            return await HandleImport(survey, images, instances);
+            return await HandleImport(survey, images, instances, new()
+            {
+                Name = model.Name,
+                Type = model.Type,
+                Settings = model.Settings
+            });
         }
     }
 }

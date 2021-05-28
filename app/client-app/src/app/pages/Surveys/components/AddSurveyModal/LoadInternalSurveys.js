@@ -14,7 +14,7 @@ const LoadInternalSurveys = ({ closeModal }) => {
   const [internalKey, setInternalKey] = useState();
 
   const doImport = (name, type, settings) => {
-    loadInternal(internalKey); // TODO: name, type, settings
+    loadInternal(internalKey, name, type, settings);
     createSurveyModal.onClose();
     closeModal();
   };
