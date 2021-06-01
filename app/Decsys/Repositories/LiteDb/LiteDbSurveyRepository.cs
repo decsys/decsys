@@ -60,45 +60,62 @@ namespace Decsys.Repositories.LiteDb
             var survey = new Survey();
             if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
 
-            HandleSurveyTypeCreation(model, ref survey);
+            var lookup = HandleSurveyTypeCreation(model, ref survey);
 
-            return _surveys.Insert(survey);
+            var surveyId = _surveys.Insert(survey);
+
+            if (lookup is not null)
+                CreateExternalLookup(lookup, survey);
+
+            return surveyId;
         }
 
-        private void HandleSurveyTypeCreation(Models.CreateSurveyModel model, ref Survey survey)
+        private ExternalLookup? HandleSurveyTypeCreation(Models.CreateSurveyModel model, ref Survey survey)
         {
             // Handle type settings
             switch (model.Type)
             {
                 case SurveyTypes.Prolific:
                     survey.Type = model.Type;
-                    HandleProlificSurveyCreation(model, ref survey);
-                    break;
+                    return HandleProlificSurveyCreation(model, ref survey);
+                default:
+                    return null;
             }
         }
 
-        private void HandleProlificSurveyCreation(Models.CreateSurveyModel model, ref Survey survey)
+        private ExternalLookup HandleProlificSurveyCreation(Models.CreateSurveyModel model, ref Survey survey)
         {
             // Fix some settings based on type
             survey.OneTimeParticipants = true;
             survey.UseParticipantIdentifiers = true;
             survey.ValidIdentifiers = new();
 
-            // TODO: what happens if settings is structured wrong?
-            var settings = model.Settings.ToObject<ProlificSettings>();
-            const string externalKey = "STUDY_ID";
-
             // add the type specific settings
             _mapper.Map(model, survey);
 
+            // TODO: what happens if settings is structured wrong?
+            var settings = model.Settings.ToObject<ProlificSettings>();
+
+            // return a partially ready Lookup record
+            // with Type specific properties,
+            // to be completed after the survey is successfully inserted 
+            return new("STUDY_ID", settings.StudyId, survey.Id)
+            {
+                ParticipantIdKey = "PROLIFIC_PID"
+            };
+        }
+
+        private void CreateExternalLookup(ExternalLookup lookup, Survey survey)
+        {
             // add / amend a lookup record for this survey type
             var existingLookup = _external.FindOne(x =>
-                x.ExternalIdKey == externalKey &&
-                x.ExternalIdValue == settings.StudyId);
+                x.ExternalIdKey == lookup.ExternalIdKey &&
+                x.ExternalIdValue == lookup.ExternalIdValue);
 
             if (existingLookup is null)
             {
-                _external.Insert(new ExternalLookup(externalKey, settings.StudyId, survey.Id));
+                lookup.SurveyId = survey.Id;
+                _external.Insert(lookup);
             }
             else
             {
@@ -106,17 +123,23 @@ namespace Decsys.Repositories.LiteDb
                 existingLookup.InstanceId = null;
                 _external.Update(existingLookup);
             }
+
         }
 
         public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
         {
             var entity = _mapper.Map<Survey>(survey);
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
-            HandleSurveyTypeCreation(model, ref entity);
+            var lookup = HandleSurveyTypeCreation(model, ref entity);
 
             entity.Id = 0;
 
-            return _surveys.Insert(entity);
+            var surveyId = _surveys.Insert(entity);
+
+            if (lookup is not null)
+                CreateExternalLookup(lookup, entity);
+
+            return surveyId;
         }
 
         public void Delete(int id)

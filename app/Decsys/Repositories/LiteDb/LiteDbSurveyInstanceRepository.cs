@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+
 using AutoMapper;
+
 using Decsys.Constants;
 using Decsys.Data;
+using Decsys.Data.Entities;
 using Decsys.Data.Entities.LiteDb;
 using Decsys.Repositories.Contracts;
+
 using LiteDB;
 
 namespace Decsys.Repositories.LiteDb
@@ -12,19 +16,36 @@ namespace Decsys.Repositories.LiteDb
     public class LiteDbSurveyInstanceRepository : ISurveyInstanceRepository
     {
         private readonly ILiteCollection<SurveyInstance> _instances;
+        private readonly ILiteCollection<ExternalLookup> _external;
         private readonly IMapper _mapper;
 
         public LiteDbSurveyInstanceRepository(LiteDbFactory db, IMapper mapper)
         {
             _instances = db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            _external = db.Surveys.GetCollection<ExternalLookup>(Collections.ExternalLookup);
             _mapper = mapper;
         }
 
         public bool HasActiveInstance(int id) =>
             _instances.Exists(x => x.Survey.Id == id && x.Closed == null);
 
-        public int Create(Models.SurveyInstance instance) =>
-            _instances.Insert(_mapper.Map<SurveyInstance>(instance));
+        public int Create(Models.SurveyInstance instance)
+        {
+            var id = _instances.Insert(_mapper.Map<SurveyInstance>(instance));
+
+            // we always try and a update a lookup record
+            // but no worries if none found
+            var lookup = _external.FindOne(
+                x => x.SurveyId == instance.Survey.Id);
+
+            if (lookup is not null)
+            {
+                lookup.InstanceId = id;
+                _external.Update(lookup);
+            }
+
+            return id;
+        }
 
         public Models.SurveyInstance Find(int id) =>
             _mapper.Map<Models.SurveyInstance>(

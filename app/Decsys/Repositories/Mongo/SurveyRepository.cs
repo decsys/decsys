@@ -111,10 +111,11 @@ namespace Decsys.Repositories.Mongo
         {
             var entity = _mapper.Map<Survey>(survey);
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
-            HandleSurveyTypeCreation(model, ref entity);
 
             entity.Id = GetNextSurveyId();
             entity.Owner = ownerId;
+
+            HandleSurveyTypeCreation(model, ref entity);
 
             _surveys.InsertOne(entity);
             return entity.Id;
