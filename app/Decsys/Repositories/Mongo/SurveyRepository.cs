@@ -120,6 +120,10 @@ namespace Decsys.Repositories.Mongo
             return entity.Id;
         }
 
+        public ExternalLookup LookupExternal(string externalKey, string externalId)
+            => _external.Find(x => x.ExternalIdKey == externalKey &&
+                x.ExternalIdValue == externalId).SingleOrDefault();
+
         public void Delete(int id)
         {
             // Delete all Instance Event Logs

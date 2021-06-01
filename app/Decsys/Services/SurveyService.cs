@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 using Decsys.Config;
@@ -8,6 +10,8 @@ using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
 
 using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json.Linq;
 
 namespace Decsys.Services
 {
@@ -30,6 +34,41 @@ namespace Decsys.Services
             _surveys = surveys;
             _images = images;
             _componentTypeMaps = componentTypeMaps;
+        }
+
+        public ExternalLookupDetails LookupExternal(JObject model)
+        {
+            // this is pretty hardcoded to Prolific right now
+            // Any extension of it would warrant a small refactor to eliminate magic strings etc.
+            const string externalKey = "STUDY_ID";
+
+            if (model.ContainsKey(externalKey))
+            {
+                var value = (string)model[externalKey];
+                var lookup = _surveys.LookupExternal(externalKey, value);
+
+                if (lookup is null)
+                    throw new KeyNotFoundException(
+                        $"Couldn't find a Survey using the Id key/value: {externalKey}={value}");
+
+                ExternalLookupDetails details = new()
+                {
+                    SurveyId = lookup.SurveyId,
+                    InstanceId = lookup.InstanceId
+                };
+
+                if (!string.IsNullOrWhiteSpace(lookup.ParticipantIdKey) && model.ContainsKey(lookup.ParticipantIdKey))
+                {
+                    details.ParticipantId = (string)model[lookup.ParticipantIdKey];
+                }
+
+                return details;
+            }
+
+            throw new HttpRequestException(
+                "No valid parameter for Survey ID was found.",
+                null,
+                HttpStatusCode.BadRequest);
         }
 
         /// <summary>

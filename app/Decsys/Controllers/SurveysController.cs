@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -71,6 +72,12 @@ namespace Decsys.Controllers
                 ? NotFound()
                 : Ok(survey);
         }
+
+        [HttpPost("external")]
+        [SwaggerOperation("Lookup Survey details for an External Survey, from the external params")]
+        [SwaggerResponse(200, "The looked up Survey details")]
+        public ActionResult<ExternalLookupDetails> LookupExternal(JObject model)
+            => _surveys.LookupExternal(model);
 
         [HttpPost]
         [SwaggerOperation("Create a new Survey.")]

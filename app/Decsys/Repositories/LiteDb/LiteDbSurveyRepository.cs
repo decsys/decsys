@@ -96,10 +96,11 @@ namespace Decsys.Repositories.LiteDb
                 x.ExternalIdKey == externalKey &&
                 x.ExternalIdValue == settings.StudyId);
 
-            if(existingLookup is null)
+            if (existingLookup is null)
             {
                 _external.Insert(new ExternalLookup(externalKey, settings.StudyId, survey.Id));
-            } else
+            }
+            else
             {
                 existingLookup.SurveyId = survey.Id;
                 existingLookup.InstanceId = null;
@@ -151,5 +152,8 @@ namespace Decsys.Repositories.LiteDb
             if (!Exists(id)) return new(SurveyAccessStatus.NotFound);
             return new(SurveyAccessStatus.Owned);
         }
+
+        public ExternalLookup LookupExternal(string externalKey, string externalId)
+            => _external.FindOne(x => x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId);
     }
 }

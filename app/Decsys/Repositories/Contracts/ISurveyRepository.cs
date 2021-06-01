@@ -1,3 +1,4 @@
+using Decsys.Data.Entities;
 using Decsys.Models;
 using Decsys.Models.Results;
 using System.Collections.Generic;
@@ -71,5 +72,16 @@ namespace Decsys.Repositories.Contracts
         /// <param name="allowOwnerless">Treat Surveys with no Owner as owned by the specified User</param>
         /// <returns></returns>
         SurveyAccessResult TestSurveyAccess(int id, string userId, bool allowOwnerless = false);
+
+
+        /// <summary>
+        /// Get the ExternalLookup record for a given key name and value
+        /// </summary>
+        /// <param name="externalKey"></param>
+        /// <param name="externalId"></param>
+        /// <returns></returns>
+        // Entity return is safe as it's not data layer dependent :)
+        // if it becomes such, a DTO (model) will be needed
+        public ExternalLookup LookupExternal(string externalKey, string externalId);
     }
 }
