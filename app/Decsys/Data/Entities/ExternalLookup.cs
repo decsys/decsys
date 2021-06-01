@@ -2,18 +2,19 @@
 
 namespace Decsys.Data.Entities
 {
-    public class BaseExternalLookup
+    public class ExternalLookup
     {
         /// <summary>
         /// DO NOT USE. Only provided for ORM use.
         /// </summary>
         [Obsolete]
-        public BaseExternalLookup() { }
+        public ExternalLookup() { }
 
-        public BaseExternalLookup(string externalKey, string externalId)
+        public ExternalLookup(string externalKey, string externalId, int surveyId)
         {
             ExternalIdKey = externalKey;
             ExternalIdValue = externalId;
+            SurveyId = surveyId;
         }
 
         /// <summary>
@@ -38,5 +39,9 @@ namespace Decsys.Data.Entities
         /// e.g. for Prolific: `PROLIFIC_PID`
         /// </summary>
         public string? ParticipantIdKey { get; set; }
+
+        public int SurveyId { get; set; }
+
+        public int? InstanceId { get; set; }
     }
 }
