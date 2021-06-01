@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using AutoMapper;
+
 using Decsys.Config;
 using Decsys.Constants;
+using Decsys.Data.Entities;
 using Decsys.Data.Entities.Mongo;
+using Decsys.Models.ExternalTypeSettings;
 using Decsys.Models.Results;
 using Decsys.Repositories.Contracts;
+
 using Microsoft.Extensions.Options;
+
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -16,6 +22,7 @@ namespace Decsys.Repositories.Mongo
     {
         private readonly IMongoCollection<Survey> _surveys;
         private readonly IMongoCollection<SurveyInstance> _instances;
+        private readonly IMongoCollection<ExternalLookup> _external;
         private readonly IParticipantEventRepository _events;
         private readonly IMapper _mapper;
 
@@ -28,6 +35,7 @@ namespace Decsys.Repositories.Mongo
             var db = mongo.GetDatabase(config.Value.DatabaseName);
             _surveys = db.GetCollection<Survey>(Collections.Surveys);
             _instances = db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            _external = db.GetCollection<ExternalLookup>(Collections.ExternalLookup);
             _events = events;
             _mapper = mapper;
         }
@@ -81,12 +89,22 @@ namespace Decsys.Repositories.Mongo
             survey.UseParticipantIdentifiers = true;
             survey.ValidIdentifiers = new();
 
-            // TODO: Validate type specific settings?
+            // TODO: what happens if settings is structured wrong?
+            var settings = model.Settings.ToObject<ProlificSettings>();
+            const string externalKey = "STUDY_ID";
 
             // add the type specific settings
             _mapper.Map(model, survey);
 
-            // TODO: add / amend a lookup record for this survey type
+            // add / amend a lookup record for this survey type
+            _external.ReplaceOne(
+                x => x.ExternalIdKey == externalKey &&
+                    x.ExternalIdValue == settings.StudyId,
+                new(externalKey, settings.StudyId, survey.Id),
+                new ReplaceOptions
+                {
+                    IsUpsert = true
+                });
         }
 
         public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
@@ -113,7 +131,8 @@ namespace Decsys.Repositories.Mongo
             // Delete all Instances
             _instances.DeleteMany(x => x.SurveyId == id);
 
-            // TODO: delete external lookup records?
+            // Delete any external lookup records
+            _external.DeleteMany(x => x.SurveyId == id);
 
             // Delete the Survey
             _surveys.DeleteOne(x => x.Id == id);

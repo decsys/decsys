@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using AutoMapper;
+
 using Decsys.Config;
 using Decsys.Constants;
+using Decsys.Data.Entities;
 using Decsys.Data.Entities.Mongo;
 using Decsys.Repositories.Contracts;
+
 using Microsoft.Extensions.Options;
+
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -16,6 +21,7 @@ namespace Decsys.Repositories.Mongo
     {
         private readonly IMongoCollection<Survey> _surveys;
         private readonly IMongoCollection<SurveyInstance> _instances;
+        private readonly IMongoCollection<ExternalLookup> _external;
         private readonly IMapper _mapper;
 
         public SurveyInstanceRepository(
@@ -26,6 +32,7 @@ namespace Decsys.Repositories.Mongo
             var db = mongo.GetDatabase(config.Value.DatabaseName);
             _surveys = db.GetCollection<Survey>(Collections.Surveys);
             _instances = db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            _external = db.GetCollection<ExternalLookup>(Collections.ExternalLookup);
             _mapper = mapper;
         }
 
@@ -35,6 +42,13 @@ namespace Decsys.Repositories.Mongo
                 Builders<SurveyInstance>.Update.Set(
                     x => x.Closed,
                     DateTimeOffset.UtcNow));
+
+        public void Reactivate(int instanceId) =>
+            _instances.UpdateOne(
+                x => x.Id == instanceId,
+                Builders<SurveyInstance>.Update.Set(
+                    x => x.Closed,
+                    null));
 
         private int GetNextSurveyInstanceId()
         {
@@ -55,6 +69,15 @@ namespace Decsys.Repositories.Mongo
         {
             instance.Id = GetNextSurveyInstanceId();
             _instances.InsertOne(_mapper.Map<SurveyInstance>(instance));
+
+            // we always try and a update a lookup record
+            // but no worries if none found
+            _external.UpdateOne(
+                x => x.SurveyId == instance.Survey.Id,
+                Builders<ExternalLookup>.Update.Set(
+                    x => x.InstanceId,
+                    instance.Id));
+
             return instance.Id;
         }
 

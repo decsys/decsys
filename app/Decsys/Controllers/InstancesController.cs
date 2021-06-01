@@ -17,7 +17,9 @@ namespace Decsys.Controllers
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _participantEvents;
 
-        public InstancesController(SurveyInstanceService instances, ParticipantEventService participantEvents)
+        public InstancesController(
+            SurveyInstanceService instances,
+            ParticipantEventService participantEvents)
         {
             _instances = instances;
             _participantEvents = participantEvents;
@@ -80,15 +82,15 @@ namespace Decsys.Controllers
         }
 
         [HttpPost]
-        [SwaggerOperation("Create a Survey Instance for a Survey.")]
+        [SwaggerOperation("Create a Survey Instance for a Survey, or resume the current instance if appropriate.")]
         [SwaggerResponse(201, "The Survey Instance was created with the returned ID.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
         [SwaggerResponse(400, "This Survey already has an active Instance.")]
-        public IActionResult Create(int id)
+        public IActionResult Activate(int id)
         {
             try
             {
-                var instanceId = _instances.Create(id);
+                var instanceId = _instances.Activate(id);
 
                 return Created(
                     Url.Action("Get", "Instances", new { id, instanceId }),
@@ -99,10 +101,10 @@ namespace Decsys.Controllers
         }
 
         [HttpPost("{instanceId}/close")]
-        [SwaggerOperation("Close a Survey Instance for a Survey.")]
+        [SwaggerOperation("Close a Survey Instance for a Survey. (Temporarily if appropriate.)")]
         [SwaggerResponse(204, "The Survey Instance was closed successfully.")]
         [SwaggerResponse(404, "No Survey Instance, or Survey, was found with the provided ID.")]
-        public IActionResult Close(int id, int instanceId)
+        public IActionResult Deactivate(int id, int instanceId)
         {
             try
             {

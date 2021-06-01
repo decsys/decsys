@@ -6,6 +6,8 @@ namespace Decsys.Constants
 
         public const string SurveyInstances = "SurveyInstances";
 
+        public const string ExternalLookup = "ExternalLookup";
+
         public const string EventLogDb = "events_";
 
         public const string EventLog = "e";

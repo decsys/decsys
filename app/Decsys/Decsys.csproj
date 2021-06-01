@@ -39,6 +39,7 @@
     <PackageReference Include="Base62-Net" Version="1.1.1" />
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.1" />
+    <PackageReference Include="LinqKit.Core" Version="1.1.24" />
     <PackageReference Include="LiteDB" Version="5.0.8" />
     <PackageReference Include="MailKit" Version="2.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" />

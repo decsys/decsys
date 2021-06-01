@@ -45,5 +45,12 @@ namespace Decsys.Repositories.LiteDb
         }
 
         public bool Exists(int id) => _instances.Exists(x => x.Id == id);
+
+        public void Reactivate(int id)
+        {
+            var instance = _instances.FindById(id);
+            instance.Closed = null;
+            _instances.Update(instance);
+        }
     }
 }
