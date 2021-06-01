@@ -2,28 +2,31 @@ import { createElement } from "react";
 import { Button, Text } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import { listMatchingKeys } from "services/data-structures";
-import { FaTimesCircle, FaRocket } from "react-icons/fa";
+import { FaTimesCircle, FaRocket, FaPlay, FaPause } from "react-icons/fa";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 
 const buttons = {
-  launch: ({ handleLaunch }) => (
-    <Button
-      lineHeight="inherit"
-      colorScheme="green"
-      leftIcon={<FaRocket />}
-      onClick={handleLaunch}
-    >
-      Launch
-    </Button>
-  ),
-  close: ({ handleClose }) => (
+  launch: ({ type, runCount, handleLaunch }) => {
+    const isResume = type && runCount > 0;
+    return (
+      <Button
+        lineHeight="inherit"
+        colorScheme="green"
+        leftIcon={isResume ? <FaPlay /> : <FaRocket />}
+        onClick={handleLaunch}
+      >
+        {isResume ? "Resume" : "Launch"}
+      </Button>
+    );
+  },
+  close: ({ type, handleClose }) => (
     <Button
       lineHeight="inherit"
       colorScheme="red"
-      leftIcon={<FaTimesCircle />}
+      leftIcon={type ? <FaPause /> : <FaTimesCircle />}
       onClick={handleClose}
     >
-      <Text>Close</Text>
+      <Text>{type ? "Pause" : "Close"}</Text>
     </Button>
   ),
   dashboard: ({ friendlyId }) => (
@@ -55,18 +58,17 @@ export const getActionButtons = ({ activeInstanceId, runCount }) => ({
   results: runCount > 0,
 });
 
-const ActionButtons = ({ actionButtons, id, activeInstanceId, friendlyId }) => {
+const ActionButtons = (p) => {
   const { launch, close } = useSurveyCardActions();
-  const handleLaunch = () => launch(id);
-  const handleClose = () => close(id, activeInstanceId);
+  const handleLaunch = () => launch(p.id);
+  const handleClose = () => close(p.id, p.activeInstanceId);
 
-  return listMatchingKeys(actionButtons).map((key) =>
+  return listMatchingKeys(p.actionButtons).map((key) =>
     createElement(buttons[key], {
-      key,
+      ...p,
       handleLaunch,
       handleClose,
-      id,
-      friendlyId,
+      key,
     })
   );
 };
