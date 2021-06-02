@@ -85,8 +85,25 @@ const prolificInstructions = (surveyUrl) => `
     - This will link the Prolific Study to *this* DECSYS Survey
 `;
 
-const CreateSurveyModal = ({ name, onCreate, modalState }) => {
+const CreateSurveyModal = ({
+  name,
+  type,
+  settings = {},
+  onCreate,
+  modalState,
+}) => {
   const defaultName = name ?? "";
+  const defaultType = type ?? "";
+  console.log(type, settings);
+  const defaultSettings = Object.keys(settings).reduce(
+    (result, k) => ({
+      ...result,
+      [`${type}${k}`]: settings[k],
+    }),
+    {}
+  );
+
+  console.log(defaultSettings);
 
   const handleSubmit = (values, actions) => {
     let { name, type, ...settings } = values;
@@ -117,9 +134,10 @@ const CreateSurveyModal = ({ name, onCreate, modalState }) => {
     <Formik
       initialValues={{
         name: defaultName,
-        type: "",
+        type: defaultType,
         prolificStudyId: "",
         prolificCompletionUrl: "",
+        ...defaultSettings, // these may override some of the empty strings above
       }}
       enableReinitialize
       onSubmit={handleSubmit}

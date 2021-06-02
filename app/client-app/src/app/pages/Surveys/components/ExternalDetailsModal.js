@@ -52,7 +52,7 @@ const ExternalDetailsModal = ({
             </Alert>
           )}
           {Object.keys(settings).map((k) => (
-            <Definition term={k} definition={settings[k]} />
+            <Definition key={k} term={k} definition={settings[k]} />
           ))}
         </Stack>
       </Stack>

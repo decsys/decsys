@@ -33,7 +33,7 @@ const ImportSurvey = (p) => {
 const isZip = (filename) => filename.split(".").pop().toLowerCase() === "zip";
 
 const ImportSurveyForm = ({ modalState }) => {
-  const [surveyName, setSurveyName] = useState();
+  const [oldSurveyDetails, setOldSurveyDetails] = useState();
   const { importFile } = useAddSurveyActions();
   const createSurveyModal = useDisclosure();
 
@@ -62,14 +62,18 @@ const ImportSurveyForm = ({ modalState }) => {
   const handleImportClick = async () => {
     if (!state.file || state.error) return;
 
-    // get survey name from within the zip file locally :)
+    // get some structure details from within the zip file locally :)
     try {
       var zip = new JSZip();
       const zipFile = await zip.loadAsync(state.file);
       const content = await zipFile.file("structure.json").async("string");
-      const name = JSON.parse(stripBom(content)).Name;
+      const oldSurvey = JSON.parse(stripBom(content));
 
-      setSurveyName(name);
+      setOldSurveyDetails({
+        name: oldSurvey.Name,
+        type: oldSurvey.Type,
+        settings: oldSurvey.Settings,
+      });
     } catch {
       setState({
         ...state,
@@ -110,7 +114,7 @@ const ImportSurveyForm = ({ modalState }) => {
         </Button>
       </Flex>
       <CreateSurveyModal
-        name={surveyName}
+        {...oldSurveyDetails}
         modalState={createSurveyModal}
         onCreate={doImport}
       />
