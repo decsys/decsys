@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Collapse,
   Flex,
   FormControl,
@@ -166,6 +170,28 @@ const CreateSurveyModal = ({
         >
           <Form noValidate css={{ width: "100%" }}>
             <Stack spacing={4}>
+              {(isFixedType || hasFixedSettings) && (
+                <Alert status="info">
+                  <AlertIcon />
+                  <Stack>
+                    <AlertTitle>Some settings are disabled</AlertTitle>
+                    <AlertDescription>
+                      <Stack>
+                        <Text>
+                          Due to importing existing survey results data, some
+                          settings will retain their values from the Survey
+                          being imported.
+                        </Text>
+                        <Text>
+                          To use the imported Survey's structure but change
+                          these settings, do not also import results data.
+                        </Text>
+                      </Stack>
+                    </AlertDescription>
+                  </Stack>
+                </Alert>
+              )}
+
               <Field name="name">
                 {(rp) => (
                   <FormikInput
