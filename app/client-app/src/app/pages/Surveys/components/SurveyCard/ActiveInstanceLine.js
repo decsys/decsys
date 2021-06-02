@@ -20,7 +20,6 @@ import { getInstanceResultsSummary } from "api/survey-instances";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 
 const ExternalTypeInfo = ({ type, settings, hasInvalidExternalLink }) => {
-  // TODO: Validate External Lookup Link to feedback if another survey has broken the link
   switch (type) {
     case "prolific":
       return (
@@ -123,7 +122,6 @@ const ActiveInstanceLine = ({
         <InstanceValidIdModal modalState={instanceValidIdModal} />
       </InstanceFriendlyIdProvider>
 
-      {/* TODO: new modal for external details instead of reusing Config */}
       <ExternalDetailsModal
         id={id}
         name={name}
