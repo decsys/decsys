@@ -17,7 +17,7 @@ import InstanceValidIdModal from "./InstanceValidIdModal";
 import { InstanceFriendlyIdProvider } from "../../contexts/InstanceFriendlyId";
 import { decode } from "services/instance-id";
 import { getInstanceResultsSummary } from "api/survey-instances";
-import SurveyConfigModal from "../SurveyConfigModal";
+import { ExternalDetailsModal } from "../ExternalDetailsModal";
 
 const ExternalTypeInfo = ({ type, settings, hasInvalidExternalLink }) => {
   // TODO: Validate External Lookup Link to feedback if another survey has broken the link
@@ -124,7 +124,14 @@ const ActiveInstanceLine = ({
       </InstanceFriendlyIdProvider>
 
       {/* TODO: new modal for external details instead of reusing Config */}
-      <SurveyConfigModal id={id} name={name} modalState={configModal} />
+      <ExternalDetailsModal
+        id={id}
+        name={name}
+        settings={settings}
+        type={type}
+        hasInvalidExternalLink={hasInvalidExternalLink}
+        modalState={configModal}
+      />
     </>
   );
 };

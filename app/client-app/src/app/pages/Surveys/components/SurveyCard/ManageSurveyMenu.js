@@ -12,11 +12,21 @@ import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import SurveyConfigModal from "../SurveyConfigModal";
 import ExportModal from "components/shared/ExportModal";
 import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
+import { ExternalDetailsModal } from "../ExternalDetailsModal";
+import { capitalise } from "services/strings";
 
-const ManageSurveyMenu = ({ id, editable, name }) => {
+const ManageSurveyMenu = ({
+  id,
+  editable,
+  name,
+  type,
+  settings,
+  hasInvalidExternalLink,
+}) => {
   const deleteModal = useDisclosure();
   const configModal = useDisclosure();
   const exportModal = useDisclosure();
+  const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
@@ -39,7 +49,12 @@ const ManageSurveyMenu = ({ id, editable, name }) => {
           {editable && (
             <MenuItem onClick={() => navigate(`survey/${id}`)}>Edit</MenuItem>
           )}
-          <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>
+          {!type && <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>}
+          {type && (
+            <MenuItem onClick={externalDetailsModal.onOpen}>
+              {capitalise(type)} Details
+            </MenuItem>
+          )}
           <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
             Preview
           </MenuItem>
@@ -56,6 +71,14 @@ const ManageSurveyMenu = ({ id, editable, name }) => {
       />
       <SurveyConfigModal id={id} name={name} modalState={configModal} />
       <ExportModal id={id} name={name} modalState={exportModal} />
+      <ExternalDetailsModal
+        id={id}
+        name={name}
+        type={type}
+        settings={settings}
+        hasInvalidExternalLink={hasInvalidExternalLink}
+        modalState={externalDetailsModal}
+      />
       <CreateSurveyModal
         name={`${name} (Copy)`} // we always use this modal for duplicating only
         modalState={createSurveyModal}
