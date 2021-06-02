@@ -175,9 +175,21 @@ namespace Decsys.Repositories.Mongo
 
             return summaries
                 .Select(survey =>
-                    _mapper.Map(_instances.Find(
-                        instance => instance.SurveyId == survey.Id).ToList(),
-                        survey))
+                    {
+                        var summary = _mapper.Map(_instances.Find(
+                          instance => instance.SurveyId == survey.Id).ToList(),
+                          survey);
+
+                        // validate external link if necessary
+                        summary.HasInvalidExternalLink =
+                            !string.IsNullOrWhiteSpace(summary.Type) &&
+                            _external.Find(x =>
+                                    x.SurveyId == summary.Id &&
+                                    x.InstanceId == summary.ActiveInstanceId)
+                                .SingleOrDefault() is null;
+
+                        return summary;
+                    })
                 .ToList();
         }
 

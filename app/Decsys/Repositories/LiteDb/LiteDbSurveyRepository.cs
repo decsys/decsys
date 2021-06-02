@@ -49,10 +49,22 @@ namespace Decsys.Repositories.LiteDb
                 _surveys.FindAll());
 
             return summaries.Select(survey =>
-                _mapper.Map(
-                    _instances.Find(
-                        instance => instance.Survey.Id == survey.Id),
-                    survey)).ToList();
+                {
+                    var summary = _mapper.Map(
+                      _instances.Find(
+                          instance => instance.Survey.Id == survey.Id),
+                      survey);
+
+                    // validate external link if necessary
+                    summary.HasInvalidExternalLink =
+                        !string.IsNullOrWhiteSpace(summary.Type) &&
+                        _external.Find(x =>
+                                x.SurveyId == summary.Id &&
+                                x.InstanceId == summary.ActiveInstanceId)
+                            .SingleOrDefault() is null;
+
+                    return summary;
+                }).ToList();
         }
 
         public int Create(Models.CreateSurveyModel model, string? ownerId = null)

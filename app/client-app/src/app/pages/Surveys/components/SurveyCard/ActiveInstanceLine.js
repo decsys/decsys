@@ -19,7 +19,7 @@ import { decode } from "services/instance-id";
 import { getInstanceResultsSummary } from "api/survey-instances";
 import SurveyConfigModal from "../SurveyConfigModal";
 
-const ExternalTypeInfo = ({ type, settings }) => {
+const ExternalTypeInfo = ({ type, settings, hasInvalidExternalLink }) => {
   // TODO: Validate External Lookup Link to feedback if another survey has broken the link
   switch (type) {
     case "prolific":
@@ -27,6 +27,18 @@ const ExternalTypeInfo = ({ type, settings }) => {
         <>
           <Text fontWeight="bold">Prolific Study ID:</Text>
           <Text>{settings.StudyId}</Text>
+
+          {hasInvalidExternalLink && (
+            <Stack
+              display={{ base: "none", xl: "inherit" }}
+              title="Another DECSYS Survey has the same type and external ID."
+            >
+              <Alert variant="left-accent" status="warning" py={1}>
+                <AlertIcon />
+                Broken external link!
+              </Alert>
+            </Stack>
+          )}
         </>
       );
     default:
@@ -34,7 +46,14 @@ const ExternalTypeInfo = ({ type, settings }) => {
   }
 };
 
-const ActiveInstanceLine = ({ id, name, type, friendlyId, settings }) => {
+const ActiveInstanceLine = ({
+  id,
+  name,
+  type,
+  friendlyId,
+  settings,
+  hasInvalidExternalLink,
+}) => {
   const instanceValidIdModal = useDisclosure();
   const configModal = useDisclosure();
   const [results, setResults] = useState({});
@@ -55,7 +74,11 @@ const ActiveInstanceLine = ({ id, name, type, friendlyId, settings }) => {
           </Badge>
 
           {type ? (
-            <ExternalTypeInfo type={type} settings={settings} />
+            <ExternalTypeInfo
+              type={type}
+              settings={settings}
+              hasInvalidExternalLink={hasInvalidExternalLink}
+            />
           ) : (
             <>
               <Text fontWeight="bold">Survey ID:</Text>
