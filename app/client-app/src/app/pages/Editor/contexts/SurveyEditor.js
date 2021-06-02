@@ -1,4 +1,3 @@
-import React from "react";
 import { FetchSurveyProvider } from "app/contexts/FetchSurvey";
 import { EditorBarContextProvider } from "./EditorBar";
 import { PageListContextProvider } from "./PageList";
@@ -13,7 +12,7 @@ export const SurveyEditorContextProvider = ({
   navigate,
   selectedPageItem,
   setSelectedPageItem,
-  children
+  children,
 }) => {
   return (
     <FetchSurveyProvider id={id}>

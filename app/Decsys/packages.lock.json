@@ -63,6 +63,12 @@
           "IdentityServer4": "4.1.1"
         }
       },
+      "LinqKit.Core": {
+        "type": "Direct",
+        "requested": "[1.1.24, )",
+        "resolved": "1.1.24",
+        "contentHash": "IsRZtjO8Eo2WFR9BjvXhigF/BjSepJgjlqh4XqNscR9cUFbAsG791wOq6eNzGHUbJ70pGsT8rSqNzBZYl80s4w=="
+      },
       "LiteDB": {
         "type": "Direct",
         "requested": "[5.0.8, )",

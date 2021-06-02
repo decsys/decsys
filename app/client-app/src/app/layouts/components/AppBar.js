@@ -19,6 +19,9 @@ export const AppBarLink = (p) => (
 const AppBar = ({ brand, children, brandLink }) => {
   const { colorMode } = useColorMode();
   const bg = { light: "gray.800", dark: "gray.700" };
+
+  const brandLinkProps = brandLink ? { as: RouterLink, to: brandLink } : {};
+
   return (
     <Flex
       w="100%"
@@ -33,9 +36,7 @@ const AppBar = ({ brand, children, brandLink }) => {
         justify="space-between"
       >
         <LightHeading size="lg" py={2}>
-          <AppBarLink as={RouterLink} to={brandLink}>
-            {brand}
-          </AppBarLink>
+          <AppBarLink {...brandLinkProps}>{brand}</AppBarLink>
         </LightHeading>
         {children != null && (
           <Grid

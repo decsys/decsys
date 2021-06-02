@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Flex,
@@ -12,6 +12,9 @@ import {
 } from "@chakra-ui/react";
 import { FaFileImport } from "react-icons/fa";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
+import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
+import JSZip from "jszip";
+import { stripBom } from "services/data-structures";
 
 const ImportSurvey = (p) => {
   const { isOpen, onToggle } = useDisclosure();
@@ -30,7 +33,9 @@ const ImportSurvey = (p) => {
 const isZip = (filename) => filename.split(".").pop().toLowerCase() === "zip";
 
 const ImportSurveyForm = ({ modalState }) => {
+  const [oldSurveyDetails, setOldSurveyDetails] = useState();
   const { importFile } = useAddSurveyActions();
+  const createSurveyModal = useDisclosure();
 
   const [state, setState] = useState({
     importData: false,
@@ -48,10 +53,36 @@ const ImportSurveyForm = ({ modalState }) => {
     setState({ ...state, importData: e.target.checked });
   };
 
-  const handleImportClick = () => {
-    if (!state.file || state.error) return;
-    importFile(state.file, state.importData);
+  const doImport = (name, type, settings) => {
+    importFile(state.file, state.importData, name, type, settings);
+    createSurveyModal.onClose();
     modalState.onClose();
+  };
+
+  const handleImportClick = async () => {
+    if (!state.file || state.error) return;
+
+    // get some structure details from within the zip file locally :)
+    try {
+      var zip = new JSZip();
+      const zipFile = await zip.loadAsync(state.file);
+      const content = await zipFile.file("structure.json").async("string");
+      const oldSurvey = JSON.parse(stripBom(content));
+
+      setOldSurveyDetails({
+        name: oldSurvey.Name,
+        type: oldSurvey.Type,
+        settings: oldSurvey.Settings,
+      });
+    } catch {
+      setState({
+        ...state,
+        error:
+          "Couldn't read a valid a 'structure.json' within the provided .zip file",
+      });
+      return;
+    }
+    createSurveyModal.onOpen();
   };
 
   return (
@@ -82,6 +113,13 @@ const ImportSurveyForm = ({ modalState }) => {
           Import
         </Button>
       </Flex>
+      <CreateSurveyModal
+        {...oldSurveyDetails}
+        modalState={createSurveyModal}
+        onCreate={doImport}
+        isFixedType={state.importData}
+        hasFixedSettings={state.importData}
+      />
     </Stack>
   );
 };

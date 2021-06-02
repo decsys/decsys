@@ -5,7 +5,9 @@ using AutoMapper;
 
 using Decsys.Constants;
 using Decsys.Data;
+using Decsys.Data.Entities;
 using Decsys.Data.Entities.LiteDb;
+using Decsys.Models.ExternalTypeSettings;
 using Decsys.Models.Results;
 using Decsys.Repositories.Contracts;
 
@@ -18,6 +20,7 @@ namespace Decsys.Repositories.LiteDb
     {
         private readonly ILiteCollection<Survey> _surveys;
         private readonly ILiteCollection<SurveyInstance> _instances;
+        private readonly ILiteCollection<ExternalLookup> _external;
         private readonly IMapper _mapper;
         private readonly IParticipantEventRepository _events;
 
@@ -28,6 +31,7 @@ namespace Decsys.Repositories.LiteDb
         {
             _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _instances = db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            _external = db.Surveys.GetCollection<ExternalLookup>(Collections.ExternalLookup);
             _mapper = mapper;
             _events = events;
         }
@@ -45,22 +49,121 @@ namespace Decsys.Repositories.LiteDb
                 _surveys.FindAll());
 
             return summaries.Select(survey =>
-                _mapper.Map(
-                    _instances.Find(
-                        instance => instance.Survey.Id == survey.Id),
-                    survey)).ToList();
+                {
+                    var instances = _instances
+                            .Find(instance =>
+                                instance.Survey.Id == survey.Id)
+                            .OrderByDescending(x => x.Published)
+                            .ToList();
+
+                    var summary = _mapper.Map(instances,
+                      survey);
+
+                    var latestInstanceId = instances.FirstOrDefault()?.Id;
+
+                    // validate external link if necessary
+                    summary.HasInvalidExternalLink =
+                        !string.IsNullOrWhiteSpace(summary.Type) &&
+                        _external.Find(x =>
+                                x.SurveyId == summary.Id &&
+                                x.InstanceId == latestInstanceId)
+                            .SingleOrDefault() is null;
+
+                    return summary;
+                }).ToList();
         }
 
-        public int Create(string? name = null, string? ownerId = null) =>
-            _surveys.Insert(
-                name is null
-                    ? new Survey()
-                    : new Survey { Name = name });
-
-        public int Create(Models.Survey survey, string? ownerId = null)
+        public int Create(Models.CreateSurveyModel model, string? ownerId = null)
         {
-            survey.Id = 0;
-            return _surveys.Insert(_mapper.Map<Survey>(survey));
+            var survey = new Survey();
+            if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
+
+            var lookup = HandleSurveyTypeCreation(model, ref survey);
+
+            var surveyId = _surveys.Insert(survey);
+
+            if (lookup is not null)
+                CreateExternalLookup(lookup, survey);
+
+            return surveyId;
+        }
+
+        private ExternalLookup? HandleSurveyTypeCreation(Models.CreateSurveyModel model, ref Survey survey)
+        {
+            // Handle type settings
+            switch (model.Type)
+            {
+                case SurveyTypes.Prolific:
+                    survey.Type = model.Type;
+                    return HandleProlificSurveyCreation(model, ref survey);
+                default:
+                    return null;
+            }
+        }
+
+        private ExternalLookup HandleProlificSurveyCreation(Models.CreateSurveyModel model, ref Survey survey)
+        {
+            // Fix some settings based on type
+            survey.OneTimeParticipants = true;
+            survey.UseParticipantIdentifiers = true;
+            survey.ValidIdentifiers = new();
+
+            // add the type specific settings
+            _mapper.Map(model, survey);
+
+            // TODO: what happens if settings is structured wrong?
+            var settings = model.Settings.ToObject<ProlificSettings>();
+
+            // return a partially ready Lookup record
+            // with Type specific properties,
+            // to be completed after the survey is successfully inserted 
+            return new("STUDY_ID", settings.StudyId, survey.Id)
+            {
+                ParticipantIdKey = "PROLIFIC_PID"
+            };
+        }
+
+        private void CreateExternalLookup(ExternalLookup lookup, Survey survey)
+        {
+            // add / amend a lookup record for this survey type
+            var existingLookup = _external.FindOne(x =>
+                x.ExternalIdKey == lookup.ExternalIdKey &&
+                x.ExternalIdValue == lookup.ExternalIdValue);
+
+            if (existingLookup is null)
+            {
+                lookup.SurveyId = survey.Id;
+                _external.Insert(lookup);
+            }
+            else
+            {
+                existingLookup.SurveyId = survey.Id;
+                existingLookup.InstanceId = null;
+                _external.Update(existingLookup);
+            }
+
+        }
+
+        public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
+        {
+            var entity = _mapper.Map<Survey>(survey);
+
+            // Reset Type properties
+            // when we map the model, these will be accurately restored 
+            entity.Type = null;
+            entity.Settings = new();
+
+            if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
+            var lookup = HandleSurveyTypeCreation(model, ref entity);
+
+            entity.Id = 0;
+
+            var surveyId = _surveys.Insert(entity);
+
+            if (lookup is not null)
+                CreateExternalLookup(lookup, entity);
+
+            return surveyId;
         }
 
         public void Delete(int id)
@@ -73,6 +176,9 @@ namespace Decsys.Repositories.LiteDb
 
             // Delete all Instances
             _instances.DeleteMany(x => x.Survey.Id == id);
+
+            // Delete any external lookup records
+            _external.DeleteMany(x => x.SurveyId == id);
 
             // Delete the Survey
             _surveys.Delete(id);
@@ -93,5 +199,8 @@ namespace Decsys.Repositories.LiteDb
             if (!Exists(id)) return new(SurveyAccessStatus.NotFound);
             return new(SurveyAccessStatus.Owned);
         }
+
+        public ExternalLookup LookupExternal(string externalKey, string externalId)
+            => _external.FindOne(x => x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId);
     }
 }

@@ -1,11 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+
 using Decsys.Config;
 using Decsys.Models;
 using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
+
 using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json.Linq;
 
 namespace Decsys.Services
 {
@@ -28,6 +34,41 @@ namespace Decsys.Services
             _surveys = surveys;
             _images = images;
             _componentTypeMaps = componentTypeMaps;
+        }
+
+        public ExternalLookupDetails LookupExternal(JObject model)
+        {
+            // this is pretty hardcoded to Prolific right now
+            // Any extension of it would warrant a small refactor to eliminate magic strings etc.
+            const string externalKey = "STUDY_ID";
+
+            if (model.ContainsKey(externalKey))
+            {
+                var value = (string)model[externalKey];
+                var lookup = _surveys.LookupExternal(externalKey, value);
+
+                if (lookup is null)
+                    throw new KeyNotFoundException(
+                        $"Couldn't find a Survey using the Id key/value: {externalKey}={value}");
+
+                ExternalLookupDetails details = new()
+                {
+                    SurveyId = lookup.SurveyId,
+                    InstanceId = lookup.InstanceId
+                };
+
+                if (!string.IsNullOrWhiteSpace(lookup.ParticipantIdKey) && model.ContainsKey(lookup.ParticipantIdKey))
+                {
+                    details.ParticipantId = (string)model[lookup.ParticipantIdKey];
+                }
+
+                return details;
+            }
+
+            throw new HttpRequestException(
+                "No valid parameter for Survey ID was found.",
+                null,
+                HttpStatusCode.BadRequest);
         }
 
         /// <summary>
@@ -53,27 +94,29 @@ namespace Decsys.Services
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
         /// </summary>
-        /// <param name="name">The name to give the new Survey.</param>
+        /// <param name="model">The model of options to create the new Survey.</param>
         /// <param name="ownerId">Optional Owner of the new Survey</param>
         /// <returns>The ID of the newly created Survey.</returns>
-        public int Create(string? name = null, string? ownerId = null)
-            => _surveys.Create(name, ownerId);
+        public int Create(CreateSurveyModel model, string? ownerId = null)
+            => _surveys.Create(model, ownerId);
 
 
         /// <summary>
         /// Duplicate a Survey, but not any of its Instance data.
         /// </summary>
         /// <param name="id">The ID of the Survey to use a source.</param>
+        /// <param name="model">The model of options to create the new Survey.</param>
         /// <returns>The ID of the newly created duplicate Survey.</returns>
         /// <exception cref="KeyNotFoundException">Thrown if a Survey could not be found with the specified ID.</exception>
 
-        public async Task<int> Duplicate(int id, string? ownerId = null)
+        public async Task<int> Duplicate(int id, CreateSurveyModel model, string? ownerId = null)
         {
             var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             var oldId = survey.Id;
 
-            survey.Name = $"{survey.Name} (Copy)";
-            var newId = _surveys.Create(survey, ownerId);
+            survey.Name = model.Name ?? $"{survey.Name} (Copy)";
+
+            var newId = _surveys.Create(survey, model, ownerId);
 
             await _images.CopyAllSurveyImages(oldId, newId);
 
@@ -85,13 +128,18 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="survey">Survey model to import</param>
         /// <param name="images">List of Survey Images to import</param>
+        /// <param name="model">The model of options to create the new Survey.</param>
         /// <param name="newOwnerId">ID of the User doing the import</param>
-        public async Task<int> Import(Survey survey, List<(string filename, byte[] data)> images, string? newOwnerId = null)
+        public async Task<int> Import(
+            Survey survey,
+            List<(string filename, byte[] data)> images,
+            CreateSurveyModel model,
+            string? newOwnerId = null)
         {
             // any validation, or mapping to account for version changes
             MigrateUpComponentTypes(ref survey);
 
-            int id = _surveys.Create(survey, newOwnerId);
+            int id = _surveys.Create(survey, model, newOwnerId);
 
             if (images.Count > 0)
                 await _images.Import(id, images).ConfigureAwait(false);

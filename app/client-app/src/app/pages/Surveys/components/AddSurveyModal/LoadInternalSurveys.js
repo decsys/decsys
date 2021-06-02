@@ -1,12 +1,27 @@
-import { Button, Tooltip } from "@chakra-ui/react";
+import { useState } from "react";
+import { Button, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
+
+const names = {
+  demo: "Demo Survey",
+  sample: "Sample Research Survey",
+};
 
 const LoadInternalSurveys = ({ closeModal }) => {
   const { loadInternal } = useAddSurveyActions();
+  const createSurveyModal = useDisclosure();
+  const [internalKey, setInternalKey] = useState();
 
-  const handleClick = (type) => {
-    loadInternal(type);
+  const doImport = (name, type, settings) => {
+    loadInternal(internalKey, name, type, settings);
+    createSurveyModal.onClose();
     closeModal();
+  };
+
+  const handleClick = (key) => {
+    setInternalKey(key);
+    createSurveyModal.onOpen();
   };
   const handleDemoClick = () => handleClick("demo");
   const handleSampleClick = () => handleClick("sample");
@@ -15,8 +30,7 @@ const LoadInternalSurveys = ({ closeModal }) => {
     <>
       <Tooltip
         hasArrow
-        label="This Survey demonstrates the features of the DECSYS
-            Survey Platform."
+        label="This Survey demonstrates the features of the DECSYS Survey Platform."
       >
         <Button variant="outline" mb={1} onClick={handleDemoClick}>
           Load the Demo Survey
@@ -31,6 +45,11 @@ const LoadInternalSurveys = ({ closeModal }) => {
           Load the Sample Research Survey
         </Button>
       </Tooltip>
+      <CreateSurveyModal
+        name={names[internalKey]}
+        modalState={createSurveyModal}
+        onCreate={doImport}
+      />
     </>
   );
 };

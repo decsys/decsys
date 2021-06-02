@@ -37,6 +37,12 @@ namespace Decsys.Repositories.Contracts
         void Close(int instanceId);
 
         /// <summary>
+        /// Reactivate a closed SurveyInstance
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance to reactivate</param>
+        void Reactivate(int instanceId);
+
+        /// <summary>
         /// Check if a SurveyInstance exists
         /// </summary>
         /// <param name="id">The ID of the Instance to look for</param>

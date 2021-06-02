@@ -7650,15 +7650,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.19.2":
-  version: 0.19.2
-  resolution: "axios@npm:0.19.2"
-  dependencies:
-    follow-redirects: 1.5.10
-  checksum: bad346deea24050f9953ce09bb8015f85a99a7b8f016806adccfab0b8981827d1fbee9c77c0ef7c70cc48392c1af6bbc65e07c3e88221d17282d2d5fd0a191f6
-  languageName: node
-  linkType: hard
-
 "axios@npm:^0.21.1":
   version: 0.21.1
   resolution: "axios@npm:0.21.1"
@@ -9121,7 +9112,7 @@ __metadata:
     "@storybook/preset-create-react-app": ^3.1.7
     "@storybook/react": ^6.2.9
     "@storybook/source-loader": ^6.2.9
-    axios: ^0.19.2
+    axios: ^0.21.1
     base64url: ^3.0.1
     core-js: ^3.6.5
     downloadjs: ^1.4.7
@@ -9129,9 +9120,10 @@ __metadata:
     framer-motion: ^4.1.17
     gfycat-style-urls: ^1.0.3
     github-markdown-css: ^4.0.0
-    immer: ^6.0.9
+    immer: ^9.0.2
     js-forms: ^2.0.0
     json2csv: ^4.5.4
+    jszip: ^3.6.0
     lodash-es: ^4.17.15
     mathjs: ^7.1.0
     oidc-client: ^1.10.1
@@ -10937,15 +10929,6 @@ __metadata:
     supports-color:
       optional: true
   checksum: 5543570879e2274f6725d4285a034d6e0822d35faefc6f55965933fb440e8c21eb3a0bef934e66f4b6b491f898ee2de37cab980e9d4fd61372136c19d3ce4527
-  languageName: node
-  linkType: hard
-
-"debug@npm:=3.1.0":
-  version: 3.1.0
-  resolution: "debug@npm:3.1.0"
-  dependencies:
-    ms: 2.0.0
-  checksum: 1295acd5e0531761255661d325cd0a80ac8c5f6de8942a53bb23c2197ccb97526972de662ed0e5d9393be83f3428a298a6e7185ecb02f0da6282019cd2ffb4a8
   languageName: node
   linkType: hard
 
@@ -13243,15 +13226,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:1.5.10":
-  version: 1.5.10
-  resolution: "follow-redirects@npm:1.5.10"
-  dependencies:
-    debug: =3.1.0
-  checksum: 6e58e02c31337b6b41ffc3d5f3d49920b7db428eddcf374537da00ef121fe473983e12d8557f4304287604168d3efcc288d1f009abaf4c9d61e5db0c0cee3c4a
-  languageName: node
-  linkType: hard
-
 "follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.10.0":
   version: 1.14.1
   resolution: "follow-redirects@npm:1.14.1"
@@ -15435,6 +15409,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"immediate@npm:~3.0.5":
+  version: 3.0.6
+  resolution: "immediate@npm:3.0.6"
+  checksum: e86d4d20e2da86f9a4629d9aee9d56dfae7d3a7ace7f569b0538f2ec2570d86b3cbdc52c546d23be2cfd28306670f44676fc833cd96d9506659b8c5ab8202ca4
+  languageName: node
+  linkType: hard
+
 "immer@npm:8.0.1":
   version: 8.0.1
   resolution: "immer@npm:8.0.1"
@@ -15442,10 +15423,10 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"immer@npm:^6.0.9":
-  version: 6.0.9
-  resolution: "immer@npm:6.0.9"
-  checksum: e55b0d70c9e79203796ae11919ce0ce6943d97da83cb0b7ab6f63513dcdce01a5c2f8121ac895309a5b7be64661a61147562e146ed5e6fdde27e7d2719557b19
+"immer@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "immer@npm:9.0.2"
+  checksum: 71487285a890e6fb92ed8950ce3b5b0e2546321bb4dfe82a7395fbc3f24308b0481387b5939fd35681bac8e36161d903f2bcd99ac045acd25ed3a7f21c629bfd
   languageName: node
   linkType: hard
 
@@ -17320,6 +17301,18 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"jszip@npm:^3.6.0":
+  version: 3.6.0
+  resolution: "jszip@npm:3.6.0"
+  dependencies:
+    lie: ~3.3.0
+    pako: ~1.0.2
+    readable-stream: ~2.3.6
+    set-immediate-shim: ~1.0.1
+  checksum: 7b6e31bbe30c22491830b29e45642e2c8aba3bc45e1ebe855ceee593bc80c2dafab5ba0457d8b8889f70c7e227626da4bdca6160b2e4d3fdf7003c1aee989b72
+  languageName: node
+  linkType: hard
+
 "junk@npm:^3.1.0":
   version: 3.1.0
   resolution: "junk@npm:3.1.0"
@@ -17487,6 +17480,15 @@ fsevents@^1.2.7:
     prelude-ls: ~1.1.2
     type-check: ~0.3.2
   checksum: 775861da38dcb7e5f1de5bea2a1c7ffaede6e9e8632cfbac76be145ecb295370f46bb41307613c283d66f1fee5d8cc448ca3323c4a02d0fb1e913b2f78de2abb
+  languageName: node
+  linkType: hard
+
+"lie@npm:~3.3.0":
+  version: 3.3.0
+  resolution: "lie@npm:3.3.0"
+  dependencies:
+    immediate: ~3.0.5
+  checksum: 6c758fbea382ca251d8f6f32b4066b4c57b4c5d574babc7c6abf7bd20e522a54bcd364dd95d6695103b189a005fcaf9e55d7c58a6c243d4ebdd0cc803898c8bd
   languageName: node
   linkType: hard
 
@@ -19910,7 +19912,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pako@npm:~1.0.5":
+"pako@npm:~1.0.2, pako@npm:~1.0.5":
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
   checksum: 71c60150b68220ec52a404f3c39a4ed38f750e42452b88fe0eb2e6b5c98e91f73f706444359b097aca1e6db83ef8fef50b5a9ec100e30a606cda6da8d45e5439
@@ -24696,6 +24698,13 @@ resolve@^2.0.0-next.3:
   version: 2.0.0
   resolution: "set-blocking@npm:2.0.0"
   checksum: 0ac2403b0c2d39bf452f6d5d17dfd3cb952b9113098e1231cc0614c436e2f465637e39d27cf3b93556f5c59795e9790fd7e98da784c5f9919edeba4295ffeb29
+  languageName: node
+  linkType: hard
+
+"set-immediate-shim@npm:~1.0.1":
+  version: 1.0.1
+  resolution: "set-immediate-shim@npm:1.0.1"
+  checksum: be64b6800160830fec11aee59f88c7c20f9368510059673488f4373b2d83996337757bd9bf867356120d64762e2e6347272dd83438d452247e6f19be2fac36d2
   languageName: node
   linkType: hard
 

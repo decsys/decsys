@@ -3,7 +3,13 @@ import { Badge, Flex } from "@chakra-ui/react";
 import NameInput from "components/shared/NameInput";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 
-const SurveyInfoLine = ({ id, name, runCount }) => {
+const SurveyInfoLine = ({
+  id,
+  name,
+  runCount,
+  type,
+  hasInvalidExternalLink,
+}) => {
   const [nameState, setNameState] = useState({});
   const { saveName } = useSurveyCardActions();
   const handleNameSave = (value) => {
@@ -16,11 +22,18 @@ const SurveyInfoLine = ({ id, name, runCount }) => {
         <Badge
           w="100%"
           textAlign="center"
-          colorScheme="cyan"
+          colorScheme={
+            !!type ? (hasInvalidExternalLink ? "red" : "yellow") : "cyan"
+          }
           variant="solid"
           py={1}
+          title={
+            hasInvalidExternalLink
+              ? "Another DECSYS Survey has the same type and external ID."
+              : ""
+          }
         >
-          {runCount} runs
+          {!!type ? type.toUpperCase() : `${runCount} runs`}
         </Badge>
       </Flex>
 

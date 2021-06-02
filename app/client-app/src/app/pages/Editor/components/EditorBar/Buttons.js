@@ -4,7 +4,7 @@ import {
   useDisclosure,
   LightMode,
 } from "@chakra-ui/react";
-import { Link } from "@reach/router";
+import { Link, useLocation } from "@reach/router";
 import {
   FaChevronLeft,
   FaEye,
@@ -16,6 +16,7 @@ import ExportModal from "components/shared/ExportModal";
 import DeleteSurveyModal from "components/shared/DeleteSurveyModal";
 import { useEditorBarContext } from "../../contexts/EditorBar";
 import { defaultColorMode } from "themes";
+import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 
 const BarButton = (p) => {
   const { colorMode } = useColorMode();
@@ -41,11 +42,19 @@ export const BackButton = () => (
   </BarButton>
 );
 
-export const PreviewButton = () => (
-  <BarButton as={Link} to="preview" leftIcon={<FaEye />}>
-    Preview
-  </BarButton>
-);
+export const PreviewButton = () => {
+  const location = useLocation();
+  return (
+    <BarButton
+      as={Link}
+      to="preview"
+      state={{ backRedirect: `${location.pathname}` }}
+      leftIcon={<FaEye />}
+    >
+      Preview
+    </BarButton>
+  );
+};
 
 export const ExportButton = ({ id, name }) => {
   const modal = useDisclosure();
@@ -59,12 +68,24 @@ export const ExportButton = ({ id, name }) => {
   );
 };
 
-export const DuplicateButton = () => {
+export const DuplicateButton = ({ name }) => {
   const { duplicate } = useEditorBarContext();
+  const createSurveyModal = useDisclosure();
+  const handleDuplicate = (name, type, settings) => {
+    duplicate(name, type, settings);
+    createSurveyModal.onClose();
+  };
   return (
-    <BarButton leftIcon={<FaCopy />} onClick={duplicate}>
-      Duplicate
-    </BarButton>
+    <>
+      <BarButton leftIcon={<FaCopy />} onClick={createSurveyModal.onOpen}>
+        Duplicate
+      </BarButton>
+      <CreateSurveyModal
+        name={`${name} (Copy)`} // we always use this modal for duplicating only
+        modalState={createSurveyModal}
+        onCreate={handleDuplicate}
+      />
+    </>
   );
 };
 

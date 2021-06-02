@@ -50,7 +50,9 @@ const SurveyCard = () => {
           <ManageSurveyMenu {...survey} editable={!runCount} />
         </Grid>
 
-        {activeInstanceId && <ActiveInstanceLine friendlyId={friendlyId} />}
+        {activeInstanceId && (
+          <ActiveInstanceLine friendlyId={friendlyId} {...survey} />
+        )}
       </Stack>
     </Stack>
   );

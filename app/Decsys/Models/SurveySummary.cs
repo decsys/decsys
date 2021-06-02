@@ -1,4 +1,6 @@
-﻿namespace Decsys.Models
+﻿using Newtonsoft.Json.Linq;
+
+namespace Decsys.Models
 {
     public class SurveySummary
     {
@@ -6,6 +8,12 @@
         {
             Name = name;
         }
+
+        public string Type { get; set; } = string.Empty;
+
+        public bool HasInvalidExternalLink { get; set; }
+
+        public JObject Settings { get; set; } = new();
 
         public int Id { get; set; }
 

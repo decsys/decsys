@@ -6,8 +6,8 @@ import AddSurveyModal from "./components/AddSurveyModal";
 import { useSurveysList } from "api/surveys";
 import { AddSurveyActionsProvider } from "./contexts/AddSurveyActions";
 import { SurveyCardActionsProvider } from "./contexts/SurveyCardActions";
-import addSurveyActions from "./actions/addSurveyActions";
-import surveyCardActions from "./actions/surveyCardActions";
+import { addSurveyActions } from "./actions/addSurveyActions";
+import { surveyCardActions } from "./actions/surveyCardActions";
 import { FaList } from "react-icons/fa";
 
 const ShowSurveys = ({ surveys, actions }) => (

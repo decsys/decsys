@@ -9,9 +9,17 @@ export const defaultFetcher = (withToken) => async (url) =>
     )
   ).data;
 
-export const uploadFile = async (url, file, method = "post") => {
+export const uploadFile = async (
+  url,
+  file,
+  method = "post",
+  additionalData
+) => {
   const formData = new FormData();
   formData.append("file", file);
+
+  if (additionalData) formData.append("json", JSON.stringify(additionalData));
+
   await axios[method](url, formData, {
     headers: {
       "content-type": "multipart/form-data",

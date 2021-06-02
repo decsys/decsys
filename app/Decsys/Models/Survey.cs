@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+
 using System.Collections.Generic;
 
 namespace Decsys.Models
@@ -13,6 +15,8 @@ namespace Decsys.Models
 
         public string Name { get; set; }
 
+        public string? Type { get; set; }
+
         public List<Page> Pages { get; set; } = new List<Page>();
 
         public bool OneTimeParticipants { get; set; }
@@ -20,5 +24,7 @@ namespace Decsys.Models
         public bool UseParticipantIdentifiers { get; set; }
 
         public List<string> ValidIdentifiers { get; set; } = new List<string>();
+
+        public JObject Settings { get; set; } = new JObject();
     }
 }

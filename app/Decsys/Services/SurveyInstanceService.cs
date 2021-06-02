@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using AutoMapper;
+
 using Decsys.Constants;
 using Decsys.Models;
 using Decsys.Repositories.Contracts;
@@ -27,10 +30,10 @@ namespace Decsys.Services
         }
 
         /// <summary>
-        /// Create a new SurveyInstance
+        /// Create a new SurveyInstance, or reactivate a Single-Instance Survey's instance.
         /// </summary>
-        /// <param name="surveyId">ID of the Survey to create an Instance of</param>
-        public int Create(int surveyId)
+        /// <param name="surveyId">ID of the Survey to activate an Instance of</param>
+        public int Activate(int surveyId)
         {
             var survey = _surveys.Find(surveyId) ?? throw new KeyNotFoundException();
 
@@ -39,6 +42,19 @@ namespace Decsys.Services
                     $"The Survey with the id '{surveyId}' currently has an active Survey Instance.",
                     nameof(surveyId));
 
+            // Currently, any specified type means single instance
+            if (!string.IsNullOrWhiteSpace(survey.Type))
+            {
+                // So if there's an existing instance, reactivate it
+                var existing = _instances.List(surveyId).SingleOrDefault();
+                if (existing is not null)
+                {
+                    _instances.Reactivate(existing.Id);
+                    return existing.Id;
+                }
+            }
+
+            // Multi instance, or no existing instance - create a new one
             var instance = new SurveyInstance(survey)
             {
                 // Preserve the Survey Config at the time of this Instance launch

@@ -5,10 +5,35 @@ import {
   authorization_BearerToken,
 } from "./helpers";
 import axios from "axios";
+import { encode } from "services/instance-id";
 
 const urls = {
   instanceResultsSummary: (surveyId, instanceId) =>
     `/api/surveys/${surveyId}/instances/${instanceId}/results`,
+};
+
+export const useExternalSurveyAccess = (friendlyId, params) => {
+  return useSWR(
+    `/api/surveys/external`,
+    async (url) => {
+      if (friendlyId !== "ext") return { friendlyId };
+
+      const { surveyId, instanceId, participantId } = (
+        await axios.post(
+          url,
+          params,
+          withHeaders(await authorization_BearerToken())
+        )
+      ).data;
+
+      // any problems, return an invalid friendlyId
+      if (!instanceId) return encode(0, 0);
+
+      friendlyId = encode(surveyId, instanceId);
+      return { friendlyId, participantId };
+    },
+    { suspense: true }
+  );
 };
 
 export const useSurveyInstance = (surveyId, instanceId) =>

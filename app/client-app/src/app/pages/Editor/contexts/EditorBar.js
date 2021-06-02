@@ -1,15 +1,15 @@
-import React, { createContext, useContext, useState, useMemo } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import editorBarActions from "../actions/editorBarActions";
+import { editorBarActions } from "../actions/editorBarActions";
 
 const EditorBarContext = createContext({
   name: {
     save: () => {},
     isSaving: false,
-    hasSaved: false
+    hasSaved: false,
   },
   duplicate: () => {},
-  delete: () => {}
+  delete: () => {},
 });
 
 export const useEditorBarContext = () => useContext(EditorBarContext);

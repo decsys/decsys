@@ -44,6 +44,7 @@ namespace Decsys.Data
         {
             var connection = _connections[connectionString];
             _connections.Remove(connectionString);
+            connection.Commit();
             connection.Dispose();
         }
 
@@ -70,8 +71,8 @@ namespace Decsys.Data
         protected virtual void Dispose(bool managed)
         {
             if (managed)
-                foreach (var db in _connections.Values)
-                    db.Dispose();
+                foreach (var connection in _connections.Keys)
+                    CloseConnection(connection);
         }
     }
 }

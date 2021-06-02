@@ -27,20 +27,35 @@ export const useSurveysList = () =>
 export const useSurvey = (id) =>
   useSWR(`/api/surveys/${id}`, defaultFetcher(true), { suspense: true });
 
-export const createSurvey = async () =>
+export const createSurvey = async (name, type, settings) =>
   await axios.post(
     "/api/surveys",
-    null,
+    { name, type, settings },
     withHeaders(await authorization_BearerToken())
   );
 
-export const uploadSurveyImport = async (file, importData = false) =>
-  await uploadFile(`/api/surveys/import?importData=${importData}`, file);
+export const uploadSurveyImport = async (
+  file,
+  importData = false,
+  name,
+  type,
+  settings
+) =>
+  await uploadFile(
+    `/api/surveys/import?importData=${importData}`,
+    file,
+    "post",
+    {
+      name,
+      type,
+      settings,
+    }
+  );
 
-export const loadInternalSurvey = async (type) =>
+export const loadInternalSurvey = async (internalKey, name, type, settings) =>
   await axios.post(
-    `/api/surveys/internal/${type}`,
-    null,
+    `/api/surveys/internal/${internalKey}`,
+    { name, type, settings },
     withHeaders(await authorization_BearerToken())
   );
 
@@ -50,10 +65,10 @@ export const deleteSurvey = async (id) =>
     withHeaders(await authorization_BearerToken())
   );
 
-export const duplicateSurvey = async (id) =>
+export const duplicateSurvey = async (id, name, type, settings) =>
   await axios.post(
     `/api/surveys/${id}/duplicate`,
-    null,
+    { name, type, settings },
     withHeaders(await authorization_BearerToken())
   );
 

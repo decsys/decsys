@@ -10,7 +10,10 @@ import { LoadingIndicator, Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
 import { navigate } from "@reach/router";
 import { decode } from "services/instance-id";
-import { useSurveyInstance } from "api/survey-instances";
+import {
+  useExternalSurveyAccess,
+  useSurveyInstance,
+} from "api/survey-instances";
 import Error from "./Error";
 import { useLocalInstances } from "app/contexts/LocalInstances";
 import { PAGE_RANDOMIZE, SURVEY_COMPLETE } from "constants/event-types";
@@ -23,6 +26,8 @@ import { routes, bootstrapSurvey } from "services/survey-bootstrap";
 import ParticipantIdEntry from "./ParticipantIdEntry";
 import ErrorBoundary from "components/ErrorBoundary";
 import SurveyNotFoundError, { errorCallToAction } from "./SurveyNotFoundError";
+import { useQueryString } from "hooks/useQueryString";
+import Preview from "./Preview";
 
 //Contexts all the way down?
 var InstanceContext = createContext();
@@ -30,22 +35,34 @@ const useInstance = () => useContext(InstanceContext);
 
 // Do all the data fetching and validation ahead of rendering the survey
 const SurveyBootstrapper = ({ id }) => {
-  const { data: instance } = useSurveyInstance(...decode(id));
+  // Try and get friendly ID based on query string params if id indicates external access
+  const params = useQueryString();
+  const {
+    data: { friendlyId, participantId },
+  } = useExternalSurveyAccess(id, params);
+  const [surveyId, instanceId] = decode(friendlyId);
+  const { data: instance } = useSurveyInstance(surveyId, instanceId);
   const { instances, storeInstanceParticipantId } = useLocalInstances();
   const [route, setRoute] = useState();
   const [userId, setUserId] = useState();
   const [progress, setProgress] = useState({});
 
   useLayoutEffect(() => {
-    bootstrapSurvey(id, instance, instances).then(
+    bootstrapSurvey(friendlyId, instance, instances, participantId).then(
       ({ route, userId, progress }) => {
         setRoute(route);
         setUserId(userId);
         setProgress(progress || {});
-        storeInstanceParticipantId(id, userId);
+        storeInstanceParticipantId(friendlyId, userId);
       }
     );
-  }, [id, instance, instances, storeInstanceParticipantId]);
+  }, [
+    friendlyId,
+    instance,
+    instances,
+    storeInstanceParticipantId,
+    participantId,
+  ]);
 
   // render appropriately based on
   // the route arrived at during the above render
@@ -62,17 +79,25 @@ const SurveyBootstrapper = ({ id }) => {
     case routes.PARTICIPANT_ID_ENTRY:
       return (
         <ParticipantIdEntry
-          combinedId={id}
+          combinedId={friendlyId}
           validIdentifiers={instance.validIdentifiers}
         />
       );
     case routes.SURVEY_COMPLETED:
-      navigate(`/survey/${id}/complete`);
+      navigate(`/survey/${friendlyId}/complete`);
       return null;
     case routes.BOOTSTRAP_COMPLETE:
       return (
         <InstanceContext.Provider value={instance}>
-          <Survey combinedId={id} userId={userId} progressStatus={progress} />
+          {params.preview ? (
+            <Preview id={surveyId} />
+          ) : (
+            <Survey
+              combinedId={friendlyId}
+              userId={userId}
+              progressStatus={progress}
+            />
+          )}
         </InstanceContext.Provider>
       );
     default:
@@ -169,7 +194,10 @@ const Survey = ({ combinedId, userId, progressStatus }) => {
       // (e.g. resuming an already completed one time survey)
       if (page >= pages.length) {
         logEvent(instance.survey.id, SURVEY_COMPLETE, {});
-        navigate(`/survey/${combinedId}/complete`);
+        navigate(
+          instance.survey.settings?.CompletionUrl ??
+            `/survey/${combinedId}/complete`
+        );
         return;
       }
 
@@ -177,7 +205,14 @@ const Survey = ({ combinedId, userId, progressStatus }) => {
       // then do an ordinary lastPage check
       setLastPage(page >= pages.length - 1);
     }
-  }, [page, combinedId, logEvent, pages.length, instance.survey.id]);
+  }, [
+    page,
+    combinedId,
+    logEvent,
+    pages.length,
+    instance.survey.id,
+    instance.survey.settings,
+  ]);
 
   const handleClick = () => {
     // TODO confirm modal? if (lastPage)
