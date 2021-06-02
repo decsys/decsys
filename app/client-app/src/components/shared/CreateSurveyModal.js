@@ -100,7 +100,6 @@ const CreateSurveyModal = ({
 }) => {
   const defaultName = name ?? "";
   const defaultType = type ?? "";
-  console.log(type, settings);
   const defaultSettings = Object.keys(settings).reduce(
     (result, k) => ({
       ...result,
@@ -108,8 +107,6 @@ const CreateSurveyModal = ({
     }),
     {}
   );
-
-  console.log(defaultSettings);
 
   const handleSubmit = (values, actions) => {
     let { name, type, ...settings } = values;

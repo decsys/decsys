@@ -100,7 +100,10 @@ namespace Decsys.Repositories.Mongo
             _external.ReplaceOne(
                 x => x.ExternalIdKey == externalKey &&
                     x.ExternalIdValue == settings.StudyId,
-                new(externalKey, settings.StudyId, survey.Id),
+                new(externalKey, settings.StudyId, survey.Id)
+                {
+                    ParticipantIdKey = "PROLIFIC_PID"
+                },
                 new ReplaceOptions
                 {
                     IsUpsert = true

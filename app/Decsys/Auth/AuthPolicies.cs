@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+
 using Decsys.Config;
 using Decsys.Repositories.Contracts;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -35,7 +37,7 @@ namespace Decsys.Auth
                     if (mode.IsWorkshop)
                     {
                         // localhost access == admin
-                        return (new[] { "localhost", "127.0.0.1"})
+                        return (new[] { "localhost", "127.0.0.1" })
                             .Contains(((DefaultHttpContext?)context.Resource)?
                                 .Request.Host.Host);
                     }
@@ -62,8 +64,11 @@ namespace Decsys.Auth
                         out var surveyId))
                         return false;
 
+                    var authenticatedUser = !mode.IsWorkshop &&
+                        (context.User.Identity?.IsAuthenticated ?? false);
+
                     var result = surveys.TestSurveyAccess(surveyId,
-                        mode.IsWorkshop ? string.Empty : context.User.GetUserId(),
+                        !authenticatedUser ? string.Empty : context.User.GetUserId(),
                         context.User.IsSuperUser());
 
                     return result.IsAccessible();

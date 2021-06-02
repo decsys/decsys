@@ -41,7 +41,6 @@ const SurveyBootstrapper = ({ id }) => {
     data: { friendlyId, participantId },
   } = useExternalSurveyAccess(id, params);
   const [surveyId, instanceId] = decode(friendlyId);
-  console.log(friendlyId, surveyId, instanceId, participantId);
   const { data: instance } = useSurveyInstance(surveyId, instanceId);
   const { instances, storeInstanceParticipantId } = useLocalInstances();
   const [route, setRoute] = useState();
