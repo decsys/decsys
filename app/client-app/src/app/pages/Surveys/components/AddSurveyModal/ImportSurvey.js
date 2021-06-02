@@ -117,6 +117,8 @@ const ImportSurveyForm = ({ modalState }) => {
         {...oldSurveyDetails}
         modalState={createSurveyModal}
         onCreate={doImport}
+        isFixedType={state.importData}
+        hasFixedSettings={state.importData}
       />
     </Stack>
   );

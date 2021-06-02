@@ -91,6 +91,8 @@ const CreateSurveyModal = ({
   settings = {},
   onCreate,
   modalState,
+  isFixedType,
+  hasFixedSettings,
 }) => {
   const defaultName = name ?? "";
   const defaultType = type ?? "";
@@ -179,6 +181,7 @@ const CreateSurveyModal = ({
                   const { onChange, ...rest } = field;
                   return (
                     <FormControl
+                      isDisabled={isFixedType}
                       id={field.name}
                       isInvalid={
                         !!form.errors[field.name] && !!form.touched[field.name]
@@ -214,10 +217,22 @@ const CreateSurveyModal = ({
                   )}
                 />
                 <Field name="prolificStudyId">
-                  {(rp) => <FormikInput {...rp} label="Study ID" />}
+                  {(rp) => (
+                    <FormikInput
+                      isDisabled={hasFixedSettings}
+                      {...rp}
+                      label="Study ID"
+                    />
+                  )}
                 </Field>
                 <Field name="prolificCompletionUrl">
-                  {(rp) => <FormikInput {...rp} label="Completion URL" />}
+                  {(rp) => (
+                    <FormikInput
+                      isDisabled={hasFixedSettings}
+                      {...rp}
+                      label="Completion URL"
+                    />
+                  )}
                 </Field>
               </Stack>
             </Stack>
