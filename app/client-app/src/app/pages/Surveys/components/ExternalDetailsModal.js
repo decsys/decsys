@@ -11,10 +11,10 @@ import { capitalise } from "services/strings";
 import LightHeading from "components/core/LightHeading";
 
 const Definition = ({ term, definition }) => (
-  <Text>
+  <>
     <Text fontWeight="bold">{term}</Text>
-    {definition}
-  </Text>
+    <Text>{definition}</Text>
+  </>
 );
 
 const ExternalDetailsModal = ({
