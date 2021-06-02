@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using Decsys.Config;
 using Decsys.Repositories.Contracts;
@@ -34,8 +35,9 @@ namespace Decsys.Auth
                     if (mode.IsWorkshop)
                     {
                         // localhost access == admin
-                        return ((DefaultHttpContext?)context.Resource)?
-                            .Request.Host.Host == "localhost";
+                        return (new[] { "localhost", "127.0.0.1"})
+                            .Contains(((DefaultHttpContext?)context.Resource)?
+                                .Request.Host.Host);
                     }
 
                     // having the claim obviously fulfills the policy

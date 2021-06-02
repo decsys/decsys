@@ -14,6 +14,7 @@ namespace Decsys.Mapping
             // SurveySummary
             CreateMap<Data.Entities.LiteDb.Survey, SurveySummary>()
                 .ConstructUsing(src => new SurveySummary(src.Name))
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()))
                 .ForSourceMember(src => src.Pages, opt => opt.DoNotValidate());
 
             CreateMap<IEnumerable<Data.Entities.LiteDb.SurveyInstance>, SurveySummary>()
@@ -27,6 +28,7 @@ namespace Decsys.Mapping
 
             CreateMap<Data.Entities.Mongo.Survey, SurveySummary>()
                 .ConstructUsing(src => new SurveySummary(src.Name))
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new MongoBsonJObjectConverter()))
                 .ForSourceMember(src => src.Pages, opt => opt.DoNotValidate());
 
             CreateMap<IEnumerable<Data.Entities.Mongo.SurveyInstance>, SurveySummary>()

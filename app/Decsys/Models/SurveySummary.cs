@@ -1,4 +1,6 @@
-﻿namespace Decsys.Models
+﻿using Newtonsoft.Json.Linq;
+
+namespace Decsys.Models
 {
     public class SurveySummary
     {
@@ -8,6 +10,8 @@
         }
 
         public string Type { get; set; } = string.Empty;
+
+        public JObject Settings { get; set; } = new();
 
         public int Id { get; set; }
 

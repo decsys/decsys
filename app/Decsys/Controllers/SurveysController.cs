@@ -76,6 +76,7 @@ namespace Decsys.Controllers
         [HttpPost("external")]
         [SwaggerOperation("Lookup Survey details for an External Survey, from the external params")]
         [SwaggerResponse(200, "The looked up Survey details")]
+        [AllowAnonymous]
         public ActionResult<ExternalLookupDetails> LookupExternal(JObject model)
             => _surveys.LookupExternal(model);
 

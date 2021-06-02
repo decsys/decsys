@@ -37,8 +37,11 @@ const useInstance = () => useContext(InstanceContext);
 const SurveyBootstrapper = ({ id }) => {
   // Try and get friendly ID based on query string params if id indicates external access
   const params = useQueryString();
-  const { data: friendlyId } = useExternalSurveyAccess(id, params);
+  const {
+    data: { friendlyId, participantId },
+  } = useExternalSurveyAccess(id, params);
   const [surveyId, instanceId] = decode(friendlyId);
+  console.log(friendlyId, surveyId, instanceId, participantId);
   const { data: instance } = useSurveyInstance(surveyId, instanceId);
   const { instances, storeInstanceParticipantId } = useLocalInstances();
   const [route, setRoute] = useState();
@@ -46,15 +49,21 @@ const SurveyBootstrapper = ({ id }) => {
   const [progress, setProgress] = useState({});
 
   useLayoutEffect(() => {
-    bootstrapSurvey(id, instance, instances).then(
+    bootstrapSurvey(friendlyId, instance, instances, participantId).then(
       ({ route, userId, progress }) => {
         setRoute(route);
         setUserId(userId);
         setProgress(progress || {});
-        storeInstanceParticipantId(id, userId);
+        storeInstanceParticipantId(friendlyId, userId);
       }
     );
-  }, [id, instance, instances, storeInstanceParticipantId]);
+  }, [
+    friendlyId,
+    instance,
+    instances,
+    storeInstanceParticipantId,
+    participantId,
+  ]);
 
   // render appropriately based on
   // the route arrived at during the above render
@@ -71,12 +80,12 @@ const SurveyBootstrapper = ({ id }) => {
     case routes.PARTICIPANT_ID_ENTRY:
       return (
         <ParticipantIdEntry
-          combinedId={id}
+          combinedId={friendlyId}
           validIdentifiers={instance.validIdentifiers}
         />
       );
     case routes.SURVEY_COMPLETED:
-      navigate(`/survey/${id}/complete`);
+      navigate(`/survey/${friendlyId}/complete`);
       return null;
     case routes.BOOTSTRAP_COMPLETE:
       return (
@@ -84,7 +93,11 @@ const SurveyBootstrapper = ({ id }) => {
           {params.preview ? (
             <Preview id={surveyId} />
           ) : (
-            <Survey combinedId={id} userId={userId} progressStatus={progress} />
+            <Survey
+              combinedId={friendlyId}
+              userId={userId}
+              progressStatus={progress}
+            />
           )}
         </InstanceContext.Provider>
       );
