@@ -50,17 +50,23 @@ namespace Decsys.Repositories.LiteDb
 
             return summaries.Select(survey =>
                 {
-                    var summary = _mapper.Map(
-                      _instances.Find(
-                          instance => instance.Survey.Id == survey.Id),
+                    var instances = _instances
+                            .Find(instance =>
+                                instance.Survey.Id == survey.Id)
+                            .OrderByDescending(x => x.Published)
+                            .ToList();
+
+                    var summary = _mapper.Map(instances,
                       survey);
+
+                    var latestInstanceId = instances.FirstOrDefault()?.Id;
 
                     // validate external link if necessary
                     summary.HasInvalidExternalLink =
                         !string.IsNullOrWhiteSpace(summary.Type) &&
                         _external.Find(x =>
                                 x.SurveyId == summary.Id &&
-                                x.InstanceId == summary.ActiveInstanceId)
+                                x.InstanceId == latestInstanceId)
                             .SingleOrDefault() is null;
 
                     return summary;
