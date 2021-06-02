@@ -195,7 +195,10 @@ const Survey = ({ combinedId, userId, progressStatus }) => {
       // (e.g. resuming an already completed one time survey)
       if (page >= pages.length) {
         logEvent(instance.survey.id, SURVEY_COMPLETE, {});
-        navigate(`/survey/${combinedId}/complete`); // TODO: Optional Completion Redirect URL
+        navigate(
+          instance.survey.settings?.CompletionUrl ??
+            `/survey/${combinedId}/complete`
+        );
         return;
       }
 
@@ -203,7 +206,14 @@ const Survey = ({ combinedId, userId, progressStatus }) => {
       // then do an ordinary lastPage check
       setLastPage(page >= pages.length - 1);
     }
-  }, [page, combinedId, logEvent, pages.length, instance.survey.id]);
+  }, [
+    page,
+    combinedId,
+    logEvent,
+    pages.length,
+    instance.survey.id,
+    instance.survey.settings,
+  ]);
 
   const handleClick = () => {
     // TODO confirm modal? if (lastPage)

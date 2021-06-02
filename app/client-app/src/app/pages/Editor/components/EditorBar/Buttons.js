@@ -4,7 +4,7 @@ import {
   useDisclosure,
   LightMode,
 } from "@chakra-ui/react";
-import { Link } from "@reach/router";
+import { Link, useLocation } from "@reach/router";
 import {
   FaChevronLeft,
   FaEye,
@@ -42,11 +42,19 @@ export const BackButton = () => (
   </BarButton>
 );
 
-export const PreviewButton = () => (
-  <BarButton as={Link} to="preview" leftIcon={<FaEye />}>
-    Preview
-  </BarButton>
-);
+export const PreviewButton = () => {
+  const location = useLocation();
+  return (
+    <BarButton
+      as={Link}
+      to="preview"
+      state={{ backRedirect: `${location.pathname}` }}
+      leftIcon={<FaEye />}
+    >
+      Preview
+    </BarButton>
+  );
+};
 
 export const ExportButton = ({ id, name }) => {
   const modal = useDisclosure();

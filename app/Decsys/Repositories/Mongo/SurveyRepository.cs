@@ -115,6 +115,11 @@ namespace Decsys.Repositories.Mongo
             entity.Id = GetNextSurveyId();
             entity.Owner = ownerId;
 
+            // Reset Type properties
+            // when we map the model, these will be accurately restored 
+            entity.Type = null;
+            entity.Settings = new();
+
             HandleSurveyTypeCreation(model, ref entity);
 
             _surveys.InsertOne(entity);

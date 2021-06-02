@@ -141,6 +141,12 @@ namespace Decsys.Repositories.LiteDb
         public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
         {
             var entity = _mapper.Map<Survey>(survey);
+
+            // Reset Type properties
+            // when we map the model, these will be accurately restored 
+            entity.Type = null;
+            entity.Settings = new();
+
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
             var lookup = HandleSurveyTypeCreation(model, ref entity);
 
