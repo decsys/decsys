@@ -77,10 +77,10 @@ export const OptionValueNotPropOrderBased = () => (
     option0="All of the time"
     option1="Most of the time"
     option2="A good bit of the time"
-    option9=""
+    option9="None of the time"
     option3="Some of the time"
     option4="A little bit of the time"
-    option5="None of the time"
+    option5=""
   />
 );
 

@@ -31,6 +31,6 @@ export const filterOptions = (props) => {
 
   // - one to revalue them based on the new ordered subset of configured options: [0,5,9] = [0,1,2]
   return includeOptions
-    .sort(({ value: a }, { value: b }) => a > b)
+    .sort(({ value: a }, { value: b }) => a - b)
     .map((x, i) => ({ ...x, value: i }));
 };
