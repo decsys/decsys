@@ -67,4 +67,21 @@ export const RadioList = () => {
   return <ResponseItem dropDown={false} {...props()} />;
 };
 
+export const OptionValueNotPropOrderBased = () => (
+  <ResponseItem
+    _context={_context}
+    dropDown={false}
+    option8=""
+    option7=""
+    option6=""
+    option0="All of the time"
+    option1="Most of the time"
+    option2="A good bit of the time"
+    option9="None of the time"
+    option3="Some of the time"
+    option4="A little bit of the time"
+    option5=""
+  />
+);
+
 export const MetadataIcon = () => <Icon width="24px" />;
