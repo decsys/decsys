@@ -12,29 +12,29 @@ const urls = {
     `/api/surveys/${surveyId}/instances/${instanceId}/results`,
 };
 
-export const useExternalSurveyAccess = (friendlyId, params) => {
-  return useSWR(
-    `/api/surveys/external`,
-    async (url) => {
-      if (friendlyId !== "ext") return { friendlyId };
+// export const useExternalSurveyAccess = (friendlyId, params) => {
+//   return useSWR(
+//     `/api/surveys/external`,
+//     async (url) => {
+//       if (friendlyId !== "ext") return { friendlyId };
 
-      const { surveyId, instanceId, participantId } = (
-        await axios.post(
-          url,
-          params,
-          withHeaders(await authorization_BearerToken())
-        )
-      ).data;
+//       const { surveyId, instanceId, participantId } = (
+//         await axios.post(
+//           url,
+//           params,
+//           withHeaders(await authorization_BearerToken())
+//         )
+//       ).data;
 
-      // any problems, return an invalid friendlyId
-      if (!instanceId) return encode(0, 0);
+//       // any problems, return an invalid friendlyId
+//       if (!instanceId) return encode(0, 0);
 
-      friendlyId = encode(surveyId, instanceId);
-      return { friendlyId, participantId };
-    },
-    { suspense: true }
-  );
-};
+//       friendlyId = encode(surveyId, instanceId);
+//       return { friendlyId, participantId };
+//     },
+//     { suspense: true }
+//   );
+// };
 
 export const useSurveyInstance = (surveyId, instanceId) =>
   useSWR(`/api/surveys/${surveyId}/instances/${instanceId}`, defaultFetcher(), {

@@ -37,72 +37,75 @@ const useInstance = () => useContext(InstanceContext);
 const SurveyBootstrapper = ({ id }) => {
   // Try and get friendly ID based on query string params if id indicates external access
   const params = useQueryString();
-  const {
-    data: { friendlyId, participantId },
-  } = useExternalSurveyAccess(id, params);
-  const [surveyId, instanceId] = decode(friendlyId);
-  const { data: instance } = useSurveyInstance(surveyId, instanceId);
-  const { instances, storeInstanceParticipantId } = useLocalInstances();
-  const [route, setRoute] = useState();
-  const [userId, setUserId] = useState();
-  const [progress, setProgress] = useState({});
 
-  useLayoutEffect(() => {
-    bootstrapSurvey(friendlyId, instance, instances, participantId).then(
-      ({ route, userId, progress }) => {
-        setRoute(route);
-        setUserId(userId);
-        setProgress(progress || {});
-        storeInstanceParticipantId(friendlyId, userId);
-      }
-    );
-  }, [
-    friendlyId,
-    instance,
-    instances,
-    storeInstanceParticipantId,
-    participantId,
-  ]);
+  const { instances, storeInstanceParticipantId } = useLocalInstances();
+  // TODO: getProgress(friendlyId, participantId, params);
+
+  // const {
+  //   data: { friendlyId, participantId },
+  // } = useExternalSurveyAccess(id, params);
+  const [surveyId, instanceId] = decode(id); //friendlyId);
+  // const { data: instance } = useSurveyInstance(surveyId, instanceId);
+  // const [route, setRoute] = useState();
+  // const [userId, setUserId] = useState();
+  // const [progress, setProgress] = useState({});
+
+  // useLayoutEffect(() => {
+  //   bootstrapSurvey(friendlyId, instance, instances, participantId).then(
+  //     ({ route, userId, progress }) => {
+  //       setRoute(route);
+  //       setUserId(userId);
+  //       setProgress(progress || {});
+  //       storeInstanceParticipantId(friendlyId, userId);
+  //     }
+  //   );
+  // }, [
+  //   friendlyId,
+  //   instance,
+  //   instances,
+  //   storeInstanceParticipantId,
+  //   participantId,
+  // ]);
 
   // render appropriately based on
   // the route arrived at during the above render
-  switch (route) {
-    case routes.INSTANCE_404:
-      return <SurveyNotFoundError />;
-    case routes.SURVEY_EMPTY:
-      return (
-        <Error
-          message={"That Survey contains no pages."}
-          callToAction={errorCallToAction}
-        />
-      );
-    case routes.PARTICIPANT_ID_ENTRY:
-      return (
-        <ParticipantIdEntry
-          combinedId={friendlyId}
-          validIdentifiers={instance.validIdentifiers}
-        />
-      );
-    case routes.SURVEY_COMPLETED:
-      navigate(`/survey/${friendlyId}/complete`);
-      return null;
-    case routes.BOOTSTRAP_COMPLETE:
-      return (
-        <InstanceContext.Provider value={instance}>
-          {params.preview ? (
-            <Preview id={surveyId} />
-          ) : (
-            <Survey
-              combinedId={friendlyId}
-              userId={userId}
-              progressStatus={progress}
-            />
-          )}
-        </InstanceContext.Provider>
-      );
-    default:
-      return <LoadingIndicator />;
-  }
+  // switch (route) {
+  //   case routes.INSTANCE_404:
+  //     return <SurveyNotFoundError />;
+  //   case routes.SURVEY_EMPTY:
+  //     return (
+  //       <Error
+  //         message={"That Survey contains no pages."}
+  //         callToAction={errorCallToAction}
+  //       />
+  //     );
+  //   case routes.PARTICIPANT_ID_ENTRY:
+  //     return (
+  //       <ParticipantIdEntry
+  //         combinedId={friendlyId}
+  //         validIdentifiers={instance.validIdentifiers}
+  //       />
+  //     );
+  //   case routes.SURVEY_COMPLETED:
+  //     navigate(`/survey/${friendlyId}/complete`);
+  //     return null;
+  //   case routes.BOOTSTRAP_COMPLETE:
+  //     return (
+  //       <InstanceContext.Provider value={instance}>
+  //         {params.preview ? (
+  //           <Preview id={surveyId} />
+  //         ) : (
+  //           <Survey
+  //             combinedId={friendlyId}
+  //             userId={userId}
+  //             progressStatus={progress}
+  //           />
+  //         )}
+  //       </InstanceContext.Provider>
+  //     );
+  //   default:
+  //     return <LoadingIndicator />;
+  // }
 };
 
 // TODO: move the callbacks out to static methods in the survey-bootstrap service

@@ -15,6 +15,7 @@ const SurveyComplete = ({ id }) => {
 
   // We don't clear auto-generated ID's, to ensure we can track non-repeatable completion.
 
+  // TODO: get participant progress, not survey instance
   const { data: instance } = useSurveyInstance(...decode(id));
   const { clearInstanceParticipantId } = useLocalInstances();
 
