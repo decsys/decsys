@@ -72,6 +72,25 @@ namespace Decsys.Controllers
                 : Ok(survey);
         }
 
+        [HttpPost("external")]
+        [SwaggerOperation("Lookup Survey details for an External Survey, from the external params")]
+        [SwaggerResponse(200, "The looked up Survey details")]
+        [AllowAnonymous]
+        public ActionResult<ExternalLookupDetails> LookupExternal(JObject model)
+        {
+            try
+            {
+                return _surveys.LookupExternal(model);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e);
+            } catch (KeyNotFoundException e)
+            {
+                return NotFound(e);
+            }
+        }
+
         [HttpPost]
         [SwaggerOperation("Create a new Survey.")]
         [SwaggerResponse(201, "The Survey was successfully created with the returned ID.")]

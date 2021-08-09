@@ -42,10 +42,6 @@ namespace Decsys.Controllers
             if (friendlyId == "ext")
             {
                 var externalDetails = _surveys.LookupExternal(externalParams);
-
-                // TODO: do we need to update this? is it used again server side?
-                //friendlyId = InstanceIdService.Encode(externalDetails.SurveyId, externalDetails.InstanceId.Value);
-
                 return (externalDetails.SurveyId, externalDetails.InstanceId);
             }
             else // everything we need to know is in the friendly id :)
@@ -76,7 +72,9 @@ namespace Decsys.Controllers
 
                 var result = new ParticipantProgressModel()
                 {
-                    ParticipantId = participantId, // This may be replaced by a server generated id if necessary
+                    SurveyId = surveyId,
+                    InstanceId = instanceId,
+                    ParticipantId = participantId,
                     UseParticipantIdentifiers = instance.UseParticipantIdentifiers,
                     PageCount = instance.Survey.Pages.Count
                 };
@@ -173,7 +171,6 @@ namespace Decsys.Controllers
 
                         // TODO: We could also provide latest response values recorded when loading pages for which responses have been logged!
                         // This will likely be desirable when page navigation is more flexible
-
 
                         if (lastNavigation is null && lastPageLoaded is null) // neither event available; use First Page in the order
                         {

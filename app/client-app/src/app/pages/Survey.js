@@ -35,11 +35,12 @@ const useInstance = () => useContext(InstanceContext);
 
 // Do all the data fetching and validation ahead of rendering the survey
 const SurveyBootstrapper = ({ id }) => {
-  // Try and get friendly ID based on query string params if id indicates external access
+  // external `ext` id provides details via query params
+  // so we get them and pass them on when requesting progress
   const params = useQueryString();
+  const { instances, storeInstanceParticipantId } = useLocalInstances();
 
   // TODO: getProgress(friendlyId, participantId, params);
-  const { instances, storeInstanceParticipantId } = useLocalInstances();
 
   // const {
   //   data: { friendlyId, participantId },

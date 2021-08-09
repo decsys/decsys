@@ -7,6 +7,16 @@
     public class ParticipantProgressModel
     {
         /// <summary>
+        /// The Survey ID this progress relates to
+        /// </summary>
+        public int SurveyId { get; set; }
+
+        /// <summary>
+        /// The Instance ID this progress relates to
+        /// </summary>
+        public int InstanceId { get; set; }
+
+        /// <summary>
         /// Participant Id, if any, provided in the progress request
         /// </summary>
         public string? ParticipantId { get; set; }

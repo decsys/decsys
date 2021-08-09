@@ -12,6 +12,15 @@ const urls = {
     `/api/surveys/${surveyId}/instances/${instanceId}/results`,
 };
 
+export const getExternalSurveyDetails = async (params) =>
+  (
+    await axios.post(
+      "/api/surveys/external",
+      params,
+      withHeaders(await authorization_BearerToken())
+    )
+  ).data;
+
 // export const useExternalSurveyAccess = (friendlyId, params) => {
 //   return useSWR(
 //     `/api/surveys/external`,
