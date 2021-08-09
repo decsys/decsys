@@ -38,8 +38,8 @@ const SurveyBootstrapper = ({ id }) => {
   // Try and get friendly ID based on query string params if id indicates external access
   const params = useQueryString();
 
-  const { instances, storeInstanceParticipantId } = useLocalInstances();
   // TODO: getProgress(friendlyId, participantId, params);
+  const { instances, storeInstanceParticipantId } = useLocalInstances();
 
   // const {
   //   data: { friendlyId, participantId },
