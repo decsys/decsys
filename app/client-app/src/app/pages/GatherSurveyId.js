@@ -11,7 +11,7 @@ import { encode } from "services/instance-id";
 import { useLocalInstances } from "app/contexts/LocalInstances";
 
 const buildSurveyUrl = (id, preview) =>
-  `/survey/${id}${preview ? "?preview" : ""}`;
+  `/survey/${id}${preview ? `?preview=${preview}` : ""}`;
 
 export const GatherSurveyId = () => {
   const { preview, ...params } = useQueryString();
@@ -33,6 +33,7 @@ export const GatherSurveyId = () => {
 
       if (participantId) storeInstanceParticipantId(friendlyId, participantId);
 
+      console.log(preview);
       navigate(buildSurveyUrl(friendlyId, preview));
     },
     suspense: true,
