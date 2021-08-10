@@ -6,7 +6,6 @@ using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using System;
@@ -333,7 +332,7 @@ namespace Decsys.Controllers
         /// <param name="friendlyId">Friendly Survey Identifier e.g. "bzb", or "ext" for external</param>
         /// <param name="participantId">Participant Id if known</param>
         /// <returns></returns>
-        [HttpGet("{friendlyId}/{participantId}")]
+        [HttpGet("{friendlyId}/{participantId?}")]
         public ActionResult<ParticipantProgressModel> Get(string friendlyId, string? participantId)
         {
             try

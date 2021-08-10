@@ -22,9 +22,13 @@ export const getExternalSurveyDetails = async (params) =>
   ).data;
 
 export const useParticipantProgress = (friendlyId, participantId) =>
-  useSWR(`/api/progress/${friendlyId}/${participantId}`, defaultFetcher(), {
-    suspense: true,
-  });
+  useSWR(
+    `/api/progress/${friendlyId}/${participantId ?? ""}`,
+    defaultFetcher(),
+    {
+      suspense: true,
+    }
+  );
 
 export const requestParticipantProgress = async (
   friendlyId,

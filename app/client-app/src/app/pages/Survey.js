@@ -65,6 +65,11 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
       />
     );
 
+  storeInstanceParticipantId(
+    friendlyId,
+    progress.newParticipantId ?? progress.participantId
+  );
+
   // Survey Complete
   if (progress.participantId && !progress.page) {
     navigate(`/survey/${friendlyId}/complete`);
@@ -73,11 +78,6 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
 
   // Valid Survey Progress
   if (progress.page) {
-    storeInstanceParticipantId(
-      friendlyId,
-      progress.newParticipantId ?? progress.participantId
-    );
-
     if (isPreview) return <Preview id={surveyId} />;
 
     return (
@@ -119,7 +119,7 @@ const Survey = ({ friendlyId, participantId, progress, mutateProgress }) => {
     setIsBusy(true);
     try {
       // 1. POST navigation request
-      const { progress } = await requestParticipantProgress(
+      const { data: progress } = await requestParticipantProgress(
         friendlyId,
         participantId,
         "next"
@@ -141,13 +141,15 @@ const Survey = ({ friendlyId, participantId, progress, mutateProgress }) => {
         );
       } else {
         // progress; just mutate our local progress and proceed
-        mutateProgress();
+        await mutateProgress();
       }
     } catch (e) {
       console.error(e);
     }
     setIsBusy(false);
   };
+
+  if (!progress?.page) return <LoadingIndicator />;
 
   return (
     <Page layout="survey">

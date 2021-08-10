@@ -7,6 +7,7 @@ import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import VisibilitySensor from "react-visibility-sensor";
 import { usePrevious } from "hooks/usePrevious";
+import { LoadingIndicator } from "components/core";
 
 export const Body = ({ page, renderContext }) => {
   return page.components.map((item) => {
@@ -34,6 +35,7 @@ const SurveyPage = ({
   lastPage,
   handleNextClick,
   logEvent,
+  isBusy,
 }) => {
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
@@ -67,7 +69,11 @@ const SurveyPage = ({
       <Flex overflowY="auto" py={2}>
         <DefaultContainer>
           <Stack>
-            <Body page={page} renderContext={renderContext} />
+            {isBusy ? (
+              <LoadingIndicator />
+            ) : (
+              <Body page={page} renderContext={renderContext} />
+            )}
             <VisibilitySensor onChange={handleBodyBottomVisibilityChange}>
               <div style={{ height: "1px" }} />
             </VisibilitySensor>
@@ -99,7 +105,8 @@ const SurveyPage = ({
           </div>
           <Button
             size="lg"
-            disabled={!nextEnabled}
+            disabled={!nextEnabled || isBusy}
+            isLoading={isBusy}
             colorScheme={nextEnabled ? "blue" : "gray"}
             onClick={handleNextClick}
             rightIcon={!lastPage && <FaChevronRight />}
