@@ -20,24 +20,6 @@ export const getExternalSurveyDetails = async (params) =>
     )
   ).data;
 
-export const useParticipantProgress = (friendlyId, participantId) =>
-  useSWR(
-    `/api/progress/${friendlyId}/${participantId ?? ""}`,
-    defaultFetcher(),
-    {
-      suspense: true,
-    }
-  );
-
-export const requestParticipantProgress = async (
-  friendlyId,
-  participantId,
-  requestedPageKey
-) =>
-  await axios.post(
-    `/api/progress/${friendlyId}/${participantId}/${requestedPageKey}`
-  );
-
 export const useSurveyInstance = (surveyId, instanceId) =>
   useSWR(`/api/surveys/${surveyId}/instances/${instanceId}`, defaultFetcher(), {
     suspense: true,

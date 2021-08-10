@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Page, EmptyState } from "components/core";
 import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
 import { FaCheck } from "react-icons/fa";
-import { useParticipantProgress } from "api/survey-instances";
+import { useParticipantProgress } from "api/participant-event-logs";
 import ErrorBoundary from "components/ErrorBoundary";
 import SurveyNotFoundError from "./SurveyNotFoundError";
 import { useLocalInstances } from "app/contexts/LocalInstances";
@@ -15,7 +15,6 @@ const SurveyComplete = ({ id }) => {
 
   // We don't clear auto-generated ID's, to ensure we can track non-repeatable completion.
 
-  // TODO: get participant progress, not survey instance
   const { instances, clearInstanceParticipantId } = useLocalInstances();
   const { data: progress } = useParticipantProgress(id, instances[id]);
 
