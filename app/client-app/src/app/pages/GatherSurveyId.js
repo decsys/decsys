@@ -33,7 +33,6 @@ export const GatherSurveyId = () => {
 
       if (participantId) storeInstanceParticipantId(friendlyId, participantId);
 
-      console.log(preview);
       navigate(buildSurveyUrl(friendlyId, preview));
     },
     suspense: true,

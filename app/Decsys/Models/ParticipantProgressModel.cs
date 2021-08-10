@@ -1,4 +1,6 @@
-﻿namespace Decsys.Models
+﻿using Newtonsoft.Json.Linq;
+
+namespace Decsys.Models
 {
     /// <summary>
     /// A model representing a Participant's progress through a Survey,
@@ -6,16 +8,6 @@
     /// </summary>
     public class ParticipantProgressModel
     {
-        /// <summary>
-        /// The Survey ID this progress relates to
-        /// </summary>
-        public int SurveyId { get; set; }
-
-        /// <summary>
-        /// The Instance ID this progress relates to
-        /// </summary>
-        public int InstanceId { get; set; }
-
         /// <summary>
         /// Participant Id, if any, provided in the progress request
         /// </summary>
@@ -61,5 +53,10 @@
         /// </para>
         /// </summary>
         public bool UseParticipantIdentifiers { get; set; }
+
+        /// <summary>
+        /// Settings for this Survey, based on its Type.
+        /// </summary>
+        public JObject Settings { get; set; } = new();
     }
 }

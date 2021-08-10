@@ -21,29 +21,19 @@ export const getExternalSurveyDetails = async (params) =>
     )
   ).data;
 
-// export const useExternalSurveyAccess = (friendlyId, params) => {
-//   return useSWR(
-//     `/api/surveys/external`,
-//     async (url) => {
-//       if (friendlyId !== "ext") return { friendlyId };
+export const useParticipantProgress = (friendlyId, participantId) =>
+  useSWR(`/api/progress/${friendlyId}/${participantId}`, defaultFetcher(), {
+    suspense: true,
+  });
 
-//       const { surveyId, instanceId, participantId } = (
-//         await axios.post(
-//           url,
-//           params,
-//           withHeaders(await authorization_BearerToken())
-//         )
-//       ).data;
-
-//       // any problems, return an invalid friendlyId
-//       if (!instanceId) return encode(0, 0);
-
-//       friendlyId = encode(surveyId, instanceId);
-//       return { friendlyId, participantId };
-//     },
-//     { suspense: true }
-//   );
-// };
+export const requestParticipantProgress = async (
+  friendlyId,
+  participantId,
+  requestedPageKey
+) =>
+  await axios.post(
+    `/api/progress/${friendlyId}/${participantId}/${requestedPageKey}`
+  );
 
 export const useSurveyInstance = (surveyId, instanceId) =>
   useSWR(`/api/surveys/${surveyId}/instances/${instanceId}`, defaultFetcher(), {
