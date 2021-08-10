@@ -18,20 +18,20 @@ import Preview from "./Preview";
 
 // Do all the data fetching and validation ahead of rendering the survey
 const SurveyBootstrapper = ({ id: friendlyId }) => {
-  // can opt into preview mode from query string
-  const { preview: isPreview } = useQueryString();
-
   // we can lookup in progress participant Id's
   // to resume without prompting user for id
   const { instances, storeInstanceParticipantId } = useLocalInstances();
 
-  const [surveyId] = decode(friendlyId);
+  // technically, preview could bypass this, but hooks ¯\_(ツ)_/¯
   const { data: progress, mutate } = useParticipantProgress(
     friendlyId,
     instances[friendlyId]
   );
 
-  console.log(progress);
+  // can opt into preview mode from query string
+  const { preview: isPreview } = useQueryString();
+  const [surveyId] = decode(friendlyId);
+  if (isPreview) return <Preview id={surveyId} />;
 
   // behave differently based on progress state
   /* Valid Progress matrix
@@ -78,8 +78,6 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
 
   // Valid Survey Progress
   if (progress.page) {
-    if (isPreview) return <Preview id={surveyId} />;
-
     return (
       <Survey
         friendlyId={friendlyId}
@@ -94,7 +92,6 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
   return <LoadingIndicator />;
 };
 
-// TODO: move the callbacks out to static methods in the survey-bootstrap service
 const Survey = ({ friendlyId, participantId, progress, mutateProgress }) => {
   const { clearInstanceParticipantId } = useLocalInstances();
   const [isBusy, setIsBusy] = useState();

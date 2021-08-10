@@ -5,7 +5,6 @@ import {
   authorization_BearerToken,
 } from "./helpers";
 import axios from "axios";
-import { encode } from "services/instance-id";
 
 const urls = {
   instanceResultsSummary: (surveyId, instanceId) =>

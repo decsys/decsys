@@ -1,5 +1,9 @@
 // Randomizes a list within subgroups - leaves fixed items alone.
 
+// TODO: this is currently unused as real participant randomisation
+// is done server side by an exactly equivalent C# algorithm.
+// It may be used in future on the client side for preview mode
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
@@ -7,7 +11,7 @@ function shuffle(array) {
   }
 }
 
-export const randomize = randomFlags => {
+export const randomize = (randomFlags) => {
   const output = []; // we will add numbers from the input in order
 
   const a = Object.keys(randomFlags).reduce((a, key) => {

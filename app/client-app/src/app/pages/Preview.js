@@ -16,9 +16,15 @@ const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin`);
 
 const Preview = ({ id, location }) => {
+  // Preview uses a Survey's Page List directly
+  // it can't use progress as there is no participant
   const {
     data: { pages, settings },
   } = useSurvey(id);
+
+  // It therefore has to maintain its own progress state
+  // with regards to page order, and position
+  // TODO: consider adding randomisation
   const [page, setPage] = useState(0);
   const [lastPage, setLastPage] = useState(false);
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
