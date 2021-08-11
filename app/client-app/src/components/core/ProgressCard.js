@@ -72,8 +72,6 @@ const ProgressCard = ({
           {progressHeader && <Text>{progressHeader}</Text>}
           <Flex alignItems="center" flexWrap="wrap">
             {progressData.map((x, i) => {
-              console.log();
-
               // simple check if progress has a value or not
               let progressState = x.progress
                 ? progressStates.complete
