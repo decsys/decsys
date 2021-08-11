@@ -30,8 +30,6 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
     instances[friendlyId]
   );
 
-  console.log(progress);
-
   const [surveyId] = decode(friendlyId);
   if (isPreview) return <Preview id={surveyId} />;
 

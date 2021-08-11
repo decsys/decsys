@@ -1,4 +1,4 @@
-export { default as ActiveIndicator } from "./ActiveIndicator";
+export { ActiveIndicator, StateIndicator } from "./StateIndicator";
 export { default as EmptyState } from "./EmptyState";
 export { default as LoadingIndicator } from "./LoadingIndicator";
 export { default as StandardModal } from "./StandardModal";
