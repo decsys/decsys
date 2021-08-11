@@ -127,14 +127,14 @@ namespace Decsys.Services
         public async Task<byte[]> GetImage(int surveyId, Guid componentId, string extension)
             => await GetImage(surveyId, GetImageFilename(componentId, extension));
 
-
         public async Task<List<(string filename, byte[] bytes)>> ListSurveyImages(int surveyId)
         {
             List<(string filename, byte[] bytes)> images = new();
             var files = await Enumerate(surveyId);
 
-            foreach (var filename in files)
+            foreach (var filePath in files)
             {
+                var filename = Path.GetFileName(filePath);
                 var bytes = await File.ReadAllBytesAsync(
                     Path.Combine(SurveyImagesPath(surveyId), filename));
                 images.Add((filename, bytes));
