@@ -1,7 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+
 using Decsys.Services.Contracts;
+
 using Newtonsoft.Json;
+
 using UoN.ZipBuilder;
 
 namespace Decsys.Services
@@ -40,8 +43,8 @@ namespace Decsys.Services
                     "structure.json");
 
             // if this survey has any images uploaded, add them
-            foreach(var (filename, bytes) in await _images.ListSurveyImages(surveyId))
-                zipBuilder = zipBuilder.AddBytes(bytes, filename);
+            foreach (var (filename, bytes) in await _images.ListSurveyImages(surveyId))
+                zipBuilder = zipBuilder.AddBytes(bytes, $"images/{filename}");
 
             return zipBuilder;
         }
