@@ -76,7 +76,11 @@ an ip address where your machine can access DECSYS, such as
               </Text>
             </Alert>
           )}
-          <CopyableTextPanel label="Survey URL:" value={surveyUrl} />
+          <CopyableTextPanel
+            buttonScheme="blue"
+            label="Survey URL"
+            value={surveyUrl}
+          />
         </Stack>
 
         <Text pb={2} as="div" className="markdown-body">

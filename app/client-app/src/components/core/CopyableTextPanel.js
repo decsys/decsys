@@ -9,7 +9,12 @@ import {
 import { useState } from "react";
 import { FaCheck, FaCopy } from "react-icons/fa";
 
-export const CopyableTextPanel = ({ label, value }) => {
+export const CopyableTextPanel = ({
+  label,
+  value,
+  hideCopyButton,
+  buttonScheme = "gray",
+}) => {
   const [copyButton, setCopyButton] = useState({
     leftIcon: <FaCopy />,
     children: "Copy",
@@ -20,6 +25,15 @@ export const CopyableTextPanel = ({ label, value }) => {
       leftIcon: <FaCheck />,
       children: "Copied!",
     });
+
+    setTimeout(
+      () =>
+        setCopyButton({
+          leftIcon: <FaCopy />,
+          children: "Copy",
+        }),
+      2000
+    );
   };
 
   return (
@@ -30,15 +44,18 @@ export const CopyableTextPanel = ({ label, value }) => {
         </InputLeftAddon>
       )}
       <Input variant="filled" readOnly value={value} />
-      <InputRightElement w="5rem">
-        <Button
-          colorScheme="blue"
-          size="sm"
-          h="1.75rem"
-          {...copyButton}
-          onClick={onCopyClick}
-        />
-      </InputRightElement>
+      {!hideCopyButton && (
+        <InputRightElement w="5rem">
+          <Button
+            colorScheme={buttonScheme}
+            size="sm"
+            h="1.75rem"
+            {...copyButton}
+            transition="linear .1s content"
+            onClick={onCopyClick}
+          />
+        </InputRightElement>
+      )}
     </InputGroup>
   );
 };
