@@ -41,7 +41,7 @@ const getDataByPage = (survey, results) => {
     Object.keys(results.participants).reduce((a, k) => {
       const { id } = results.participants[k];
       // but in resultsByPage they're 1-indexed, as noted above
-      a[id] = !!resultsByPage[i + 1] && !!resultsByPage[i + 1][id];
+      a[id] = !!resultsByPage[i + 1] && resultsByPage[i + 1][id];
       return a;
     }, {})
   );
@@ -119,7 +119,7 @@ const Dashboard = ({ combinedId }) => {
                   progressData={
                     !noProgressMessage // this is a reliable determinator of the presence of progress data
                       ? Object.keys(completionData).map((id) => ({
-                          complete: completionData[id],
+                          progress: completionData[id],
                         }))
                       : []
                   }

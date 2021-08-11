@@ -8,9 +8,11 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
-import { ActiveIndicator } from ".";
 import LightHeading from "./LightHeading";
 import { defaultColorMode } from "themes";
+import { statePresets, StateIndicator } from "./StateIndicator";
+import { FaEllipsisH } from "react-icons/fa";
+import { isPlainObject } from "lodash-es";
 
 const ProgressCard = ({
   title,
@@ -31,6 +33,12 @@ const ProgressCard = ({
   progressData = !missingDataCount
     ? progressData
     : [...progressData, ...Array(missingDataCount).fill({})];
+
+  const progressStates = {
+    none: { ...statePresets.inactive, label: "Incomplete" },
+    skipped: { label: "Skipped", color: "yellow.300", icon: FaEllipsisH },
+    complete: { ...statePresets.active, label: "Complete" },
+  };
 
   return (
     <Grid
@@ -63,18 +71,31 @@ const ProgressCard = ({
         <Flex flexDirection="column">
           {progressHeader && <Text>{progressHeader}</Text>}
           <Flex alignItems="center" flexWrap="wrap">
-            {progressData.map((x, i) => (
-              <Flex key={i} m="0.1em">
-                <ActiveIndicator
-                  p={lowProfile ? 0.5 : 2}
-                  active={x.complete}
-                  tooltips={{
-                    [true]: "Complete",
-                    [false]: "Incomplete",
-                  }}
-                />
-              </Flex>
-            ))}
+            {progressData.map((x, i) => {
+              console.log();
+
+              // simple check if progress has a value or not
+              let progressState = x.progress
+                ? progressStates.complete
+                : progressStates.none;
+
+              // then check if its value is an empty object
+              if (
+                x.progress &&
+                isPlainObject(x.progress) &&
+                Object.keys(x.progress).length === 0
+              )
+                progressState = progressStates.skipped;
+
+              return (
+                <Flex key={i} m="0.1em">
+                  <StateIndicator
+                    p={lowProfile ? 0.5 : 2}
+                    state={progressState}
+                  />
+                </Flex>
+              );
+            })}
           </Flex>
         </Flex>
       )}

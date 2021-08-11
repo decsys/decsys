@@ -8,6 +8,7 @@ using AutoMapper;
 using Decsys.Constants;
 using Decsys.Mapping;
 using Decsys.Models;
+using Decsys.Models.EventPayloads;
 using Decsys.Repositories.Contracts;
 
 using LiteDB;
@@ -179,9 +180,7 @@ namespace Decsys.Services
                     EventTypes.PAGE_RANDOMIZE);
             if (orderEvent is null) return resultsSummary;
 
-            var order = ((dynamic)orderEvent.Payload)
-                .order
-                .ToObject<IList<string>>();
+            var order = orderEvent.Payload.ToObject<PageRandomizeEventPayload>().Order;
 
             foreach (var page in instance.Survey.Pages.OrderBy(x => x.Order))
             {
