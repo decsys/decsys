@@ -16,8 +16,11 @@ namespace Decsys.Models
         /// <summary>
         /// <para>Replacement Participant Id issued by the server which should be used to progress further.</para>
         /// <para>
-        /// This occurs if the originally provided participant id has completed the survey, but repeats are allowed:
-        /// repeats should use the provided progress state and the new id.
+        /// This occurs if the originally provided participant id has completed the survey
+        /// but repeats are allowed and the server generates an id (i.e. not gathered interactively).
+        /// </para>
+        /// <para>
+        /// If populated, a new progress request with the new id should be made.
         /// </para>
         /// </summary>
         public string? NewParticipantId { get; set; }
@@ -28,9 +31,8 @@ namespace Decsys.Models
         public Page? Page { get; set; }
 
         /// <summary>
-        /// Is the participant's current page the last one in their order.
-        ///
-        /// Just information for the UI to respond to (changes "Next" to "Finish" for example).
+        /// <para>Is the participant's current page the last one in their order.</para>
+        /// <para>Just information for the UI to respond to (changes "Next" to "Finish" for example).</para>
         /// </summary>
         // TODO: Will cease to be relevant when progress provides an ordered pages map
         public bool IsLastPage { get; set; }
@@ -44,7 +46,7 @@ namespace Decsys.Models
 
         /// <summary>
         /// <para>
-        /// Indicates whether this instance expectes Participants to provide Ids,
+        /// Indicates whether this instance expects Participants to provide Ids,
         /// instead of the server generating them.
         /// </para>
         /// <para>

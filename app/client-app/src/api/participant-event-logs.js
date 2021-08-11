@@ -1,5 +1,5 @@
 import axios from "axios";
-import useSWR, { cache } from "swr";
+import useSWR from "swr";
 import { withHeaders, contentType_AppJson, defaultFetcher } from "./helpers";
 
 export const logParticipantEvent = async (

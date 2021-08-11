@@ -36,7 +36,10 @@ namespace Decsys.Data
         private LiteDatabase Connect(string connectionString)
         {
             if (!_connections.ContainsKey(connectionString))
+            {
                 _connections[connectionString] = new LiteDatabase(connectionString);
+                _connections[connectionString].CheckpointSize = 1;
+            }
             return _connections[connectionString];
         }
 

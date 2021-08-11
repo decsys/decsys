@@ -21,9 +21,13 @@ export const getExternalSurveyDetails = async (params) =>
   ).data;
 
 export const useSurveyInstance = (surveyId, instanceId) =>
-  useSWR(`/api/surveys/${surveyId}/instances/${instanceId}`, defaultFetcher(), {
-    suspense: true,
-  });
+  useSWR(
+    `/api/surveys/${surveyId}/instances/${instanceId}`,
+    defaultFetcher(true),
+    {
+      suspense: true,
+    }
+  );
 
 export const useSurveyInstancesList = (surveyId) =>
   useSWR(`/api/surveys/${surveyId}/instances`, defaultFetcher(true), {

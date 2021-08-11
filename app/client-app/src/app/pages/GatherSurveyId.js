@@ -31,6 +31,8 @@ export const GatherSurveyId = () => {
 
       const friendlyId = encode(surveyId, instanceId);
 
+      // TODO: if we ever allow repeatable surveys by external params
+      // we'll need to validate id here, like we do with manual entry
       if (participantId) storeInstanceParticipantId(friendlyId, participantId);
 
       navigate(buildSurveyUrl(friendlyId, preview));

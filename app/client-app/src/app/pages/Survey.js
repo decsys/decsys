@@ -58,12 +58,7 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
 
   // Interactively get Participant Id
   if (!progress.participantId && !progress.newParticipantId)
-    return (
-      <ParticipantIdEntry
-        combinedId={friendlyId}
-        // TODO: server side valid identifier check
-      />
-    );
+    return <ParticipantIdEntry friendlyId={friendlyId} />;
 
   storeInstanceParticipantId(
     friendlyId,
@@ -143,7 +138,7 @@ const Survey = ({ friendlyId, participantId, progress, mutateProgress }) => {
         mutateProgress(progress);
       } else {
         // progress; just mutate our local progress and proceed
-        await mutateProgress(progress);
+        await mutateProgress(progress, true);
       }
     } catch (e) {
       console.error(e);
