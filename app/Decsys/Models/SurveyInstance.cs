@@ -8,7 +8,7 @@ namespace Decsys.Models
         /// <summary>
         /// Create a SurveyInstance belong to a given Survey.
         /// </summary>
-        /// <param name="surveyId">ID of the owning Survey.</param>
+        /// <param name="survey">The owning Survey.</param>
         public SurveyInstance(Survey survey)
         {
             Survey = survey;

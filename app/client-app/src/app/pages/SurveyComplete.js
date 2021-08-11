@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Page, EmptyState } from "components/core";
-import { Flex } from "@chakra-ui/react";
+import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
 import { FaCheck } from "react-icons/fa";
-import { useSurveyInstance } from "api/survey-instances";
-import { decode } from "services/instance-id";
+import { useParticipantProgress } from "api/participant-event-logs";
 import ErrorBoundary from "components/ErrorBoundary";
 import SurveyNotFoundError from "./SurveyNotFoundError";
 import { useLocalInstances } from "app/contexts/LocalInstances";
+import { navigate } from "@reach/router";
 
 const SurveyComplete = ({ id }) => {
   // if Participants enter Identifiers,
@@ -15,18 +15,43 @@ const SurveyComplete = ({ id }) => {
 
   // We don't clear auto-generated ID's, to ensure we can track non-repeatable completion.
 
-  const { data: instance } = useSurveyInstance(...decode(id));
-  const { clearInstanceParticipantId } = useLocalInstances();
+  const { instances, clearInstanceParticipantId } = useLocalInstances();
+  const { data: progress } = useParticipantProgress(id, instances[id]);
 
   useEffect(() => {
-    if (instance.useParticipantIdentifiers) clearInstanceParticipantId(id);
-  }, [id, instance, clearInstanceParticipantId]);
+    if (progress.useParticipantIdentifiers) clearInstanceParticipantId(id);
+  }, [id, progress, clearInstanceParticipantId]);
+
+  const externalCompletionUrl = progress.settings?.CompletionUrl;
 
   return (
     <Page>
-      <Flex mt={5}>
-        <EmptyState message="Survey Complete!" splash={FaCheck} />
-      </Flex>
+      <Stack mt={5}>
+        {externalCompletionUrl && (
+          <Alert status="info" flexDirection="column">
+            <AlertIcon />
+            <p>
+              This Survey is accessed via an external service. You should have
+              been redirected there upon completion.
+            </p>
+
+            <p>
+              If something went wrong, you can follow the completion link again
+              below.
+            </p>
+          </Alert>
+        )}
+        <EmptyState
+          message="Survey Complete!"
+          splash={FaCheck}
+          callToAction={
+            externalCompletionUrl && {
+              label: "Return to External Survey Provider",
+              onClick: () => navigate(externalCompletionUrl),
+            }
+          }
+        />
+      </Stack>
     </Page>
   );
 };

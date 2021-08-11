@@ -1,11 +1,15 @@
 using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using Swashbuckle.AspNetCore.Annotations;
+
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Decsys.Controllers
 {
@@ -16,13 +20,16 @@ namespace Decsys.Controllers
     {
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _participantEvents;
+        private readonly IAuthorizationService _auth;
 
         public InstancesController(
             SurveyInstanceService instances,
-            ParticipantEventService participantEvents)
+            ParticipantEventService participantEvents,
+            IAuthorizationService auth)
         {
             _instances = instances;
             _participantEvents = participantEvents;
+            _auth = auth;
         }
 
         [HttpGet("{instanceId}/results")]
@@ -72,11 +79,21 @@ namespace Decsys.Controllers
         [SwaggerResponse(200, "The Survey Instance.", Type = typeof(SurveyInstance))]
         [SwaggerResponse(404, "No Survey Instance, or Survey, was found with the provided ID.")]
         [AllowAnonymous]
-        public IActionResult Get(int id, int instanceId)
+        public async Task<ActionResult<SurveyInstance>> Get(int id, int instanceId)
         {
             try
             {
-                return Ok(_instances.Get(id, instanceId));
+                var instance = _instances.Get(id, instanceId);
+                var canManageSurvey = await _auth.AuthorizeAsync(User, HttpContext, nameof(AuthPolicies.CanManageSurvey));
+                
+                if(!canManageSurvey.Succeeded)
+                {
+                    // hide private stuff if user not authorized
+                    instance.ValidIdentifiers = new();
+                    instance.Survey.ValidIdentifiers = new();
+                }
+
+                return instance;
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }

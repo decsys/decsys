@@ -77,7 +77,19 @@ namespace Decsys.Controllers
         [SwaggerResponse(200, "The looked up Survey details")]
         [AllowAnonymous]
         public ActionResult<ExternalLookupDetails> LookupExternal(JObject model)
-            => _surveys.LookupExternal(model);
+        {
+            try
+            {
+                return _surveys.LookupExternal(model);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e);
+            } catch (KeyNotFoundException e)
+            {
+                return NotFound(e);
+            }
+        }
 
         [HttpPost]
         [SwaggerOperation("Create a new Survey.")]

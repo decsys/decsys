@@ -1,5 +1,6 @@
 import axios from "axios";
-import { withHeaders, contentType_AppJson } from "./helpers";
+import useSWR from "swr";
+import { withHeaders, contentType_AppJson, defaultFetcher } from "./helpers";
 
 export const logParticipantEvent = async (
   instanceId,
@@ -27,3 +28,19 @@ export const getLastLogEntryByTypeOnly = async (
   participantId,
   type
 ) => await axios.get(`/api/log/${instanceId}/${participantId}/${type}`);
+
+export const useParticipantProgress = (friendlyId, participantId) => {
+  const url = `/api/progress/${friendlyId}/${participantId ?? ""}`;
+  return useSWR(friendlyId ? url : null, defaultFetcher(), {
+    suspense: true,
+  });
+};
+
+export const requestParticipantProgress = async (
+  friendlyId,
+  participantId,
+  requestedPageKey
+) =>
+  await axios.post(
+    `/api/progress/${friendlyId}/${participantId}/${requestedPageKey}`
+  );
