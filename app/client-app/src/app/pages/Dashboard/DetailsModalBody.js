@@ -77,7 +77,7 @@ const DetailsModalBody = ({ surveyId, page, results, completion }) => {
     return (
       <Alert status="warning">
         <AlertIcon />
-        There is no data for this question yet.
+        There are no data for this question yet.
       </Alert>
     );
   }
