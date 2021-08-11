@@ -236,7 +236,7 @@ const CreateSurveyModal = ({
                     `${window.location.origin.replace(
                       "localhost",
                       "<ip-address>"
-                    )}/ext`
+                    )}/survey`
                   )}
                 />
                 <Field name="prolificStudyId">
