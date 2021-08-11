@@ -12,6 +12,8 @@ using Decsys.Repositories.Contracts;
 
 using LiteDB;
 
+using Newtonsoft.Json.Linq;
+
 namespace Decsys.Services
 {
     public class ParticipantEventService
@@ -201,7 +203,7 @@ namespace Decsys.Services
                 // e.g. if the survey is still in progress
                 if (pageLoadEvent is null) continue;
 
-                resultsSummary.Responses.Add(new PageResponseSummary
+                var response = new PageResponseSummary
                 {
                     Page = page.Order,
                     ResponseType = responseComponent.Type,
@@ -210,7 +212,32 @@ namespace Decsys.Services
                         ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
                     Response = finalResponse?.Payload,
                     Order = order.IndexOf(page.Id.ToString()) + 1
-                });
+                };
+
+                // If it looks like we haven't recorded a response, even though the page loaded
+                // check if we have also left the page without a response, and have therefore skipped it
+                if(response.Response is null)
+                {
+                    // This is the event for *leaving* this page; we can use it to calculate skipped pages
+                    var pageNavEvent = FindLast(
+                        instance.Id,
+                        participantId,
+                        page.Id.ToString(),
+                        EventTypes.PAGE_NAVIGATION);
+
+                    // only consider skipped if leaving was after loading;
+                    // we may have returned to answer it!
+                    // e.g. by the nav request being denied, or back navigation
+                    if (pageNavEvent?.Timestamp > pageLoadEvent.Timestamp)
+                    {
+                        // Set the response value to an empty object,
+                        // to indicate that we are explicitly recording NO response,
+                        // rather than not recording any response.
+                        response.Response = JObject.Parse("{}");
+                    }
+                }
+
+                resultsSummary.Responses.Add(response);
             }
 
             return resultsSummary;

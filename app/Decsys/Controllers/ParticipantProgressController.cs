@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace Decsys.Controllers
@@ -253,7 +254,7 @@ namespace Decsys.Controllers
                     $"{participantId} progress state doesn't allow further navigation");
             }
 
-            // TODO: we *could* validate that a response has been logged for mandatory questions?
+            // TODO: confirm that mandatory response items have had responses recorded before leaving the current page!
 
             // Currently, we never allow page skips or back navigation.
             // So if a specific page is requested, we should check that it's the next page in order

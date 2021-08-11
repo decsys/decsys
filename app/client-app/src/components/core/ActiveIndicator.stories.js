@@ -1,4 +1,4 @@
-import ActiveIndicator from "./ActiveIndicator";
+import { ActiveIndicator } from "./StateIndicator";
 
 export default {
   title: "Core UI/ActiveIndicator",
