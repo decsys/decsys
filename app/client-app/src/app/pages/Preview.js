@@ -26,17 +26,28 @@ const Preview = ({ id, location }) => {
   // with regards to page order, and position
   // TODO: consider adding randomisation
   const [page, setPage] = useState(0);
+  const [isBusy, setIsBusy] = useState();
   const [lastPage, setLastPage] = useState(false);
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
   const confirmRedirectModal = useDisclosure();
 
-  const handleClick = () => {
+  const handleClick = async () => {
+    // you'd think busy state in preview wouldn't be worth it
+
+    setIsBusy(true);
+
+    // but in practice it resets scrolling between different page content ;)
+    // as long as it takes a non "zero" amount of time
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
     if (lastPage) {
       if (settings?.CompletionUrl) confirmRedirectModal.onOpen();
       else return navigateBack(location);
     } else {
       setPage(page + 1);
     }
+
+    setIsBusy(false);
   };
 
   return (
@@ -46,6 +57,7 @@ const Preview = ({ id, location }) => {
         page={pages[page]}
         lastPage={lastPage}
         handleNextClick={handleClick}
+        isBusy={isBusy}
       />
       <ConfirmRedirectModal
         modalState={confirmRedirectModal}
