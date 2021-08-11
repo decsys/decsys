@@ -9,12 +9,16 @@ const ParamsEditor = ({ component, params, handleParamChange }) => {
     const p = component.params[key];
     if (!p) continue;
     list.push([
-      <Text key={`${key}-label`} textAlign="right" fontWeight="bold">
+      <Text
+        key={`${component.id}-${key}-label`}
+        textAlign="right"
+        fontWeight="bold"
+      >
         {p.label}
       </Text>,
       <Param
-        key={`${key}-value`}
-        value={params[key] || p.defaultValue}
+        key={`${component.id}-${key}-value`}
+        value={params[key] || (p.defaultValue ?? "")}
         type={p.type}
         paramKey={key}
         oneOf={p.oneOf}

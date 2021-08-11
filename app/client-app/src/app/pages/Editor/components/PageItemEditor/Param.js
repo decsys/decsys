@@ -10,14 +10,18 @@ import {
   Checkbox,
   Select,
 } from "@chakra-ui/react";
+import { useDerivedState } from "hooks/useDerivedState";
+import useDeferredAction from "hooks/useDeferredAction";
 
-const useDelayedChangeHandler = (paramKey, init, onChange) => {
-  const [timer, setTimer] = useState();
+const useDeferredChangeHandler = (paramKey, init, onChange) => {
+  const [value, setValue] = useDerivedState(init);
 
-  const [value, setValue] = useState(init); // we use local state so updates work without delay
-  useEffect(() => setValue(init), [init]); // but still ensure update when new props come in
+  const deferredOnChange = useDeferredAction(
+    (inputValue) => onChange(paramKey, inputValue),
+    500
+  );
 
-  const delayedHandleValueChange = (e) => {
+  const handleValueChange = (e) => {
     //at time of writing,
     //Number Inputs send string values;
     //everything else sends SyntheticEvents
@@ -28,37 +32,31 @@ const useDelayedChangeHandler = (paramKey, init, onChange) => {
         break;
       case "object":
         inputValue = e.target.value;
-        e.persist();
         break;
       default:
         throw new TypeError("expected a SyntheticEvent or a string");
     }
 
-    setValue(inputValue); // update our local state
-
-    //delay, then fire the onChange passed in to update remote state
-    clearTimeout(timer); // reset the delay timer every change
-    setTimer(setTimeout(() => onChange(paramKey, inputValue), 500));
+    setValue(inputValue);
+    deferredOnChange(inputValue);
   };
 
-  return [value, delayedHandleValueChange];
+  return [value, handleValueChange];
 };
 
 const Param = ({ paramKey, value, type, oneOf, onChange }) => {
   // use this for text inputs to allow the user to finish changing things
   // before saving
-  const [text, delayedHandleChange] = useDelayedChangeHandler(
+  const [text, deferredHandleChange] = useDeferredChangeHandler(
     paramKey,
     value,
     onChange
   );
 
   const handleCheckedChange = (e) => {
-    e.persist();
     onChange(paramKey, e.target.checked);
   };
   const handleValueChange = (e) => {
-    e.persist();
     onChange(paramKey, e.target.value);
   };
 
@@ -69,7 +67,7 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
           <Input
             size="sm"
             type="text"
-            onChange={delayedHandleChange}
+            onChange={deferredHandleChange}
             value={text}
           />
         );
@@ -90,13 +88,13 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
           <NumberInput
             size="sm"
             step={1}
-            defaultValue={text}
-            onChange={delayedHandleChange}
+            value={text}
+            onChange={deferredHandleChange}
           >
             <NumberInputField />
             <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
+              <NumberIncrementStepper onClick={handleValueChange} />
+              <NumberDecrementStepper onClick={handleValueChange} />
             </NumberInputStepper>
           </NumberInput>
         );

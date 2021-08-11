@@ -4,6 +4,8 @@ import LightHeading from "components/core/LightHeading";
 const PageHeading = ({ text, xMargin, color, variant, ...p }) => {
   const size = { h1: "2xl", h2: "xl", h3: "lg", h4: "md", h5: "sm" }[variant];
 
+  console.log(xMargin);
+
   return (
     // we set color in standard CSS,
     // so that simple CSS color names work e.g. "red"
@@ -12,9 +14,11 @@ const PageHeading = ({ text, xMargin, color, variant, ...p }) => {
       as={variant}
       size={size}
       {...p}
-      mr={p.textAlign === "right" ? `${xMargin}%` : 0}
-      ml={p.textAlign === "left" ? `${xMargin}%` : 0}
-      style={{ color }}
+      style={{
+        color,
+        marginLeft: p.textAlign === "left" ? `${xMargin}%` : 0,
+        marginRight: p.textAlign === "right" ? `${xMargin}%` : 0,
+      }}
     >
       {text}
     </LightHeading>
