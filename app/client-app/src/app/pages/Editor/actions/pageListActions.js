@@ -10,7 +10,7 @@ import { setSurveyPageItemOrder } from "api/page-items";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
 
-export default (id, mutate, selectedPageItem, setSelectedPageItem) => ({
+const actions = (id, mutate, selectedPageItem, setSelectedPageItem) => ({
   addPage: async () => {
     const tempId = uuid();
     mutate(
@@ -103,3 +103,5 @@ export default (id, mutate, selectedPageItem, setSelectedPageItem) => ({
   },
   mutate,
 });
+
+export default actions;

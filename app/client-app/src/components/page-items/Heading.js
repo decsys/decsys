@@ -12,9 +12,11 @@ const PageHeading = ({ text, xMargin, color, variant, ...p }) => {
       as={variant}
       size={size}
       {...p}
-      mr={p.textAlign === "right" ? `${xMargin}%` : 0}
-      ml={p.textAlign === "left" ? `${xMargin}%` : 0}
-      style={{ color }}
+      style={{
+        color,
+        marginLeft: p.textAlign === "left" ? `${xMargin}%` : 0,
+        marginRight: p.textAlign === "right" ? `${xMargin}%` : 0,
+      }}
     >
       {text}
     </LightHeading>

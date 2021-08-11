@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Icon,
   Textarea,
@@ -12,6 +12,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaInfoCircle, FaExternalLinkAlt } from "react-icons/fa";
+import { useDerivedState } from "hooks/useDerivedState";
+import useDeferredAction from "hooks/useDeferredAction";
 
 const PageParagraphEditor = ({
   _context: { handleParamChange },
@@ -20,18 +22,15 @@ const PageParagraphEditor = ({
 }) => {
   const [gfmVisible, setGfmVisible] = useState(true);
 
-  const [timer, setTimer] = useState();
-
-  const [text, setText] = useState(params.text); // we use local state so updates work without delay
-  useEffect(() => setText(params.text), [params]); // but still ensure update when new name props come in
+  const [text, setText] = useDerivedState(params.text); // we use local state so updates work without delay
+  const deferredSave = useDeferredAction(
+    (value) => handleParamChange("text", value),
+    1000
+  );
 
   const handleChange = (e) => {
-    setText(e.target.value); //update local state
-    e.persist(); // tell React we want the event to have a longer lifetime than this scope
-    //delay, then fire the onChange passed in
-    clearTimeout(timer); // reset the delay timer every change
-    setTimer(setTimeout(() => handleParamChange("text", e.target.value), 1000));
-    // TODO: read about debouncing
+    setText(e.target.value);
+    deferredSave(e.target.value);
   };
   return (
     <Tabs onChange={(i) => setGfmVisible(!i)}>

@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
 import { getSortedLookup, getFilteredLookup } from "./helpers";
 
-export const useSortingAndFiltering = surveys => {
-  const [sorting, setSorting] = useState({ key: "name", name: true });
+const storageKey = "surveys.sorting";
+
+export const useSortingAndFiltering = (surveys) => {
+  const [sorting, setSorting] = useState(
+    JSON.parse(localStorage.getItem(storageKey)) || {
+      key: "name",
+      name: true,
+    }
+  );
+
   const [sortedSurveys, setSortedSurveys] = useState([]);
   const [filter, setFilter] = useState("");
   const [filteredSurveys, setFilteredSurveys] = useState([]);
@@ -12,6 +20,8 @@ export const useSortingAndFiltering = surveys => {
     setSortedSurveys(
       getSortedLookup(surveys, sorting.key, sorting[sorting.key])
     );
+    // also save the new sort for next time
+    localStorage.setItem(storageKey, JSON.stringify(sorting));
   }, [surveys, sorting]);
 
   // update the filtered list appropriately
@@ -24,6 +34,6 @@ export const useSortingAndFiltering = surveys => {
     setSorting,
     filter,
     setFilter,
-    surveyList: filteredSurveys
+    surveyList: filteredSurveys,
   };
 };

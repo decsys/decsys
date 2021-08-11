@@ -24,6 +24,7 @@ import gfm from "remark-gfm";
 import "github-markdown-css";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import { object, string } from "yup";
+import { CopyableTextPanel } from "components/core/CopyableTextPanel";
 
 // There are a number of ways to create a survey: Blank, Import, Duplicate etc.
 // But they also all require some common follow up information
@@ -42,14 +43,13 @@ const validationSchema = object().shape({
   }),
 });
 
-const SetupGuide = ({ markdown }) => {
+const SetupGuide = ({ markdown, surveyUrl }) => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
     <Stack
       bg="gray.200"
       borderRadius={5}
-      onClick={onToggle}
       alignItems="center"
       spacing={0}
       boxShadow=""
@@ -60,6 +60,29 @@ const SetupGuide = ({ markdown }) => {
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
+        <Stack p={2}>
+          {surveyUrl?.includes("<ip-address>") && (
+            <Alert status="warning">
+              <AlertIcon />
+
+              <Text as="div" className="markdown-body">
+                <ReactMarkdown
+                  source={`
+Since you're running in **Workshop Mode**, you'll need to provide
+an ip address where your machine can access DECSYS, such as
+\`127.0.0.1\`
+            `}
+                />
+              </Text>
+            </Alert>
+          )}
+          <CopyableTextPanel
+            buttonScheme="blue"
+            label="Survey URL"
+            value={surveyUrl}
+          />
+        </Stack>
+
         <Text pb={2} as="div" className="markdown-body">
           <ReactMarkdown
             plugins={[gfm]}
@@ -72,10 +95,9 @@ const SetupGuide = ({ markdown }) => {
   );
 };
 
-const prolificInstructions = (surveyUrl) => `
+const prolificInstructions = `
 1. Create your study in [Prolific]("https://prolific.co")
-1. Provide the following survey url:
-    - \`${surveyUrl}\`
+1. Provide the **Survey URL** (above)
 1. When asked **"How do you want to record Prolific IDs?"**
     - Choose **"I'll use URL parameters"**
     - You can leave the default settings
@@ -132,6 +154,11 @@ const CreateSurveyModal = ({
     actions.setSubmitting(false);
     actions.resetForm();
   };
+
+  const externalSurveyUrl = `${window.location.origin.replace(
+    "localhost",
+    "<ip-address>"
+  )}/survey`;
 
   return (
     <Formik
@@ -232,12 +259,8 @@ const CreateSurveyModal = ({
 
               <Stack hidden={values.type !== "prolific"}>
                 <SetupGuide
-                  markdown={prolificInstructions(
-                    `${window.location.origin.replace(
-                      "localhost",
-                      "<ip-address>"
-                    )}/ext`
-                  )}
+                  surveyUrl={externalSurveyUrl}
+                  markdown={prolificInstructions}
                 />
                 <Field name="prolificStudyId">
                   {(rp) => (

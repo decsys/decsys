@@ -106,7 +106,7 @@ const Dashboard = ({ combinedId }) => {
 
               let noProgressMessage; // If there's no progress data, display a relevant message
               if (!isResponsePage)
-                noProgressMessage = "This page doesn't gather reponses.";
+                noProgressMessage = "This page doesn't gather responses.";
               if (!Object.keys(completionData).length)
                 noProgressMessage =
                   "The survey doesn't have any participants yet.";
