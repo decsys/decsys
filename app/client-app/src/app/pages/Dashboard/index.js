@@ -9,14 +9,24 @@ import {
 import { decode } from "services/instance-id";
 import { useSurvey } from "api/surveys";
 import { useSurveyInstanceResultsSummary } from "api/survey-instances";
-import { Alert, AlertIcon, Flex, Stack, useDisclosure } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertIcon,
+  Badge,
+  Flex,
+  Icon,
+  Stack,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import {
   dateTimeOffsetStringComparer,
   exportDateFormat as formatDate,
 } from "services/date-formats";
 import DetailsModalBody from "./DetailsModalBody";
-import { getPageResponseItem } from "services/page-items";
+import { getPageResponseItem, getComponent } from "services/page-items";
+import { FaQuestion } from "react-icons/fa";
 
 const getDataByPage = (survey, results) => {
   // sort participants consistently,
@@ -101,7 +111,8 @@ const Dashboard = ({ combinedId }) => {
         {surveyHasPages && !isLoading && (
           <Stack boxShadow="callout" spacing={0}>
             {survey.pages.map((p, i) => {
-              const isResponsePage = !!getPageResponseItem(p.components);
+              const responseItem = getPageResponseItem(p.components);
+              const isResponsePage = !!responseItem;
               const completionData = completionByPage[i]; // 0-indexed array, matching `survey.pages`
 
               let noProgressMessage; // If there's no progress data, display a relevant message
@@ -114,6 +125,21 @@ const Dashboard = ({ combinedId }) => {
                 <ProgressCard
                   key={i}
                   title={`Page ${i + 1}`}
+                  progressHeader={
+                    isResponsePage && (
+                      <Badge p={1}>
+                        <Stack direction="row" align="center">
+                          <Icon
+                            as={
+                              getComponent(responseItem.type)?.icon ||
+                              FaQuestion
+                            }
+                          />
+                          <Text>{responseItem.type}</Text>
+                        </Stack>
+                      </Badge>
+                    )
+                  }
                   cardHeaderWidth="100px"
                   total={results.participants.length}
                   progressData={

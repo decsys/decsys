@@ -71,7 +71,7 @@ StateIndicator.propTypes = {
   state: PropTypes.shape({
     color: PropTypes.string.isRequired,
     label: PropTypes.string,
-    icon: PropTypes.node,
+    icon: PropTypes.elementType,
   }),
 };
 

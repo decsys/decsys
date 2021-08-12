@@ -1,10 +1,11 @@
-import { FaCheck, FaEllipsisH, FaTimes } from "react-icons/fa";
+import { FaEllipsisH } from "react-icons/fa";
 import { StateIndicator, statePresets } from "./StateIndicator";
 
-export default {
+const story = {
   title: "Core UI/StateIndicator",
   component: StateIndicator,
 };
+export default story;
 
 export const Incomplete = () => (
   <StateIndicator state={statePresets.inactive} />
