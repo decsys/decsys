@@ -69,7 +69,7 @@ const ProgressCard = ({
         </Flex>
       ) : (
         <Flex flexDirection="column">
-          {progressHeader && <Text>{progressHeader}</Text>}
+          {progressHeader && progressHeader}
           <Flex alignItems="center" flexWrap="wrap">
             {progressData.map((x, i) => {
               // simple check if progress has a value or not
@@ -104,7 +104,7 @@ const ProgressCard = ({
 ProgressCard.propTypes = {
   title: PropTypes.string.isRequired,
   onClick: PropTypes.func,
-  progressHeader: PropTypes.string,
+  progressHeader: PropTypes.node,
   progressData: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string,
