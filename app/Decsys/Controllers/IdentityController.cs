@@ -49,7 +49,8 @@ namespace Decsys.Controllers
         /// <c>404</c> if no valid id/instance found.
         /// </para>
         /// </summary>
-        /// <param name="friendlyId"></param>
+        /// <param name="surveyId"></param>
+        /// <param name="instanceId"></param>
         /// <param name="participantId"></param>
         /// <returns></returns>
         [HttpGet("validate/{surveyId}/{instanceId}/{participantId}")]
