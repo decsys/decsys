@@ -52,10 +52,9 @@ namespace Decsys.Controllers
         /// <param name="friendlyId"></param>
         /// <param name="participantId"></param>
         /// <returns></returns>
-        [HttpGet("validate/{friendlyId}/{participantId}")]
-        public ActionResult<string> ValidateParticipantId(string friendlyId, string participantId)
+        [HttpGet("validate/{surveyId}/{instanceId}/{participantId}")]
+        public ActionResult<string> ValidateParticipantId(int surveyId, int instanceId, string participantId)
         {
-            var (surveyId, instanceId) = InstanceIdService.Decode(friendlyId);
             var instance = _instances.Get(surveyId, instanceId);
 
             if (instance is null) return NotFound();
