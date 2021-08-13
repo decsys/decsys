@@ -130,6 +130,7 @@ const Dashboard = ({ combinedId }) => {
                       <Badge p={1}>
                         <Stack direction="row" align="center">
                           <Icon
+                            size="1em"
                             as={
                               getComponent(responseItem.type)?.icon ||
                               FaQuestion
