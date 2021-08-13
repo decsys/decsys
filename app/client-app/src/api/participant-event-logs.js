@@ -1,4 +1,5 @@
 import axios from "axios";
+import { decode } from "services/instance-id";
 import useSWR from "swr";
 import { withHeaders, contentType_AppJson, defaultFetcher } from "./helpers";
 
@@ -30,8 +31,12 @@ export const getLastLogEntryByTypeOnly = async (
 ) => await axios.get(`/api/log/${instanceId}/${participantId}/${type}`);
 
 export const useParticipantProgress = (friendlyId, participantId) => {
-  const url = `/api/progress/${friendlyId}/${participantId ?? ""}`;
-  return useSWR(friendlyId ? url : null, defaultFetcher(), {
+  let url = null; // null will cause SWR to skip fetching
+  if (friendlyId) {
+    const [surveyId, instanceId] = decode(friendlyId);
+    url = `/api/progress/${surveyId}/${instanceId}/${participantId ?? ""}`;
+  }
+  return useSWR(url, defaultFetcher(), {
     suspense: true,
   });
 };
@@ -40,7 +45,9 @@ export const requestParticipantProgress = async (
   friendlyId,
   participantId,
   requestedPageKey
-) =>
-  await axios.post(
-    `/api/progress/${friendlyId}/${participantId}/${requestedPageKey}`
+) => {
+  const [surveyId, instanceId] = decode(friendlyId);
+  return await axios.post(
+    `/api/progress/${surveyId}/${instanceId}/${participantId}/${requestedPageKey}`
   );
+};

@@ -10,7 +10,6 @@ using Newtonsoft.Json.Linq;
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace Decsys.Controllers
@@ -40,14 +39,13 @@ namespace Decsys.Controllers
         /// Calculate a model of a Participant's progress in a given Survey based on logged events,
         /// return the Progress Model along with some of the fetched data used to calculate it.
         /// </summary>
-        /// <param name="friendlyId"></param>
+        /// <param name="surveyId"></param>
+        /// <param name="instanceId"></param>
         /// <param name="participantId"></param>
         /// <returns></returns>
         private (ParticipantProgressModel progress, SurveyInstance instance, List<string>? pageOrder)
-            GetProgress(string friendlyId, string? participantId)
+            GetProgress(int surveyId, int instanceId, string? participantId)
         {
-            var (surveyId, instanceId) = InstanceIdService.Decode(friendlyId);
-
             var instance = _instances.Get(surveyId, instanceId);
             if (instance is null || instance.Closed is not null) // TODO: differentiate between closed and non-existent instances?
                 throw new KeyNotFoundException();
@@ -211,7 +209,8 @@ namespace Decsys.Controllers
         /// and instead the returned Progress will reflect where the participant should actually go next.
         /// </para>
         /// </summary>
-        /// <param name="friendlyId"></param>
+        /// <param name="surveyId"></param>
+        /// <param name="instanceId"></param>
         /// <param name="participantId"></param>
         /// <param name="requestedPageKey">
         ///     <para>
@@ -224,10 +223,14 @@ namespace Decsys.Controllers
         ///     </list>
         /// </param>
         /// <returns></returns>
-        [HttpPost("{friendlyId}/{participantId}/{requestedPageKey}")]
-        public ActionResult<ParticipantProgressModel> RequestNavigation(string friendlyId, string participantId, string requestedPageKey)
+        [HttpPost("{surveyId}/{instanceId}/{participantId}/{requestedPageKey}")]
+        public ActionResult<ParticipantProgressModel> RequestNavigation(
+            int surveyId,
+            int instanceId,
+            string participantId,
+            string requestedPageKey)
         {
-            var (progress, instance, pageOrder) = GetProgress(friendlyId, participantId);
+            var (progress, instance, pageOrder) = GetProgress(surveyId, instanceId, participantId);
 
             // there's a bunch of situations in which we can't really advance progress
             // it should be assumed the frontend state will never allow requesting it
@@ -321,15 +324,17 @@ namespace Decsys.Controllers
         /// Get progress in a Survey Instance for a given Participant
         /// (or provide a new ID for a new Participant with zero progress)
         /// </summary>
-        /// <param name="friendlyId">Friendly Survey Identifier e.g. "bzb", or "ext" for external</param>
+        /// <param name="surveyId"></param>
+        /// <param name="instanceId"></param>
+        /// <param name="participantId"></param>
         /// <param name="participantId">Participant Id if known</param>
         /// <returns></returns>
-        [HttpGet("{friendlyId}/{participantId?}")]
-        public ActionResult<ParticipantProgressModel> Get(string friendlyId, string? participantId)
+        [HttpGet("{surveyId}/{instanceId}/{participantId?}")]
+        public ActionResult<ParticipantProgressModel> Get(int surveyId, int instanceId, string? participantId)
         {
             try
             {
-                return GetProgress(friendlyId, participantId).progress;
+                return GetProgress(surveyId, instanceId, participantId).progress;
             }
             catch (KeyNotFoundException)
             {

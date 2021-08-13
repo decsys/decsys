@@ -49,13 +49,13 @@ namespace Decsys.Controllers
         /// <c>404</c> if no valid id/instance found.
         /// </para>
         /// </summary>
-        /// <param name="friendlyId"></param>
+        /// <param name="surveyId"></param>
+        /// <param name="instanceId"></param>
         /// <param name="participantId"></param>
         /// <returns></returns>
-        [HttpGet("validate/{friendlyId}/{participantId}")]
-        public ActionResult<string> ValidateParticipantId(string friendlyId, string participantId)
+        [HttpGet("validate/{surveyId}/{instanceId}/{participantId}")]
+        public ActionResult<string> ValidateParticipantId(int surveyId, int instanceId, string participantId)
         {
-            var (surveyId, instanceId) = InstanceIdService.Decode(friendlyId);
             var instance = _instances.Get(surveyId, instanceId);
 
             if (instance is null) return NotFound();
