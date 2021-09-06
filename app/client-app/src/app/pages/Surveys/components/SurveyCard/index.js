@@ -13,7 +13,7 @@ const SurveyCard = () => {
   const { colorMode } = useColorMode();
   const style = themes.sharedStyles.card;
   const survey = useSurvey();
-  const { id, activeInstanceId, runCount } = survey;
+  const { id, activeInstanceId, runCount, parent } = survey;
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
 
   const actionButtons = getActionButtons(survey);
@@ -24,19 +24,19 @@ const SurveyCard = () => {
       spacing={0}
       {...style[colorMode || defaultColorMode]}
     >
-      <ActiveIndicator active={!!activeInstanceId} />
+      {!parent && <ActiveIndicator active={!!activeInstanceId} />}
 
       <Stack spacing={0} w="100%">
         <Grid
-          borderBottom={activeInstanceId ? "thin solid" : "none"}
+          borderBottom={!parent && activeInstanceId ? "thin solid" : "none"}
           borderColor={style[colorMode || defaultColorMode].borderColor}
           gap={2}
-          templateColumns={`80px 1fr ${Array(
+          templateColumns={`${!parent ? "80px" : ""} 1fr ${Array(
             listMatchingKeys(actionButtons).length
           )
             .fill("100px")
             .join(" ")} auto`}
-          p={2}
+          p={parent ? 1 : 2}
           alignContent="center"
         >
           <SurveyInfoLine {...survey} />

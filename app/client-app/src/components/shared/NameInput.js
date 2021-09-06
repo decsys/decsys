@@ -12,7 +12,7 @@ import { useDerivedState } from "hooks/useDerivedState";
 import useDeferredAction from "hooks/useDeferredAction";
 import Spinner from "components/core/Spinner";
 
-const NameInput = ({ name, handleNameSave, nameState }) => {
+const NameInput = ({ name, handleNameSave, nameState, ...p }) => {
   const toast = useToast();
   const [value, setValue] = useDerivedState(name);
 
@@ -35,7 +35,7 @@ const NameInput = ({ name, handleNameSave, nameState }) => {
 
   return (
     <Flex align="center" width="100%">
-      <InputGroup width="100%">
+      <InputGroup width="100%" {...p}>
         <InputLeftElement>
           {nameState.isSaving ? <Spinner /> : <Icon as={FaEdit} />}
         </InputLeftElement>

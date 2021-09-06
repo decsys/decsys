@@ -21,6 +21,7 @@ const ManageSurveyMenu = ({
   name,
   type,
   settings,
+  parent,
   hasInvalidExternalLink,
 }) => {
   const deleteModal = useDisclosure();
@@ -44,6 +45,7 @@ const ManageSurveyMenu = ({
           borderColor="gray.500"
           as={IconButton}
           icon={<FaEllipsisV />}
+          boxSize={parent ? "32px" : null}
         />
         <MenuList>
           {editable && (

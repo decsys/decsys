@@ -51,10 +51,10 @@ const buttons = {
   ),
 };
 
-export const getActionButtons = ({ activeInstanceId, runCount }) => ({
-  close: !!activeInstanceId,
+export const getActionButtons = ({ activeInstanceId, runCount, parent }) => ({
+  close: !parent && !!activeInstanceId,
   dashboard: !!activeInstanceId,
-  launch: !activeInstanceId,
+  launch: !parent && !activeInstanceId,
   results: runCount > 0,
 });
 
