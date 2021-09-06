@@ -6,7 +6,7 @@ import { FaTimesCircle, FaRocket, FaPlay, FaPause } from "react-icons/fa";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 
 const buttons = {
-  launch: ({ type, runCount, handleLaunch }) => {
+  launch: ({ type, runCount, handleLaunch, parent }) => {
     const isResume = type && runCount > 0;
     return (
       <Button
@@ -14,48 +14,57 @@ const buttons = {
         colorScheme="green"
         leftIcon={isResume ? <FaPlay /> : <FaRocket />}
         onClick={handleLaunch}
+        size={parent ? "sm" : "md"}
       >
         {isResume ? "Resume" : "Launch"}
       </Button>
     );
   },
-  close: ({ type, handleClose }) => (
+  close: ({ type, handleClose, parent }) => (
     <Button
       lineHeight="inherit"
       colorScheme="red"
       leftIcon={type ? <FaPause /> : <FaTimesCircle />}
       onClick={handleClose}
+      size={parent ? "sm" : "md"}
     >
       <Text>{type ? "Pause" : "Close"}</Text>
     </Button>
   ),
-  dashboard: ({ friendlyId }) => (
+  dashboard: ({ friendlyId, parent }) => (
     <Button
       lineHeight="inherit"
       colorScheme="green"
       as={Link}
       to={`/admin/survey/dashboard/${friendlyId}`}
+      size={parent ? "sm" : "md"}
     >
       Dashboard
     </Button>
   ),
-  results: ({ id }) => (
+  results: ({ id, parent }) => (
     <Button
       lineHeight="inherit"
       colorScheme="cyan"
       as={Link}
       to={`/admin/survey/${id}/results`}
+      size={parent ? "sm" : "md"}
     >
       Results
     </Button>
   ),
 };
 
-export const getActionButtons = ({ activeInstanceId, runCount, parent }) => ({
+export const getActionButtons = ({
+  activeInstanceId,
+  runCount,
+  parent,
+  isStudy,
+}) => ({
   close: !parent && !!activeInstanceId,
-  dashboard: !!activeInstanceId,
+  dashboard: !isStudy && !!activeInstanceId,
   launch: !parent && !activeInstanceId,
-  results: runCount > 0,
+  results: !isStudy && runCount > 0,
 });
 
 const ActionButtons = (p) => {

@@ -45,16 +45,7 @@ const ExternalTypeInfo = ({ type, settings, hasInvalidExternalLink }) => {
   }
 };
 
-const ActiveInstanceLine = ({
-  id,
-  name,
-  type,
-  friendlyId,
-  settings,
-  hasInvalidExternalLink,
-}) => {
-  const instanceValidIdModal = useDisclosure();
-  const configModal = useDisclosure();
+export const RespondentCountBadge = ({ friendlyId }) => {
   const [results, setResults] = useState({});
   useEffect(() => {
     (async () => {
@@ -65,13 +56,28 @@ const ActiveInstanceLine = ({
   }, [friendlyId]);
 
   return (
+    <Badge textAlign="center" colorScheme="cyan" variant="outline" p={1}>
+      {results?.participants?.length ?? 0} respondents
+    </Badge>
+  );
+};
+
+const ActiveInstanceLine = ({
+  id,
+  name,
+  type,
+  friendlyId,
+  settings,
+  hasInvalidExternalLink,
+}) => {
+  const instanceValidIdModal = useDisclosure();
+  const configModal = useDisclosure();
+
+  return (
     <>
       <Flex align="center" px={2} py={1}>
         <Stack direction="row" alignItems="center">
-          <Badge textAlign="center" colorScheme="cyan" variant="outline" p={1}>
-            {results?.participants?.length ?? 0} respondents
-          </Badge>
-
+          <RespondentCountBadge friendlyId={friendlyId} />
           {type ? (
             <ExternalTypeInfo
               type={type}

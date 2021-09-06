@@ -51,8 +51,10 @@ const ManageSurveyMenu = ({
           {editable && (
             <MenuItem onClick={() => navigate(`survey/${id}`)}>Edit</MenuItem>
           )}
-          {!type && <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>}
-          {type && (
+          {!type && !parent && (
+            <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>
+          )}
+          {type && !parent && (
             <MenuItem onClick={externalDetailsModal.onOpen}>
               {capitalise(type)} Details
             </MenuItem>
