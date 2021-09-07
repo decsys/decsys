@@ -47,31 +47,51 @@ namespace Decsys.Repositories.LiteDb
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.FindAll());
+                _surveys.Find(x => x.Parent == null));
 
-            return summaries.Select(survey =>
+            // Reusable enhancement
+            Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
+            {
+                var instances = _instances
+                    .Find(instance =>
+                        instance.Survey.Id == survey.Id)
+                    .OrderByDescending(x => x.Published)
+                    .ToList();
+
+                var summary = _mapper.Map(instances,
+                  survey);
+
+                var latestInstanceId = instances.FirstOrDefault()?.Id;
+
+                // validate external link if necessary
+                summary.HasInvalidExternalLink =
+                    !string.IsNullOrWhiteSpace(summary.Type) &&
+                    _external.Find(x =>
+                            x.SurveyId == summary.Id &&
+                            x.InstanceId == latestInstanceId)
+                        .SingleOrDefault() is null;
+
+                return summary;
+            }
+
+            return summaries
+                .ConvertAll(survey =>
                 {
-                    var instances = _instances
-                            .Find(instance =>
-                                instance.Survey.Id == survey.Id)
-                            .OrderByDescending(x => x.Published)
-                            .ToList();
+                    var summary = EnhanceSummary(survey);
 
-                    var summary = _mapper.Map(instances,
-                      survey);
+                    // Get Children for studies
+                    if (survey.IsStudy)
+                    {
+                        summary.Children = _mapper.Map<List<Models.SurveySummary>>(
+                            _surveys.Find(x => x.Parent != null && x.Parent.Id == survey.Id).ToList());
 
-                    var latestInstanceId = instances.FirstOrDefault()?.Id;
-
-                    // validate external link if necessary
-                    summary.HasInvalidExternalLink =
-                        !string.IsNullOrWhiteSpace(summary.Type) &&
-                        _external.Find(x =>
-                                x.SurveyId == summary.Id &&
-                                x.InstanceId == latestInstanceId)
-                            .SingleOrDefault() is null;
+                        // they also need enhancing
+                        summary.Children = summary.Children.ConvertAll(EnhanceSummary);
+                    }
 
                     return summary;
-                }).ToList();
+                })
+;
         }
 
         public int Create(Models.CreateSurveyModel model, string? ownerId = null)

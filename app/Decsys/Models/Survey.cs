@@ -15,6 +15,8 @@ namespace Decsys.Models
 
         public string Name { get; set; }
 
+        public bool IsStudy { get; set; }
+
         public string? Type { get; set; }
 
         public List<Page> Pages { get; set; } = new List<Page>();
@@ -26,5 +28,7 @@ namespace Decsys.Models
         public List<string> ValidIdentifiers { get; set; } = new List<string>();
 
         public JObject Settings { get; set; } = new JObject();
+
+        public Survey? Parent { get; set; }
     }
 }

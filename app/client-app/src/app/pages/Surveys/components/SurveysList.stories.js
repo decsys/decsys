@@ -13,8 +13,8 @@ const surveys = [
     name: "Study 1",
     isStudy: true,
     children: [
-      { id: 3, name: "Survey 4", parent: 1, activeInstanceId: 1 },
-      { id: 4, name: "Survey 2", parent: 1, activeInstanceId: 2 },
+      { id: 3, name: "Survey 4", parentSurveyId: 1, activeInstanceId: 1 },
+      { id: 4, name: "Survey 2", parentSurveyId: 1, activeInstanceId: 2 },
     ],
     activeInstanceId: 3,
   },

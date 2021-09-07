@@ -119,6 +119,7 @@ const CreateSurveyModal = ({
   modalState,
   isFixedType,
   isStudy,
+  parentId,
   hasFixedSettings,
 }) => {
   const entityName = isStudy ? "Study" : "Survey";
@@ -152,7 +153,10 @@ const CreateSurveyModal = ({
               : o,
           {}
         );
-    await onCreate(name, type, settings, isStudy);
+    await onCreate(name, type, settings, {
+      isStudy,
+      parentId,
+    });
     actions.setSubmitting(false);
     actions.resetForm();
     modalState.onClose();

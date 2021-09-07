@@ -201,39 +201,58 @@ namespace Decsys.Repositories.Mongo
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
         {
             var surveys = userId is null
-                ? _surveys.Find(new BsonDocument()).ToList()
+                ? _surveys.Find(x => x.ParentSurveyId == null).ToList()
                 : _surveys.Find(
-                        x => x.Owner == userId ||
-                        (includeOwnerless && x.Owner == null))
+                        x => x.ParentSurveyId == null &&
+                        (x.Owner == userId ||
+                        (includeOwnerless && x.Owner == null)))
                     .ToList();
 
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
 
-            return summaries
-                .Select(survey =>
-                    {
-                        var instances = _instances
+            // Reusable enhancement
+            Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
+            {
+                var instances = _instances
                             .Find(instance =>
                                 instance.SurveyId == survey.Id)
                             .SortByDescending(x => x.Published)
                             .ToList();
 
-                        var summary = _mapper.Map(instances,
-                          survey);
+                var summary = _mapper.Map(instances,
+                  survey);
 
-                        var latestInstanceId = instances.FirstOrDefault()?.Id;
+                var latestInstanceId = instances.FirstOrDefault()?.Id;
 
-                        // validate external link if necessary
-                        summary.HasInvalidExternalLink =
-                            !string.IsNullOrWhiteSpace(summary.Type) &&
-                            _external.Find(x =>
-                                    x.SurveyId == summary.Id &&
-                                    x.InstanceId == latestInstanceId)
-                                .SingleOrDefault() is null;
+                // validate external link if necessary
+                summary.HasInvalidExternalLink =
+                    !string.IsNullOrWhiteSpace(summary.Type) &&
+                    _external.Find(x =>
+                            x.SurveyId == summary.Id &&
+                            x.InstanceId == latestInstanceId)
+                        .SingleOrDefault() is null;
+
+                return summary;
+            }
+
+            return summaries
+                .ConvertAll(survey =>
+                    {
+                        var summary = EnhanceSummary(survey);
+
+                        // Get Children for studies
+                        if (survey.IsStudy)
+                        {
+                            summary.Children = _mapper.Map<List<Models.SurveySummary>>(
+                                _surveys.Find(x => x.ParentSurveyId == survey.Id).ToList());
+
+                            // they also need enhancing
+                            summary.Children = summary.Children.ConvertAll(EnhanceSummary);
+                        }
 
                         return summary;
                     })
-                .ToList();
+;
         }
 
         public void Update(Models.Survey survey) =>

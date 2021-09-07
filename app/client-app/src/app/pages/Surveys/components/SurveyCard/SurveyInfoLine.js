@@ -11,7 +11,7 @@ const SurveyInfoLine = ({
   name,
   runCount,
   type,
-  parent,
+  parentSurveyId,
   hasInvalidExternalLink,
   isStudy,
   friendlyId,
@@ -29,7 +29,7 @@ const SurveyInfoLine = ({
           <Icon as={isStudy ? AiOutlineGroup : RiSurveyLine} />
         </Flex>
       </Tooltip>
-      {!parent && (
+      {!parentSurveyId && (
         <>
           <Flex align="center" justifyContent="center">
             <Badge
@@ -60,7 +60,7 @@ const SurveyInfoLine = ({
           size="sm"
         />
       </Flex>
-      {parent && friendlyId && (
+      {parentSurveyId && friendlyId && (
         <Stack direction="row" alignItems="center">
           <RespondentCountBadge friendlyId={friendlyId} />
         </Stack>

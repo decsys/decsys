@@ -131,6 +131,23 @@ namespace Decsys.Controllers
             catch (KeyNotFoundException) { return NotFound(); }
         }
 
+        [HttpPut("{id}/parent/{parentId?}")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [SwaggerOperation("Edit the Name of a single Survey by ID.")]
+        [SwaggerResponse(204, "The Survey's Parent was updated successfully.")]
+        [SwaggerResponse(400, "The specified Survey cannot be a child, or the specified Parent cannot be a parent.")]
+        [SwaggerResponse(404, "Either the Survey or Parent could not be found.")]
+        public ActionResult SetParent(int id, int? parentId)
+        {
+            try
+            {
+                _surveys.SetParent(id, parentId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+            catch (ArgumentException e) { return BadRequest(e.Message); }
+        }
+
         [HttpPost("{id}/duplicate")]
         [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Duplicate a single Survey with the provided ID.")]

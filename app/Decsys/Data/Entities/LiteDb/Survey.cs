@@ -11,7 +11,5 @@ namespace Decsys.Data.Entities.LiteDb
         public BsonDocument Settings { get; set; } = new BsonDocument();
 
         public Survey? Parent { get; set; }
-
-        public List<Survey>? Children { get; set; }
     }
 }

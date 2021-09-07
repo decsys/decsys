@@ -144,6 +144,26 @@ namespace Decsys.Services
             return id;
         }
 
+        public void SetParent(int id, int? parentId)
+        {
+            var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
+            if (survey.IsStudy)
+                throw new ArgumentException(
+                    $"The specified survey {id} is a Study and therefore cannot have a parent.", nameof(id));
+
+            Survey? parent = null;
+            if (parentId is not null)
+            {
+                parent = _surveys.Find(parentId.Value) ?? throw new KeyNotFoundException();
+                if (!parent.IsStudy)
+                    throw new ArgumentException(
+                        $"The specified parent {parentId} is not a Study and therefore cannot have children.", nameof(parentId));
+            }
+
+            survey.Parent = parent;
+            _surveys.Update(survey);
+        }
+
         private void MigrateUpComponentTypes(ref Survey survey)
         {
             // this is very simplistic right now from 1.x to 2.x

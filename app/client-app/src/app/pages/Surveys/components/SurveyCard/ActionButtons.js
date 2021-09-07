@@ -6,7 +6,7 @@ import { FaTimesCircle, FaRocket, FaPlay, FaPause } from "react-icons/fa";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 
 const buttons = {
-  launch: ({ type, runCount, handleLaunch, parent }) => {
+  launch: ({ type, runCount, handleLaunch, parentSurveyId }) => {
     const isResume = type && runCount > 0;
     return (
       <Button
@@ -14,41 +14,41 @@ const buttons = {
         colorScheme="green"
         leftIcon={isResume ? <FaPlay /> : <FaRocket />}
         onClick={handleLaunch}
-        size={parent ? "sm" : "md"}
+        size={parentSurveyId ? "sm" : "md"}
       >
         {isResume ? "Resume" : "Launch"}
       </Button>
     );
   },
-  close: ({ type, handleClose, parent }) => (
+  close: ({ type, handleClose, parentSurveyId }) => (
     <Button
       lineHeight="inherit"
       colorScheme="red"
       leftIcon={type ? <FaPause /> : <FaTimesCircle />}
       onClick={handleClose}
-      size={parent ? "sm" : "md"}
+      size={parentSurveyId ? "sm" : "md"}
     >
       <Text>{type ? "Pause" : "Close"}</Text>
     </Button>
   ),
-  dashboard: ({ friendlyId, parent }) => (
+  dashboard: ({ friendlyId, parentSurveyId }) => (
     <Button
       lineHeight="inherit"
       colorScheme="green"
       as={Link}
       to={`/admin/survey/dashboard/${friendlyId}`}
-      size={parent ? "sm" : "md"}
+      size={parentSurveyId ? "sm" : "md"}
     >
       Dashboard
     </Button>
   ),
-  results: ({ id, parent }) => (
+  results: ({ id, parentSurveyId }) => (
     <Button
       lineHeight="inherit"
       colorScheme="cyan"
       as={Link}
       to={`/admin/survey/${id}/results`}
-      size={parent ? "sm" : "md"}
+      size={parentSurveyId ? "sm" : "md"}
     >
       Results
     </Button>
@@ -58,12 +58,12 @@ const buttons = {
 export const getActionButtons = ({
   activeInstanceId,
   runCount,
-  parent,
+  parentSurveyId,
   isStudy,
 }) => ({
-  close: !parent && !!activeInstanceId,
+  close: !parentSurveyId && !!activeInstanceId,
   dashboard: !isStudy && !!activeInstanceId,
-  launch: !parent && !activeInstanceId,
+  launch: !parentSurveyId && !activeInstanceId,
   results: !isStudy && runCount > 0,
 });
 

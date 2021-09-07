@@ -21,7 +21,7 @@ const ManageSurveyMenu = ({
   name,
   type,
   settings,
-  parent,
+  parentSurveyId,
   hasInvalidExternalLink,
 }) => {
   const deleteModal = useDisclosure();
@@ -45,16 +45,16 @@ const ManageSurveyMenu = ({
           borderColor="gray.500"
           as={IconButton}
           icon={<FaEllipsisV />}
-          boxSize={parent ? "32px" : null}
+          boxSize={parentSurveyId ? "32px" : null}
         />
         <MenuList>
           {editable && (
             <MenuItem onClick={() => navigate(`survey/${id}`)}>Edit</MenuItem>
           )}
-          {!type && !parent && (
+          {!type && !parentSurveyId && (
             <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>
           )}
-          {type && !parent && (
+          {type && !parentSurveyId && (
             <MenuItem onClick={externalDetailsModal.onOpen}>
               {capitalise(type)} Details
             </MenuItem>

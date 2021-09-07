@@ -11,7 +11,5 @@ namespace Decsys.Data.Entities.Mongo
         public BsonDocument Settings { get; set; } = new BsonDocument();
 
         public int? ParentSurveyId { get; set; }
-
-        public List<int>? ChildSurveyIds { get; set; }
     }
 }

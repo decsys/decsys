@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 
+using System.Collections.Generic;
+
 namespace Decsys.Models
 {
     public class SurveySummary
@@ -24,5 +26,9 @@ namespace Decsys.Models
         public int RunCount { get; set; }
 
         public int? ActiveInstanceId { get; set; }
+
+        public int? ParentSurveyId { get; set; }
+
+        public List<SurveySummary>? Children { get; set; }
     }
 }
