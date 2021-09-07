@@ -69,7 +69,9 @@ const ManageSurveyMenu = ({
               <MenuItem onClick={createSurveyModal.onOpen}>Duplicate</MenuItem>
             </>
           )}
-          <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
+          {(editable || !parentSurveyId) && (
+            <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
+          )}
         </MenuList>
       </Menu>
 
