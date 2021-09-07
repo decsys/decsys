@@ -185,12 +185,22 @@ namespace Decsys.Services
 
         /// <summary>
         /// Attempt to delete a Survey by ID.
+        /// Deleting Studies will also delete all child surveys.
         /// </summary>
         /// <param name="id">The ID of the Survey to delete.</param>
         public async Task Delete(int id)
         {
-            await _images.RemoveAllSurveyImages(id); // delete stored images for built-in image Page Items
-            _surveys.Delete(id);
+            List<int> toDelete = new() { id };
+
+            // Studies need to delete children too
+            var children = _surveys.ListChildren(id);
+            toDelete.AddRange(children.Select(x => x.Id));
+
+            foreach (var surveyId in toDelete)
+            {
+                await _images.RemoveAllSurveyImages(surveyId); // delete stored images for built-in image Page Items
+                _surveys.Delete(surveyId);
+            }
         }
 
         /// <summary>

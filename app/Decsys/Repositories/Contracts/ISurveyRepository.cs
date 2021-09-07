@@ -24,6 +24,12 @@ namespace Decsys.Repositories.Contracts
         List<SurveySummary> List(string? userId = null, bool includeOwnerless = false);
 
         /// <summary>
+        /// List Summaries of all children of the specified Study.
+        /// </summary>
+        /// <param name="parentId"></param>
+        List<SurveySummary> ListChildren(int parentId);
+
+        /// <summary>
         /// Create a new empty Survey, optionally belonging to a specific user.
         /// </summary>
         /// <param name="model">Survey creation details</param>

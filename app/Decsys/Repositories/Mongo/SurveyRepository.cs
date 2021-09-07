@@ -264,5 +264,9 @@ namespace Decsys.Repositories.Mongo
             _surveys.UpdateOne(
                 x => x.Id == id,
                 Builders<Survey>.Update.Set(x => x.Name, name));
+
+        public List<Models.SurveySummary> ListChildren(int parentId)
+            => _mapper.Map<List<Models.SurveySummary>>(
+                _surveys.Find(x => x.ParentSurveyId == parentId).ToList());
     }
 }

@@ -244,5 +244,9 @@ namespace Decsys.Repositories.LiteDb
 
         public ExternalLookup LookupExternal(string externalKey, string externalId)
             => _external.FindOne(x => x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId);
+
+        public List<Models.SurveySummary> ListChildren(int parentId)
+            => _mapper.Map<List<Models.SurveySummary>>(
+                _surveys.Find(x => x.Parent != null && x.Parent.Id == parentId));
     }
 }

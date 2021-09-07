@@ -68,7 +68,11 @@ const SurveyCard = () => {
               friendlyId={friendlyId}
             />
 
-            <ManageSurveyMenu {...survey} editable={!runCount} />
+            <ManageSurveyMenu
+              {...survey}
+              editable={!runCount && !isStudy}
+              isStudy={isStudy}
+            />
           </Grid>
 
           {!parentSurveyId && activeInstanceId && (

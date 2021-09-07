@@ -22,6 +22,7 @@ const ManageSurveyMenu = ({
   type,
   settings,
   parentSurveyId,
+  isStudy,
   hasInvalidExternalLink,
 }) => {
   const deleteModal = useDisclosure();
@@ -35,7 +36,7 @@ const ManageSurveyMenu = ({
     duplicate(id, name, type, settings);
     createSurveyModal.onClose();
   };
-  const handleDelete = () => deleteSurvey(id);
+  const handleDelete = async () => await deleteSurvey(id);
 
   return (
     <>
@@ -59,11 +60,15 @@ const ManageSurveyMenu = ({
               {capitalise(type)} Details
             </MenuItem>
           )}
-          <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
-            Preview
-          </MenuItem>
-          <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
-          <MenuItem onClick={createSurveyModal.onOpen}>Duplicate</MenuItem>
+          {!isStudy && (
+            <>
+              <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
+                Preview
+              </MenuItem>
+              <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
+              <MenuItem onClick={createSurveyModal.onOpen}>Duplicate</MenuItem>
+            </>
+          )}
           <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
         </MenuList>
       </Menu>
@@ -72,6 +77,7 @@ const ManageSurveyMenu = ({
         name={name}
         onConfirm={handleDelete}
         modalState={deleteModal}
+        isStudy={isStudy}
       />
       <SurveyConfigModal id={id} name={name} modalState={configModal} />
       <ExportModal id={id} name={name} modalState={exportModal} />
