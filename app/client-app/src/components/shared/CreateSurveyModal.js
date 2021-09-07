@@ -132,7 +132,7 @@ const CreateSurveyModal = ({
     {}
   );
 
-  const handleSubmit = (values, actions) => {
+  const handleSubmit = async (values, actions) => {
     let { name, type, ...settings } = values;
 
     // we do some pre-submissions massaging of the form values
@@ -152,9 +152,10 @@ const CreateSurveyModal = ({
               : o,
           {}
         );
-    onCreate(name, type, settings, isStudy);
+    await onCreate(name, type, settings, isStudy);
     actions.setSubmitting(false);
     actions.resetForm();
+    modalState.onClose();
   };
 
   const externalSurveyUrl = `${window.location.origin.replace(
@@ -186,6 +187,7 @@ const CreateSurveyModal = ({
             onClick: submitForm,
             type: "submit",
             disabled: isSubmitting,
+            isLoading: isSubmitting,
           }}
           cancelButton={{
             onClick: () => {
