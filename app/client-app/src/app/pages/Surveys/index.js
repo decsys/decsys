@@ -1,7 +1,7 @@
 import { Page, EmptyState } from "components/core";
 import SurveysList from "./components/SurveysList";
 import { useDisclosure, Box, Alert, AlertIcon } from "@chakra-ui/react";
-import PageHeader from "./components/PageHeader";
+import { PageHeader } from "./components/PageHeader";
 import AddSurveyModal from "./components/AddSurveyModal";
 import { useSurveysList } from "api/surveys";
 import { AddSurveyActionsProvider } from "./contexts/AddSurveyActions";
@@ -53,17 +53,15 @@ const Surveys = ({ navigate }) => {
   );
 
   return (
-    <>
+    <AddSurveyActionsProvider value={AddSurveyActions}>
       <Page>
-        <PageHeader buttonAction={addSurveyModal.onOpen} />
+        <PageHeader addSurveyAction={addSurveyModal.onOpen} />
 
         {pageBody}
       </Page>
 
-      <AddSurveyActionsProvider value={AddSurveyActions}>
-        <AddSurveyModal modalState={addSurveyModal} />
-      </AddSurveyActionsProvider>
-    </>
+      <AddSurveyModal modalState={addSurveyModal} />
+    </AddSurveyActionsProvider>
   );
 };
 

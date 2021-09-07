@@ -78,7 +78,7 @@ an ip address where your machine can access DECSYS, such as
           )}
           <CopyableTextPanel
             buttonScheme="blue"
-            label="Survey URL"
+            label="Access URL"
             value={surveyUrl}
           />
         </Stack>
@@ -97,7 +97,7 @@ an ip address where your machine can access DECSYS, such as
 
 const prolificInstructions = `
 1. Create your study in [Prolific]("https://prolific.co")
-1. Provide the **Survey URL** (above)
+1. Provide the **Access URL** (above)
 1. When asked **"How do you want to record Prolific IDs?"**
     - Choose **"I'll use URL parameters"**
     - You can leave the default settings
@@ -118,8 +118,10 @@ const CreateSurveyModal = ({
   onCreate,
   modalState,
   isFixedType,
+  isStudy,
   hasFixedSettings,
 }) => {
+  const entityName = isStudy ? "Study" : "Survey";
   const defaultName = name ?? "";
   const defaultType = type ?? "";
   const defaultSettings = Object.keys(settings).reduce(
@@ -177,10 +179,10 @@ const CreateSurveyModal = ({
         <StandardModal
           size="2xl"
           {...modalState}
-          header="New Survey details"
+          header={`New ${entityName} details`}
           confirmButton={{
             colorScheme: "green",
-            children: "Create survey",
+            children: `Create ${entityName.toLocaleLowerCase()}`,
             onClick: submitForm,
             type: "submit",
             disabled: isSubmitting,
@@ -220,8 +222,8 @@ const CreateSurveyModal = ({
                 {(rp) => (
                   <FormikInput
                     {...rp}
-                    label="Survey Name"
-                    placeholder="Untitled Survey"
+                    label="Name"
+                    placeholder={`Untitled ${entityName}`}
                   />
                 )}
               </Field>
@@ -237,7 +239,7 @@ const CreateSurveyModal = ({
                         !!form.errors[field.name] && !!form.touched[field.name]
                       }
                     >
-                      <FormLabel htmlFor={field.name}>Survey Type</FormLabel>
+                      <FormLabel htmlFor={field.name}>Access Type</FormLabel>
                       <RadioGroup id={field.name} {...rest}>
                         <Stack direction="row">
                           <Radio onChange={onChange} value="">
