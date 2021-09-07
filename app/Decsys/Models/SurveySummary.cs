@@ -9,6 +9,8 @@ namespace Decsys.Models
             Name = name;
         }
 
+        public bool IsStudy { get; set; }
+
         public string Type { get; set; } = string.Empty;
 
         public bool HasInvalidExternalLink { get; set; }
