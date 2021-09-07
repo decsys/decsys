@@ -27,10 +27,10 @@ export const useSurveysList = () =>
 export const useSurvey = (id) =>
   useSWR(`/api/surveys/${id}`, defaultFetcher(true), { suspense: true });
 
-export const createSurvey = async (name, type, settings) =>
+export const createSurvey = async (name, type, settings, isStudy) =>
   await axios.post(
     "/api/surveys",
-    { name, type, settings },
+    { name, type, settings, isStudy },
     withHeaders(await authorization_BearerToken())
   );
 

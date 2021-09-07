@@ -152,7 +152,7 @@ const CreateSurveyModal = ({
               : o,
           {}
         );
-    onCreate(name, type, settings);
+    onCreate(name, type, settings, isStudy);
     actions.setSubmitting(false);
     actions.resetForm();
   };

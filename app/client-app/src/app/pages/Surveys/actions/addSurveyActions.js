@@ -5,8 +5,8 @@ import {
 } from "api/surveys";
 
 export const addSurveyActions = (navigate, mutateSurveys) => ({
-  create: async (name, type, settings) => {
-    const { data: id } = await createSurvey(name, type, settings);
+  create: async (name, type, settings, isStudy) => {
+    const { data: id } = await createSurvey(name, type, settings, isStudy);
     navigate(`survey/${id}`);
   },
   importFile: async (file, importData, name, type, settings) => {
