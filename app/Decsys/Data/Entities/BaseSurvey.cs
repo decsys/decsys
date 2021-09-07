@@ -6,6 +6,8 @@ namespace Decsys.Data.Entities
     {
         public int Id { get; set; }
 
+        public bool IsStudy { get; set; }
+
         public string Name { get; set; } = "Untitled Survey";
 
         public string? Type { get; set; }

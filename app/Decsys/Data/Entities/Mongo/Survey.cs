@@ -6,8 +6,12 @@ namespace Decsys.Data.Entities.Mongo
 {
     public class Survey : BaseSurvey
     {
-        public List<Page> Pages { get; set; } = new List<Page>();
+        public List<Page> Pages { get; set; } = new();
 
         public BsonDocument Settings { get; set; } = new BsonDocument();
+
+        public int? ParentSurveyId { get; set; }
+
+        public List<int>? ChildSurveyIds { get; set; }
     }
 }

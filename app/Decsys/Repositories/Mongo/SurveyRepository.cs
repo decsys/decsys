@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AutoMapper;
@@ -57,9 +58,36 @@ namespace Decsys.Repositories.Mongo
 
         public int Create(Models.CreateSurveyModel model, string? ownerId = null)
         {
+            Survey? parent = null;
+
+            // Some validation
+            if (model.ParentSurveyId is not null)
+            {
+                if (model.IsStudy)
+                    throw new ArgumentException("A Study cannot belong to a parent", nameof(model));
+
+                parent = _surveys.Find(x => x.Id == model.ParentSurveyId).SingleOrDefault();
+
+                var parentFailureMessage = $"Can't create a Survey with Parent {model.ParentSurveyId}";
+
+                if (parent is null)
+                    throw new KeyNotFoundException(
+                        $"{parentFailureMessage}: that Study could not be found.");
+
+                if (!parent.IsStudy)
+                    throw new ArgumentException(
+                        $"{parentFailureMessage}: that Survey is not a Study and therefore cannot have children.");
+            }
+
             var id = GetNextSurveyId();
 
-            var survey = new Survey { Id = id, Owner = ownerId };
+            var survey = new Survey
+            {
+                Id = id,
+                Owner = ownerId,
+                IsStudy = model.IsStudy,
+                ParentSurveyId = parent?.Id
+            };
             if (!string.IsNullOrWhiteSpace(model.Name))
                 survey.Name = model.Name;
 

@@ -21,7 +21,6 @@ namespace Decsys.Services
     /// </summary>
     public class SurveyService
     {
-
         private readonly ISurveyRepository _surveys;
         private readonly IImageService _images;
         private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;

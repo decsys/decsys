@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -75,7 +76,28 @@ namespace Decsys.Repositories.LiteDb
 
         public int Create(Models.CreateSurveyModel model, string? ownerId = null)
         {
-            var survey = new Survey();
+            Survey? parent = null;
+
+            // Some validation
+            if (model.ParentSurveyId is not null)
+            {
+                if (model.IsStudy)
+                    throw new ArgumentException("A Study cannot belong to a parent", nameof(model));
+
+                parent = _surveys.FindById(model.ParentSurveyId);
+
+                var parentFailureMessage = $"Can't create a Survey with Parent {model.ParentSurveyId}";
+
+                if (parent is null)
+                    throw new KeyNotFoundException(
+                        $"{parentFailureMessage}: that Study could not be found.");
+
+                if (!parent.IsStudy)
+                    throw new ArgumentException(
+                        $"{parentFailureMessage}: that Survey is not a Study and therefore cannot have children.");
+            }
+
+            var survey = new Survey { Parent = parent, IsStudy = model.IsStudy };
             if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
 
             var lookup = HandleSurveyTypeCreation(model, ref survey);

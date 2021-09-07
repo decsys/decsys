@@ -31,7 +31,8 @@ namespace Decsys.Repositories.Contracts
         int Create(CreateSurveyModel model, string? ownerId = null);
 
         /// <summary>
-        /// Create a new Survey from a provided model
+        /// <para>Create a new Survey from a provided model.</para>
+        /// <para>Used when duplicating or importing Surveys.</para>
         /// </summary>
         /// <param name="survey">Survey model to import</param>
         /// <param name="model">New Survey creation details</param>

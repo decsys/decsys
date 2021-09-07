@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Decsys.Auth;
 using Decsys.Config;
 using Decsys.Models;
@@ -20,6 +12,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Swashbuckle.AspNetCore.Annotations;
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Decsys.Controllers
 {

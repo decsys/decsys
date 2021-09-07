@@ -6,8 +6,12 @@ namespace Decsys.Data.Entities.LiteDb
 {
     public class Survey : BaseSurvey
     {
-        public List<Page> Pages { get; set; } = new List<Page>();
+        public List<Page> Pages { get; set; } = new();
 
         public BsonDocument Settings { get; set; } = new BsonDocument();
+
+        public Survey? Parent { get; set; }
+
+        public List<Survey>? Children { get; set; }
     }
 }
