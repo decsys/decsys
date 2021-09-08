@@ -9,6 +9,7 @@ import { SurveyCardActionsProvider } from "./contexts/SurveyCardActions";
 import { addSurveyActions } from "./actions/addSurveyActions";
 import { surveyCardActions } from "./actions/surveyCardActions";
 import { FaList } from "react-icons/fa";
+import { SurveysListProvider } from "./contexts/SurveysList";
 
 const ShowSurveys = ({ surveys, actions }) => (
   <>
@@ -53,15 +54,17 @@ const Surveys = ({ navigate }) => {
   );
 
   return (
-    <AddSurveyActionsProvider value={AddSurveyActions}>
-      <Page>
-        <PageHeader addSurveyAction={addSurveyModal.onOpen} />
+    <SurveysListProvider value={{ surveys, mutateSurveys }}>
+      <AddSurveyActionsProvider value={AddSurveyActions}>
+        <Page>
+          <PageHeader addSurveyAction={addSurveyModal.onOpen} />
 
-        {pageBody}
-      </Page>
+          {pageBody}
+        </Page>
 
-      <AddSurveyModal modalState={addSurveyModal} />
-    </AddSurveyActionsProvider>
+        <AddSurveyModal modalState={addSurveyModal} />
+      </AddSurveyActionsProvider>
+    </SurveysListProvider>
   );
 };
 

@@ -14,6 +14,7 @@ import ExportModal from "components/shared/ExportModal";
 import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 import { capitalise } from "services/strings";
+import { SelectStudyModal } from "./SelectStudyModal";
 
 const ManageSurveyMenu = ({
   id,
@@ -30,6 +31,7 @@ const ManageSurveyMenu = ({
   const exportModal = useDisclosure();
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
+  const selectStudyModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
   const handleDuplicate = (name, type, settings) => {
@@ -66,6 +68,11 @@ const ManageSurveyMenu = ({
                 Preview
               </MenuItem>
               <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
+              {editable && (
+                <MenuItem onClick={selectStudyModal.onOpen}>
+                  Change Study...
+                </MenuItem>
+              )}
               <MenuItem onClick={createSurveyModal.onOpen}>Duplicate</MenuItem>
             </>
           )}
@@ -95,6 +102,12 @@ const ManageSurveyMenu = ({
         name={`${name} (Copy)`} // we always use this modal for duplicating only
         modalState={createSurveyModal}
         onCreate={handleDuplicate}
+      />
+      <SelectStudyModal
+        name={name}
+        id={id}
+        parentId={parentSurveyId}
+        modalState={selectStudyModal}
       />
     </>
   );

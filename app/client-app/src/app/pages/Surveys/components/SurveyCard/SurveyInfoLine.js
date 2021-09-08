@@ -30,26 +30,24 @@ const SurveyInfoLine = ({
         </Flex>
       </Tooltip>
       {!parentSurveyId && (
-        <>
-          <Flex align="center" justifyContent="center">
-            <Badge
-              w="100%"
-              textAlign="center"
-              colorScheme={
-                !!type ? (hasInvalidExternalLink ? "red" : "yellow") : "cyan"
-              }
-              variant="solid"
-              py={1}
-              title={
-                hasInvalidExternalLink
-                  ? "Another DECSYS Survey has the same type and external ID."
-                  : ""
-              }
-            >
-              {!!type ? type.toUpperCase() : `${runCount} runs`}
-            </Badge>
-          </Flex>
-        </>
+        <Flex align="center" justifyContent="center">
+          <Badge
+            w="100%"
+            textAlign="center"
+            colorScheme={
+              !!type ? (hasInvalidExternalLink ? "red" : "yellow") : "cyan"
+            }
+            variant="solid"
+            py={1}
+            title={
+              hasInvalidExternalLink
+                ? "Another DECSYS Survey has the same type and external ID."
+                : ""
+            }
+          >
+            {!!type ? type.toUpperCase() : `${runCount} runs`}
+          </Badge>
+        </Flex>
       )}
 
       <Flex align="center">

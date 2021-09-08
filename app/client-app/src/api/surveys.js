@@ -9,6 +9,9 @@ import {
 import useSWR from "swr";
 import { toDictionary } from "services/data-structures";
 
+/**
+ * Fetch a List of Survey Summaries from the API
+ */
 export const useSurveysList = () =>
   useSWR(
     "/api/surveys",
@@ -90,6 +93,14 @@ export const setSurveyName = async (id, name) =>
     JSON.stringify(name),
     withHeaders(contentType_AppJson, await authorization_BearerToken())
   );
+
+export const setParent = async (id, parentId) => {
+  await axios.put(
+    `/api/surveys/${id}/parent/${parentId ?? ""}`,
+    null,
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
+  );
+};
 
 export const getSurveyExport = async (surveyId, type) =>
   await axios.get(
