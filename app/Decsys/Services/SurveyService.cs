@@ -23,16 +23,19 @@ namespace Decsys.Services
     {
         private readonly ISurveyRepository _surveys;
         private readonly IImageService _images;
+        private readonly ISurveyInstanceRepository _instances;
         private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;
 
         /// <summary>DI Constructor</summary>
         public SurveyService(
             ISurveyRepository surveys,
             IImageService images,
+            ISurveyInstanceRepository instances,
             IOptionsSnapshot<ComponentTypeMap> componentTypeMaps)
         {
             _surveys = surveys;
             _images = images;
+            _instances = instances;
             _componentTypeMaps = componentTypeMaps;
         }
 
@@ -113,9 +116,42 @@ namespace Decsys.Services
 
             survey.Name = model.Name ?? $"{survey.Name} (Copy)";
 
+            // if it's a child, but it/its study are locked,
+            // then we can't duplicate inside the study; we have to clear the parent
+            if (survey.Parent is not null && _instances.List(oldId).Count > 0)
+            {
+                survey.Parent = null;
+            }
+
             var newId = _surveys.Create(survey, model, ownerId);
 
-            await _images.CopyAllSurveyImages(oldId, newId);
+            if (survey.IsStudy)
+            {
+                var study = _surveys.Find(newId);
+                foreach (var child in _surveys.ListChildren(oldId))
+                {
+                    var childSurvey = _surveys.Find(child.Id);
+
+                    childSurvey.Parent = study;
+
+                    var newChildId = _surveys.Create(
+                        childSurvey,
+                        new()
+                        {
+                            Name = childSurvey.Name,
+                            Type = childSurvey.Type,
+                            IsStudy = false,
+                            ParentSurveyId = study.Id,
+                            Settings = childSurvey.Settings
+                        },
+                        ownerId);
+                    await _images.CopyAllSurveyImages(child.Id, newChildId);
+                }
+            }
+            else
+            {
+                await _images.CopyAllSurveyImages(oldId, newId);
+            }
 
             return newId;
         }

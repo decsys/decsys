@@ -96,7 +96,7 @@ const SelectableStudyCard = ({ study, ...p }) => {
                 children?.length ? (
                   <Stack spacing={0}>
                     {children.map((x) => (
-                      <Flex>{x.name}</Flex>
+                      <Flex key={x.id}>{x.name}</Flex>
                     ))}
                   </Stack>
                 ) : (
