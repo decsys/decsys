@@ -45,9 +45,14 @@ namespace Decsys.Repositories.LiteDb
                 _surveys.FindById(id));
 
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
+            => List(null);
+
+        private List<Models.SurveySummary> List(int? parentId = null)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.Find(x => x.Parent == null));
+                _surveys.Find(x =>
+                    (x.Parent == null && parentId == null) ||
+                    (x.Parent != null && x.Parent.Id == parentId)));
 
             // Reusable enhancement
             Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
@@ -257,7 +262,6 @@ namespace Decsys.Repositories.LiteDb
             => _external.FindOne(x => x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId);
 
         public List<Models.SurveySummary> ListChildren(int parentId)
-            => _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.Find(x => x.Parent != null && x.Parent.Id == parentId));
+            => List(parentId);
     }
 }

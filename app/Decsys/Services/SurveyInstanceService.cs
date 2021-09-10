@@ -46,15 +46,17 @@ namespace Decsys.Services
             if (!string.IsNullOrWhiteSpace(survey.Type))
             {
                 // So if there's an existing instance, reactivate it
-                var existing = _instances.List(surveyId).SingleOrDefault();
+                var existing = _instances.List(survey.Id).SingleOrDefault();
                 if (existing is not null)
                 {
+                    // TODO: if study reactivate children
                     _instances.Reactivate(existing.Id);
                     return existing.Id;
                 }
             }
 
             // Multi instance, or no existing instance - create a new one
+
             var instance = new SurveyInstance(survey)
             {
                 // Preserve the Survey Config at the time of this Instance launch
@@ -63,7 +65,36 @@ namespace Decsys.Services
                 ValidIdentifiers = survey.ValidIdentifiers
             };
 
-            return _instances.Create(instance);
+            var instanceId = _instances.Create(instance);
+
+            if (survey.IsStudy)
+            {
+                // TODO: if study:
+                // - create child survey instances too
+                // - preserve study config on child instances, not child survey config
+                // - create instance metadata records
+                //   - record child instance ids
+                //   - randomisation state?
+
+                // Create child instances too
+                foreach (var child in _surveys.ListChildren(survey.Id))
+                {
+                    var childInstanceId = _instances.Create(
+                        new SurveyInstance(
+                            _surveys.Find(child.Id))
+                        {
+                            // Preserve the Study Config at the time of this Instance launch,
+                            // not the Child Survey Config
+                            OneTimeParticipants = survey.OneTimeParticipants,
+                            UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
+                            ValidIdentifiers = survey.ValidIdentifiers
+                        });
+                }
+
+                // Create Study Instance state records
+            }
+
+            return instanceId;
         }
 
         /// <summary>
@@ -109,6 +140,16 @@ namespace Decsys.Services
             if (instance?.Survey.Id != surveyId) throw new KeyNotFoundException();
 
             _instances.Close(instanceId);
+
+            // If study, close child instances too
+            if (instance.Survey.IsStudy)
+            {
+                foreach (var child in _surveys.ListChildren(instance.Survey.Id))
+                {
+                    if (child.ActiveInstanceId is not null)
+                        _instances.Close(child.ActiveInstanceId.Value);
+                }
+            }
         }
 
         /// <summary>

@@ -78,6 +78,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="local-data\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
