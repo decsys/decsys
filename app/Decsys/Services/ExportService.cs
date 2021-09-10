@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
 
 using Newtonsoft.Json;
@@ -11,13 +12,13 @@ namespace Decsys.Services
 {
     public class ExportService
     {
-        private readonly SurveyService _surveys;
+        private readonly ISurveyRepository _surveys;
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _events;
         private readonly IImageService _images;
 
         public ExportService(
-            SurveyService surveys,
+            ISurveyRepository surveys,
             SurveyInstanceService instances,
             ParticipantEventService events,
             IImageService images)
@@ -29,11 +30,22 @@ namespace Decsys.Services
         }
 
         public async Task<byte[]> Structure(int surveyId)
-            => (await ExportStructure(surveyId)).AsByteArray();
+        {
+            var zip = await ExportStructure(surveyId);
+
+            foreach (var child in _surveys.ListChildren(surveyId))
+            {
+                zip.AddBytes(
+                    (await ExportStructure(child.Id)).AsByteArray(),
+                    $"{child.Id}.zip");
+            }
+
+            return zip.AsByteArray();
+        }
 
         private async Task<ZipBuilder> ExportStructure(int surveyId)
         {
-            var surveyData = _surveys.Get(surveyId);
+            var surveyData = _surveys.Find(surveyId);
 
             // start building the export zip
             var zipBuilder = new ZipBuilder()
@@ -61,6 +73,9 @@ namespace Decsys.Services
                       JsonConvert.SerializeObject(_events.Results(instance.Id)),
                       $"Instance-{instance.Published.UtcDateTime.ToString("s").Replace(":", "_")}.json");
             }
+
+            foreach (var child in _surveys.ListChildren(surveyId))
+                zip.AddBytes(await Full(child.Id), $"{child.Id}.zip");
 
             // return the zip data
             return zip.AsByteArray();

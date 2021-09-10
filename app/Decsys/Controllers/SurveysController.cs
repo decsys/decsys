@@ -85,7 +85,8 @@ namespace Decsys.Controllers
             catch (ArgumentException e)
             {
                 return BadRequest(e);
-            } catch (KeyNotFoundException e)
+            }
+            catch (KeyNotFoundException e)
             {
                 return NotFound(e);
             }
@@ -214,25 +215,17 @@ namespace Decsys.Controllers
             using var fs = new FileStream(Path.Combine(_internalSurveysPath, $"{type}.zip"), FileMode.Open);
             var zip = new ZipArchive(fs);
 
-            var (survey, images, instances) = ProcessImportZip(zip);
-            if (survey is null)
+            var import = ProcessImportZip(zip);
+            if (import.
+                Survey is null)
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
-            return await HandleImport(survey, images, instances, model);
+            return await HandleImport(import.Survey, import.Images, import.Instances, model);
         }
 
-        private static (
-                Survey? survey,
-                List<(string filename, byte[] data)> images,
-                List<SurveyInstanceResults<ParticipantEvents>> instances
-            )
-            ProcessImportZip(
-                ZipArchive zip,
-                bool importData = false)
+        private static ImportZipContentModel ProcessImportZip(ZipArchive zip, bool importData = false)
         {
-            Survey? survey = null;
-            var images = new List<(string filename, byte[] data)>();
-            var instances = new List<SurveyInstanceResults<ParticipantEvents>>();
+            ImportZipContentModel result = new();
 
             foreach (var entry in zip.Entries)
             {
@@ -246,20 +239,25 @@ namespace Decsys.Controllers
                         entry.Open().CopyTo(ms);
                         bytes = ms.ToArray();
                     }
-                    images.Add((entry.FullName.Replace("images/", string.Empty), bytes));
+                    result.Images.Add((entry.FullName.Replace("images/", string.Empty), bytes));
                 }
 
                 if (entry.FullName == "structure.json")
                 {
                     using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
-                    survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+                    result.Survey = JsonConvert.DeserializeObject<Survey>(reader.ReadToEnd());
+
+                    // always orphan surveys at this stage of import;
+                    // if we are importing into a study,
+                    // the correct parent will be assigned later in the process
+                    result.Survey.Parent = null;
                 }
                 else if (importData && entry.FullName.StartsWith("Instance-") && entry.FullName.EndsWith(".json"))
                 {
                     try
                     {
                         using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
-                        instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
+                        result.Instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
                     }
                     catch (JsonSerializationException)
                     {
@@ -268,9 +266,16 @@ namespace Decsys.Controllers
                         // TODO: Maybe someday we could report on the result of our attempted import ¯\_(ツ)_/¯
                     }
                 }
+                else if (entry.FullName.EndsWith(".zip"))
+                {
+                    // Nested zips are assumed to be child surveys
+                    using var zipStream = entry.Open();
+                    var childZip = new ZipArchive(zipStream);
+                    result.Children.Add(ProcessImportZip(childZip, importData));
+                }
             }
 
-            return (survey, images, instances);
+            return result;
         }
 
         private async Task<int> HandleImport(
@@ -303,16 +308,45 @@ namespace Decsys.Controllers
             await model.File.CopyToAsync(stream).ConfigureAwait(false);
             var zip = new ZipArchive(stream);
 
-            var (survey, images, instances) = ProcessImportZip(zip, importData);
-            if (survey is null)
+            var import = ProcessImportZip(zip, importData);
+            if (import.Survey is null)
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
-            return await HandleImport(survey, images, instances, new()
+
+            var importedId = await HandleImport(import.Survey, import.Images, import.Instances, new()
             {
                 Name = model.Name,
                 Type = model.Type,
-                Settings = model.Settings
+                Settings = model.Settings,
+                ParentSurveyId = model.ParentSurveyId
             });
+
+            if (import.Survey.IsStudy)
+            {
+                foreach (var child in import.Children)
+                {
+                    if (child.Survey is not null)
+                    {
+                        await HandleImport(child.Survey, child.Images, child.Instances, new()
+                        {
+                            Name = child.Survey.Name,
+                            Type = child.Survey.Type,
+                            Settings = child.Survey.Settings,
+                            ParentSurveyId = importedId // TODO: make import service method reassign parents :)
+                        });
+                    }
+                }
+            }
+
+            return importedId;
         }
+    }
+
+    class ImportZipContentModel
+    {
+        public Survey? Survey { get; set; }
+        public List<(string filename, byte[] data)> Images { get; set; } = new();
+        public List<SurveyInstanceResults<ParticipantEvents>> Instances { get; set; } = new();
+        public List<ImportZipContentModel> Children { get; set; } = new();
     }
 }

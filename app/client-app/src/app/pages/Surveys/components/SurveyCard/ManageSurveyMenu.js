@@ -62,19 +62,19 @@ const ManageSurveyMenu = ({
               {capitalise(type)} Details
             </MenuItem>
           )}
+
           {!isStudy && (
-            <>
-              <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
-                Preview
-              </MenuItem>
-              <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
-              {editable && (
-                <MenuItem onClick={selectStudyModal.onOpen}>
-                  Change Study...
-                </MenuItem>
-              )}
-            </>
+            <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
+              Preview
+            </MenuItem>
           )}
+          <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
+          {!isStudy && editable && (
+            <MenuItem onClick={selectStudyModal.onOpen}>
+              Change Study...
+            </MenuItem>
+          )}
+
           <MenuItem onClick={createSurveyModal.onOpen}>Duplicate</MenuItem>
           {(editable || !parentSurveyId) && (
             <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>

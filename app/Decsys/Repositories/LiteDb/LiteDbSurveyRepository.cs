@@ -94,7 +94,7 @@ namespace Decsys.Repositories.LiteDb
 ;
         }
 
-        public int Create(Models.CreateSurveyModel model, string? ownerId = null)
+        private Survey? GetParent(Models.CreateSurveyModel model)
         {
             Survey? parent = null;
 
@@ -116,6 +116,13 @@ namespace Decsys.Repositories.LiteDb
                     throw new ArgumentException(
                         $"{parentFailureMessage}: that Survey is not a Study and therefore cannot have children.");
             }
+
+            return parent;
+        }
+
+        public int Create(Models.CreateSurveyModel model, string? ownerId = null)
+        {
+            var parent = GetParent(model);
 
             var survey = new Survey { Parent = parent, IsStudy = model.IsStudy };
             if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
@@ -183,12 +190,16 @@ namespace Decsys.Repositories.LiteDb
                 existingLookup.InstanceId = null;
                 _external.Update(existingLookup);
             }
-
         }
 
         public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
         {
             var entity = _mapper.Map<Survey>(survey);
+
+            if(entity.Parent?.Id != model.ParentSurveyId)
+            {
+                entity.Parent = GetParent(model);
+            }
 
             // Reset Type properties
             // when we map the model, these will be accurately restored 

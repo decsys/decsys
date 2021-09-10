@@ -56,7 +56,7 @@ namespace Decsys.Repositories.Mongo
             return ++lastId;
         }
 
-        public int Create(Models.CreateSurveyModel model, string? ownerId = null)
+        private Survey? GetParent(Models.CreateSurveyModel model)
         {
             Survey? parent = null;
 
@@ -78,6 +78,12 @@ namespace Decsys.Repositories.Mongo
                     throw new ArgumentException(
                         $"{parentFailureMessage}: that Survey is not a Study and therefore cannot have children.");
             }
+            return parent;
+        }
+
+        public int Create(Models.CreateSurveyModel model, string? ownerId = null)
+        {
+            var parent = GetParent(model);
 
             var id = GetNextSurveyId();
 
@@ -141,6 +147,9 @@ namespace Decsys.Repositories.Mongo
         public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
         {
             var entity = _mapper.Map<Survey>(survey);
+
+            entity.ParentSurveyId = model.ParentSurveyId;
+
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
 
             entity.Id = GetNextSurveyId();

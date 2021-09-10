@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 using Decsys.Config;
@@ -116,11 +114,20 @@ namespace Decsys.Services
 
             survey.Name = model.Name ?? $"{survey.Name} (Copy)";
 
-            // if it's a child, but it/its study are locked,
-            // then we can't duplicate inside the study; we have to clear the parent
-            if (survey.Parent is not null && _instances.List(oldId).Count > 0)
+            if (survey.Parent is not null)
             {
-                survey.Parent = null;
+
+                // if it's a child, but it/its study are locked,
+                // then we can't duplicate inside the study; we have to clear the parent
+                if (_instances.List(oldId).Count > 0)
+                {
+                    survey.Parent = null;
+                }
+                else
+                {
+                    // align these for duplication purposes, allowing us to short circuit fetching the parent
+                    model.ParentSurveyId = survey.Parent.Id;
+                }
             }
 
             var newId = _surveys.Create(survey, model, ownerId);
