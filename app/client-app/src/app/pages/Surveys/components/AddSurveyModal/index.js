@@ -4,13 +4,30 @@ import CreateBlankSurveyButton from "./CreateBlankSurveyButton";
 import LoadInternalSurveys from "./LoadInternalSurveys";
 import ImportSurvey from "./ImportSurvey";
 
-const AddSurveyModal = ({ modalState, parentId }) => {
+const AddSurveyModal = ({ modalState, parent, isStudy }) => {
   return (
-    <StandardModal {...modalState} header="Add a Survey" cancelButton={false}>
+    <StandardModal
+      {...modalState}
+      header={`Add a ${isStudy ? "Study" : "Survey"}`}
+      cancelButton={false}
+    >
       <Stack w="100%" spacing={1} mb={3}>
-        <CreateBlankSurveyButton parentId={parentId} />
-        <ImportSurvey modalState={modalState} />
-        <LoadInternalSurveys closeModal={modalState.onClose} />
+        <CreateBlankSurveyButton
+          closeModal={modalState.onClose}
+          parent={parent}
+          isStudy={isStudy}
+        />
+        <ImportSurvey
+          modalState={modalState}
+          parent={parent}
+          isStudy={isStudy}
+        />
+        {!isStudy && (
+          <LoadInternalSurveys
+            closeModal={modalState.onClose}
+            parent={parent}
+          />
+        )}
       </Stack>
     </StandardModal>
   );

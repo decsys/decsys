@@ -1,13 +1,8 @@
-import { Flex, Button, Stack, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Flex, Button, Stack, Tooltip } from "@chakra-ui/react";
 import { FaPlusCircle } from "react-icons/fa";
 import LightHeading from "components/core/LightHeading";
-import { useAddSurveyActions } from "../contexts/AddSurveyActions";
-import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 
-export const PageHeader = ({ addSurveyAction }) => {
-  const { create } = useAddSurveyActions();
-  const createSurveyModal = useDisclosure();
-
+export const PageHeader = ({ addSurveyAction, addStudyAction }) => {
   return (
     <>
       <Flex my={8} align="center" justify="space-between">
@@ -28,7 +23,7 @@ export const PageHeader = ({ addSurveyAction }) => {
               colorScheme="green"
               variant="outline"
               leftIcon={<FaPlusCircle />}
-              onClick={createSurveyModal.onOpen}
+              onClick={addStudyAction}
             >
               Add a Study
             </Button>
@@ -43,12 +38,6 @@ export const PageHeader = ({ addSurveyAction }) => {
           </Button>
         </Stack>
       </Flex>
-
-      <CreateSurveyModal
-        modalState={createSurveyModal}
-        onCreate={create}
-        isStudy
-      />
     </>
   );
 };

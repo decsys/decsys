@@ -21,7 +21,7 @@ const ImportSurvey = (p) => {
   return (
     <>
       <Button mb={1} onClick={onToggle}>
-        Import an existing Survey...
+        Import an existing {p.isStudy ? "Study" : "Survey"}...
       </Button>
       <Collapse in={isOpen} animateOpacity>
         <ImportSurveyForm {...p} />
@@ -32,7 +32,11 @@ const ImportSurvey = (p) => {
 
 const isZip = (filename) => filename.split(".").pop().toLowerCase() === "zip";
 
-const ImportSurveyForm = ({ modalState }) => {
+const ImportSurveyForm = ({
+  modalState,
+  isStudy,
+  parent: { id: parentId } = {},
+}) => {
   const [oldSurveyDetails, setOldSurveyDetails] = useState();
   const { importFile } = useAddSurveyActions();
   const createSurveyModal = useDisclosure();
@@ -53,8 +57,15 @@ const ImportSurveyForm = ({ modalState }) => {
     setState({ ...state, importData: e.target.checked });
   };
 
-  const doImport = (name, type, settings) => {
-    importFile(state.file, state.importData, name, type, settings);
+  const doImport = (name, type, settings, creationOptions) => {
+    importFile(
+      state.file,
+      state.importData,
+      name,
+      type,
+      settings,
+      creationOptions
+    );
     createSurveyModal.onClose();
     modalState.onClose();
   };
@@ -68,6 +79,15 @@ const ImportSurveyForm = ({ modalState }) => {
       const zipFile = await zip.loadAsync(state.file);
       const content = await zipFile.file("structure.json").async("string");
       const oldSurvey = JSON.parse(stripBom(content));
+
+      if (parentId && oldSurvey.IsStudy) {
+        setState({
+          ...state,
+          error:
+            "The provided file is an exported Study, but you can't import a Study into another Study.",
+        });
+        return;
+      }
 
       setOldSurveyDetails({
         name: oldSurvey.Name,
@@ -117,8 +137,10 @@ const ImportSurveyForm = ({ modalState }) => {
         {...oldSurveyDetails}
         modalState={createSurveyModal}
         onCreate={doImport}
-        isFixedType={state.importData}
-        hasFixedSettings={state.importData}
+        isFixedType={state.importData || !!parentId}
+        hasFixedSettings={state.importData || !!parentId}
+        isStudy={isStudy}
+        parentId={parentId}
       />
     </Stack>
   );

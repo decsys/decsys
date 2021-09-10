@@ -8,13 +8,13 @@ const names = {
   sample: "Sample Research Survey",
 };
 
-const LoadInternalSurveys = ({ closeModal }) => {
+const LoadInternalSurveys = ({ closeModal, parent }) => {
   const { loadInternal } = useAddSurveyActions();
   const createSurveyModal = useDisclosure();
   const [internalKey, setInternalKey] = useState();
 
-  const doImport = (name, type, settings) => {
-    loadInternal(internalKey, name, type, settings);
+  const doImport = (name, type, settings, { parentId } = {}) => {
+    loadInternal(internalKey, name, type, settings, parentId);
     createSurveyModal.onClose();
     closeModal();
   };
@@ -49,6 +49,11 @@ const LoadInternalSurveys = ({ closeModal }) => {
         name={names[internalKey]}
         modalState={createSurveyModal}
         onCreate={doImport}
+        parentId={parent?.id}
+        type={parent?.type}
+        settings={parent?.settings}
+        isFixedType={!!parent}
+        hasFixedSettings={!!parent}
       />
     </>
   );

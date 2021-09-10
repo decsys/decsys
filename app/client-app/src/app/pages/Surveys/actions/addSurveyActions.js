@@ -15,12 +15,26 @@ export const addSurveyActions = (navigate, mutateSurveys) => ({
     if (!creationOptions.isStudy) navigate(`survey/${id}`);
     else mutateSurveys();
   },
-  importFile: async (file, importData, name, type, settings) => {
-    await uploadSurveyImport(file, importData, name, type, settings);
+  importFile: async (
+    file,
+    importData,
+    name,
+    type,
+    settings,
+    creationOptions
+  ) => {
+    await uploadSurveyImport(
+      file,
+      importData,
+      name,
+      type,
+      settings,
+      creationOptions
+    );
     mutateSurveys();
   },
-  loadInternal: async (internalKey, name, type, settings) => {
-    await loadInternalSurvey(internalKey, name, type, settings);
+  loadInternal: async (internalKey, name, type, settings, parentId) => {
+    await loadInternalSurvey(internalKey, name, type, settings, parentId);
     mutateSurveys();
   },
 });

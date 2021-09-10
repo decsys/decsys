@@ -10,10 +10,13 @@ import {
   FormLabel,
   Heading,
   Icon,
+  List,
+  ListItem,
   Radio,
   RadioGroup,
   Stack,
   Text,
+  UnorderedList,
   useDisclosure,
 } from "@chakra-ui/react";
 import FormikInput from "components/core/FormikInput";
@@ -210,14 +213,16 @@ const CreateSurveyModal = ({
                     <AlertDescription>
                       <Stack>
                         <Text>
-                          Due to importing existing survey results data, some
-                          settings will retain their values from the Survey
-                          being imported.
+                          This can be due to several reasons, such as:
                         </Text>
-                        <Text>
-                          To use the imported Survey's structure but change
-                          these settings, do not also import results data.
-                        </Text>
+                        <UnorderedList pl={10}>
+                          <ListItem>
+                            Importing Survey data along with structure.
+                          </ListItem>
+                          <ListItem>
+                            Adding a Survey as the child of a Study
+                          </ListItem>
+                        </UnorderedList>
                       </Stack>
                     </AlertDescription>
                   </Stack>

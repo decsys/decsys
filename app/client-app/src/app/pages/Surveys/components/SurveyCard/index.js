@@ -28,8 +28,16 @@ const SurveyCard = () => {
   const { colorMode } = useColorMode();
   const style = themes.sharedStyles.card;
   const survey = useSurvey();
-  const { id, activeInstanceId, runCount, parentSurveyId, isStudy, children } =
-    survey;
+  const {
+    id,
+    activeInstanceId,
+    runCount,
+    parentSurveyId,
+    isStudy,
+    children,
+    type,
+    settings,
+  } = survey;
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
 
   const actionButtons = getActionButtons(survey);
@@ -128,7 +136,10 @@ const SurveyCard = () => {
         </Stack>
       </Stack>
 
-      <AddSurveyModal modalState={addSurveyModal} parentId={id} />
+      <AddSurveyModal
+        modalState={addSurveyModal}
+        parent={{ id, type, settings }}
+      />
     </>
   );
 };

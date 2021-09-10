@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Page, EmptyState } from "components/core";
 import SurveysList from "./components/SurveysList";
 import { useDisclosure, Box, Alert, AlertIcon } from "@chakra-ui/react";
@@ -43,26 +44,40 @@ const Surveys = ({ navigate }) => {
   const { data: surveys, mutate: mutateSurveys } = useSurveysList();
 
   const addSurveyModal = useDisclosure();
+  const [addStudy, setAddStudy] = useState(false);
 
   const AddSurveyActions = addSurveyActions(navigate, mutateSurveys);
   const SurveyCardActions = surveyCardActions(navigate, mutateSurveys);
 
+  const handleAddSurvey = () => {
+    setAddStudy(false);
+    addSurveyModal.onOpen();
+  };
+
+  const handleAddStudy = () => {
+    setAddStudy(true);
+    addSurveyModal.onOpen();
+  };
+
   const pageBody = Object.keys(surveys).length ? (
     <ShowSurveys surveys={surveys} actions={SurveyCardActions} />
   ) : (
-    <NoSurveys action={addSurveyModal.onOpen} />
+    <NoSurveys action={handleAddSurvey} />
   );
 
   return (
     <SurveysListProvider value={{ surveys, mutateSurveys }}>
       <AddSurveyActionsProvider value={AddSurveyActions}>
         <Page>
-          <PageHeader addSurveyAction={addSurveyModal.onOpen} />
+          <PageHeader
+            addSurveyAction={handleAddSurvey}
+            addStudyAction={handleAddStudy}
+          />
 
           {pageBody}
         </Page>
 
-        <AddSurveyModal modalState={addSurveyModal} />
+        <AddSurveyModal modalState={addSurveyModal} isStudy={addStudy} />
       </AddSurveyActionsProvider>
     </SurveysListProvider>
   );

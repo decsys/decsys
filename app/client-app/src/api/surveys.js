@@ -34,7 +34,7 @@ export const createSurvey = async (
   name,
   type,
   settings,
-  { isStudy, parentId: parentSurveyId }
+  { isStudy, parentId: parentSurveyId } = {}
 ) =>
   await axios.post(
     "/api/surveys",
@@ -47,7 +47,8 @@ export const uploadSurveyImport = async (
   importData = false,
   name,
   type,
-  settings
+  settings,
+  { isStudy, parentId: parentSurveyId } = {}
 ) =>
   await uploadFile(
     `/api/surveys/import?importData=${importData}`,
@@ -57,13 +58,21 @@ export const uploadSurveyImport = async (
       name,
       type,
       settings,
+      isStudy,
+      parentSurveyId,
     }
   );
 
-export const loadInternalSurvey = async (internalKey, name, type, settings) =>
+export const loadInternalSurvey = async (
+  internalKey,
+  name,
+  type,
+  settings,
+  parentSurveyId
+) =>
   await axios.post(
     `/api/surveys/internal/${internalKey}`,
-    { name, type, settings },
+    { name, type, settings, parentSurveyId },
     withHeaders(await authorization_BearerToken())
   );
 
