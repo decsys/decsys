@@ -208,11 +208,14 @@ namespace Decsys.Repositories.Mongo
                 _surveys.Find(x => x.Id == id).SingleOrDefault());
 
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
+            => List(null, userId, includeOwnerless);
+
+        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false)
         {
             var surveys = userId is null
-                ? _surveys.Find(x => x.ParentSurveyId == null).ToList()
+                ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
                 : _surveys.Find(
-                        x => x.ParentSurveyId == null &&
+                        x => x.ParentSurveyId == parentId &&
                         (x.Owner == userId ||
                         (includeOwnerless && x.Owner == null)))
                     .ToList();
@@ -275,7 +278,6 @@ namespace Decsys.Repositories.Mongo
                 Builders<Survey>.Update.Set(x => x.Name, name));
 
         public List<Models.SurveySummary> ListChildren(int parentId)
-            => _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.Find(x => x.ParentSurveyId == parentId).ToList());
+            => List(parentId);
     }
 }
