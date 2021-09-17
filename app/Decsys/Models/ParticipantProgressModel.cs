@@ -9,6 +9,18 @@ namespace Decsys.Models
     public class ParticipantProgressModel
     {
         /// <summary>
+        /// <para>Confirm or provide an alternative Survey Id than requested for future progress interactions.</para>
+        /// <para>Currently this is used for Studies to redirect the frontend into a child survey.</para>
+        /// </summary>
+        public int SurveyId { get; set; }
+
+        /// <summary>
+        /// <para>Confirm or provide an alternative Instance Id than requested for future progress interactions.</para>
+        /// <para>Currently this is used for Studies to redirect the frontend into a child survey instance.</para>
+        /// </summary>
+        public int InstanceId { get; set; }
+
+        /// <summary>
         /// Participant Id, if any, provided in the progress request
         /// </summary>
         public string? ParticipantId { get; set; }

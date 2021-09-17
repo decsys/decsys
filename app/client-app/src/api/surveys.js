@@ -30,6 +30,16 @@ export const useSurveysList = () =>
 export const useSurvey = (id) =>
   useSWR(`/api/surveys/${id}`, defaultFetcher(true), { suspense: true });
 
+/**
+ * Fetch a List of Child Survey Summaries from the API using SWR
+ * @param {*} id The ID of the Parent Survey to fetch Children of
+ * @returns `{data, mutate}`
+ */
+export const useChildList = (id) =>
+  useSWR(`/api/surveys/${id}/children`, defaultFetcher(true), {
+    suspense: true,
+  });
+
 export const createSurvey = async (
   name,
   type,

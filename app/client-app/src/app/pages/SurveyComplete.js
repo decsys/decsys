@@ -15,6 +15,7 @@ const SurveyComplete = ({ id }) => {
 
   // We don't clear auto-generated ID's, to ensure we can track non-repeatable completion.
 
+  // TODO: what the hell do we do about studies here? check parent?
   const { instances, clearInstanceParticipantId } = useLocalInstances();
   const { data: progress } = useParticipantProgress(id, instances[id]);
 

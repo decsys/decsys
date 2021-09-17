@@ -88,6 +88,13 @@ namespace Decsys.Services
         public IEnumerable<SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => _surveys.List(userId, includeOwnerless);
 
+        /// <summary>
+        /// List summary data for all children of a Survey
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
+        public IEnumerable<SurveySummary> ListChildren(int parentId)
+            => _surveys.ListChildren(parentId);
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).

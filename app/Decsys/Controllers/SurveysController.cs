@@ -58,6 +58,11 @@ namespace Decsys.Controllers
                 OwnerId,
                 User.IsSuperUser());
 
+        [HttpGet("{id}/children")]
+        [SwaggerOperation("List summary data for all Child Surveys of this.")]
+        public IEnumerable<SurveySummary> ListChildren(int id)
+            => _surveys.ListChildren(id);
+
         [HttpGet("{id}")]
         [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Get a single Survey by ID.")]

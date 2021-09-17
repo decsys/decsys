@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Page, StandardModal } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
-import { useSurvey } from "api/surveys";
+import { useChildList, useSurvey } from "api/surveys";
 import { navigate } from "@reach/router";
 import {
   Alert,
@@ -11,16 +11,37 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { pickRandomItem } from "services/randomizer";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin`);
 
+const pickRandomChildOrDefault = (parentId, childIds = []) =>
+  childIds.length ? pickRandomItem(childIds) : parentId;
+
+const usePreviewSurvey = (surveyId) => {
+  // first try and get children in case the surveyId is for a Study
+  const { data: children } = useChildList(surveyId);
+
+  // then get the survey for either a randomly picked child,
+  // or the survey itself if it has no children
+  const {
+    data: { parent, pages, settings },
+  } = useSurvey(
+    pickRandomChildOrDefault(
+      surveyId,
+      children.map((x) => x.id)
+    )
+  );
+
+  // finally, use parent settings if we have a parent
+  return { pages, settings: parent?.settings ?? settings };
+};
+
 const Preview = ({ id, location }) => {
   // Preview uses a Survey's Page List directly
   // it can't use progress as there is no participant
-  const {
-    data: { pages, settings },
-  } = useSurvey(id);
+  const { pages, settings } = usePreviewSurvey(id);
 
   // It therefore has to maintain its own progress state
   // with regards to page order, and position
