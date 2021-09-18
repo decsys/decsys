@@ -49,8 +49,13 @@ namespace Decsys.Services
                 var existing = _instances.List(survey.Id).SingleOrDefault();
                 if (existing is not null)
                 {
-                    // TODO: if study reactivate children
                     _instances.Reactivate(existing.Id);
+
+                    foreach (var childInstance in existing.Children)
+                    {
+                        _instances.Reactivate(childInstance.Id);
+                    }
+
                     return existing.Id;
                 }
             }
@@ -62,36 +67,28 @@ namespace Decsys.Services
                 // Preserve the Survey Config at the time of this Instance launch
                 OneTimeParticipants = survey.OneTimeParticipants,
                 UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
-                ValidIdentifiers = survey.ValidIdentifiers
+                ValidIdentifiers = survey.ValidIdentifiers,
+                RandomisationStrategy = survey.IsStudy ? new() : null // Currently we only use the default, later load it from Study config
             };
 
             var instanceId = _instances.Create(instance);
 
             if (survey.IsStudy)
             {
-                // TODO: if study:
-                // - create child survey instances too
-                // - preserve study config on child instances, not child survey config
-                // - create instance metadata records
-                //   - record child instance ids
-                //   - randomisation state?
-
                 // Create child instances too
                 foreach (var child in _surveys.ListChildren(survey.Id))
                 {
-                    var childInstanceId = _instances.Create(
-                        new SurveyInstance(
-                            _surveys.Find(child.Id))
+                    _instances.Create(
+                        new SurveyInstance(_surveys.Find(child.Id))
                         {
                             // Preserve the Study Config at the time of this Instance launch,
                             // not the Child Survey Config
                             OneTimeParticipants = survey.OneTimeParticipants,
                             UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
                             ValidIdentifiers = survey.ValidIdentifiers
-                        });
+                        },
+                        parentInstanceId: instance.Id);
                 }
-
-                // Create Study Instance state records
             }
 
             return instanceId;

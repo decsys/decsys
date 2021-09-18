@@ -109,7 +109,7 @@ namespace Decsys.Repositories.LiteDb
 
             var entries = study.Children.ConvertAll(x => new RandListEntry
             {
-                Block = ++lastBlockNumber,
+                Block = lastBlockNumber + 1,
                 InstanceId = x.Id
             });
 

@@ -29,9 +29,22 @@ namespace Decsys.Repositories.LiteDb
         public bool HasActiveInstance(int id) =>
             _instances.Exists(x => x.Survey.Id == id && x.Closed == null);
 
-        public int Create(Models.SurveyInstance instance)
+        public int Create(Models.SurveyInstance instance, int? parentInstanceId = null)
         {
+            SurveyInstance? parent = null;
+            if (parentInstanceId is not null)
+                parent = _instances.FindOne(x => x.Id == parentInstanceId)
+                    ?? throw new KeyNotFoundException(
+                        $"Invalid Parent Instance with ID {parentInstanceId}");
+
             var id = _instances.Insert(_mapper.Map<SurveyInstance>(instance));
+
+            if(parent is not null)
+            {
+                var entity = _instances.FindOne(x => x.Id == id);
+                parent.Children.Add(entity);
+                _instances.Update(parent);
+            }
 
             // we always try and a update a lookup record
             // but no worries if none found

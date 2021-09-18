@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-
+﻿
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities;
@@ -24,7 +23,6 @@ namespace Decsys.Repositories.Mongo
 
         private readonly HostedDbSettings _config;
         private readonly IMongoClient _mongo;
-        private readonly IMapper _mapper;
         private readonly ISurveyInstanceRepository _instances;
         private readonly ILockProvider _locks;
         private readonly MathService _math;
@@ -32,14 +30,12 @@ namespace Decsys.Repositories.Mongo
         public StudyInstanceRepository(
             IOptions<HostedDbSettings> config,
             IMongoClient mongo,
-            IMapper mapper,
             ISurveyInstanceRepository instances,
             ILockProvider locks,
             MathService math)
         {
             _config = config.Value;
             _mongo = mongo;
-            _mapper = mapper;
             _instances = instances;
             _locks = locks;
             _math = math;

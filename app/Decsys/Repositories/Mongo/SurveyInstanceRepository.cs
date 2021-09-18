@@ -65,10 +65,23 @@ namespace Decsys.Repositories.Mongo
             return ++lastId;
         }
 
-        public int Create(Models.SurveyInstance instance)
+        public int Create(Models.SurveyInstance instance, int? parentInstanceId = null)
         {
+            SurveyInstance? parentInstance = null;
+            if(parentInstanceId is not null)
+                parentInstance = _instances.Find(x => x.Id == parentInstanceId)
+                    .SingleOrDefault()
+                    ?? throw new KeyNotFoundException(
+                        $"Invalid Parent Instance with ID {parentInstanceId}");
+
             instance.Id = GetNextSurveyInstanceId();
             _instances.InsertOne(_mapper.Map<SurveyInstance>(instance));
+
+            if (parentInstance is not null)
+            {
+                parentInstance.ChildInstanceIds.Add(instance.Id);
+                _instances.ReplaceOne(x => x.Id == parentInstance.Id, parentInstance);
+            }
 
             // we always try and a update a lookup record
             // but no worries if none found
