@@ -46,7 +46,8 @@ namespace Decsys.Mapping
                 .ConstructUsing(src => new Survey(src.Name))
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()));
             CreateMap<Survey, Data.Entities.LiteDb.Survey>()
-                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()));
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()))
+                .ForMember(dest => dest.ParentSurveyId, opt => opt.MapFrom(src => MapOptionalParentId(src)));
             CreateMap<Data.Entities.Mongo.Survey, Survey>()
                 .ConstructUsing(src => new Survey(src.Name))
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new MongoBsonJObjectConverter()));

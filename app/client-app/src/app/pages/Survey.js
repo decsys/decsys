@@ -50,6 +50,8 @@ const SurveyBootstrapper = ({ id: accessFriendlyId }) => {
    *     Y  |    Y     |    Y   | Update ID and Refetch Progress - Survey complete and repeatable
    */
 
+  console.log(progress);
+
   // Empty Survey
   if (!progress.pageCount)
     return (

@@ -40,9 +40,16 @@ namespace Decsys.Repositories.LiteDb
         public bool Exists(int id) =>
             _surveys.Exists(x => x.Id == id);
 
-        public Models.Survey Find(int id) =>
-            _mapper.Map<Models.Survey>(
-                _surveys.FindById(id));
+        public Models.Survey Find(int id)
+        {
+            var entity = _surveys.FindById(id);
+            var survey = _mapper.Map<Models.Survey>(entity);
+            if (entity.ParentSurveyId is not null)
+                survey.Parent = _mapper.Map<Models.Survey>(
+                    _surveys.FindById(entity.ParentSurveyId));
+
+            return survey;
+        }
 
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null);

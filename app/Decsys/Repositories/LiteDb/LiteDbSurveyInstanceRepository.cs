@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -39,7 +40,7 @@ namespace Decsys.Repositories.LiteDb
 
             var id = _instances.Insert(_mapper.Map<SurveyInstance>(instance));
 
-            if(parent is not null)
+            if (parent is not null)
             {
                 parent.ChildInstanceIds.Add(id);
                 _instances.Update(parent);
@@ -59,16 +60,45 @@ namespace Decsys.Repositories.LiteDb
             return id;
         }
 
-        public Models.SurveyInstance Find(int id) =>
-            _mapper.Map<Models.SurveyInstance>(
-                _instances
-                    .Include(x => x.Survey)
-                    .Include(x => x.Survey.Pages)
-                    .FindById(id));
+        private Models.SurveyInstance? FindInstance(int id)
+        {
+            var instance = _instances
+                .Include(x => x.Survey)
+                .Include(x => x.Survey.Pages)
+                .FindById(id);
+            if (instance is null) return null;
 
-        public List<Models.SurveyInstance> List(int surveyId) =>
-            _mapper.Map<List<Models.SurveyInstance>>(
-                _instances.Find(x => x.Survey.Id == surveyId));
+            var model = _mapper.Map<Models.SurveyInstance>(instance);
+
+            foreach (var childId in instance.ChildInstanceIds)
+            {
+                var child = FindInstance(childId);
+                if (child is not null) model.Children.Add(child);
+            }
+
+            return model;
+        }
+
+        public Models.SurveyInstance? Find(int id) =>
+            FindInstance(id);
+
+        public List<Models.SurveyInstance> List(int surveyId)
+        {
+            var instances = _instances.Find(x => x.Survey.Id == surveyId).ToList();
+
+            return instances.ConvertAll(instance =>
+            {
+                var model = _mapper.Map<Models.SurveyInstance>(instance);
+
+                foreach (var childId in instance.ChildInstanceIds)
+                {
+                    var child = FindInstance(childId);
+                    if (child is not null) model.Children.Add(child);
+                }
+
+                return model;
+            });
+        }
 
         public void Close(int id)
         {

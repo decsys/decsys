@@ -16,7 +16,9 @@ namespace Decsys.Mapping
 
             CreateMap<SurveyInstance, Data.Entities.LiteDb.SurveyInstance>()
                 .ConstructUsing(src =>
-                    new Data.Entities.LiteDb.SurveyInstance(src.Survey.Id));
+                    new Data.Entities.LiteDb.SurveyInstance(src.Survey.Id))
+                .ForMember(dest => dest.ChildInstanceIds,
+                    opt => opt.MapFrom(src => src.Children.Select(x => x.Id)));
 
             CreateMap<Data.Entities.Mongo.SurveyInstance, SurveyInstance>()
                 .ConstructUsing(_ =>

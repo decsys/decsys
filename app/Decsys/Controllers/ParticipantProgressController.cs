@@ -68,7 +68,9 @@ namespace Decsys.Controllers
                 InstanceId = instanceId,
                 ParticipantId = participantId,
                 UseParticipantIdentifiers = instance.UseParticipantIdentifiers,
-                PageCount = instance.Survey.Pages.Count,
+                PageCount = instance.Survey.IsStudy
+                    ? -1 // Studies have 0 page count, but they're not meant to have pages, so this helps the frontend distinguish
+                    : instance.Survey.Pages.Count,
                 Settings = instance.Survey.Parent?.Settings ?? instance.Survey.Settings
             };
 
@@ -76,6 +78,7 @@ namespace Decsys.Controllers
             var targetInstance = instance;
 
             // short circuit on empty surveys
+
             if (!instance.Survey.IsStudy && progress.PageCount == 0)
                 return (progress, instance, null);
 
