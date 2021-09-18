@@ -1,5 +1,6 @@
 ﻿using Decsys.Config;
 using Decsys.Constants;
+using Decsys.Services.Contracts;
 
 using Microsoft.Extensions.Options;
 
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Decsys.Services.LockProvider
 {
-    public class MongoLockProvider
+    public class MongoLockProvider : ILockProvider
     {
         private readonly IMongoCollection<LockModel> _locks;
 
