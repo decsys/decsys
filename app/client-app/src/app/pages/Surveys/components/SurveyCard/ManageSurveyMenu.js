@@ -34,8 +34,8 @@ const ManageSurveyMenu = ({
   const selectStudyModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
-  const handleDuplicate = (name, type, settings) => {
-    duplicate(id, name, type, settings);
+  const handleDuplicate = (name, type, settings, creationOptions) => {
+    duplicate(id, name, type, settings, creationOptions);
     createSurveyModal.onClose();
   };
   const handleDelete = async () => await deleteSurvey(id);
@@ -102,6 +102,9 @@ const ManageSurveyMenu = ({
         name={`${name} (Copy)`} // we always use this modal for duplicating only
         modalState={createSurveyModal}
         onCreate={handleDuplicate}
+        parentId={parentSurveyId}
+        isFixedType={!!parentSurveyId}
+        hasFixedSettings={!!parentSurveyId}
       />
       <SelectStudyModal
         name={name}

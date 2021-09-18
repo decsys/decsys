@@ -87,7 +87,7 @@ namespace Decsys.Services
                             UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
                             ValidIdentifiers = survey.ValidIdentifiers
                         },
-                        parentInstanceId: instance.Id);
+                        parentInstanceId: instanceId);
                 }
             }
 

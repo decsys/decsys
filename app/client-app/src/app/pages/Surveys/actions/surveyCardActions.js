@@ -40,8 +40,8 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
       })
     );
   },
-  duplicate: async (id, name, type, settings) => {
-    await duplicateSurvey(id, name, type, settings);
+  duplicate: async (id, name, type, settings, creationOptions) => {
+    await duplicateSurvey(id, name, type, settings, creationOptions);
     mutateSurveys();
   },
   changeStudy: async (id, parentId) => {
