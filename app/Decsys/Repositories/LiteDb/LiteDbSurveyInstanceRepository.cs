@@ -41,8 +41,7 @@ namespace Decsys.Repositories.LiteDb
 
             if(parent is not null)
             {
-                var entity = _instances.FindOne(x => x.Id == id);
-                parent.Children.Add(entity);
+                parent.ChildInstanceIds.Add(id);
                 _instances.Update(parent);
             }
 

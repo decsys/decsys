@@ -16,5 +16,7 @@ namespace Decsys.Data.Entities
         public bool UseParticipantIdentifiers { get; set; }
 
         public List<string> ValidIdentifiers { get; set; } = new List<string>();
+
+        public List<int> ChildInstanceIds { get; set; } = new();
     }
 }

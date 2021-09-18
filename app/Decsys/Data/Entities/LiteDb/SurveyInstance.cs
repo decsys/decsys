@@ -28,8 +28,5 @@ namespace Decsys.Data.Entities.LiteDb
         public Survey Survey { get; set; } = new Survey { Id = 0 };
 
         public RandomisationStrategy? RandomisationStrategy { get; set; }
-
-        [BsonRef(Collections.SurveyInstances)]
-        public List<SurveyInstance> Children { get; set; } = new();
     }
 }
