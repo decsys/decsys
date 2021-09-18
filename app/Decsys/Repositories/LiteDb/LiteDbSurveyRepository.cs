@@ -50,9 +50,7 @@ namespace Decsys.Repositories.LiteDb
         private List<Models.SurveySummary> List(int? parentId = null)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.Find(x =>
-                    (x.Parent == null && parentId == null) ||
-                    (x.Parent != null && x.Parent.Id == parentId)));
+                _surveys.Find(x => x.ParentSurveyId == parentId));
 
             // Reusable enhancement
             Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
@@ -88,7 +86,7 @@ namespace Decsys.Repositories.LiteDb
                     if (survey.IsStudy)
                     {
                         summary.Children = _mapper.Map<List<Models.SurveySummary>>(
-                            _surveys.Find(x => x.Parent != null && x.Parent.Id == survey.Id).ToList());
+                            _surveys.Find(x => x.ParentSurveyId == survey.Id).ToList());
 
                         // they also need enhancing
                         summary.Children = summary.Children.ConvertAll(EnhanceSummary);
@@ -129,7 +127,7 @@ namespace Decsys.Repositories.LiteDb
         {
             var parent = GetParent(model);
 
-            var survey = new Survey { Parent = parent, IsStudy = model.IsStudy };
+            var survey = new Survey { ParentSurveyId = parent?.Id, IsStudy = model.IsStudy };
             if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
 
             var lookup = HandleSurveyTypeCreation(model, ref survey);
@@ -201,10 +199,7 @@ namespace Decsys.Repositories.LiteDb
         {
             var entity = _mapper.Map<Survey>(survey);
 
-            if(entity.Parent?.Id != model.ParentSurveyId)
-            {
-                entity.Parent = GetParent(model);
-            }
+            entity.ParentSurveyId = model.ParentSurveyId;
 
             // Reset Type properties
             // when we map the model, these will be accurately restored 

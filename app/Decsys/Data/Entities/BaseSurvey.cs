@@ -19,5 +19,7 @@ namespace Decsys.Data.Entities
         public List<string> ValidIdentifiers { get; set; } = new List<string>();
 
         public string? Owner { get; set; }
+
+        public int? ParentSurveyId { get; set; }
     }
 }

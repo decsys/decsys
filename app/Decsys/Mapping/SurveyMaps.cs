@@ -15,7 +15,6 @@ namespace Decsys.Mapping
             CreateMap<Data.Entities.LiteDb.Survey, SurveySummary>()
                 .ConstructUsing(src => new SurveySummary(src.Name))
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()))
-                .ForMember(dest => dest.ParentSurveyId, opt => opt.MapFrom(src => MapOptionalParentId(src)))
                 .ForSourceMember(src => src.Pages, opt => opt.DoNotValidate());
 
             CreateMap<IEnumerable<Data.Entities.LiteDb.SurveyInstance>, SurveySummary>()
@@ -92,9 +91,6 @@ namespace Decsys.Mapping
 
         private int? MapActiveInstanceToId(Data.Entities.BaseSurveyInstance? instance)
             => instance?.Id;
-
-        private int? MapOptionalParentId(Data.Entities.LiteDb.Survey survey)
-            => survey.Parent?.Id;
 
         private int? MapOptionalParentId(Survey survey)
             => survey.Parent?.Id;
