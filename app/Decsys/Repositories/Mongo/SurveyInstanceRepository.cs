@@ -84,18 +84,28 @@ namespace Decsys.Repositories.Mongo
         public bool Exists(int id)
             => _instances.CountDocuments(x => x.Id == id) > 0;
 
-        public Models.SurveyInstance? Find(int id)
+        private Models.SurveyInstance? FindInstance(int id, Models.Survey? providedSurvey = null)
         {
             var instance = _instances.Find(x => x.Id == id).SingleOrDefault();
             if (instance is null) return null;
 
-            var survey = _surveys.Find(x => x.Id == instance.SurveyId).Single();
-
             var model = _mapper.Map<Models.SurveyInstance>(instance);
-            model.Survey = _mapper.Map<Models.Survey>(survey);
+            model.Survey = (providedSurvey is not null && providedSurvey?.Id == instance.SurveyId)
+                ? providedSurvey
+                : _mapper.Map<Models.Survey>(
+                    _surveys.Find(x => x.Id == instance.SurveyId).Single());
+
+            foreach (var childId in instance.ChildInstanceIds)
+            {
+                var child = FindInstance(childId, model.Survey);
+                if (child is not null) model.Children.Add(child);
+            }
 
             return model;
         }
+
+        public Models.SurveyInstance? Find(int id)
+            => FindInstance(id);
 
         public bool HasActiveInstance(int surveyId)
             => _instances.CountDocuments(
@@ -106,7 +116,8 @@ namespace Decsys.Repositories.Mongo
         {
             var surveys = new Dictionary<int, Models.Survey>();
             var instances = _instances.Find(x => x.SurveyId == surveyId).ToList();
-            return instances.Select(instance =>
+
+            return instances.ConvertAll(instance =>
             {
                 // make sure the dictionary has the survey, but only fetch it once
                 if (!surveys.ContainsKey(instance.SurveyId))
@@ -117,8 +128,15 @@ namespace Decsys.Repositories.Mongo
 
                 var model = _mapper.Map<Models.SurveyInstance>(instance);
                 model.Survey = surveys[instance.SurveyId];
+
+                foreach (var childId in instance.ChildInstanceIds)
+                {
+                    var child = FindInstance(childId, model.Survey);
+                    if (child is not null) model.Children.Add(child);
+                }
+
                 return model;
-            }).ToList();
+            });
         }
     }
 }

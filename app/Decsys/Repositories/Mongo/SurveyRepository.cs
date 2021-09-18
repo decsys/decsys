@@ -203,9 +203,19 @@ namespace Decsys.Repositories.Mongo
         }
 
 
-        public Models.Survey Find(int id) =>
-            _mapper.Map<Models.Survey>(
-                _surveys.Find(x => x.Id == id).SingleOrDefault());
+        public Models.Survey Find(int id)
+        {
+            var entity = _surveys.Find(x => x.Id == id).SingleOrDefault();
+            var survey = _mapper.Map<Models.Survey>(entity);
+
+            if (entity.ParentSurveyId is not null)
+            {
+                var parent = _surveys.Find(x => x.Id == x.ParentSurveyId).SingleOrDefault();
+                survey.Parent = _mapper.Map<Models.Survey>(parent);
+            }
+
+            return survey;
+        }
 
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null, userId, includeOwnerless);

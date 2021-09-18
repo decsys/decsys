@@ -20,10 +20,11 @@ namespace Decsys.Repositories.Contracts
             string? type = null);
 
         /// <summary>
-        /// List all Events for all Participants in the Instance
+        /// List all Events for all Participants in the Instance, optionally of a specified type.
         /// </summary>
         /// <param name="instanceId">ID of the Instance to list Events for</param>
-        Dictionary<string, List<ParticipantEvent>> List(int instanceId);
+        /// <param name="type">Optional event type to filter by</param>
+        Dictionary<string, List<ParticipantEvent>> List(int instanceId, string? type = null);
 
         /// <summary>
         /// Get the next sequential ID for a Participant

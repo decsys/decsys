@@ -98,13 +98,13 @@ namespace Decsys.Repositories.LiteDb
                         (type == null || x.Type == type))
                     .OrderBy(x => x.Timestamp));
 
-        public Dictionary<string, List<Models.ParticipantEvent>> List(int instanceId)
+        public Dictionary<string, List<Models.ParticipantEvent>> List(int instanceId, string? type = null)
             => ListLogs(instanceId)
                 .ToDictionary(
                     x => GetParticipantId(instanceId, x),
                     x => _mapper.Map<List<Models.ParticipantEvent>>(
                         GetLog(instanceId, x)
-                            .FindAll()
+                            .Find(x => type == null || x.Type == type)
                             .OrderBy(x => x.Timestamp)));
 
         public string NextParticipantId(int instanceId, string participantIdPrefix)

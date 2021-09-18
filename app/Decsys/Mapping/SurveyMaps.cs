@@ -52,7 +52,8 @@ namespace Decsys.Mapping
                 .ConstructUsing(src => new Survey(src.Name))
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new MongoBsonJObjectConverter()));
             CreateMap<Survey, Data.Entities.Mongo.Survey>()
-                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()))
+                .ForMember(dest => dest.ParentSurveyId, opt => opt.MapFrom(src => MapOptionalParentId(src)));
 
             // Survey Type Settings only
             // these will only be used to apply to existing Survey objects
@@ -93,6 +94,9 @@ namespace Decsys.Mapping
             => instance?.Id;
 
         private int? MapOptionalParentId(Data.Entities.LiteDb.Survey survey)
+            => survey.Parent?.Id;
+
+        private int? MapOptionalParentId(Survey survey)
             => survey.Parent?.Id;
     }
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Decsys.Models;
 using System;
+using System.Linq;
 
 namespace Decsys.Mapping
 {
@@ -24,7 +25,9 @@ namespace Decsys.Mapping
 
             CreateMap<SurveyInstance, Data.Entities.Mongo.SurveyInstance>()
                 .ConstructUsing(src =>
-                    new Data.Entities.Mongo.SurveyInstance(src.Survey.Id));
+                    new Data.Entities.Mongo.SurveyInstance(src.Survey.Id))
+                .ForMember(dest => dest.ChildInstanceIds,
+                    opt => opt.MapFrom(src => src.Children.Select(x => x.Id)));
 
             // Export
             CreateMap<SurveyInstance, BaseSurveyInstanceResults>()
@@ -43,6 +46,19 @@ namespace Decsys.Mapping
 
             CreateMap<string, Survey>()
                 .ConstructUsing(src => new Survey(src));
+
+            // Randomisation Strategy Settings
+            CreateMap<RandomisationStrategy, Data.Entities.Mongo.RandomisationStrategy>()
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
+
+            CreateMap<RandomisationStrategy, Data.Entities.LiteDb.RandomisationStrategy>()
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()));
+
+            CreateMap<Data.Entities.Mongo.RandomisationStrategy, RandomisationStrategy>()
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new MongoBsonJObjectConverter()));
+
+            CreateMap<Data.Entities.LiteDb.RandomisationStrategy, RandomisationStrategy>()
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()));
         }
     }
 }

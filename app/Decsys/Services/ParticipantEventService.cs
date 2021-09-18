@@ -61,7 +61,7 @@ namespace Decsys.Services
             if (!_instances.Exists(instanceId))
                 throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            return _events.List(instanceId, participantId);
+            return _events.List(instanceId, participantId: participantId);
         }
 
 

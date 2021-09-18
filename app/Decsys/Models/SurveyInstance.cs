@@ -26,6 +26,10 @@ namespace Decsys.Models
 
         public bool UseParticipantIdentifiers { get; set; }
 
-        public List<string> ValidIdentifiers { get; set; } = new List<string>();
+        public List<string> ValidIdentifiers { get; set; } = new();
+
+        public List<SurveyInstance> Children { get; set; } = new();
+
+        public RandomisationStrategy? RandomisationStrategy { get; set; }
     }
 }

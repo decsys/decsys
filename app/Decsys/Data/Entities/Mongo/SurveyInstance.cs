@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Decsys.Data.Entities.Mongo
 {
@@ -21,5 +22,9 @@ namespace Decsys.Data.Entities.Mongo
         }
 
         public int SurveyId { get; set; }
+
+        public RandomisationStrategy? RandomisationStrategy { get; set; }
+
+        public List<int> ChildInstanceIds { get; set; } = new();
     }
 }
