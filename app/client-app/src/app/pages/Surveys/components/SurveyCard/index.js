@@ -106,22 +106,24 @@ const SurveyCard = () => {
                   {children?.length && (
                     <Icon as={isOpen ? FaChevronDown : FaChevronRight} />
                   )}
-                  <Heading size="sm" fontWeight="medium">
+                  <Heading p={1.5} size="sm" fontWeight="medium">
                     Child Surveys ({children?.length ?? 0})
                   </Heading>
                 </Stack>
-                <Button
-                  leftIcon={<FaPlus />}
-                  size="sm"
-                  colorScheme="green"
-                  variant="outline"
-                  onClick={addSurveyModal.onOpen}
-                >
-                  Add a Survey
-                </Button>
+                {!runCount && (
+                  <Button
+                    leftIcon={<FaPlus />}
+                    size="sm"
+                    colorScheme="green"
+                    variant="outline"
+                    onClick={addSurveyModal.onOpen}
+                  >
+                    Add a Survey
+                  </Button>
+                )}
               </Flex>
-              <Collapse in={isOpen} animateOpacity>
-                <Stack p={2}>
+              <Collapse in={children?.length && isOpen} animateOpacity>
+                <Stack p={children?.length ? 2 : 0} pt={0}>
                   <Stack spacing={0} shadow="callout">
                     {children?.map((x) => (
                       <SurveyProvider key={x.id} value={x}>

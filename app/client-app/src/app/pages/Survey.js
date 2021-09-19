@@ -31,7 +31,7 @@ const SurveyBootstrapper = ({ id: accessFriendlyId }) => {
   );
 
   // this might differ from the access ID, e.g. for children of Studies
-  const surveyFriendlyId = encode(progress.SurveyId, progress.InstanceId);
+  const surveyFriendlyId = encode(progress.surveyId, progress.instanceId);
 
   if (isPreview) {
     const [accessSurveyId] = decode(accessFriendlyId)[0];
@@ -51,6 +51,7 @@ const SurveyBootstrapper = ({ id: accessFriendlyId }) => {
    */
 
   console.log(progress);
+  console.log(surveyFriendlyId);
 
   // Empty Survey
   if (!progress.pageCount)

@@ -103,14 +103,14 @@ namespace Decsys.Repositories.Mongo
             if (instance is null) return null;
 
             var model = _mapper.Map<Models.SurveyInstance>(instance);
-            model.Survey = (providedSurvey is not null && providedSurvey?.Id == instance.SurveyId)
+            model.Survey = (providedSurvey?.Id == instance.SurveyId)
                 ? providedSurvey
                 : _mapper.Map<Models.Survey>(
                     _surveys.Find(x => x.Id == instance.SurveyId).Single());
 
             foreach (var childId in instance.ChildInstanceIds)
             {
-                var child = FindInstance(childId, model.Survey);
+                var child = FindInstance(childId);
                 if (child is not null) model.Children.Add(child);
             }
 

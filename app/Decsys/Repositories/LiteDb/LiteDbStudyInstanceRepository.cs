@@ -105,7 +105,9 @@ namespace Decsys.Repositories.LiteDb
 
             var randList = RandList(studyInstanceId);
 
-            var lastBlockNumber = randList.Max(x => x.Block);
+            var lastBlockNumber = randList.Count() > 0
+                ? randList.Max(x => x.Block)
+                : 0;
 
             var entries = study.Children.ConvertAll(x => new RandListEntry
             {

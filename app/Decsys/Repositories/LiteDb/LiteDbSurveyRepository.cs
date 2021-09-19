@@ -251,8 +251,12 @@ namespace Decsys.Repositories.LiteDb
             _surveys.Update(survey);
         }
 
-        public void Update(Models.Survey survey) =>
-            _surveys.Update(_mapper.Map<Survey>(survey));
+        public void Update(Models.Survey survey)
+        {
+            var entity = _mapper.Map<Survey>(survey);
+            _surveys.Update(entity);
+        }
+
 
         public SurveyAccessResult TestSurveyAccess(int id, string userId, bool allowOwnerless = false)
         {

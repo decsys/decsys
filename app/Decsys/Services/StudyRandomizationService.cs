@@ -73,26 +73,28 @@ namespace Decsys.Services
 
         #region Service level Randomisation Strategy Implementations
 
-        private int Minimisation_v1(Dictionary<int, int> factors)
+        private int Minimisation_v1(Dictionary<int, int> factors, int weightPower = 1)
         {
-            List<int> randSource = new();
-            // 1. reduce weights to smallest integer values
-            // and 2. build a weighted list of surveys
+            // Greatest Common Divisor will allow us to squash the factor values
+            // This gives us more reasonable weights for the weighting math in the case of high factor values
             var gcd = MathService.Gcd(factors.Values.ToList());
-            foreach (var surveyFactor in factors)
-            {
-                randSource.AddRange(
-                    Enumerable.Repeat(
-                        surveyFactor.Key,
-                        surveyFactor.Value / gcd)
-                    .ToArray());
-            }
 
-            // 3. Shuffle the List for good measure
-            _math.Shuffle(ref randSource);
+            return _math.PickRandomWeightedItem(factors
+                .Select(x => {
+                    // 1. Use GCD to squash,
+                    // 2. add 1 to every value to avoid divide by zero (also 0 should have the highest chance of selection anyway)
+                    // 3. invert the value (1/) so the highest factor values have the lowest weight
+                    var factorValue = gcd == 0
+                        ? 1 // if gcd is 0, then all values are 0 so we should evenly weight everything at 1
+                        : ((x.Value / gcd) + 1d);
 
-            // 4. Randomly pick an item from the shuffled weighted list
-            return randSource[_math.Random.Next(0, randSource.Count)];
+                    // here we optionally increase the weight of higher factors
+                    // to a specified power
+                    var weightedFactorValue = Math.Pow(factorValue, weightPower);
+
+                    return (item: x.Key, weight: 1 / weightedFactorValue);
+                })
+                .ToList());
         }
 
         private Dictionary<int, int> GetMinimisationFactors(SurveyInstance study)

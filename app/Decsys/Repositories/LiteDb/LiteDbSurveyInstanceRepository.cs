@@ -18,11 +18,13 @@ namespace Decsys.Repositories.LiteDb
     {
         private readonly ILiteCollection<SurveyInstance> _instances;
         private readonly ILiteCollection<ExternalLookup> _external;
+        private readonly ILiteCollection<Survey> _surveys;
         private readonly IMapper _mapper;
 
         public LiteDbSurveyInstanceRepository(LiteDbFactory db, IMapper mapper)
         {
             _instances = db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _external = db.Surveys.GetCollection<ExternalLookup>(Collections.ExternalLookup);
             _mapper = mapper;
         }
@@ -60,7 +62,7 @@ namespace Decsys.Repositories.LiteDb
             return id;
         }
 
-        private Models.SurveyInstance? FindInstance(int id)
+        private Models.SurveyInstance? FindInstance(int id, Models.Survey? providedParentSurvey = null)
         {
             var instance = _instances
                 .Include(x => x.Survey)
@@ -69,10 +71,14 @@ namespace Decsys.Repositories.LiteDb
             if (instance is null) return null;
 
             var model = _mapper.Map<Models.SurveyInstance>(instance);
+            model.Survey.Parent = (providedParentSurvey?.Id == instance.Survey.ParentSurveyId)
+                ? providedParentSurvey
+                : _mapper.Map<Models.Survey>(
+                    _surveys.Find(x => x.Id == instance.Survey.ParentSurveyId).Single());
 
             foreach (var childId in instance.ChildInstanceIds)
             {
-                var child = FindInstance(childId);
+                var child = FindInstance(childId, model.Survey);
                 if (child is not null) model.Children.Add(child);
             }
 
@@ -84,18 +90,25 @@ namespace Decsys.Repositories.LiteDb
 
         public List<Models.SurveyInstance> List(int surveyId)
         {
-            var instances = _instances.Find(x => x.Survey.Id == surveyId).ToList();
+            var instances = _instances
+                .Include(x => x.Survey)
+                .Include(x => x.Survey.Pages)
+                .Find(x => x.Survey.Id == surveyId)
+                .ToList();
 
             return instances.ConvertAll(instance =>
             {
                 var model = _mapper.Map<Models.SurveyInstance>(instance);
+                model.Survey.Parent = instance.Survey.ParentSurveyId is not null
+                    ? _mapper.Map<Models.Survey>(
+                        _surveys.Find(x => x.Id == instance.Survey.ParentSurveyId).Single())
+                    : null;
 
                 foreach (var childId in instance.ChildInstanceIds)
                 {
-                    var child = FindInstance(childId);
+                    var child = FindInstance(childId, model.Survey);
                     if (child is not null) model.Children.Add(child);
                 }
-
                 return model;
             });
         }
