@@ -86,7 +86,11 @@ namespace Decsys.Repositories.LiteDb
                     nextRand = GenerateNewBlock(studyInstanceId);
                 }
 
-                nextRand.Allocation = new(participantId, nextRand.InstanceId);
+                var allocation = new StudySurveyAllocation(participantId, nextRand.InstanceId);
+
+                Allocations(studyInstanceId).Insert(allocation);
+
+                nextRand.Allocation = allocation;
 
                 randList.Update(nextRand);
 
@@ -130,7 +134,9 @@ namespace Decsys.Repositories.LiteDb
                 Allocations(instanceId).FindAll());
 
         List<Models.RandListEntry> IStudyInstanceRepository.RandList(int instanceId)
-            => _mapper.Map<List<Models.RandListEntry>>(
-                RandList(instanceId).FindAll());
+        {
+            var randList = RandList(instanceId).Include(x => x.Allocation).FindAll();
+            return _mapper.Map<List<Models.RandListEntry>>(randList);
+        }
     }
 }
