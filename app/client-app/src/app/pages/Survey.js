@@ -41,7 +41,6 @@ const SurveyBootstrapper = ({ id: accessFriendlyId }) => {
   // behave differently based on progress state
   /* Valid Progress matrix
    *
-
    *   Page | Known ID | New ID | Output
    *   ---------------------------------
    *     Y  |    Y     |    N   | (Update ID) and Load Page
