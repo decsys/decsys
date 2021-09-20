@@ -210,7 +210,7 @@ namespace Decsys.Repositories.Mongo
 
             if (entity.ParentSurveyId is not null)
             {
-                var parent = _surveys.Find(x => x.Id == x.ParentSurveyId).SingleOrDefault();
+                var parent = _surveys.Find(x => x.Id == entity.ParentSurveyId).SingleOrDefault();
                 survey.Parent = _mapper.Map<Models.Survey>(parent);
             }
 

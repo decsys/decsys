@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Page, StandardModal } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
 import { useChildList, useSurvey } from "api/surveys";
@@ -23,16 +23,19 @@ const usePreviewSurvey = (surveyId) => {
   // first try and get children in case the surveyId is for a Study
   const { data: children } = useChildList(surveyId);
 
+  const targetId = useRef(
+    pickRandomChildOrDefault(
+      surveyId,
+      children.map((x) => x.id)
+    ),
+    [surveyId]
+  );
+
   // then get the survey for either a randomly picked child,
   // or the survey itself if it has no children
   const {
     data: { parent, pages, settings },
-  } = useSurvey(
-    pickRandomChildOrDefault(
-      surveyId,
-      children.map((x) => x.id)
-    )
-  );
+  } = useSurvey(targetId.current);
 
   // finally, use parent settings if we have a parent
   return { pages, settings: parent?.settings ?? settings };

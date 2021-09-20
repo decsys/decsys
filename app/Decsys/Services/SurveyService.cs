@@ -123,12 +123,12 @@ namespace Decsys.Services
 
             if (survey.Parent is not null)
             {
-
                 // if it's a child, but it/its study are locked,
                 // then we can't duplicate inside the study; we have to clear the parent
                 if (_instances.List(oldId).Count > 0)
                 {
                     survey.Parent = null;
+                    model.ParentSurveyId = null;
                 }
                 else
                 {

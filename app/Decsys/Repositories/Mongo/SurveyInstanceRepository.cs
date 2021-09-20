@@ -68,7 +68,7 @@ namespace Decsys.Repositories.Mongo
         public int Create(Models.SurveyInstance instance, int? parentInstanceId = null)
         {
             SurveyInstance? parentInstance = null;
-            if(parentInstanceId is not null)
+            if (parentInstanceId is not null)
                 parentInstance = _instances.Find(x => x.Id == parentInstanceId)
                     .SingleOrDefault()
                     ?? throw new KeyNotFoundException(
@@ -97,20 +97,24 @@ namespace Decsys.Repositories.Mongo
         public bool Exists(int id)
             => _instances.CountDocuments(x => x.Id == id) > 0;
 
-        private Models.SurveyInstance? FindInstance(int id, Models.Survey? providedSurvey = null)
+        private Models.SurveyInstance? FindInstance(int id, Models.Survey? providedParentSurvey = null)
         {
             var instance = _instances.Find(x => x.Id == id).SingleOrDefault();
             if (instance is null) return null;
 
             var model = _mapper.Map<Models.SurveyInstance>(instance);
-            model.Survey = (providedSurvey?.Id == instance.SurveyId)
-                ? providedSurvey
+
+            var survey = _surveys.Find(x => x.Id == instance.SurveyId).Single();
+            model.Survey = _mapper.Map<Models.Survey>(survey);
+
+            model.Survey.Parent = (providedParentSurvey?.Id == survey.ParentSurveyId)
+                ? providedParentSurvey
                 : _mapper.Map<Models.Survey>(
-                    _surveys.Find(x => x.Id == instance.SurveyId).Single());
+                    _surveys.Find(x => x.Id == survey.ParentSurveyId).Single());
 
             foreach (var childId in instance.ChildInstanceIds)
             {
-                var child = FindInstance(childId);
+                var child = FindInstance(childId, model.Survey);
                 if (child is not null) model.Children.Add(child);
             }
 
@@ -135,8 +139,15 @@ namespace Decsys.Repositories.Mongo
                 // make sure the dictionary has the survey, but only fetch it once
                 if (!surveys.ContainsKey(instance.SurveyId))
                 {
-                    surveys[instance.SurveyId] = _mapper.Map<Models.Survey>(
-                        _surveys.Find(x => x.Id == instance.SurveyId).Single());
+                    var survey = _surveys.Find(x => x.Id == instance.SurveyId).Single();
+                    var surveyModel = _mapper.Map<Models.Survey>(survey);
+
+                    surveyModel.Parent = survey.ParentSurveyId is not null
+                        ? _mapper.Map<Models.Survey>(
+                            _surveys.Find(x => x.Id == survey.ParentSurveyId).Single())
+                        : null;
+
+                    surveys[instance.SurveyId] = surveyModel;
                 }
 
                 var model = _mapper.Map<Models.SurveyInstance>(instance);
