@@ -23,14 +23,14 @@ namespace Decsys.Controllers
         private readonly SurveyService _surveys;
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _events;
-        private readonly StudyRandomizationService _random;
+        private readonly StudyAllocationService _random;
         private readonly MathService _math;
 
         public ParticipantProgressController(
             SurveyService surveys,
             SurveyInstanceService instances,
             ParticipantEventService events,
-            StudyRandomizationService random,
+            StudyAllocationService random,
             MathService math)
         {
             _surveys = surveys;

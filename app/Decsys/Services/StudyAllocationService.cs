@@ -1,4 +1,6 @@
-﻿using Decsys.Constants;
+﻿using AutoMapper;
+
+using Decsys.Constants;
 using Decsys.Models;
 using Decsys.Repositories.Contracts;
 
@@ -9,24 +11,27 @@ using System.Threading.Tasks;
 
 namespace Decsys.Services
 {
-    public class StudyRandomizationService
+    public class StudyAllocationService
     {
 
         private readonly ISurveyInstanceRepository _instances;
         private readonly IStudyInstanceRepository _studyInstances;
         private readonly IParticipantEventRepository _events;
         private readonly MathService _math;
+        private readonly IMapper _mapper;
 
-        public StudyRandomizationService(
+        public StudyAllocationService(
             ISurveyInstanceRepository instances,
             IStudyInstanceRepository studyInstances,
             IParticipantEventRepository events,
-            MathService math)
+            MathService math,
+            IMapper mapper)
         {
             _instances = instances;
             _studyInstances = studyInstances;
             _events = events;
             _math = math;
+            _mapper = mapper;
         }
 
         public SurveyInstance? FindAllocatedInstance(int studyInstanceId, string participantId)
@@ -69,6 +74,26 @@ namespace Decsys.Services
                         $"The Study Instance with ID {studyInstanceId} does not have a vaild Randomisation Strategy.",
                         nameof(studyInstanceId));
             }
+        }
+
+        internal StudyInstanceAllocationData Export(int instanceId)
+        {
+            var instance = _instances.Find(instanceId) ??
+                throw new KeyNotFoundException("Study Instance could not be found.");
+
+            var allocations = _studyInstances.ListAllocations(instanceId);
+            var randList = _studyInstances.RandList(instanceId);
+
+            var result = _mapper.Map<SurveyInstance, StudyInstanceAllocationData>(
+                instance,
+                // Automapper is to stupid to do this inside a profile?
+                opt => opt.AfterMap((src, dest) =>
+                    dest.ChildInstanceIds = src.Children.ConvertAll(x => x.Id)));
+
+            result.Allocations = allocations;
+            result.RandList = randList;
+
+            return result;
         }
 
         #region Service level Randomisation Strategy Implementations

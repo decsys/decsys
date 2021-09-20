@@ -22,17 +22,20 @@ namespace Decsys.Repositories.LiteDb
         private readonly ISurveyInstanceRepository _instances;
         private readonly ILockProvider _locks;
         private readonly MathService _math;
+        private readonly IMapper _mapper;
 
         public LiteDbStudyInstanceRepository(
             LiteDbFactory db,
             ISurveyInstanceRepository instances,
             ILockProvider locks,
-            MathService math)
+            MathService math,
+            IMapper mapper)
         {
             _db = db;
             _instances = instances;
             _locks = locks;
             _math = math;
+            _mapper = mapper;
         }
 
         #region Helpers
@@ -121,5 +124,13 @@ namespace Decsys.Repositories.LiteDb
 
             return entries[0];
         }
+
+        public List<Models.StudySurveyAllocation> ListAllocations(int instanceId)
+            => _mapper.Map<List<Models.StudySurveyAllocation>>(
+                Allocations(instanceId).FindAll());
+
+        List<Models.RandListEntry> IStudyInstanceRepository.RandList(int instanceId)
+            => _mapper.Map<List<Models.RandListEntry>>(
+                RandList(instanceId).FindAll());
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Decsys.Models;
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Decsys.Repositories.Contracts
@@ -32,5 +33,19 @@ namespace Decsys.Repositories.Contracts
         /// <param name="participantId"></param>
         /// <returns></returns>
         Task<SurveyInstance> AllocateNext_Block(int studyInstanceId, string participantId);
+
+        /// <summary>
+        /// An export list of all allocations for this Study Instance
+        /// </summary>
+        /// <param name="instanceId"></param>
+        /// <returns></returns>
+        List<StudySurveyAllocation> ListAllocations(int instanceId);
+
+        /// <summary>
+        /// An export list of the Blocked Randomisation List for this Study Instance
+        /// </summary>
+        /// <param name="instanceId"></param>
+        /// <returns></returns>
+        List<RandListEntry> RandList(int instanceId);
     }
 }

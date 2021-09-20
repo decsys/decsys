@@ -273,7 +273,7 @@ namespace Decsys
                 .AddTransient<SurveyInstanceService>()
                 .AddTransient<ExportService>()
                 .AddTransient<ParticipantEventService>()
-                .AddTransient<StudyRandomizationService>()
+                .AddTransient<StudyAllocationService>()
 
                 .AddSingleton<MathService>()
 

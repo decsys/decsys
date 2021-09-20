@@ -14,17 +14,20 @@ namespace Decsys.Services
     {
         private readonly ISurveyRepository _surveys;
         private readonly SurveyInstanceService _instances;
+        private readonly StudyAllocationService _studies;
         private readonly ParticipantEventService _events;
         private readonly IImageService _images;
 
         public ExportService(
             ISurveyRepository surveys,
             SurveyInstanceService instances,
+            StudyAllocationService studies,
             ParticipantEventService events,
             IImageService images)
         {
             _surveys = surveys;
             _instances = instances;
+            _studies = studies;
             _events = events;
             _images = images;
         }
@@ -70,8 +73,10 @@ namespace Decsys.Services
             foreach (var instance in _instances.List(surveyId))
             {
                 zip.AddTextContent(
-                      JsonConvert.SerializeObject(_events.Results(instance.Id)),
-                      $"Instance-{instance.Published.UtcDateTime.ToString("s").Replace(":", "_")}.json");
+                    instance.Survey.IsStudy
+                        ? JsonConvert.SerializeObject(_studies.Export(instance.Id))
+                        : JsonConvert.SerializeObject(_events.Results(instance.Id)),
+                    $"Instance-{instance.Published.UtcDateTime.ToString("s").Replace(":", "_")}.json");
             }
 
             foreach (var child in _surveys.ListChildren(surveyId))

@@ -10,6 +10,11 @@ namespace Decsys.Models
     public class BaseSurveyInstanceResults
     {
         /// <summary>
+        /// The original internal ID of the instance. Useful for linking with parents (e.g. in Studies)
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
         /// A timestamp for when the export was produced
         /// </summary>
         public DateTimeOffset ExportGenerated { get; set; }
@@ -33,7 +38,11 @@ namespace Decsys.Models
 
         public bool UseParticipantIdentifiers { get; set; }
 
-        public List<string> ValidIdentifiers { get; set; } = new List<string>();
+        public List<string> ValidIdentifiers { get; set; } = new();
+
+        public List<int> ChildInstanceIds { get; set; } = new();
+
+        public RandomisationStrategy? RandomisationStrategy { get; set; }
     }
 
     /// <summary>
@@ -45,6 +54,6 @@ namespace Decsys.Models
         /// <summary>
         /// The instance participants and their export data
         /// </summary>
-        public List<T> Participants { get; set; } = new List<T>();
+        public List<T> Participants { get; set; } = new();
     }
 }

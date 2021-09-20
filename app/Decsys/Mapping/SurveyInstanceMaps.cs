@@ -32,13 +32,26 @@ namespace Decsys.Mapping
                     opt => opt.MapFrom(src => src.Children.Select(x => x.Id)));
 
             // Export
+
             CreateMap<SurveyInstance, BaseSurveyInstanceResults>()
                 .ForMember(dest => dest.ExportGenerated, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
-                .ForMember(dest => dest.Survey, opt => opt.MapFrom(src => src.Survey.Name));
+                .ForMember(dest => dest.Survey, opt => opt.MapFrom(src => src.Survey.Name))
+                .ForMember(dest => dest.ChildInstanceIds, opt => opt.Ignore()); // have to do these manually, for some reason
 
             CreateMap(typeof(SurveyInstance), typeof(SurveyInstanceResults<>))
                 .IncludeBase(typeof(SurveyInstance), typeof(BaseSurveyInstanceResults))
                 .ForMember("Participants", opt => opt.Ignore());
+
+            CreateMap<SurveyInstance, StudyInstanceAllocationData>()
+                .ForMember(dest => dest.RandList, opt => opt.Ignore())
+                .ForMember(dest => dest.Allocations, opt => opt.Ignore());
+
+            CreateMap<Data.Entities.StudySurveyAllocation, StudySurveyAllocation>();
+
+            CreateMap<Data.Entities.LiteDb.RandListEntry, RandListEntry>()
+                .ForMember(dest => dest.AllocationId, opt => opt.MapFrom(src => MapOptionalAllocationId(src)));
+
+            CreateMap<Data.Entities.Mongo.RandListEntry, RandListEntry>();
 
             // Import
             CreateMap<BaseSurveyInstanceResults, SurveyInstance>()
@@ -49,7 +62,7 @@ namespace Decsys.Mapping
             CreateMap<string, Survey>()
                 .ConstructUsing(src => new Survey(src));
 
-            // Randomisation Strategy Settings
+            // Randomisation Strategy
             CreateMap<RandomisationStrategy, Data.Entities.Mongo.RandomisationStrategy>()
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
 
@@ -62,5 +75,8 @@ namespace Decsys.Mapping
             CreateMap<Data.Entities.LiteDb.RandomisationStrategy, RandomisationStrategy>()
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()));
         }
+
+        private int? MapOptionalAllocationId(Data.Entities.LiteDb.RandListEntry entry)
+                => entry.Allocation?.Id;
     }
 }

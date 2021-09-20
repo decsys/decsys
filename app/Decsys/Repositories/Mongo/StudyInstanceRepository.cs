@@ -1,4 +1,6 @@
 ﻿
+using AutoMapper;
+
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities;
@@ -20,25 +22,27 @@ namespace Decsys.Repositories.Mongo
 {
     public class StudyInstanceRepository : IStudyInstanceRepository
     {
-
         private readonly HostedDbSettings _config;
         private readonly IMongoClient _mongo;
         private readonly ISurveyInstanceRepository _instances;
         private readonly ILockProvider _locks;
         private readonly MathService _math;
+        private readonly IMapper _mapper;
 
         public StudyInstanceRepository(
             IOptions<HostedDbSettings> config,
             IMongoClient mongo,
             ISurveyInstanceRepository instances,
             ILockProvider locks,
-            MathService math)
+            MathService math,
+            IMapper mapper)
         {
             _config = config.Value;
             _mongo = mongo;
             _instances = instances;
             _locks = locks;
             _math = math;
+            _mapper = mapper;
         }
 
         private int GetNextAllocationId(int studyInstanceId)
@@ -178,5 +182,13 @@ namespace Decsys.Repositories.Mongo
 
             return entries[0];
         }
+
+        public List<Models.StudySurveyAllocation> ListAllocations(int instanceId)
+            => _mapper.Map<List<Models.StudySurveyAllocation>>(
+                Allocations(instanceId).Find(new BsonDocument()).ToList());
+
+        List<Models.RandListEntry> IStudyInstanceRepository.RandList(int instanceId)
+            => _mapper.Map<List<Models.RandListEntry>>(
+                RandList(instanceId).Find(new BsonDocument()).ToList());
     }
 }
