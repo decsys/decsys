@@ -385,7 +385,6 @@ namespace Decsys.Controllers
                         oldId => idMap[oldId]);
 
                     // now import the study instance
-                    // TODO
                     _studies.ImportAllocationData(importedId, instance);
                 }
             }
