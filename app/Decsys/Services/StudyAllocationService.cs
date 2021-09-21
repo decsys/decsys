@@ -19,19 +19,22 @@ namespace Decsys.Services
         private readonly IParticipantEventRepository _events;
         private readonly MathService _math;
         private readonly IMapper _mapper;
+        private readonly ISurveyRepository _surveys;
 
         public StudyAllocationService(
             ISurveyInstanceRepository instances,
             IStudyInstanceRepository studyInstances,
             IParticipantEventRepository events,
             MathService math,
-            IMapper mapper)
+            IMapper mapper,
+            ISurveyRepository surveys)
         {
             _instances = instances;
             _studyInstances = studyInstances;
             _events = events;
             _math = math;
             _mapper = mapper;
+            _surveys = surveys;
         }
 
         public SurveyInstance? FindAllocatedInstance(int studyInstanceId, string participantId)
@@ -94,6 +97,26 @@ namespace Decsys.Services
             result.RandList = randList;
 
             return result;
+        }
+
+        public void ImportAllocationData(int studyId, StudyInstanceAllocationData allocationDataImport)
+        {
+            // Create the Study Instance
+            var survey = _surveys.Find(studyId);
+            if (survey is null) throw new KeyNotFoundException();
+
+            var instance = _mapper.Map<SurveyInstance>(allocationDataImport);
+            instance.Survey = survey;
+            instance.Children = allocationDataImport.ChildInstanceIds.ConvertAll(
+                // the child instance we put here is irrelevant; it's just transport for the id
+                childId => new SurveyInstance(new("__DUMMY__")) { Id = childId });
+            var instanceId = _instances.Create(instance);
+
+            // Bulk Insert Allocations
+            _studyInstances.ImportAllocations(instanceId, allocationDataImport.Allocations);
+
+            // Bulk Insert RandList
+            _studyInstances.ImportRandList(instanceId, allocationDataImport.RandList);
         }
 
         #region Service level Randomisation Strategy Implementations

@@ -154,8 +154,11 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="instances">Instance data to import</param>
         /// <param name="targetSurveyId">ID of the Survey to import to</param>
-        public void Import(IList<SurveyInstanceResults<ParticipantEvents>> instances, int targetSurveyId)
+        /// <returns>A map of original exported instance IDs to their new IDs after insertion</returns>
+        public Dictionary<int, int> Import(IList<SurveyInstanceResults<ParticipantEvents>> instances, int targetSurveyId)
         {
+            Dictionary<int, int> idMap = new();
+
             var survey = _surveys.Find(targetSurveyId);
             if (survey is null) throw new KeyNotFoundException();
 
@@ -164,6 +167,8 @@ namespace Decsys.Services
                 var instance = _mapper.Map<SurveyInstance>(instanceImport);
                 instance.Survey = survey;
                 var instanceId = _instances.Create(instance);
+
+                idMap[instanceImport.Id] = instanceId;
 
                 foreach (var participant in instanceImport.Participants)
                     foreach (var e in participant.Events)
@@ -183,6 +188,7 @@ namespace Decsys.Services
                         _events.Create(instanceId, participant.Id, e);
                     }
             }
+            return idMap;
         }
     }
 }

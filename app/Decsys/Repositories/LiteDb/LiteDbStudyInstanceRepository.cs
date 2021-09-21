@@ -138,5 +138,29 @@ namespace Decsys.Repositories.LiteDb
             var randList = RandList(instanceId).Include(x => x.Allocation).FindAll();
             return _mapper.Map<List<Models.RandListEntry>>(randList);
         }
+
+        public void ImportAllocations(int instanceId, List<Models.StudySurveyAllocation> allocations)
+        {
+            Allocations(instanceId).DeleteAll();
+            Allocations(instanceId).Insert(
+                _mapper.Map<List<StudySurveyAllocation>>(allocations));
+        }
+
+        public void ImportRandList(int instanceId, List<Models.RandListEntry> randList)
+        {
+            RandList(instanceId).DeleteAll();
+
+            List<RandListEntry> entries = new();
+            foreach(var entryModel in randList)
+            {
+                var entry = _mapper.Map<RandListEntry>(entryModel);
+                if (entryModel.AllocationId is not null)
+                    entry.Allocation = Allocations(instanceId).FindOne(x => x.Id == entryModel.AllocationId);
+                entries.Add(entry);
+            }
+
+            if (entries.Count > 0)
+                RandList(instanceId).Insert(entries);
+        }
     }
 }

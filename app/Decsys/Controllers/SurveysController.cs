@@ -31,6 +31,7 @@ namespace Decsys.Controllers
         private readonly AppMode _mode;
         private readonly SurveyService _surveys;
         private readonly SurveyInstanceService _instances;
+        private readonly StudyAllocationService _studies;
         private readonly ExportService _export;
 
         private readonly string _internalSurveysPath;
@@ -40,12 +41,14 @@ namespace Decsys.Controllers
             SurveyService surveys,
             ExportService export,
             SurveyInstanceService instances,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            StudyAllocationService studies)
         {
             _mode = mode.Value;
             _surveys = surveys;
             _export = export;
             _instances = instances;
+            _studies = studies;
             _internalSurveysPath = Path.Combine(env.ContentRootPath, "surveys");
         }
 
@@ -225,7 +228,8 @@ namespace Decsys.Controllers
                 Survey is null)
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
-            return await HandleImport(import.Survey, import.Images, import.Instances, model);
+            var (surveyId, _) = await HandleImport(import.Survey, import.Images, import.Instances, model);
+            return surveyId;
         }
 
         private static ImportZipContentModel ProcessImportZip(ZipArchive zip, bool importData = false)
@@ -271,6 +275,20 @@ namespace Decsys.Controllers
                         // TODO: Maybe someday we could report on the result of our attempted import ¯\_(ツ)_/¯
                     }
                 }
+                else if (importData && entry.FullName.StartsWith("StudyInstance-") && entry.FullName.EndsWith(".json"))
+                {
+                    try
+                    {
+                        using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
+                        result.StudyInstances.Add(JsonConvert.DeserializeObject<StudyInstanceAllocationData>(reader.ReadToEnd()));
+                    }
+                    catch (JsonSerializationException)
+                    {
+                        // This is fine 🔥🍵🐕🔥
+                        // We just don't import what we can't deserialize as an instance
+                        // TODO: Maybe someday we could report on the result of our attempted import ¯\_(ツ)_/¯
+                    }
+                }
                 else if (entry.FullName.EndsWith(".zip"))
                 {
                     // Nested zips are assumed to be child surveys
@@ -283,7 +301,7 @@ namespace Decsys.Controllers
             return result;
         }
 
-        private async Task<int> HandleImport(
+        private async Task<(int surveyId, Dictionary<int, int> instanceIdMap)> HandleImport(
             Survey survey,
             List<(string filename, byte[] data)> images,
             List<SurveyInstanceResults<ParticipantEvents>> instances,
@@ -296,10 +314,11 @@ namespace Decsys.Controllers
                 OwnerId);
 
             // attempt to import any instances
+            Dictionary<int, int> instanceIdMap = new();
             if (instances.Count > 0)
-                _instances.Import(instances, surveyId);
+                instanceIdMap = _instances.Import(instances, surveyId);
 
-            return surveyId;
+            return (surveyId, instanceIdMap);
         }
 
         [HttpPost("import")]
@@ -318,7 +337,7 @@ namespace Decsys.Controllers
                 return BadRequest("The uploaded file doesn't contain a valid Survey Structure file.");
 
 
-            var importedId = await HandleImport(import.Survey, import.Images, import.Instances, new()
+            var (importedId, _) = await HandleImport(import.Survey, import.Images, import.Instances, new()
             {
                 Name = model.Name,
                 Type = model.Type,
@@ -328,18 +347,46 @@ namespace Decsys.Controllers
 
             if (import.Survey.IsStudy)
             {
+                // We'll need to aggregate a map of instance ids across survey imports
+                List<Dictionary<int, int>> instanceIdMaps = new();
+
                 foreach (var child in import.Children)
                 {
                     if (child.Survey is not null)
                     {
-                        await HandleImport(child.Survey, child.Images, child.Instances, new()
+                        var (_, childIdMap) = await HandleImport(child.Survey, child.Images, child.Instances, new()
                         {
                             Name = child.Survey.Name,
                             Type = child.Survey.Type,
                             Settings = child.Survey.Settings,
-                            ParentSurveyId = importedId // TODO: make import service method reassign parents :)
+                            ParentSurveyId = importedId
                         });
+
+                        instanceIdMaps.Add(childIdMap);
                     }
+                }
+
+                // merge id maps from all children into one list
+                var idMap = instanceIdMaps.SelectMany(childIdMap => childIdMap)
+                    .ToDictionary(item => item.Key, item => item.Value);
+
+                // Import StudyInstance, amending child instance Id's from the map
+                foreach (var instance in import.StudyInstances)
+                {
+                    // update allocation instance id's
+                    instance.Allocations = instance.Allocations.ConvertAll(x =>
+                    {
+                        x.InstanceId = idMap[x.InstanceId];
+                        return x;
+                    });
+
+                    // update child instance id's
+                    instance.ChildInstanceIds = instance.ChildInstanceIds.ConvertAll(
+                        oldId => idMap[oldId]);
+
+                    // now import the study instance
+                    // TODO
+                    _studies.ImportAllocationData(importedId, instance);
                 }
             }
 
@@ -352,6 +399,7 @@ namespace Decsys.Controllers
         public Survey? Survey { get; set; }
         public List<(string filename, byte[] data)> Images { get; set; } = new();
         public List<SurveyInstanceResults<ParticipantEvents>> Instances { get; set; } = new();
+        public List<StudyInstanceAllocationData> StudyInstances { get; set; } = new();
         public List<ImportZipContentModel> Children { get; set; } = new();
     }
 }

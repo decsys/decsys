@@ -62,6 +62,13 @@ namespace Decsys.Mapping
             CreateMap<string, Survey>()
                 .ConstructUsing(src => new Survey(src));
 
+            CreateMap<StudySurveyAllocation, Data.Entities.StudySurveyAllocation>();
+
+            CreateMap<RandListEntry, Data.Entities.LiteDb.RandListEntry>()
+                .ForMember(dest => dest.Allocation, opt => opt.Ignore());
+
+            CreateMap<RandListEntry, Data.Entities.Mongo.RandListEntry>();
+
             // Randomisation Strategy
             CreateMap<RandomisationStrategy, Data.Entities.Mongo.RandomisationStrategy>()
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));

@@ -47,5 +47,19 @@ namespace Decsys.Repositories.Contracts
         /// <param name="instanceId"></param>
         /// <returns></returns>
         List<RandListEntry> RandList(int instanceId);
+
+        /// <summary>
+        /// Import an entire instance's Allocation recordset verbatim.
+        /// </summary>
+        /// <param name="instanceId"></param>
+        /// <param name="allocations"></param>
+        void ImportAllocations(int instanceId, List<StudySurveyAllocation> allocations);
+
+        /// <summary>
+        /// Import an entire instance's RandList verbatim.
+        /// </summary>
+        /// <param name="instanceId"></param>
+        /// <param name="randList"></param>
+        void ImportRandList(int instanceId, List<RandListEntry> randList);
     }
 }

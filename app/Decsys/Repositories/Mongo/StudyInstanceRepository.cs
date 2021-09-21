@@ -190,5 +190,19 @@ namespace Decsys.Repositories.Mongo
         List<Models.RandListEntry> IStudyInstanceRepository.RandList(int instanceId)
             => _mapper.Map<List<Models.RandListEntry>>(
                 RandList(instanceId).Find(new BsonDocument()).ToList());
+
+        public void ImportAllocations(int instanceId, List<Models.StudySurveyAllocation> allocations)
+        {
+            Allocations(instanceId).DeleteMany(new BsonDocument());
+            Allocations(instanceId).InsertMany(
+                _mapper.Map<List<StudySurveyAllocation>>(allocations));
+        }
+
+        public void ImportRandList(int instanceId, List<Models.RandListEntry> randList)
+        {
+            RandList(instanceId).DeleteMany(new BsonDocument());
+            RandList(instanceId).InsertMany(
+                _mapper.Map<List<RandListEntry>>(randList));
+        }
     }
 }

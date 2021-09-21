@@ -72,11 +72,14 @@ namespace Decsys.Services
             // add full json exports for each instance
             foreach (var instance in _instances.List(surveyId))
             {
+                var publishTimestamp = instance.Published.UtcDateTime.ToString("s").Replace(":", "_");
+                var studyPrefix = instance.Survey.IsStudy ? "Study" : "";
+
                 zip.AddTextContent(
                     instance.Survey.IsStudy
                         ? JsonConvert.SerializeObject(_studies.Export(instance.Id))
                         : JsonConvert.SerializeObject(_events.Results(instance.Id)),
-                    $"Instance-{instance.Published.UtcDateTime.ToString("s").Replace(":", "_")}.json");
+                    $"{studyPrefix}Instance-{publishTimestamp}.json");
             }
 
             foreach (var child in _surveys.ListChildren(surveyId))
