@@ -24,6 +24,12 @@ namespace Decsys.Repositories.Contracts
         List<SurveySummary> List(string? userId = null, bool includeOwnerless = false);
 
         /// <summary>
+        /// List Summaries of all children of the specified Study.
+        /// </summary>
+        /// <param name="parentId"></param>
+        List<SurveySummary> ListChildren(int parentId);
+
+        /// <summary>
         /// Create a new empty Survey, optionally belonging to a specific user.
         /// </summary>
         /// <param name="model">Survey creation details</param>
@@ -31,7 +37,8 @@ namespace Decsys.Repositories.Contracts
         int Create(CreateSurveyModel model, string? ownerId = null);
 
         /// <summary>
-        /// Create a new Survey from a provided model
+        /// <para>Create a new Survey from a provided model.</para>
+        /// <para>Used when duplicating or importing Surveys.</para>
         /// </summary>
         /// <param name="survey">Survey model to import</param>
         /// <param name="model">New Survey creation details</param>

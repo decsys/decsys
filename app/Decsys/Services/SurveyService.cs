@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 using Decsys.Config;
@@ -21,19 +19,21 @@ namespace Decsys.Services
     /// </summary>
     public class SurveyService
     {
-
         private readonly ISurveyRepository _surveys;
         private readonly IImageService _images;
+        private readonly ISurveyInstanceRepository _instances;
         private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;
 
         /// <summary>DI Constructor</summary>
         public SurveyService(
             ISurveyRepository surveys,
             IImageService images,
+            ISurveyInstanceRepository instances,
             IOptionsSnapshot<ComponentTypeMap> componentTypeMaps)
         {
             _surveys = surveys;
             _images = images;
+            _instances = instances;
             _componentTypeMaps = componentTypeMaps;
         }
 
@@ -88,6 +88,13 @@ namespace Decsys.Services
         public IEnumerable<SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => _surveys.List(userId, includeOwnerless);
 
+        /// <summary>
+        /// List summary data for all children of a Survey
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
+        public IEnumerable<SurveySummary> ListChildren(int parentId)
+            => _surveys.ListChildren(parentId);
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
@@ -114,9 +121,51 @@ namespace Decsys.Services
 
             survey.Name = model.Name ?? $"{survey.Name} (Copy)";
 
+            if (survey.Parent is not null)
+            {
+                // if it's a child, but it/its study are locked,
+                // then we can't duplicate inside the study; we have to clear the parent
+                if (_instances.List(oldId).Count > 0)
+                {
+                    survey.Parent = null;
+                    model.ParentSurveyId = null;
+                }
+                else
+                {
+                    // align these for duplication purposes, allowing us to short circuit fetching the parent
+                    model.ParentSurveyId = survey.Parent.Id;
+                }
+            }
+
             var newId = _surveys.Create(survey, model, ownerId);
 
-            await _images.CopyAllSurveyImages(oldId, newId);
+            if (survey.IsStudy)
+            {
+                var study = _surveys.Find(newId);
+                foreach (var child in _surveys.ListChildren(oldId))
+                {
+                    var childSurvey = _surveys.Find(child.Id);
+
+                    childSurvey.Parent = study;
+
+                    var newChildId = _surveys.Create(
+                        childSurvey,
+                        new()
+                        {
+                            Name = childSurvey.Name,
+                            Type = childSurvey.Type,
+                            IsStudy = false,
+                            ParentSurveyId = study.Id,
+                            Settings = childSurvey.Settings
+                        },
+                        ownerId);
+                    await _images.CopyAllSurveyImages(child.Id, newChildId);
+                }
+            }
+            else
+            {
+                await _images.CopyAllSurveyImages(oldId, newId);
+            }
 
             return newId;
         }
@@ -145,6 +194,26 @@ namespace Decsys.Services
             return id;
         }
 
+        public void SetParent(int id, int? parentId)
+        {
+            var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
+            if (survey.IsStudy)
+                throw new ArgumentException(
+                    $"The specified survey {id} is a Study and therefore cannot have a parent.", nameof(id));
+
+            Survey? parent = null;
+            if (parentId is not null)
+            {
+                parent = _surveys.Find(parentId.Value) ?? throw new KeyNotFoundException();
+                if (!parent.IsStudy)
+                    throw new ArgumentException(
+                        $"The specified parent {parentId} is not a Study and therefore cannot have children.", nameof(parentId));
+            }
+
+            survey.Parent = parent;
+            _surveys.Update(survey);
+        }
+
         private void MigrateUpComponentTypes(ref Survey survey)
         {
             // this is very simplistic right now from 1.x to 2.x
@@ -166,12 +235,22 @@ namespace Decsys.Services
 
         /// <summary>
         /// Attempt to delete a Survey by ID.
+        /// Deleting Studies will also delete all child surveys.
         /// </summary>
         /// <param name="id">The ID of the Survey to delete.</param>
         public async Task Delete(int id)
         {
-            await _images.RemoveAllSurveyImages(id); // delete stored images for built-in image Page Items
-            _surveys.Delete(id);
+            List<int> toDelete = new() { id };
+
+            // Studies need to delete children too
+            var children = _surveys.ListChildren(id);
+            toDelete.AddRange(children.Select(x => x.Id));
+
+            foreach (var surveyId in toDelete)
+            {
+                await _images.RemoveAllSurveyImages(surveyId); // delete stored images for built-in image Page Items
+                _surveys.Delete(surveyId);
+            }
         }
 
         /// <summary>

@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
 
 const AddSurveyActionsContext = createContext({
-  create: () => {},
-  importFile: () => {},
-  loadInternal: () => {}
+  create: async () => {},
+  importFile: async () => {},
+  loadInternal: async () => {},
 });
 
 export const useAddSurveyActions = () => useContext(AddSurveyActionsContext);

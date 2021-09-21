@@ -14,6 +14,7 @@ import ExportModal from "components/shared/ExportModal";
 import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 import { capitalise } from "services/strings";
+import { SelectStudyModal } from "./SelectStudyModal";
 
 const ManageSurveyMenu = ({
   id,
@@ -21,6 +22,8 @@ const ManageSurveyMenu = ({
   name,
   type,
   settings,
+  parentSurveyId,
+  isStudy,
   hasInvalidExternalLink,
 }) => {
   const deleteModal = useDisclosure();
@@ -28,13 +31,14 @@ const ManageSurveyMenu = ({
   const exportModal = useDisclosure();
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
+  const selectStudyModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
-  const handleDuplicate = (name, type, settings) => {
-    duplicate(id, name, type, settings);
+  const handleDuplicate = (name, type, settings, creationOptions) => {
+    duplicate(id, name, type, settings, creationOptions);
     createSurveyModal.onClose();
   };
-  const handleDelete = () => deleteSurvey(id);
+  const handleDelete = async () => await deleteSurvey(id);
 
   return (
     <>
@@ -44,23 +48,39 @@ const ManageSurveyMenu = ({
           borderColor="gray.500"
           as={IconButton}
           icon={<FaEllipsisV />}
+          boxSize={parentSurveyId ? "32px" : null}
         />
         <MenuList>
           {editable && (
             <MenuItem onClick={() => navigate(`survey/${id}`)}>Edit</MenuItem>
           )}
-          {!type && <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>}
-          {type && (
+
+          {!type && !parentSurveyId && (
+            <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>
+          )}
+
+          {type && !parentSurveyId && (
             <MenuItem onClick={externalDetailsModal.onOpen}>
               {capitalise(type)} Details
             </MenuItem>
           )}
+
           <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
             Preview
           </MenuItem>
           <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
+
+          {!isStudy && editable && (
+            <MenuItem onClick={selectStudyModal.onOpen}>
+              Change Study...
+            </MenuItem>
+          )}
+
           <MenuItem onClick={createSurveyModal.onOpen}>Duplicate</MenuItem>
-          <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
+
+          {(editable || !parentSurveyId) && (
+            <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
+          )}
         </MenuList>
       </Menu>
 
@@ -68,6 +88,7 @@ const ManageSurveyMenu = ({
         name={name}
         onConfirm={handleDelete}
         modalState={deleteModal}
+        isStudy={isStudy}
       />
       <SurveyConfigModal id={id} name={name} modalState={configModal} />
       <ExportModal id={id} name={name} modalState={exportModal} />
@@ -83,6 +104,15 @@ const ManageSurveyMenu = ({
         name={`${name} (Copy)`} // we always use this modal for duplicating only
         modalState={createSurveyModal}
         onCreate={handleDuplicate}
+        parentId={parentSurveyId}
+        isFixedType={!!parentSurveyId}
+        hasFixedSettings={!!parentSurveyId}
+      />
+      <SelectStudyModal
+        name={name}
+        id={id}
+        parentId={parentSurveyId}
+        modalState={selectStudyModal}
       />
     </>
   );

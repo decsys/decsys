@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 using Decsys.Constants;
 using LiteDB;
 
@@ -24,5 +26,7 @@ namespace Decsys.Data.Entities.LiteDb
 
         [BsonRef(Collections.Surveys)]
         public Survey Survey { get; set; } = new Survey { Id = 0 };
+
+        public RandomisationStrategy? RandomisationStrategy { get; set; }
     }
 }

@@ -17,6 +17,8 @@ using Decsys.Services;
 using Decsys.Services.Contracts;
 using Decsys.Services.EmailSender;
 using Decsys.Services.EmailServices;
+using Decsys.Services.LockProvider;
+
 using LiteDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -114,6 +116,7 @@ namespace Decsys
             {
                 var mongoClient = new MongoClient(_config.GetConnectionString("mongo"));
                 services.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient);
+                services.AddTransient<ILockProvider, MongoLockProvider>();
 
                 // Identity
                 services.AddSingleton<IUserConfirmation<DecsysUser>, DecsysUserConfirmation>();
@@ -175,6 +178,7 @@ namespace Decsys
             if (mode.IsWorkshop)
             {
                 services.AddSingleton(_ => new LiteDbFactory(_localPaths["Databases"]));
+                services.AddTransient<ILockProvider, MemoryCacheLockProvider>();
             }
 
             services.AddResponseCompression();
@@ -212,59 +216,72 @@ namespace Decsys
 
             if (mode.IsHosted)
             {
-                services.AddTransient<
-                    ISurveyRepository,
-                    Repositories.Mongo.SurveyRepository>();
-                services.AddTransient<
-                    IPageRepository,
-                    Repositories.Mongo.PageRepository>();
-                services.AddTransient<
-                    IComponentRepository,
-                    Repositories.Mongo.ComponentRepository>();
-                services.AddTransient<
-                    ISurveyInstanceRepository,
-                    Repositories.Mongo.SurveyInstanceRepository>();
-                services.AddTransient<
-                    IParticipantEventRepository,
-                    Repositories.Mongo.ParticipantEventRepository>();
+                services
+                    .AddTransient<
+                        ISurveyRepository,
+                        Repositories.Mongo.SurveyRepository>()
+                    .AddTransient<
+                        IPageRepository,
+                        Repositories.Mongo.PageRepository>()
+                    .AddTransient<
+                        IComponentRepository,
+                        Repositories.Mongo.ComponentRepository>()
+                    .AddTransient<
+                        ISurveyInstanceRepository,
+                        Repositories.Mongo.SurveyInstanceRepository>()
+                    .AddTransient<
+                        IParticipantEventRepository,
+                        Repositories.Mongo.ParticipantEventRepository>()
+                    .AddTransient<
+                        IStudyInstanceRepository,
+                        Repositories.Mongo.StudyInstanceRepository>()
 
-                services.AddTransient<IImageService, MongoImageService>();
+                    .AddTransient<IImageService, MongoImageService>();
 
                 // Email related
+                services
+                    .AddTransient<TokenIssuingService>()
+                    .AddTransient<IRazorViewRenderer, RazorViewRenderer>()
+                    .AddTransient<RazorViewService>()
+                    .AddTransient<AccountEmailService>();
+
                 services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-                services.AddTransient<TokenIssuingService>();
-                services.AddTransient<IRazorViewRenderer, RazorViewRenderer>();
-                services.AddTransient<RazorViewService>();
-                services.AddTransient<AccountEmailService>();
+
                 if (useSendGrid) services.AddTransient<IEmailSender, SendGridEmailSender>();
                 else services.AddTransient<IEmailSender, LocalDiskEmailSender>();
             }
             if (mode.IsWorkshop)
             {
-                services.AddTransient<ISurveyRepository, LiteDbSurveyRepository>();
-                services.AddTransient<IPageRepository, LiteDbPageRepository>();
-                services.AddTransient<IComponentRepository, LiteDbComponentRepository>();
-                services.AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>();
-                services.AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>();
+                services
+                    .AddTransient<ISurveyRepository, LiteDbSurveyRepository>()
+                    .AddTransient<IPageRepository, LiteDbPageRepository>()
+                    .AddTransient<IComponentRepository, LiteDbComponentRepository>()
+                    .AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>()
+                    .AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>()
+                    .AddTransient<IStudyInstanceRepository, LiteDbStudyInstanceRepository>()
 
-                services.AddTransient<IImageService>(svc =>
-                    new LocalFileImageService(
-                        _localPaths["SurveyImages"],
-                        svc.GetRequiredService<IComponentRepository>()));
+                    .AddTransient<IImageService>(svc =>
+                        new LocalFileImageService(
+                            _localPaths["SurveyImages"],
+                            svc.GetRequiredService<IComponentRepository>()));
             }
 
-            services.AddTransient<SurveyService>();
-            services.AddTransient<PageService>();
-            services.AddTransient<ComponentService>();
-            services.AddTransient<SurveyInstanceService>();
-            services.AddTransient<ExportService>();
-            services.AddTransient<ParticipantEventService>();
+            services
+                .AddTransient<SurveyService>()
+                .AddTransient<PageService>()
+                .AddTransient<ComponentService>()
+                .AddTransient<SurveyInstanceService>()
+                .AddTransient<ExportService>()
+                .AddTransient<ParticipantEventService>()
+                .AddTransient<StudyAllocationService>()
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "DECSYS API", Version = "v1" });
-                c.EnableAnnotations();
-            }).AddSwaggerGenNewtonsoftSupport();
+                .AddSingleton<MathService>()
+
+                .AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "DECSYS API", Version = "v1" });
+                    c.EnableAnnotations();
+                }).AddSwaggerGenNewtonsoftSupport();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

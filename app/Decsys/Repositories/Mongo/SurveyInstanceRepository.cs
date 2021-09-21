@@ -65,10 +65,23 @@ namespace Decsys.Repositories.Mongo
             return ++lastId;
         }
 
-        public int Create(Models.SurveyInstance instance)
+        public int Create(Models.SurveyInstance instance, int? parentInstanceId = null)
         {
+            SurveyInstance? parentInstance = null;
+            if (parentInstanceId is not null)
+                parentInstance = _instances.Find(x => x.Id == parentInstanceId)
+                    .SingleOrDefault()
+                    ?? throw new KeyNotFoundException(
+                        $"Invalid Parent Instance with ID {parentInstanceId}");
+
             instance.Id = GetNextSurveyInstanceId();
             _instances.InsertOne(_mapper.Map<SurveyInstance>(instance));
+
+            if (parentInstance is not null)
+            {
+                parentInstance.ChildInstanceIds.Add(instance.Id);
+                _instances.ReplaceOne(x => x.Id == parentInstance.Id, parentInstance);
+            }
 
             // we always try and a update a lookup record
             // but no worries if none found
@@ -84,18 +97,32 @@ namespace Decsys.Repositories.Mongo
         public bool Exists(int id)
             => _instances.CountDocuments(x => x.Id == id) > 0;
 
-        public Models.SurveyInstance? Find(int id)
+        private Models.SurveyInstance? FindInstance(int id, Models.Survey? providedParentSurvey = null)
         {
             var instance = _instances.Find(x => x.Id == id).SingleOrDefault();
             if (instance is null) return null;
 
-            var survey = _surveys.Find(x => x.Id == instance.SurveyId).Single();
-
             var model = _mapper.Map<Models.SurveyInstance>(instance);
+
+            var survey = _surveys.Find(x => x.Id == instance.SurveyId).Single();
             model.Survey = _mapper.Map<Models.Survey>(survey);
+
+            model.Survey.Parent = (providedParentSurvey?.Id == survey.ParentSurveyId)
+                ? providedParentSurvey
+                : _mapper.Map<Models.Survey>(
+                    _surveys.Find(x => x.Id == survey.ParentSurveyId).Single());
+
+            foreach (var childId in instance.ChildInstanceIds)
+            {
+                var child = FindInstance(childId, model.Survey);
+                if (child is not null) model.Children.Add(child);
+            }
 
             return model;
         }
+
+        public Models.SurveyInstance? Find(int id)
+            => FindInstance(id);
 
         public bool HasActiveInstance(int surveyId)
             => _instances.CountDocuments(
@@ -106,19 +133,34 @@ namespace Decsys.Repositories.Mongo
         {
             var surveys = new Dictionary<int, Models.Survey>();
             var instances = _instances.Find(x => x.SurveyId == surveyId).ToList();
-            return instances.Select(instance =>
+
+            return instances.ConvertAll(instance =>
             {
                 // make sure the dictionary has the survey, but only fetch it once
                 if (!surveys.ContainsKey(instance.SurveyId))
                 {
-                    surveys[instance.SurveyId] = _mapper.Map<Models.Survey>(
-                        _surveys.Find(x => x.Id == instance.SurveyId).Single());
+                    var survey = _surveys.Find(x => x.Id == instance.SurveyId).Single();
+                    var surveyModel = _mapper.Map<Models.Survey>(survey);
+
+                    surveyModel.Parent = survey.ParentSurveyId is not null
+                        ? _mapper.Map<Models.Survey>(
+                            _surveys.Find(x => x.Id == survey.ParentSurveyId).Single())
+                        : null;
+
+                    surveys[instance.SurveyId] = surveyModel;
                 }
 
                 var model = _mapper.Map<Models.SurveyInstance>(instance);
                 model.Survey = surveys[instance.SurveyId];
+
+                foreach (var childId in instance.ChildInstanceIds)
+                {
+                    var child = FindInstance(childId, model.Survey);
+                    if (child is not null) model.Children.Add(child);
+                }
+
                 return model;
-            }).ToList();
+            });
         }
     }
 }

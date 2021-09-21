@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Decsys.Controllers
 {
@@ -19,20 +20,24 @@ namespace Decsys.Controllers
     [AllowAnonymous] // TODO: perhaps restrict this to `client-app` (but no user) in future?
     public class ParticipantProgressController : ControllerBase
     {
-        private Random _random = new();
-
         private readonly SurveyService _surveys;
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _events;
+        private readonly StudyAllocationService _random;
+        private readonly MathService _math;
 
         public ParticipantProgressController(
             SurveyService surveys,
             SurveyInstanceService instances,
-            ParticipantEventService events)
+            ParticipantEventService events,
+            StudyAllocationService random,
+            MathService math)
         {
             _surveys = surveys;
             _instances = instances;
             _events = events;
+            _random = random;
+            _math = math;
         }
 
         /// <summary>
@@ -43,23 +48,39 @@ namespace Decsys.Controllers
         /// <param name="instanceId"></param>
         /// <param name="participantId"></param>
         /// <returns></returns>
-        private (ParticipantProgressModel progress, SurveyInstance instance, List<string>? pageOrder)
-            GetProgress(int surveyId, int instanceId, string? participantId)
+        private async Task<(ParticipantProgressModel progress, SurveyInstance instance, List<string>? pageOrder)>
+            GetProgress(int surveyId, int instanceId, string? participantId, bool allowChildSurveys = false)
         {
             var instance = _instances.Get(surveyId, instanceId);
             if (instance is null || instance.Closed is not null) // TODO: differentiate between closed and non-existent instances?
                 throw new KeyNotFoundException();
 
+            // if we don't allow child progress updates (i.e. a GET request)
+            // then pretend like we couldn't find the survey instance
+            if (!allowChildSurveys && instance.Survey.Parent is not null)
+                throw new KeyNotFoundException();
+
+            // This is a starter for 10, these properties may conditionally change,
+            // especially in Study / Child situations
             var progress = new ParticipantProgressModel()
             {
+                SurveyId = surveyId,
+                InstanceId = instanceId,
                 ParticipantId = participantId,
                 UseParticipantIdentifiers = instance.UseParticipantIdentifiers,
-                PageCount = instance.Survey.Pages.Count,
-                Settings = instance.Survey.Settings
+                PageCount = instance.Survey.IsStudy
+                    ? -1 // Studies have 0 page count, but they're not meant to have pages, so this helps the frontend distinguish
+                    : instance.Survey.Pages.Count,
+                Settings = instance.Survey.Parent?.Settings ?? instance.Survey.Settings
             };
 
+            // This might end up being a child Survey Instance
+            var targetInstance = instance;
+
             // short circuit on empty surveys
-            if (progress.PageCount == 0) return (progress, instance, null);
+
+            if (!instance.Survey.IsStudy && progress.PageCount == 0)
+                return (progress, instance, null);
 
             bool hasCompleted = false;
 
@@ -68,20 +89,55 @@ namespace Decsys.Controllers
             // otherwise its a new progress record
             if (progress.ParticipantId is not null)
             {
-                // check if this participant has completed
-                hasCompleted = _events.Last(
-                    instanceId,
-                    progress.ParticipantId,
-                    source: surveyId.ToString(),
-                    EventTypes.SURVEY_COMPLETE) is not null;
+                var skipCompletionCheck = false;
 
-                if (hasCompleted)
+                // For studies, we actually want the correct child survey for this participant
+                if (instance.Survey.IsStudy)
                 {
-                    // can the survey be taken repeatedly and are we responsible for generating an id?
-                    if (!instance.OneTimeParticipants && !instance.UseParticipantIdentifiers)
+                    // Look up which survey/instance this participant entered
+                    var allocatedInstance = _random.FindAllocatedInstance(instanceId, progress.ParticipantId);
+
+                    // If they've not been allocated, then allocate them now
+                    if(allocatedInstance is null)
                     {
-                        // provide a new participant id for next run through
-                        progress.NewParticipantId = Guid.NewGuid().ToString();
+                        allocatedInstance = await _random.AllocateNext(instanceId, progress.ParticipantId);
+                        skipCompletionCheck = true; // we know they haven't completed, as they haven't been allocated!
+                    }
+
+                    targetInstance = allocatedInstance;
+                    progress.SurveyId = targetInstance.Survey.Id;
+                    progress.InstanceId = targetInstance.Id;
+                    progress.PageCount = targetInstance.Survey.Pages.Count;
+
+                    // short circuit on empty child Survey
+                    if (progress.PageCount == 0) return (progress, targetInstance, null);
+                }
+
+                if (!skipCompletionCheck)
+                {
+                    // check if this participant has completed
+                    hasCompleted = _events.Last(
+                        progress.InstanceId,
+                        progress.ParticipantId,
+                        source: progress.SurveyId.ToString(),
+                        EventTypes.SURVEY_COMPLETE) is not null;
+
+                    if (hasCompleted)
+                    {
+                        // can the survey be taken repeatedly and are we responsible for generating an id?
+                        if (!instance.OneTimeParticipants && !instance.UseParticipantIdentifiers)
+                        {
+                            // provide a new participant id for next run through
+                            progress.NewParticipantId = Guid.NewGuid().ToString();
+
+                            if (instance.Survey.IsStudy)
+                            {
+                                // a "new" participant should be freshly randomised into a target child Survey
+                                // so revert these values to the parent Study
+                                progress.SurveyId = surveyId;
+                                progress.InstanceId = instanceId;
+                            }
+                        }
                     }
                 }
             }
@@ -122,9 +178,9 @@ namespace Decsys.Controllers
                 // The first thing recorded for a new participant is their randomised page order,
                 // and we'll need that to determine their next page regardless
                 var pageOrderEvent = _events.Last(
-                    instanceId,
+                    progress.InstanceId,
                     progress.ParticipantId!, // guaranteed as a condition of tryFetchProgress
-                    surveyId.ToString(),
+                    progress.SurveyId.ToString(),
                     EventTypes.PAGE_RANDOMIZE);
 
                 if (pageOrderEvent is null)
@@ -133,16 +189,16 @@ namespace Decsys.Controllers
                     // and won't have any other progress events either
 
                     // So we'll generate their page order now
-                    pageOrder = RandomizePageOrder(instance.Survey.Pages);
+                    pageOrder = RandomizePageOrder(targetInstance.Survey.Pages);
 
                     // Log the Randomize event
                     _events.Log(
-                        instanceId,
+                        progress.InstanceId,
                         progress.NewParticipantId ?? progress.ParticipantId!, // we're guaranteed at least one of these; new is prioritised
                         new()
                         {
                             Type = EventTypes.PAGE_RANDOMIZE,
-                            Source = instance.Survey.Id.ToString(),
+                            Source = progress.SurveyId.ToString(),
                             Timestamp = DateTimeOffset.UtcNow,
                             Payload = JObject.FromObject(new PageRandomizeEventPayload() { Order = pageOrder })
                         });
@@ -161,8 +217,8 @@ namespace Decsys.Controllers
                     // or the last page they submitted (i.e. requested a valid navigation from);
                     // whichever event is later, or exists.
                     // if none exists, they aren't brand new, but are on the first page.
-                    var lastPageLoaded = _events.Last(instanceId, progress.ParticipantId!, EventTypes.PAGE_LOAD);
-                    var lastNavigation = _events.Last(instanceId, progress.ParticipantId!, EventTypes.PAGE_NAVIGATION);
+                    var lastPageLoaded = _events.Last(progress.InstanceId, progress.ParticipantId!, EventTypes.PAGE_LOAD);
+                    var lastNavigation = _events.Last(progress.InstanceId, progress.ParticipantId!, EventTypes.PAGE_NAVIGATION);
                     pageOrder = pageOrderEvent.Payload.ToObject<PageRandomizeEventPayload>().Order;
 
                     // TODO: We could also provide latest response values recorded when loading pages for which responses have been logged!
@@ -188,7 +244,7 @@ namespace Decsys.Controllers
                             $"Invalid Page Order Event for Participant {progress.ParticipantId}");
                 }
 
-                progress.Page = instance.Survey.Pages.SingleOrDefault(p => p.Id == Guid.Parse(pageId!));
+                progress.Page = targetInstance.Survey.Pages.SingleOrDefault(p => p.Id == Guid.Parse(pageId!));
                 if (progress.Page is null)
                     throw new InvalidOperationException(
                         $"Couldn't find next page for Participant {progress.ParticipantId}");
@@ -196,7 +252,7 @@ namespace Decsys.Controllers
                 progress.IsLastPage = progress.Page.Id.ToString() == pageOrder.Last();
             }
 
-            return (progress, instance, pageOrder);
+            return (progress, targetInstance, pageOrder);
         }
 
         /// <summary>
@@ -224,13 +280,17 @@ namespace Decsys.Controllers
         /// </param>
         /// <returns></returns>
         [HttpPost("{surveyId}/{instanceId}/{participantId}/{requestedPageKey}")]
-        public ActionResult<ParticipantProgressModel> RequestNavigation(
+        public async Task<ActionResult<ParticipantProgressModel>> RequestNavigation(
             int surveyId,
             int instanceId,
             string participantId,
             string requestedPageKey)
         {
-            var (progress, instance, pageOrder) = GetProgress(surveyId, instanceId, participantId);
+            var (progress, instance, pageOrder) = await GetProgress(
+                surveyId,
+                instanceId,
+                participantId,
+                allowChildSurveys: true);
 
             // there's a bunch of situations in which we can't really advance progress
             // it should be assumed the frontend state will never allow requesting it
@@ -330,11 +390,15 @@ namespace Decsys.Controllers
         /// <param name="participantId">Participant Id if known</param>
         /// <returns></returns>
         [HttpGet("{surveyId}/{instanceId}/{participantId?}")]
-        public ActionResult<ParticipantProgressModel> Get(int surveyId, int instanceId, string? participantId)
+        public async Task<ActionResult<ParticipantProgressModel>> Get(int surveyId, int instanceId, string? participantId)
         {
             try
             {
-                return GetProgress(surveyId, instanceId, participantId).progress;
+                return (await GetProgress(
+                    surveyId,
+                    instanceId,
+                    participantId,
+                    allowChildSurveys: false)).progress;
             }
             catch (KeyNotFoundException)
             {
@@ -369,7 +433,7 @@ namespace Decsys.Controllers
                         // 3. flush the acccumulator
                         if (a.Count > 0)
                         {
-                            Shuffle(ref a); // 1
+                            _math.Shuffle(ref a); // 1
                             result.AddRange(a); // 1b
                         }
                         result.Add(p.Id.ToString()); // 2
@@ -382,25 +446,11 @@ namespace Decsys.Controllers
             // we'll need to handle whatever was left in the accumulator
             if (a.Count > 0)
             {
-                Shuffle(ref a); // 1
+                _math.Shuffle(ref a); // 1
                 result.AddRange(a); // 1b
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// randomly reorder a List in place
-        /// </summary>
-        private void Shuffle<T>(ref List<T> items)
-        {
-            for (var i = items.Count - 1; i > 0; i--)
-            {
-                int j = _random.Next(0, i + 1);
-                var itemJ = items[j];
-                items[j] = items[i];
-                items[i] = itemJ;
-            }
         }
     }
 }

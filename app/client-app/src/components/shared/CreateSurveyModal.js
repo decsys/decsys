@@ -10,10 +10,13 @@ import {
   FormLabel,
   Heading,
   Icon,
+  List,
+  ListItem,
   Radio,
   RadioGroup,
   Stack,
   Text,
+  UnorderedList,
   useDisclosure,
 } from "@chakra-ui/react";
 import FormikInput from "components/core/FormikInput";
@@ -78,7 +81,7 @@ an ip address where your machine can access DECSYS, such as
           )}
           <CopyableTextPanel
             buttonScheme="blue"
-            label="Survey URL"
+            label="Access URL"
             value={surveyUrl}
           />
         </Stack>
@@ -97,7 +100,7 @@ an ip address where your machine can access DECSYS, such as
 
 const prolificInstructions = `
 1. Create your study in [Prolific]("https://prolific.co")
-1. Provide the **Survey URL** (above)
+1. Provide the **Access URL** (above)
 1. When asked **"How do you want to record Prolific IDs?"**
     - Choose **"I'll use URL parameters"**
     - You can leave the default settings
@@ -118,8 +121,11 @@ const CreateSurveyModal = ({
   onCreate,
   modalState,
   isFixedType,
+  isStudy,
+  parentId,
   hasFixedSettings,
 }) => {
+  const entityName = isStudy ? "Study" : "Survey";
   const defaultName = name ?? "";
   const defaultType = type ?? "";
   const defaultSettings = Object.keys(settings).reduce(
@@ -130,7 +136,7 @@ const CreateSurveyModal = ({
     {}
   );
 
-  const handleSubmit = (values, actions) => {
+  const handleSubmit = async (values, actions) => {
     let { name, type, ...settings } = values;
 
     // we do some pre-submissions massaging of the form values
@@ -150,9 +156,13 @@ const CreateSurveyModal = ({
               : o,
           {}
         );
-    onCreate(name, type, settings);
+    await onCreate(name, type, settings, {
+      isStudy,
+      parentId,
+    });
     actions.setSubmitting(false);
     actions.resetForm();
+    modalState.onClose();
   };
 
   const externalSurveyUrl = `${window.location.origin.replace(
@@ -177,13 +187,14 @@ const CreateSurveyModal = ({
         <StandardModal
           size="2xl"
           {...modalState}
-          header="New Survey details"
+          header={`New ${entityName} details`}
           confirmButton={{
             colorScheme: "green",
-            children: "Create survey",
+            children: `Create ${entityName.toLocaleLowerCase()}`,
             onClick: submitForm,
             type: "submit",
             disabled: isSubmitting,
+            isLoading: isSubmitting,
           }}
           cancelButton={{
             onClick: () => {
@@ -202,14 +213,16 @@ const CreateSurveyModal = ({
                     <AlertDescription>
                       <Stack>
                         <Text>
-                          Due to importing existing survey results data, some
-                          settings will retain their values from the Survey
-                          being imported.
+                          This can be due to several reasons, such as:
                         </Text>
-                        <Text>
-                          To use the imported Survey's structure but change
-                          these settings, do not also import results data.
-                        </Text>
+                        <UnorderedList pl={10}>
+                          <ListItem>
+                            Importing Survey data along with structure.
+                          </ListItem>
+                          <ListItem>
+                            Adding a Survey as the child of a Study
+                          </ListItem>
+                        </UnorderedList>
                       </Stack>
                     </AlertDescription>
                   </Stack>
@@ -220,8 +233,8 @@ const CreateSurveyModal = ({
                 {(rp) => (
                   <FormikInput
                     {...rp}
-                    label="Survey Name"
-                    placeholder="Untitled Survey"
+                    label="Name"
+                    placeholder={`Untitled ${entityName}`}
                   />
                 )}
               </Field>
@@ -237,7 +250,7 @@ const CreateSurveyModal = ({
                         !!form.errors[field.name] && !!form.touched[field.name]
                       }
                     >
-                      <FormLabel htmlFor={field.name}>Survey Type</FormLabel>
+                      <FormLabel htmlFor={field.name}>Access Type</FormLabel>
                       <RadioGroup id={field.name} {...rest}>
                         <Stack direction="row">
                           <Radio onChange={onChange} value="">

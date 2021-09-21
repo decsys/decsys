@@ -6,7 +6,7 @@ import { FaTimesCircle, FaRocket, FaPlay, FaPause } from "react-icons/fa";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 
 const buttons = {
-  launch: ({ type, runCount, handleLaunch }) => {
+  launch: ({ type, runCount, handleLaunch, parentSurveyId }) => {
     const isResume = type && runCount > 0;
     return (
       <Button
@@ -14,48 +14,57 @@ const buttons = {
         colorScheme="green"
         leftIcon={isResume ? <FaPlay /> : <FaRocket />}
         onClick={handleLaunch}
+        size={parentSurveyId ? "sm" : "md"}
       >
         {isResume ? "Resume" : "Launch"}
       </Button>
     );
   },
-  close: ({ type, handleClose }) => (
+  close: ({ type, handleClose, parentSurveyId }) => (
     <Button
       lineHeight="inherit"
       colorScheme="red"
       leftIcon={type ? <FaPause /> : <FaTimesCircle />}
       onClick={handleClose}
+      size={parentSurveyId ? "sm" : "md"}
     >
       <Text>{type ? "Pause" : "Close"}</Text>
     </Button>
   ),
-  dashboard: ({ friendlyId }) => (
+  dashboard: ({ friendlyId, parentSurveyId }) => (
     <Button
       lineHeight="inherit"
       colorScheme="green"
       as={Link}
       to={`/admin/survey/dashboard/${friendlyId}`}
+      size={parentSurveyId ? "sm" : "md"}
     >
       Dashboard
     </Button>
   ),
-  results: ({ id }) => (
+  results: ({ id, parentSurveyId }) => (
     <Button
       lineHeight="inherit"
       colorScheme="cyan"
       as={Link}
       to={`/admin/survey/${id}/results`}
+      size={parentSurveyId ? "sm" : "md"}
     >
       Results
     </Button>
   ),
 };
 
-export const getActionButtons = ({ activeInstanceId, runCount }) => ({
-  close: !!activeInstanceId,
-  dashboard: !!activeInstanceId,
-  launch: !activeInstanceId,
-  results: runCount > 0,
+export const getActionButtons = ({
+  activeInstanceId,
+  runCount,
+  parentSurveyId,
+  isStudy,
+}) => ({
+  close: !parentSurveyId && !!activeInstanceId,
+  dashboard: !isStudy && !!activeInstanceId,
+  launch: !parentSurveyId && !activeInstanceId,
+  results: !isStudy && runCount > 0,
 });
 
 const ActionButtons = (p) => {

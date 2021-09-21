@@ -4,8 +4,9 @@ const SurveyCardActionsContext = createContext({
   launch: () => {},
   close: () => {},
   duplicate: () => {},
-  deleteSurvey: () => {},
-  navigate: () => {}
+  changeStudy: async () => {},
+  deleteSurvey: async () => {},
+  navigate: () => {},
 });
 
 export const useSurveyCardActions = () => useContext(SurveyCardActionsContext);

@@ -1,17 +1,26 @@
-// Randomizes a list within subgroups - leaves fixed items alone.
+/**
+ * Pick a random item out of a list using `Math.random`
+ * @param {*} array
+ * @returns
+ */
+export const pickRandomItem = (array) => {
+  const i = Math.floor(Math.random() * array.length); // random index from 0 to the max array index
+  return array[i];
+};
 
-// TODO: this is currently unused as real participant randomisation
-// is done server side by an exactly equivalent C# algorithm.
-// It may be used in future on the client side for preview mode
-
-function shuffle(array) {
+export function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
     [array[i], array[j]] = [array[j], array[i]]; // swap elements
   }
 }
 
-export const randomize = (randomFlags) => {
+/**
+ * Randomizes a list within subgroups - leaves fixed items alone.
+ * @param {*} randomFlags
+ * @returns
+ */
+export const shuffleInGroups = (randomFlags) => {
   const output = []; // we will add numbers from the input in order
 
   const a = Object.keys(randomFlags).reduce((a, key) => {

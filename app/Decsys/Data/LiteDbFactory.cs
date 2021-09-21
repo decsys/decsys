@@ -23,7 +23,7 @@ namespace Decsys.Data
         private const string SurveysFile = "user-surveys.db";
 
         private static string InstanceEventLogsFile(int instanceId)
-            => $"{Collections.EventLogDb}{instanceId}.db";
+            => $"{Collections.InstanceDb}{instanceId}.db";
 
         private string AbsoluteFilePath(string file)
             => Path.Combine(_localDbPath, file);

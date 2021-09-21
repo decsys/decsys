@@ -13,10 +13,11 @@ namespace Decsys.Repositories.Contracts
         bool HasActiveInstance(int surveyId);
 
         /// <summary>
-        /// Create a new Instance from a provided model
+        /// Create a new Instance from a provided model,
+        /// and optionally add it as a child of another Instance
         /// </summary>
         /// <param name="instance">Instance model to create from</param>
-        int Create(SurveyInstance instance);
+        int Create(SurveyInstance instance, int? parentInstanceId = null);
 
         /// <summary>
         /// Find a SurveyInstance

@@ -21,5 +21,7 @@ namespace Decsys.Data.Entities.Mongo
         }
 
         public int SurveyId { get; set; }
+
+        public RandomisationStrategy? RandomisationStrategy { get; set; }
     }
 }

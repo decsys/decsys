@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,44 +40,105 @@ namespace Decsys.Repositories.LiteDb
         public bool Exists(int id) =>
             _surveys.Exists(x => x.Id == id);
 
-        public Models.Survey Find(int id) =>
-            _mapper.Map<Models.Survey>(
-                _surveys.FindById(id));
+        public Models.Survey Find(int id)
+        {
+            var entity = _surveys.FindById(id);
+            var survey = _mapper.Map<Models.Survey>(entity);
+            if (entity.ParentSurveyId is not null)
+                survey.Parent = _mapper.Map<Models.Survey>(
+                    _surveys.FindById(entity.ParentSurveyId));
+
+            return survey;
+        }
 
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
+            => List(null);
+
+        private List<Models.SurveySummary> List(int? parentId = null)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
-                _surveys.FindAll());
+                _surveys.Find(x => x.ParentSurveyId == parentId));
 
-            return summaries.Select(survey =>
+            // Reusable enhancement
+            Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
+            {
+                var instances = _instances
+                    .Find(instance =>
+                        instance.Survey.Id == survey.Id)
+                    .OrderByDescending(x => x.Published)
+                    .ToList();
+
+                var summary = _mapper.Map(instances,
+                  survey);
+
+                var latestInstanceId = instances.FirstOrDefault()?.Id;
+
+                // validate external link if necessary
+                summary.HasInvalidExternalLink =
+                    !string.IsNullOrWhiteSpace(summary.Type) &&
+                    _external.Find(x =>
+                            x.SurveyId == summary.Id &&
+                            x.InstanceId == latestInstanceId)
+                        .SingleOrDefault() is null;
+
+                return summary;
+            }
+
+            return summaries
+                .ConvertAll(survey =>
                 {
-                    var instances = _instances
-                            .Find(instance =>
-                                instance.Survey.Id == survey.Id)
-                            .OrderByDescending(x => x.Published)
-                            .ToList();
+                    var summary = EnhanceSummary(survey);
 
-                    var summary = _mapper.Map(instances,
-                      survey);
+                    // Get Children for studies
+                    if (survey.IsStudy)
+                    {
+                        summary.Children = _mapper.Map<List<Models.SurveySummary>>(
+                            _surveys.Find(x => x.ParentSurveyId == survey.Id).ToList());
 
-                    var latestInstanceId = instances.FirstOrDefault()?.Id;
-
-                    // validate external link if necessary
-                    summary.HasInvalidExternalLink =
-                        !string.IsNullOrWhiteSpace(summary.Type) &&
-                        _external.Find(x =>
-                                x.SurveyId == summary.Id &&
-                                x.InstanceId == latestInstanceId)
-                            .SingleOrDefault() is null;
+                        // they also need enhancing
+                        summary.Children = summary.Children.ConvertAll(EnhanceSummary);
+                    }
 
                     return summary;
-                }).ToList();
+                })
+;
+        }
+
+        private Survey? GetParent(Models.CreateSurveyModel model)
+        {
+            Survey? parent = null;
+
+            // Some validation
+            if (model.ParentSurveyId is not null)
+            {
+                if (model.IsStudy)
+                    throw new ArgumentException("A Study cannot belong to a parent", nameof(model));
+
+                parent = _surveys.FindById(model.ParentSurveyId);
+
+                var parentFailureMessage = $"Can't create a Survey with Parent {model.ParentSurveyId}";
+
+                if (parent is null)
+                    throw new KeyNotFoundException(
+                        $"{parentFailureMessage}: that Study could not be found.");
+
+                if (!parent.IsStudy)
+                    throw new ArgumentException(
+                        $"{parentFailureMessage}: that Survey is not a Study and therefore cannot have children.");
+            }
+
+            return parent;
         }
 
         public int Create(Models.CreateSurveyModel model, string? ownerId = null)
         {
-            var survey = new Survey();
-            if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
+            var parent = GetParent(model);
+
+            var survey = new Survey { ParentSurveyId = parent?.Id, IsStudy = model.IsStudy };
+            if (survey.IsStudy)
+                survey.Name = "Untitled Study";
+            if (!string.IsNullOrWhiteSpace(model.Name))
+                survey.Name = model.Name;
 
             var lookup = HandleSurveyTypeCreation(model, ref survey);
 
@@ -141,12 +203,13 @@ namespace Decsys.Repositories.LiteDb
                 existingLookup.InstanceId = null;
                 _external.Update(existingLookup);
             }
-
         }
 
         public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
         {
             var entity = _mapper.Map<Survey>(survey);
+
+            entity.ParentSurveyId = model.ParentSurveyId;
 
             // Reset Type properties
             // when we map the model, these will be accurately restored 
@@ -191,8 +254,12 @@ namespace Decsys.Repositories.LiteDb
             _surveys.Update(survey);
         }
 
-        public void Update(Models.Survey survey) =>
-            _surveys.Update(_mapper.Map<Survey>(survey));
+        public void Update(Models.Survey survey)
+        {
+            var entity = _mapper.Map<Survey>(survey);
+            _surveys.Update(entity);
+        }
+
 
         public SurveyAccessResult TestSurveyAccess(int id, string userId, bool allowOwnerless = false)
         {
@@ -202,5 +269,8 @@ namespace Decsys.Repositories.LiteDb
 
         public ExternalLookup LookupExternal(string externalKey, string externalId)
             => _external.FindOne(x => x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId);
+
+        public List<Models.SurveySummary> ListChildren(int parentId)
+            => List(parentId);
     }
 }

@@ -46,12 +46,14 @@ namespace Decsys.Mapping
                 .ConstructUsing(src => new Survey(src.Name))
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new LiteDbBsonJObjectConverter()));
             CreateMap<Survey, Data.Entities.LiteDb.Survey>()
-                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()));
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()))
+                .ForMember(dest => dest.ParentSurveyId, opt => opt.MapFrom(src => MapOptionalParentId(src)));
             CreateMap<Data.Entities.Mongo.Survey, Survey>()
                 .ConstructUsing(src => new Survey(src.Name))
                 .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new MongoBsonJObjectConverter()));
             CreateMap<Survey, Data.Entities.Mongo.Survey>()
-                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()))
+                .ForMember(dest => dest.ParentSurveyId, opt => opt.MapFrom(src => MapOptionalParentId(src)));
 
             // Survey Type Settings only
             // these will only be used to apply to existing Survey objects
@@ -86,7 +88,12 @@ namespace Decsys.Mapping
                     opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
         }
 
+        // HACK: These helpers are sometimes necessary because Expression Trees are limited
+
         private int? MapActiveInstanceToId(Data.Entities.BaseSurveyInstance? instance)
-            => instance?.Id; // Necessary because Expression Trees are limited
+            => instance?.Id;
+
+        private int? MapOptionalParentId(Survey survey)
+            => survey.Parent?.Id;
     }
 }

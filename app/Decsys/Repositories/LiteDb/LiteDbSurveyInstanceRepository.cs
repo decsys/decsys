@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using AutoMapper;
 
@@ -17,11 +18,13 @@ namespace Decsys.Repositories.LiteDb
     {
         private readonly ILiteCollection<SurveyInstance> _instances;
         private readonly ILiteCollection<ExternalLookup> _external;
+        private readonly ILiteCollection<Survey> _surveys;
         private readonly IMapper _mapper;
 
         public LiteDbSurveyInstanceRepository(LiteDbFactory db, IMapper mapper)
         {
             _instances = db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
+            _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _external = db.Surveys.GetCollection<ExternalLookup>(Collections.ExternalLookup);
             _mapper = mapper;
         }
@@ -29,9 +32,21 @@ namespace Decsys.Repositories.LiteDb
         public bool HasActiveInstance(int id) =>
             _instances.Exists(x => x.Survey.Id == id && x.Closed == null);
 
-        public int Create(Models.SurveyInstance instance)
+        public int Create(Models.SurveyInstance instance, int? parentInstanceId = null)
         {
+            SurveyInstance? parent = null;
+            if (parentInstanceId is not null)
+                parent = _instances.FindOne(x => x.Id == parentInstanceId)
+                    ?? throw new KeyNotFoundException(
+                        $"Invalid Parent Instance with ID {parentInstanceId}");
+
             var id = _instances.Insert(_mapper.Map<SurveyInstance>(instance));
+
+            if (parent is not null)
+            {
+                parent.ChildInstanceIds.Add(id);
+                _instances.Update(parent);
+            }
 
             // we always try and a update a lookup record
             // but no worries if none found
@@ -47,16 +62,56 @@ namespace Decsys.Repositories.LiteDb
             return id;
         }
 
-        public Models.SurveyInstance Find(int id) =>
-            _mapper.Map<Models.SurveyInstance>(
-                _instances
-                    .Include(x => x.Survey)
-                    .Include(x => x.Survey.Pages)
-                    .FindById(id));
+        private Models.SurveyInstance? FindInstance(int id, Models.Survey? providedParentSurvey = null)
+        {
+            var instance = _instances
+                .Include(x => x.Survey)
+                .Include(x => x.Survey.Pages)
+                .FindById(id);
+            if (instance is null) return null;
 
-        public List<Models.SurveyInstance> List(int surveyId) =>
-            _mapper.Map<List<Models.SurveyInstance>>(
-                _instances.Find(x => x.Survey.Id == surveyId));
+            var model = _mapper.Map<Models.SurveyInstance>(instance);
+            model.Survey.Parent = (providedParentSurvey?.Id == instance.Survey.ParentSurveyId)
+                ? providedParentSurvey
+                : _mapper.Map<Models.Survey>(
+                    _surveys.Find(x => x.Id == instance.Survey.ParentSurveyId).Single());
+
+            foreach (var childId in instance.ChildInstanceIds)
+            {
+                var child = FindInstance(childId, model.Survey);
+                if (child is not null) model.Children.Add(child);
+            }
+
+            return model;
+        }
+
+        public Models.SurveyInstance? Find(int id) =>
+            FindInstance(id);
+
+        public List<Models.SurveyInstance> List(int surveyId)
+        {
+            var instances = _instances
+                .Include(x => x.Survey)
+                .Include(x => x.Survey.Pages)
+                .Find(x => x.Survey.Id == surveyId)
+                .ToList();
+
+            return instances.ConvertAll(instance =>
+            {
+                var model = _mapper.Map<Models.SurveyInstance>(instance);
+                model.Survey.Parent = instance.Survey.ParentSurveyId is not null
+                    ? _mapper.Map<Models.Survey>(
+                        _surveys.Find(x => x.Id == instance.Survey.ParentSurveyId).Single())
+                    : null;
+
+                foreach (var childId in instance.ChildInstanceIds)
+                {
+                    var child = FindInstance(childId, model.Survey);
+                    if (child is not null) model.Children.Add(child);
+                }
+                return model;
+            });
+        }
 
         public void Close(int id)
         {

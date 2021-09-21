@@ -46,24 +46,52 @@ namespace Decsys.Services
             if (!string.IsNullOrWhiteSpace(survey.Type))
             {
                 // So if there's an existing instance, reactivate it
-                var existing = _instances.List(surveyId).SingleOrDefault();
+                var existing = _instances.List(survey.Id).SingleOrDefault();
                 if (existing is not null)
                 {
                     _instances.Reactivate(existing.Id);
+
+                    foreach (var childInstance in existing.Children)
+                    {
+                        _instances.Reactivate(childInstance.Id);
+                    }
+
                     return existing.Id;
                 }
             }
 
             // Multi instance, or no existing instance - create a new one
+
             var instance = new SurveyInstance(survey)
             {
                 // Preserve the Survey Config at the time of this Instance launch
                 OneTimeParticipants = survey.OneTimeParticipants,
                 UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
-                ValidIdentifiers = survey.ValidIdentifiers
+                ValidIdentifiers = survey.ValidIdentifiers,
+                RandomisationStrategy = survey.IsStudy ? new() : null // Currently we only use the default, later load it from Study config
             };
 
-            return _instances.Create(instance);
+            var instanceId = _instances.Create(instance);
+
+            if (survey.IsStudy)
+            {
+                // Create child instances too
+                foreach (var child in _surveys.ListChildren(survey.Id))
+                {
+                    _instances.Create(
+                        new SurveyInstance(_surveys.Find(child.Id))
+                        {
+                            // Preserve the Study Config at the time of this Instance launch,
+                            // not the Child Survey Config
+                            OneTimeParticipants = survey.OneTimeParticipants,
+                            UseParticipantIdentifiers = survey.UseParticipantIdentifiers,
+                            ValidIdentifiers = survey.ValidIdentifiers
+                        },
+                        parentInstanceId: instanceId);
+                }
+            }
+
+            return instanceId;
         }
 
         /// <summary>
@@ -109,6 +137,16 @@ namespace Decsys.Services
             if (instance?.Survey.Id != surveyId) throw new KeyNotFoundException();
 
             _instances.Close(instanceId);
+
+            // If study, close child instances too
+            if (instance.Survey.IsStudy)
+            {
+                foreach (var child in _surveys.ListChildren(instance.Survey.Id))
+                {
+                    if (child.ActiveInstanceId is not null)
+                        _instances.Close(child.ActiveInstanceId.Value);
+                }
+            }
         }
 
         /// <summary>
@@ -116,8 +154,11 @@ namespace Decsys.Services
         /// </summary>
         /// <param name="instances">Instance data to import</param>
         /// <param name="targetSurveyId">ID of the Survey to import to</param>
-        public void Import(IList<SurveyInstanceResults<ParticipantEvents>> instances, int targetSurveyId)
+        /// <returns>A map of original exported instance IDs to their new IDs after insertion</returns>
+        public Dictionary<int, int> Import(IList<SurveyInstanceResults<ParticipantEvents>> instances, int targetSurveyId)
         {
+            Dictionary<int, int> idMap = new();
+
             var survey = _surveys.Find(targetSurveyId);
             if (survey is null) throw new KeyNotFoundException();
 
@@ -126,6 +167,8 @@ namespace Decsys.Services
                 var instance = _mapper.Map<SurveyInstance>(instanceImport);
                 instance.Survey = survey;
                 var instanceId = _instances.Create(instance);
+
+                idMap[instanceImport.Id] = instanceId;
 
                 foreach (var participant in instanceImport.Participants)
                     foreach (var e in participant.Events)
@@ -145,6 +188,7 @@ namespace Decsys.Services
                         _events.Create(instanceId, participant.Id, e);
                     }
             }
+            return idMap;
         }
     }
 }

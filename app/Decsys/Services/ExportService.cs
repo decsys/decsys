@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
+using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
 
 using Newtonsoft.Json;
@@ -11,29 +12,43 @@ namespace Decsys.Services
 {
     public class ExportService
     {
-        private readonly SurveyService _surveys;
+        private readonly ISurveyRepository _surveys;
         private readonly SurveyInstanceService _instances;
+        private readonly StudyAllocationService _studies;
         private readonly ParticipantEventService _events;
         private readonly IImageService _images;
 
         public ExportService(
-            SurveyService surveys,
+            ISurveyRepository surveys,
             SurveyInstanceService instances,
+            StudyAllocationService studies,
             ParticipantEventService events,
             IImageService images)
         {
             _surveys = surveys;
             _instances = instances;
+            _studies = studies;
             _events = events;
             _images = images;
         }
 
         public async Task<byte[]> Structure(int surveyId)
-            => (await ExportStructure(surveyId)).AsByteArray();
+        {
+            var zip = await ExportStructure(surveyId);
+
+            foreach (var child in _surveys.ListChildren(surveyId))
+            {
+                zip.AddBytes(
+                    (await ExportStructure(child.Id)).AsByteArray(),
+                    $"{child.Id}.zip");
+            }
+
+            return zip.AsByteArray();
+        }
 
         private async Task<ZipBuilder> ExportStructure(int surveyId)
         {
-            var surveyData = _surveys.Get(surveyId);
+            var surveyData = _surveys.Find(surveyId);
 
             // start building the export zip
             var zipBuilder = new ZipBuilder()
@@ -57,10 +72,18 @@ namespace Decsys.Services
             // add full json exports for each instance
             foreach (var instance in _instances.List(surveyId))
             {
+                var publishTimestamp = instance.Published.UtcDateTime.ToString("s").Replace(":", "_");
+                var studyPrefix = instance.Survey.IsStudy ? "Study" : "";
+
                 zip.AddTextContent(
-                      JsonConvert.SerializeObject(_events.Results(instance.Id)),
-                      $"Instance-{instance.Published.UtcDateTime.ToString("s").Replace(":", "_")}.json");
+                    instance.Survey.IsStudy
+                        ? JsonConvert.SerializeObject(_studies.Export(instance.Id))
+                        : JsonConvert.SerializeObject(_events.Results(instance.Id)),
+                    $"{studyPrefix}Instance-{publishTimestamp}.json");
             }
+
+            foreach (var child in _surveys.ListChildren(surveyId))
+                zip.AddBytes(await Full(child.Id), $"{child.Id}.zip");
 
             // return the zip data
             return zip.AsByteArray();

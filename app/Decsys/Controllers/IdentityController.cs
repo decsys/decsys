@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Decsys.Services;
 
@@ -67,7 +68,42 @@ namespace Decsys.Controllers
 
             // If valid, check we're using the correct version for repeatable surveys
             if (!instance.OneTimeParticipants)
-                return _events.GetNextId(participantId, instance.Id);
+            {
+                if (instance.Survey.IsStudy)
+                {
+                    // need to check all child instances for an advanced participant id
+                    List<string> numberedIds = new();
+
+                    foreach(var childInstance in instance.Children)
+                    {
+                        var nextId = _events.GetNextId(participantId, childInstance.Id);
+
+                        // we only care if it's got a number on the end
+                        // which will be the case if it doesn't match the provided id
+                        if (nextId != participantId)
+                            numberedIds.Add(nextId);
+                    }
+
+                    if (numberedIds.Count > 0)
+                    {
+                        // numbered id's came back from the next id;
+                        // each number is the count of times this participant id
+                        // has taken the child instance in question
+                        // so we can sum them to get our next id at a study level
+                        int ParseVersionFromId(string id)
+                            => int.Parse(id.Substring(id.LastIndexOf("-") + 1));
+
+                        return $"{participantId}-{numberedIds.Sum(ParseVersionFromId)}";
+                    } else
+                    {
+                        return participantId;
+                    }
+                }
+                else
+                {
+                    return _events.GetNextId(participantId, instance.Id);
+                }
+            }
 
             return participantId;
         }

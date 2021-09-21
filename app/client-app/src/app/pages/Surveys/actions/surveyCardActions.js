@@ -3,6 +3,7 @@ import {
   duplicateSurvey,
   launchSurvey,
   setSurveyName,
+  setParent,
 } from "api/surveys";
 import { closeSurveyInstance } from "api/survey-instances";
 import produce from "immer";
@@ -39,8 +40,12 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
       })
     );
   },
-  duplicate: async (id, name, type, settings) => {
-    await duplicateSurvey(id, name, type, settings);
+  duplicate: async (id, name, type, settings, creationOptions) => {
+    await duplicateSurvey(id, name, type, settings, creationOptions);
+    mutateSurveys();
+  },
+  changeStudy: async (id, parentId) => {
+    await setParent(id, parentId);
     mutateSurveys();
   },
   deleteSurvey: async (id) => {

@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using AutoMapper;
+
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities.Mongo;
 using Decsys.Repositories.Contracts;
+
 using Microsoft.Extensions.Options;
+
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -29,7 +33,7 @@ namespace Decsys.Repositories.Mongo
 
         private IMongoDatabase EventLogDb(int instanceId)
             => _mongo.GetDatabase(
-                $"{_config.DatabaseName}_{Collections.EventLogDb}{instanceId}");
+                $"{_config.DatabaseName}_{Collections.InstanceDb}{instanceId}");
 
         private List<string> ListLogs(int instanceId)
             => EventLogDb(instanceId)
@@ -79,13 +83,13 @@ namespace Decsys.Repositories.Mongo
                     .SortBy(x => x.Timestamp)
                     .ToList());
 
-        public Dictionary<string, List<Models.ParticipantEvent>> List(int instanceId)
+        public Dictionary<string, List<Models.ParticipantEvent>> List(int instanceId, string? type = null)
             => ListLogs(instanceId)
                 .ToDictionary(
                     GetParticipantId,
                     x => _mapper.Map<List<Models.ParticipantEvent>>(
                         GetLog(instanceId, x)
-                            .Find(new BsonDocument())
+                            .Find(x => type == null || x.Type == type)
                             .SortBy(x => x.Timestamp)
                             .ToList()));
 

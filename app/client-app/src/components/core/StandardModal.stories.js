@@ -10,6 +10,7 @@ const modalState = {
   onToggle: action("Modal toggled"),
 };
 
+/* eslint-disable-next-line */
 export default {
   title: "Core UI/StandardModal",
   component: StandardModal,

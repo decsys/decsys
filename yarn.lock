@@ -9136,7 +9136,7 @@ __metadata:
     react-dev-utils: ^11.0.0
     react-div-100vh: ^0.5.6
     react-dom: ^17.0.2
-    react-icons: ^3.11.0
+    react-icons: ^4.2.0
     react-markdown: ^5.0.3
     react-plotly.js: ^2.5.0
     react-refresh: ^0.9.0
@@ -22655,14 +22655,12 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-icons@npm:^3.11.0":
-  version: 3.11.0
-  resolution: "react-icons@npm:3.11.0"
-  dependencies:
-    camelcase: ^5.0.0
+"react-icons@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "react-icons@npm:4.2.0"
   peerDependencies:
     react: "*"
-  checksum: b629e024d4002b0d951e03256b30d20f9546add9bf30ad0721fba33a4cf8811b730e44f63341d7148eaad9785dfdb02cac2efa3b263dd703e95b8e535af140e9
+  checksum: 0052e25c6aacab93da3328ab856e4971214dce082de4bce857801802903366c7a8f9f490fe02ecd4ce181512b7b55cac12d6273c3c8dccc0e3b71b30dfd28256
   languageName: node
   linkType: hard
 

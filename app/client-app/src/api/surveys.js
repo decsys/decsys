@@ -9,6 +9,9 @@ import {
 import useSWR from "swr";
 import { toDictionary } from "services/data-structures";
 
+/**
+ * Fetch a List of Survey Summaries from the API
+ */
 export const useSurveysList = () =>
   useSWR(
     "/api/surveys",
@@ -27,10 +30,25 @@ export const useSurveysList = () =>
 export const useSurvey = (id) =>
   useSWR(`/api/surveys/${id}`, defaultFetcher(true), { suspense: true });
 
-export const createSurvey = async (name, type, settings) =>
+/**
+ * Fetch a List of Child Survey Summaries from the API using SWR
+ * @param {*} id The ID of the Parent Survey to fetch Children of
+ * @returns `{data, mutate}`
+ */
+export const useChildList = (id) =>
+  useSWR(`/api/surveys/${id}/children`, defaultFetcher(true), {
+    suspense: true,
+  });
+
+export const createSurvey = async (
+  name,
+  type,
+  settings,
+  { isStudy, parentId: parentSurveyId } = {}
+) =>
   await axios.post(
     "/api/surveys",
-    { name, type, settings },
+    { name, type, settings, isStudy, parentSurveyId },
     withHeaders(await authorization_BearerToken())
   );
 
@@ -39,7 +57,8 @@ export const uploadSurveyImport = async (
   importData = false,
   name,
   type,
-  settings
+  settings,
+  { isStudy, parentId: parentSurveyId } = {}
 ) =>
   await uploadFile(
     `/api/surveys/import?importData=${importData}`,
@@ -49,13 +68,21 @@ export const uploadSurveyImport = async (
       name,
       type,
       settings,
+      isStudy,
+      parentSurveyId,
     }
   );
 
-export const loadInternalSurvey = async (internalKey, name, type, settings) =>
+export const loadInternalSurvey = async (
+  internalKey,
+  name,
+  type,
+  settings,
+  parentSurveyId
+) =>
   await axios.post(
     `/api/surveys/internal/${internalKey}`,
-    { name, type, settings },
+    { name, type, settings, parentSurveyId },
     withHeaders(await authorization_BearerToken())
   );
 
@@ -65,10 +92,16 @@ export const deleteSurvey = async (id) =>
     withHeaders(await authorization_BearerToken())
   );
 
-export const duplicateSurvey = async (id, name, type, settings) =>
+export const duplicateSurvey = async (
+  id,
+  name,
+  type,
+  settings,
+  { isStudy, parentId: parentSurveyId }
+) =>
   await axios.post(
     `/api/surveys/${id}/duplicate`,
-    { name, type, settings },
+    { name, type, settings, isStudy, parentSurveyId },
     withHeaders(await authorization_BearerToken())
   );
 
@@ -85,6 +118,14 @@ export const setSurveyName = async (id, name) =>
     JSON.stringify(name),
     withHeaders(contentType_AppJson, await authorization_BearerToken())
   );
+
+export const setParent = async (id, parentId) => {
+  await axios.put(
+    `/api/surveys/${id}/parent/${parentId ?? ""}`,
+    null,
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
+  );
+};
 
 export const getSurveyExport = async (surveyId, type) =>
   await axios.get(

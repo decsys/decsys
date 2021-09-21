@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { LoadingIndicator, Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
 import { navigate } from "@reach/router";
-import { decode } from "services/instance-id";
+import { decode, encode } from "services/instance-id";
 import {
   requestParticipantProgress,
   useParticipantProgress,
@@ -17,7 +17,7 @@ import { useQueryString } from "hooks/useQueryString";
 import Preview from "./Preview";
 
 // Do all the data fetching and validation ahead of rendering the survey
-const SurveyBootstrapper = ({ id: friendlyId }) => {
+const SurveyBootstrapper = ({ id: accessFriendlyId }) => {
   // we can lookup in progress participant Id's
   // to resume without prompting user for id
   const { instances, storeInstanceParticipantId } = useLocalInstances();
@@ -26,12 +26,17 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
   const { preview: isPreview } = useQueryString();
 
   const { data: progress, mutate } = useParticipantProgress(
-    !isPreview && friendlyId, // preview skips progress fetching
-    instances[friendlyId]
+    !isPreview && accessFriendlyId, // preview skips progress fetching
+    instances[accessFriendlyId]
   );
 
-  const [surveyId] = decode(friendlyId);
-  if (isPreview) return <Preview id={surveyId} />;
+  if (isPreview) {
+    const [accessSurveyId] = decode(accessFriendlyId);
+    return <Preview id={accessSurveyId} />;
+  }
+
+  // this might differ from the access ID, e.g. for children of Studies
+  const surveyFriendlyId = encode(progress.surveyId, progress.instanceId);
 
   // behave differently based on progress state
   /* Valid Progress matrix
@@ -56,10 +61,10 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
 
   // Interactively get Participant Id
   if (!progress.participantId && !progress.newParticipantId)
-    return <ParticipantIdEntry friendlyId={friendlyId} />;
+    return <ParticipantIdEntry friendlyId={accessFriendlyId} />;
 
   storeInstanceParticipantId(
-    friendlyId,
+    accessFriendlyId,
     progress.newParticipantId ?? progress.participantId
   );
 
@@ -68,7 +73,8 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
     if (progress.page) {
       return (
         <Survey
-          friendlyId={friendlyId}
+          friendlyId={surveyFriendlyId} // use the actual target ids
+          accessFriendlyId={accessFriendlyId} // pass the access id for completion usage
           participantId={progress.participantId}
           progress={progress}
           mutateProgress={mutate}
@@ -76,7 +82,7 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
       );
     } else {
       // Survey Complete
-      navigate(`/survey/${friendlyId}/complete`);
+      navigate(`/survey/${accessFriendlyId}/complete`);
       return null;
     }
   }
@@ -86,7 +92,13 @@ const SurveyBootstrapper = ({ id: friendlyId }) => {
   return <LoadingIndicator />;
 };
 
-const Survey = ({ friendlyId, participantId, progress, mutateProgress }) => {
+const Survey = ({
+  friendlyId,
+  accessFriendlyId,
+  participantId,
+  progress,
+  mutateProgress,
+}) => {
   const { clearInstanceParticipantId } = useLocalInstances();
   const [isBusy, setIsBusy] = useState();
 
@@ -125,10 +137,11 @@ const Survey = ({ friendlyId, participantId, progress, mutateProgress }) => {
         // the decsys completion page also does this, for safety
         // but we should do it here too for surveys with custom completion URLs
         if (progress.useParticipantIdentifiers)
-          clearInstanceParticipantId(friendlyId);
+          clearInstanceParticipantId(accessFriendlyId);
 
         navigate(
-          progress.settings?.CompletionUrl ?? `/survey/${friendlyId}/complete`
+          progress.settings?.CompletionUrl ??
+            `/survey/${accessFriendlyId}/complete`
         );
 
         // go ahead and mutate progress anyway

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AutoMapper;
@@ -55,11 +56,47 @@ namespace Decsys.Repositories.Mongo
             return ++lastId;
         }
 
+        private Survey? GetParent(Models.CreateSurveyModel model)
+        {
+            Survey? parent = null;
+
+            // Some validation
+            if (model.ParentSurveyId is not null)
+            {
+                if (model.IsStudy)
+                    throw new ArgumentException("A Study cannot belong to a parent", nameof(model));
+
+                parent = _surveys.Find(x => x.Id == model.ParentSurveyId).SingleOrDefault();
+
+                var parentFailureMessage = $"Can't create a Survey with Parent {model.ParentSurveyId}";
+
+                if (parent is null)
+                    throw new KeyNotFoundException(
+                        $"{parentFailureMessage}: that Study could not be found.");
+
+                if (!parent.IsStudy)
+                    throw new ArgumentException(
+                        $"{parentFailureMessage}: that Survey is not a Study and therefore cannot have children.");
+            }
+            return parent;
+        }
+
         public int Create(Models.CreateSurveyModel model, string? ownerId = null)
         {
+            var parent = GetParent(model);
+
             var id = GetNextSurveyId();
 
-            var survey = new Survey { Id = id, Owner = ownerId };
+            var survey = new Survey
+            {
+                Id = id,
+                Owner = ownerId,
+                IsStudy = model.IsStudy,
+                ParentSurveyId = parent?.Id
+            };
+
+            if (survey.IsStudy)
+                survey.Name = "Untitled Study";
             if (!string.IsNullOrWhiteSpace(model.Name))
                 survey.Name = model.Name;
 
@@ -113,6 +150,9 @@ namespace Decsys.Repositories.Mongo
         public int Create(Models.Survey survey, Models.CreateSurveyModel model, string? ownerId = null)
         {
             var entity = _mapper.Map<Survey>(survey);
+
+            entity.ParentSurveyId = model.ParentSurveyId;
+
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
 
             entity.Id = GetNextSurveyId();
@@ -166,46 +206,78 @@ namespace Decsys.Repositories.Mongo
         }
 
 
-        public Models.Survey Find(int id) =>
-            _mapper.Map<Models.Survey>(
-                _surveys.Find(x => x.Id == id).SingleOrDefault());
+        public Models.Survey Find(int id)
+        {
+            var entity = _surveys.Find(x => x.Id == id).SingleOrDefault();
+            var survey = _mapper.Map<Models.Survey>(entity);
+
+            if (entity.ParentSurveyId is not null)
+            {
+                var parent = _surveys.Find(x => x.Id == entity.ParentSurveyId).SingleOrDefault();
+                survey.Parent = _mapper.Map<Models.Survey>(parent);
+            }
+
+            return survey;
+        }
 
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
+            => List(null, userId, includeOwnerless);
+
+        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false)
         {
             var surveys = userId is null
-                ? _surveys.Find(new BsonDocument()).ToList()
+                ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
                 : _surveys.Find(
-                        x => x.Owner == userId ||
-                        (includeOwnerless && x.Owner == null))
+                        x => x.ParentSurveyId == parentId &&
+                        (x.Owner == userId ||
+                        (includeOwnerless && x.Owner == null)))
                     .ToList();
 
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
 
-            return summaries
-                .Select(survey =>
-                    {
-                        var instances = _instances
+            // Reusable enhancement
+            Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
+            {
+                var instances = _instances
                             .Find(instance =>
                                 instance.SurveyId == survey.Id)
                             .SortByDescending(x => x.Published)
                             .ToList();
 
-                        var summary = _mapper.Map(instances,
-                          survey);
+                var summary = _mapper.Map(instances,
+                  survey);
 
-                        var latestInstanceId = instances.FirstOrDefault()?.Id;
+                var latestInstanceId = instances.FirstOrDefault()?.Id;
 
-                        // validate external link if necessary
-                        summary.HasInvalidExternalLink =
-                            !string.IsNullOrWhiteSpace(summary.Type) &&
-                            _external.Find(x =>
-                                    x.SurveyId == summary.Id &&
-                                    x.InstanceId == latestInstanceId)
-                                .SingleOrDefault() is null;
+                // validate external link if necessary
+                summary.HasInvalidExternalLink =
+                    !string.IsNullOrWhiteSpace(summary.Type) &&
+                    _external.Find(x =>
+                            x.SurveyId == summary.Id &&
+                            x.InstanceId == latestInstanceId)
+                        .SingleOrDefault() is null;
+
+                return summary;
+            }
+
+            return summaries
+                .ConvertAll(survey =>
+                    {
+                        var summary = EnhanceSummary(survey);
+
+                        // Get Children for studies
+                        if (survey.IsStudy)
+                        {
+                            summary.Children = _mapper.Map<List<Models.SurveySummary>>(
+                                _surveys.Find(x => x.ParentSurveyId == survey.Id).ToList());
+
+                            // they also need enhancing
+                            summary.Children = summary.Children.ConvertAll(EnhanceSummary);
+                        }
 
                         return summary;
                     })
-                .ToList();
+;
         }
 
         public void Update(Models.Survey survey) =>
@@ -217,5 +289,8 @@ namespace Decsys.Repositories.Mongo
             _surveys.UpdateOne(
                 x => x.Id == id,
                 Builders<Survey>.Update.Set(x => x.Name, name));
+
+        public List<Models.SurveySummary> ListChildren(int parentId)
+            => List(parentId);
     }
 }
