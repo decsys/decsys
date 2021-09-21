@@ -35,27 +35,27 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.Identity.Mongo" Version="6.7.2" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
-    <PackageReference Include="Base62-Net" Version="1.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Base62-Net" Version="1.2.157201" />
     <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
-    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.1" />
-    <PackageReference Include="LinqKit.Core" Version="1.1.24" />
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
+    <PackageReference Include="LinqKit.Core" Version="1.1.26" />
     <PackageReference Include="LiteDB" Version="5.0.8" />
-    <PackageReference Include="MailKit" Version="2.9.0" />
+    <PackageReference Include="MailKit" Version="2.15.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.11.4" />
-    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.11.4" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.1" />
+    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.13.1" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
-    <PackageReference Include="SendGrid" Version="9.21.1" />
+    <PackageReference Include="SendGrid" Version="9.24.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="5.6.3" />
     <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="5.6.3" />
     <PackageReference Include="UoN.AspNetCore.RazorViewRenderer" Version="1.0.1" />
     <PackageReference Include="UoN.AspNetCore.VersionMiddleware" Version="1.1.1" />
     <PackageReference Include="UoN.VersionInformation.DependencyInjection" Version="1.0.0" />
-    <PackageReference Include="IdentityServer4" Version="4.1.1" />
+    <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="UoN.ZipBuilder" Version="1.1.0" />
   </ItemGroup>
 
