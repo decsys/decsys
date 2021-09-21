@@ -135,7 +135,10 @@ namespace Decsys.Repositories.LiteDb
             var parent = GetParent(model);
 
             var survey = new Survey { ParentSurveyId = parent?.Id, IsStudy = model.IsStudy };
-            if (!string.IsNullOrWhiteSpace(model.Name)) survey.Name = model.Name;
+            if (survey.IsStudy)
+                survey.Name = "Untitled Study";
+            if (!string.IsNullOrWhiteSpace(model.Name))
+                survey.Name = model.Name;
 
             var lookup = HandleSurveyTypeCreation(model, ref survey);
 

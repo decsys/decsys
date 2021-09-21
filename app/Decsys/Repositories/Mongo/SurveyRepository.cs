@@ -94,6 +94,9 @@ namespace Decsys.Repositories.Mongo
                 IsStudy = model.IsStudy,
                 ParentSurveyId = parent?.Id
             };
+
+            if (survey.IsStudy)
+                survey.Name = "Untitled Study";
             if (!string.IsNullOrWhiteSpace(model.Name))
                 survey.Name = model.Name;
 
