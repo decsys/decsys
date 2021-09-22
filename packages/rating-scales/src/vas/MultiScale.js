@@ -38,6 +38,7 @@ const MultiVisualAnalogScale = ({
   leftMarkerOptions = {},
   rightMarkerOptions = {},
   centerMarkerOptions = {},
+  useConfidenceText,
   confidenceTextOptions,
   confidenceText,
 }) => {
@@ -240,31 +241,35 @@ const MultiVisualAnalogScale = ({
           </FlexContainer>
         </ScaleBar>
 
-        <Question {...confidenceTextOptions}>{confidenceText}</Question>
-        <div
-          css={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <InputGroup marginTop={frameHeight} width="120px">
-            <NumberInput
-              isDisabled={outputs.bestEstimate == null}
-              min={0}
-              max={100}
-              onChange={handleConfidenceChange}
-              value={outputs.confidence ?? ""}
+        {useConfidenceText && (
+          <>
+            <Question {...confidenceTextOptions}>{confidenceText}</Question>
+            <div
+              css={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <InputRightAddon children="%" />
-          </InputGroup>
-        </div>
+              <InputGroup marginTop={frameHeight} width="120px">
+                <NumberInput
+                  isDisabled={outputs.bestEstimate == null}
+                  min={0}
+                  max={100}
+                  onChange={handleConfidenceChange}
+                  value={outputs.confidence ?? ""}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                <InputRightAddon children="%" />
+              </InputGroup>
+            </div>
+          </>
+        )}
       </Frame>
     </>
   );
