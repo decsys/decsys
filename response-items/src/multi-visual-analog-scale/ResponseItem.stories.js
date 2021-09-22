@@ -77,4 +77,11 @@ export const NumericStats = stats(
   ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)
 );
 
+export const NumericStatsMissingConfidence = stats(
+  ResponseItem.stats(
+    { ...ResponseItem.defaultProps, ...props },
+    dummyResults.map((x) => ({ ...x, confidence: undefined }))
+  )
+);
+
 export const MetadataIcon = () => <Icon width="24px" />;
