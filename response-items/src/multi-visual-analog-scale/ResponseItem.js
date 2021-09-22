@@ -34,12 +34,15 @@ const ResponseItem = ({
   rightDragMarkerLabel,
   centerDragMarkerColor,
   centerDragMarkerLabel,
+  useConfidenceInput,
   confidenceText,
   confidenceTextColor,
   confidenceTextFontFamily,
   confidenceTextFontSize,
   _context: { setNextEnabled, logResults },
 }) => {
+  useConfidenceInput = useConfidenceInput === "true"; // convert this oneOf to a bool
+
   const handleMvasCompleted = (e) => {
     logResults({ value: e.detail });
     setNextEnabled(true);
@@ -99,6 +102,7 @@ const ResponseItem = ({
         label: centerDragMarkerLabel,
         color: centerDragMarkerColor,
       }}
+      useConfidenceInput={useConfidenceInput}
       confidenceText={confidenceText}
       confidenceTextOptions={{
         topMargin: "80%",

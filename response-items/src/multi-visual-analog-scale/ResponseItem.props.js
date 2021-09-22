@@ -52,6 +52,11 @@ const params = {
   rightDragMarkerLabel: ParamTypes.string("Right Drag Marker Label", "R"),
   centerDragMarkerColor: ParamTypes.string("Center Drag Marker Color", "blue"),
   centerDragMarkerLabel: ParamTypes.string("Center Drag Marker Label", "C"),
+  useConfidenceInput: ParamTypes.oneOf(
+    "Use Confidence Input?",
+    ["true", "false"],
+    "false"
+  ),
   confidenceText: ParamTypes.string(
     "Confidence Input Text",
     "How confident are you?"

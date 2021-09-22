@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { MultiVisualAnalogScale } from "./MultiScale";
 import { action } from "@storybook/addon-actions";
 
+// eslint-disable-next-line
 export default {
   title: "Rating Scales/MVAS",
   component: MultiVisualAnalogScale,
@@ -62,5 +63,6 @@ export const Sample = () => (
     rightMarkerOptions={{
       color: "#1a4",
     }}
+    useConfidenceInput={"true"}
   />
 );

@@ -2,6 +2,7 @@ import { action } from "@storybook/addon-actions";
 import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
 
+// eslint-disable-next-line
 export default {
   title: "Multi Visual Analog Scale Response",
   component: ResponseItem,
@@ -67,6 +68,10 @@ const _context = {
 };
 
 export const Basic = () => <ResponseItem _context={_context} />;
+
+export const WithConfidence = () => (
+  <ResponseItem _context={_context} useConfidenceInput={"true"} />
+);
 
 export const NumericStats = stats(
   ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)

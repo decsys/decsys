@@ -38,7 +38,7 @@ const MultiVisualAnalogScale = ({
   leftMarkerOptions = {},
   rightMarkerOptions = {},
   centerMarkerOptions = {},
-  useConfidenceText,
+  useConfidenceInput,
   confidenceTextOptions,
   confidenceText,
 }) => {
@@ -241,7 +241,7 @@ const MultiVisualAnalogScale = ({
           </FlexContainer>
         </ScaleBar>
 
-        {useConfidenceText && (
+        {useConfidenceInput && (
           <>
             <Question {...confidenceTextOptions}>{confidenceText}</Question>
             <div
