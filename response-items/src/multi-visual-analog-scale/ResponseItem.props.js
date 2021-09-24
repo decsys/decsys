@@ -54,8 +54,8 @@ const params = {
   centerDragMarkerLabel: ParamTypes.string("Center Drag Marker Label", "C"),
   useConfidenceInput: ParamTypes.oneOf(
     "Use Confidence Input?",
-    ["true", "false"],
-    "false"
+    ["Yes", "No"],
+    "Yes"
   ),
   confidenceText: ParamTypes.string(
     "Confidence Input Text",

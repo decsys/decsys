@@ -69,8 +69,8 @@ const _context = {
 
 export const Basic = () => <ResponseItem _context={_context} />;
 
-export const WithConfidence = () => (
-  <ResponseItem _context={_context} useConfidenceInput={"true"} />
+export const WithoutConfidence = () => (
+  <ResponseItem _context={_context} useConfidenceInput={"No"} />
 );
 
 export const NumericStats = stats(

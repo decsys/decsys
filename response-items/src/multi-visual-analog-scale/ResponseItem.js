@@ -41,7 +41,7 @@ const ResponseItem = ({
   confidenceTextFontSize,
   _context: { setNextEnabled, logResults },
 }) => {
-  useConfidenceInput = useConfidenceInput === "true"; // convert this oneOf to a bool
+  useConfidenceInput = useConfidenceInput === "Yes"; // convert this oneOf to a bool
 
   const handleMvasCompleted = (e) => {
     logResults({ value: e.detail });
