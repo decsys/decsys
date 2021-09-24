@@ -117,6 +117,22 @@ const behaviours = {
   },
 };
 
+const DottedLine = ({ yAnchor, x1, x2 }) => {
+  if (x1 == null || x2 == null) return null;
+
+  return (
+    <div
+      css={{
+        position: "absolute",
+        top: `${yAnchor - 25}px`,
+        left: x1,
+        width: x2 - x1,
+        borderTop: "dashed .2em gray",
+      }}
+    ></div>
+  );
+};
+
 const MultiVisualAnalogScale = ({
   frameHeight,
   questionOptions,
@@ -310,6 +326,20 @@ const MultiVisualAnalogScale = ({
               {...centerMarkerOptions}
               onDrop={handleMarkerDrop("center")}
             />
+            {behaviour === behaviours.HeskethPryorHesketh1988 && (
+              <>
+                <DottedLine
+                  {...markerPositioning}
+                  x1={markerX.left}
+                  x2={markerX.center}
+                />
+                <DottedLine
+                  {...markerPositioning}
+                  x1={markerX.center}
+                  x2={markerX.right}
+                />
+              </>
+            )}
           </FlexContainer>
         </ScaleBar>
 
