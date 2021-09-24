@@ -3,6 +3,11 @@ import { MultiVisualAnalogScale } from "@decsys/rating-scales/mvas";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 
+const behaviourKeyMap = {
+  "Speirs-Bridge 2010": "SpeirsBridge2010",
+  "Hesketh, Pryor & Hesketh 1988": "HeskethPryorHesketh1988",
+};
+
 const ResponseItem = ({
   barLeftMargin,
   barRightMargin,
@@ -39,6 +44,7 @@ const ResponseItem = ({
   confidenceTextColor,
   confidenceTextFontFamily,
   confidenceTextFontSize,
+  behaviour,
   _context: { setNextEnabled, logResults },
 }) => {
   useConfidenceInput = useConfidenceInput === "Yes"; // convert this oneOf to a bool
@@ -112,6 +118,7 @@ const ResponseItem = ({
         textColor: confidenceTextColor,
       }}
       frameHeight="300px"
+      behaviour={behaviourKeyMap[behaviour]}
     />
   );
 };

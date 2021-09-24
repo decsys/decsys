@@ -73,6 +73,11 @@ const params = {
     "Confidence Input Text Font Size",
     "18pt"
   ),
+  behaviour: ParamTypes.oneOf(
+    "Behaviour",
+    ["Speirs-Bridge 2010", "Hesketh, Pryor & Hesketh 1988"],
+    "Speirs-Bridge 2010"
+  ),
 };
 
 // Specify PropTypes for non-Configurable Props

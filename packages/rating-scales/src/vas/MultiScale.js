@@ -27,6 +27,11 @@ import {
 } from "@chakra-ui/react";
 
 const behaviours = {
+  SpeirsBridge2010: "SpeirsBridge2010",
+  HeskethPryorHesketh1988: "HeskethPryorHesketh1988",
+};
+
+const behaviourDefinitions = {
   // Speirs-Bridge 2010
   SpeirsBridge2010: {
     initialMarkerBounds: ({ width, x }) => ({
@@ -148,6 +153,7 @@ const MultiVisualAnalogScale = ({
   useConfidenceInput,
   confidenceTextOptions,
   confidenceText,
+  behaviour,
 }) => {
   leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
   rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
@@ -158,7 +164,9 @@ const MultiVisualAnalogScale = ({
   const [markerBounds, setMarkerBounds] = useState({});
   const [markerX, setMarkerX] = useState({});
 
-  const behaviour = behaviours.HeskethPryorHesketh1988; // TODO: Config
+  const behaviourFunctions =
+    behaviourDefinitions[behaviour] ??
+    behaviourDefinitions[behaviours.SpeirsBridge2010];
 
   const [outputs, setOutputs] = useState({});
   useEffect(() => {
@@ -174,8 +182,16 @@ const MultiVisualAnalogScale = ({
 
     // If the last output to be entered has a value
     // we can consider the response "completed"
-    if (outputs.confidence != null) dispatch("MvasCompleted");
-  }, [outputs]);
+    if (useConfidenceInput) {
+      if (outputs.confidence != null) dispatch("MvasCompleted");
+    } else if (
+      outputs.left != null &&
+      outputs.right != null &&
+      outputs.bestEstimate != null
+    ) {
+      dispatch("MvasCompleted");
+    }
+  }, [outputs, useConfidenceInput]);
 
   // mounting the bar / confuguring dom ref
   const [bar, setBar] = useState(null);
@@ -196,10 +212,10 @@ const MultiVisualAnalogScale = ({
         left: {},
         right: {},
         center: {},
-        ...behaviour.initialMarkerBounds(barBounds),
+        ...behaviourFunctions.initialMarkerBounds(barBounds),
       });
     },
-    [behaviour]
+    [behaviourFunctions]
   );
 
   // bar labels
@@ -256,14 +272,14 @@ const MultiVisualAnalogScale = ({
     newMarkerBounds.center.baseZIndex = markerZ.center;
 
     // apply behaviour updates
-    newMarkerBounds = behaviour.updateMarkerBounds(
+    newMarkerBounds = behaviourFunctions.updateMarkerBounds(
       newMarkerBounds,
       markerX,
       markerPositioning
     );
 
     setMarkerBounds(newMarkerBounds);
-  }, [markerX, markerPositioning, behaviour]);
+  }, [markerX, markerPositioning, behaviourFunctions]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
     const value = getValueForRelativeX(
@@ -456,11 +472,17 @@ MultiVisualAnalogScale.propTypes = {
   /** Options for Center Drag Marker */
   centerMarkerOptions: dragMarkerOptionsPropTypes,
 
+  /** Whether to ask for a Confidence response */
+  useConfidenceInput: PropTypes.bool,
+
   /** Options for the Reponse Confidence text */
   confidenceTextOptions: PropTypes.shape(questionPropTypes),
 
   /** Response Confidence text to display */
   confidenceText: PropTypes.string,
+
+  /** Select a preset behaviour */
+  behaviour: PropTypes.string,
 };
 
 MultiVisualAnalogScale.defaultProps = {
@@ -479,11 +501,13 @@ MultiVisualAnalogScale.defaultProps = {
   leftMarkerOptions: { label: "L" },
   rightMarkerOptions: { label: "R" },
   centerMarkerOptions: { label: "C" },
+  useConfidenceInput: true,
   confidenceText: "How confident are you?",
   confidenceTextOptions: {
     topMargin: "80%",
     xAlign: "center",
   },
+  behaviour: behaviours.SpeirsBridge2010,
 };
 
 export { MultiVisualAnalogScale };
