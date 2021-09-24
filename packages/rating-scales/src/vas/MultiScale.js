@@ -74,10 +74,46 @@ const behaviours = {
   // Hesketh, Pryor & Hesketh 1988
   HeskethPryorHesketh1988: {
     initialMarkerBounds: ({ width, x }) => ({
+      // Hesketh, Pryor & Hesketh 1988 goes center -> left -> right, so init center only
       left: { xMin: x },
       right: { xMax: width + x },
       center: { xInit: width / 2, xMin: x, xMax: width + x },
     }),
+    updateMarkerBounds: (markerBounds, markerX, markerPositioning) => {
+      const { xOffset } = markerPositioning;
+
+      // center updates
+      // center bounds are based on the others
+      if (markerX.left != null)
+        markerBounds.center.xMin = markerX.left + xOffset;
+      if (markerX.right != null)
+        markerBounds.center.xMax = markerX.right + xOffset;
+
+      // left updates
+      if (markerX.center != null) {
+        // left is after center, so init it
+        // center / 2
+        markerBounds.left.xInit = markerX.center / 2;
+
+        // left max is based on center
+        markerBounds.left.xMax = markerX.center + xOffset;
+      }
+
+      // right updates
+      if (markerX.left != null) {
+        // right is after left, so init it
+        // left + (rightMax - left) / 2 - (offset / 2)
+        markerBounds.right.xInit =
+          markerX.center +
+          (markerBounds.right.xMax - markerX.center) / 2 -
+          xOffset / 2;
+
+        // right min is based on center
+        markerBounds.right.xMin = markerX.center + xOffset;
+      }
+
+      return markerBounds;
+    },
   },
 };
 
@@ -106,7 +142,7 @@ const MultiVisualAnalogScale = ({
   const [markerBounds, setMarkerBounds] = useState({});
   const [markerX, setMarkerX] = useState({});
 
-  const behaviour = behaviours.SpeirsBridge2010; // TODO: Config
+  const behaviour = behaviours.HeskethPryorHesketh1988; // TODO: Config
 
   const [outputs, setOutputs] = useState({});
   useEffect(() => {
