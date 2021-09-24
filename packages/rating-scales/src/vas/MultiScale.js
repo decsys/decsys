@@ -26,6 +26,61 @@ import {
   InputRightAddon,
 } from "@chakra-ui/react";
 
+const behaviours = {
+  // Speirs-Bridge 2010
+  SpeirsBridge2010: {
+    initialMarkerBounds: ({ width, x }) => ({
+      // Speirs-Bridge 2010 goes left -> right -> center, so init left only
+      left: { xInit: width / 2, xMin: x, xMax: width + x },
+      right: { xMax: width + x },
+    }),
+    updateMarkerBounds: (markerBounds, markerX, markerPositioning) => {
+      const { xOffset } = markerPositioning;
+
+      // left updates
+      if ((markerX.center ?? markerX.right) != null)
+        markerBounds.left.xMax = (markerX.center ?? markerX.right) + xOffset;
+
+      // right updates
+      if (markerX.left != null) {
+        // right is after left, so init it
+        // left + (rightMax - left) / 2 - (offset / 2)
+        markerBounds.right.xInit =
+          markerX.left +
+          (markerBounds.right.xMax - markerX.left) / 2 -
+          xOffset / 2;
+
+        // right min is based on left
+        markerBounds.right.xMin = markerBounds.left.xMin;
+      }
+
+      if ((markerX.center ?? markerX.left) != null)
+        markerBounds.right.xMin = (markerX.center ?? markerX.left) + xOffset;
+
+      // center updates
+      if (markerX.right != null) {
+        // center is after right, so init it
+        // left + (right - left) / 2
+        markerBounds.center.xInit =
+          markerX.left + (markerX.right - markerX.left) / 2;
+        // center bounds are based on the others
+        markerBounds.center.xMin = markerX.left + xOffset;
+        markerBounds.center.xMax = markerX.right + xOffset;
+      }
+
+      return markerBounds;
+    },
+  },
+  // Hesketh, Pryor & Hesketh 1988
+  HeskethPryorHesketh1988: {
+    initialMarkerBounds: ({ width, x }) => ({
+      left: { xMin: x },
+      right: { xMax: width + x },
+      center: { xInit: width / 2, xMin: x, xMax: width + x },
+    }),
+  },
+};
+
 const MultiVisualAnalogScale = ({
   frameHeight,
   questionOptions,
@@ -51,6 +106,8 @@ const MultiVisualAnalogScale = ({
   const [markerBounds, setMarkerBounds] = useState({});
   const [markerX, setMarkerX] = useState({});
 
+  const behaviour = behaviours.SpeirsBridge2010; // TODO: Config
+
   const [outputs, setOutputs] = useState({});
   useEffect(() => {
     const dispatch = (eventName) =>
@@ -70,30 +127,28 @@ const MultiVisualAnalogScale = ({
 
   // mounting the bar / confuguring dom ref
   const [bar, setBar] = useState(null);
-  const barRef = useCallback((bar) => {
-    if (!bar) return;
-    setBar(bar);
+  const barRef = useCallback(
+    (bar) => {
+      if (!bar) return;
+      setBar(bar);
 
-    // initialise the dragmarker now the bar is available
-    const { width, x } = getBounds(bar);
-    setMarkerPositioning({
-      yAnchor: 0,
-      xOffset: x,
-    });
+      // initialise the dragmarker now the bar is available
+      const barBounds = getBounds(bar);
+      setMarkerPositioning({
+        yAnchor: 0,
+        xOffset: barBounds.x,
+      });
 
-    // On Bar mount, set static bounds
-    // and enable the left marker only
-    setMarkerBounds({
-      left: {
-        xInit: width / 2,
-        xMin: x, // this will always be true
-        xMax: width + x,
-      },
-      right: {
-        xMax: width + x, // this will always be true
-      },
-    });
-  }, []);
+      // On Bar mount, set initial bounds
+      setMarkerBounds({
+        left: {},
+        right: {},
+        center: {},
+        ...behaviour.initialMarkerBounds(barBounds),
+      });
+    },
+    [behaviour]
+  );
 
   // bar labels
   const labels = [];
@@ -111,20 +166,18 @@ const MultiVisualAnalogScale = ({
 
   // update marker bounds based on new marker x positions
   useEffect(() => {
-    // no left marker position yet, nothing to do
-    if (markerX.left == null) return;
+    // no marker positions yet, nothing to do
+    if ((markerX.left ?? markerX.right ?? markerX.center) == null) return;
 
-    const { xOffset } = markerPositioning;
-
-    // calculate relative z-index values
+    // calculate relative z-index values // TODO: maybe behaviour in future?
     const markerZ = { left: 0, right: 0, center: 0 };
     // we need to know
     // a) how many markers are within a sensible overlap range (for center priority)
     const nearPx = 20;
     if (markerX.center != null) {
       const isNear = (x1, x2) => Math.abs(x1 - x2) < nearPx;
-      let count = +isNear(markerX.left, markerX.center);
-      count += +isNear(markerX.right, markerX.center);
+      let count = +(!!markerX.left && isNear(markerX.left, markerX.center));
+      count += +(!!markerX.right && isNear(markerX.right, markerX.center));
 
       // if there's 1 marker nearby, center goes on top, so it can be moved away even at axis extremes
       // otherwise center goes at bottom, as it either makes no difference, or L/R are more important
@@ -142,40 +195,23 @@ const MultiVisualAnalogScale = ({
       markerZ.right = 10;
     }
 
-    setMarkerBounds({
-      left: {
-        baseZIndex: markerZ.left,
-        xInit: markerBounds.left.xInit,
-        xMin: markerBounds.left.xMin,
-        xMax:
-          // this one's annoying as the default (leftMax) already includes the offset
-          // but the recorded x positions dont
-          (markerX.center ?? markerX.right) != null
-            ? (markerX.center ?? markerX.right) + xOffset
-            : markerBounds.left.xMax,
-      },
-      right: {
-        baseZIndex: markerZ.right,
-        // left + (rightMax - left) / 2 - (offset / 2)
-        xInit:
-          markerX.left +
-          (markerBounds.right.xMax - markerX.left) / 2 -
-          xOffset / 2,
-        xMin: (markerX.center ?? markerX.left) + xOffset,
-        xMax: markerBounds.right.xMax,
-      },
-      center: {
-        baseZIndex: markerZ.center,
-        // left + (right - left) / 2
-        xInit:
-          markerX.right != null
-            ? markerX.left + (markerX.right - markerX.left) / 2
-            : undefined,
-        xMin: markerX.left + xOffset,
-        xMax: markerX.right + xOffset,
-      },
-    });
-  }, [markerX, markerPositioning]);
+    //update markerBounds state
+    let newMarkerBounds = { ...markerBounds };
+
+    // apply updated Z index
+    newMarkerBounds.left.baseZIndex = markerZ.left;
+    newMarkerBounds.right.baseZIndex = markerZ.right;
+    newMarkerBounds.center.baseZIndex = markerZ.center;
+
+    // apply behaviour updates
+    newMarkerBounds = behaviour.updateMarkerBounds(
+      newMarkerBounds,
+      markerX,
+      markerPositioning
+    );
+
+    setMarkerBounds(newMarkerBounds);
+  }, [markerX, markerPositioning, behaviour]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
     const value = getValueForRelativeX(
