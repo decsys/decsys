@@ -24,8 +24,36 @@ import {
   NumberDecrementStepper,
   InputGroup,
   InputRightAddon,
+  Button,
+  Stack,
 } from "@chakra-ui/react";
+import { behaviour as behaviourKeys, behaviours } from "./behaviours";
 
+const DottedLine = ({ yAnchor, x1, x2 }) => {
+  if (x1 == null || x2 == null) return null;
+
+  return (
+    <div
+      css={{
+        position: "absolute",
+        top: `${yAnchor - 25}px`,
+        left: x1,
+        width: x2 - x1,
+        borderTop: "dashed .2em gray",
+      }}
+    ></div>
+  );
+};
+
+const generateMarkerKey = (markerId) => `${markerId}-${Date.now()}`;
+
+const addToOutputsStack = (stack, value) => {
+  const newStack = [...stack];
+  if (newStack.every((x) => x !== value)) newStack.push(value);
+  return newStack;
+};
+
+// TODO: Refactor, especially undo/reset
 const MultiVisualAnalogScale = ({
   frameHeight,
   questionOptions,
@@ -38,8 +66,11 @@ const MultiVisualAnalogScale = ({
   leftMarkerOptions = {},
   rightMarkerOptions = {},
   centerMarkerOptions = {},
+  useConfidenceInput,
   confidenceTextOptions,
   confidenceText,
+  behaviour,
+  buttons,
 }) => {
   leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
   rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
@@ -49,6 +80,17 @@ const MultiVisualAnalogScale = ({
   const [markerPositioning, setMarkerPositioning] = useState({});
   const [markerBounds, setMarkerBounds] = useState({});
   const [markerX, setMarkerX] = useState({});
+
+  // enabling reset/undo
+  const [outputsStack, setOutputsStack] = useState([]);
+  const [markerKeys, setMarkerKeys] = useState({
+    left: generateMarkerKey("left"),
+    right: generateMarkerKey("center"),
+    center: generateMarkerKey("right"),
+  });
+
+  const behaviourProvider =
+    behaviours[behaviour] ?? behaviours[behaviourKeys.SpeirsBridge2010];
 
   const [outputs, setOutputs] = useState({});
   useEffect(() => {
@@ -64,35 +106,41 @@ const MultiVisualAnalogScale = ({
 
     // If the last output to be entered has a value
     // we can consider the response "completed"
-    if (outputs.confidence != null) dispatch("MvasCompleted");
-  }, [outputs]);
+    if (useConfidenceInput) {
+      if (outputs.confidence != null) dispatch("MvasCompleted");
+    } else if (
+      outputs.left != null &&
+      outputs.right != null &&
+      outputs.bestEstimate != null
+    ) {
+      dispatch("MvasCompleted");
+    }
+  }, [outputs, useConfidenceInput]);
 
   // mounting the bar / confuguring dom ref
   const [bar, setBar] = useState(null);
-  const barRef = useCallback((bar) => {
-    if (!bar) return;
-    setBar(bar);
+  const barRef = useCallback(
+    (bar) => {
+      if (!bar) return;
+      setBar(bar);
 
-    // initialise the dragmarker now the bar is available
-    const { width, x } = getBounds(bar);
-    setMarkerPositioning({
-      yAnchor: 0,
-      xOffset: x,
-    });
+      // initialise the dragmarker now the bar is available
+      const barBounds = getBounds(bar);
+      setMarkerPositioning({
+        yAnchor: 0,
+        xOffset: barBounds.x,
+      });
 
-    // On Bar mount, set static bounds
-    // and enable the left marker only
-    setMarkerBounds({
-      left: {
-        xInit: width / 2,
-        xMin: x, // this will always be true
-        xMax: width + x,
-      },
-      right: {
-        xMax: width + x, // this will always be true
-      },
-    });
-  }, []);
+      // On Bar mount, set initial bounds
+      setMarkerBounds({
+        left: {},
+        right: {},
+        center: {},
+        ...behaviourProvider.initialMarkerBounds(barBounds),
+      });
+    },
+    [behaviourProvider]
+  );
 
   // bar labels
   const labels = [];
@@ -110,20 +158,25 @@ const MultiVisualAnalogScale = ({
 
   // update marker bounds based on new marker x positions
   useEffect(() => {
-    // no left marker position yet, nothing to do
-    if (markerX.left == null) return;
+    // if we don't have bounds state for ANY markers, quit
+    if (
+      (markerBounds.left ?? markerBounds.right ?? markerBounds.center) == null
+    )
+      return;
 
-    const { xOffset } = markerPositioning;
-
-    // calculate relative z-index values
+    // calculate relative z-index values // TODO: maybe behaviour in future?
     const markerZ = { left: 0, right: 0, center: 0 };
     // we need to know
     // a) how many markers are within a sensible overlap range (for center priority)
     const nearPx = 20;
     if (markerX.center != null) {
       const isNear = (x1, x2) => Math.abs(x1 - x2) < nearPx;
-      let count = +isNear(markerX.left, markerX.center);
-      count += +isNear(markerX.right, markerX.center);
+      let count = +(
+        markerX.left != null && isNear(markerX.left, markerX.center)
+      );
+      count += +(
+        markerX.right != null && isNear(markerX.right, markerX.center)
+      );
 
       // if there's 1 marker nearby, center goes on top, so it can be moved away even at axis extremes
       // otherwise center goes at bottom, as it either makes no difference, or L/R are more important
@@ -141,40 +194,23 @@ const MultiVisualAnalogScale = ({
       markerZ.right = 10;
     }
 
-    setMarkerBounds({
-      left: {
-        baseZIndex: markerZ.left,
-        xInit: markerBounds.left.xInit,
-        xMin: markerBounds.left.xMin,
-        xMax:
-          // this one's annoying as the default (leftMax) already includes the offset
-          // but the recorded x positions dont
-          (markerX.center ?? markerX.right) != null
-            ? (markerX.center ?? markerX.right) + xOffset
-            : markerBounds.left.xMax,
-      },
-      right: {
-        baseZIndex: markerZ.right,
-        // left + (rightMax - left) / 2 - (offset / 2)
-        xInit:
-          markerX.left +
-          (markerBounds.right.xMax - markerX.left) / 2 -
-          xOffset / 2,
-        xMin: (markerX.center ?? markerX.left) + xOffset,
-        xMax: markerBounds.right.xMax,
-      },
-      center: {
-        baseZIndex: markerZ.center,
-        // left + (right - left) / 2
-        xInit:
-          markerX.right != null
-            ? markerX.left + (markerX.right - markerX.left) / 2
-            : undefined,
-        xMin: markerX.left + xOffset,
-        xMax: markerX.right + xOffset,
-      },
-    });
-  }, [markerX, markerPositioning]);
+    //update markerBounds state
+    let newMarkerBounds = { ...markerBounds };
+
+    // apply updated Z index
+    newMarkerBounds.left.baseZIndex = markerZ.left;
+    newMarkerBounds.right.baseZIndex = markerZ.right;
+    newMarkerBounds.center.baseZIndex = markerZ.center;
+
+    // apply behaviour updates
+    newMarkerBounds = behaviourProvider.updateMarkerBounds(
+      newMarkerBounds,
+      markerX,
+      markerPositioning
+    );
+
+    setMarkerBounds(newMarkerBounds);
+  }, [markerX, markerPositioning, behaviourProvider]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
     const value = getValueForRelativeX(
@@ -190,14 +226,54 @@ const MultiVisualAnalogScale = ({
       right: "right",
       center: "bestEstimate",
     }[markerId];
+    const newStack = addToOutputsStack(outputsStack, outputKey);
+    setOutputsStack(newStack);
     setOutputs({ ...outputs, [outputKey]: value });
   };
 
   const handleConfidenceChange = (value) => {
     value = Math.min(Math.max(value, 0), 100);
+    setOutputsStack(addToOutputsStack(outputsStack, "confidence"));
     setOutputs({
       ...outputs,
       confidence: value,
+    });
+  };
+
+  const handleUndo = () => {
+    const newStack = [...outputsStack];
+    let lastKey = newStack.pop();
+
+    if (lastKey) {
+      // clear the recorded output
+      setOutputs({
+        ...outputs,
+        [lastKey]: undefined,
+      });
+      if (lastKey !== "confidence") {
+        if (lastKey === "bestEstimate") lastKey = "center";
+        // if we're undoing a marker, clear its x pos
+        setMarkerX({
+          ...markerX,
+          [lastKey]: undefined,
+        });
+        setMarkerKeys({
+          ...markerKeys,
+          [lastKey]: generateMarkerKey(lastKey),
+        });
+      }
+    }
+    setOutputsStack(newStack);
+  };
+
+  const handleReset = () => {
+    setOutputsStack([]);
+    setOutputs({});
+    setMarkerX({});
+    setMarkerKeys({
+      left: generateMarkerKey("left"),
+      right: generateMarkerKey("right"),
+      center: generateMarkerKey("center"),
     });
   };
 
@@ -220,51 +296,94 @@ const MultiVisualAnalogScale = ({
           <FlexContainer>{labels}</FlexContainer>
           <FlexContainer>
             <DragMarker
+              key={markerKeys.left}
               {...markerPositioning}
               {...markerBounds.left}
               {...leftMarkerOptions}
               onDrop={handleMarkerDrop("left")}
             />
             <DragMarker
+              key={markerKeys.right}
               {...markerPositioning}
               {...markerBounds.right}
               {...rightMarkerOptions}
               onDrop={handleMarkerDrop("right")}
             />
             <DragMarker
+              key={markerKeys.center}
               {...markerPositioning}
               {...markerBounds.center}
               {...centerMarkerOptions}
               onDrop={handleMarkerDrop("center")}
             />
+            {behaviour === behaviours.HeskethPryorHesketh1988 && (
+              <>
+                <DottedLine
+                  {...markerPositioning}
+                  x1={markerX.left}
+                  x2={markerX.center}
+                />
+                <DottedLine
+                  {...markerPositioning}
+                  x1={markerX.center}
+                  x2={markerX.right}
+                />
+              </>
+            )}
           </FlexContainer>
         </ScaleBar>
 
-        <Question {...confidenceTextOptions}>{confidenceText}</Question>
-        <div
-          css={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <InputGroup marginTop={frameHeight} width="120px">
-            <NumberInput
-              isDisabled={outputs.bestEstimate == null}
-              min={0}
-              max={100}
-              onChange={handleConfidenceChange}
-              value={outputs.confidence ?? ""}
+        {useConfidenceInput && (
+          <>
+            <Question {...confidenceTextOptions}>{confidenceText}</Question>
+            <div
+              css={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <InputRightAddon children="%" />
-          </InputGroup>
-        </div>
+              <InputGroup marginTop={frameHeight} width="120px">
+                <NumberInput
+                  isDisabled={
+                    outputs.bestEstimate == null ||
+                    outputs.left == null ||
+                    outputs.right == null
+                  }
+                  min={0}
+                  max={100}
+                  onChange={handleConfidenceChange}
+                  value={outputs.confidence ?? ""}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+                <InputRightAddon children="%" />
+              </InputGroup>
+            </div>
+          </>
+        )}
+        {(buttons.undo || buttons.reset) && (
+          <Stack direction="row" justify="center" mt={5}>
+            {buttons.undo && (
+              <Button
+                size="sm"
+                disabled={!outputsStack.length}
+                onClick={handleUndo}
+              >
+                Undo last
+              </Button>
+            )}
+            {buttons.reset && (
+              <Button size="sm" onClick={handleReset}>
+                Reset all
+              </Button>
+            )}
+          </Stack>
+        )}
       </Frame>
     </>
   );
@@ -349,11 +468,23 @@ MultiVisualAnalogScale.propTypes = {
   /** Options for Center Drag Marker */
   centerMarkerOptions: dragMarkerOptionsPropTypes,
 
+  /** Whether to ask for a Confidence response */
+  useConfidenceInput: PropTypes.bool,
+
   /** Options for the Reponse Confidence text */
   confidenceTextOptions: PropTypes.shape(questionPropTypes),
 
   /** Response Confidence text to display */
   confidenceText: PropTypes.string,
+
+  /** Select a preset behaviour */
+  behaviour: PropTypes.string,
+
+  /** Display buttons */
+  buttons: PropTypes.shape({
+    undo: PropTypes.bool,
+    reset: PropTypes.bool,
+  }),
 };
 
 MultiVisualAnalogScale.defaultProps = {
@@ -372,11 +503,13 @@ MultiVisualAnalogScale.defaultProps = {
   leftMarkerOptions: { label: "L" },
   rightMarkerOptions: { label: "R" },
   centerMarkerOptions: { label: "C" },
+  useConfidenceInput: true,
   confidenceText: "How confident are you?",
   confidenceTextOptions: {
     topMargin: "80%",
     xAlign: "center",
   },
+  behaviour: behaviours.SpeirsBridge2010,
 };
 
 export { MultiVisualAnalogScale };

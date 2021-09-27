@@ -1,7 +1,9 @@
 import { action } from "@storybook/addon-actions";
+import { optionsKnob } from "@storybook/addon-knobs";
 import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
 
+// eslint-disable-next-line
 export default {
   title: "Multi Visual Analog Scale Response",
   component: ResponseItem,
@@ -66,10 +68,27 @@ const _context = {
   logResults: action("Results logged"),
 };
 
-export const Basic = () => <ResponseItem _context={_context} />;
+export const Basic = () => (
+  <ResponseItem
+    _context={_context}
+    buttons={optionsKnob("Buttons", ["None", "Undo", "Reset", "Both"], "None", {
+      display: "inline-radio",
+    })}
+    useConfidenceInput={optionsKnob("Confidence Input", ["Yes", "No"], "No", {
+      display: "inline-radio",
+    })}
+  />
+);
 
 export const NumericStats = stats(
   ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)
+);
+
+export const NumericStatsMissingConfidence = stats(
+  ResponseItem.stats(
+    { ...ResponseItem.defaultProps, ...props },
+    dummyResults.map((x) => ({ ...x, confidence: undefined }))
+  )
 );
 
 export const MetadataIcon = () => <Icon width="24px" />;

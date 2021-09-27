@@ -3,6 +3,11 @@ import { MultiVisualAnalogScale } from "@decsys/rating-scales/mvas";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 
+const behaviourKeyMap = {
+  "Speirs-Bridge 2010": "SpeirsBridge2010",
+  "Hesketh, Pryor & Hesketh 1988": "HeskethPryorHesketh1988",
+};
+
 const ResponseItem = ({
   barLeftMargin,
   barRightMargin,
@@ -34,12 +39,20 @@ const ResponseItem = ({
   rightDragMarkerLabel,
   centerDragMarkerColor,
   centerDragMarkerLabel,
+  useConfidenceInput,
   confidenceText,
   confidenceTextColor,
   confidenceTextFontFamily,
   confidenceTextFontSize,
+  behaviour,
+  buttons,
   _context: { setNextEnabled, logResults },
 }) => {
+  // Convert oneOf's to bools
+  useConfidenceInput = useConfidenceInput === "Yes";
+  const showUndoButton = ["Undo", "Both"].includes(buttons);
+  const showResetButton = ["Reset", "Both"].includes(buttons);
+
   const handleMvasCompleted = (e) => {
     logResults({ value: e.detail });
     setNextEnabled(true);
@@ -53,6 +66,10 @@ const ResponseItem = ({
 
   return (
     <MultiVisualAnalogScale
+      buttons={{
+        undo: showUndoButton,
+        reset: showResetButton,
+      }}
       barOptions={{
         minValue: barMinValue,
         maxValue: barMaxValue,
@@ -99,6 +116,7 @@ const ResponseItem = ({
         label: centerDragMarkerLabel,
         color: centerDragMarkerColor,
       }}
+      useConfidenceInput={useConfidenceInput}
       confidenceText={confidenceText}
       confidenceTextOptions={{
         topMargin: "80%",
@@ -108,6 +126,7 @@ const ResponseItem = ({
         textColor: confidenceTextColor,
       }}
       frameHeight="300px"
+      behaviour={behaviourKeyMap[behaviour]}
     />
   );
 };
