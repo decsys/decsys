@@ -244,8 +244,12 @@ const MultiVisualAnalogScale = ({
     const nearPx = 20;
     if (markerX.center != null) {
       const isNear = (x1, x2) => Math.abs(x1 - x2) < nearPx;
-      let count = +(!!markerX.left && isNear(markerX.left, markerX.center));
-      count += +(!!markerX.right && isNear(markerX.right, markerX.center));
+      let count = +(
+        markerX.left != null && isNear(markerX.left, markerX.center)
+      );
+      count += +(
+        markerX.right != null && isNear(markerX.right, markerX.center)
+      );
 
       // if there's 1 marker nearby, center goes on top, so it can be moved away even at axis extremes
       // otherwise center goes at bottom, as it either makes no difference, or L/R are more important
