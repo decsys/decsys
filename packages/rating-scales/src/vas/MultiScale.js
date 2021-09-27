@@ -371,7 +371,10 @@ const MultiVisualAnalogScale = ({
             >
               <InputGroup marginTop={frameHeight} width="120px">
                 <NumberInput
-                  isDisabled={outputs.bestEstimate == null}
+                  isDisabled={
+                    (outputs.bestEstimate ?? outputs.left ?? outputs.right) ==
+                    null
+                  }
                   min={0}
                   max={100}
                   onChange={handleConfidenceChange}
