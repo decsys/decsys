@@ -164,8 +164,6 @@ const MultiVisualAnalogScale = ({
     )
       return;
 
-    console.log(markerBounds);
-
     // calculate relative z-index values // TODO: maybe behaviour in future?
     const markerZ = { left: 0, right: 0, center: 0 };
     // we need to know
@@ -229,7 +227,6 @@ const MultiVisualAnalogScale = ({
       center: "bestEstimate",
     }[markerId];
     const newStack = addToOutputsStack(outputsStack, outputKey);
-    console.log(newStack);
     setOutputsStack(newStack);
     setOutputs({ ...outputs, [outputKey]: value });
   };
@@ -246,7 +243,6 @@ const MultiVisualAnalogScale = ({
   const handleUndo = () => {
     const newStack = [...outputsStack];
     let lastKey = newStack.pop();
-    console.log(lastKey);
 
     if (lastKey) {
       // clear the recorded output
@@ -267,7 +263,6 @@ const MultiVisualAnalogScale = ({
         });
       }
     }
-    console.log(newStack);
     setOutputsStack(newStack);
   };
 

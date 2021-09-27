@@ -19,8 +19,6 @@ export const updateMarkerBounds = (
     x: markerBounds.left.xMin, // always bar x
   });
 
-  console.log(markerBounds, initialBounds);
-
   // left updates
   if ((markerX.center ?? markerX.right) != null)
     markerBounds.left.xMax = (markerX.center ?? markerX.right) + xOffset;
@@ -54,8 +52,6 @@ export const updateMarkerBounds = (
   } else {
     markerBounds.center = initialBounds.center ?? {};
   }
-
-  console.log(markerX, markerBounds);
 
   return markerBounds;
 };
