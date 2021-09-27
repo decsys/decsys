@@ -24,103 +24,10 @@ import {
   NumberDecrementStepper,
   InputGroup,
   InputRightAddon,
+  Button,
+  Stack,
 } from "@chakra-ui/react";
-
-const behaviours = {
-  SpeirsBridge2010: "SpeirsBridge2010",
-  HeskethPryorHesketh1988: "HeskethPryorHesketh1988",
-};
-
-const behaviourDefinitions = {
-  // Speirs-Bridge 2010
-  SpeirsBridge2010: {
-    initialMarkerBounds: ({ width, x }) => ({
-      // Speirs-Bridge 2010 goes left -> right -> center, so init left only
-      left: { xInit: width / 2, xMin: x, xMax: width + x },
-      right: { xMax: width + x },
-    }),
-    updateMarkerBounds: (markerBounds, markerX, markerPositioning) => {
-      const { xOffset } = markerPositioning;
-
-      // left updates
-      if ((markerX.center ?? markerX.right) != null)
-        markerBounds.left.xMax = (markerX.center ?? markerX.right) + xOffset;
-
-      // right updates
-      if (markerX.left != null) {
-        // right is after left, so init it
-        // left + (rightMax - left) / 2 - (offset / 2)
-        markerBounds.right.xInit =
-          markerX.left +
-          (markerBounds.right.xMax - markerX.left) / 2 -
-          xOffset / 2;
-
-        // right min is based on left
-        markerBounds.right.xMin = markerBounds.left.xMin;
-      }
-
-      if ((markerX.center ?? markerX.left) != null)
-        markerBounds.right.xMin = (markerX.center ?? markerX.left) + xOffset;
-
-      // center updates
-      if (markerX.right != null) {
-        // center is after right, so init it
-        // left + (right - left) / 2
-        markerBounds.center.xInit =
-          markerX.left + (markerX.right - markerX.left) / 2;
-        // center bounds are based on the others
-        markerBounds.center.xMin = markerX.left + xOffset;
-        markerBounds.center.xMax = markerX.right + xOffset;
-      }
-
-      return markerBounds;
-    },
-  },
-  // Hesketh, Pryor & Hesketh 1988
-  HeskethPryorHesketh1988: {
-    initialMarkerBounds: ({ width, x }) => ({
-      // Hesketh, Pryor & Hesketh 1988 goes center -> left -> right, so init center only
-      left: { xMin: x },
-      right: { xMax: width + x },
-      center: { xInit: width / 2, xMin: x, xMax: width + x },
-    }),
-    updateMarkerBounds: (markerBounds, markerX, markerPositioning) => {
-      const { xOffset } = markerPositioning;
-
-      // center updates
-      // center bounds are based on the others
-      if (markerX.left != null)
-        markerBounds.center.xMin = markerX.left + xOffset;
-      if (markerX.right != null)
-        markerBounds.center.xMax = markerX.right + xOffset;
-
-      // left updates
-      if (markerX.center != null) {
-        // left is after center, so init it
-        // center / 2
-        markerBounds.left.xInit = markerX.center / 2;
-
-        // left max is based on center
-        markerBounds.left.xMax = markerX.center + xOffset;
-      }
-
-      // right updates
-      if (markerX.left != null) {
-        // right is after left, so init it
-        // left + (rightMax - left) / 2 - (offset / 2)
-        markerBounds.right.xInit =
-          markerX.center +
-          (markerBounds.right.xMax - markerX.center) / 2 -
-          xOffset / 2;
-
-        // right min is based on center
-        markerBounds.right.xMin = markerX.center + xOffset;
-      }
-
-      return markerBounds;
-    },
-  },
-};
+import { behaviour as behaviourKeys, behaviours } from "./behaviours";
 
 const DottedLine = ({ yAnchor, x1, x2 }) => {
   if (x1 == null || x2 == null) return null;
@@ -138,6 +45,15 @@ const DottedLine = ({ yAnchor, x1, x2 }) => {
   );
 };
 
+const generateMarkerKey = (markerId) => `${markerId}-${Date.now()}`;
+
+const addToOutputsStack = (stack, value) => {
+  const newStack = [...stack];
+  if (newStack.every((x) => x !== value)) newStack.push(value);
+  return newStack;
+};
+
+// TODO: Refactor, especially undo/reset
 const MultiVisualAnalogScale = ({
   frameHeight,
   questionOptions,
@@ -164,9 +80,16 @@ const MultiVisualAnalogScale = ({
   const [markerBounds, setMarkerBounds] = useState({});
   const [markerX, setMarkerX] = useState({});
 
-  const behaviourFunctions =
-    behaviourDefinitions[behaviour] ??
-    behaviourDefinitions[behaviours.SpeirsBridge2010];
+  // enabling reset/undo
+  const [outputsStack, setOutputsStack] = useState([]);
+  const [markerKeys, setMarkerKeys] = useState({
+    left: generateMarkerKey("left"),
+    right: generateMarkerKey("center"),
+    center: generateMarkerKey("right"),
+  });
+
+  const behaviourProvider =
+    behaviours[behaviour] ?? behaviours[behaviourKeys.SpeirsBridge2010];
 
   const [outputs, setOutputs] = useState({});
   useEffect(() => {
@@ -212,10 +135,10 @@ const MultiVisualAnalogScale = ({
         left: {},
         right: {},
         center: {},
-        ...behaviourFunctions.initialMarkerBounds(barBounds),
+        ...behaviourProvider.initialMarkerBounds(barBounds),
       });
     },
-    [behaviourFunctions]
+    [behaviourProvider]
   );
 
   // bar labels
@@ -234,8 +157,13 @@ const MultiVisualAnalogScale = ({
 
   // update marker bounds based on new marker x positions
   useEffect(() => {
-    // no marker positions yet, nothing to do
-    if ((markerX.left ?? markerX.right ?? markerX.center) == null) return;
+    // if we don't have bounds state for ANY markers, quit
+    if (
+      (markerBounds.left ?? markerBounds.right ?? markerBounds.center) == null
+    )
+      return;
+
+    console.log(markerBounds);
 
     // calculate relative z-index values // TODO: maybe behaviour in future?
     const markerZ = { left: 0, right: 0, center: 0 };
@@ -276,14 +204,14 @@ const MultiVisualAnalogScale = ({
     newMarkerBounds.center.baseZIndex = markerZ.center;
 
     // apply behaviour updates
-    newMarkerBounds = behaviourFunctions.updateMarkerBounds(
+    newMarkerBounds = behaviourProvider.updateMarkerBounds(
       newMarkerBounds,
       markerX,
       markerPositioning
     );
 
     setMarkerBounds(newMarkerBounds);
-  }, [markerX, markerPositioning, behaviourFunctions]);
+  }, [markerX, markerPositioning, behaviourProvider]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
     const value = getValueForRelativeX(
@@ -299,14 +227,57 @@ const MultiVisualAnalogScale = ({
       right: "right",
       center: "bestEstimate",
     }[markerId];
+    const newStack = addToOutputsStack(outputsStack, outputKey);
+    console.log(newStack);
+    setOutputsStack(newStack);
     setOutputs({ ...outputs, [outputKey]: value });
   };
 
   const handleConfidenceChange = (value) => {
     value = Math.min(Math.max(value, 0), 100);
+    setOutputsStack(addToOutputsStack(outputsStack, "confidence"));
     setOutputs({
       ...outputs,
       confidence: value,
+    });
+  };
+
+  const handleUndo = () => {
+    const newStack = [...outputsStack];
+    let lastKey = newStack.pop();
+    console.log(lastKey);
+
+    if (lastKey) {
+      // clear the recorded output
+      setOutputs({
+        ...outputs,
+        [lastKey]: undefined,
+      });
+      if (lastKey !== "confidence") {
+        if (lastKey === "bestEstimate") lastKey = "center";
+        // if we're undoing a marker, clear its x pos
+        setMarkerX({
+          ...markerX,
+          [lastKey]: undefined,
+        });
+        setMarkerKeys({
+          ...markerKeys,
+          [lastKey]: generateMarkerKey(lastKey),
+        });
+      }
+    }
+    console.log(newStack);
+    setOutputsStack(newStack);
+  };
+
+  const handleReset = () => {
+    setOutputsStack([]);
+    setOutputs({});
+    setMarkerX({});
+    setMarkerKeys({
+      left: generateMarkerKey("left"),
+      right: generateMarkerKey("right"),
+      center: generateMarkerKey("center"),
     });
   };
 
@@ -329,18 +300,21 @@ const MultiVisualAnalogScale = ({
           <FlexContainer>{labels}</FlexContainer>
           <FlexContainer>
             <DragMarker
+              key={markerKeys.left}
               {...markerPositioning}
               {...markerBounds.left}
               {...leftMarkerOptions}
               onDrop={handleMarkerDrop("left")}
             />
             <DragMarker
+              key={markerKeys.right}
               {...markerPositioning}
               {...markerBounds.right}
               {...rightMarkerOptions}
               onDrop={handleMarkerDrop("right")}
             />
             <DragMarker
+              key={markerKeys.center}
               {...markerPositioning}
               {...markerBounds.center}
               {...centerMarkerOptions}
@@ -396,6 +370,18 @@ const MultiVisualAnalogScale = ({
             </div>
           </>
         )}
+        <Stack direction="row" justify="center" mt={5}>
+          <Button
+            size="sm"
+            disabled={!outputsStack.length}
+            onClick={handleUndo}
+          >
+            Undo last
+          </Button>
+          <Button size="sm" onClick={handleReset}>
+            Reset all
+          </Button>
+        </Stack>
       </Frame>
     </>
   );
