@@ -32,6 +32,11 @@ const params = {
     "Confidence Input Text Font Size",
     "18pt"
   ),
+  buttons: ParamTypes.oneOf(
+    "Reset Buttons",
+    ["None", "Undo", "Reset", "Both"],
+    "None"
+  ),
   dragMarkerInteractColor: ParamTypes.string(
     "Drag Marker Interaction Color",
     "#58d"

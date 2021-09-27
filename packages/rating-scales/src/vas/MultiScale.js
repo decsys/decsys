@@ -70,6 +70,7 @@ const MultiVisualAnalogScale = ({
   confidenceTextOptions,
   confidenceText,
   behaviour,
+  buttons,
 }) => {
   leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
   rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
@@ -370,18 +371,24 @@ const MultiVisualAnalogScale = ({
             </div>
           </>
         )}
-        <Stack direction="row" justify="center" mt={5}>
-          <Button
-            size="sm"
-            disabled={!outputsStack.length}
-            onClick={handleUndo}
-          >
-            Undo last
-          </Button>
-          <Button size="sm" onClick={handleReset}>
-            Reset all
-          </Button>
-        </Stack>
+        {(buttons.undo || buttons.reset) && (
+          <Stack direction="row" justify="center" mt={5}>
+            {buttons.undo && (
+              <Button
+                size="sm"
+                disabled={!outputsStack.length}
+                onClick={handleUndo}
+              >
+                Undo last
+              </Button>
+            )}
+            {buttons.reset && (
+              <Button size="sm" onClick={handleReset}>
+                Reset all
+              </Button>
+            )}
+          </Stack>
+        )}
       </Frame>
     </>
   );
@@ -477,6 +484,12 @@ MultiVisualAnalogScale.propTypes = {
 
   /** Select a preset behaviour */
   behaviour: PropTypes.string,
+
+  /** Display buttons */
+  buttons: PropTypes.shape({
+    undo: PropTypes.bool,
+    reset: PropTypes.bool,
+  }),
 };
 
 MultiVisualAnalogScale.defaultProps = {

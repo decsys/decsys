@@ -1,4 +1,5 @@
 import { action } from "@storybook/addon-actions";
+import { optionsKnob } from "@storybook/addon-knobs";
 import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
 
@@ -67,10 +68,16 @@ const _context = {
   logResults: action("Results logged"),
 };
 
-export const Basic = () => <ResponseItem _context={_context} />;
-
-export const WithoutConfidence = () => (
-  <ResponseItem _context={_context} useConfidenceInput={"No"} />
+export const Basic = () => (
+  <ResponseItem
+    _context={_context}
+    buttons={optionsKnob("Buttons", ["None", "Undo", "Reset", "Both"], "None", {
+      display: "inline-radio",
+    })}
+    useConfidenceInput={optionsKnob("Confidence Input", ["Yes", "No"], "No", {
+      display: "inline-radio",
+    })}
+  />
 );
 
 export const NumericStats = stats(

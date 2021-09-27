@@ -45,9 +45,13 @@ const ResponseItem = ({
   confidenceTextFontFamily,
   confidenceTextFontSize,
   behaviour,
+  buttons,
   _context: { setNextEnabled, logResults },
 }) => {
-  useConfidenceInput = useConfidenceInput === "Yes"; // convert this oneOf to a bool
+  // Convert oneOf's to bools
+  useConfidenceInput = useConfidenceInput === "Yes";
+  const showUndoButton = ["Undo", "Both"].includes(buttons);
+  const showResetButton = ["Reset", "Both"].includes(buttons);
 
   const handleMvasCompleted = (e) => {
     logResults({ value: e.detail });
@@ -62,6 +66,10 @@ const ResponseItem = ({
 
   return (
     <MultiVisualAnalogScale
+      buttons={{
+        undo: showUndoButton,
+        reset: showResetButton,
+      }}
       barOptions={{
         minValue: barMinValue,
         maxValue: barMaxValue,
