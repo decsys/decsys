@@ -6,7 +6,6 @@ using AutoMapper;
 
 using Decsys.Constants;
 using Decsys.Data;
-using Decsys.Data.Entities;
 using Decsys.Data.Entities.LiteDb;
 using Decsys.Models.ExternalTypeSettings;
 using Decsys.Models.Results;
@@ -267,8 +266,11 @@ namespace Decsys.Repositories.LiteDb
             return new(SurveyAccessStatus.Owned);
         }
 
-        public ExternalLookup LookupExternal(string externalKey, string externalId)
-            => _external.FindOne(x => x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId);
+        public Models.ExternalLookup LookupExternal(string externalKey, string externalId)
+            => _mapper.Map<Models.ExternalLookup>(
+                _external.FindOne(
+                    x => x.ExternalIdKey == externalKey &&
+                    x.ExternalIdValue == externalId));
 
         public List<Models.SurveySummary> ListChildren(int parentId)
             => List(parentId);

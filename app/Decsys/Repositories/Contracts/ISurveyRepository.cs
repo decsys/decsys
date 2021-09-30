@@ -1,4 +1,3 @@
-using Decsys.Data.Entities;
 using Decsys.Models;
 using Decsys.Models.Results;
 using System.Collections.Generic;

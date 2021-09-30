@@ -86,6 +86,12 @@ namespace Decsys.Mapping
             CreateMap<Component, Data.Entities.Mongo.Component>()
                 .ForMember(dest => dest.Params,
                     opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
+
+            // External Lookups
+            CreateMap<Data.Entities.Mongo.ExternalLookup, ExternalLookup>()
+                .ConstructUsing((src) => new(src.ExternalIdKey, src.ExternalIdValue, src.SurveyId));
+            CreateMap<Data.Entities.LiteDb.ExternalLookup, ExternalLookup>()
+                .ConstructUsing((src) => new(src.ExternalIdKey, src.ExternalIdValue, src.SurveyId));
         }
 
         // HACK: These helpers are sometimes necessary because Expression Trees are limited

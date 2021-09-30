@@ -1,7 +1,10 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace Decsys.Data.Entities
+using System;
+
+namespace Decsys.Data.Entities.Mongo
 {
+    [BsonIgnoreExtraElements]
     public class ExternalLookup
     {
         /// <summary>
@@ -16,11 +19,6 @@ namespace Decsys.Data.Entities
             ExternalIdValue = externalId;
             SurveyId = surveyId;
         }
-
-        /// <summary>
-        /// PK
-        /// </summary>
-        public int Id { get; set; }
 
         /// <summary>
         /// The key name to get the external lookup id from
