@@ -38,13 +38,17 @@ const usePreviewSurvey = (surveyId) => {
   } = useSurvey(targetId.current);
 
   // finally, use parent settings if we have a parent
-  return { pages, settings: parent?.settings ?? settings };
+  return {
+    pages,
+    settings: parent?.settings ?? settings,
+    targetId: targetId.current,
+  };
 };
 
 const Preview = ({ id, location }) => {
   // Preview uses a Survey's Page List directly
   // it can't use progress as there is no participant
-  const { pages, settings } = usePreviewSurvey(id);
+  const { targetId, pages, settings } = usePreviewSurvey(id);
 
   // It therefore has to maintain its own progress state
   // with regards to page order, and position
@@ -77,7 +81,7 @@ const Preview = ({ id, location }) => {
   return (
     <Page layout="preview">
       <SurveyPage
-        surveyId={id}
+        surveyId={targetId}
         page={pages[page]}
         lastPage={lastPage}
         handleNextClick={handleClick}
