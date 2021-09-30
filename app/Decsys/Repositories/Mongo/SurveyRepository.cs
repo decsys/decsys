@@ -6,7 +6,6 @@ using AutoMapper;
 
 using Decsys.Config;
 using Decsys.Constants;
-using Decsys.Data.Entities;
 using Decsys.Data.Entities.Mongo;
 using Decsys.Models.ExternalTypeSettings;
 using Decsys.Models.Results;
@@ -169,9 +168,12 @@ namespace Decsys.Repositories.Mongo
             return entity.Id;
         }
 
-        public ExternalLookup LookupExternal(string externalKey, string externalId)
-            => _external.Find(x => x.ExternalIdKey == externalKey &&
-                x.ExternalIdValue == externalId).SingleOrDefault();
+        public Models.ExternalLookup LookupExternal(string externalKey, string externalId)
+            => _mapper.Map<Models.ExternalLookup>(
+                _external.Find(x =>
+                    x.ExternalIdKey == externalKey &&
+                    x.ExternalIdValue == externalId)
+                .SingleOrDefault());
 
         public void Delete(int id)
         {
