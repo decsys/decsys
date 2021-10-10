@@ -168,11 +168,11 @@ namespace Decsys.Repositories.Mongo
             return entity.Id;
         }
 
-        public Models.ExternalLookup LookupExternal(string externalKey, string externalId)
+        public Models.ExternalLookup LookupExternal(string? externalKey, string externalId)
             => _mapper.Map<Models.ExternalLookup>(
                 _external.Find(x =>
-                    x.ExternalIdKey == externalKey &&
-                    x.ExternalIdValue == externalId)
+                    (externalKey == null && x.SurveyId.ToString() == externalId) ||
+                    (x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId))
                 .SingleOrDefault());
 
         public void Delete(int id)

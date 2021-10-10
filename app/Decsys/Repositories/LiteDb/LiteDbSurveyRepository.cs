@@ -266,11 +266,11 @@ namespace Decsys.Repositories.LiteDb
             return new(SurveyAccessStatus.Owned);
         }
 
-        public Models.ExternalLookup LookupExternal(string externalKey, string externalId)
+        public Models.ExternalLookup LookupExternal(string? externalKey, string externalId)
             => _mapper.Map<Models.ExternalLookup>(
                 _external.FindOne(
-                    x => x.ExternalIdKey == externalKey &&
-                    x.ExternalIdValue == externalId));
+                    x => (externalKey == null && x.SurveyId.ToString() == externalId) ||
+                    (x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId)));
 
         public List<Models.SurveySummary> ListChildren(int parentId)
             => List(parentId);

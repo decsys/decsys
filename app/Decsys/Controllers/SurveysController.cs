@@ -80,15 +80,15 @@ namespace Decsys.Controllers
                 : Ok(survey);
         }
 
-        [HttpPost("external")]
+        [HttpPost("external/{surveyId?}")]
         [SwaggerOperation("Lookup Survey details for an External Survey, from the external params")]
         [SwaggerResponse(200, "The looked up Survey details")]
         [AllowAnonymous]
-        public ActionResult<ExternalLookupDetails> LookupExternal(JObject model)
+        public ActionResult<ExternalLookupDetails> LookupExternal([FromBody] JObject model, int? surveyId = null)
         {
             try
             {
-                return _surveys.LookupExternal(model);
+                return _surveys.LookupExternal(model, surveyId);
             }
             catch (ArgumentException e)
             {

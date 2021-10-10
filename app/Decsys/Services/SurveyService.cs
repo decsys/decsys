@@ -37,20 +37,29 @@ namespace Decsys.Services
             _componentTypeMaps = componentTypeMaps;
         }
 
-        public ExternalLookupDetails LookupExternal(JObject model)
+        public ExternalLookupDetails LookupExternal(JObject model, int? surveyId)
         {
-            // this is pretty hardcoded to Prolific right now
-            // Any extension of it would warrant a small refactor to eliminate magic strings etc.
-            const string externalKey = "STUDY_ID";
+            string? lookupKey = null;
+            string? lookupValue = null;
 
-            if (model.ContainsKey(externalKey))
+            if(surveyId.HasValue)
             {
-                var value = (string)model[externalKey];
-                var lookup = _surveys.LookupExternal(externalKey, value);
+                lookupValue = surveyId.Value.ToString();
+            } else if (model.ContainsKey("STUDY_ID"))
+            {
+                // this is pretty hardcoded to Prolific right now
+                // Any extension of it would warrant a small refactor to eliminate magic strings etc.
+                lookupKey = "STUDY_ID";
+                lookupValue = (string)model[lookupKey];
+            }
+
+            if(lookupValue is not null)
+            {
+                var lookup = _surveys.LookupExternal(lookupKey, lookupValue);
 
                 if (lookup is null)
                     throw new KeyNotFoundException(
-                        $"Couldn't find a Survey using the Id key/value: {externalKey}={value}");
+                        $"Couldn't find a Survey using the Id key/value: {lookupKey ?? "Internal Survey ID"}={lookupValue}");
 
                 ExternalLookupDetails details = new()
                 {
