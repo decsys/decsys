@@ -2,14 +2,7 @@ import { createElement } from "react";
 import { Button, Text, useDisclosure } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import { listMatchingKeys } from "services/data-structures";
-import {
-  FaTimesCircle,
-  FaRocket,
-  FaPlay,
-  FaPause,
-  FaCog,
-  FaExclamationTriangle,
-} from "react-icons/fa";
+import { FaTimesCircle, FaRocket, FaPlay, FaPause } from "react-icons/fa";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 
@@ -63,12 +56,11 @@ const buttons = {
   ),
   settings: ({ onExternalDetailsOpen }) => (
     <Button
-      leftIcon={<FaExclamationTriangle />}
       lineHeight="inherit"
       colorScheme="orange"
       onClick={onExternalDetailsOpen}
     >
-      Fix
+      Finish Setup
     </Button>
   ),
 };

@@ -18,3 +18,10 @@ export const saveSurveyConfig = async (surveyId, config) =>
     config,
     withHeaders(await authorization_BearerToken())
   );
+
+export const saveSurveySettings = async (surveyId, settings) =>
+  await axios.put(
+    `/api/surveys/${surveyId}/settings`,
+    settings,
+    withHeaders(await authorization_BearerToken())
+  );

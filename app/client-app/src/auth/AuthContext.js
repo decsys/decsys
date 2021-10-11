@@ -3,8 +3,7 @@ import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
 import * as helpers from "./helpers";
 import { UserManager, Log } from "oidc-client";
-import config from "./config";
-import { isEmpty } from "services/data-structures";
+import { config } from "./config";
 
 const { isWorkshopAdmin, isOidcAdmin } = helpers;
 

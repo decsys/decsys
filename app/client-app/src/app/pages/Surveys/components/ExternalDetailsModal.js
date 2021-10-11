@@ -20,6 +20,7 @@ import {
   getValidationSchema,
   EditableSettings,
 } from "../external-types";
+import { useSurveyCardActions } from "../contexts/SurveyCardActions";
 
 /**
  * Build the external survey link based on survey id.
@@ -141,7 +142,9 @@ const ExternalDetailsModal = ({
   hasInvalidExternalLink,
   runCount,
 }) => {
+  const { saveSettings } = useSurveyCardActions();
   const handleSubmit = async (values, actions) => {
+    await saveSettings(id, values);
     actions.setSubmitting(false);
     actions.resetForm();
     modalState.onClose();

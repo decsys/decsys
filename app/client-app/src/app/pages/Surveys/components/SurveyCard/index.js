@@ -50,7 +50,6 @@ const SurveyCard = () => {
       validateYupSchema(settings, getValidationSchema(type), true);
       return true;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }, [settings, type]);

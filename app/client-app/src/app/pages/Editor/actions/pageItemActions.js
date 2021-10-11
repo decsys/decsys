@@ -8,7 +8,7 @@ import {
 } from "api/page-items";
 import { addSurveyPageItem } from "api/pages";
 
-export default (
+export const pageItemActions = (
   surveyId,
   pageId,
   mutate,
