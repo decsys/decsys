@@ -28,23 +28,6 @@ const validationSchema = object().shape({
   type: string().oneOf(["", "prolific"]),
 });
 
-// TODO: move to docs
-const prolificInstructions = `
-1. Create your study in [Prolific]("https://prolific.co")
-1. Provide the **Access URL** (above)
-1. When asked **"How do you want to record Prolific IDs?"**
-    - Choose **"I'll use URL parameters"**
-    - You can leave the default settings
-1. When asked **"How do you want to confirm participants have completed your study?"**
-    - Choose **"I'll redirect them using a URL"**
-    - Copy the URL and enter it below for the **Completion URL**
-1. Save your Prolific Study as a draft (this will generate its Study ID)
-1. Copy *only* the Study ID from your browser address bar:
-    - \`https://app.prolific.co/studies/<your-study-id-here>\`
-    - Enter it below for the **Study ID**
-    - This will link the Prolific Study to *this* DECSYS Survey
-`;
-
 const CreateSurveyModal = ({
   name,
   type,

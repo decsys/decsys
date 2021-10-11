@@ -1,0 +1,119 @@
+---
+title: Prolific Setup Guide
+sidebar_label: Prolific.co
+---
+
+import TOCInline from "@theme/TOCInline";
+
+DECSYS supports using [Prolific](https://prolific.co) as an external participant recruitment service.
+
+This guide is for setting up DECSYS to capture responses from Prolific participants.
+
+<TOCInline toc={toc} />
+
+## 1. Create a Prolific Study
+
+Using a Researcher account, create your study in [Prolific]("https://prolific.co").
+
+![New Study](/img/prolific/new-study.png)
+
+## 2. Create a DECSYS Study or Survey
+
+:::tip
+Be sure to choose `Prolific.co` as the type!
+
+![New Decsys Survey](/img/prolific/create-decsys-survey.png)
+:::
+
+## 3. Complete Setup
+
+DECSYS and Prolific need to be linked to one another.
+
+There are three main pieces of data that allow this connection, and the steps below ensure that both DECSYS and Prolific are set up correctly.
+
+The key pieces are as follows:
+
+1. The DECSYS **Access URL**
+1. The Prolific **Participant ID**
+1. The Prolific **Completion URL**
+
+To complete the setup, you'll need to be viewing your **Prolific Study details**, and your **DECSYS Survey's "Prolific Details"**.
+
+### Prolific Study details
+
+If you've just created your study, you should already be in the details screen:
+
+![Study details](/img/prolific/study-details.png)
+
+:::tip
+If you've previously saved a study as a draft, you can pick it from the "Drafts" list to get back to the details screen above:
+
+![Drafts list](/img/prolific/drafts-list.png)
+:::
+
+### DECSYS "Prolific Details"
+
+If you've just created your DECSYS Survey, you can click "Finish Setup" to bring up the Prolific details.
+
+Or you can always choose "Prolific Details" from the **Manage Survey** menu:
+
+![DECSYS Prolific details](/img/prolific/decsys-prolific-details.png)
+
+:::caution
+If you don't see either of these options, try creating your Survey again ensuring you choose `Prolific.co` as the type.
+:::
+
+### 1. The DECSYS Access URL
+
+Copy the `Access URL` from DECSYS into the Prolific Study URL box:
+
+![DECSYS Access URL](/img/prolific/decsys-prolific-details-empty.png)
+
+![Prolific Study Link](/img/prolific/prolific-study-link.png)
+
+:::info
+Usually, it's expected that you'll be doing this on a hosted DECSYS environment, and as such the IP address warning will not be present.
+
+You can simply copy and paste the URL directly if it is a normal internet accessible address such as
+
+```
+https://my-decsys.com/survey/g
+```
+
+:::
+
+### 2. The Prolific Participant ID
+
+DECSYS expects to receive the Participant ID from Prolific as a Query String Parameter in the URL that each Participant uses.
+
+To configure this, choose the options in Prolific's Study Link section as follows:
+
+![Prolific Participant ID](/img/prolific/prolific-participant-id.png)
+
+:::info
+Note that DECSYS uses the default settings for the parameters, so no further configuration is required.
+
+The important thing is to ensure that the **Prolific ID** parameter is `PROLIFIC_PID`.
+
+DECSYS doesn't currently use **Study ID** or **Session ID**.
+:::
+
+### 3. The Prolific Completion URL
+
+In the Prolific Study Details screen, when asked **"How do you want to confirm participants have completed your study?"**, choose **"I'll redirect them using a URL"**:
+
+![Prolific Completion URL](/img/prolific/prolific-completion-url.png)
+
+Then copy the URL and enter it into the DECSYS Prolific Details screen for the **Completion URL**:
+
+![DECSYS Completion URL](/img/prolific/decsys-completion-url.png)
+
+## Ready to go!
+
+Finally, click `Save Settings`. Your DECSYS survey is now ready:
+
+![DECSYS Survey ready](/img/prolific/decsys-ready.png)
+
+You can preview it from Prolific all the way through, before launching within DECSYS, allowing you to make changes if necessary:
+
+![Prolific preview](/img/prolific/prolific-preview.png)

@@ -6,6 +6,7 @@ module.exports = {
       "users/configuration",
       "users/platforms",
     ],
+    "Integrations": ["users/integrations/prolific"],
   },
   contributing: {
     "Developer Guide": ["devs/contributing/source-code"],
