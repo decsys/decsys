@@ -1,9 +1,17 @@
 import { createElement } from "react";
-import { Button, Text } from "@chakra-ui/react";
+import { Button, Text, useDisclosure } from "@chakra-ui/react";
 import { Link } from "@reach/router";
 import { listMatchingKeys } from "services/data-structures";
-import { FaTimesCircle, FaRocket, FaPlay, FaPause } from "react-icons/fa";
+import {
+  FaTimesCircle,
+  FaRocket,
+  FaPlay,
+  FaPause,
+  FaCog,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
+import { ExternalDetailsModal } from "../ExternalDetailsModal";
 
 const buttons = {
   launch: ({ type, runCount, handleLaunch, parentSurveyId }) => {
@@ -53,32 +61,57 @@ const buttons = {
       Results
     </Button>
   ),
+  settings: ({ onExternalDetailsOpen }) => (
+    <Button
+      leftIcon={<FaExclamationTriangle />}
+      lineHeight="inherit"
+      colorScheme="orange"
+      onClick={onExternalDetailsOpen}
+    >
+      Fix
+    </Button>
+  ),
 };
 
-export const getActionButtons = ({
-  activeInstanceId,
-  runCount,
-  parentSurveyId,
-  isStudy,
-}) => ({
+export const getActionButtons = (
+  { activeInstanceId, runCount, parentSurveyId, isStudy },
+  areSettingsValid
+) => ({
   close: !parentSurveyId && !!activeInstanceId,
   dashboard: !isStudy && !!activeInstanceId,
-  launch: !parentSurveyId && !activeInstanceId,
+  launch: !parentSurveyId && !activeInstanceId && areSettingsValid,
   results: !isStudy && runCount > 0,
+  settings: !parentSurveyId && !areSettingsValid,
 });
 
 const ActionButtons = (p) => {
   const { launch, close } = useSurveyCardActions();
   const handleLaunch = () => launch(p.id);
   const handleClose = () => close(p.id, p.activeInstanceId);
+  const externalDetailsModal = useDisclosure();
 
-  return listMatchingKeys(p.actionButtons).map((key) =>
-    createElement(buttons[key], {
-      ...p,
-      handleLaunch,
-      handleClose,
-      key,
-    })
+  return (
+    <>
+      {listMatchingKeys(p.actionButtons).map((key) =>
+        createElement(buttons[key], {
+          ...p,
+          handleLaunch,
+          handleClose,
+          onExternalDetailsOpen: externalDetailsModal.onOpen,
+          key,
+        })
+      )}
+
+      <ExternalDetailsModal
+        id={p.id}
+        name={p.name}
+        type={p.type}
+        settings={p.settings}
+        runCount={p.runCount}
+        hasInvalidExternalLink={p.hasInvalidExternalLink}
+        modalState={externalDetailsModal}
+      />
+    </>
   );
 };
 
