@@ -3,7 +3,7 @@ import { Page, EmptyState } from "components/core";
 import { Alert, AlertIcon, Stack } from "@chakra-ui/react";
 import { FaCheck } from "react-icons/fa";
 import { useParticipantProgress } from "api/participant-event-logs";
-import ErrorBoundary from "components/ErrorBoundary";
+import { ErrorBoundary } from "components/ErrorBoundary";
 import SurveyNotFoundError from "./SurveyNotFoundError";
 import { useLocalInstances } from "app/contexts/LocalInstances";
 import { navigate } from "@reach/router";

@@ -7,11 +7,11 @@ import {
   requestParticipantProgress,
   useParticipantProgress,
 } from "api/participant-event-logs";
-import Error from "./Error";
+import { Error } from "./Error";
 import { useLocalInstances } from "app/contexts/LocalInstances";
 import { logParticipantEvent } from "api/participant-event-logs";
 import ParticipantIdEntry from "./ParticipantIdEntry";
-import ErrorBoundary from "components/ErrorBoundary";
+import {ErrorBoundary} from "components/ErrorBoundary";
 import SurveyNotFoundError, { errorCallToAction } from "./SurveyNotFoundError";
 import { useQueryString } from "hooks/useQueryString";
 import Preview from "./Preview";

@@ -1,11 +1,12 @@
 import { Suspense, StrictMode } from "react";
 import ReactDOM from "react-dom";
-import ErrorBoundary from "components/ErrorBoundary";
-import Error from "app/pages/Error";
+import { NakedErrorBoundary } from "components/ErrorBoundary";
+import { ErrorBody } from "app/pages/Error";
 import App from "app";
 import LoadingIndicator from "components/core/LoadingIndicator";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "themes";
+import { Router } from "@reach/router";
 
 const root = document.getElementById("root");
 ReactDOM.render(<LoadingIndicator />, root);
@@ -25,11 +26,16 @@ document.addEventListener("__DECSYS__ComponentsLoaded", () =>
         portalZIndex={theme.zIndices.portal}
         theme={theme}
       >
-        <ErrorBoundary fallback={<Error message="Something went wrong!" />}>
+        <NakedErrorBoundary
+          fallback={<ErrorBody message="Something went wrong!" />}
+        >
           <Suspense fallback={<LoadingIndicator />}>
-            <App />
+            {/* This Router is used hilariously to initialise LocationProvider earlier than it would otherwise */}
+            <Router>
+              <App default />
+            </Router>
           </Suspense>
-        </ErrorBoundary>
+        </NakedErrorBoundary>
       </ChakraProvider>
     </StrictMode>,
     root

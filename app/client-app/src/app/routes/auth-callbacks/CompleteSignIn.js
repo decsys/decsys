@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { IfFulfilled, IfRejected, useAsync } from "react-async";
 import { Results } from "auth/constants";
-import ErrorPage from "app/pages/Error";
+import { Error } from "app/pages/Error";
 import { getReturnUrl } from "auth/helpers";
 import { users } from "auth/AuthContext";
 
@@ -44,7 +44,7 @@ const CompleteSignIn = () => {
               window.location.replace(getReturnUrl(state));
               break;
             case Results.Fail:
-              return <ErrorPage message={message} />;
+              return <Error message={message} />;
             default:
               throw new Error(`Invalid Auth Result: ${status}`);
           }
@@ -53,7 +53,7 @@ const CompleteSignIn = () => {
       </IfFulfilled>
       <IfRejected state={state}>
         {(error) => (
-          <ErrorPage message="An authorization error occurred" error={error} />
+          <Error message="An authorization error occurred" error={error} />
         )}
       </IfRejected>
     </>

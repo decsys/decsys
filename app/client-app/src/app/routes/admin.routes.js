@@ -1,5 +1,5 @@
 import { Router } from "@reach/router";
-import Error from "app/pages/Error";
+import { Error } from "app/pages/Error";
 import Surveys from "app/pages/Surveys";
 import Editor from "app/pages/Editor";
 import Preview from "app/pages/Preview";

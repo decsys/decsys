@@ -8,7 +8,7 @@ import validationSchema from "./validation";
 import { navigate } from "@reach/router";
 import { useQueryStringViewModel } from "hooks/useQueryString";
 import { useServerConfig } from "api/config";
-import Error from "app/pages/Error";
+import { Error } from "app/pages/Error";
 import ErrorsAlert from "components/core/ErrorsAlert";
 import { ApprovalRequired, EmailConfirmationRequired } from "./alerts";
 import {
@@ -36,13 +36,8 @@ const Feedback = ({ errors, accountState, Email }) => {
 };
 
 const Register = () => {
-  const {
-    errors,
-    Email,
-    EmailConfirm,
-    Fullname,
-    accountState,
-  } = useQueryStringViewModel();
+  const { errors, Email, EmailConfirm, Fullname, accountState } =
+    useQueryStringViewModel();
   const { allowRegistration, accountApprovalRequired } = useServerConfig();
 
   if (!allowRegistration)

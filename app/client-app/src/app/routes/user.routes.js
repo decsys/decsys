@@ -3,7 +3,7 @@ import Register from "app/pages/user/Register";
 import UserFeedback from "app/pages/user/Feedback";
 import { useServerConfig } from "api/config";
 import ForgotPassword from "app/pages/user/ForgotPassword";
-import Error from "app/pages/Error";
+import { Error } from "app/pages/Error";
 import ResetPassword from "app/pages/user/ResetPassword";
 import Profile from "app/pages/user/Profile";
 import { useAuth } from "auth/AuthContext";

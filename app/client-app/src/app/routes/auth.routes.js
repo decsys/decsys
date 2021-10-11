@@ -2,7 +2,7 @@ import { Router } from "@reach/router";
 import { Paths } from "auth/constants";
 import Login from "app/pages/Login/Login";
 import CompleteSignIn from "./auth-callbacks/CompleteSignIn";
-import Error from "app/pages/Error";
+import { Error } from "app/pages/Error";
 
 const Auth = () => (
   <Router>

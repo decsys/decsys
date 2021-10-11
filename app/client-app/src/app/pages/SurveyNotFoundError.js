@@ -1,5 +1,5 @@
 import { navigate } from "@reach/router";
-import Error from "./Error";
+import { Error } from "./Error";
 
 export const errorCallToAction = {
   label: "Try a different ID",
