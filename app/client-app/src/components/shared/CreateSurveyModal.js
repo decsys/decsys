@@ -98,6 +98,7 @@ an ip address where your machine can access DECSYS, such as
   );
 };
 
+// TODO: move to docs
 const prolificInstructions = `
 1. Create your study in [Prolific]("https://prolific.co")
 1. Provide the **Access URL** (above)

@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import AppBar from "./AppBar";
 import {
   Icon,
@@ -24,11 +23,11 @@ import {
   FaUserPlus,
   FaUserCog,
 } from "react-icons/fa";
-import { Link } from "@reach/router";
+import { Link, useLocation } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
 import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
-import Spinner from "components/core/Spinner";
+import { LoadingIndicator } from "components/core";
 
 const HelpMenu = () => (
   <Menu>
@@ -61,13 +60,18 @@ const HelpMenu = () => (
 
 const UserMenu = () => {
   const { allowRegistration } = useServerConfig();
+  const location = useLocation();
   const { user, login, logout, isSuperUser } = useAuth();
+
+  const handleLoginClick = () => {
+    login({ returnUrl: location.pathname === "/survey" ? "/" : undefined });
+  };
 
   let menuItems = null;
   if (!user) {
     menuItems = (
       <>
-        <MenuItem onClick={login}>
+        <MenuItem closeOnSelect onClick={handleLoginClick}>
           <Stack direction="row" align="center" spacing={1}>
             <Icon as={FaSignInAlt} />
             <Text>Login</Text>
@@ -95,7 +99,7 @@ const UserMenu = () => {
               </Stack>
             </MenuItem>
           )}
-          <MenuItem onClick={logout}>
+          <MenuItem closeOnSelect onClick={logout}>
             <Stack direction="row" align="center" spacing={1}>
               <Icon as={FaSignOutAlt} />
               <Text>Logout</Text>
@@ -106,7 +110,13 @@ const UserMenu = () => {
     );
   }
 
-  return (
+  return user === undefined ? (
+    <LoadingIndicator
+      textProps={{ color: "white" }}
+      verb="Checking"
+      noun="user"
+    />
+  ) : (
     <Menu>
       <DarkMode>
         <MenuButton
@@ -128,17 +138,20 @@ const DefaultAppBar = ({ brandLink }) => {
     <AppBar brand="DECSYS" brandLink={brandLink}>
       {isAdmin && (
         <DarkMode>
+          <Button as={Link} variant="ghost" to="/survey">
+            Take a Survey
+          </Button>
+        </DarkMode>
+      )}
+      {isAdmin && (
+        <DarkMode>
           <Button as={Link} variant="ghost" to="/admin">
             Admin
           </Button>
         </DarkMode>
       )}
 
-      {mode !== WORKSHOP && (
-        <Suspense fallback={<Spinner />}>
-          <UserMenu />
-        </Suspense>
-      )}
+      {mode !== WORKSHOP && <UserMenu />}
 
       <HelpMenu />
     </AppBar>

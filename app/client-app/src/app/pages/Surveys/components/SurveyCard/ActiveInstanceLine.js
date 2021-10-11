@@ -69,6 +69,7 @@ const ActiveInstanceLine = ({
   friendlyId,
   settings,
   hasInvalidExternalLink,
+  runCount,
 }) => {
   const instanceValidIdModal = useDisclosure();
   const configModal = useDisclosure();
@@ -133,6 +134,7 @@ const ActiveInstanceLine = ({
         name={name}
         settings={settings}
         type={type}
+        runCount={runCount}
         hasInvalidExternalLink={hasInvalidExternalLink}
         modalState={configModal}
       />

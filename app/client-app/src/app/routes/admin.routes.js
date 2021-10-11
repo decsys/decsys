@@ -12,8 +12,8 @@ const Admin = () => {
   const { isAdmin, user, login } = useAuth();
 
   if (!user) {
-    login();
-    return <LoadingIndicator />;
+    if (user === null) login();
+    return <LoadingIndicator verb="Checking" noun="user" />;
   }
 
   if (!isAdmin) return <Error message="403: Forbidden" default />;

@@ -14,8 +14,8 @@ import { LoadingIndicator } from "components/core";
 const Protected = ({ as: SuccessRoute, ...p }) => {
   const { user, login, isSuperUser } = useAuth();
   if (!user) {
-    login();
-    return <LoadingIndicator {...p} />;
+    if (user === null) login();
+    return <LoadingIndicator verb="Checking" noun="user" />;
   }
 
   // NO `user` routes at this time are available to the SuperUser!

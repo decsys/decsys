@@ -4,11 +4,12 @@ import { WORKSHOP } from "constants/app-modes";
 import * as helpers from "./helpers";
 import { UserManager, Log } from "oidc-client";
 import config from "./config";
+import { isEmpty } from "services/data-structures";
 
 const { isWorkshopAdmin, isOidcAdmin } = helpers;
 
 //#region User Manager singleton init
-// Log.logger = console; // TODO: useful for debugging ;)
+Log.logger = console; // TODO: useful for debugging ;)
 export const users = new UserManager(config.oidc);
 //#endregion
 
@@ -55,7 +56,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }) => {
   const { mode } = useServerConfig();
-  const [user, setUser] = useState(mode === WORKSHOP ? {} : null);
+  const [user, setUser] = useState(mode === WORKSHOP ? {} : undefined);
   const [isAdmin, setIsAdmin] = useState(
     mode === WORKSHOP ? isWorkshopAdmin : false
   );
@@ -82,8 +83,11 @@ export const AuthContextProvider = ({ children }) => {
       try {
         await users.signinSilent({ useReplaceToNavigate: true }); // this works but is slow
       } catch (e) {
+        setUser(null);
         // login_required is fine, we won't go on to login until a user requests it
-        if (e.error !== "login_required") throw e;
+        if (e.error !== "login_required") {
+          throw e;
+        }
       }
     })();
 
