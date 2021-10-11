@@ -47,7 +47,7 @@ namespace Decsys.Services
                 lookupValue = surveyId.Value.ToString();
             } else if (model.ContainsKey("STUDY_ID"))
             {
-                // this is pretty hardcoded to Prolific right now
+                // this is pretty hardcoded to the Legacy Prolific access right now
                 // Any extension of it would warrant a small refactor to eliminate magic strings etc.
                 lookupKey = "STUDY_ID";
                 lookupValue = (string)model[lookupKey];
@@ -282,7 +282,18 @@ namespace Decsys.Services
             survey.UseParticipantIdentifiers = config.UseParticipantIdentifiers;
             survey.ValidIdentifiers = config.ValidIdentifiers;
             _surveys.Update(survey);
+        }
 
+        /// <summary>
+        /// Update a Survey's Type Settings
+        /// </summary>
+        /// <param name="id">ID of the Survey to update</param>
+        /// <param name="settings">New settings</param>
+        public void EditSettings(int id, JObject settings)
+        {
+            var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
+            survey.Settings = settings;
+            _surveys.Update(survey);
         }
     }
 }

@@ -108,12 +108,21 @@ namespace Decsys.Repositories.Mongo
 
         private void HandleSurveyTypeCreation(Models.CreateSurveyModel model, ref Survey survey)
         {
+            survey.Type = model.Type;
+
+            // always map the model to get settings across
+            _mapper.Map(model, survey);
+
             // Handle type settings
             switch (model.Type)
             {
                 case SurveyTypes.Prolific:
-                    survey.Type = model.Type;
                     HandleProlificSurveyCreation(model, ref survey);
+                    break;
+                default:
+                    if (model.Type is not null)
+                        throw new ArgumentException(
+                            $"Uknown Survey Type: {model.Type}", nameof(model));
                     break;
             }
         }
@@ -125,18 +134,12 @@ namespace Decsys.Repositories.Mongo
             survey.UseParticipantIdentifiers = true;
             survey.ValidIdentifiers = new();
 
-            // TODO: what happens if settings is structured wrong?
-            var settings = model.Settings.ToObject<ProlificSettings>();
-            const string externalKey = "STUDY_ID";
-
-            // add the type specific settings
-            _mapper.Map(model, survey);
+            var surveyId = survey.Id; // lambdas don't like using ref params
 
             // add / amend a lookup record for this survey type
             _external.ReplaceOne(
-                x => x.ExternalIdKey == externalKey &&
-                    x.ExternalIdValue == settings.StudyId,
-                new(externalKey, settings.StudyId, survey.Id)
+                x => x.SurveyId == surveyId,
+                new(string.Empty, string.Empty, survey.Id)
                 {
                     ParticipantIdKey = "PROLIFIC_PID"
                 },
@@ -169,11 +172,31 @@ namespace Decsys.Repositories.Mongo
         }
 
         public Models.ExternalLookup LookupExternal(string? externalKey, string externalId)
-            => _mapper.Map<Models.ExternalLookup>(
-                _external.Find(x =>
-                    (externalKey == null && x.SurveyId.ToString() == externalId) ||
-                    (x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId))
-                .SingleOrDefault());
+        {
+            if (externalKey is null)
+            {
+                if (int.TryParse(externalId, out var surveyId))
+                {
+                    return _mapper.Map<Models.ExternalLookup>(
+                    _external.Find(x => x.SurveyId == surveyId)
+                    .SingleOrDefault());
+                }
+                else
+                {
+                    throw new ArgumentException(
+                        $"If no {nameof(externalKey)} is specified, {nameof(externalId)} must be a valid integer",
+                        nameof(externalId));
+                }
+            }
+            else
+            {
+                return _mapper.Map<Models.ExternalLookup>(
+                    _external.Find(x =>
+                        x.ExternalIdKey == externalKey &&
+                        x.ExternalIdValue == externalId)
+                    .SingleOrDefault());
+            }
+        }
 
         public void Delete(int id)
         {

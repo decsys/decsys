@@ -171,6 +171,21 @@ namespace Decsys.Controllers
             catch (KeyNotFoundException) { return NotFound(); }
         }
 
+        [HttpPut("{id}/settings")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [SwaggerOperation("Replace Type Settings for the Survey with the provided ID.")]
+        [SwaggerResponse(204, "The Survey Type Settings were updated successfully.")]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        public IActionResult Configure(int id, JObject settings)
+        {
+            try
+            {
+                _surveys.EditSettings(id, settings);
+                return NoContent();
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+        }
+
         [HttpPut("{id}/config")]
         [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Configure the Survey with the provided ID.")]

@@ -11,13 +11,13 @@
 
         /// <summary>
         /// The key name to get the external lookup id from
-        /// e.g. for Prolific: `STUDY_ID`
+        /// e.g. for Legacy Prolific: `STUDY_ID`
         /// </summary>
         public string ExternalIdKey { get; set; } = string.Empty;
 
         /// <summary>
         /// The value of the external lookup id for this record
-        /// e.g. for Prolific: `STUDY_ID={ExternalIdValue}`
+        /// e.g. for Legacy Prolific: `STUDY_ID={ExternalIdValue}`
         /// </summary>
         public string ExternalIdValue { get; set; } = string.Empty;
 
