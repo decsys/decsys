@@ -53,6 +53,9 @@ const addToOutputsStack = (stack, value) => {
   return newStack;
 };
 
+const getBehaviourProvider = (behaviour) =>
+  behaviours[behaviour] ?? behaviours[behaviourKeys.SpeirsBridge2010];
+
 // TODO: Refactor, especially undo/reset
 const MultiVisualAnalogScale = ({
   frameHeight,
@@ -88,9 +91,6 @@ const MultiVisualAnalogScale = ({
     right: generateMarkerKey("center"),
     center: generateMarkerKey("right"),
   });
-
-  const behaviourProvider =
-    behaviours[behaviour] ?? behaviours[behaviourKeys.SpeirsBridge2010];
 
   const [outputs, setOutputs] = useState({});
   useEffect(() => {
@@ -136,10 +136,10 @@ const MultiVisualAnalogScale = ({
         left: {},
         right: {},
         center: {},
-        ...behaviourProvider.initialMarkerBounds(barBounds),
+        ...getBehaviourProvider(behaviour).initialMarkerBounds(barBounds),
       });
     },
-    [behaviourProvider]
+    [behaviour]
   );
 
   // bar labels
@@ -158,6 +158,8 @@ const MultiVisualAnalogScale = ({
 
   // update marker bounds based on new marker x positions
   useEffect(() => {
+    if(!bar) return;
+    const { width } = getBounds(bar);
     // if we don't have bounds state for ANY markers, quit
     if (
       (markerBounds.left ?? markerBounds.right ?? markerBounds.center) == null
@@ -186,7 +188,7 @@ const MultiVisualAnalogScale = ({
     // we do this irrespective of closeness of markers
     // since it makes no difference at distance,
     // but is correct if any are close
-    if (markerX.left < markerBounds.left.xInit) {
+    if (markerX.left < width / 2) {
       markerZ.left = 10;
       markerZ.right = 20;
     } else {
@@ -203,14 +205,14 @@ const MultiVisualAnalogScale = ({
     newMarkerBounds.center.baseZIndex = markerZ.center;
 
     // apply behaviour updates
-    newMarkerBounds = behaviourProvider.updateMarkerBounds(
+    newMarkerBounds = getBehaviourProvider(behaviour).updateMarkerBounds(
       newMarkerBounds,
       markerX,
       markerPositioning
     );
 
     setMarkerBounds(newMarkerBounds);
-  }, [markerX, markerPositioning, behaviourProvider]);
+  }, [markerX, markerPositioning, behaviour, bar]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
     const value = getValueForRelativeX(
@@ -316,7 +318,7 @@ const MultiVisualAnalogScale = ({
               {...centerMarkerOptions}
               onDrop={handleMarkerDrop("center")}
             />
-            {behaviour === behaviours.HeskethPryorHesketh1988 && (
+            {behaviour === behaviourKeys.HeskethPryorHesketh1988 && (
               <>
                 <DottedLine
                   {...markerPositioning}

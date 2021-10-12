@@ -14,10 +14,10 @@ export const updateMarkerBounds = (
   const { xOffset } = markerPositioning;
 
   // in case we need to reset any
-  const initialBounds = initialMarkerBounds(
-    markerBounds.right.xMax - markerBounds.left.xMin, // always bar width
-    markerBounds.left.xMin // always bar x
-  );
+  const initialBounds = initialMarkerBounds({
+    width: markerBounds.right.xMax - markerBounds.left.xMin, // always bar width
+    x: markerBounds.left.xMin, // always bar x
+  });
 
   // center updates
   // center bounds are based on the others

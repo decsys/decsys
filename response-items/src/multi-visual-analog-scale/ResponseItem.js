@@ -3,7 +3,7 @@ import { MultiVisualAnalogScale } from "@decsys/rating-scales/mvas";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 
-const behaviourKeyMap = {
+export const behaviourKeyMap = {
   "Speirs-Bridge 2010": "SpeirsBridge2010",
   "Hesketh, Pryor & Hesketh 1988": "HeskethPryorHesketh1988",
 };

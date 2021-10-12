@@ -1,6 +1,6 @@
 import { action } from "@storybook/addon-actions";
 import { optionsKnob } from "@storybook/addon-knobs";
-import ResponseItem from "./ResponseItem";
+import ResponseItem, { behaviourKeyMap } from "./ResponseItem";
 import Icon from "./Icon";
 
 // eslint-disable-next-line
@@ -68,7 +68,11 @@ const _context = {
   logResults: action("Results logged"),
 };
 
-export const Basic = () => (
+const behaviours = Object.keys(behaviourKeyMap).map((x) =>
+  x.replace("&amp;", "&")
+);
+
+export const SpiersBridge = () => (
   <ResponseItem
     _context={_context}
     buttons={optionsKnob("Buttons", ["None", "Undo", "Reset", "Both"], "None", {
@@ -77,6 +81,20 @@ export const Basic = () => (
     useConfidenceInput={optionsKnob("Confidence Input", ["Yes", "No"], "No", {
       display: "inline-radio",
     })}
+    behaviour={behaviours[0]}
+  />
+);
+
+export const HeskethPryorHesketh = () => (
+  <ResponseItem
+    _context={_context}
+    buttons={optionsKnob("Buttons", ["None", "Undo", "Reset", "Both"], "None", {
+      display: "inline-radio",
+    })}
+    useConfidenceInput={optionsKnob("Confidence Input", ["Yes", "No"], "No", {
+      display: "inline-radio",
+    })}
+    behaviour={behaviours[1]}
   />
 );
 

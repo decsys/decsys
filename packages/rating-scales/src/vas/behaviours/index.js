@@ -10,6 +10,7 @@ export const behaviour = {
 };
 
 export const behaviours = {
-  [behaviour.SpeirsBridge2010]: SpeirsBridge2010,
-  [behaviour.HeskethPryorHesketh1988]: HeskethPryorHesketh1988,
+  SpeirsBridge2010: SpeirsBridge2010,
+  HeskethPryorHesketh1988: HeskethPryorHesketh1988,
 };
+
