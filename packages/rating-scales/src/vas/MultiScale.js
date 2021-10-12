@@ -121,6 +121,7 @@ const MultiVisualAnalogScale = ({
   const [bar, setBar] = useState(null);
   const barRef = useCallback(
     (bar) => {
+      console.log(behaviour, bar);
       if (!bar) return;
       setBar(bar);
 
@@ -138,6 +139,7 @@ const MultiVisualAnalogScale = ({
         center: {},
         ...getBehaviourProvider(behaviour).initialMarkerBounds(barBounds),
       });
+      handleReset();
     },
     [behaviour]
   );
@@ -212,7 +214,7 @@ const MultiVisualAnalogScale = ({
     );
 
     setMarkerBounds(newMarkerBounds);
-  }, [markerX, markerPositioning, behaviour, bar]);
+  }, [markerX, markerPositioning, behaviour]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
     const value = getValueForRelativeX(

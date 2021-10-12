@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useRef, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 // https://github.com/FortAwesome/Font-Awesome/blob/0d1f27efb836eb2ab994ba37221849ed64a73e5c/svgs/solid/map-marker.svg
 // FontAwesome Solid
@@ -25,7 +25,6 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0, onDrop) => {
   const [isActivated, setIsActivated] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  const ref = useRef();
   // we need this because we're adding event handlers based on dom ref availability
   const markerRef = useCallback(
     (marker) => {
@@ -62,8 +61,6 @@ const useDragMarker = (xMin, xMax, yAnchor, xOffset = 0, onDrop) => {
         marker.style.top = `${yAnchor}px`;
         onDrop(barRelativeX);
       };
-
-      ref.current = marker;
     },
     [xMax, xMin, yAnchor, xOffset, onDrop]
   );
@@ -133,7 +130,7 @@ const DragMarker = ({
     width: 0,
     height: 0,
   };
-  if (!isActivated) containerStyles.left = `${xInit}px`;
+  containerStyles.left = `${xInit}px`;
   const markerStyles = getMarkerStyles({
     isActivated,
     isDragging,

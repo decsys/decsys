@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { MultiVisualAnalogScale } from "./MultiScale";
 import { action } from "@storybook/addon-actions";
+import { optionsKnob } from "@storybook/addon-knobs";
+import { behaviour } from "./behaviours";
 
 // eslint-disable-next-line
 export default {
@@ -24,7 +26,19 @@ const EventHandler = ({ onEvent, children }) => {
   return children;
 };
 
-export const Basic = () => <MultiVisualAnalogScale />;
+const behaviours = Object.keys(behaviour);
+
+export const Basic = () => (
+  <MultiVisualAnalogScale
+    behaviour={optionsKnob("Behaviour", behaviours, behaviours[0], {
+      display: "inline-radio",
+    })}
+  />
+);
+
+export const HeskethPryorHesketh = () => (
+  <MultiVisualAnalogScale behaviour={behaviour.HeskethPryorHesketh1988} />
+);
 
 export const Sample = () => (
   <MultiVisualAnalogScale
