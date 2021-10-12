@@ -1,5 +1,4 @@
 import React from "react"; // eslint-disable-line no-unused-vars
-import PageLayout from "../components/PageLayout";
 import {
   Stack,
   Flex,
@@ -10,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import LinkButton from "../components/LinkButton";
 import { favicon } from "../../config/default.config";
+import Layout from "../theme/Layout";
 
 const Banner = () => {
   const { colorMode } = useColorMode();
@@ -56,7 +56,7 @@ const ActionCard = ({ to, buttonText }) => {
 };
 
 const Home = () => (
-  <PageLayout
+  <Layout
     title="Home"
     description="Description will go into a meta tag in <head />"
   >
@@ -81,7 +81,7 @@ const Home = () => (
         />
       </Stack>
     </Stack>
-  </PageLayout>
+  </Layout>
 );
 
 export default Home;

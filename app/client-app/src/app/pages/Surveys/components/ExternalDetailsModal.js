@@ -58,6 +58,24 @@ an ip address where your machine can access DECSYS, such as
   ) : null;
 };
 
+const SetupGuideLinkAlert = ({ type }) => {
+  return !!type ? (
+    <Alert status="info">
+      <AlertIcon />
+
+      <Text as="div" className="markdown-body">
+        <ReactMarkdown
+          source={`For assistance, view the
+**${capitalise(
+  type
+)}** [Setup Guide](/docs/users/integrations/${type})
+  `}
+        />
+      </Text>
+    </Alert>
+  ) : null;
+};
+
 const InvalidExternalLinkAlert = () => (
   <Alert status="warning">
     <AlertIcon />
@@ -111,6 +129,7 @@ const ModalBody = ({
     >
       <Stack w="100%" spacing={2} mb={3}>
         <Stack w="100%" pl={2}>
+          <SetupGuideLinkAlert type={type} />
           <CopyableTextPanel label="Survey Name" value={name} />
 
           <IpAddressWarning url={externalSurveyUrl} />

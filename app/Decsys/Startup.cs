@@ -308,6 +308,7 @@ namespace Decsys
 
             app.UseVersion(GetVersionInfo(version));
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             // components' static files
@@ -331,11 +332,7 @@ namespace Decsys
                 });
             } // else we map an endpoint later
 
-
             app.UseSpaStaticFiles();
-
-            app.UseRewriter(new RewriteOptions()
-                .AddRedirect("docs", "docs/index.html"));
 
             app.UseSwagger();
 

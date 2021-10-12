@@ -17,6 +17,8 @@ import FormikInput from "components/core/FormikInput";
 import StandardModal from "components/core/StandardModal";
 import { Field, Form, Formik } from "formik";
 import "github-markdown-css";
+import ReactMarkdown from "react-markdown";
+import { capitalise } from "services/strings";
 import { object, string } from "yup";
 
 // There are a number of ways to create a survey: Blank, Import, Duplicate etc.
@@ -27,6 +29,29 @@ import { object, string } from "yup";
 const validationSchema = object().shape({
   type: string().oneOf(["", "prolific"]),
 });
+
+const SetupGuideLinkAlert = ({ type }) => {
+  return !!type ? (
+    <Alert status="info">
+      <AlertIcon />
+
+      <Stack>
+        <Text>
+          {capitalise(type)} Surveys require some further setup after creation.
+        </Text>
+        <Text as="div" className="markdown-body">
+          <ReactMarkdown
+            source={`For assistance, view the
+          **${capitalise(
+            type
+          )}** [Setup Guide](/docs/users/integrations/${type})
+          `}
+          />
+        </Text>
+      </Stack>
+    </Alert>
+  ) : null;
+};
 
 const CreateSurveyModal = ({
   name,
@@ -90,7 +115,7 @@ const CreateSurveyModal = ({
       onSubmit={handleSubmit}
       validationSchema={validationSchema}
     >
-      {({ isSubmitting, submitForm, resetForm }) => (
+      {({ isSubmitting, values, submitForm, resetForm }) => (
         <StandardModal
           size="2xl"
           {...modalState}
@@ -176,6 +201,7 @@ const CreateSurveyModal = ({
                   );
                 }}
               </Field>
+              <SetupGuideLinkAlert type={values.type} />
             </Stack>
           </Form>
         </StandardModal>
