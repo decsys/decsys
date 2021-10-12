@@ -19,33 +19,53 @@ import { decode } from "services/instance-id";
 import { getInstanceResultsSummary } from "api/survey-instances";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 
-const ExternalTypeInfo = ({ type, settings, hasInvalidExternalLink }) => {
+const SurveyLinkInfo = ({ friendlyId }) => (
+  <>
+    <Text fontWeight="bold">Share Link:</Text>
+    <Link color="blue.500" as={RouterLink} to={`/survey/${friendlyId}`}>
+      /survey/{friendlyId}
+    </Link>
+
+    <Stack display={{ base: "none", xl: "inherit" }}>
+      <Alert variant="left-accent" status="info" py={1}>
+        <AlertIcon />
+        Remember to include your DECSYS server's address
+      </Alert>
+    </Stack>
+  </>
+);
+
+const ExternalTypeInfo = ({ type, hasInvalidExternalLink }) => {
   switch (type) {
     case "prolific":
-      return (
-        <>
-          <Text fontWeight="bold">Prolific Study ID:</Text>
-          <Text>{settings.StudyId}</Text>
-
-          {hasInvalidExternalLink && (
-            <Stack
-              display={{ base: "none", xl: "inherit" }}
-              title="Another DECSYS Survey has the same type and external ID."
-            >
-              <Alert variant="left-accent" status="warning" py={1}>
-                <AlertIcon />
-                Broken external link!
-              </Alert>
-            </Stack>
-          )}
-        </>
-      );
+      return hasInvalidExternalLink ? (
+        <Stack
+          display={{ base: "none", xl: "inherit" }}
+          title="Another DECSYS Survey has the same type and external ID."
+        >
+          <Alert variant="left-accent" status="warning" py={1}>
+            <AlertIcon />
+            Broken external link!
+          </Alert>
+        </Stack>
+      ) : null;
     default:
       return null;
   }
 };
 
-export const RespondentCountBadge = ({ friendlyId }) => {
+const InternalTypeInfo = ({ friendlyId }) => (
+  <>
+    <Text fontWeight="bold">Survey ID:</Text>
+    <Text>{friendlyId}</Text>
+
+    <Divider orientation="vertical" />
+
+    <SurveyLinkInfo friendlyId={friendlyId} />
+  </>
+);
+
+export const RespondentCountBadge = ({ friendlyId, isStudy }) => {
   const [results, setResults] = useState({});
   useEffect(() => {
     (async () => {
@@ -54,6 +74,9 @@ export const RespondentCountBadge = ({ friendlyId }) => {
       setResults(data);
     })();
   }, [friendlyId]);
+
+  // TODO: fix for studies
+  if (isStudy) return null;
 
   return (
     <Badge textAlign="center" colorScheme="cyan" variant="outline" p={1}>
@@ -70,6 +93,7 @@ const ActiveInstanceLine = ({
   settings,
   hasInvalidExternalLink,
   runCount,
+  isStudy,
 }) => {
   const instanceValidIdModal = useDisclosure();
   const configModal = useDisclosure();
@@ -78,36 +102,16 @@ const ActiveInstanceLine = ({
     <>
       <Flex align="center" px={2} py={1}>
         <Stack direction="row" alignItems="center">
-          <RespondentCountBadge friendlyId={friendlyId} />
+          <RespondentCountBadge friendlyId={friendlyId} isStudy={isStudy} />
           {type ? (
             <ExternalTypeInfo
+              friendlyId={friendlyId}
               type={type}
               settings={settings}
               hasInvalidExternalLink={hasInvalidExternalLink}
             />
           ) : (
-            <>
-              <Text fontWeight="bold">Survey ID:</Text>
-              <Text>{friendlyId}</Text>
-
-              <Divider orientation="vertical" />
-
-              <Text fontWeight="bold">Share Link:</Text>
-              <Link
-                color="blue.500"
-                as={RouterLink}
-                to={`/survey/${friendlyId}`}
-              >
-                /survey/{friendlyId}
-              </Link>
-
-              <Stack display={{ base: "none", xl: "inherit" }}>
-                <Alert variant="left-accent" status="info" py={1}>
-                  <AlertIcon />
-                  Remember to include your DECSYS server's address
-                </Alert>
-              </Stack>
-            </>
+            <InternalTypeInfo friendlyId={friendlyId} />
           )}
         </Stack>
 
