@@ -510,6 +510,7 @@ MultiVisualAnalogScale.defaultProps = {
     xAlign: "center",
   },
   behaviour: behaviours.SpeirsBridge2010,
+  buttons: {},
 };
 
 export { MultiVisualAnalogScale };
