@@ -32,11 +32,7 @@ const ImportSurvey = (p) => {
 
 const isZip = (filename) => filename.split(".").pop().toLowerCase() === "zip";
 
-const ImportSurveyForm = ({
-  modalState,
-  isStudy,
-  parent: { id: parentId } = {},
-}) => {
+const ImportSurveyForm = ({ modalState, isStudy, parent }) => {
   const [oldSurveyDetails, setOldSurveyDetails] = useState();
   const { importFile } = useAddSurveyActions();
   const createSurveyModal = useDisclosure();
@@ -80,7 +76,7 @@ const ImportSurveyForm = ({
       const content = await zipFile.file("structure.json").async("string");
       const oldSurvey = JSON.parse(stripBom(content));
 
-      if (parentId && oldSurvey.IsStudy) {
+      if (parent && oldSurvey.IsStudy) {
         setState({
           ...state,
           error:
@@ -137,10 +133,11 @@ const ImportSurveyForm = ({
         {...oldSurveyDetails}
         modalState={createSurveyModal}
         onCreate={doImport}
-        isFixedType={state.importData || !!parentId}
-        hasFixedSettings={state.importData || !!parentId}
+        isFixedType={state.importData || !!parent}
+        settings={state.importData ? parent?.settings : undefined}
+        hasFixedSettings={state.importData || !!parent}
         isStudy={isStudy}
-        parentId={parentId}
+        parentId={parent}
       />
     </Stack>
   );

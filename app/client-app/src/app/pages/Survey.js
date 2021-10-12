@@ -7,24 +7,76 @@ import {
   requestParticipantProgress,
   useParticipantProgress,
 } from "api/participant-event-logs";
-import Error from "./Error";
+import { Error } from "./Error";
 import { useLocalInstances } from "app/contexts/LocalInstances";
 import { logParticipantEvent } from "api/participant-event-logs";
 import ParticipantIdEntry from "./ParticipantIdEntry";
-import ErrorBoundary from "components/ErrorBoundary";
+import {ErrorBoundary} from "components/ErrorBoundary";
 import SurveyNotFoundError, { errorCallToAction } from "./SurveyNotFoundError";
 import { useQueryString } from "hooks/useQueryString";
 import Preview from "./Preview";
+import useSWR from "swr";
+import { getExternalSurveyDetails } from "api/survey-instances";
+
+const useExternalLookup = (friendlyId, params, isPreview) => {
+  const { instances, storeInstanceParticipantId } = useLocalInstances();
+
+  const result = {
+    friendlyId,
+    participantId: instances[friendlyId],
+  };
+
+  return useSWR(
+    JSON.stringify({
+      friendlyId,
+      params,
+      isPreview,
+    }),
+    async () => {
+      if (isPreview) return result;
+
+      const [surveyId, instanceId] = decode(friendlyId);
+      if (instanceId != null) return result;
+
+      // if we've got here, our friendlyId contains survey ID only,
+      // so we need to do an external lookup
+      const { instanceId: lookupInstanceId, participantId } =
+        await getExternalSurveyDetails(params, surveyId);
+
+      result.friendlyId = encode(surveyId, lookupInstanceId);
+
+      // TODO: if we ever allow repeatable surveys by external params
+      // we'll need to validate id here, like we do with manual entry
+      if (participantId) {
+        storeInstanceParticipantId(friendlyId, participantId);
+        result.participantId = participantId;
+      }
+
+      return result;
+    },
+    {
+      suspense: true,
+    }
+  );
+};
 
 // Do all the data fetching and validation ahead of rendering the survey
-const SurveyBootstrapper = ({ id: accessFriendlyId }) => {
+const SurveyBootstrapper = ({ id: urlFriendlyId }) => {
   // we can lookup in progress participant Id's
   // to resume without prompting user for id
   const { instances, storeInstanceParticipantId } = useLocalInstances();
 
   // can opt into preview mode from query string
-  const { preview: isPreview } = useQueryString();
+  const { preview: isPreview, ...params } = useQueryString();
 
+  // depending what our friendlyId looks like,
+  // we might need to do an external survey lookup
+  const {
+    data: { friendlyId: accessFriendlyId },
+  } = useExternalLookup(urlFriendlyId, params, isPreview);
+
+  // now we are sure we have a complete friendly id and participant id
+  // we can check participant progress
   const { data: progress, mutate } = useParticipantProgress(
     !isPreview && accessFriendlyId, // preview skips progress fetching
     instances[accessFriendlyId]

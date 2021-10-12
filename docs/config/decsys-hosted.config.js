@@ -8,7 +8,7 @@ module.exports = {
   themeConfig: {
     navbar: buildNavbarConfig({
       title: "Back to DECSYS",
-      logoHref: "../", // this is relative to baseUrl
+      logoHref: "abs:/",
     }),
     footer: buildFooterConfig(),
   },

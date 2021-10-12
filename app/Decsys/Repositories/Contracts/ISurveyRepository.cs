@@ -81,13 +81,14 @@ namespace Decsys.Repositories.Contracts
 
 
         /// <summary>
-        /// Get the ExternalLookup record for a given key name and value
+        /// Get the ExternalLookup record for a given key name and value.
+        /// If externalKey is null, the externalId value is instead matched against the internal Survey ID
         /// </summary>
         /// <param name="externalKey"></param>
         /// <param name="externalId"></param>
         /// <returns></returns>
         // Entity return is safe as it's not data layer dependent :)
         // if it becomes such, a DTO (model) will be needed
-        public ExternalLookup LookupExternal(string externalKey, string externalId);
+        public ExternalLookup LookupExternal(string? externalKey, string externalId);
     }
 }

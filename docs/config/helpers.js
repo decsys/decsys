@@ -85,7 +85,10 @@ const buildNavbarConfig = ({ title, docsRoutePrefix, logoHref }) => {
     ],
   };
 
-  if (logoHref) config.logo.href = logoHref;
+  if (logoHref) {
+    config.logo.href = logoHref;
+    config.logo.target = "_self";
+  }
 
   return config;
 };

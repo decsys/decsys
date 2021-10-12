@@ -11,10 +11,10 @@ const urls = {
     `/api/surveys/${surveyId}/instances/${instanceId}/results`,
 };
 
-export const getExternalSurveyDetails = async (params) =>
+export const getExternalSurveyDetails = async (params, surveyId) =>
   (
     await axios.post(
-      "/api/surveys/external",
+      `/api/surveys/external${surveyId != null ? `/${surveyId}` : ""}`,
       params,
       withHeaders(await authorization_BearerToken())
     )

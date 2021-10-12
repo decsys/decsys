@@ -3,31 +3,23 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
-  Collapse,
-  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
-  Heading,
-  Icon,
-  List,
   ListItem,
   Radio,
   RadioGroup,
   Stack,
   Text,
   UnorderedList,
-  useDisclosure,
 } from "@chakra-ui/react";
 import FormikInput from "components/core/FormikInput";
 import StandardModal from "components/core/StandardModal";
 import { Field, Form, Formik } from "formik";
-import ReactMarkdown from "react-markdown";
-import gfm from "remark-gfm";
 import "github-markdown-css";
-import { FaChevronDown, FaChevronRight } from "react-icons/fa";
+import ReactMarkdown from "react-markdown";
+import { capitalise } from "services/strings";
 import { object, string } from "yup";
-import { CopyableTextPanel } from "components/core/CopyableTextPanel";
 
 // There are a number of ways to create a survey: Blank, Import, Duplicate etc.
 // But they also all require some common follow up information
@@ -36,83 +28,30 @@ import { CopyableTextPanel } from "components/core/CopyableTextPanel";
 
 const validationSchema = object().shape({
   type: string().oneOf(["", "prolific"]),
-  prolificStudyId: string().when("type", {
-    is: (type) => type === "prolific",
-    then: string().required("Prolific Surveys require a Study ID."),
-  }),
-  prolificCompletionUrl: string().when("type", {
-    is: (type) => type === "prolific",
-    then: string().required("Prolific Surveys require a Completion URL."),
-  }),
 });
 
-const SetupGuide = ({ markdown, surveyUrl }) => {
-  const { isOpen, onToggle } = useDisclosure();
+const SetupGuideLinkAlert = ({ type }) => {
+  return !!type ? (
+    <Alert status="info">
+      <AlertIcon />
 
-  return (
-    <Stack
-      bg="gray.200"
-      borderRadius={5}
-      alignItems="center"
-      spacing={0}
-      boxShadow=""
-    >
-      <Flex p={2} onClick={onToggle} cursor="pointer" align="center" w="100%">
-        <Icon mr={2} as={isOpen ? FaChevronDown : FaChevronRight} />
-        <Heading size="sm">Setup Guide</Heading>
-      </Flex>
-
-      <Collapse in={isOpen} animateOpacity>
-        <Stack p={2}>
-          {surveyUrl?.includes("<ip-address>") && (
-            <Alert status="warning">
-              <AlertIcon />
-
-              <Text as="div" className="markdown-body">
-                <ReactMarkdown
-                  source={`
-Since you're running in **Workshop Mode**, you'll need to provide
-an ip address where your machine can access DECSYS, such as
-\`127.0.0.1\`
-            `}
-                />
-              </Text>
-            </Alert>
-          )}
-          <CopyableTextPanel
-            buttonScheme="blue"
-            label="Access URL"
-            value={surveyUrl}
-          />
-        </Stack>
-
-        <Text pb={2} as="div" className="markdown-body">
+      <Stack>
+        <Text>
+          {capitalise(type)} Surveys require some further setup after creation.
+        </Text>
+        <Text as="div" className="markdown-body">
           <ReactMarkdown
-            plugins={[gfm]}
-            linkTarget="_blank"
-            source={markdown}
+            source={`For assistance, view the
+          **${capitalise(
+            type
+          )}** [Setup Guide](/docs/users/integrations/${type})
+          `}
           />
         </Text>
-      </Collapse>
-    </Stack>
-  );
+      </Stack>
+    </Alert>
+  ) : null;
 };
-
-const prolificInstructions = `
-1. Create your study in [Prolific]("https://prolific.co")
-1. Provide the **Access URL** (above)
-1. When asked **"How do you want to record Prolific IDs?"**
-    - Choose **"I'll use URL parameters"**
-    - You can leave the default settings
-1. When asked **"How do you want to confirm participants have completed your study?"**
-    - Choose **"I'll redirect them using a URL"**
-    - Copy the URL and enter it below for the **Completion URL**
-1. Save your Prolific Study as a draft (this will generate its Study ID)
-1. Copy *only* the Study ID from your browser address bar:
-    - \`https://app.prolific.co/studies/<your-study-id-here>\`
-    - Enter it below for the **Study ID**
-    - This will link the Prolific Study to *this* DECSYS Survey
-`;
 
 const CreateSurveyModal = ({
   name,
@@ -165,19 +104,12 @@ const CreateSurveyModal = ({
     modalState.onClose();
   };
 
-  const externalSurveyUrl = `${window.location.origin.replace(
-    "localhost",
-    "<ip-address>"
-  )}/survey`;
-
   return (
     <Formik
       initialValues={{
         name: defaultName,
         type: defaultType,
-        prolificStudyId: "",
-        prolificCompletionUrl: "",
-        ...defaultSettings, // these may override some of the empty strings above
+        ...defaultSettings,
       }}
       enableReinitialize
       onSubmit={handleSubmit}
@@ -269,31 +201,7 @@ const CreateSurveyModal = ({
                   );
                 }}
               </Field>
-
-              <Stack hidden={values.type !== "prolific"}>
-                <SetupGuide
-                  surveyUrl={externalSurveyUrl}
-                  markdown={prolificInstructions}
-                />
-                <Field name="prolificStudyId">
-                  {(rp) => (
-                    <FormikInput
-                      isDisabled={hasFixedSettings}
-                      {...rp}
-                      label="Study ID"
-                    />
-                  )}
-                </Field>
-                <Field name="prolificCompletionUrl">
-                  {(rp) => (
-                    <FormikInput
-                      isDisabled={hasFixedSettings}
-                      {...rp}
-                      label="Completion URL"
-                    />
-                  )}
-                </Field>
-              </Stack>
+              <SetupGuideLinkAlert type={values.type} />
             </Stack>
           </Form>
         </StandardModal>

@@ -51,7 +51,6 @@ const LoadInternalSurveys = ({ closeModal, parent }) => {
         onCreate={doImport}
         parentId={parent?.id}
         type={parent?.type}
-        settings={parent?.settings}
         isFixedType={!!parent}
         hasFixedSettings={!!parent}
       />

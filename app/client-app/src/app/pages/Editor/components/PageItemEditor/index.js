@@ -3,7 +3,7 @@ import ParamsEditor from "./ParamsEditor";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { usePageListContext } from "../../contexts/PageList";
 import { getComponent } from "services/page-items";
-import pageItemActions from "../../actions/pageItemActions";
+import { pageItemActions } from "../../actions/pageItemActions";
 import { Flex } from "@chakra-ui/react";
 
 // TODO: Document this capability for components

@@ -1,7 +1,7 @@
 import { Paths, ApplicationName } from "./constants";
 import { WebStorageStateStore } from "oidc-client";
 
-export default {
+export const config = {
   oidc: {
     authority: Paths.Origin,
     client_id: "decsys-client-app",

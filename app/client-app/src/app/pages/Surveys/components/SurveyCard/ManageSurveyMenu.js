@@ -25,6 +25,7 @@ const ManageSurveyMenu = ({
   parentSurveyId,
   isStudy,
   hasInvalidExternalLink,
+  runCount,
 }) => {
   const deleteModal = useDisclosure();
   const configModal = useDisclosure();
@@ -97,6 +98,7 @@ const ManageSurveyMenu = ({
         name={name}
         type={type}
         settings={settings}
+        runCount={runCount}
         hasInvalidExternalLink={hasInvalidExternalLink}
         modalState={externalDetailsModal}
       />

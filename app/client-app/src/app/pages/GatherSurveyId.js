@@ -27,7 +27,7 @@ export const GatherSurveyId = () => {
     onResolve: ({ surveyId, instanceId, participantId }) => {
       // No valid instance looked up;
       // we can't proceed from params
-      if (!surveyId || !instanceId) return;
+      if (!surveyId || (!preview && !instanceId)) return;
 
       const friendlyId = encode(surveyId, instanceId);
 

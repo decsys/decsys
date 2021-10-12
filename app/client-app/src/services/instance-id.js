@@ -26,7 +26,9 @@ const decodeId = (id) => parseInt(id, 35) - 10;
  * @returns the encoded ids as a string
  */
 export const encode = (surveyId, instanceId) =>
-  `${encodeId(surveyId)}z${encodeId(instanceId)}`;
+  instanceId == null
+    ? encodeId(surveyId)
+    : `${encodeId(surveyId)}z${encodeId(instanceId)}`;
 
 /**
  * Decode an ID previously encoded by `encode()`

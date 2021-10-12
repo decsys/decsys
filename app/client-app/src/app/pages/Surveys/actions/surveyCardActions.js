@@ -7,6 +7,7 @@ import {
 } from "api/surveys";
 import { closeSurveyInstance } from "api/survey-instances";
 import produce from "immer";
+import { saveSurveySettings } from "api/survey-config";
 
 export const surveyCardActions = (navigate, mutateSurveys) => ({
   saveName: async (id, newName, setNameState) => {
@@ -50,6 +51,10 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
   },
   deleteSurvey: async (id) => {
     await deleteSurvey(id);
+    mutateSurveys();
+  },
+  saveSettings: async (id, settings) => {
+    await saveSurveySettings(id, settings);
     mutateSurveys();
   },
   navigate,

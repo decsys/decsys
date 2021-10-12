@@ -1,5 +1,5 @@
 import { Router } from "@reach/router";
-import Error from "app/pages/Error";
+import { Error } from "app/pages/Error";
 import Survey from "app/pages/Survey";
 import SurveyComplete from "app/pages/SurveyComplete";
 import { GatherSurveyId } from "app/pages/GatherSurveyId";

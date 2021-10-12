@@ -1,3 +1,6 @@
+import { useCallback } from "react";
+import { validateYupSchema } from "formik";
+import { getValidationSchema } from "../../external-types";
 import {
   Stack,
   Grid,
@@ -40,7 +43,18 @@ const SurveyCard = () => {
   } = survey;
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
 
-  const actionButtons = getActionButtons(survey);
+  const validateSettings = useCallback(() => {
+    if (!type) return true;
+    try {
+      // check settings validity
+      validateYupSchema(settings, getValidationSchema(type), true);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }, [settings, type]);
+
+  const actionButtons = getActionButtons(survey, validateSettings());
 
   return (
     <>
@@ -68,7 +82,11 @@ const SurveyCard = () => {
             p={parentSurveyId ? 1 : 2}
             alignContent="center"
           >
-            <SurveyInfoLine {...survey} friendlyId={friendlyId} />
+            <SurveyInfoLine
+              {...survey}
+              friendlyId={friendlyId}
+              areSettingsValid={validateSettings()}
+            />
 
             <ActionButtons
               actionButtons={actionButtons}
@@ -80,6 +98,7 @@ const SurveyCard = () => {
               {...survey}
               editable={!runCount && !isStudy}
               isStudy={isStudy}
+              areSettingsValid={validateSettings()}
             />
           </Grid>
 

@@ -1,5 +1,5 @@
 import { Router } from "@reach/router";
-import Error from "app/pages/Error";
+import { Error } from "app/pages/Error";
 import Surveys from "app/pages/Surveys";
 import Editor from "app/pages/Editor";
 import Preview from "app/pages/Preview";
@@ -12,8 +12,8 @@ const Admin = () => {
   const { isAdmin, user, login } = useAuth();
 
   if (!user) {
-    login();
-    return <LoadingIndicator />;
+    if (user === null) login();
+    return <LoadingIndicator verb="Checking" noun="user" />;
   }
 
   if (!isAdmin) return <Error message="403: Forbidden" default />;

@@ -17,8 +17,9 @@
   "dependencies": {
     "@babel/core": "^7.14.3",
     "@chakra-ui/react": "^1.6.2",
-    "@docusaurus/core": "2.0.0-beta.0",
-    "@docusaurus/preset-classic": "2.0.0-beta.0",
+    "@docusaurus/core": "latest",
+    "@docusaurus/preset-classic": "latest",
+    "@docusaurus/theme-common": "^2.0.0-beta.6",
     "@emotion/babel-plugin": "^11.3.0",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",

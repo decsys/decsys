@@ -80,15 +80,15 @@ namespace Decsys.Controllers
                 : Ok(survey);
         }
 
-        [HttpPost("external")]
+        [HttpPost("external/{surveyId?}")]
         [SwaggerOperation("Lookup Survey details for an External Survey, from the external params")]
         [SwaggerResponse(200, "The looked up Survey details")]
         [AllowAnonymous]
-        public ActionResult<ExternalLookupDetails> LookupExternal(JObject model)
+        public ActionResult<ExternalLookupDetails> LookupExternal([FromBody] JObject model, int? surveyId = null)
         {
             try
             {
-                return _surveys.LookupExternal(model);
+                return _surveys.LookupExternal(model, surveyId);
             }
             catch (ArgumentException e)
             {
@@ -167,6 +167,21 @@ namespace Decsys.Controllers
             try
             {
                 return await _surveys.Duplicate(id, model, OwnerId);
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+        }
+
+        [HttpPut("{id}/settings")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [SwaggerOperation("Replace Type Settings for the Survey with the provided ID.")]
+        [SwaggerResponse(204, "The Survey Type Settings were updated successfully.")]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        public IActionResult Configure(int id, JObject settings)
+        {
+            try
+            {
+                _surveys.EditSettings(id, settings);
+                return NoContent();
             }
             catch (KeyNotFoundException) { return NotFound(); }
         }

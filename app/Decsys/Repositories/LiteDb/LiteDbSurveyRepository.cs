@@ -151,11 +151,13 @@ namespace Decsys.Repositories.LiteDb
 
         private ExternalLookup? HandleSurveyTypeCreation(Models.CreateSurveyModel model, ref Survey survey)
         {
+            survey.Type = model.Type;
+            _mapper.Map(model, survey);
+
             // Handle type settings
             switch (model.Type)
             {
                 case SurveyTypes.Prolific:
-                    survey.Type = model.Type;
                     return HandleProlificSurveyCreation(model, ref survey);
                 default:
                     return null;
@@ -169,16 +171,10 @@ namespace Decsys.Repositories.LiteDb
             survey.UseParticipantIdentifiers = true;
             survey.ValidIdentifiers = new();
 
-            // add the type specific settings
-            _mapper.Map(model, survey);
-
-            // TODO: what happens if settings is structured wrong?
-            var settings = model.Settings.ToObject<ProlificSettings>();
-
             // return a partially ready Lookup record
             // with Type specific properties,
             // to be completed after the survey is successfully inserted 
-            return new("STUDY_ID", settings.StudyId, survey.Id)
+            return new(string.Empty, string.Empty, survey.Id)
             {
                 ParticipantIdKey = "PROLIFIC_PID"
             };
@@ -187,9 +183,11 @@ namespace Decsys.Repositories.LiteDb
         private void CreateExternalLookup(ExternalLookup lookup, Survey survey)
         {
             // add / amend a lookup record for this survey type
-            var existingLookup = _external.FindOne(x =>
-                x.ExternalIdKey == lookup.ExternalIdKey &&
-                x.ExternalIdValue == lookup.ExternalIdValue);
+            var existingLookup = string.IsNullOrEmpty(lookup.ExternalIdKey)
+                ? _external.FindOne(x => x.SurveyId == survey.Id)
+                : _external.FindOne(x =>
+                    x.ExternalIdKey == lookup.ExternalIdKey &&
+                    x.ExternalIdValue == lookup.ExternalIdValue);
 
             if (existingLookup is null)
             {
@@ -266,11 +264,11 @@ namespace Decsys.Repositories.LiteDb
             return new(SurveyAccessStatus.Owned);
         }
 
-        public Models.ExternalLookup LookupExternal(string externalKey, string externalId)
+        public Models.ExternalLookup LookupExternal(string? externalKey, string externalId)
             => _mapper.Map<Models.ExternalLookup>(
                 _external.FindOne(
-                    x => x.ExternalIdKey == externalKey &&
-                    x.ExternalIdValue == externalId));
+                    x => (externalKey == null && x.SurveyId.ToString() == externalId) ||
+                    (x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId)));
 
         public List<Models.SurveySummary> ListChildren(int parentId)
             => List(parentId);

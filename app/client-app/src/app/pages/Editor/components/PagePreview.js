@@ -8,7 +8,7 @@ import {
   usePageItemActions,
   PageItemActionsProvider,
 } from "../contexts/PageItemActions";
-import pageItemActions from "../actions/pageItemActions";
+import { pageItemActions } from "../actions/pageItemActions";
 import { renderContextDefaults as renderActions } from "@decsys/param-types/ResponseItemContexts";
 
 // TODO: Document this capability for components

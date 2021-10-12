@@ -22,7 +22,6 @@ const CreateBlankSurveyButton = ({ parent, isStudy, closeModal }) => {
         parentId={parent?.id}
         isStudy={isStudy}
         type={parent?.type}
-        settings={parent?.settings}
         isFixedType={!!parent}
         hasFixedSettings={!!parent}
       />
