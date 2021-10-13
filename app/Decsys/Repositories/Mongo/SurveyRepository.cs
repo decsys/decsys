@@ -301,14 +301,18 @@ namespace Decsys.Repositories.Mongo
                         }
 
                         return summary;
-                    })
-;
+                    });
         }
 
-        public void Update(Models.Survey survey) =>
-            _surveys.FindOneAndReplace(
-                x => x.Id == survey.Id,
-                _mapper.Map<Survey>(survey));
+        public void Update(Models.Survey survey)
+        {
+            var entity = _surveys.Find(x => x.Id == survey.Id).SingleOrDefault()
+                ?? throw new KeyNotFoundException();
+
+            var updated = _mapper.Map(survey, entity);
+
+            _surveys.ReplaceOne(x => x.Id == survey.Id, updated);
+        }
 
         public void UpdateName(int id, string name) =>
             _surveys.UpdateOne(
