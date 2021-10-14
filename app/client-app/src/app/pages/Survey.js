@@ -11,7 +11,7 @@ import { Error } from "./Error";
 import { useLocalInstances } from "app/contexts/LocalInstances";
 import { logParticipantEvent } from "api/participant-event-logs";
 import ParticipantIdEntry from "./ParticipantIdEntry";
-import {ErrorBoundary} from "components/ErrorBoundary";
+import { ErrorBoundary } from "components/ErrorBoundary";
 import SurveyNotFoundError, { errorCallToAction } from "./SurveyNotFoundError";
 import { useQueryString } from "hooks/useQueryString";
 import Preview from "./Preview";
@@ -72,14 +72,14 @@ const SurveyBootstrapper = ({ id: urlFriendlyId }) => {
   // depending what our friendlyId looks like,
   // we might need to do an external survey lookup
   const {
-    data: { friendlyId: accessFriendlyId },
+    data: { friendlyId: accessFriendlyId, participantId },
   } = useExternalLookup(urlFriendlyId, params, isPreview);
 
   // now we are sure we have a complete friendly id and participant id
   // we can check participant progress
   const { data: progress, mutate } = useParticipantProgress(
     !isPreview && accessFriendlyId, // preview skips progress fetching
-    instances[accessFriendlyId]
+    instances[accessFriendlyId] ?? participantId
   );
 
   if (isPreview) {
@@ -191,7 +191,7 @@ const Survey = ({
         if (progress.useParticipantIdentifiers)
           clearInstanceParticipantId(accessFriendlyId);
 
-        navigate(
+        await navigate(
           progress.settings?.CompletionUrl ??
             `/survey/${accessFriendlyId}/complete`
         );

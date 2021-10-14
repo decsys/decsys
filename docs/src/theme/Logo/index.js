@@ -24,7 +24,6 @@ const buildAbsoluteLink = (href) => {
 
   let relHref = href.replace("abs:", "");
   if (!relHref.startsWith("/")) relHref = `/${relHref}`;
-  console.log(href, relHref);
   return `${window.location.origin}${relHref}`;
 };
 
