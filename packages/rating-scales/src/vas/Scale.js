@@ -27,7 +27,7 @@ const VisualAnalogScale = ({
   scaleMarkerOptions,
   dragMarkerOptions,
 }) => {
-  const [markerBounds, setMarkerBounds] = useState({});
+  const [markerState, setMarkerState] = useState({});
 
   const [bar, setBar] = useState(null);
   const barRef = useCallback((bar) => {
@@ -36,12 +36,13 @@ const VisualAnalogScale = ({
 
     // initialise the dragmarker now the bar is available
     const { width, x } = getBounds(bar);
-    setMarkerBounds({
-      xInit: width / 2,
-      yAnchor: 0,
+    setMarkerState({
+      x: width / 2,
+      baseX: x,
+      baseY: 0,
       xMin: x,
       xMax: width + x,
-      xOffset: x,
+      isActivated: false,
     });
   }, []);
 
@@ -58,9 +59,10 @@ const VisualAnalogScale = ({
     );
   }
 
-  const handleMarkerDrop = (barRelativeX) => {
+  const handleMarkerDrop = (x) => {
+    setMarkerState((old) => ({ ...old, x, isActivated: true }));
     const value = getValueForRelativeX(
-      barRelativeX,
+      x,
       barOptions.minValue,
       barOptions.maxValue,
       bar
@@ -86,7 +88,7 @@ const VisualAnalogScale = ({
         <FlexContainer>{labels}</FlexContainer>
         <FlexContainer>
           <DragMarker
-            {...markerBounds}
+            {...markerState}
             {...dragMarkerOptions}
             onDrop={handleMarkerDrop}
           />
