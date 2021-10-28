@@ -24,7 +24,17 @@
     "rules": {
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off"
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.7.1",
