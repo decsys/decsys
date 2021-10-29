@@ -16,19 +16,9 @@ import {
 } from "../core/ScaleMarkerSet";
 import { getBounds, getValueForRelativeX } from "../core/services/bar-coords";
 import { DragMarker } from "./DragMarker";
-import {
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  InputGroup,
-  InputRightAddon,
-  Button,
-  Stack,
-} from "@chakra-ui/react";
 import { behaviour as behaviourKeys, behaviours } from "./behaviours";
 import { ResetButtons } from "./ResetButtons";
+import { Confidence } from "./Confidence";
 
 const DottedLine = ({ yAnchor, x1, x2 }) => {
   if (x1 == null || x2 == null) return null;
@@ -45,8 +35,6 @@ const DottedLine = ({ yAnchor, x1, x2 }) => {
     ></div>
   );
 };
-
-const generateMarkerKey = (markerId) => `${markerId}-${Date.now()}`;
 
 const addToOutputsStack = (stack, value) => {
   const newStack = [...stack];
@@ -87,11 +75,6 @@ const MultiVisualAnalogScale = ({
 
   // enabling reset/undo
   const [outputsStack, setOutputsStack] = useState([]);
-  const [markerKeys, setMarkerKeys] = useState({
-    left: generateMarkerKey("left"),
-    right: generateMarkerKey("center"),
-    center: generateMarkerKey("right"),
-  });
 
   const [outputs, setOutputs] = useState({});
   useEffect(() => {
@@ -338,44 +321,27 @@ const MultiVisualAnalogScale = ({
         </ScaleBar>
 
         {useConfidenceInput && (
-          <>
-            <Question {...confidenceTextOptions}>{confidenceText}</Question>
-            <div
-              css={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <InputGroup marginTop={frameHeight} width="120px">
-                <NumberInput
-                  isDisabled={
-                    outputs.bestEstimate == null ||
-                    outputs.left == null ||
-                    outputs.right == null
-                  }
-                  min={0}
-                  max={100}
-                  onChange={handleConfidenceChange}
-                  value={outputs.confidence ?? ""}
-                >
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-                <InputRightAddon children="%" />
-              </InputGroup>
-            </div>
-          </>
+          <Confidence
+            confidenceText={confidenceText}
+            confidenceTextOptions={confidenceTextOptions}
+            isDisabled={
+              outputs.bestEstimate == null ||
+              outputs.left == null ||
+              outputs.right == null
+            }
+            frameHeight={frameHeight}
+            onChange={handleConfidenceChange}
+            value={outputs.confidence}
+          />
         )}
         {(buttons.resetAll || buttons.resetLast) && (
           <ResetButtons
-            resetLast={buttons.resetLast && {
-              onClick: handleUndo,
-              isDisabled: !outputsStack.length,
-            }}
+            resetLast={
+              buttons.resetLast && {
+                onClick: handleUndo,
+                isDisabled: !outputsStack.length,
+              }
+            }
             resetAll={{
               onClick: handleReset,
               isDisabled: !outputsStack.length,
