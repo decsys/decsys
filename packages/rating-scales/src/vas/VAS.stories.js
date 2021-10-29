@@ -1,29 +1,14 @@
-import { useEffect } from "react";
 import { VisualAnalogScale } from "./Scale";
 import { action } from "@storybook/addon-actions";
 
 export default {
   title: "Rating Scales/VAS",
   component: VisualAnalogScale,
-  decorators: [
-    (s) => <EventHandler onEvent={action("VAS Completed")}>{s()}</EventHandler>,
-  ],
 };
 
-const EventHandler = ({ onEvent, children }) => {
-  const handle = ({ detail }) => {
-    onEvent(detail);
-  };
-
-  useEffect(() => {
-    document.addEventListener("VasCompleted", handle);
-    return () => document.removeEventListener("VasCompleted", handle);
-  }, []);
-
-  return children;
-};
-
-export const Basic = () => <VisualAnalogScale />;
+export const Basic = () => (
+  <VisualAnalogScale onChange={action("VAS Completed")} />
+);
 
 export const Sample = () => (
   <VisualAnalogScale
@@ -55,5 +40,6 @@ export const Sample = () => (
       subdivisions: 10,
     }}
     frameHeight="300px"
+    onChange={action("VAS Completed")}
   />
 );
