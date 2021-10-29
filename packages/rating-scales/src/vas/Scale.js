@@ -105,8 +105,8 @@ export const Scale = ({
 };
 
 const VisualAnalogScale = ({
-  frameHeight,
-  questionOptions,
+  frameHeight = "300px",
+  questionOptions = {},
   question,
   barOptions,
   labels,

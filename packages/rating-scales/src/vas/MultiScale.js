@@ -20,14 +20,14 @@ import { behaviour as behaviourKeys, behaviours } from "./behaviours";
 import { ResetButtons } from "./ResetButtons";
 import { Confidence } from "./Confidence";
 
-const DottedLine = ({ yAnchor, x1, x2 }) => {
+const DottedLine = ({ baseY, x1, x2 }) => {
   if (x1 == null || x2 == null) return null;
 
   return (
     <div
       css={{
         position: "absolute",
-        top: `${yAnchor - 25}px`,
+        top: `${baseY - 25}px`,
         left: x1,
         width: x2 - x1,
         borderTop: "dashed .2em gray",
@@ -45,13 +45,148 @@ const addToOutputsStack = (stack, value) => {
 const getBehaviourProvider = (behaviour) =>
   behaviours[behaviour] ?? behaviours[behaviourKeys.SpeirsBridge2010];
 
+const ScaleLabels = ({ labels: { min, mid, max } = {}, labelOptions }) => {
+  const labels = [];
+  const labelValues = [min, mid, max];
+  for (let i = 0; i < labelValues.length; i++) {
+    labels.push(
+      <ScaleLabel
+        key={i}
+        labelIndex={i}
+        {...{ ...labelOptions, yAlign: "below" }} // fix labels to below as the marker is above
+        value={labelValues[i]}
+      />
+    );
+  }
+  return <FlexContainer>{labels}</FlexContainer>;
+};
+
+export const Scale = ({
+  behaviour,
+  labels = {},
+  labelOptions = {},
+  barOptions = {
+    minValue: 0,
+    maxValue: 100,
+    // we depend on this one for calculations
+    thickness: scaleBarDefaultProps.thickness,
+  },
+  scaleMarkerOptions = {},
+  leftMarkerOptions = {},
+  rightMarkerOptions = {},
+  centerMarkerOptions = {},
+  onChange = () => {},
+}) => {
+  console.log(behaviour);
+  const [markerState, setMarkerState] = useState({
+    shared: {},
+    left: {},
+    right: {},
+    center: {},
+  });
+
+  // mounting the bar / configuring dom ref
+  const [bar, setBar] = useState(null);
+  const barRef = useCallback(
+    // TODO: controlled values
+    (bar) => {
+      if (!bar) return;
+      setBar(bar);
+      console.log(behaviour, bar);
+
+      // initialise the dragmarker now the bar is available
+      const barBounds = getBounds(bar);
+      setMarkerState({
+        shared: {
+          baseY: 0,
+          baseX: barBounds.x,
+        },
+        left: {},
+        right: {},
+        center: {},
+        ...getBehaviourProvider(behaviour).initialMarkerBounds(barBounds),
+      });
+    },
+    [behaviour]
+  );
+
+  const handleMarkerDrop = (markerId) => (x) => {
+    setMarkerState((old) =>
+      getBehaviourProvider(behaviour).updateMarkerBounds({
+        ...old,
+        [markerId]: { ...old[markerId], x, isActivated: true },
+      })
+    );
+
+    const value = getValueForRelativeX(
+      x,
+      barOptions.minValue,
+      barOptions.maxValue,
+      bar
+    );
+
+    onChange(markerId, value);
+  };
+
+  return (
+    <ScaleBar ref={barRef} {...barOptions}>
+      <FlexContainer>
+        <ScaleMarkerSet
+          {...{
+            // we compute some scale marker defaults
+            // if not explicitly provided
+            thickness: barOptions.thickness,
+            length: UnitValue.multiply(barOptions.thickness, 8).toString(),
+            ...scaleMarkerOptions,
+          }}
+        />
+      </FlexContainer>
+      <ScaleLabels labels={labels} labelOptions={labelOptions} />
+      <FlexContainer>
+        <DragMarker
+          {...markerState.shared}
+          {...markerState.left}
+          {...leftMarkerOptions}
+          onDrop={handleMarkerDrop("left")}
+        />
+        <DragMarker
+          {...markerState.shared}
+          {...markerState.right}
+          {...rightMarkerOptions}
+          onDrop={handleMarkerDrop("right")}
+        />
+        <DragMarker
+          {...markerState.shared}
+          {...markerState.center}
+          {...centerMarkerOptions}
+          onDrop={handleMarkerDrop("center")}
+        />
+        {behaviour === behaviourKeys.HeskethPryorHesketh1988 && (
+          <>
+            <DottedLine
+              {...markerState.shared}
+              x1={markerState.left.x}
+              x2={markerState.center.x}
+            />
+            <DottedLine
+              {...markerState.shared}
+              x1={markerState.center.x}
+              x2={markerState.right.x}
+            />
+          </>
+        )}
+      </FlexContainer>
+    </ScaleBar>
+  );
+};
+
 // TODO: Refactor, especially undo/reset
 const MultiVisualAnalogScale = ({
   frameHeight,
   questionOptions,
   question,
   barOptions,
-  labels: { min, mid, max },
+  labels,
   labelOptions,
   scaleMarkerOptions,
   dragMarkerDefaults,
@@ -67,11 +202,6 @@ const MultiVisualAnalogScale = ({
   leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
   rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
   centerMarkerOptions = { ...dragMarkerDefaults, ...centerMarkerOptions };
-
-  // marker state
-  const [markerPositioning, setMarkerPositioning] = useState({});
-  const [markerBounds, setMarkerBounds] = useState({});
-  const [markerX, setMarkerX] = useState({});
 
   // enabling reset/undo
   const [outputsStack, setOutputsStack] = useState([]);
@@ -101,53 +231,7 @@ const MultiVisualAnalogScale = ({
     }
   }, [outputs, useConfidenceInput]);
 
-  // mounting the bar / confuguring dom ref
-  const [bar, setBar] = useState(null);
-  const barRef = useCallback(
-    (bar) => {
-      console.log(behaviour, bar);
-      if (!bar) return;
-      setBar(bar);
-
-      // initialise the dragmarker now the bar is available
-      const barBounds = getBounds(bar);
-      setMarkerPositioning({
-        baseY: 0,
-        baseX: barBounds.x,
-      });
-
-      // On Bar mount, set initial bounds
-      const result = {
-        left: {},
-        right: {},
-        center: {},
-        ...getBehaviourProvider(behaviour).initialMarkerBounds(barBounds),
-      };
-      setMarkerBounds(result);
-      console.log(result);
-      setMarkerX({
-        left: result.left.x,
-        center: result.center.x,
-        right: result.right.x,
-      });
-      // handleReset();
-    },
-    [behaviour]
-  );
-
   // bar labels
-  const labels = [];
-  const labelValues = [min, mid, max];
-  for (let i = 0; i < labelValues.length; i++) {
-    labels.push(
-      <ScaleLabel
-        key={i}
-        labelIndex={i}
-        {...{ ...labelOptions, yAlign: "below" }} // fix labels to below as the marker is above
-        value={labelValues[i]}
-      />
-    );
-  }
 
   // update marker bounds based on new marker x positions
   useEffect(() => {
@@ -268,57 +352,15 @@ const MultiVisualAnalogScale = ({
     <>
       <Frame frameHeight={frameHeight}>
         <Question {...questionOptions}>{question}</Question>
-        <ScaleBar ref={barRef} {...barOptions}>
-          <FlexContainer>
-            <ScaleMarkerSet
-              {...{
-                // we compute some scale marker defaults
-                // if not explicitly provided
-                thickness: barOptions.thickness,
-                length: UnitValue.multiply(barOptions.thickness, 8).toString(),
-                ...scaleMarkerOptions,
-              }}
-            />
-          </FlexContainer>
-          <FlexContainer>{labels}</FlexContainer>
-          <FlexContainer>
-            <DragMarker
-              {...markerPositioning}
-              {...markerBounds.left}
-              {...leftMarkerOptions}
-              x={markerX.left}
-              onDrop={handleMarkerDrop("left")}
-            />
-            <DragMarker
-              {...markerPositioning}
-              {...markerBounds.right}
-              {...rightMarkerOptions}
-              x={markerX.right}
-              onDrop={handleMarkerDrop("right")}
-            />
-            <DragMarker
-              {...markerPositioning}
-              {...markerBounds.center}
-              {...centerMarkerOptions}
-              x={markerX.center}
-              onDrop={handleMarkerDrop("center")}
-            />
-            {behaviour === behaviourKeys.HeskethPryorHesketh1988 && (
-              <>
-                <DottedLine
-                  {...markerPositioning}
-                  x1={markerX.left}
-                  x2={markerX.center}
-                />
-                <DottedLine
-                  {...markerPositioning}
-                  x1={markerX.center}
-                  x2={markerX.right}
-                />
-              </>
-            )}
-          </FlexContainer>
-        </ScaleBar>
+        <Scale
+          barOptions={barOptions}
+          scaleMarkerOptions={scaleMarkerOptions}
+          labels={labels}
+          labelOptions={labelOptions}
+          leftMarkerOptions={leftMarkerOptions}
+          rightMarkerOptions={rightMarkerOptions}
+          centerMarkerOptions={centerMarkerOptions}
+        />
 
         {useConfidenceInput && (
           <Confidence

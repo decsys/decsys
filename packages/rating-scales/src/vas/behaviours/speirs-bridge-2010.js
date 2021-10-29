@@ -6,51 +6,50 @@ export const initialMarkerBounds = ({ width, x }) => ({
   right: { xMax: width + x },
 });
 
-export const updateMarkerBounds = (
-  markerBounds,
-  markerX,
-  markerPositioning
-) => {
-  const { baseX } = markerPositioning;
+export const updateMarkerBounds = (markerState) => {
+  let {
+    shared: { baseX },
+    left,
+    right,
+    center,
+  } = markerState;
 
   // in case we need to reset any
   const initialBounds = initialMarkerBounds({
-    width: markerBounds.right.xMax - markerBounds.left.xMin, // always bar width
-    x: markerBounds.left.xMin, // always bar x
+    width: right.xMax - left.xMin, // always bar width
+    x: left.xMin, // always bar x
   });
 
   // left updates
-  if ((markerX.center ?? markerX.right) != null)
-    markerBounds.left.xMax = (markerX.center ?? markerX.right) + baseX;
-  else markerBounds.left.xMax = initialBounds.left.xMax;
+  if ((center.x ?? right.x) != null) left.xMax = (center.x ?? right.x) + baseX;
+  else left.xMax = initialBounds.left.xMax;
 
   // right updates
-  if (markerX.left != null) {
+  if (left.isActivated) {
     // right is after left, so init it
     // left + (rightMax - left) / 2 - (offset / 2)
-    markerBounds.right.x =
-      markerX.left + (markerBounds.right.xMax - markerX.left) / 2 - baseX / 2;
+    if (!right.isActivated)
+      right.x = left.x + (right.xMax - left.x) / 2 - baseX / 2;
 
     // right min is based on left
-    markerBounds.right.xMin = markerBounds.left.xMin;
+    right.xMin = left.xMin;
   } else {
-    markerBounds.right = initialBounds.right;
+    right = initialBounds.right;
   }
 
-  if ((markerX.center ?? markerX.left) != null)
-    markerBounds.right.xMin = (markerX.center ?? markerX.left) + baseX;
+  if ((center.x ?? left.x) != null) right.xMin = (center.x ?? left.x) + baseX;
 
   // center updates
-  if (markerX.right != null) {
+  if (right.isActivated) {
     // center is after right, so init it
     // left + (right - left) / 2
-    markerBounds.center.x = markerX.left + (markerX.right - markerX.left) / 2;
+    if (!center.isActivated) center.x = left.x + (right.x - left.x) / 2;
     // center bounds are based on the others
-    markerBounds.center.xMin = markerX.left + baseX;
-    markerBounds.center.xMax = markerX.right + baseX;
+    center.xMin = left.x + baseX;
+    center.xMax = right.x + baseX;
   } else {
-    markerBounds.center = initialBounds.center ?? {};
+    center = initialBounds.center ?? {};
   }
 
-  return markerBounds;
+  return { ...markerState, left, right, center };
 };
