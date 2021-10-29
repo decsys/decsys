@@ -236,76 +236,10 @@ const MultiVisualAnalogScale = ({
     }
   }, [outputs, useConfidenceInput]);
 
-  // bar labels
-
-  // update marker bounds based on new marker x positions
-  useEffect(() => {
-    if (!bar) return;
-    const { width } = getBounds(bar);
-    // if we don't have bounds state for ANY markers, quit
-    if (
-      (markerBounds.left ?? markerBounds.right ?? markerBounds.center) == null
-    )
-      return;
-
-    // calculate relative z-index values // TODO: maybe behaviour in future?
-    const markerZ = { left: 0, right: 0, center: 0 };
-    // we need to know
-    // a) how many markers are within a sensible overlap range (for center priority)
-    const nearPx = 20;
-    if (markerX.center != null) {
-      const isNear = (x1, x2) => Math.abs(x1 - x2) < nearPx;
-      let count = +(
-        markerX.left != null && isNear(markerX.left, markerX.center)
-      );
-      count += +(
-        markerX.right != null && isNear(markerX.right, markerX.center)
-      );
-
-      // if there's 1 marker nearby, center goes on top, so it can be moved away even at axis extremes
-      // otherwise center goes at bottom, as it either makes no difference, or L/R are more important
-      markerZ.center = count === 1 ? 50 : 0;
-    }
-    // b) if left marker is in the left or right half of the scale (for L/R priority)
-    // we do this irrespective of closeness of markers
-    // since it makes no difference at distance,
-    // but is correct if any are close
-    if (markerX.left < width / 2) {
-      markerZ.left = 10;
-      markerZ.right = 20;
-    } else {
-      markerZ.left = 20;
-      markerZ.right = 10;
-    }
-
-    //update markerBounds state
-    let newMarkerBounds = { ...markerBounds };
-
-    // apply updated Z index
-    newMarkerBounds.left.baseZ = markerZ.left;
-    newMarkerBounds.right.baseZ = markerZ.right;
-    newMarkerBounds.center.baseZ = markerZ.center;
-
-    // apply behaviour updates
-    newMarkerBounds = getBehaviourProvider(behaviour).updateMarkerBounds(
-      newMarkerBounds,
-      markerX,
-      markerPositioning
-    );
-
-    setMarkerBounds(newMarkerBounds);
-  }, [markerX, markerPositioning, behaviour, bar]);
-
-  const handleMarkerDrop = (markerId) => (barRelativeX) => {
-    // TODO: markerX is dumb, can we do the updates in here instead of useEffect()?
-    const value = getValueForRelativeX(
-      barRelativeX,
-      barOptions.minValue,
-      barOptions.maxValue,
-      bar
-    );
-
-    setMarkerX({ ...markerX, [markerId]: barRelativeX });
+  const handleMvasChange = (markerId, value) => {
+    // TODO: Update value state
+    // TODO: do we really need to manage outputs separately from value state?
+    // it's possible, given the confidence state as well, but we'll see
     const outputKey = {
       left: "left",
       right: "right",
@@ -325,7 +259,7 @@ const MultiVisualAnalogScale = ({
     });
   };
 
-  const handleUndo = () => {
+  const handleResetLast = () => {
     const newStack = [...outputsStack];
     let lastKey = newStack.pop();
 
@@ -337,20 +271,15 @@ const MultiVisualAnalogScale = ({
       });
       if (lastKey !== "confidence") {
         if (lastKey === "bestEstimate") lastKey = "center";
-        // if we're undoing a marker, clear its x pos
-        setMarkerX({
-          ...markerX,
-          [lastKey]: undefined,
-        });
+        // TODO: if we're undoing a marker, clear its value
       }
     }
     setOutputsStack(newStack);
   };
 
-  const handleReset = () => {
+  const handleResetAll = () => {
     setOutputsStack([]);
     setOutputs({});
-    setMarkerX({});
   };
 
   return (
@@ -365,6 +294,8 @@ const MultiVisualAnalogScale = ({
           leftMarkerOptions={leftMarkerOptions}
           rightMarkerOptions={rightMarkerOptions}
           centerMarkerOptions={centerMarkerOptions}
+          behaviour={behaviour}
+          // TODO: Controlled values and changeHandler
         />
 
         {useConfidenceInput && (
@@ -385,12 +316,12 @@ const MultiVisualAnalogScale = ({
           <ResetButtons
             resetLast={
               buttons.resetLast && {
-                onClick: handleUndo,
+                onClick: handleResetLast,
                 isDisabled: !outputsStack.length,
               }
             }
             resetAll={{
-              onClick: handleReset,
+              onClick: handleResetAll,
               isDisabled: !outputsStack.length,
             }}
           />
@@ -398,104 +329,6 @@ const MultiVisualAnalogScale = ({
       </Frame>
     </>
   );
-};
-
-const dragMarkerOptionsPropTypes = PropTypes.shape(
-  // we don't use all of DragMarker's props; some are calculated
-  {
-    /** Color of the marker to show interaction (hover/dragging) */
-    interactColor: PropTypes.string,
-
-    /** Color of the marker at rest, when no other more specific color applies */
-    color: PropTypes.string,
-
-    /** distance from yAnchor (px) the marker starts at */
-    yInitDistance: PropTypes.number,
-
-    /** a text label for the marker, recommended no longer than 3 characters */
-    label: PropTypes.string,
-
-    /** Color for the marker label, if any is given */
-    labelColor: PropTypes.string,
-  }
-);
-
-MultiVisualAnalogScale.propTypes = {
-  /** Options for the scale's question text */
-  questionOptions: PropTypes.shape(questionPropTypes),
-
-  /** Question text to display */
-  question: PropTypes.string,
-
-  /** Options for the scale's horizontal bar */
-  barOptions: PropTypes.shape({
-    ...scaleBarPropTypes,
-    /**
-     * The numeric value of the left hand end of the range bar
-     * (the minimum possible value of the range)
-     */
-    minValue: PropTypes.number.isRequired,
-    /**
-     * The numeric value of the right hand end of the range bar
-     * (the maximum possible value of the range)
-     */
-    maxValue: PropTypes.number.isRequired,
-  }),
-
-  /** Options for the range bar's fixed labels */
-  labelOptions: PropTypes.shape(
-    // sadly we don't use all of ScaleLabel's props
-    // ugh the doc comments aren't inherited either?
-    // TODO: better api docs
-    {
-      labelColor: scaleLabelPropTypes.labelColor,
-      fontFamily: scaleLabelPropTypes.fontFamily,
-      fontSize: scaleLabelPropTypes.fontSize,
-    }
-  ),
-
-  /** Fixed label values for the range bar */
-  labels: PropTypes.shape({
-    /** Label value for the left hand end */
-    min: PropTypes.string,
-    /** Central label value */
-    mid: PropTypes.string,
-    /** Label value for the right hand end */
-    max: PropTypes.string,
-  }),
-
-  /** Options for the Scale Markers */
-  scaleMarkerOptions: PropTypes.shape(scaleMarkerSetPropTypes),
-
-  /** Default options for all Drag Markers */
-  dragMarkerDefaults: dragMarkerOptionsPropTypes,
-
-  /** Options for Left Drag Marker */
-  leftMarkerOptions: dragMarkerOptionsPropTypes,
-
-  /** Options for Right Drag Marker */
-  rightMarkerOptions: dragMarkerOptionsPropTypes,
-
-  /** Options for Center Drag Marker */
-  centerMarkerOptions: dragMarkerOptionsPropTypes,
-
-  /** Whether to ask for a Confidence response */
-  useConfidenceInput: PropTypes.bool,
-
-  /** Options for the Reponse Confidence text */
-  confidenceTextOptions: PropTypes.shape(questionPropTypes),
-
-  /** Response Confidence text to display */
-  confidenceText: PropTypes.string,
-
-  /** Select a preset behaviour */
-  behaviour: PropTypes.string,
-
-  /** Display buttons */
-  buttons: PropTypes.shape({
-    rseetLast: PropTypes.bool,
-    resetAll: PropTypes.bool,
-  }),
 };
 
 MultiVisualAnalogScale.defaultProps = {
