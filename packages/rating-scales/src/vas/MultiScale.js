@@ -104,18 +104,23 @@ export const Scale = ({
         left: {},
         right: {},
         center: {},
-        ...getBehaviourProvider(behaviour).initialMarkerBounds(barBounds),
+        ...getBehaviourProvider(behaviour).getInitialState(barBounds),
       });
     },
     [behaviour]
   );
 
   const handleMarkerDrop = (markerId) => (x) => {
+    const { width } = getBounds(bar);
+
     setMarkerState((old) =>
-      getBehaviourProvider(behaviour).updateMarkerBounds({
-        ...old,
-        [markerId]: { ...old[markerId], x, isActivated: true },
-      })
+      getBehaviourProvider(behaviour).getUpdatedState(
+        {
+          ...old,
+          [markerId]: { ...old[markerId], x, isActivated: true },
+        },
+        width
+      )
     );
 
     const value = getValueForRelativeX(

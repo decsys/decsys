@@ -1,6 +1,8 @@
 // MVAS Behaviours to make it work like Hesketh, Pryor & Hesketh 1988
 
-export const initialMarkerBounds = ({ width, x }) => {
+import { getUpdatedBaseZ } from "./shared";
+
+export const getInitialState = ({ width, x }) => {
   const result = {
     left: { xMin: x },
     right: { xMax: width + x },
@@ -10,7 +12,10 @@ export const initialMarkerBounds = ({ width, x }) => {
   return result;
 };
 
-export const updateMarkerBounds = (markerState) => {
+export const getUpdatedState = (markerState, barWidth) => {
+  // Update zIndex first
+  markerState = getUpdatedBaseZ(markerState, barWidth);
+
   let {
     shared: { baseX },
     left,
@@ -19,7 +24,7 @@ export const updateMarkerBounds = (markerState) => {
   } = markerState;
 
   // in case we need to reset any
-  const initialBounds = initialMarkerBounds({
+  const initialBounds = getInitialState({
     width: right.xMax - left.xMin, // always bar width
     x: left.xMin, // always bar x
   });

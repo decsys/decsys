@@ -1,12 +1,17 @@
 // MVAS Behaviours to make it work like Speirs-Bridge 2010
 
-export const initialMarkerBounds = ({ width, x }) => ({
+import { getUpdatedBaseZ } from "./shared";
+
+export const getInitialState = ({ width, x }) => ({
   // Speirs-Bridge 2010 goes left -> right -> center, so init left only
   left: { x: width / 2, xMin: x, xMax: width + x },
   right: { xMax: width + x },
 });
 
-export const updateMarkerBounds = (markerState) => {
+export const getUpdatedState = (markerState, barWidth) => {
+  // Update zIndex first
+  markerState = getUpdatedBaseZ(markerState, barWidth);
+
   let {
     shared: { baseX },
     left,
@@ -15,7 +20,7 @@ export const updateMarkerBounds = (markerState) => {
   } = markerState;
 
   // in case we need to reset any
-  const initialBounds = initialMarkerBounds({
+  const initialBounds = getInitialState({
     width: right.xMax - left.xMin, // always bar width
     x: left.xMin, // always bar x
   });
