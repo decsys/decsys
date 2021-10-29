@@ -30,7 +30,7 @@ const behaviours = Object.keys(behaviour);
 
 export const Basic = () => (
   <MultiVisualAnalogScale
-    buttons={{ reset: true, undo: true }}
+    buttons={{ resetLast: true, resetAll: true }}
     behaviour={optionsKnob("Behaviour", behaviours, behaviours[0], {
       display: "inline-radio",
     })}

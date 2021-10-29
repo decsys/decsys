@@ -28,6 +28,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { behaviour as behaviourKeys, behaviours } from "./behaviours";
+import { ResetButtons } from "./ResetButtons";
 
 const DottedLine = ({ yAnchor, x1, x2 }) => {
   if (x1 == null || x2 == null) return null;
@@ -224,7 +225,6 @@ const MultiVisualAnalogScale = ({
   }, [markerX, markerPositioning, behaviour, bar]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
-
     // TODO: markerX is dumb, can we do the updates in here instead of useEffect()?
     const value = getValueForRelativeX(
       barRelativeX,
@@ -370,23 +370,17 @@ const MultiVisualAnalogScale = ({
             </div>
           </>
         )}
-        {(buttons.undo || buttons.reset) && (
-          <Stack direction="row" justify="center" mt={5}>
-            {buttons.undo && (
-              <Button
-                size="sm"
-                disabled={!outputsStack.length}
-                onClick={handleUndo}
-              >
-                Reset last
-              </Button>
-            )}
-            {buttons.reset && (
-              <Button size="sm" onClick={handleReset}>
-                Reset all
-              </Button>
-            )}
-          </Stack>
+        {(buttons.resetAll || buttons.resetLast) && (
+          <ResetButtons
+            resetLast={buttons.resetLast && {
+              onClick: handleUndo,
+              isDisabled: !outputsStack.length,
+            }}
+            resetAll={{
+              onClick: handleReset,
+              isDisabled: !outputsStack.length,
+            }}
+          />
         )}
       </Frame>
     </>
@@ -486,8 +480,8 @@ MultiVisualAnalogScale.propTypes = {
 
   /** Display buttons */
   buttons: PropTypes.shape({
-    undo: PropTypes.bool,
-    reset: PropTypes.bool,
+    rseetLast: PropTypes.bool,
+    resetAll: PropTypes.bool,
   }),
 };
 
