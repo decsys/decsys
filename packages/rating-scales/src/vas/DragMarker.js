@@ -128,8 +128,9 @@ const DragMarker = ({
   onDrop = () => {},
   x,
 }) => {
+  console.log(x);
   const isControlled = x == null;
-  const { markerRef, isDragging } = useDragMarker({
+  const { markerRef, isDragging } = useDragBehaviour({
     baseX,
     xMin,
     xMax,
@@ -158,7 +159,7 @@ const DragMarker = ({
   );
 };
 
-const useDragMarker = ({ baseX, xMin, xMax, onDrop }) => {
+const useDragBehaviour = ({ baseX, xMin, xMax, onDrop }) => {
   const [isDragging, setIsDragging] = useState(false);
 
   const markerRef = useCallback(

@@ -128,18 +128,25 @@ const MultiVisualAnalogScale = ({
       // initialise the dragmarker now the bar is available
       const barBounds = getBounds(bar);
       setMarkerPositioning({
-        yAnchor: 0,
-        xOffset: barBounds.x,
+        baseY: 0,
+        baseX: barBounds.x,
       });
 
       // On Bar mount, set initial bounds
-      setMarkerBounds({
+      const result = {
         left: {},
         right: {},
         center: {},
         ...getBehaviourProvider(behaviour).initialMarkerBounds(barBounds),
+      };
+      setMarkerBounds(result);
+      console.log(result);
+      setMarkerX({
+        left: result.left.x,
+        center: result.center.x,
+        right: result.right.x,
       });
-      handleReset();
+      // handleReset();
     },
     [behaviour]
   );
@@ -160,7 +167,7 @@ const MultiVisualAnalogScale = ({
 
   // update marker bounds based on new marker x positions
   useEffect(() => {
-    if(!bar) return;
+    if (!bar) return;
     const { width } = getBounds(bar);
     // if we don't have bounds state for ANY markers, quit
     if (
@@ -202,9 +209,9 @@ const MultiVisualAnalogScale = ({
     let newMarkerBounds = { ...markerBounds };
 
     // apply updated Z index
-    newMarkerBounds.left.baseZIndex = markerZ.left;
-    newMarkerBounds.right.baseZIndex = markerZ.right;
-    newMarkerBounds.center.baseZIndex = markerZ.center;
+    newMarkerBounds.left.baseZ = markerZ.left;
+    newMarkerBounds.right.baseZ = markerZ.right;
+    newMarkerBounds.center.baseZ = markerZ.center;
 
     // apply behaviour updates
     newMarkerBounds = getBehaviourProvider(behaviour).updateMarkerBounds(
@@ -214,9 +221,11 @@ const MultiVisualAnalogScale = ({
     );
 
     setMarkerBounds(newMarkerBounds);
-  }, [markerX, markerPositioning, behaviour]);
+  }, [markerX, markerPositioning, behaviour, bar]);
 
   const handleMarkerDrop = (markerId) => (barRelativeX) => {
+
+    // TODO: markerX is dumb, can we do the updates in here instead of useEffect()?
     const value = getValueForRelativeX(
       barRelativeX,
       barOptions.minValue,
@@ -261,10 +270,6 @@ const MultiVisualAnalogScale = ({
           ...markerX,
           [lastKey]: undefined,
         });
-        setMarkerKeys({
-          ...markerKeys,
-          [lastKey]: generateMarkerKey(lastKey),
-        });
       }
     }
     setOutputsStack(newStack);
@@ -274,11 +279,6 @@ const MultiVisualAnalogScale = ({
     setOutputsStack([]);
     setOutputs({});
     setMarkerX({});
-    setMarkerKeys({
-      left: generateMarkerKey("left"),
-      right: generateMarkerKey("right"),
-      center: generateMarkerKey("center"),
-    });
   };
 
   return (
@@ -300,24 +300,24 @@ const MultiVisualAnalogScale = ({
           <FlexContainer>{labels}</FlexContainer>
           <FlexContainer>
             <DragMarker
-              key={markerKeys.left}
               {...markerPositioning}
               {...markerBounds.left}
               {...leftMarkerOptions}
+              x={markerX.left}
               onDrop={handleMarkerDrop("left")}
             />
             <DragMarker
-              key={markerKeys.right}
               {...markerPositioning}
               {...markerBounds.right}
               {...rightMarkerOptions}
+              x={markerX.right}
               onDrop={handleMarkerDrop("right")}
             />
             <DragMarker
-              key={markerKeys.center}
               {...markerPositioning}
               {...markerBounds.center}
               {...centerMarkerOptions}
+              x={markerX.center}
               onDrop={handleMarkerDrop("center")}
             />
             {behaviour === behaviourKeys.HeskethPryorHesketh1988 && (
@@ -378,7 +378,7 @@ const MultiVisualAnalogScale = ({
                 disabled={!outputsStack.length}
                 onClick={handleUndo}
               >
-                Undo last
+                Reset last
               </Button>
             )}
             {buttons.reset && (
