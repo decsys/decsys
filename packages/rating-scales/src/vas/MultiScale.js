@@ -1,20 +1,19 @@
 import { useState, useCallback, useEffect } from "react";
-import PropTypes from "prop-types";
 import UnitValue from "unit-value/lib/unit-value";
 import Frame from "../core/Frame";
-import Question, { questionPropTypes } from "../core/Question";
+import Question from "../core/Question";
 import {
   FlexContainer,
   ScaleBar,
   scaleBarDefaultProps,
-  scaleBarPropTypes,
 } from "../core/ScaleBar";
-import ScaleLabel, { scaleLabelPropTypes } from "../core/ScaleLabel";
+import ScaleLabel from "../core/ScaleLabel";
+import { ScaleMarkerSet } from "../core/ScaleMarkerSet";
 import {
-  ScaleMarkerSet,
-  scaleMarkerSetPropTypes,
-} from "../core/ScaleMarkerSet";
-import { getBounds, getValueForRelativeX } from "../core/services/bar-coords";
+  getBounds,
+  getValueForRelativeX,
+  getXPosForValue,
+} from "../core/services/bar-coords";
 import { DragMarker } from "./DragMarker";
 import { behaviour as behaviourKeys, behaviours } from "./behaviours";
 import { ResetButtons } from "./ResetButtons";
@@ -75,9 +74,9 @@ export const Scale = ({
   leftMarkerOptions = {},
   rightMarkerOptions = {},
   centerMarkerOptions = {},
+  values = {},
   onChange = () => {},
 }) => {
-  console.log(behaviour);
   const [markerState, setMarkerState] = useState({
     shared: {},
     left: {},
@@ -86,17 +85,18 @@ export const Scale = ({
   });
 
   // mounting the bar / configuring dom ref
+  // update marker state in response to prop changes (notably controlled values)
   const [bar, setBar] = useState(null);
   const barRef = useCallback(
-    // TODO: controlled values
     (bar) => {
       if (!bar) return;
       setBar(bar);
-      console.log(behaviour, bar);
 
       // initialise the dragmarker now the bar is available
       const barBounds = getBounds(bar);
-      setMarkerState({
+
+      // initialise state, including based on behaviour
+      const initialMarkerState = {
         shared: {
           baseY: 0,
           baseX: barBounds.x,
@@ -105,24 +105,51 @@ export const Scale = ({
         right: {},
         center: {},
         ...getBehaviourProvider(behaviour).getInitialState(barBounds),
-      });
+      };
+
+      // add values if any are set
+      const getMarkerX = (value, fallback) =>
+        value != null
+          ? getXPosForValue(
+              value,
+              barOptions.minValue,
+              barOptions.maxValue,
+              bar
+            )
+          : fallback;
+
+      if (values?.left != null)
+        initialMarkerState.left = {
+          ...initialMarkerState.left,
+          x: getMarkerX(values.left),
+          isActivated: true,
+        };
+      if (values?.right != null)
+        initialMarkerState.right = {
+          ...initialMarkerState.right,
+          x: getMarkerX(values.right),
+          isActivated: true,
+        };
+      if (values?.center != null)
+        initialMarkerState.center = {
+          ...initialMarkerState.center,
+          x: getMarkerX(values.center),
+          isActivated: true,
+        };
+
+      // finally, set the initial state
+      setMarkerState(
+        getBehaviourProvider(behaviour).getUpdatedState(
+          initialMarkerState,
+          { minValue: barOptions.minValue, maxValue: barOptions.maxValue },
+          barBounds
+        )
+      );
     },
-    [behaviour]
+    [behaviour, values, barOptions.minValue, barOptions.maxValue]
   );
 
   const handleMarkerDrop = (markerId) => (x) => {
-    const { width } = getBounds(bar);
-
-    setMarkerState((old) =>
-      getBehaviourProvider(behaviour).getUpdatedState(
-        {
-          ...old,
-          [markerId]: { ...old[markerId], x, isActivated: true },
-        },
-        width
-      )
-    );
-
     const value = getValueForRelativeX(
       x,
       barOptions.minValue,
@@ -130,7 +157,7 @@ export const Scale = ({
       bar
     );
 
-    onChange(markerId, value);
+    onChange(markerId, value, { ...values, [markerId]: value });
   };
 
   return (
@@ -185,6 +212,11 @@ export const Scale = ({
   );
 };
 
+const valueIds = {
+  center: "center",
+  bestEstimate: "bestEstimate",
+};
+
 // TODO: Refactor, especially undo/reset
 const MultiVisualAnalogScale = ({
   frameHeight,
@@ -198,15 +230,30 @@ const MultiVisualAnalogScale = ({
   leftMarkerOptions = {},
   rightMarkerOptions = {},
   centerMarkerOptions = {},
+
   useConfidenceInput,
   confidenceTextOptions,
   confidenceText,
   behaviour,
   buttons,
+
+  values = {},
+  onChange = () => {},
 }) => {
   leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
   rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
   centerMarkerOptions = { ...dragMarkerDefaults, ...centerMarkerOptions };
+
+  const [resetStack, setResetStack] = useState([]);
+  const [scaleValues, setScaleValues] = useState({});
+
+  const handleScaleChange = (markerId, newValue, newValues) => {
+    // map output property names
+    const outputId =
+      markerId === valueIds.center ? valueIds.bestEstimate : markerId;
+
+    onChange(outputId, newValue, { ...values, ...newValues });
+  };
 
   // enabling reset/undo
   const [outputsStack, setOutputsStack] = useState([]);

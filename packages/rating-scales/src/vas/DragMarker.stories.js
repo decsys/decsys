@@ -26,10 +26,8 @@ export const Basic = (args) => {
     x: markerPos,
     onDrop: (x) => {
       setMarkerPos(x);
-      console.log(x);
     },
   };
-  console.log(args);
 
   return (
     <>

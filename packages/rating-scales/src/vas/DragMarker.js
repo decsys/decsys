@@ -128,7 +128,6 @@ const DragMarker = ({
   onDrop = () => {},
   x,
 }) => {
-  console.log(x);
   const isControlled = x == null;
   const { markerRef, isDragging } = useDragBehaviour({
     baseX,

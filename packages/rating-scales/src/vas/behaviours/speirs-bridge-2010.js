@@ -1,16 +1,19 @@
 // MVAS Behaviours to make it work like Speirs-Bridge 2010
-
 import { getUpdatedBaseZ } from "./shared";
 
 export const getInitialState = ({ width, x }) => ({
   // Speirs-Bridge 2010 goes left -> right -> center, so init left only
-  left: { x: width / 2, xMin: x, xMax: width + x },
+  left: {
+    x: width / 2,
+    xMin: x,
+    xMax: width + x,
+  },
   right: { xMax: width + x },
 });
 
-export const getUpdatedState = (markerState, barWidth) => {
+export const getUpdatedState = (markerState, barOptions, barBounds) => {
   // Update zIndex first
-  markerState = getUpdatedBaseZ(markerState, barWidth);
+  markerState = getUpdatedBaseZ(markerState, barOptions, barBounds);
 
   let {
     shared: { baseX },
@@ -20,14 +23,11 @@ export const getUpdatedState = (markerState, barWidth) => {
   } = markerState;
 
   // in case we need to reset any
-  const initialBounds = getInitialState({
-    width: right.xMax - left.xMin, // always bar width
-    x: left.xMin, // always bar x
-  });
+  const initialState = getInitialState(barBounds);
 
   // left updates
   if ((center.x ?? right.x) != null) left.xMax = (center.x ?? right.x) + baseX;
-  else left.xMax = initialBounds.left.xMax;
+  else left.xMax = initialState.left.xMax;
 
   // right updates
   if (left.isActivated) {
@@ -39,7 +39,7 @@ export const getUpdatedState = (markerState, barWidth) => {
     // right min is based on left
     right.xMin = left.xMin;
   } else {
-    right = initialBounds.right;
+    right = initialState.right;
   }
 
   if ((center.x ?? left.x) != null) right.xMin = (center.x ?? left.x) + baseX;
@@ -53,7 +53,7 @@ export const getUpdatedState = (markerState, barWidth) => {
     center.xMin = left.x + baseX;
     center.xMax = right.x + baseX;
   } else {
-    center = initialBounds.center ?? {};
+    center = initialState.center ?? {};
   }
 
   return { ...markerState, left, right, center };

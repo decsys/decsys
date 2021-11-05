@@ -82,4 +82,5 @@ Basic.args = {
   leftMarkerOptions: { label: "L" },
   rightMarkerOptions: { label: "R" },
   centerMarkerOptions: { label: "C" },
+  values: {},
 };

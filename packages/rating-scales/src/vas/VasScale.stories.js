@@ -19,7 +19,6 @@ export const Basic = (args) => {
       action("VAS Completed")(v);
     },
   };
-  console.log(args);
 
   return (
     <Frame frameHeight="300px">
