@@ -35,7 +35,15 @@ const DottedLine = ({ baseY, x1, x2 }) => {
   );
 };
 
-const addToOutputsStack = (stack, value) => {
+/**
+ * Ensure we only add a value to the stack once,
+ * and only in the originally added order
+ * e.g. behaviour order for drag markers
+ * @param {*} stack the current stack
+ * @param {*} value the value to add
+ * @returns a new copy of the stack, with the added value if appropriate
+ */
+const addToResetStack = (stack, value) => {
   const newStack = [...stack];
   if (newStack.every((x) => x !== value)) newStack.push(value);
   return newStack;
@@ -215,9 +223,26 @@ export const Scale = ({
 const valueIds = {
   center: "center",
   bestEstimate: "bestEstimate",
+  confidence: "confidence",
 };
 
-// TODO: Refactor, especially undo/reset
+export const useMultiVisualAnalogScale = (initialValues) => {
+  const [values, setValues] = useState(initialValues);
+
+  const onChange = (id, v, newValues) => setValues({ ...newValues, [id]: v });
+
+  const onResetValue = (id) =>
+    setValues((old) => ({ ...old, [id]: undefined }));
+
+  const onResetAll = () => setValues({});
+
+  return {
+    props: { values },
+    handlers: { onChange, onResetValue, onResetAll },
+    setValues,
+  };
+};
+
 const MultiVisualAnalogScale = ({
   frameHeight,
   questionOptions,
@@ -230,15 +255,15 @@ const MultiVisualAnalogScale = ({
   leftMarkerOptions = {},
   rightMarkerOptions = {},
   centerMarkerOptions = {},
-
   useConfidenceInput,
   confidenceTextOptions,
   confidenceText,
   behaviour,
   buttons,
-
   values = {},
   onChange = () => {},
+  onResetAll = () => {},
+  onResetValue = () => {},
 }) => {
   leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
   rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
@@ -246,87 +271,50 @@ const MultiVisualAnalogScale = ({
 
   const [resetStack, setResetStack] = useState([]);
   const [scaleValues, setScaleValues] = useState({});
+  const [confidenceValue, setConfidenceValue] = useState();
+
+  useEffect(() => {
+    const { left, right, bestEstimate, confidence } = values;
+    setScaleValues({ left, right, center: bestEstimate });
+    setConfidenceValue(confidence);
+  }, [values]);
 
   const handleScaleChange = (markerId, newValue, newValues) => {
     // map output property names
     const outputId =
       markerId === valueIds.center ? valueIds.bestEstimate : markerId;
 
-    onChange(outputId, newValue, { ...values, ...newValues });
-  };
+    setResetStack(addToResetStack(resetStack, outputId));
 
-  // enabling reset/undo
-  const [outputsStack, setOutputsStack] = useState([]);
-
-  const [outputs, setOutputs] = useState({});
-  useEffect(() => {
-    const dispatch = (eventName) =>
-      document.dispatchEvent(
-        new CustomEvent(eventName, {
-          detail: outputs,
-        })
-      );
-
-    // Outputs updated
-    dispatch("MvasUpdated");
-
-    // If the last output to be entered has a value
-    // we can consider the response "completed"
-    if (useConfidenceInput) {
-      if (outputs.confidence != null) dispatch("MvasCompleted");
-    } else if (
-      outputs.left != null &&
-      outputs.right != null &&
-      outputs.bestEstimate != null
-    ) {
-      dispatch("MvasCompleted");
-    }
-  }, [outputs, useConfidenceInput]);
-
-  const handleMvasChange = (markerId, value) => {
-    // TODO: Update value state
-    // TODO: do we really need to manage outputs separately from value state?
-    // it's possible, given the confidence state as well, but we'll see
-    const outputKey = {
-      left: "left",
-      right: "right",
-      center: "bestEstimate",
-    }[markerId];
-    const newStack = addToOutputsStack(outputsStack, outputKey);
-    setOutputsStack(newStack);
-    setOutputs({ ...outputs, [outputKey]: value });
+    const mergedValues = {
+      ...values,
+      ...newValues,
+      bestEstimate:
+        outputId === valueIds.bestEstimate ? newValue : newValues.center,
+    };
+    delete mergedValues.center;
+    onChange(outputId, newValue, mergedValues);
   };
 
   const handleConfidenceChange = (value) => {
     value = Math.min(Math.max(value, 0), 100);
-    setOutputsStack(addToOutputsStack(outputsStack, "confidence"));
-    setOutputs({
-      ...outputs,
-      confidence: value,
-    });
+    setResetStack(addToResetStack(resetStack, valueIds.confidence));
+    setConfidenceValue(value);
+    onChange(valueIds.confidence, value, { ...values, confidence: value });
   };
 
   const handleResetLast = () => {
-    const newStack = [...outputsStack];
+    const newStack = [...resetStack];
     let lastKey = newStack.pop();
-
     if (lastKey) {
-      // clear the recorded output
-      setOutputs({
-        ...outputs,
-        [lastKey]: undefined,
-      });
-      if (lastKey !== "confidence") {
-        if (lastKey === "bestEstimate") lastKey = "center";
-        // TODO: if we're undoing a marker, clear its value
-      }
+      onResetValue(lastKey);
+      setResetStack(newStack);
     }
-    setOutputsStack(newStack);
   };
 
   const handleResetAll = () => {
-    setOutputsStack([]);
-    setOutputs({});
+    setResetStack([]);
+    onResetAll();
   };
 
   return (
@@ -342,21 +330,20 @@ const MultiVisualAnalogScale = ({
           rightMarkerOptions={rightMarkerOptions}
           centerMarkerOptions={centerMarkerOptions}
           behaviour={behaviour}
-          // TODO: Controlled values and changeHandler
+          values={scaleValues}
+          onChange={handleScaleChange}
         />
 
         {useConfidenceInput && (
           <Confidence
             confidenceText={confidenceText}
             confidenceTextOptions={confidenceTextOptions}
-            isDisabled={
-              outputs.bestEstimate == null ||
-              outputs.left == null ||
-              outputs.right == null
-            }
+            isDisabled={[values.left, values.right, values.bestEstimate].some(
+              (x) => x == null
+            )}
             frameHeight={frameHeight}
             onChange={handleConfidenceChange}
-            value={outputs.confidence}
+            value={confidenceValue}
           />
         )}
         {(buttons.resetAll || buttons.resetLast) && (
@@ -364,12 +351,12 @@ const MultiVisualAnalogScale = ({
             resetLast={
               buttons.resetLast && {
                 onClick: handleResetLast,
-                isDisabled: !outputsStack.length,
+                isDisabled: !resetStack.length,
               }
             }
             resetAll={{
               onClick: handleResetAll,
-              isDisabled: !outputsStack.length,
+              isDisabled: !resetStack.length,
             }}
           />
         )}

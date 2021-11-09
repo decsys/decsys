@@ -26,7 +26,7 @@ export const Basic = (args) => {
     values,
     onChange: (id, v) => {
       setValues((old) => ({ ...old, [id]: v }));
-      action("VAS Completed")(id, v);
+      action("MVAS Change")(id, v);
     },
   };
 
