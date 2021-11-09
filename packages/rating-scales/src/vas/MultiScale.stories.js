@@ -16,6 +16,13 @@ export default {
       options: behaviours,
       control: { type: "radio" },
     },
+    useConfidenceInput: {
+      options: [false, "input", "scale"],
+      control: {
+        type: "radio",
+        labels: { [false]: "None", input: "Input", scale: "Scale" },
+      },
+    },
   },
 };
 
