@@ -226,6 +226,11 @@ const valueIds = {
   confidence: "confidence",
 };
 
+/**
+ * State Hook for using a MultiVisualAnalogScale
+ * @param {*} initialValues
+ * @returns
+ */
 export const useMultiVisualAnalogScale = (initialValues) => {
   const [values, setValues] = useState(initialValues);
 
@@ -244,22 +249,30 @@ export const useMultiVisualAnalogScale = (initialValues) => {
 };
 
 const MultiVisualAnalogScale = ({
-  frameHeight,
-  questionOptions,
+  frameHeight = "300px",
+  questionOptions = {},
+  barOptions = {
+    minValue: 0,
+    maxValue: 100,
+    // we depend on this one for calculations
+    thickness: scaleBarDefaultProps.thickness,
+  },
+  labelOptions = {},
+  labels = {},
+  scaleMarkerOptions = {},
+  dragMarkerDefaults = {},
+  leftMarkerOptions = { label: "L" },
+  rightMarkerOptions = { label: "R" },
+  centerMarkerOptions = { label: "C" },
+  useConfidenceInput = true,
+  confidenceText = "How confident are you?",
+  confidenceTextOptions = {
+    topMargin: "80%",
+    xAlign: "center",
+  },
+  behaviour = behaviours.SpeirsBridge2010,
+  buttons = {},
   question,
-  barOptions,
-  labels,
-  labelOptions,
-  scaleMarkerOptions,
-  dragMarkerDefaults,
-  leftMarkerOptions = {},
-  rightMarkerOptions = {},
-  centerMarkerOptions = {},
-  useConfidenceInput,
-  confidenceTextOptions,
-  confidenceText,
-  behaviour,
-  buttons,
   values = {},
   onChange = () => {},
   onResetAll = () => {},
@@ -363,32 +376,6 @@ const MultiVisualAnalogScale = ({
       </Frame>
     </>
   );
-};
-
-MultiVisualAnalogScale.defaultProps = {
-  frameHeight: "300px",
-  questionOptions: {},
-  barOptions: {
-    minValue: 0,
-    maxValue: 100,
-    // we depend on this one for calculations
-    thickness: scaleBarDefaultProps.thickness,
-  },
-  labelOptions: {},
-  labels: {},
-  scaleMarkerOptions: {},
-  dragMarkerDefaults: {},
-  leftMarkerOptions: { label: "L" },
-  rightMarkerOptions: { label: "R" },
-  centerMarkerOptions: { label: "C" },
-  useConfidenceInput: true,
-  confidenceText: "How confident are you?",
-  confidenceTextOptions: {
-    topMargin: "80%",
-    xAlign: "center",
-  },
-  behaviour: behaviours.SpeirsBridge2010,
-  buttons: {},
 };
 
 export { MultiVisualAnalogScale };
