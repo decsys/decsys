@@ -138,5 +138,5 @@ Sample.args = {
   rightMarkerOptions: {
     color: "#1a4",
   },
-  useConfidenceInput: "true",
+  useConfidenceInput: "scale",
 };

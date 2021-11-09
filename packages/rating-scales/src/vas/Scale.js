@@ -29,6 +29,7 @@ export const Scale = ({
   dragMarkerOptions = {},
   value,
   onChange = () => {},
+  isDisabled,
 }) => {
   const [markerState, setMarkerState] = useState({});
 
@@ -49,10 +50,11 @@ export const Scale = ({
         baseY: 0,
         xMin: barX,
         xMax: width + barX,
-        isActivated: old.isActivated ?? false,
+        isActivated: markerX ?? false,
+        isDisabled: isDisabled,
       }));
     },
-    [value, barOptions.minValue, barOptions.maxValue]
+    [value, barOptions.minValue, barOptions.maxValue, isDisabled]
   );
 
   const labels = [];
@@ -69,7 +71,6 @@ export const Scale = ({
   }
 
   const handleMarkerDrop = (x) => {
-    setMarkerState((old) => ({ ...old, x, isActivated: true }));
     const value = getValueForRelativeX(
       x,
       barOptions.minValue,

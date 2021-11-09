@@ -38,7 +38,7 @@ const MarkerIcon = (p) => (
 );
 
 const MarkerPin = () => {
-  const { color, interactColor, baseZ, isActivated, isDragging } =
+  const { color, interactColor, baseZ, isActivated, isDragging, isDisabled } =
     useContext(DragMarkerContext);
 
   const dropShadow = (dist) =>
@@ -58,7 +58,7 @@ const MarkerPin = () => {
     position: "absolute",
     opacity: isActivated ? 1 : 0.5,
     color,
-    "&:hover": inUseStyles,
+    "&:hover": !isDisabled ? inUseStyles : {},
     transition: "color .1s, top .1s, filter .1s",
   };
 
@@ -91,7 +91,7 @@ const MarkerLabel = () => {
     pointerEvents: "none",
   };
 
-  return label ? <div css={styles}>{label}</div> : null;
+  return label != null ? <div css={styles}>{label}</div> : null;
 };
 
 const Marker = forwardRef(({ x }, ref) => {
@@ -121,6 +121,7 @@ const DragMarker = ({
   xMin,
   xMax,
   isActivated,
+  isDisabled,
   color = "#000",
   interactColor = "#69b",
   label,
@@ -128,13 +129,12 @@ const DragMarker = ({
   onDrop = () => {},
   x,
 }) => {
-  const isControlled = x == null;
   const { markerRef, isDragging } = useDragBehaviour({
     baseX,
     xMin,
     xMax,
-    isControlled,
     onDrop,
+    isDisabled,
   });
 
   if (x == null) return null;
@@ -145,12 +145,13 @@ const DragMarker = ({
         baseY,
         baseZ,
         inactiveY,
-        isActivated,
+        isActivated: isActivated != null && isActivated !== false,
         color,
         interactColor,
         label,
         labelColor,
         isDragging,
+        isDisabled,
       }}
     >
       <Marker ref={markerRef} x={x} />
@@ -158,7 +159,7 @@ const DragMarker = ({
   );
 };
 
-const useDragBehaviour = ({ baseX, xMin, xMax, onDrop }) => {
+const useDragBehaviour = ({ baseX, xMin, xMax, onDrop, isDisabled }) => {
   const [isDragging, setIsDragging] = useState(false);
 
   const markerRef = useCallback(
@@ -178,29 +179,31 @@ const useDragBehaviour = ({ baseX, xMin, xMax, onDrop }) => {
         marker.style.left = `${xPos}px`;
       };
 
-      marker.onpointerdown = (e) => {
-        setIsDragging(true);
-        marker.setPointerCapture(e.pointerId);
-        marker.onpointermove = handleMove;
-        marker.style.cursor = "grabbing";
+      marker.onpointerdown = isDisabled
+        ? () => {}
+        : (e) => {
+            setIsDragging(true);
+            marker.setPointerCapture(e.pointerId);
+            marker.onpointermove = handleMove;
+            marker.style.cursor = "grabbing";
 
-        handleMove(e); // act as if we've moved the pointer to this position
-      };
+            handleMove(e); // act as if we've moved the pointer to this position
+          };
 
-      marker.onpointerup = (e) => {
-        setIsDragging(false);
-        marker.onpointermove = null;
-        marker.releasePointerCapture(e.pointerId);
-        marker.style.cursor = null;
-        marker.style.left = null;
-        onDrop(xPos);
-      };
+      marker.onpointerup = isDisabled
+        ? () => {}
+        : (e) => {
+            setIsDragging(false);
+            marker.onpointermove = null;
+            marker.releasePointerCapture(e.pointerId);
+            marker.style.cursor = null;
+            marker.style.left = null;
+            onDrop(xPos);
+          };
     },
-    [baseX, xMax, xMin, onDrop]
+    [baseX, xMax, xMin, onDrop, isDisabled]
   );
 
-  // TODO might wrap up the actions for use in onDrop? e.g. setValue/Position?
-  // or might not need them outside the hook for use in onDrop?
   return { isDragging, markerRef };
 };
 

@@ -17,7 +17,7 @@ import {
 import { DragMarker } from "./DragMarker";
 import { behaviour as behaviourKeys, behaviours } from "./behaviours";
 import { ResetButtons } from "./ResetButtons";
-import { Confidence } from "./Confidence";
+import { Confidence, confidenceInputStyles } from "./Confidence";
 
 const DottedLine = ({ baseY, x1, x2 }) => {
   if (x1 == null || x2 == null) return null;
@@ -264,12 +264,9 @@ const MultiVisualAnalogScale = ({
   leftMarkerOptions = { label: "L" },
   rightMarkerOptions = { label: "R" },
   centerMarkerOptions = { label: "C" },
-  useConfidenceInput = true,
+  useConfidenceInput = confidenceInputStyles.input,
   confidenceText = "How confident are you?",
-  confidenceTextOptions = {
-    topMargin: "80%",
-    xAlign: "center",
-  },
+  confidenceTextOptions = { topMargin: "0%", xAlign: "center" },
   behaviour = behaviours.SpeirsBridge2010,
   buttons = {},
   question,
@@ -346,34 +343,34 @@ const MultiVisualAnalogScale = ({
           values={scaleValues}
           onChange={handleScaleChange}
         />
-
-        {useConfidenceInput && (
-          <Confidence
-            confidenceText={confidenceText}
-            confidenceTextOptions={confidenceTextOptions}
-            isDisabled={[values.left, values.right, values.bestEstimate].some(
-              (x) => x == null
-            )}
-            frameHeight={frameHeight}
-            onChange={handleConfidenceChange}
-            value={confidenceValue}
-          />
-        )}
-        {(buttons.resetAll || buttons.resetLast) && (
-          <ResetButtons
-            resetLast={
-              buttons.resetLast && {
-                onClick: handleResetLast,
-                isDisabled: !resetStack.length,
-              }
-            }
-            resetAll={{
-              onClick: handleResetAll,
-              isDisabled: !resetStack.length,
-            }}
-          />
-        )}
       </Frame>
+      {useConfidenceInput && (
+        <Confidence
+          confidenceText={confidenceText}
+          confidenceTextOptions={confidenceTextOptions}
+          isDisabled={[values.left, values.right, values.bestEstimate].some(
+            (x) => x == null
+          )}
+          topMargin={frameHeight}
+          onChange={handleConfidenceChange}
+          value={confidenceValue}
+          style={useConfidenceInput}
+        />
+      )}
+      {(buttons.resetAll || buttons.resetLast) && (
+        <ResetButtons
+          resetLast={
+            buttons.resetLast && {
+              onClick: handleResetLast,
+              isDisabled: !resetStack.length,
+            }
+          }
+          resetAll={{
+            onClick: handleResetAll,
+            isDisabled: !resetStack.length,
+          }}
+        />
+      )}
     </>
   );
 };

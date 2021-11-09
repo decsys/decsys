@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { action } from "@storybook/addon-actions";
 import Frame from "../core/Frame";
-import { Confidence } from "./Confidence";
+import { Confidence, confidenceInputStyles } from "./Confidence";
 
 export default {
   title: "VAS + MVAS/Confidence",
@@ -22,7 +22,6 @@ export const Basic = (args) => {
 
   return (
     <Frame frameHeight="300px">
-      <Confidence frameHeight="300px" {...args} />
       <input
         style={{ border: "thin solid grey" }}
         value={value}
@@ -30,6 +29,7 @@ export const Basic = (args) => {
           setValue(e.target.value ? parseFloat(e.target.value) : null)
         }
       />
+      <Confidence topMargin="300px" {...args} />
     </Frame>
   );
 };
@@ -39,4 +39,5 @@ Basic.args = {
   confidenceTextOptions: {
     xAlign: "center",
   },
+  style: confidenceInputStyles.scale,
 };
