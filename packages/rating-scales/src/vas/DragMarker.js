@@ -4,6 +4,7 @@ import {
   forwardRef,
   createContext,
   useContext,
+  useRef,
 } from "react";
 
 const zIndexOffsets = {
@@ -162,11 +163,11 @@ const DragMarker = ({
 const useDragBehaviour = ({ baseX, xMin, xMax, onDrop, isDisabled }) => {
   const [isDragging, setIsDragging] = useState(false);
 
+  const xPos = useRef();
+
   const markerRef = useCallback(
     (marker) => {
       if (!marker) return;
-
-      let xPos;
 
       const handleMove = (e) => {
         // clamp x if necessary
@@ -175,8 +176,8 @@ const useDragBehaviour = ({ baseX, xMin, xMax, onDrop, isDisabled }) => {
           xMax ?? e.pageX
         );
         //offset it for the CSS positioning
-        xPos = clampedX - baseX;
-        marker.style.left = `${xPos}px`;
+        xPos.current = clampedX - baseX;
+        marker.style.left = `${xPos.current}px`;
       };
 
       marker.onpointerdown = isDisabled
@@ -198,7 +199,7 @@ const useDragBehaviour = ({ baseX, xMin, xMax, onDrop, isDisabled }) => {
             marker.releasePointerCapture(e.pointerId);
             marker.style.cursor = null;
             marker.style.left = null;
-            onDrop(xPos);
+            onDrop(xPos.current);
           };
     },
     [baseX, xMax, xMin, onDrop, isDisabled]

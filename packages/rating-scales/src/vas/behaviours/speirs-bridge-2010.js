@@ -56,7 +56,5 @@ export const getUpdatedState = (markerState, barBounds) => {
     center = initialState.center ?? {};
   }
 
-  console.log(left, right, center);
-
   return { ...markerState, left, right, center };
 };

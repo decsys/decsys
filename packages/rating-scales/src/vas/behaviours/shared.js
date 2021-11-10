@@ -22,7 +22,6 @@ export const getUpdatedBaseZ = (markerState, { width: barWidth }) => {
   // we do this irrespective of closeness of markers
   // since it makes no difference at distance,
   // but is correct if any are close
-  console.log(left.x, barWidth, barWidth / 2);
   if (left.x < barWidth / 2) {
     left.baseZ = 10;
     right.baseZ = 20;
