@@ -149,7 +149,6 @@ export const Scale = ({
       setMarkerState(
         getBehaviourProvider(behaviour).getUpdatedState(
           initialMarkerState,
-          { minValue: barOptions.minValue, maxValue: barOptions.maxValue },
           barBounds
         )
       );

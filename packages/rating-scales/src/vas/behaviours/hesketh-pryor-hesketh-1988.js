@@ -17,9 +17,9 @@ export const getInitialState = ({ width, x }) => {
   };
 };
 
-export const getUpdatedState = (markerState, barOptions, barBounds) => {
+export const getUpdatedState = (markerState, barBounds) => {
   // Update zIndex first
-  markerState = getUpdatedBaseZ(markerState, barOptions, barBounds);
+  markerState = getUpdatedBaseZ(markerState, barBounds);
 
   let {
     shared: { baseX },

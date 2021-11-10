@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { action } from "@storybook/addon-actions";
-import Frame from "../core/Frame";
 import { Confidence, confidenceInputStyles } from "./Confidence";
 
 export default {

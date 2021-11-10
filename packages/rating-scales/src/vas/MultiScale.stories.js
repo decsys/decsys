@@ -105,6 +105,7 @@ Basic.args = {
   centerMarkerOptions: { label: "C" },
   values: {},
   buttons: { resetLast: true, resetAll: true },
+  useConfidenceInput: "input",
 };
 
 export const Sample = Basic.bind({});

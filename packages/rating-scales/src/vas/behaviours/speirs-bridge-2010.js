@@ -11,9 +11,9 @@ export const getInitialState = ({ width, x }) => ({
   right: { xMax: width + x },
 });
 
-export const getUpdatedState = (markerState, barOptions, barBounds) => {
+export const getUpdatedState = (markerState, barBounds) => {
   // Update zIndex first
-  markerState = getUpdatedBaseZ(markerState, barOptions, barBounds);
+  markerState = getUpdatedBaseZ(markerState, barBounds);
 
   let {
     shared: { baseX },
@@ -55,6 +55,8 @@ export const getUpdatedState = (markerState, barOptions, barBounds) => {
   } else {
     center = initialState.center ?? {};
   }
+
+  console.log(left, right, center);
 
   return { ...markerState, left, right, center };
 };
