@@ -47,6 +47,7 @@ const ConfidenceScale = ({ isDisabled, onChange = () => {}, value }) => (
     labels={{ min: "0%", max: "100%" }}
     labelOptions={{
       labelColor: isDisabled ? "#bbb" : undefined,
+      yAlign: "center",
     }}
     value={value}
     onChange={(v) => !isDisabled && onChange(v)}

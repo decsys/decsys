@@ -14,6 +14,7 @@ import {
   getValueForRelativeX,
   getXPosForValue,
 } from "../core/services/bar-coords";
+import { Confidence } from "./Confidence";
 import { DragMarker } from "./DragMarker";
 
 export const Scale = ({
@@ -64,7 +65,13 @@ export const Scale = ({
       <ScaleLabel
         key={i}
         labelIndex={i}
-        {...{ ...labelOptions, yAlign: "below" }} // fix labels to below as the marker is above
+        {...{
+          ...labelOptions,
+          yAlign:
+            labelOptions.yAlign === "above"
+              ? "below" // fix labels to below as the marker is above
+              : labelOptions.yAlign,
+        }}
         value={labelValues[i]}
       />
     );
@@ -105,6 +112,27 @@ export const Scale = ({
   );
 };
 
+/**
+ * State Hook for using a VisualAnalogScale
+ * @param {*} initialValue
+ * @param {*} initialConfidence
+ * @returns
+ */
+export const useVisualAnalogScale = (initialValue, initialConfidence) => {
+  const [value, setValue] = useState(initialValue);
+  const [confidence, setConfidence] = useState(initialConfidence);
+
+  const onChange = (v) => setValue(v);
+  const onConfidenceChange = (c) => setConfidence(c);
+
+  return {
+    props: { value, confidenceValue: confidence },
+    handlers: { onChange, onConfidenceChange },
+    setValue,
+    setConfidence,
+  };
+};
+
 const VisualAnalogScale = ({
   frameHeight = "300px",
   questionOptions = {},
@@ -116,20 +144,38 @@ const VisualAnalogScale = ({
   dragMarkerOptions,
   value,
   onChange,
+  useConfidenceInput,
+  confidenceText = "How confident are you?",
+  confidenceTextOptions = { topMargin: "0%", xAlign: "center" },
+  confidenceValue,
+  onConfidenceChange,
 }) => {
   return (
-    <Frame frameHeight={frameHeight}>
-      <Question {...questionOptions}>{question}</Question>
-      <Scale
-        barOptions={barOptions}
-        labels={labels}
-        labelOptions={labelOptions}
-        scaleMarkerOptions={scaleMarkerOptions}
-        dragMarkerOptions={dragMarkerOptions}
-        onChange={onChange}
-        value={value}
-      />
-    </Frame>
+    <>
+      <Frame frameHeight={frameHeight}>
+        <Question {...questionOptions}>{question}</Question>
+        <Scale
+          barOptions={barOptions}
+          labels={labels}
+          labelOptions={labelOptions}
+          scaleMarkerOptions={scaleMarkerOptions}
+          dragMarkerOptions={dragMarkerOptions}
+          onChange={onChange}
+          value={value}
+        />
+      </Frame>
+      {useConfidenceInput && (
+        <Confidence
+          confidenceText={confidenceText}
+          confidenceTextOptions={confidenceTextOptions}
+          isDisabled={value == null}
+          topMargin={frameHeight}
+          onChange={onConfidenceChange}
+          value={confidenceValue}
+          style={useConfidenceInput}
+        />
+      )}
+    </>
   );
 };
 
