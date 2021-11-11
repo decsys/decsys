@@ -1,44 +1,33 @@
-import { MultiVisualAnalogScale } from "./MultiScale";
+import { Scale } from "./MultiScale";
+import { useState } from "react";
+import Frame from "../core/Frame";
 import { action } from "@storybook/addon-actions";
 import { behaviour } from "./behaviours";
 import { Flex, Stack } from "@chakra-ui/react";
-import { useArgs } from "@storybook/client-api";
 
 const behaviours = Object.keys(behaviour);
 
 export default {
-  title: "Rating Scales/MVAS",
-  component: MultiVisualAnalogScale,
+  title: "VAS + MVAS/MVAS Scale",
+  component: Scale,
   argTypes: {
     behaviour: {
       options: behaviours,
       control: { type: "radio" },
     },
-    useConfidenceInput: {
-      options: [false, "input", "scale"],
-      control: {
-        type: "radio",
-        labels: { [false]: "None", input: "Input", scale: "Scale" },
-      },
-    },
   },
 };
 
 export const Basic = (args) => {
-  const [{ values }, updateArgs] = useArgs();
+  const [values, setValues] = useState(args.values);
 
-  // add actions for storybook benefit
-  const handleChange = (id, v, all) => {
-    updateArgs({ values: { ...all, [id]: v } });
-    action("onChange")(id, v, all);
-  };
-  const handleResetAll = () => {
-    updateArgs({ values: {} });
-    action("onResetAll")();
-  };
-  const handleResetValue = (id) => {
-    updateArgs({ values: { ...values, [id]: undefined } });
-    action("onResetValue")(id);
+  args = {
+    ...args,
+    values,
+    onChange: (id, v) => {
+      setValues((old) => ({ ...old, [id]: v }));
+      action("MVAS Change")(id, v);
+    },
   };
 
   return (
@@ -49,12 +38,10 @@ export const Basic = (args) => {
           style={{ border: "thin solid grey" }}
           value={values?.left ?? ""}
           onChange={(e) =>
-            updateArgs({
-              values: {
-                ...values,
-                left: e.target.value ? parseFloat(e.target.value) : null,
-              },
-            })
+            setValues((old) => ({
+              ...old,
+              left: e.target.value ? parseFloat(e.target.value) : null,
+            }))
           }
         />
       </Flex>
@@ -62,16 +49,12 @@ export const Basic = (args) => {
         Center:
         <input
           style={{ border: "thin solid grey" }}
-          value={values?.bestEstimate ?? ""}
+          value={values?.center ?? ""}
           onChange={(e) =>
-            updateArgs({
-              values: {
-                ...values,
-                bestEstimate: e.target.value
-                  ? parseFloat(e.target.value)
-                  : null,
-              },
-            })
+            setValues((old) => ({
+              ...old,
+              center: e.target.value ? parseFloat(e.target.value) : null,
+            }))
           }
         />
       </Flex>
@@ -81,21 +64,16 @@ export const Basic = (args) => {
           style={{ border: "thin solid grey" }}
           value={values?.right ?? ""}
           onChange={(e) =>
-            updateArgs({
-              values: {
-                ...values,
-                right: e.target.value ? parseFloat(e.target.value) : null,
-              },
-            })
+            setValues((old) => ({
+              ...old,
+              right: e.target.value ? parseFloat(e.target.value) : null,
+            }))
           }
         />
       </Flex>
-      <MultiVisualAnalogScale
-        {...args}
-        onChange={handleChange}
-        onResetAll={handleResetAll}
-        onResetValue={handleResetValue}
-      />
+      <Frame frameHeight="300px">
+        <Scale {...args} />
+      </Frame>
     </Stack>
   );
 };
@@ -105,47 +83,4 @@ Basic.args = {
   rightMarkerOptions: { label: "R" },
   centerMarkerOptions: { label: "C" },
   values: {},
-  buttons: { resetLast: true, resetAll: true },
-  useConfidenceInput: "input",
-};
-
-export const Sample = Basic.bind({});
-Sample.args = {
-  ...Basic.args,
-  barOptions: {
-    minValue: 1,
-    maxValue: 10,
-    thickness: "1px",
-  },
-  labels: {
-    min: "Easy",
-    mid: "Ok",
-    max: "Hard",
-  },
-  labelOptions: {
-    yAlign: "above",
-  },
-  question: "How?",
-  questionOptions: {
-    xAlign: "center",
-  },
-  scaleMarkerOptions: {
-    markerColor: "red",
-    length: "50px",
-    thickness: "1em",
-    subColor: "green",
-    subThickness: "0.2em",
-    subLength: "20px",
-    markers: 5,
-    subdivisions: 10,
-  },
-  frameHeight: "300px",
-  leftMarkerOptions: {
-    label: "X",
-    color: "#f71",
-  },
-  rightMarkerOptions: {
-    color: "#1a4",
-  },
-  useConfidenceInput: "scale",
 };

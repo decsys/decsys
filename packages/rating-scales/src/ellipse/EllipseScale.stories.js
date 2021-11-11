@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { EllipseScale } from "./Scale";
+import { EllipseScale } from "./EllipseScale";
 import { action } from "@storybook/addon-actions";
 import { text } from "@storybook/addon-knobs";
 
