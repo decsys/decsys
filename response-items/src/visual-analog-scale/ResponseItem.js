@@ -94,9 +94,10 @@ const ResponseItem = ({
       }}
       frameHeight="300px"
       useConfidenceInput={
-        useConfidenceInput === "None"
+        useConfidenceInput &&
+        (useConfidenceInput === "None"
           ? false
-          : useConfidenceInput.toLocaleLowerCase()
+          : useConfidenceInput.toLocaleLowerCase())
       }
       confidenceText={confidenceText}
       confidenceTextOptions={{

@@ -7,10 +7,10 @@ export default {
   component: ResponseItem,
   argTypes: {
     useConfidenceInput: {
-      options: [false, "input", "scale"],
+      options: ["None", "input", "scale"],
       control: {
         type: "radio",
-        labels: { [false]: "None", input: "Input", scale: "Scale" },
+        labels: { None: "None", input: "Input", scale: "Scale" },
       },
     },
   },
@@ -27,19 +27,24 @@ const props = {
 
 const dummyResults = [
   {
-    value: 60,
+    scale: 60,
+    confidence: 50,
   },
   {
-    value: 0,
+    confidence: 50,
+    scale: 0,
   },
   {
-    value: 50,
+    confidence: 35,
+    scale: 50,
   },
   {
-    value: 40,
+    confidence: 55,
+    scale: 40,
   },
   {
-    value: 80,
+    confidence: 90,
+    scale: 80,
   },
 ];
 
@@ -62,11 +67,18 @@ const _context = {
 
 export const Basic = (args) => <ResponseItem {...args} _context={_context} />;
 Basic.args = {
-  useConfidenceInput: false,
+  useConfidenceInput: "None",
 };
 
 export const NumericStats = stats(
   ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)
+);
+
+export const NumericStatsMissingConfidence = stats(
+  ResponseItem.stats(
+    { ...ResponseItem.defaultProps, ...props },
+    dummyResults.map((x) => ({ ...x, confidence: undefined }))
+  )
 );
 
 export const MetadataIcon = () => <Icon width="24px" />;
