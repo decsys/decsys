@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import ScaleBar, { scaleBarDefaultProps, FlexContainer } from "./ScaleBar";
+import { ScaleBar, scaleBarDefaultProps, FlexContainer } from "./ScaleBar";
 import { text } from "@storybook/addon-knobs";
 
 export default {

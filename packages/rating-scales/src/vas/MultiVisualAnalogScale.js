@@ -1,3 +1,27 @@
+import { useState } from "react";
+import { scaleBarDefaultProps } from "../core/ScaleBar";
+import { Frame } from "../core/Frame";
+import { Question } from "../core/Question";
+import { Scale } from "./MultiScale";
+import { Confidence, confidenceInputStyles } from "./Confidence";
+import { ResetButtons } from "./ResetButtons";
+import { valueIds } from "./constants";
+import { behaviours } from "./behaviours";
+
+/**
+ * Ensure we only add a value to the stack once,
+ * and only in the originally added order
+ * e.g. behaviour order for drag markers
+ * @param {*} stack the current stack
+ * @param {*} value the value to add
+ * @returns a new copy of the stack, with the added value if appropriate
+ */
+const addToResetStack = (stack, value) => {
+  const newStack = [...stack];
+  if (newStack.every((x) => x !== value)) newStack.push(value);
+  return newStack;
+};
+
 /**
  * State Hook for using a MultiVisualAnalogScale
  * @param {*} initialValues

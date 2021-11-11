@@ -1,6 +1,6 @@
 import { Scale } from "./MultiScale";
 import { useState } from "react";
-import Frame from "../core/Frame";
+import { Frame } from "../core/Frame";
 import { action } from "@storybook/addon-actions";
 import { behaviour } from "./behaviours";
 import { Flex, Stack } from "@chakra-ui/react";

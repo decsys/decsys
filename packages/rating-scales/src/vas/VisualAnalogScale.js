@@ -1,3 +1,10 @@
+import { useState } from "react";
+import { Frame } from "../core/Frame";
+import { Question } from "../core/Question";
+import { Scale } from "./Scale";
+import { Confidence } from "./Confidence";
+import { valueIds } from "./constants";
+
 /**
  * State Hook for using a VisualAnalogScale
  * @param {*} initialValue

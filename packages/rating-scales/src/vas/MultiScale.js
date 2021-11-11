@@ -1,7 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import UnitValue from "unit-value/lib/unit-value";
-import Frame from "../core/Frame";
-import Question from "../core/Question";
 import {
   FlexContainer,
   ScaleBar,
@@ -16,9 +14,6 @@ import {
 } from "../core/services/bar-coords";
 import { DragMarker } from "./DragMarker";
 import { behaviour as behaviourKeys, behaviours } from "./behaviours";
-import { ResetButtons } from "./ResetButtons";
-import { Confidence, confidenceInputStyles } from "./Confidence";
-import { valueIds } from "./constants";
 
 const DottedLine = ({ baseY, x1, x2 }) => {
   if (x1 == null || x2 == null) return null;
@@ -34,20 +29,6 @@ const DottedLine = ({ baseY, x1, x2 }) => {
       }}
     ></div>
   );
-};
-
-/**
- * Ensure we only add a value to the stack once,
- * and only in the originally added order
- * e.g. behaviour order for drag markers
- * @param {*} stack the current stack
- * @param {*} value the value to add
- * @returns a new copy of the stack, with the added value if appropriate
- */
-const addToResetStack = (stack, value) => {
-  const newStack = [...stack];
-  if (newStack.every((x) => x !== value)) newStack.push(value);
-  return newStack;
 };
 
 const getBehaviourProvider = (behaviour) =>

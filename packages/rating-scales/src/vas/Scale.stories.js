@@ -1,5 +1,5 @@
 import { Scale } from "./Scale";
-import Frame from "../core/Frame";
+import { Frame } from "../core/Frame";
 import { action } from "@storybook/addon-actions";
 import { useArgs } from "@storybook/client-api";
 

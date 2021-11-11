@@ -31,4 +31,4 @@ Frame.defaultProps = {
 };
 
 /** @component */
-export default Frame;
+export { Frame };

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
-import EllipseCanvas, { ellipseCanvasPropTypes } from "./Canvas";
-import Frame, { framePropTypes } from "../core/Frame";
-import Question, { questionPropTypes } from "../core/Question";
+import { EllipseCanvas, ellipseCanvasPropTypes } from "./Canvas";
+import { Frame, framePropTypes } from "../core/Frame";
+import { Question, questionPropTypes } from "../core/Question";
 import {
   ScaleBar,
   scaleBarPropTypes,

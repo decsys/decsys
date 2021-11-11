@@ -7,8 +7,8 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from "@chakra-ui/react";
-import Frame from "../core/Frame";
-import Question from "../core/Question";
+import { Frame } from "../core/Frame";
+import { Question } from "../core/Question";
 import { Scale } from "./Scale";
 
 export const confidenceInputStyles = {

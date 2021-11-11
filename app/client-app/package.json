@@ -35,7 +35,7 @@
     "supports es6-module-dynamic-import"
   ],
   "dependencies": {
-    "@chakra-ui/react": "^1.6.2",
+    "@chakra-ui/react": "1.6.10",
     "@decsys/param-types": "workspace:*",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
