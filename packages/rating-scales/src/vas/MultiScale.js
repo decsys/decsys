@@ -354,10 +354,12 @@ const MultiVisualAnalogScale = ({
               isDisabled: !resetStack.length,
             }
           }
-          resetAll={{
-            onClick: handleResetAll,
-            isDisabled: !resetStack.length,
-          }}
+          resetAll={
+            buttons.resetAll && {
+              onClick: handleResetAll,
+              isDisabled: !resetStack.length,
+            }
+          }
         />
       )}
     </>

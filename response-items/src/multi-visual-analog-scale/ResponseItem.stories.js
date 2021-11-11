@@ -1,12 +1,29 @@
 import { action } from "@storybook/addon-actions";
-import { optionsKnob } from "@storybook/addon-knobs";
 import ResponseItem, { behaviourKeyMap } from "./ResponseItem";
 import Icon from "./Icon";
 
-// eslint-disable-next-line
+const behaviours = Object.keys(behaviourKeyMap);
+
 export default {
   title: "Multi Visual Analog Scale Response",
   component: ResponseItem,
+  argTypes: {
+    behaviour: {
+      options: behaviours,
+      control: { type: "radio" },
+    },
+    buttons: {
+      options: ["None", "Reset Last", "Reset All", "Both"],
+      control: { type: "radio" },
+    },
+    useConfidenceInput: {
+      options: [false, "input", "scale"],
+      control: {
+        type: "radio",
+        labels: { [false]: "None", input: "Input", scale: "Scale" },
+      },
+    },
+  },
 };
 
 const props = {
@@ -68,35 +85,12 @@ const _context = {
   logResults: action("Results logged"),
 };
 
-const behaviours = Object.keys(behaviourKeyMap).map((x) =>
-  x.replace("&amp;", "&")
-);
-
-export const SpiersBridge = () => (
-  <ResponseItem
-    _context={_context}
-    buttons={optionsKnob("Buttons", ["None", "Undo", "Reset", "Both"], "None", {
-      display: "inline-radio",
-    })}
-    useConfidenceInput={optionsKnob("Confidence Input", ["Yes", "No"], "No", {
-      display: "inline-radio",
-    })}
-    behaviour={behaviours[0]}
-  />
-);
-
-export const HeskethPryorHesketh = () => (
-  <ResponseItem
-    _context={_context}
-    buttons={optionsKnob("Buttons", ["None", "Undo", "Reset", "Both"], "None", {
-      display: "inline-radio",
-    })}
-    useConfidenceInput={optionsKnob("Confidence Input", ["Yes", "No"], "No", {
-      display: "inline-radio",
-    })}
-    behaviour={behaviours[1]}
-  />
-);
+export const Basic = (args) => <ResponseItem {...args} _context={_context} />;
+Basic.args = {
+  behaviour: behaviours[0],
+  buttons: "None",
+  useConfidenceInput: true,
+};
 
 export const NumericStats = stats(
   ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)

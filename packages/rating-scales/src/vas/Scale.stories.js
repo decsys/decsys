@@ -1,4 +1,4 @@
-import { useVisualAnalogScale, VisualAnalogScale } from "./Scale";
+import { VisualAnalogScale } from "./Scale";
 import { action } from "@storybook/addon-actions";
 import { useArgs } from "@storybook/client-api";
 
