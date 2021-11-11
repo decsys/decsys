@@ -119,7 +119,7 @@ export const Scale = ({
  * @param {*} initialConfidence
  * @returns
  */
-export const useVisualAnalogScale = (initialValues) => {
+export const useVisualAnalogScale = (initialValues = {}) => {
   const [values, setValues] = useState(initialValues);
 
   const onChange = (id, v, newValues) => setValues({ ...newValues, [id]: v });

@@ -225,7 +225,7 @@ export const Scale = ({
  * @param {*} initialValues
  * @returns
  */
-export const useMultiVisualAnalogScale = (initialValues) => {
+export const useMultiVisualAnalogScale = (initialValues = {}) => {
   const [values, setValues] = useState(initialValues);
 
   const onChange = (id, v, newValues) => setValues({ ...newValues, [id]: v });

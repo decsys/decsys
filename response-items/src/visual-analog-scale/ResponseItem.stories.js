@@ -5,6 +5,15 @@ import Icon from "./Icon";
 export default {
   title: "Visual Analog Scale Response",
   component: ResponseItem,
+  argTypes: {
+    useConfidenceInput: {
+      options: [false, "input", "scale"],
+      control: {
+        type: "radio",
+        labels: { [false]: "None", input: "Input", scale: "Scale" },
+      },
+    },
+  },
 };
 
 const props = {
@@ -51,7 +60,10 @@ const _context = {
   logResults: action("Results logged"),
 };
 
-export const Basic = () => <ResponseItem _context={_context} />;
+export const Basic = (args) => <ResponseItem {...args} _context={_context} />;
+Basic.args = {
+  useConfidenceInput: false,
+};
 
 export const NumericStats = stats(
   ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)

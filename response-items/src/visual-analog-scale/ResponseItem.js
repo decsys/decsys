@@ -1,5 +1,8 @@
 import { useEffect } from "react";
-import { VisualAnalogScale } from "@decsys/rating-scales/vas";
+import {
+  VisualAnalogScale,
+  useVisualAnalogScale,
+} from "@decsys/rating-scales/vas";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 
@@ -29,18 +32,28 @@ const ResponseItem = ({
   dragMarkerColor,
   dragMarkerInteractColor,
   dragMarkerInitDistance,
+  useConfidenceInput,
+  confidenceText,
+  confidenceTextColor,
+  confidenceTextFontFamily,
+  confidenceTextFontSize,
   _context: { setNextEnabled, logResults },
 }) => {
-  const handleVasCompleted = (e) => {
-    logResults({ value: e.detail });
-    setNextEnabled(true);
-  };
+  const { props: vasProps, handlers: vasHandlers } = useVisualAnalogScale();
 
   useEffect(() => {
-    document.addEventListener("VasCompleted", handleVasCompleted);
-    return () =>
-      document.removeEventListener("VasCompleted", handleVasCompleted);
-  }, []);
+    // only log on "completions"
+    // and only consider complete when the "last" expected input has a value
+    // which is either scale or confidence, depending if confidence is being captured.
+    const isComplete = useConfidenceInput
+      ? vasProps.values.confidence != null
+      : vasProps.values.scale != null;
+
+    if (isComplete) {
+      logResults(vasProps.values);
+      setNextEnabled(true);
+    }
+  }, [vasProps.values, logResults, setNextEnabled, useConfidenceInput]);
 
   return (
     <VisualAnalogScale
@@ -80,6 +93,21 @@ const ResponseItem = ({
         yInitDistance: dragMarkerInitDistance,
       }}
       frameHeight="300px"
+      useConfidenceInput={
+        useConfidenceInput === "None"
+          ? false
+          : useConfidenceInput.toLocaleLowerCase()
+      }
+      confidenceText={confidenceText}
+      confidenceTextOptions={{
+        topMargin: "0%",
+        xAlign: "center",
+        fontFamily: confidenceTextFontFamily,
+        fontSize: confidenceTextFontSize,
+        textColor: confidenceTextColor,
+      }}
+      {...vasProps}
+      {...vasHandlers}
     />
   );
 };

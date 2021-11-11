@@ -119,7 +119,7 @@ const ResponseItem = ({
       useConfidenceInput={useConfidenceInput}
       confidenceText={confidenceText}
       confidenceTextOptions={{
-        topMargin: "80%",
+        topMargin: "0%",
         xAlign: "center",
         fontFamily: confidenceTextFontFamily,
         fontSize: confidenceTextFontSize,
