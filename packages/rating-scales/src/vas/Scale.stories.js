@@ -1,5 +1,6 @@
 import { useVisualAnalogScale, VisualAnalogScale } from "./Scale";
 import { action } from "@storybook/addon-actions";
+import { useArgs } from "@storybook/client-api";
 
 export default {
   title: "Rating Scales/VAS",
@@ -16,32 +17,19 @@ export default {
 };
 
 export const Basic = (args) => {
-  const {
-    props,
-    handlers: { onChange, onConfidenceChange },
-  } = useVisualAnalogScale(args.value, args.confidenceValue);
+  const [_, updateArgs] = useArgs(); // eslint-disable-line
 
-  const handleChange = (v) => {
-    onChange(v);
-    action("VAS Changed")(v);
-  };
-  const handleConfidenceChange = (v) => {
-    onConfidenceChange(v);
-    action("Confidence Changed")(v);
+  const handleChange = (id, v, values) => {
+    updateArgs({ values: { ...values, [id]: v } });
+    action("onChange")(id, v, values);
   };
 
-  return (
-    <VisualAnalogScale
-      {...args}
-      {...props}
-      onChange={handleChange}
-      onConfidenceChange={handleConfidenceChange}
-    />
-  );
+  return <VisualAnalogScale {...args} onChange={handleChange} />;
 };
 
 Basic.args = {
   useConfidenceInput: false,
+  values: {},
 };
 
 export const Sample = Basic.bind({});

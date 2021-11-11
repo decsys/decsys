@@ -1,7 +1,7 @@
 import { Scale } from "./Scale";
-import { useState } from "react";
 import Frame from "../core/Frame";
 import { action } from "@storybook/addon-actions";
+import { useArgs } from "@storybook/client-api";
 
 export default {
   title: "VAS + MVAS/VAS Scale",
@@ -9,13 +9,13 @@ export default {
 };
 
 export const Basic = (args) => {
-  const [value, setValue] = useState(args.value);
+  const [{ value }, updateArgs] = useArgs();
 
   args = {
     ...args,
     value,
     onChange: (v) => {
-      setValue(v);
+      updateArgs({ value: v });
       action("VAS Completed")(v);
     },
   };
@@ -27,10 +27,12 @@ export const Basic = (args) => {
         style={{ border: "thin solid grey" }}
         value={value}
         onChange={(e) =>
-          setValue(e.target.value ? parseFloat(e.target.value) : null)
+          updateArgs({
+            value: e.target.value ? parseFloat(e.target.value) : null,
+          })
         }
       />
     </Frame>
   );
 };
-Basic.args = {};
+Basic.args = { value: 4 };

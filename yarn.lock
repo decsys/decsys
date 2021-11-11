@@ -3038,6 +3038,7 @@ __metadata:
     "@storybook/addon-links": ^6.3.12
     "@storybook/addon-storysource": ^6.3.12
     "@storybook/addons": ^6.3.12
+    "@storybook/client-api": ^6.3.12
     "@storybook/react": ^6.3.12
     "@storybook/source-loader": ^6.3.12
     babel-loader: ^8.2.2
@@ -5527,7 +5528,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/client-api@npm:6.3.12":
+"@storybook/client-api@npm:6.3.12, @storybook/client-api@npm:^6.3.12":
   version: 6.3.12
   resolution: "@storybook/client-api@npm:6.3.12"
   dependencies:

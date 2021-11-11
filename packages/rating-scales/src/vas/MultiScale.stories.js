@@ -1,10 +1,8 @@
-import {
-  MultiVisualAnalogScale,
-  useMultiVisualAnalogScale,
-} from "./MultiScale";
+import { MultiVisualAnalogScale } from "./MultiScale";
 import { action } from "@storybook/addon-actions";
 import { behaviour } from "./behaviours";
 import { Flex, Stack } from "@chakra-ui/react";
+import { useArgs } from "@storybook/client-api";
 
 const behaviours = Object.keys(behaviour);
 
@@ -27,23 +25,19 @@ export default {
 };
 
 export const Basic = (args) => {
-  const {
-    props: { values },
-    handlers,
-    setValues,
-  } = useMultiVisualAnalogScale(args.values);
+  const [{ values }, updateArgs] = useArgs();
 
   // add actions for storybook benefit
   const handleChange = (id, v, all) => {
-    handlers.onChange(id, v, all);
+    updateArgs({ values: { ...all, [id]: v } });
     action("onChange")(id, v, all);
   };
   const handleResetAll = () => {
-    handlers.onResetAll();
-    action("Reset All")();
+    updateArgs({ values: {} });
+    action("onResetAll")();
   };
   const handleResetValue = (id) => {
-    handlers.onResetValue(id);
+    updateArgs({ values: { ...values, [id]: undefined } });
     action("onResetValue")(id);
   };
 
@@ -55,10 +49,12 @@ export const Basic = (args) => {
           style={{ border: "thin solid grey" }}
           value={values?.left ?? ""}
           onChange={(e) =>
-            setValues((old) => ({
-              ...old,
-              left: e.target.value ? parseFloat(e.target.value) : null,
-            }))
+            updateArgs({
+              values: {
+                ...values,
+                left: e.target.value ? parseFloat(e.target.value) : null,
+              },
+            })
           }
         />
       </Flex>
@@ -68,10 +64,14 @@ export const Basic = (args) => {
           style={{ border: "thin solid grey" }}
           value={values?.bestEstimate ?? ""}
           onChange={(e) =>
-            setValues((old) => ({
-              ...old,
-              bestEstimate: e.target.value ? parseFloat(e.target.value) : null,
-            }))
+            updateArgs({
+              values: {
+                ...values,
+                bestEstimate: e.target.value
+                  ? parseFloat(e.target.value)
+                  : null,
+              },
+            })
           }
         />
       </Flex>
@@ -81,16 +81,17 @@ export const Basic = (args) => {
           style={{ border: "thin solid grey" }}
           value={values?.right ?? ""}
           onChange={(e) =>
-            setValues((old) => ({
-              ...old,
-              right: e.target.value ? parseFloat(e.target.value) : null,
-            }))
+            updateArgs({
+              values: {
+                ...values,
+                right: e.target.value ? parseFloat(e.target.value) : null,
+              },
+            })
           }
         />
       </Flex>
       <MultiVisualAnalogScale
         {...args}
-        values={values}
         onChange={handleChange}
         onResetAll={handleResetAll}
         onResetValue={handleResetValue}

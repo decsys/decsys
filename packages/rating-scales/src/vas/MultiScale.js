@@ -18,6 +18,7 @@ import { DragMarker } from "./DragMarker";
 import { behaviour as behaviourKeys, behaviours } from "./behaviours";
 import { ResetButtons } from "./ResetButtons";
 import { Confidence, confidenceInputStyles } from "./Confidence";
+import { valueIds } from "./constants";
 
 const DottedLine = ({ baseY, x1, x2 }) => {
   if (x1 == null || x2 == null) return null;
@@ -219,12 +220,6 @@ export const Scale = ({
   );
 };
 
-const valueIds = {
-  center: "center",
-  bestEstimate: "bestEstimate",
-  confidence: "confidence",
-};
-
 /**
  * State Hook for using a MultiVisualAnalogScale
  * @param {*} initialValues
@@ -279,14 +274,6 @@ const MultiVisualAnalogScale = ({
   centerMarkerOptions = { ...dragMarkerDefaults, ...centerMarkerOptions };
 
   const [resetStack, setResetStack] = useState([]);
-  const [scaleValues, setScaleValues] = useState({});
-  const [confidenceValue, setConfidenceValue] = useState();
-
-  useEffect(() => {
-    const { left, right, bestEstimate, confidence } = values;
-    setScaleValues({ left, right, center: bestEstimate });
-    setConfidenceValue(confidence);
-  }, [values]);
 
   const handleScaleChange = (markerId, newValue, newValues) => {
     // map output property names
@@ -308,7 +295,6 @@ const MultiVisualAnalogScale = ({
   const handleConfidenceChange = (value) => {
     value = Math.min(Math.max(value, 0), 100);
     setResetStack(addToResetStack(resetStack, valueIds.confidence));
-    setConfidenceValue(value);
     onChange(valueIds.confidence, value, { ...values, confidence: value });
   };
 
@@ -339,7 +325,11 @@ const MultiVisualAnalogScale = ({
           rightMarkerOptions={rightMarkerOptions}
           centerMarkerOptions={centerMarkerOptions}
           behaviour={behaviour}
-          values={scaleValues}
+          values={{
+            left: values.left,
+            right: values.right,
+            center: values.bestEstimate,
+          }}
           onChange={handleScaleChange}
         />
       </Frame>
@@ -352,7 +342,7 @@ const MultiVisualAnalogScale = ({
           )}
           topMargin={frameHeight}
           onChange={handleConfidenceChange}
-          value={confidenceValue}
+          value={values.confidence}
           style={useConfidenceInput}
         />
       )}

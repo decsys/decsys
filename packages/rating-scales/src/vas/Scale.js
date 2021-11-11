@@ -15,6 +15,7 @@ import {
   getXPosForValue,
 } from "../core/services/bar-coords";
 import { Confidence } from "./Confidence";
+import { valueIds } from "./constants";
 import { DragMarker } from "./DragMarker";
 
 export const Scale = ({
@@ -118,18 +119,15 @@ export const Scale = ({
  * @param {*} initialConfidence
  * @returns
  */
-export const useVisualAnalogScale = (initialValue, initialConfidence) => {
-  const [value, setValue] = useState(initialValue);
-  const [confidence, setConfidence] = useState(initialConfidence);
+export const useVisualAnalogScale = (initialValues) => {
+  const [values, setValues] = useState(initialValues);
 
-  const onChange = (v) => setValue(v);
-  const onConfidenceChange = (c) => setConfidence(c);
+  const onChange = (id, v, newValues) => setValues({ ...newValues, [id]: v });
 
   return {
-    props: { value, confidenceValue: confidence },
-    handlers: { onChange, onConfidenceChange },
-    setValue,
-    setConfidence,
+    props: { values },
+    handlers: { onChange },
+    setValues,
   };
 };
 
@@ -142,14 +140,24 @@ const VisualAnalogScale = ({
   labelOptions,
   scaleMarkerOptions,
   dragMarkerOptions,
-  value,
-  onChange,
+  values = {},
+  onChange = () => {},
   useConfidenceInput,
   confidenceText = "How confident are you?",
   confidenceTextOptions = { topMargin: "0%", xAlign: "center" },
-  confidenceValue,
-  onConfidenceChange,
 }) => {
+  const handleScaleChange = (value) => {
+    onChange(valueIds.scale, value, { ...values, [valueIds.scale]: value });
+  };
+
+  const handleConfidenceChange = (value) => {
+    value = Math.min(Math.max(value, 0), 100);
+    onChange(valueIds.confidence, value, {
+      ...values,
+      [valueIds.confidence]: value,
+    });
+  };
+
   return (
     <>
       <Frame frameHeight={frameHeight}>
@@ -160,18 +168,18 @@ const VisualAnalogScale = ({
           labelOptions={labelOptions}
           scaleMarkerOptions={scaleMarkerOptions}
           dragMarkerOptions={dragMarkerOptions}
-          onChange={onChange}
-          value={value}
+          onChange={handleScaleChange}
+          value={values.scale}
         />
       </Frame>
       {useConfidenceInput && (
         <Confidence
           confidenceText={confidenceText}
           confidenceTextOptions={confidenceTextOptions}
-          isDisabled={value == null}
+          isDisabled={values.scale == null}
           topMargin={frameHeight}
-          onChange={onConfidenceChange}
-          value={confidenceValue}
+          onChange={handleConfidenceChange}
+          value={values.confidence}
           style={useConfidenceInput}
         />
       )}
