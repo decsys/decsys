@@ -106,7 +106,8 @@ namespace Decsys.Controllers
         public IActionResult Create(CreateSurveyModel model)
         {
             var id = _surveys.Create(model, OwnerId);
-            return Created(Url.Action("Get", new { id }), id);
+            var url = Url.Action("Get", new { id }) ?? throw new InvalidOperationException("Failed to get a URL for an Action Route.");
+            return Created(url, id);
         }
 
         [HttpDelete("{id}")]
@@ -274,14 +275,16 @@ namespace Decsys.Controllers
                     // always orphan surveys at this stage of import;
                     // if we are importing into a study,
                     // the correct parent will be assigned later in the process
-                    result.Survey.Parent = null;
+                    if(result.Survey is not null)
+                        result.Survey.Parent = null;
                 }
                 else if (importData && entry.FullName.StartsWith("Instance-") && entry.FullName.EndsWith(".json"))
                 {
                     try
                     {
                         using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
-                        result.Instances.Add(JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd()));
+                        var results = JsonConvert.DeserializeObject<SurveyInstanceResults<ParticipantEvents>>(reader.ReadToEnd());
+                        if(results is not null) result.Instances.Add(results);
                     }
                     catch (JsonSerializationException)
                     {
@@ -295,7 +298,8 @@ namespace Decsys.Controllers
                     try
                     {
                         using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
-                        result.StudyInstances.Add(JsonConvert.DeserializeObject<StudyInstanceAllocationData>(reader.ReadToEnd()));
+                        var allocations = JsonConvert.DeserializeObject<StudyInstanceAllocationData>(reader.ReadToEnd());
+                        if(allocations is not null) result.StudyInstances.Add(allocations);
                     }
                     catch (JsonSerializationException)
                     {

@@ -85,8 +85,8 @@ namespace Decsys.Controllers
             {
                 var instance = _instances.Get(id, instanceId);
                 var canManageSurvey = await _auth.AuthorizeAsync(User, HttpContext, nameof(AuthPolicies.CanManageSurvey));
-                
-                if(!canManageSurvey.Succeeded)
+
+                if (!canManageSurvey.Succeeded)
                 {
                     // hide private stuff if user not authorized
                     instance.ValidIdentifiers = new();
@@ -108,10 +108,10 @@ namespace Decsys.Controllers
             try
             {
                 var instanceId = _instances.Activate(id);
+                var url = Url.Action("Get", "Instances", new { id, instanceId })
+                    ?? throw new InvalidOperationException("Failed to get URL for an Action Route.");
 
-                return Created(
-                    Url.Action("Get", "Instances", new { id, instanceId }),
-                    instanceId);
+                return Created(url, instanceId);
             }
             catch (KeyNotFoundException) { return NotFound(); }
             catch (ArgumentException e) { return BadRequest(e); }

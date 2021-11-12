@@ -6,10 +6,10 @@
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
-    "./discrete": "./src/discrete/Scale.js",
-    "./ellipse": "./src/ellipse/Scale.js",
-    "./vas": "./src/vas/Scale.js",
-    "./mvas": "./src/vas/MultiScale.js"
+    "./discrete": "./src/discrete/DiscreteScale.js",
+    "./ellipse": "./src/ellipse/EllipseScale.js",
+    "./vas": "./src/vas/VisualAnalogScale.js",
+    "./mvas": "./src/vas/MultiVisualAnalogScale.js"
   },
   "publishConfig": {
     "access": "public"

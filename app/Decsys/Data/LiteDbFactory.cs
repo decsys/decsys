@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 using Decsys.Constants;
+using Decsys.Services.Contracts;
 
 using LiteDB;
 
@@ -15,9 +13,9 @@ namespace Decsys.Data
     {
         private readonly string _localDbPath;
 
-        public LiteDbFactory(string localDbPath)
+        public LiteDbFactory(ILocalPathsProvider paths)
         {
-            _localDbPath = localDbPath;
+            _localDbPath = paths.Databases;
         }
 
         private const string SurveysFile = "user-surveys.db";
@@ -31,14 +29,16 @@ namespace Decsys.Data
         private string BuildConnectionString(string file)
             => $"Filename={AbsoluteFilePath(file)};Connection=direct;";
 
-        private IDictionary<string, LiteDatabase> _connections = new Dictionary<string, LiteDatabase>();
+        private readonly IDictionary<string, LiteDatabase> _connections = new Dictionary<string, LiteDatabase>();
 
         private LiteDatabase Connect(string connectionString)
         {
             if (!_connections.ContainsKey(connectionString))
             {
-                _connections[connectionString] = new LiteDatabase(connectionString);
-                _connections[connectionString].CheckpointSize = 1;
+                _connections[connectionString] = new LiteDatabase(connectionString)
+                {
+                    CheckpointSize = 1
+                };
             }
             return _connections[connectionString];
         }

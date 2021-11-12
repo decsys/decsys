@@ -15,13 +15,13 @@ namespace Decsys.Services
 
         private readonly string _imagesPath;
 
-        public LocalFileImageService(string imagesPath, IComponentRepository components)
+        public LocalFileImageService(ILocalPathsProvider paths, IComponentRepository components)
         {
-            _imagesPath = imagesPath;
+            _imagesPath = paths.SurveyImages;
             _components = components;
         }
 
-        private string GetImageFilename(Guid componentId, string extension)
+        private static string GetImageFilename(Guid componentId, string extension)
             => $"{componentId}{extension}";
 
         private string SurveyImagesPath(int id) =>
@@ -36,7 +36,7 @@ namespace Decsys.Services
             var path = Path.Combine(dir, GetImageFilename(componentId, file.extension));
 
             using var stream = File.Create(path);
-            await stream.WriteAsync(file.bytes, 0, file.bytes.Length);
+            await stream.WriteAsync(file.bytes.AsMemory(0, file.bytes.Length));
         }
 
         public Task RemoveImage(int surveyId, Guid pageId, Guid componentId)
@@ -116,7 +116,8 @@ namespace Decsys.Services
 
         private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
             _components.Find(surveyId, pageId, componentId)
-                .Params.Value<string>("extension");
+                .Params.Value<string>("extension")
+            ?? throw new InvalidOperationException("Couldn't find a valid string param for `extension`.");
 
         public async Task<byte[]> GetImage(int surveyId, string filename)
         => await File.ReadAllBytesAsync(

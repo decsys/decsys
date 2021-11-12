@@ -1,13 +1,7 @@
-﻿
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
-
-using System;
-using System.Threading.Tasks;
 
 namespace Decsys.ModelBinding
 {
@@ -18,7 +12,7 @@ namespace Decsys.ModelBinding
     {
         private readonly FormFileModelBinder _formFileModelBinder;
 
-        public MultiPartJsonModelBinder( ILoggerFactory loggerFactory)
+        public MultiPartJsonModelBinder(ILoggerFactory loggerFactory)
         {
             _formFileModelBinder = new FormFileModelBinder(loggerFactory);
         }
@@ -38,7 +32,7 @@ namespace Decsys.ModelBinding
                 return;
             }
 
-            var rawValue = valueResult.FirstValue;
+            var rawValue = valueResult.FirstValue!; // this should be safe as we checked for `ValueProviderResult.None`
 
             // Deserialize the JSON
             var model = JsonConvert.DeserializeObject(rawValue, bindingContext.ModelType); // TODO: _jsonOptions.Value.SerializerSettings);
@@ -49,9 +43,11 @@ namespace Decsys.ModelBinding
                 if (property.ModelType != typeof(IFormFile))
                     continue;
 
-                var fieldName = property.BinderModelName ?? property.PropertyName;
+                var fieldName = property.BinderModelName ?? property.PropertyName!; // this is safe as we know we are iterating on Properties
                 var modelName = fieldName;
-                var propertyModel = property.PropertyGetter(bindingContext.Model);
+                var propertyModel = bindingContext.Model is not null
+                    ? property.PropertyGetter!(bindingContext.Model) // safe because we know this is a Property
+                    : null;
                 ModelBindingResult propertyResult;
                 using (bindingContext.EnterNestedScope(property, fieldName, modelName, propertyModel))
                 {
@@ -59,10 +55,10 @@ namespace Decsys.ModelBinding
                     propertyResult = bindingContext.Result;
                 }
 
-                if (propertyResult.IsModelSet)
+                if (propertyResult.IsModelSet && model is not null)
                 {
                     // The IFormFile was sucessfully bound, assign it to the corresponding property of the model
-                    property.PropertySetter(model, propertyResult.Model);
+                    property.PropertySetter!(model, propertyResult.Model); // safe because we know this is a Property
                 }
                 else if (property.IsBindingRequired)
                 {

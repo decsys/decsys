@@ -18,10 +18,11 @@ const config = buildRollupConfig(
 config.output.globals = {
   ...config.output.globals,
   mathjs: "math",
+  "@chakra-ui/react": "Chakra",
 };
 
 // Add item specific externals
-config.external = [...config.external, "mathjs"];
+config.external = [...config.external, "mathjs", "@chakra-ui/react"];
 
 // Add plugins
 config.plugins = [

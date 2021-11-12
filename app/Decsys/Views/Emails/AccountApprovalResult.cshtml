@@ -1,7 +1,7 @@
 ﻿@using Decsys.Models.Emails;
 @model AccountEmailModel<AccountApprovalResultModel>
 
-<p>Dear @Html.Raw(Model.EmailModel.Name)</p>
+<p>Dear @Html.Raw(Model!.EmailModel.Name)</p>
 
 <p>Your @Model.ServiceName User Account request has been @(Model.EmailModel.IsApproved ? "approved" : "rejected").</p>
 

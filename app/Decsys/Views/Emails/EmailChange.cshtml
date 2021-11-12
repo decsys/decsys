@@ -1,7 +1,7 @@
 ﻿@using Decsys.Models.Emails;
 @model AccountEmailModel<EmailChangeModel>
 
-<p>Dear @Html.Raw(Model.EmailModel.Name)</p>
+<p>Dear @Html.Raw(Model!.EmailModel.Name)</p>
 
 <p>A change of email address has been requested for your @Model.ServiceName User Account.</p>
 
