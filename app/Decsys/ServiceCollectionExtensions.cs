@@ -15,11 +15,14 @@ using Decsys.Services.EmailSender;
 using Decsys.Services.EmailServices;
 using Decsys.Services.LockProvider;
 
+using IdentityServer4.Models;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 using UoN.AspNetCore.RazorViewRenderer;
@@ -141,8 +144,27 @@ namespace Decsys
             });
 
         public static IServiceCollection AddMongoDb(this IServiceCollection s, MongoClient mongoClient)
-            => s.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient)
-                .AddTransient<ILockProvider, MongoLockProvider>();
+        {
+            // Some mongo driver config for Identity Server
+            if (BsonClassMap.IsClassMapRegistered(typeof(PersistedGrant)))
+            {
+                var map = BsonClassMap.LookupClassMap(typeof(PersistedGrant));
+                map.AutoMap();
+                map.SetIgnoreExtraElements(true);
+                BsonClassMap.RegisterClassMap(map);
+            }
+            else
+            {
+                BsonClassMap.RegisterClassMap<PersistedGrant>(map =>
+                {
+                    map.AutoMap();
+                    map.SetIgnoreExtraElements(true);
+                });
+            }
+
+            return s.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient)
+                  .AddTransient<ILockProvider, MongoLockProvider>();
+        }
 
         public static IServiceCollection AddAppIdentity(this IServiceCollection s, MongoClient mongoClient, HostedDbSettings dbSettings)
         {

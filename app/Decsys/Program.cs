@@ -127,29 +127,32 @@ if (mode.IsHosted)
 
 app.UseAuthorization();
 
-app.MapControllers()
-    .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin));
-
-// TODO: move this to formal middleware
-app.MapGet("/surveys/images/{surveyId:int}/{filename}", async context =>
+app.UseEndpoints(app =>
 {
-    var surveyId = int.Parse(context.Request.RouteValues["surveyId"]?.ToString() ?? "0");
-    var filename = context.Request.RouteValues["filename"]?.ToString();
-    if (filename is null)
-    {
-        context.Response.StatusCode = 404;
-        return;
-    }
-    var images = context.RequestServices.GetRequiredService<IImageService>();
-    var bytes = await images.GetImage(surveyId, filename);
+    app.MapControllers()
+        .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin));
 
-    if (new FileExtensionContentTypeProvider()
-        .TryGetContentType(filename, out var contentType))
+    // TODO: move this to formal middleware
+    app.MapGet("/surveys/images/{surveyId:int}/{filename}", async context =>
     {
-        context.Response.ContentType = contentType;
-    }
+        var surveyId = int.Parse(context.Request.RouteValues["surveyId"]?.ToString() ?? "0");
+        var filename = context.Request.RouteValues["filename"]?.ToString();
+        if (filename is null)
+        {
+            context.Response.StatusCode = 404;
+            return;
+        }
+        var images = context.RequestServices.GetRequiredService<IImageService>();
+        var bytes = await images.GetImage(surveyId, filename);
 
-    await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
+        if (new FileExtensionContentTypeProvider()
+            .TryGetContentType(filename, out var contentType))
+        {
+            context.Response.ContentType = contentType;
+        }
+
+        await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
+    });
 });
 
 app.UseSpa(spa =>
@@ -177,13 +180,6 @@ if (mode.IsHosted)
     scope.ServiceProvider.GetRequiredService<UserManager<DecsysUser>>(),
     scope.ServiceProvider.GetRequiredService<IPasswordHasher<DecsysUser>>(),
     scope.ServiceProvider.GetRequiredService<IConfiguration>());
-
-    // Some mongo driver config for Identity Server
-    //BsonClassMap.RegisterClassMap<PersistedGrant>(cm =>
-    //{
-    //    cm.AutoMap();
-    //    cm.SetIgnoreExtraElements(true);
-    //});
 }
 
 #endregion
