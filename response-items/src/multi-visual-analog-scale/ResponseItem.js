@@ -51,7 +51,14 @@ const ResponseItem = ({
   buttons,
   _context: { setNextEnabled, logResults },
 }) => {
-  // Convert oneOf's to bools
+  // Convert params to expected prop values
+  useConfidenceInput =
+    useConfidenceInput &&
+    (useConfidenceInput === "None"
+      ? false
+      : useConfidenceInput === true
+      ? "input"
+      : useConfidenceInput.toLocaleLowerCase());
   const showResetLastButton = ["Undo", "Reset Last", "Both"].includes(buttons);
   const showResetAllButton = ["Reset", "Reset All", "Both"].includes(buttons);
 
@@ -64,7 +71,9 @@ const ResponseItem = ({
     // which is either scale or confidence, depending if confidence is being captured.
     const isComplete = useConfidenceInput
       ? mvasProps.values.confidence != null
-      : ["left", "right", "bestEstimate"].every((x) => x != null);
+      : ["left", "right", "bestEstimate"].every(
+          (valueId) => mvasProps.values[valueId] != null
+        );
 
     if (isComplete) {
       logResults(mvasProps.values);
@@ -124,14 +133,7 @@ const ResponseItem = ({
         label: centerDragMarkerLabel,
         color: centerDragMarkerColor,
       }}
-      useConfidenceInput={
-        useConfidenceInput &&
-        (useConfidenceInput === "None"
-          ? false
-          : useConfidenceInput === true
-          ? "input"
-          : useConfidenceInput.toLocaleLowerCase())
-      }
+      useConfidenceInput={useConfidenceInput}
       confidenceText={confidenceText}
       confidenceTextOptions={{
         topMargin: "0%",
