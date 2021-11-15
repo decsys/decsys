@@ -54,7 +54,7 @@ const ResponseItem = ({
     // which is either scale or confidence, depending if confidence is being captured.
     const isComplete = useConfidenceInput
       ? vasProps.values.confidence != null
-      : vasProps.values.scale != null;
+      : vasProps.values.value != null;
 
     if (isComplete) {
       logResults(vasProps.values);

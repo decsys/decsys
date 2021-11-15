@@ -27,24 +27,24 @@ const props = {
 
 const dummyResults = [
   {
-    scale: 60,
+    value: 60,
     confidence: 50,
   },
   {
     confidence: 50,
-    scale: 0,
+    value: 0,
   },
   {
     confidence: 35,
-    scale: 50,
+    value: 50,
   },
   {
     confidence: 55,
-    scale: 40,
+    value: 40,
   },
   {
     confidence: 90,
-    scale: 80,
+    value: 80,
   },
 ];
 

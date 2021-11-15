@@ -39,7 +39,7 @@ const VisualAnalogScale = ({
   confidenceTextOptions = { topMargin: "0%", xAlign: "center" },
 }) => {
   const handleScaleChange = (value) => {
-    onChange(valueIds.scale, value, { ...values, [valueIds.scale]: value });
+    onChange(valueIds.value, value, { ...values, [valueIds.value]: value });
   };
 
   const handleConfidenceChange = (value) => {
@@ -61,14 +61,14 @@ const VisualAnalogScale = ({
           scaleMarkerOptions={scaleMarkerOptions}
           dragMarkerOptions={dragMarkerOptions}
           onChange={handleScaleChange}
-          value={values.scale}
+          value={values.value}
         />
       </Frame>
       {useConfidenceInput && (
         <Confidence
           confidenceText={confidenceText}
           confidenceTextOptions={confidenceTextOptions}
-          isDisabled={values.scale == null}
+          isDisabled={values.value == null}
           topMargin={frameHeight}
           onChange={handleConfidenceChange}
           value={values.confidence}

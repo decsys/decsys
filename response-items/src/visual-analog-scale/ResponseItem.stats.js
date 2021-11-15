@@ -4,8 +4,8 @@ const fixedVal = 3;
 const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
 
 export const stats = (_, results) => {
-  const reducer = (a, { scale, confidence }) => {
-    a.values.push(scale);
+  const reducer = (a, { value, confidence }) => {
+    a.values.push(value);
     a.confidences.push(confidence);
     return a;
   };

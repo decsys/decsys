@@ -1,5 +1,5 @@
 export const valueIds = {
-  scale: "scale",
+  value: "value",
   center: "center",
   bestEstimate: "bestEstimate",
   confidence: "confidence",
