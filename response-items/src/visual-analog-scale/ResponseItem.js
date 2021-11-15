@@ -39,6 +39,13 @@ const ResponseItem = ({
   confidenceTextFontSize,
   _context: { setNextEnabled, logResults },
 }) => {
+  // remap some param values to expected prop values
+  useConfidenceInput =
+    useConfidenceInput &&
+    (useConfidenceInput === "None"
+      ? false
+      : useConfidenceInput.toLocaleLowerCase());
+
   const { props: vasProps, handlers: vasHandlers } = useVisualAnalogScale();
 
   useEffect(() => {
@@ -93,12 +100,7 @@ const ResponseItem = ({
         yInitDistance: dragMarkerInitDistance,
       }}
       frameHeight="300px"
-      useConfidenceInput={
-        useConfidenceInput &&
-        (useConfidenceInput === "None"
-          ? false
-          : useConfidenceInput.toLocaleLowerCase())
-      }
+      useConfidenceInput={useConfidenceInput}
       confidenceText={confidenceText}
       confidenceTextOptions={{
         topMargin: "0%",
