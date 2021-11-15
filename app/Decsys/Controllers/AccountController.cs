@@ -59,10 +59,10 @@ namespace Decsys.Controllers
 
         private static List<string> CollapseModelStateErrors(ModelStateDictionary modelState)
             => modelState.Keys
-                .SelectMany(k => modelState[k].Errors
+                .SelectMany(k => modelState[k]?.Errors
                     .Select(x => !string.IsNullOrWhiteSpace(k)
                         ? $"{k}: {x.ErrorMessage}"
-                        : x.ErrorMessage))
+                        : x.ErrorMessage) ?? new List<string>())
                 .ToList();
 
 
@@ -108,7 +108,7 @@ namespace Decsys.Controllers
                 return model.ReturnUrl switch
                 {
                     var url when string.IsNullOrEmpty(url) => Redirect("~/"),
-                    var url when Url.IsLocalUrl(url!) => Redirect(model.ReturnUrl),
+                    var url when Url.IsLocalUrl(url!) => Redirect(url),
                     _ => throw new InvalidOperationException("Invalid Return URL")
                 };
             }
@@ -132,7 +132,7 @@ namespace Decsys.Controllers
                     return model.ReturnUrl switch
                     {
                         var url when string.IsNullOrEmpty(url) => Redirect("~/"),
-                        var url when Url.IsLocalUrl(url!) => Redirect(model.ReturnUrl),
+                        var url when Url.IsLocalUrl(url!) => Redirect(url), // we know it's not null here since it didn't match the pattern above
                         _ => throw new InvalidOperationException("Invalid Return URL")
                     };
                 }

@@ -1,4 +1,4 @@
-import Frame from "./Frame";
+import { Frame } from "./Frame";
 
 export default {
   title: "core/StyledFrame",

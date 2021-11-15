@@ -20,20 +20,17 @@ namespace Decsys.Controllers
     [AllowAnonymous] // TODO: perhaps restrict this to `client-app` (but no user) in future?
     public class ParticipantProgressController : ControllerBase
     {
-        private readonly SurveyService _surveys;
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _events;
         private readonly StudyAllocationService _random;
         private readonly MathService _math;
 
         public ParticipantProgressController(
-            SurveyService surveys,
             SurveyInstanceService instances,
             ParticipantEventService events,
             StudyAllocationService random,
             MathService math)
         {
-            _surveys = surveys;
             _instances = instances;
             _events = events;
             _random = random;
@@ -219,7 +216,8 @@ namespace Decsys.Controllers
                     // if none exists, they aren't brand new, but are on the first page.
                     var lastPageLoaded = _events.Last(progress.InstanceId, progress.ParticipantId!, EventTypes.PAGE_LOAD);
                     var lastNavigation = _events.Last(progress.InstanceId, progress.ParticipantId!, EventTypes.PAGE_NAVIGATION);
-                    pageOrder = pageOrderEvent.Payload.ToObject<PageRandomizeEventPayload>().Order;
+                    pageOrder = pageOrderEvent.Payload.ToObject<PageRandomizeEventPayload>()?.Order
+                        ?? throw new InvalidOperationException("Participant Page Randomize Event contains invalid payload.");
 
                     // TODO: We could also provide latest response values recorded when loading pages for which responses have been logged!
                     // This will likely be desirable when page navigation is more flexible
@@ -228,7 +226,7 @@ namespace Decsys.Controllers
                     if ((lastNavigation?.Timestamp ?? default) > (lastPageLoaded?.Timestamp ?? default))
                     {
                         pageId = lastNavigation?
-                            .Payload.ToObject<PageNavigationEventPayload>()
+                            .Payload.ToObject<PageNavigationEventPayload>()?
                             .TargetPageId; // Target Page Order might be null though
                     }
 

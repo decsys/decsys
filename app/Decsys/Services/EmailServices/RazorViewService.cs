@@ -1,19 +1,21 @@
-﻿using System.Threading.Tasks;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
+
 using UoN.AspNetCore.RazorViewRenderer;
 
 namespace Decsys.Services.EmailServices
 {
     public class RazorViewService
     {
-        private readonly IActionContextAccessor _actionContextAccessor;
+        private readonly ActionContext _actionContext;
         private readonly IRazorViewEngine _razor;
         private readonly IRazorViewRenderer _renderer;
 
         public RazorViewService(IActionContextAccessor actionContextAccessor, IRazorViewEngine razor, IRazorViewRenderer renderer)
         {
-            _actionContextAccessor = actionContextAccessor;
+            _actionContext = actionContextAccessor.ActionContext ?? throw new InvalidOperationException("Failed to get the ActionContext.");
             _razor = razor;
             _renderer = renderer;
         }
@@ -22,6 +24,6 @@ namespace Decsys.Services.EmailServices
             => await _renderer.AsString(view, model);
 
         public bool ViewExists(string view)
-            => _razor.FindView(_actionContextAccessor.ActionContext, view, false) is { };
+            => _razor.FindView(_actionContext, view, false) is { };
     }
 }

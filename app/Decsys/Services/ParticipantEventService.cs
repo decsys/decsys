@@ -180,7 +180,8 @@ namespace Decsys.Services
                     EventTypes.PAGE_RANDOMIZE);
             if (orderEvent is null) return resultsSummary;
 
-            var order = orderEvent.Payload.ToObject<PageRandomizeEventPayload>().Order;
+            var order = orderEvent.Payload.ToObject<PageRandomizeEventPayload>()?.Order;
+            if (order is null) return resultsSummary;
 
             foreach (var page in instance.Survey.Pages.OrderBy(x => x.Order))
             {

@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import Frame from "../core/Frame";
+import { Frame } from "../core/Frame";
 import { ScaleBar, FlexContainer } from "../core/ScaleBar";
-import Question from "../core/Question";
-import Radio from "./Radio";
+import { Question } from "../core/Question";
+import { Radio } from "./Radio";
 
 /** A Discrete Scale */
 const DiscreteScale = ({

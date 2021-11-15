@@ -31,14 +31,22 @@ export const getValueForRelativeX = (x, minValue, maxValue, bar) => {
  * @param {number} value the value to convert
  * @returns {number} The relative x co-ordinate
  */
-export const getXPosForValue = (value, minValue, maxValue, bar) => {
+export const getXPosForValue = (
+  value,
+  minValue,
+  maxValue,
+  bar,
+  hasRawBounds = false
+) => {
+  const barBounds = hasRawBounds ? bar : getBounds(bar);
+
   // get value as a ratio of absolute bar range
   const adjustedValue = value - minValue;
   const absBarMax = maxValue - minValue;
   const valueRatio = adjustedValue / absBarMax;
 
   // apply the ratio to the relative max co-ord
-  return getBounds(bar).width * valueRatio;
+  return barBounds.width * valueRatio;
 };
 
 /**

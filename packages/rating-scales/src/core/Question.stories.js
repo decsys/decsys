@@ -1,4 +1,4 @@
-import Question from "./Question";
+import { Question } from "./Question";
 import { text, optionsKnob } from "@storybook/addon-knobs";
 
 export default {

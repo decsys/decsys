@@ -3,9 +3,7 @@ const config = require("@decsys/config");
 const { stories, addons, webpackConfig } = config.storybook;
 
 // need to fetch alias target package path manually due to Yarn PNP
-const ratingScalesMain = path.dirname(
-  require.resolve("@decsys/rating-scales/package.json")
-);
+const ratingScalesMain = path.dirname(require.resolve("@decsys/rating-scales"));
 
 module.exports = {
   stories,

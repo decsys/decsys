@@ -23,11 +23,11 @@ namespace Decsys.Services
             UserManager<DecsysUser> users,
             AccountEmailService accountEmail)
         {
-            _actionContext = actionContextAccessor.ActionContext;
+            _actionContext = actionContextAccessor.ActionContext ?? throw new InvalidOperationException("Failed to get the ActionContext");
             _users = users;
             _accountEmail = accountEmail;
             _url = new UrlHelperFactory()
-                .GetUrlHelper(actionContextAccessor.ActionContext);
+                .GetUrlHelper(_actionContext);
         }
 
         /// <summary>
@@ -38,12 +38,7 @@ namespace Decsys.Services
         {
             var code = await _users.GenerateEmailConfirmationTokenAsync(user);
 
-            await _accountEmail.SendAccountConfirmation(
-                new EmailAddress(user.Email)
-                {
-                    Name = user.Fullname
-                },
-                link: _url.ActionLink(
+            var link = _url.ActionLink(
                     action: "Confirm",
                     controller: "Account",
                     values: new
@@ -51,7 +46,15 @@ namespace Decsys.Services
                         userId = user.Id,
                         code = code.Utf8ToBase64Url()
                     },
-                    protocol: _actionContext.HttpContext.Request.Scheme));
+                    protocol: _actionContext.HttpContext.Request.Scheme)
+                ?? throw new InvalidOperationException("Failed to get a URL for an Action Route");
+
+            await _accountEmail.SendAccountConfirmation(
+                new EmailAddress(user.Email)
+                {
+                    Name = user.Fullname
+                },
+                link);
         }
 
         public async Task SendAccountApprovalRequest(DecsysUser user)
@@ -61,12 +64,7 @@ namespace Decsys.Services
                 "Default",
                 TokenPurpose.AccountApproval);
 
-            await _accountEmail.SendAccountApprovalRequest(
-                new EmailAddress(user.Email)
-                {
-                    Name = user.Fullname
-                },
-                approveLink: _url.ActionLink(
+            var approveLink = _url.ActionLink(
                     action: "Approve",
                     controller: "Account",
                     values: new
@@ -74,8 +72,10 @@ namespace Decsys.Services
                         userId = user.Id,
                         code = code.Utf8ToBase64Url()
                     },
-                    protocol: _actionContext.HttpContext.Request.Scheme),
-                rejectLink: _url.ActionLink(
+                    protocol: _actionContext.HttpContext.Request.Scheme)
+                ?? throw new InvalidOperationException("Failed to get a URL for an Action Route");
+
+            var rejectLink = _url.ActionLink(
                     action: "Reject",
                     controller: "Account",
                     values: new
@@ -83,7 +83,16 @@ namespace Decsys.Services
                         userId = user.Id,
                         code = code.Utf8ToBase64Url()
                     },
-                    protocol: _actionContext.HttpContext.Request.Scheme));
+                    protocol: _actionContext.HttpContext.Request.Scheme)
+                ?? throw new InvalidOperationException("Failed to get a URL for an Action Route");
+
+            await _accountEmail.SendAccountApprovalRequest(
+                new EmailAddress(user.Email)
+                {
+                    Name = user.Fullname
+                },
+                approveLink,
+                rejectLink);
         }
 
         public async Task SendPasswordReset(DecsysUser user)
@@ -109,12 +118,7 @@ namespace Decsys.Services
         {
             var code = await _users.GenerateChangeEmailTokenAsync(user, newEmail);
 
-            await _accountEmail.SendEmailChange(
-                new EmailAddress(newEmail)
-                {
-                    Name = user.Fullname
-                },
-                link: _url.ActionLink(
+            var link = _url.ActionLink(
                     action: "ConfirmEmailChange",
                     controller: "Account",
                     values: new
@@ -123,7 +127,15 @@ namespace Decsys.Services
                         code = code.Utf8ToBase64Url(),
                         b64NewEmail = newEmail.Utf8ToBase64Url()
                     },
-                    protocol: _actionContext.HttpContext.Request.Scheme)); ;
+                    protocol: _actionContext.HttpContext.Request.Scheme)
+                ?? throw new InvalidOperationException("Failed to get a URL for an Action Route");
+
+            await _accountEmail.SendEmailChange(
+                new EmailAddress(newEmail)
+                {
+                    Name = user.Fullname
+                },
+                link);
         }
     }
 }

@@ -1,68 +1,86 @@
-import { useEffect } from "react";
-import { MultiVisualAnalogScale } from "./MultiScale";
+import { Scale } from "./MultiScale";
+import { useState } from "react";
+import { Frame } from "../core/Frame";
 import { action } from "@storybook/addon-actions";
+import { behaviour } from "./behaviours";
+import { Flex, Stack } from "@chakra-ui/react";
 
-// eslint-disable-next-line
+const behaviours = Object.keys(behaviour);
+
 export default {
-  title: "Rating Scales/MVAS",
-  component: MultiVisualAnalogScale,
-  decorators: [
-    (s) => <EventHandler onEvent={action("MVAS Updated")}>{s()}</EventHandler>,
-  ],
+  title: "VAS + MVAS/MVAS Scale",
+  component: Scale,
+  argTypes: {
+    behaviour: {
+      options: behaviours,
+      control: { type: "radio" },
+    },
+  },
 };
 
-const EventHandler = ({ onEvent, children }) => {
-  const handle = ({ detail }) => {
-    onEvent(detail);
+export const Basic = (args) => {
+  const [values, setValues] = useState(args.values);
+
+  args = {
+    ...args,
+    values,
+    onChange: (id, v) => {
+      setValues((old) => ({ ...old, [id]: v }));
+      action("MVAS Change")(id, v);
+    },
   };
 
-  useEffect(() => {
-    document.addEventListener("MvasUpdated", handle);
-    return () => document.removeEventListener("MvasUpdated", handle);
-  }, []);
-
-  return children;
+  return (
+    <Stack>
+      <Flex>
+        Left:
+        <input
+          style={{ border: "thin solid grey" }}
+          value={values?.left ?? ""}
+          onChange={(e) =>
+            setValues((old) => ({
+              ...old,
+              left: e.target.value ? parseFloat(e.target.value) : null,
+            }))
+          }
+        />
+      </Flex>
+      <Flex>
+        Center:
+        <input
+          style={{ border: "thin solid grey" }}
+          value={values?.center ?? ""}
+          onChange={(e) =>
+            setValues((old) => ({
+              ...old,
+              center: e.target.value ? parseFloat(e.target.value) : null,
+            }))
+          }
+        />
+      </Flex>
+      <Flex>
+        Right:
+        <input
+          style={{ border: "thin solid grey" }}
+          value={values?.right ?? ""}
+          onChange={(e) =>
+            setValues((old) => ({
+              ...old,
+              right: e.target.value ? parseFloat(e.target.value) : null,
+            }))
+          }
+        />
+      </Flex>
+      <Frame frameHeight="300px">
+        <Scale {...args} />
+      </Frame>
+    </Stack>
+  );
 };
-
-export const Basic = () => <MultiVisualAnalogScale />;
-
-export const Sample = () => (
-  <MultiVisualAnalogScale
-    barOptions={{
-      minValue: 1,
-      maxValue: 10,
-      thickness: "1px",
-    }}
-    labels={{
-      min: "Easy",
-      mid: "Ok",
-      max: "Hard",
-    }}
-    labelOptions={{
-      yAlign: "above",
-    }}
-    question="How?"
-    questionOptions={{
-      xAlign: "center",
-    }}
-    scaleMarkerOptions={{
-      markerColor: "red",
-      length: "50px",
-      thickness: "1em",
-      subColor: "green",
-      subThickness: "0.2em",
-      subLength: "20px",
-      markers: 5,
-      subdivisions: 10,
-    }}
-    frameHeight="300px"
-    leftMarkerOptions={{
-      label: "X",
-      color: "#f71",
-    }}
-    rightMarkerOptions={{
-      color: "#1a4",
-    }}
-    useConfidenceInput={"true"}
-  />
-);
+Basic.args = {
+  behaviour: behaviours[0],
+  leftMarkerOptions: { label: "L" },
+  rightMarkerOptions: { label: "R" },
+  centerMarkerOptions: { label: "C" },
+  values: {},
+};

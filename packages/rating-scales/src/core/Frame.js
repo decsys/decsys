@@ -14,6 +14,7 @@ const Frame = ({ frameHeight, ...p }) => (
       width: "100%",
       position: "relative",
       fontSize: "14px",
+      userSelect: "none",
     }}
     {...p}
   />
@@ -30,4 +31,4 @@ Frame.defaultProps = {
 };
 
 /** @component */
-export default Frame;
+export { Frame };

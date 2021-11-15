@@ -33,6 +33,7 @@ const stories = ["../src/**/*.stories.js"];
 // TODO: this may need amending to find the common set
 const addons = [
   "@storybook/addon-actions",
+  "@storybook/addon-controls",
   "@storybook/addon-knobs",
   "@storybook/addon-links",
   "@storybook/addon-storysource",

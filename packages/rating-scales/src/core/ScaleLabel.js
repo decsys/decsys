@@ -25,8 +25,8 @@ const BarLabel = ({
     yTransform = "translateY(-50%)";
     transform = {
       // 0 and 2 are the left and rightmost labels
-      [0]: `${yTransform} translateX(calc(-100% + ${labelDistance} * -1))`,
-      [2]: `${yTransform} translateX(${labelDistance})`,
+      0: `${yTransform} translateX(calc(-100% + ${labelDistance} * -1))`,
+      2: `${yTransform} translateX(${labelDistance})`,
     }[labelIndex];
   }
   transform = transform || `${yTransform} translateX(-50%)`;

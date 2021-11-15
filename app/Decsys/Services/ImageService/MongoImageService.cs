@@ -34,7 +34,7 @@ namespace Decsys.Services
                 BucketName = $"{Collections.Images}{surveyId}"
             });
 
-        private string GetImageFilename(Guid componentId, string extension)
+        private static string GetImageFilename(Guid componentId, string extension)
             => $"{componentId}{extension}";
 
         public async Task<List<(string filename, byte[] bytes)>> ListSurveyImages(int surveyId)
@@ -130,6 +130,7 @@ namespace Decsys.Services
 
         private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
             _components.Find(surveyId, pageId, componentId)
-                .Params.Value<string>("extension");
+                .Params.Value<string>("extension")
+            ?? throw new InvalidOperationException("Couldn't find a valid string param for `extension`.");
     }
 }

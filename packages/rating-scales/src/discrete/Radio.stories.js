@@ -1,4 +1,4 @@
-import Radio from "./Radio";
+import { Radio } from "./Radio";
 import { boolean, text } from "@storybook/addon-knobs";
 
 export default {

@@ -5,6 +5,15 @@ import Icon from "./Icon";
 export default {
   title: "Visual Analog Scale Response",
   component: ResponseItem,
+  argTypes: {
+    useConfidenceInput: {
+      options: ["None", "input", "scale"],
+      control: {
+        type: "radio",
+        labels: { None: "None", input: "Input", scale: "Scale" },
+      },
+    },
+  },
 };
 
 const props = {
@@ -19,17 +28,22 @@ const props = {
 const dummyResults = [
   {
     value: 60,
+    confidence: 50,
   },
   {
+    confidence: 50,
     value: 0,
   },
   {
+    confidence: 35,
     value: 50,
   },
   {
+    confidence: 55,
     value: 40,
   },
   {
+    confidence: 90,
     value: 80,
   },
 ];
@@ -51,10 +65,20 @@ const _context = {
   logResults: action("Results logged"),
 };
 
-export const Basic = () => <ResponseItem _context={_context} />;
+export const Basic = (args) => <ResponseItem {...args} _context={_context} />;
+Basic.args = {
+  useConfidenceInput: "None",
+};
 
 export const NumericStats = stats(
   ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)
+);
+
+export const NumericStatsMissingConfidence = stats(
+  ResponseItem.stats(
+    { ...ResponseItem.defaultProps, ...props },
+    dummyResults.map((x) => ({ ...x, confidence: undefined }))
+  )
 );
 
 export const MetadataIcon = () => <Icon width="24px" />;

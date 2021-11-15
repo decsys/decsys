@@ -12,9 +12,9 @@ const params = {
     "Speirs-Bridge 2010"
   ),
   useConfidenceInput: ParamTypes.oneOf(
-    "Use Confidence Input?",
-    ["Yes", "No"],
-    "Yes"
+    "Confidence Input Style",
+    ["None", "Input", "Scale"],
+    "Input"
   ),
   confidenceText: ParamTypes.string(
     "Confidence Input Text",

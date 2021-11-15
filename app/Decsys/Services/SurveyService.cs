@@ -50,7 +50,7 @@ namespace Decsys.Services
                 // this is pretty hardcoded to the Legacy Prolific access right now
                 // Any extension of it would warrant a small refactor to eliminate magic strings etc.
                 lookupKey = "STUDY_ID";
-                lookupValue = (string)model[lookupKey];
+                lookupValue = (string?)model[lookupKey];
             }
 
             if(lookupValue is not null)
@@ -69,7 +69,7 @@ namespace Decsys.Services
 
                 if (!string.IsNullOrWhiteSpace(lookup.ParticipantIdKey) && model.ContainsKey(lookup.ParticipantIdKey))
                 {
-                    details.ParticipantId = (string)model[lookup.ParticipantIdKey];
+                    details.ParticipantId = (string?)model[lookup.ParticipantIdKey];
                 }
 
                 return details;

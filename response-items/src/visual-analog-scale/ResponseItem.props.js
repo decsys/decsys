@@ -46,6 +46,27 @@ const params = {
     "Drag Marker Initial Distance from Bar (px)",
     20
   ),
+  useConfidenceInput: ParamTypes.oneOf(
+    "Confidence Input Style",
+    ["None", "Input", "Scale"],
+    "None"
+  ),
+  confidenceText: ParamTypes.string(
+    "Confidence Input Text",
+    "How confident are you?"
+  ),
+  confidenceTextColor: ParamTypes.string(
+    "Confidence Input Text Color",
+    "black"
+  ),
+  confidenceTextFontFamily: ParamTypes.stringUndefined(
+    "Confidence Input Text Font Family"
+  ),
+
+  confidenceTextFontSize: ParamTypes.string(
+    "Confidence Input Text Font Size",
+    "18pt"
+  ),
 };
 
 // Specify PropTypes for non-Configurable Props

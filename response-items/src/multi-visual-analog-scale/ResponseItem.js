@@ -1,5 +1,8 @@
 import { useEffect } from "react";
-import { MultiVisualAnalogScale } from "@decsys/rating-scales/mvas";
+import {
+  MultiVisualAnalogScale,
+  useMultiVisualAnalogScale,
+} from "@decsys/rating-scales/mvas";
 import * as props from "./ResponseItem.props";
 import { stats } from "./ResponseItem.stats";
 
@@ -48,27 +51,41 @@ const ResponseItem = ({
   buttons,
   _context: { setNextEnabled, logResults },
 }) => {
-  // Convert oneOf's to bools
-  useConfidenceInput = useConfidenceInput === "Yes";
-  const showUndoButton = ["Undo", "Both"].includes(buttons);
-  const showResetButton = ["Reset", "Both"].includes(buttons);
+  // Convert params to expected prop values
+  useConfidenceInput =
+    useConfidenceInput &&
+    (useConfidenceInput === "None"
+      ? false
+      : useConfidenceInput === true
+      ? "input"
+      : useConfidenceInput.toLocaleLowerCase());
+  const showResetLastButton = ["Undo", "Reset Last", "Both"].includes(buttons);
+  const showResetAllButton = ["Reset", "Reset All", "Both"].includes(buttons);
 
-  const handleMvasCompleted = (e) => {
-    logResults({ value: e.detail });
-    setNextEnabled(true);
-  };
+  const { props: mvasProps, handlers: mvasHandlers } =
+    useMultiVisualAnalogScale();
 
   useEffect(() => {
-    document.addEventListener("MvasCompleted", handleMvasCompleted);
-    return () =>
-      document.removeEventListener("MvasCompleted", handleMvasCompleted);
-  }, []);
+    // only log on "completions"
+    // and only consider complete when the "last" expected input has a value
+    // which is either scale or confidence, depending if confidence is being captured.
+    const isComplete = useConfidenceInput
+      ? mvasProps.values.confidence != null
+      : ["left", "right", "bestEstimate"].every(
+          (valueId) => mvasProps.values[valueId] != null
+        );
+
+    if (isComplete) {
+      logResults(mvasProps.values);
+      setNextEnabled(true);
+    }
+  }, [mvasProps.values, useConfidenceInput, logResults, setNextEnabled]);
 
   return (
     <MultiVisualAnalogScale
       buttons={{
-        undo: showUndoButton,
-        reset: showResetButton,
+        resetLast: showResetLastButton,
+        resetAll: showResetAllButton,
       }}
       barOptions={{
         minValue: barMinValue,
@@ -119,7 +136,7 @@ const ResponseItem = ({
       useConfidenceInput={useConfidenceInput}
       confidenceText={confidenceText}
       confidenceTextOptions={{
-        topMargin: "80%",
+        topMargin: "0%",
         xAlign: "center",
         fontFamily: confidenceTextFontFamily,
         fontSize: confidenceTextFontSize,
@@ -127,6 +144,8 @@ const ResponseItem = ({
       }}
       frameHeight="300px"
       behaviour={behaviourKeyMap[behaviour]}
+      {...mvasProps}
+      {...mvasHandlers}
     />
   );
 };

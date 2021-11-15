@@ -220,4 +220,4 @@ EllipseCanvas.defaultProps = {
 };
 
 /** @component */
-export default EllipseCanvas;
+export { EllipseCanvas };

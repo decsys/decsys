@@ -79,4 +79,4 @@ Question.defaultProps = {
 };
 
 /** @component */
-export default Question;
+export { Question };

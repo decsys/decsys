@@ -164,4 +164,4 @@ Radio.defaultProps = {
   labelAbove: false,
 };
 
-export default Radio;
+export { Radio };

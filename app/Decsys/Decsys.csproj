@@ -1,108 +1,110 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <Version>2.1.4</Version>
-  </PropertyGroup>
+	<PropertyGroup>
+		<Version>2.1.5</Version>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net50</TargetFramework>
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
 
-    <IsPackable>false</IsPackable>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+		<IsPackable>false</IsPackable>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+		<DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
 
-    <DebugType>embedded</DebugType>
+		<DebugType>embedded</DebugType>
 
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>CS8618;CS8600;CS8602;CS8603</WarningsAsErrors>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>CS8618;CS8600;CS8602;CS8603</WarningsAsErrors>
 
-    <UserSecretsId>0cc2d989-e3a6-48a0-b877-fd5ba6a886aa</UserSecretsId>
-  </PropertyGroup>
+		<UserSecretsId>0cc2d989-e3a6-48a0-b877-fd5ba6a886aa</UserSecretsId>
 
-  <PropertyGroup>
-    <!-- SPA paths used throughout this file -->
-    <SpaSource>../client-app/</SpaSource>
-    <SpaDist>ClientApp/</SpaDist>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-    <!-- Don't show built SPA files in VS if they are present locally -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaDist)**</DefaultItemExcludes>
+	<PropertyGroup>
+		<!-- SPA paths used throughout this file -->
+		<SpaSource>../client-app/</SpaSource>
+		<SpaDist>ClientApp/</SpaDist>
 
-    <!-- Tell VS never to build any ts/js it finds -->
-    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-  </PropertyGroup>
+		<!-- Don't show built SPA files in VS if they are present locally -->
+		<DefaultItemExcludes>$(DefaultItemExcludes);$(SpaDist)**</DefaultItemExcludes>
 
-  <ItemGroup>
-    <PackageReference Include="AspNetCore.Identity.Mongo" Version="6.7.2" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageReference Include="Base62-Net" Version="1.2.157201" />
-    <PackageReference Include="ClacksMiddlware" Version="2.1.0" />
-    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
-    <PackageReference Include="LinqKit.Core" Version="1.1.26" />
-    <PackageReference Include="LiteDB" Version="5.0.11" />
-    <PackageReference Include="MailKit" Version="2.15.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.10" />
-    <PackageReference Include="MongoDB.Driver" Version="2.13.1" />
-    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.13.1" />
-    <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
-    <PackageReference Include="SendGrid" Version="9.24.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.2.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.1" />
-    <PackageReference Include="UoN.AspNetCore.RazorViewRenderer" Version="1.0.1" />
-    <PackageReference Include="UoN.AspNetCore.VersionMiddleware" Version="1.1.1" />
-    <PackageReference Include="UoN.VersionInformation.DependencyInjection" Version="1.0.0" />
-    <PackageReference Include="IdentityServer4" Version="4.1.2" />
-    <PackageReference Include="UoN.ZipBuilder" Version="1.1.0" />
-  </ItemGroup>
+		<!-- Tell VS never to build any ts/js it finds -->
+		<TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+		<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Update="components\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-    <None Update="surveys\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.Identity.Mongo" Version="6.7.2" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+		<PackageReference Include="Base62-Net" Version="1.2.157201" />
+		<PackageReference Include="ClacksMiddlware" Version="2.1.0" />
+		<PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
+		<PackageReference Include="LinqKit.Core" Version="1.1.26" />
+		<PackageReference Include="LiteDB" Version="5.0.11" />
+		<PackageReference Include="MailKit" Version="2.15.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.0" />
+		<PackageReference Include="MongoDB.Driver" Version="2.13.1" />
+		<PackageReference Include="MongoDB.Driver.GridFS" Version="2.13.1" />
+		<PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
+		<PackageReference Include="SendGrid" Version="9.24.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.2.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.2.1" />
+		<PackageReference Include="UoN.AspNetCore.RazorViewRenderer" Version="1.0.1" />
+		<PackageReference Include="UoN.AspNetCore.VersionMiddleware" Version="1.1.1" />
+		<PackageReference Include="UoN.VersionInformation.DependencyInjection" Version="1.0.0" />
+		<PackageReference Include="IdentityServer4" Version="4.1.2" />
+		<PackageReference Include="UoN.ZipBuilder" Version="1.1.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="version.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="components\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+		<None Update="surveys\**">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="version.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		</None>
+	</ItemGroup>
 
-  <!-- Ensure Node.js is installed -->
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
-    <Exec Command="node --version" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-    </Exec>
-    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-  </Target>
+	<ItemGroup>
+		<Folder Include="wwwroot\" />
+	</ItemGroup>
 
-  <Target Name="DebugEnsureYarn" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
-    <Exec Command="yarn --version" ContinueOnError="true">
-      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
-    </Exec>
-    <Error Condition="'$(ErrorCode)' != '0'" Text="Yarn is required to build and run this project. To continue, please install Yarn globally: `npm i -g yarn`, and then restart your command prompt or IDE." />
-  </Target>
-  <!-- Install npm packages (yarn) -->
-  <Target Name="DebugYarnInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
-    <Message Importance="high" Text="Restoring local dependencies using 'yarn'. This may take several minutes..." />
-    <Exec WorkingDirectory="$(SpaSource)" Command="yarn" />
-  </Target>
+	<!-- Ensure Node.js is installed -->
+	<Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+		<Exec Command="node --version" ContinueOnError="true">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+		</Exec>
+		<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+	</Target>
 
-  <Target Name="PublishIncludeSpaBuild" AfterTargets="ComputeFilesToPublish">
-    <!--
+	<Target Name="DebugEnsureYarn" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+		<Exec Command="yarn --version" ContinueOnError="true">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+		</Exec>
+		<Error Condition="'$(ErrorCode)' != '0'" Text="Yarn is required to build and run this project. To continue, please install Yarn globally: `npm i -g yarn`, and then restart your command prompt or IDE." />
+	</Target>
+	<!-- Install npm packages (yarn) -->
+	<Target Name="DebugYarnInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+		<Message Importance="high" Text="Restoring local dependencies using 'yarn'. This may take several minutes..." />
+		<Exec WorkingDirectory="$(SpaSource)" Command="yarn" />
+	</Target>
+
+	<Target Name="PublishIncludeSpaBuild" AfterTargets="ComputeFilesToPublish">
+		<!--
     Unlike the ASP.NET Core Template, which runs the Webpack build on publish,
     we do the client app build independently in parallel during CI.
     So this process appears more manual (but is automated in CI instead).
@@ -119,14 +121,14 @@
     to the right place before publishing.
     -->
 
-    <!-- Include the SPA build files in the publish output -->
-    <ItemGroup>
-      <DistFiles Include="$(SpaDist)**" />
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>%(DistFiles.Identity)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
-  </Target>
+		<!-- Include the SPA build files in the publish output -->
+		<ItemGroup>
+			<DistFiles Include="$(SpaDist)**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>%(DistFiles.Identity)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
 
 </Project>
