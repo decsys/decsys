@@ -6,6 +6,8 @@ using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities.Mongo;
 using Decsys.Repositories.Contracts;
+using Decsys.Utilities;
+
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -33,7 +35,8 @@ namespace Decsys.Repositories.Mongo
 
             var page = new Page()
             {
-                Order = survey.Pages.Count + 1
+                Order = survey.Pages.Count + 1,
+                Name = $"Page {BaseConvert.ToBijectiveHexavigesimal(survey.PageCreationCounter++)}"
             };
 
             survey.Pages.Add(page);

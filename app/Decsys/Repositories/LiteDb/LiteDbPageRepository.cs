@@ -8,6 +8,7 @@ using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities.LiteDb;
 using Decsys.Repositories.Contracts;
+using Decsys.Utilities;
 
 using LiteDB;
 
@@ -31,7 +32,8 @@ namespace Decsys.Repositories.LiteDb
 
             var page = new Page()
             {
-                Order = survey.Pages.Count + 1
+                Order = survey.Pages.Count + 1,
+                Name = $"Page {BaseConvert.ToBijectiveHexavigesimal(survey.PageCreationCounter++)}"
             };
 
             survey.Pages.Add(page);
