@@ -6,6 +6,8 @@ using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities.Mongo;
 using Decsys.Repositories.Contracts;
+using Decsys.Utilities;
+
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -33,7 +35,8 @@ namespace Decsys.Repositories.Mongo
 
             var page = new Page()
             {
-                Order = survey.Pages.Count + 1
+                Order = survey.Pages.Count + 1,
+                Name = $"Page {BaseConvert.ToBijectiveHexavigesimal(survey.PageCreationCounter++)}"
             };
 
             survey.Pages.Add(page);
@@ -52,6 +55,10 @@ namespace Decsys.Repositories.Mongo
             survey.Pages.Remove(page);
 
             survey.Pages = survey.Pages.Select((x, i) => { x.Order = i + 1; return x; }).ToList();
+
+            // If we just deleted the last page, it's ok to reset the naming counter
+            if (survey.Pages.Count == 0) survey.PageCreationCounter = 0;
+
             _surveys.ReplaceOne(x => x.Id == surveyId, survey);
         }
 

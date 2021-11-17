@@ -21,5 +21,7 @@ namespace Decsys.Data.Entities
         public string? Owner { get; set; }
 
         public int? ParentSurveyId { get; set; }
+
+        public int PageCreationCounter { get; set; }
     }
 }

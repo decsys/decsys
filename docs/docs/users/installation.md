@@ -21,10 +21,10 @@ In **Hosted** mode, DECSYS is hosted on the internet, and requires some addition
 
 #### Prerequisites
 
-- .NET 5.0 or newer Runtime.
+- .NET 6.0 runtime.
 
 #### Setup Steps
-  1. Download a `dotnet-5.0` asset from **Releases**
+  1. Download a `dotnet-6.0` asset from **Releases**
   1. Extract it to a folder
   1. Run the application as follows:
      - Use the provided `run-decsys` or `Run Decsys (Windows)` script

@@ -27,8 +27,8 @@ For Windows, we recommend using [NSSM](https://nssm.cc/) to do so.
 
 ## Prerequisites
 
-- `dotnet` SDK `5.0-preview7` or newer
-  - either independently or part of Visual Studio 2019 `16.7` or newer
+- `dotnet` SDK `6.0` or newer
+  - either independently or part of Visual Studio 2022 `17.0` or newer
 
 ## Build steps
 
