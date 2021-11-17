@@ -20,7 +20,7 @@ const PageHeader = ({ page, order, dragHandleProps }) => {
           <Icon as={FaGripVertical} />
         </Flex>
         <LightHeading mx={2} size="sm">
-          Page {order}
+        {order}
         </LightHeading>
       </Flex>
 
