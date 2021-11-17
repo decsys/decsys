@@ -55,6 +55,10 @@ namespace Decsys.Repositories.Mongo
             survey.Pages.Remove(page);
 
             survey.Pages = survey.Pages.Select((x, i) => { x.Order = i + 1; return x; }).ToList();
+
+            // If we just deleted the last page, it's ok to reset the naming counter
+            if (survey.Pages.Count == 0) survey.PageCreationCounter = 0;
+
             _surveys.ReplaceOne(x => x.Id == surveyId, survey);
         }
 
