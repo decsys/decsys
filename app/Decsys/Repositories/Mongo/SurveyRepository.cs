@@ -160,6 +160,11 @@ namespace Decsys.Repositories.Mongo
             entity.Id = GetNextSurveyId();
             entity.Owner = ownerId;
 
+            // set this so that regardless of what pages
+            // there are and what they were named
+            // we start default name generation from a sensible point
+            entity.PageCreationCounter = entity.Pages.Count;
+
             // Reset Type properties
             // when we map the model, these will be accurately restored 
             entity.Type = null;
