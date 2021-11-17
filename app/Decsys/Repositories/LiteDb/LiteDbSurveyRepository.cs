@@ -213,6 +213,11 @@ namespace Decsys.Repositories.LiteDb
             entity.Type = null;
             entity.Settings = new();
 
+            // set this so that regardless of what pages
+            // there are and what they were named
+            // we start default name generation from a sensible point
+            entity.PageCreationCounter = entity.Pages.Count;
+
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
             var lookup = HandleSurveyTypeCreation(model, ref entity);
 

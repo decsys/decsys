@@ -8,6 +8,7 @@ using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities.LiteDb;
 using Decsys.Repositories.Contracts;
+using Decsys.Utilities;
 
 using LiteDB;
 
@@ -31,7 +32,8 @@ namespace Decsys.Repositories.LiteDb
 
             var page = new Page()
             {
-                Order = survey.Pages.Count + 1
+                Order = survey.Pages.Count + 1,
+                Name = $"Page {BaseConvert.ToBijectiveHexavigesimal(survey.PageCreationCounter++)}"
             };
 
             survey.Pages.Add(page);
@@ -69,6 +71,10 @@ namespace Decsys.Repositories.LiteDb
             survey.Pages.Remove(page);
 
             survey.Pages = survey.Pages.Select((x, i) => { x.Order = i + 1; return x; }).ToList();
+
+            // If we just deleted the last page, it's ok to reset the naming counter
+            if (survey.Pages.Count == 0) survey.PageCreationCounter = 0;
+
             _surveys.Update(survey);
         }
 

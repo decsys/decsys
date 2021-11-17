@@ -14,7 +14,7 @@ DECSYS is a tool that enables the creation and administration of digital surveys
 
 | Location | Description |
 | - | - |
-| [`app/Decsys`](app/Decsys)         | The core DECSYS backend app.<br>An ASP.NET Core 5.0 API.                     |
+| [`app/Decsys`](app/Decsys)         | The core DECSYS backend app.<br>An ASP.NET Core 6.0 API.                     |
 | [`app/client-app`](app/client-app) | The core DECSYS frontend app.<br>A React app, hosted by the backend process. |
 
 ## Published Packages

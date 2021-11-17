@@ -3,7 +3,8 @@ title: Roadmap
 ---
 
 ## 2.2
-- Tagging/Labelling export data fields
+- Static page names in export data. These can be user editied, and aren't reassigned when page order changes so can be depended on by scripts.
+- Question content in data exports. A Content Item on a Page can be marked as representing the "Question" and will be included in data exports.
 
 ## 2.x Future
 
@@ -25,4 +26,4 @@ title: Roadmap
 - Sharing Survey Administration between accounts
 - new Params Editor / ParamTypes
 - Logical branching - new Survey Structure Editor
-- Tagging/Labelling export data fields
+- Tagging/Labelling further export data fields
