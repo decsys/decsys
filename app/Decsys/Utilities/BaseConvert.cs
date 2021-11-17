@@ -12,15 +12,13 @@ namespace Decsys.Utilities
 
         public static string ToBijectiveHexavigesimal(long n)
         {
-            if (n < AlphaBaseChars.Length) return AlphaBaseChars[n].ToString();
-            else return ToBijectiveHexavigesimal((long)Math.Floor((double)n / AlphaBaseChars.Length - 1)) + AlphaBaseChars[n % AlphaBaseChars.Length];
-
-            //var mod = value % 26;
-            //var n = ToBase(mod, AlphaBaseChars); // Convert to Alpha Base 26
-
-            //// if greater than 26, recursively convert the higher powers
-            //if (value > 26) return ToBijectiveHexavigesimal((long)Math.Floor((value - 1f) / 26)) + n;
-            //else return n;
+            if (n < AlphaBaseChars.Length)
+                return AlphaBaseChars[n].ToString();
+            else
+                return
+                    ToBijectiveHexavigesimal(
+                        (long)Math.Floor((double)n / AlphaBaseChars.Length - 1))
+                    + AlphaBaseChars[n % AlphaBaseChars.Length];
         }
 
         // All the generic stuff below is from here:
@@ -49,7 +47,7 @@ namespace Decsys.Utilities
             do
             {
                 buffer[--i] = charMap[value % targetBase];
-                value = value / targetBase;
+                value /= targetBase;
             }
             while (value > 0);
 
