@@ -74,6 +74,23 @@ namespace Decsys.Services
         }
 
         /// <summary>
+        /// Set the name of a Page in a Survey
+        /// </summary>
+        /// <param name="surveyId">The ID of the Survey the Page belongs to</param>
+        /// <param name="pageId">The ID of the Page to set the name of</param>
+        /// <param name="name">The name to set</param>
+        /// <exception cref="KeyNotFoundException"></exception>
+        internal void SetName(int surveyId, Guid pageId, string name)
+        {
+            var page = _pages.Find(surveyId, pageId)
+                ?? throw new KeyNotFoundException("Page could not be found.");
+
+            page.Name = name;
+
+            _pages.Update(surveyId, page);
+        }
+
+        /// <summary>
         /// Delete a Page from a Survey.
         /// </summary>
         /// <param name="id">The ID of the Survey to remove the Page from.</param>

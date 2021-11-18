@@ -8,8 +8,6 @@ using Decsys.Data.Entities;
 using Decsys.Services;
 using Decsys.Services.Contracts;
 
-using IdentityServer4.Models;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
