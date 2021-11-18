@@ -8,8 +8,6 @@ using Decsys.Data.Entities;
 using Decsys.Services;
 using Decsys.Services.Contracts;
 
-using IdentityServer4.Models;
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
@@ -67,8 +65,27 @@ builder.Services
 
     .AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "DECSYS API", Version = "v1" });
+            c.SwaggerDoc("v1", new() { Title = "DECSYS API", Version = "v1" });
             c.EnableAnnotations();
+
+            var jwtSchemeId = "jwtbearer";
+            var jwtScheme = new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
+                ,
+                Reference = new()
+                {
+                    Id = jwtSchemeId,
+                    Type = ReferenceType.SecurityScheme,
+                }
+            };
+            c.AddSecurityDefinition(jwtSchemeId, jwtScheme);
+            c.AddSecurityRequirement(new()
+            {
+                [jwtScheme] = new List<string>()
+            });
         })
     .AddSwaggerGenNewtonsoftSupport()
 
