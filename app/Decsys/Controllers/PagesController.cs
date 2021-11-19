@@ -54,7 +54,29 @@ namespace Decsys.Controllers
                 ? (ActionResult)NoContent()
                 : NotFound();
 
-
+        [HttpPut("{pageId}/name")]
+        [SwaggerOperation("Set the Name of a Page in a Survey.")]
+        [SwaggerResponse(204, "The Page name was set successfully.")]
+        [SwaggerResponse(404, "No Page, or Survey, was found with the provided ID.")]
+        public IActionResult SetName(
+            [SwaggerParameter("ID of the Survey to change the Page in.")]
+            int id,
+            [SwaggerParameter("ID of the Page to change the order of.")]
+            Guid pageId,
+            [FromBody]
+            [SwaggerParameter("The new order value for the Page.")]
+            string name)
+        {
+            try
+            {
+                _pages.SetName(id, pageId, name);
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
 
         [HttpPut("{pageId}/order")]
         [SwaggerOperation("Set the Order of a Page in a Survey.")]
