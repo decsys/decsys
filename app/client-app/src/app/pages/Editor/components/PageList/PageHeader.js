@@ -6,6 +6,7 @@ import PageActionButtons from "./PageActionButtons";
 import { defaultColorMode } from "themes";
 import axios from "axios";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
+import { authorization_BearerToken, withHeaders, contentType_AppJson } from "api/helpers";
 const PageHeader = ({ page, order, dragHandleProps }) => {
   const { colorMode } = useColorMode();
   const headerStyle = { light: { bg: "gray.300" }, dark: { bg: "gray.600" } };
@@ -13,24 +14,20 @@ const PageHeader = ({ page, order, dragHandleProps }) => {
   const [name, setName] = useState(page.name);
   const firstUpdate = useRef(true);
   useEffect(() => {
-    if(firstUpdate.current==true){
+    if (firstUpdate.current == true) {
       firstUpdate.current = false
       return
     }
-    const delayDebounceFn = setTimeout(() => {
-      console.log("this is when it would send")
-      console.log(page)
-      console.log(id)
-      // Send Axios request here
+    const delayDebounceFn = setTimeout(async () => {
       axios.put(
-        `/api/survey/${id}/pages/${page.id}/name`,
-        {name:"new name"}//,
-        //withHeaders(await authorization_BearerToken())
-      ).then(res=>console.log(res))
+        `/api/surveys/${id}/pages/${page.id}/name`,
+        JSON.stringify(name),
+        withHeaders(contentType_AppJson, await authorization_BearerToken())
+      ).then(res => console.log(res))
     }, 2000)
     return () => clearTimeout(delayDebounceFn)
   }, [name])
- 
+
   return (
     <Flex
       borderTopRadius={5}
@@ -45,17 +42,17 @@ const PageHeader = ({ page, order, dragHandleProps }) => {
         </Flex>
         <LightHeading mx={2} size="sm">
           <Flex align="center">
-          {order} 
-        <Input
-          variant="flushed"
-          borderRadius={0}
-          fontSize="1.3rem"
-          value={name}
-          ml={2}
-          onChange={(value)=>setName(value.target.value)}
-        />
+            {order}
+            <Input
+              variant="flushed"
+              borderRadius={0}
+              fontSize="1.3rem"
+              value={name}
+              ml={2}
+              onChange={(value) => setName(value.target.value)}
+            />
           </Flex>
-        
+
         </LightHeading>
       </Flex>
 
