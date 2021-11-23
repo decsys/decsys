@@ -19,8 +19,10 @@ const PageItemRenderer = ({ _context, component, params }) => {
 
   // TODO: change defaults behaviour.
   // Empty params reverting to defaults is annoying UX and sometimes prevents intentionally empty params
-  // to be fair, sucha  change is probably more in the editor/backend than here when rendering;
+  // to be fair, such a change is probably more in the editor/backend than here when rendering;
   // the behaviour in ensureParamTypes is probably correct
+
+  // Apply defaults for usnet params, and coerce types and validate any set params
   const paramValues = ensureParamTypes(component.params, params);
 
   // TODO: manage passing results here too, when the platform does that again

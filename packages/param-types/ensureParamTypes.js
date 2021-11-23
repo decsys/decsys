@@ -33,11 +33,9 @@ const validators = {
  */
 export const ensureParamTypes = (paramTypes, paramValues) => {
   // TODO: in future we can use this to check isRequired?
-  // or modify default handling for a better experience?
+  // or possibly modify default handling for a better experience?
 
   const paramKeys = Object.keys(paramTypes);
-
-  // First coerce passed values, use defaults where nothing provided
   return paramKeys.reduce((values, key) => {
     const paramType = paramTypes[key];
 
