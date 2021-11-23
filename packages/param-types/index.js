@@ -11,12 +11,14 @@ import {
   paramsEditorContextPropTypes,
 } from "./ResponseItemContexts";
 import buildPropTypes from "./buildPropTypes";
+import { ensureParamTypes } from "./ensureParamTypes";
 
 // named * exports
 export * from "./builders";
 
 // other named exports
 export {
+  ensureParamTypes,
   buildPropTypes,
   types,
   renderContextPropTypes,
@@ -26,6 +28,7 @@ export {
 
 // default export
 export default {
+  ensureParamTypes,
   buildPropTypes,
   ...builders,
   types,
