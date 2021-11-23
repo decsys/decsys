@@ -22,7 +22,7 @@ const PageItemRenderer = ({ _context, component, params }) => {
   // to be fair, such a change is probably more in the editor/backend than here when rendering;
   // the behaviour in ensureParamTypes is probably correct
 
-  // Apply defaults for usnet params, and coerce types and validate any set params
+  // Apply defaults for unset params, and coerce types and validate any set params
   const paramValues = ensureParamTypes(component.params, params);
 
   // TODO: manage passing results here too, when the platform does that again
