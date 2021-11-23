@@ -7,26 +7,31 @@ import { defaultColorMode } from "themes";
 import axios from "axios";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { authorization_BearerToken, withHeaders, contentType_AppJson } from "api/helpers";
+import { useDerivedState } from "hooks/useDerivedState";
+import useDeferredAction from "hooks/useDeferredAction";
 const PageHeader = ({ page, order, dragHandleProps }) => {
   const { colorMode } = useColorMode();
   const headerStyle = { light: { bg: "gray.300" }, dark: { bg: "gray.600" } };
   const { id, mutate } = useFetchSurvey();
-  const [name, setName] = useState(page.name);
-  const firstUpdate = useRef(true);
-  useEffect(() => {
-    if (firstUpdate.current == true) {
-      firstUpdate.current = false
-      return
-    }
-    const delayDebounceFn = setTimeout(async () => {
-      axios.put(
-        `/api/surveys/${id}/pages/${page.id}/name`,
-        JSON.stringify(name),
-        withHeaders(contentType_AppJson, await authorization_BearerToken())
-      ).then(res => console.log(res))
-    }, 2000)
-    return () => clearTimeout(delayDebounceFn)
-  }, [name])
+  //const [name, setName] = useState(page.name);
+  const [name, setName] = useDerivedState(page.name);
+  //const { saveName } = useSurveyCardActions();
+  // just need to make a save name function in an api file
+  const handleNameSave = async (value) =>{
+    //saveName(id, value, setNameState);
+    axios.put(
+      `/api/surveys/${id}/pages/${page.id}/name`,
+      JSON.stringify(value),
+      withHeaders(contentType_AppJson, await authorization_BearerToken())
+    )
+  }
+  const deferredSave = useDeferredAction(handleNameSave);
+  const handleChange = ({ target: { value } }) => {
+    setName(value);
+    deferredSave(value);
+  };
+
+  
 
   return (
     <Flex
@@ -49,7 +54,7 @@ const PageHeader = ({ page, order, dragHandleProps }) => {
               fontSize="1.3rem"
               value={name}
               ml={2}
-              onChange={(value) => setName(value.target.value)}
+              onChange={handleChange}
             />
           </Flex>
 
