@@ -1,6 +1,6 @@
 {
   "name": "client-app",
-  "version": "2.1.2",
+  "version": "2.1.6",
   "private": true,
   "scripts": {
     "start": "craco start",
