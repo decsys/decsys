@@ -10,7 +10,7 @@ import {
 import { setSurveyPageItemOrder } from "api/page-items";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
-import { setSurveyName } from "api/surveys";
+
 
 const actions = (id, mutate, selectedPageItem, setSelectedPageItem) => ({
   addPage: async () => {
