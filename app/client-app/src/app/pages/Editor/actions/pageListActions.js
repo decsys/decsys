@@ -64,6 +64,13 @@ const actions = (id, mutate, selectedPageItem, setSelectedPageItem) => ({
   },
 
   setPageName: async (pageId, name) => {
+    mutate(
+      produce(({ pages }) => {
+        const page = pages.find(({ id }) => id === pageId);
+        page.name = name;
+      }),
+      false
+    );
     await setSurveyPageName(id, pageId, name);
     mutate();
   },
