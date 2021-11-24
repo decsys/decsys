@@ -3,21 +3,17 @@ import LightHeading from "components/core/LightHeading";
 import { FaGripVertical } from "react-icons/fa";
 import PageActionButtons from "./PageActionButtons";
 import { defaultColorMode } from "themes";
-import { setSurveyPageName } from "api/pages";
-import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { useDerivedState } from "hooks/useDerivedState";
 import useDeferredAction from "hooks/useDeferredAction";
+import { usePageListContext } from "../../contexts/PageList";
 const PageHeader = ({ page, order, dragHandleProps }) => {
   const { colorMode } = useColorMode();
   const headerStyle = { light: { bg: "gray.300" }, dark: { bg: "gray.600" } };
-  const { id, mutate } = useFetchSurvey();
-  
+  const { setPageName } = usePageListContext();
   const [name, setName] = useDerivedState(page.name);
-  //const { saveName } = useSurveyCardActions();
-  // just need to make a save name function in an api file
-  const handleNameSave = async (value) =>{
-    //saveName(id, value, setNameState);
-    setSurveyPageName(id,page.id,value)
+   
+  const handleNameSave = async (value) =>{ 
+    setPageName(page.id,value)
   }
   const deferredSave = useDeferredAction(handleNameSave);
   const handleChange = ({ target: { value } }) => {

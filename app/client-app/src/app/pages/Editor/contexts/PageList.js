@@ -7,6 +7,7 @@ const defaults = {
   deletePage: (pageId) => {},
   duplicatePage: (pageId) => {},
   setPageRandomize: (pageId, randomize) => {},
+  setPageName: (pageId, name) => {},
   movePage: (pageId, source, destination) => {},
   addItemToPage: (pageId, type) => {},
   movePageItem: (pageId, itemId, source, destination) => {},
