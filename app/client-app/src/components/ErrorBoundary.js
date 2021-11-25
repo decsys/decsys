@@ -1,5 +1,6 @@
 import { Location } from "@reach/router";
-import React from "react";
+import React, { cloneElement } from "react";
+import { isEqual } from "lodash-es";
 
 // Error boundaries currently have to be classes.
 
@@ -46,6 +47,11 @@ class DefaultErrorBoundary extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.resetOnPropChanges && !isEqual(prevProps, this.props)) {
+      this.setState({
+        hasError: false,
+      });
+    }
     if (prevProps.location.key !== this.props.location.key) {
       this.setState({
         hasError: false,
@@ -55,7 +61,9 @@ class DefaultErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback;
+      return cloneElement(this.props.fallback, {
+        __BoundaryError: this.state.error,
+      });
     }
     return this.props.children;
   }

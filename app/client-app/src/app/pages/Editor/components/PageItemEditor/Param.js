@@ -27,7 +27,10 @@ const useDeferredChangeHandler = (paramKey, init, onChange) => {
     let inputValue;
     switch (typeof e) {
       case "string":
-        inputValue = e;
+        // make sure we convert back to a number, though!
+        // else items may receive strings they weren't expecting, and do invalid math!
+        const n = parseFloat(e);
+        inputValue = isNaN(n) ? init : n;
         break;
       case "object":
         inputValue = e.target.value;
