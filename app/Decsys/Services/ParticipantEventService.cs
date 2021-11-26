@@ -206,6 +206,7 @@ namespace Decsys.Services
                 var response = new PageResponseSummary
                 {
                     Page = page.Order,
+                    PageName = page.Name,
                     ResponseType = responseComponent.Type,
                     PageLoad = pageLoadEvent.Timestamp,
                     ResponseRecorded = finalResponse?.Timestamp

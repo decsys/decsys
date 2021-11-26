@@ -15,6 +15,8 @@ namespace Decsys.Models
         /// </summary>
         public int Page { get; set; }
 
+        public string PageName { get; set; } = string.Empty;
+
         /// <summary>
         /// The question component type
         /// </summary>
