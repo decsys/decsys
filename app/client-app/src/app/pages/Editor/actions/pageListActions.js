@@ -5,10 +5,12 @@ import {
   duplicateSurveyPage,
   setPageRandomize,
   addSurveyPageItem,
+  setSurveyPageName,
 } from "api/pages";
 import { setSurveyPageItemOrder } from "api/page-items";
 import produce from "immer";
 import { v4 as uuid } from "uuid";
+
 
 const actions = (id, mutate, selectedPageItem, setSelectedPageItem) => ({
   addPage: async () => {
@@ -58,6 +60,18 @@ const actions = (id, mutate, selectedPageItem, setSelectedPageItem) => ({
       false
     );
     await setPageRandomize(id, pageId, randomize);
+    mutate();
+  },
+
+  setPageName: async (pageId, name) => {
+    mutate(
+      produce(({ pages }) => {
+        const page = pages.find(({ id }) => id === pageId);
+        page.name = name;
+      }),
+      false
+    );
+    await setSurveyPageName(id, pageId, name);
     mutate();
   },
 

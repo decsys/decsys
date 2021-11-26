@@ -19,6 +19,13 @@ export const setSurveyPageOrder = async (surveyId, pageId, newOrder) =>
     withHeaders(contentType_AppJson, await authorization_BearerToken())
   );
 
+  export const setSurveyPageName = async (surveyId, pageId, newName) =>
+  await axios.put(
+    `/api/surveys/${surveyId}/pages/${pageId}/name`,
+    JSON.stringify(newName),
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
+  );
+
 export const deleteSurveyPage = async (surveyId, pageId) =>
   await axios.delete(
     `/api/surveys/${surveyId}/pages/${pageId}`,
