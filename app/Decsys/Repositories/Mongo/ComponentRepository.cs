@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
+
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities.Mongo;
 using Decsys.Repositories.Contracts;
+using Decsys.Services;
+
 using Microsoft.Extensions.Options;
+
 using MongoDB.Driver;
 
 namespace Decsys.Repositories.Mongo
@@ -15,15 +16,18 @@ namespace Decsys.Repositories.Mongo
     {
         private readonly IMongoCollection<Survey> _surveys;
         private readonly IMapper _mapper;
+        private readonly ComponentFileService _componentFiles;
 
         public ComponentRepository(
             IOptions<HostedDbSettings> config,
             IMongoClient mongo,
-            IMapper mapper)
+            IMapper mapper,
+            ComponentFileService componentFiles)
         {
             _surveys = mongo.GetDatabase(config.Value.DatabaseName)
                 .GetCollection<Survey>(Collections.Surveys);
             _mapper = mapper;
+            _componentFiles = componentFiles;
         }
 
         public Models.Component Create(int surveyId, Guid pageId, string type)
@@ -35,7 +39,12 @@ namespace Decsys.Repositories.Mongo
 
             var component = new Component(type)
             {
-                Order = page.Components.Count + 1
+                Order = page.Components.Count + 1,
+                // If this isn't a response item
+                // and there are no components on the page already (except response items)
+                // then this is a Question Item
+                IsQuestionItem = !_componentFiles.IsResponseItem(type) &&
+                    !page.Components.Any(x => !_componentFiles.IsResponseItem(x.Type))
             };
 
             page.Components.Add(component);
