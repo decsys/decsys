@@ -82,6 +82,28 @@ namespace Decsys.Controllers
             return File(Encoding.UTF8.GetBytes(output.ToString()), "application/javascript");
         }
 
+        [HttpPut("{componentId}/isQuestionItem")]
+        [SwaggerOperation("Set a Component as the Question Item for a Survey Page.")]
+        [SwaggerResponse(204, "The Question Item was set successfully.")]
+        [SwaggerResponse(404, "No Page, Survey, or Component, was found with the provided ID.")]
+        public IActionResult SetQuestionItem(
+            [SwaggerParameter("ID of the Survey the Page belongs to.")]
+            int id,
+            [SwaggerParameter("ID of the Page to set the Question Item for.")]
+            Guid pageId,
+            [SwaggerParameter("ID of the Component to set as the Question Item.")]
+            Guid componentId)
+        {
+            try
+            {
+                _components.SetQuestionItem(id, pageId, componentId);
+                return NoContent();
+            } catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         [SwaggerOperation("Add a new Component to a Survey Page.")]
         [SwaggerResponse(200, "The Component was added successfully.", typeof(Component))]

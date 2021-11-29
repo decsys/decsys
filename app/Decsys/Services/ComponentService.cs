@@ -147,6 +147,32 @@ namespace Decsys.Services
             _components.Update(surveyId, pageId, component);
         }
 
+        /// <summary>
+        /// Set the specified component as the Page's `QuestionItem`.
+        ///
+        /// Also removes the `QuestionItem` status from any component
+        /// on the page that currently has it.
+        /// </summary>
+        /// <param name="surveyId"></param>
+        /// <param name="pageId"></param>
+        /// <param name="componentId"></param>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public void SetQuestionItem(int surveyId, Guid pageId, Guid componentId)
+        {
+            var components = _components.List(surveyId, pageId);
+            var newQ = components.SingleOrDefault(x => x.Id == componentId)
+                ?? throw new KeyNotFoundException("Component could not be found.");
+
+            var oldQ = components.SingleOrDefault(x => x.IsQuestionItem);
+            if (oldQ is not null)
+            {
+                oldQ.IsQuestionItem = false;
+                _components.Update(surveyId, pageId, oldQ);
+            }
+
+            newQ.IsQuestionItem = true;
+            _components.Update(surveyId, pageId, newQ);
+        }
 
         /// <summary>
         /// Duplicate a component in a Page
