@@ -1,19 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Threading.Tasks;
+
 using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
 using Decsys.Services.Contracts;
+
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
+
 using Newtonsoft.Json.Linq;
+
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
@@ -24,6 +21,7 @@ namespace Decsys.Controllers
     public class ComponentsController : ControllerBase
     {
         private readonly ComponentService _components;
+        private readonly ComponentFileService _componentFiles;
         private readonly IImageService _images;
         private readonly IConfiguration _config;
         private readonly IFileProvider _fileProvider;
@@ -32,9 +30,11 @@ namespace Decsys.Controllers
             IWebHostEnvironment env,
             IConfiguration config,
             ComponentService components,
+            ComponentFileService componentFiles,
             IImageService images)
         {
             _components = components;
+            _componentFiles = componentFiles;
             _images = images;
             _config = config;
             _fileProvider = env.ContentRootFileProvider;
@@ -61,7 +61,7 @@ namespace Decsys.Controllers
 
             var counter = 0;
 
-            foreach (var (_, file) in _components.ListFiles())
+            foreach (var (_, file) in _componentFiles.ListFiles())
             {
                 // Import the component module, and some metadata
                 output.Append(
