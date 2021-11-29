@@ -80,6 +80,7 @@ export const getResultsCsvData = (results) => {
     fields: [
       { label: "Participant", value: "id" },
       { label: "Page", value: "responses.page" },
+      { label: "Page Name", value: "responses.pageName" },
       { label: "Order", value: "responses.order" },
       { label: "Page Loaded", value: "responses.pageLoad" },
       { label: "Response Type", value: "responses.responseType" },
