@@ -49,8 +49,6 @@ namespace Decsys.Controllers
         [AllowAnonymous]
         public FileResult GetComponentModules()
         {
-            // TODO: Move the hard work to a service?
-
             var output = new StringBuilder();
             const string global = "window.__DECSYS__";
             const string components = ".Components";
@@ -63,17 +61,8 @@ namespace Decsys.Controllers
 
             var counter = 0;
 
-            foreach (var file in componentFiles)
+            foreach (var (_, file) in _components.ListFiles())
             {
-                // for now we only want root .js files
-                if (file.IsDirectory || Path.GetExtension(file.PhysicalPath) != ".js") continue;
-
-                // TODO: maybe check some of the code? hmm... would need a js linter/parser/something for that
-                // maybe we can run some js unit tests for this?
-                // might be able to use node tools for this, but we'll need node on the server
-                // which is a bit rubbish for running outside docker...
-                // particularly in a "local" install
-
                 // Import the component module, and some metadata
                 output.Append(
                     "import Decsys").Append(++counter)
