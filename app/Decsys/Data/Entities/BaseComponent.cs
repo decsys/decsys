@@ -24,5 +24,11 @@ namespace Decsys.Data.Entities
         public int Order { get; set; }
 
         public string Type { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Whether this item is used to provide meaningful "Question"
+        /// content in aggregated results
+        /// </summary>
+        public bool IsQuestionItem { get; set; }
     }
 }
