@@ -61,22 +61,30 @@ export const getResultsCsvData = (results) => {
             ? null
             : Object.keys(x.response).map((r) => ({
                 label: `${x.responseType}_${r}`,
-                value: `responses.response.${r}`,
+                value: `responses.${x.responseType}.${r}`,
               }));
         })
         .filter((x) => !!x); // drop the null ones
 
       responseColumns.forEach((response) => {
         response.forEach((column) => {
-          if (!agg.lookup[column.value]) agg.columns.push(column);
-          agg.lookup[column.value] = true;
+          agg.columns.push(column)
         });
       });
       return agg;
     },
     { lookup: {}, columns: [] }
   ).columns;
-  const data = parse(results.participants, {
+  const participants = results.participants.map(participant => {
+    participant.responses.map(response => {
+      response[response.responseType] = {}
+      Object.keys(response.response).forEach(key => {
+        response[response.responseType][key] = response.response[key]
+      })
+    })
+    return participant
+  })
+  const data = parse(participants, {
     fields: [
       { label: "Participant", value: "id" },
       { label: "Page", value: "responses.page" },
