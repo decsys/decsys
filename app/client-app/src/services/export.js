@@ -75,7 +75,7 @@ export const getResultsCsvData = (results) => {
     },
     { lookup: {}, columns: [] }
   ).columns;
-  const newObj = results.participants.map(participant => {
+  const participants = results.participants.map(participant => {
     participant.responses.map(response => {
       response[response.responseType] = {}
       Object.keys(response.response).forEach(key => {
@@ -84,7 +84,7 @@ export const getResultsCsvData = (results) => {
     })
     return participant
   })
-  const data = parse(newObj, {
+  const data = parse(participants, {
     fields: [
       { label: "Participant", value: "id" },
       { label: "Page", value: "responses.page" },
