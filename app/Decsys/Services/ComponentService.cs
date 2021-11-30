@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using Decsys.Repositories.Contracts;
 using Decsys.Models;
@@ -8,8 +5,8 @@ using Decsys.Models;
 using LiteDB;
 
 using Newtonsoft.Json.Linq;
-using System.Threading.Tasks;
 using Decsys.Services.Contracts;
+using Microsoft.Extensions.FileProviders;
 
 namespace Decsys.Services
 {
@@ -21,12 +18,17 @@ namespace Decsys.Services
         private readonly IComponentRepository _components;
         private readonly ISurveyRepository _surveys;
         private readonly IImageService _images;
+        private readonly IConfiguration _config;
+        private readonly IFileProvider _fileProvider;
 
-        public ComponentService(IComponentRepository components, ISurveyRepository surveys, IImageService images)
+
+        public ComponentService(IComponentRepository components, ISurveyRepository surveys, IImageService images, IConfiguration config, IWebHostEnvironment env)
         {
             _components = components;
             _surveys = surveys;
             _images = images;
+            _config = config;
+            _fileProvider = env.ContentRootFileProvider;
         }
 
         /// <summary>
@@ -145,6 +147,32 @@ namespace Decsys.Services
             _components.Update(surveyId, pageId, component);
         }
 
+        /// <summary>
+        /// Set the specified component as the Page's `QuestionItem`.
+        ///
+        /// Also removes the `QuestionItem` status from any component
+        /// on the page that currently has it.
+        /// </summary>
+        /// <param name="surveyId"></param>
+        /// <param name="pageId"></param>
+        /// <param name="componentId"></param>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public void SetQuestionItem(int surveyId, Guid pageId, Guid componentId)
+        {
+            var components = _components.List(surveyId, pageId);
+            var newQ = components.SingleOrDefault(x => x.Id == componentId)
+                ?? throw new KeyNotFoundException("Component could not be found.");
+
+            var oldQ = components.SingleOrDefault(x => x.IsQuestionItem);
+            if (oldQ is not null)
+            {
+                oldQ.IsQuestionItem = false;
+                _components.Update(surveyId, pageId, oldQ);
+            }
+
+            newQ.IsQuestionItem = true;
+            _components.Update(surveyId, pageId, newQ);
+        }
 
         /// <summary>
         /// Duplicate a component in a Page

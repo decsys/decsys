@@ -17,5 +17,11 @@ namespace Decsys.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public JObject Params { get; set; } = new JObject();
+
+        /// <summary>
+        /// Whether this item is used to provide meaningful "Question"
+        /// content in aggregated results
+        /// </summary>
+        public bool IsQuestionItem { get; set; }
     }
 }

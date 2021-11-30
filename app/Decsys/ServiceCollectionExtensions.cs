@@ -83,6 +83,7 @@ namespace Decsys
             => s.AddTransient<SurveyService>()
                 .AddTransient<PageService>()
                 .AddTransient<ComponentService>()
+                .AddTransient<ComponentFileService>()
                 .AddTransient<SurveyInstanceService>()
                 .AddTransient<ExportService>()
                 .AddTransient<ParticipantEventService>()

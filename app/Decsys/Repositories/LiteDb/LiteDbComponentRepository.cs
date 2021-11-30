@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using AutoMapper;
 
@@ -8,6 +5,7 @@ using Decsys.Constants;
 using Decsys.Data;
 using Decsys.Data.Entities.LiteDb;
 using Decsys.Repositories.Contracts;
+using Decsys.Services;
 
 using LiteDB;
 
@@ -17,11 +15,16 @@ namespace Decsys.Repositories.LiteDb
     {
         private readonly ILiteCollection<Survey> _surveys;
         private readonly IMapper _mapper;
+        private readonly ComponentFileService _componentFiles;
 
-        public LiteDbComponentRepository(LiteDbFactory db, IMapper mapper)
+        public LiteDbComponentRepository(
+            LiteDbFactory db,
+            IMapper mapper,
+            ComponentFileService componentFiles)
         {
             _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _mapper = mapper;
+            _componentFiles = componentFiles;
         }
 
         public Models.Component Create(int surveyId, Guid pageId, string type)
@@ -32,7 +35,12 @@ namespace Decsys.Repositories.LiteDb
 
             var component = new Component(type)
             {
-                Order = page.Components.Count + 1
+                Order = page.Components.Count + 1,
+                // If this isn't a response item
+                // and there are no components on the page already (except response items)
+                // then this is a Question Item
+                IsQuestionItem = !_componentFiles.IsResponseItem(type) &&
+                    !page.Components.Any(x => !_componentFiles.IsResponseItem(x.Type))
             };
 
             page.Components.Add(component);
