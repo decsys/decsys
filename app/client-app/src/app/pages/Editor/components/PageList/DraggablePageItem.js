@@ -49,6 +49,7 @@ export const ItemInfo = ({
   dragHandleProps,
   isBusy,
   onSelect,
+  isQuestionItem,
 }) => (
   <Flex
     pl={8}
@@ -62,6 +63,7 @@ export const ItemInfo = ({
     <Text as={!text ? "em" : "p"} isTruncated>
       {isBuiltIn(type) ? text || capitalise(type) : "Response"}
     </Text>
+    {isQuestionItem &&<ItemIcon  />}
   </Flex>
 );
 
@@ -132,7 +134,6 @@ export const PageItem = ({
   const { busy, selectedPageItem, setSelectedPageItem } = usePageListContext();
   const isBusy = (item && item.isLoading) || some(busy);
   const isSelected = item && selectedPageItem.itemId === item.id;
-
   const { colorMode } = useColorMode();
   const selectStyle = {
     light: { bg: "blue.300" },
