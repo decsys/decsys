@@ -76,6 +76,7 @@ const ItemActions = ({ id, duplicatePageItem, deletePageItem, setQuestionItem })
       <DotHoverIconButton
         size="sm"
         icon={FaQuestion}
+        tooltip="Set to Question Item"
         onClick={handleQuestionClick}
       />
       <DotHoverIconButton
