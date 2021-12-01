@@ -67,11 +67,17 @@ export const ItemInfo = ({
   </Flex>
 );
 
-const ItemActions = ({ id, duplicatePageItem, deletePageItem }) => {
+const ItemActions = ({ id, duplicatePageItem, deletePageItem, setQuestionItem }) => {
   const handleDeleteClick = () => deletePageItem(id);
   const handleDuplicateClick = () => duplicatePageItem(id);
+  const handleQuestionClick = () => setQuestionItem(id);
   return (
     <>
+      <DotHoverIconButton
+        size="sm"
+        icon={FaQuestion}
+        onClick={handleQuestionClick}
+      />
       <DotHoverIconButton
         size="sm"
         icon={FaCopy}
@@ -91,6 +97,7 @@ const ItemActionPlaceholders = () => {
   const p = { p: "9px", dotSize: "14px" };
   return (
     <>
+      <PlaceholderDot {...p} />
       <PlaceholderDot {...p} />
       <PlaceholderDot {...p} colorScheme="red" />
     </>
@@ -172,7 +179,7 @@ export const PageItem = ({
       transition="background-color .1s ease"
       {...draggableProps}
       role="group"
-      templateColumns="minmax(50px, 1fr) auto auto"
+      templateColumns="minmax(50px, 1fr) auto auto auto"
     >
       <ItemInfo
         isBusy={busy.isPageDragging}
