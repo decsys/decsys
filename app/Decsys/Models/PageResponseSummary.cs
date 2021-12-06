@@ -15,7 +15,16 @@ namespace Decsys.Models
         /// </summary>
         public int Page { get; set; }
 
+        /// <summary>
+        /// The user specified name for the Page
+        /// </summary>
         public string PageName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The content used as the "Question Content"
+        /// from the Page Item designated as the "Question Item"
+        /// </summary>
+        public string? Question { get; set; } = null;
 
         /// <summary>
         /// The question component type

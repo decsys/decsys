@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.OpenApi.Models;
 
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 #region Host Creation
