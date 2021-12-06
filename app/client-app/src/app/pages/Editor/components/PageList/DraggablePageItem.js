@@ -1,5 +1,5 @@
 import { Draggable } from "react-beautiful-dnd";
-import { Flex, Icon, useColorMode, Text, Grid, Select } from "@chakra-ui/react";
+import { Flex, Icon, useColorMode, Text, Grid, Select, Center } from "@chakra-ui/react";
 import {
   FaHeading,
   FaParagraph,
@@ -43,6 +43,34 @@ const ItemIcon = ({ type }) => {
   );
 };
 
+const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
+  const handleQuestionClick = () => setQuestionItem(id);
+  if (!isBuiltIn(type)) {
+    return (
+      <Flex pl={8} align="center">
+      </Flex>
+    );
+  }
+  if (isQuestionItem) {
+    return (
+      <Center width={8} >
+        <Icon as={FaQuestion} />
+      </Center>
+    );
+  }
+
+  return (
+    <Flex width={8} align="center">
+      <DotHoverIconButton
+        size="sm"
+        icon={FaQuestion}
+        tooltip="Set to Question Item"
+        onClick={handleQuestionClick}
+      />
+    </Flex>
+  );
+};
+
 export const ItemInfo = ({
   type,
   params: { text },
@@ -50,35 +78,33 @@ export const ItemInfo = ({
   isBusy,
   onSelect,
   isQuestionItem,
+  setQuestionItem,
+  id
 }) => (
   <Flex
-    pl={8}
     align="center"
     width="100%"
     {...dragHandleProps}
     onClick={onSelect}
   >
+
+    <QuestionButton
+      isQuestionItem={isQuestionItem} setQuestionItem={setQuestionItem}
+      id={id} type={type} />
     <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
     <ItemIcon type={type} />
     <Text as={!text ? "em" : "p"} isTruncated>
       {isBuiltIn(type) ? text || capitalise(type) : "Response"}
     </Text>
-    {isQuestionItem &&<ItemIcon  />}
+
   </Flex>
 );
 
-const ItemActions = ({ id, duplicatePageItem, deletePageItem, setQuestionItem }) => {
+const ItemActions = ({ id, duplicatePageItem, deletePageItem }) => {
   const handleDeleteClick = () => deletePageItem(id);
   const handleDuplicateClick = () => duplicatePageItem(id);
-  const handleQuestionClick = () => setQuestionItem(id);
   return (
     <>
-      <DotHoverIconButton
-        size="sm"
-        icon={FaQuestion}
-        tooltip="Set to Question Item"
-        onClick={handleQuestionClick}
-      />
       <DotHoverIconButton
         size="sm"
         icon={FaCopy}
@@ -98,7 +124,6 @@ const ItemActionPlaceholders = () => {
   const p = { p: "9px", dotSize: "14px" };
   return (
     <>
-      <PlaceholderDot {...p} />
       <PlaceholderDot {...p} />
       <PlaceholderDot {...p} colorScheme="red" />
     </>
@@ -180,15 +205,15 @@ export const PageItem = ({
       transition="background-color .1s ease"
       {...draggableProps}
       role="group"
-      templateColumns="minmax(50px, 1fr) auto auto auto"
+      templateColumns="minmax(50px, 1fr) auto auto"
     >
       <ItemInfo
         isBusy={busy.isPageDragging}
         {...(item || { params: {} })}
         dragHandleProps={dragHandleProps}
+        {...actions}
         onSelect={handleSelect}
       />
-
       {ActionArea}
     </Grid>
   );
