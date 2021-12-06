@@ -51,25 +51,11 @@ namespace Decsys.Repositories.Mongo
         private string GetParticipantId(string collectionName)
             => collectionName.Substring($"{Collections.EventLog}_".Length);
 
-        private int GetNextEventId(IMongoCollection<ParticipantEvent> log)
-        {
-            // mongo has no integer id generator
-            // so we set integer id's at insert
-            var lastId = log.Find(new BsonDocument())
-                .SortByDescending(x => x.Id)
-                .FirstOrDefault()?
-                .Id ?? 0;
-
-            return ++lastId;
-
-        }
-
         public void Create(int instanceId, string participantId, Models.ParticipantEvent e)
         {
             var log = FindLog(instanceId, participantId);
 
             var entity = _mapper.Map<ParticipantEvent>(e);
-            entity.Id = GetNextEventId(log);
 
             log.InsertOne(entity);
         }
