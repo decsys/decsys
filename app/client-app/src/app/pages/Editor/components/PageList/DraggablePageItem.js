@@ -1,5 +1,5 @@
 import { Draggable } from "react-beautiful-dnd";
-import { Flex, Icon, useColorMode, Text, Grid, Select, Center } from "@chakra-ui/react";
+import { Flex, Icon, useColorMode, Text, Grid, Select, Center, Tooltip } from "@chakra-ui/react";
 import {
   FaHeading,
   FaParagraph,
@@ -9,6 +9,7 @@ import {
   FaGripVertical,
   FaTimes,
   FaCopy,
+
 } from "react-icons/fa";
 import { DotHoverIconButton } from "components/core";
 import { usePageItemActions } from "../../contexts/PageItemActions";
@@ -44,6 +45,7 @@ const ItemIcon = ({ type }) => {
 };
 
 const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
+  const { busy } = usePageListContext();
   const handleQuestionClick = () => setQuestionItem(id);
   if (!isBuiltIn(type)) {
     return (
@@ -53,21 +55,32 @@ const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
   }
   if (isQuestionItem) {
     return (
+      <Tooltip label={"Current Question Item"} >
+        <Center width={8} height={"100%"}>
+          <Icon as={FaQuestion} />
+        </Center>
+      </Tooltip>
+    );
+  }
+
+  if (some(busy)) {
+    const p = { p: "9px", dotSize: "14px" };
+    return (
       <Center width={8} >
-        <Icon as={FaQuestion} />
+        <PlaceholderDot {...p} />
       </Center>
     );
   }
 
   return (
-    <Flex width={8} align="center">
-      <DotHoverIconButton
-        size="sm"
-        icon={FaQuestion}
-        tooltip="Set to Question Item"
-        onClick={handleQuestionClick}
-      />
-    </Flex>
+    <Tooltip label={"Set to Question Item"} >
+      <Center width={8} height={"100%"} cursor={"pointer"} color="gray"
+        _hover={{
+          color: "green",
+        }}>
+        <Icon as={FaQuestion} onClick={handleQuestionClick} />
+      </Center>
+    </Tooltip>
   );
 };
 
@@ -87,7 +100,6 @@ export const ItemInfo = ({
     {...dragHandleProps}
     onClick={onSelect}
   >
-
     <QuestionButton
       isQuestionItem={isQuestionItem} setQuestionItem={setQuestionItem}
       id={id} type={type} />
