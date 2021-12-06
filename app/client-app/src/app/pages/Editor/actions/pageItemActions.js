@@ -5,6 +5,7 @@ import {
   duplicateSurveyPageItem,
   setSurveyPageItemParam,
   setSurveyPageItemOrder,
+  setSurveyPageItemToQuestionItem,
 } from "api/page-items";
 import { addSurveyPageItem } from "api/pages";
 
@@ -52,6 +53,21 @@ export const pageItemActions = (
     );
 
     await deleteSurveyPageItem(surveyId, pageId, itemId);
+    mutate();
+  },
+  setQuestionItem: async (itemId) => {
+    mutate(
+      produce(({ pages }) => {
+        const page = pages.find(({ id }) => id === pageId);
+        const item = page.components.find(({ id }) => id === itemId);
+        const questionItem = page.components.find((item)=> item.isQuestionItem === true);  
+        questionItem.isQuestionItem = false;
+        item.isQuestionItem = true;
+      }),
+      false
+    );
+
+    await setSurveyPageItemToQuestionItem(surveyId, pageId, itemId);
     mutate();
   },
   setParamValue: async (itemId, paramKey, value) => {
