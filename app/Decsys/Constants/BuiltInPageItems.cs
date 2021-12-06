@@ -1,6 +1,6 @@
 ﻿namespace Decsys.Constants;
 
-public readonly record struct PageItemMetadata(string Type, string questionContent);
+public record PageItemMetadata(string Type, string QuestionContent);
 
 public static class BuiltInPageItems
 {
@@ -18,5 +18,12 @@ public static class BuiltInPageItems
     /// <param name="type"></param>
     /// <returns></returns>
     public static bool IsBuiltIn(string type) => pageItems.ContainsKey(type);
+
+    /// <summary>
+    /// Get the metadata for a built in type, or null
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public static PageItemMetadata? Metadata(string type) => pageItems[type];
 }
 

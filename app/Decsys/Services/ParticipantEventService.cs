@@ -185,8 +185,8 @@ namespace Decsys.Services
 
             foreach (var page in instance.Survey.Pages.OrderBy(x => x.Order))
             {
-                var responseComponent = page.Components.SingleOrDefault( // find the one with the Capitalised Type.
-                        x => x.Type != x.Type.ToLower(CultureInfo.InvariantCulture));
+                var responseComponent = page.Components.SingleOrDefault( // find the one that's not a built in content item
+                        x => !BuiltInPageItems.IsBuiltIn(x.Type));
                 if (responseComponent is null) continue; // we don't care about pages without responses
 
                 var finalResponse = FindLast(
@@ -203,10 +203,32 @@ namespace Decsys.Services
                 // e.g. if the survey is still in progress
                 if (pageLoadEvent is null) continue;
 
+                // try and get the item marked as a Question Item
+                var questionItem = page.Components.SingleOrDefault(
+                    x => x.IsQuestionItem);
+
+                // If there isn't one (should only occur in older surveys),
+                // get the first content item (i.e. first built in)
+                if(questionItem is null)
+                    questionItem = page.Components.FirstOrDefault(
+                        x => BuiltInPageItems.IsBuiltIn(x.Type));
+
+                // If there's an item ,try and get content from it, else null
+                string? questionContent = null;
+                if(questionItem is not null)
+                {
+                    var contentKey = BuiltInPageItems.Metadata(questionItem.Type)?.QuestionContent;
+                    if(contentKey is not null)
+                    {
+                        questionContent = (string?)questionItem.Params.GetValue(contentKey) ?? string.Empty;
+                    }
+                }
+
                 var response = new PageResponseSummary
                 {
                     Page = page.Order,
                     PageName = page.Name,
+                    Question = questionContent,
                     ResponseType = responseComponent.Type,
                     PageLoad = pageLoadEvent.Timestamp,
                     ResponseRecorded = finalResponse?.Timestamp
