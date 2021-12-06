@@ -1,5 +1,5 @@
 import { Draggable } from "react-beautiful-dnd";
-import { Flex, Icon, useColorMode, Text, Grid, Select } from "@chakra-ui/react";
+import { Flex, Icon, useColorMode, Text, Grid, Select, Center, Tooltip } from "@chakra-ui/react";
 import {
   FaHeading,
   FaParagraph,
@@ -9,6 +9,7 @@ import {
   FaGripVertical,
   FaTimes,
   FaCopy,
+
 } from "react-icons/fa";
 import { DotHoverIconButton } from "components/core";
 import { usePageItemActions } from "../../contexts/PageItemActions";
@@ -43,25 +44,71 @@ const ItemIcon = ({ type }) => {
   );
 };
 
+const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
+  const { busy } = usePageListContext();
+  const handleQuestionClick = () => setQuestionItem(id);
+  if (!isBuiltIn(type)) {
+    return (
+      <Flex pl={8} align="center">
+      </Flex>
+    );
+  }
+  if (isQuestionItem) {
+    return (
+      <Tooltip label={"Current Question Item"} >
+        <Center width={8} height={"100%"}>
+          <Icon as={FaQuestion} />
+        </Center>
+      </Tooltip>
+    );
+  }
+
+  if (some(busy)) {
+    const p = { p: "9px", dotSize: "14px" };
+    return (
+      <Center width={8} >
+        <PlaceholderDot {...p} />
+      </Center>
+    );
+  }
+
+  return (
+    <Tooltip label={"Set to Question Item"} >
+      <Center width={8} height={"100%"} cursor={"pointer"} color="gray"
+        _hover={{
+          color: "green",
+        }}>
+        <Icon as={FaQuestion} onClick={handleQuestionClick} />
+      </Center>
+    </Tooltip>
+  );
+};
+
 export const ItemInfo = ({
   type,
   params: { text },
   dragHandleProps,
   isBusy,
   onSelect,
+  isQuestionItem,
+  setQuestionItem,
+  id
 }) => (
   <Flex
-    pl={8}
     align="center"
     width="100%"
     {...dragHandleProps}
     onClick={onSelect}
   >
+    <QuestionButton
+      isQuestionItem={isQuestionItem} setQuestionItem={setQuestionItem}
+      id={id} type={type} />
     <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
     <ItemIcon type={type} />
     <Text as={!text ? "em" : "p"} isTruncated>
       {isBuiltIn(type) ? text || capitalise(type) : "Response"}
     </Text>
+
   </Flex>
 );
 
@@ -132,7 +179,6 @@ export const PageItem = ({
   const { busy, selectedPageItem, setSelectedPageItem } = usePageListContext();
   const isBusy = (item && item.isLoading) || some(busy);
   const isSelected = item && selectedPageItem.itemId === item.id;
-
   const { colorMode } = useColorMode();
   const selectStyle = {
     light: { bg: "blue.300" },
@@ -177,9 +223,9 @@ export const PageItem = ({
         isBusy={busy.isPageDragging}
         {...(item || { params: {} })}
         dragHandleProps={dragHandleProps}
+        {...actions}
         onSelect={handleSelect}
       />
-
       {ActionArea}
     </Grid>
   );
