@@ -84,11 +84,13 @@ export const getResultsCsvData = (results) => {
     })
     return participant
   })
+  
   const data = parse(participants, {
     fields: [
       { label: "Participant", value: "id" },
       { label: "Page", value: "responses.page" },
       { label: "Page Name", value: "responses.pageName" },
+      { label: "Question", value: "responses.question" },
       { label: "Order", value: "responses.order" },
       { label: "Page Loaded", value: "responses.pageLoad" },
       { label: "Response Type", value: "responses.responseType" },
