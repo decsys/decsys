@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
-using Microsoft.AspNetCore.Routing.Constraints;
+
 using Microsoft.Extensions.Options;
+
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 
@@ -128,9 +124,8 @@ namespace Decsys.Services
                     .FindAsync(Builders<GridFSFileInfo>.Filter.Empty))
                 .AnyAsync();
 
-        private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
+        private string? GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
             _components.Find(surveyId, pageId, componentId)
-                .Params.Value<string>("extension")
-            ?? throw new InvalidOperationException("Couldn't find a valid string param for `extension`.");
+                .Params.Value<string>("extension");
     }
 }

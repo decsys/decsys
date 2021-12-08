@@ -197,7 +197,8 @@ namespace Decsys.Services
             };
             components.Insert(i + 1, dupe);
 
-            await _images.CopyImage(surveyId, pageId, componentId, dupe.Id);
+            if(dupe.Type == Constants.BuiltInPageItems.Image)
+                await _images.CopyImage(surveyId, pageId, componentId, dupe.Id);
 
             _components.Replace(surveyId, pageId, components.Select((x, i) => { x.Order = i + 1; return x; }));
 
