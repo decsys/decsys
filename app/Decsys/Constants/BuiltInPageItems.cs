@@ -4,12 +4,17 @@ public record PageItemMetadata(string Type, string QuestionContent);
 
 public static class BuiltInPageItems
 {
+    public const string Heading = "heading";
+    public const string Paragraph = "paragraph";
+    public const string Image = "image";
+    public const string Spacer = "spacer";
+
     private static readonly Dictionary<string, PageItemMetadata> pageItems = new()
     {
-        ["heading"] = new("heading", "text"),
-        ["paragraph"] = new("paragraph", "text"),
-        ["image"] = new("image", "questionContent"),
-        ["spacer"] = new("spacer", "questionContent"),
+        [Heading] = new(Heading, "text"),
+        [Paragraph] = new(Paragraph, "text"),
+        [Image] = new(Image, "questionContent"),
+        [Spacer] = new(Spacer, "questionContent"),
     };
 
     /// <summary>

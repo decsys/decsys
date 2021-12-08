@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
@@ -114,10 +109,9 @@ namespace Decsys.Services
         public async Task<bool> HasImages(int surveyId)
             => (await Enumerate(surveyId)).Any();
 
-        private string GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
+        private string? GetStoredFileExtension(int surveyId, Guid pageId, Guid componentId) =>
             _components.Find(surveyId, pageId, componentId)
-                .Params.Value<string>("extension")
-            ?? throw new InvalidOperationException("Couldn't find a valid string param for `extension`.");
+                .Params.Value<string>("extension");
 
         public async Task<byte[]> GetImage(int surveyId, string filename)
         => await File.ReadAllBytesAsync(
