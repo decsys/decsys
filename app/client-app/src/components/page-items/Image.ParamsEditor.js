@@ -11,13 +11,15 @@ const ImageParamsEditor = ({
 
   const [image, setImage] = useState();
   const [fileExtension, setFileExtension] = useState();
+  const [originalFilename, setOriginalFilename] = useState();
 
   const handleFileSelect = (e) => {
     e.persist();
     setImage(e.target.files[0]);
     setFileExtension(`.${e.target.value.split(".").pop()}`);
+    setOriginalFilename(`.${e.target.files[0].name}`);
   };
-
+  
   const handleAddClick = () => {
     if (!image) return;
     if (
@@ -29,6 +31,7 @@ const ImageParamsEditor = ({
 
     uploadPageItemImage(surveyId, pageId, itemId, image);
     handleParamChange("extension", fileExtension);
+    handleParamChange("originalFilename", originalFilename);
   };
 
   const handleRemoveClick = () => {
@@ -38,7 +41,7 @@ const ImageParamsEditor = ({
 
   // modify the params list so we only edit manually configurable ones
   const editableParams = { ...renderComponent.params, extension: undefined };
-
+  
   if (hasImage)
     return (
       <Stack w="100%">

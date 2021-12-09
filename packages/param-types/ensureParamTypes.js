@@ -2,6 +2,7 @@ import * as types from "./types";
 
 const converters = {
   [types.string]: (value) => (value != null ? value.toString() : undefined),
+  [types.stringImmutable]: (value) => (value != null ? value.toString() : undefined),
   [types.oneOf]: (value) => value,
   [types.number]: (value) => parseFloat(value),
   [types.bool]: (value) => !!value,

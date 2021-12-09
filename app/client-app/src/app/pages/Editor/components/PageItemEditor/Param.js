@@ -61,7 +61,7 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
   const handleValueChange = (e) => {
     onChange(paramKey, e.target.value);
   };
-
+  
   const input = ((type) => {
     switch (type) {
       case types.string:
@@ -73,6 +73,15 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
             value={text}
           />
         );
+      case types.stringImmutable:
+        return (
+          <Input
+            size="sm"
+            type="text"
+            value={text}
+            readOnly
+          />
+        );  
       case types.bool:
         return <Checkbox isChecked={value} onChange={handleCheckedChange} />;
       case types.oneOf:

@@ -5,6 +5,7 @@
  */
 
 export const string = "string";
+export const stringImmutable = "stringImmutable";
 export const number = "number";
 export const bool = "bool";
 export const oneOf = "oneOf";

@@ -17,6 +17,7 @@ const buildPropTypes = (params, propTypes, defaultProps) => {
     const param = params[key];
     switch (param.type) {
       case types.string:
+      case types.stringImmutable:
       case types.number:
       case types.bool:
         x.propTypes[key] = PropTypes[param.type];

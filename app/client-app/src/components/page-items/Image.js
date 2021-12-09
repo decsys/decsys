@@ -33,6 +33,7 @@ PageImage.params = {
   extension: ParamTypes.stringUndefined("Image File Extension"),
   width: ParamTypes.stringUndefined("Image Width"),
   questionContent:ParamTypes.string("Quesion Content"),
+  originalFilename:ParamTypes.stringImmutable("Original File Name"),
 };
 
 const { pt, defaultProps } = buildPropTypes(
@@ -44,5 +45,6 @@ PageImage.defaultProps = defaultProps;
 
 PageImage.paramsEditorComponent = ImageParamsEditor;
 PageImage.questionContent = "questionContent"
+PageImage.originalFilename = "originalFilename"
 
 export default PageImage;
