@@ -7,9 +7,11 @@ const PageVerticalSpacer = ({ height }) => {
 
 PageVerticalSpacer.params = {
   height: ParamTypes.number("Height (px)", 50),
+  questionContent:ParamTypes.string("Quesion Content"),
 };
 const { pt, defaultProps } = buildPropTypes(PageVerticalSpacer.params);
 PageVerticalSpacer.propTypes = pt;
 PageVerticalSpacer.defaultProps = defaultProps;
+PageVerticalSpacer.questionContent = "questionContent"
 
 export default PageVerticalSpacer;
