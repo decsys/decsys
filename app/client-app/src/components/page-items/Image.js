@@ -4,8 +4,7 @@ import ParamTypes, {
 } from "@decsys/param-types";
 import { Image, Flex } from "@chakra-ui/react";
 import ImageParamsEditor from "./Image.ParamsEditor";
-import { string } from "prop-types";
-import { PageItem } from "app/pages/Editor/components/PageList/DraggablePageItem";
+
 
 const PageImage = ({ _context: { surveyId, itemId }, extension, width }) => {
   // atm we do nothing if the param isn't set
