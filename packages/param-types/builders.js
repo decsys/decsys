@@ -25,12 +25,6 @@ export const string = (label, defaultValue = "") =>
  */
 export const stringUndefined = (label) => new ParamType(label, types.string);
 
-/**
- * Spec this Parameter as a string,
- * with NO default value.
- * @param {*} label
- */
- export const stringImmutable = (label) => new ParamType(label, types.stringImmutable);
 
 /**
  * Spec this Parameter as an enum,

@@ -50,6 +50,12 @@ const ImageParamsEditor = ({
             Remove Image
           </Button>
         </Flex>
+        <Input
+            size="sm"
+            type="text"
+            value={text}
+            readOnly
+          />
         <ParamsEditor // render the standard Params Editor too, but exclude params our custom editor handles
           component={{ ...renderComponent, params: editableParams }}
           params={params}
