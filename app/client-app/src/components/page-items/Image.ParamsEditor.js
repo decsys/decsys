@@ -11,8 +11,8 @@ const ImageParamsEditor = ({
 
   const [image, setImage] = useState();
   const [fileExtension, setFileExtension] = useState();
-  const [originalFilename, setOriginalFilename] = useState();
-
+  const [originalFilename, setOriginalFilename] = useState(params.originalFilename);
+  
   const handleFileSelect = (e) => {
     e.persist();
     setImage(e.target.files[0]);
@@ -62,7 +62,7 @@ const ImageParamsEditor = ({
           gap={2}
           alignItems="center"
           width="100%"
-          p={2}>
+          px={2}>
           <Text
             textAlign="right"
             fontWeight="bold"
