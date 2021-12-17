@@ -32,7 +32,7 @@ const PageImage = ({ _context: { surveyId, itemId }, extension, width }) => {
 PageImage.params = {
   extension: ParamTypes.stringUndefined("Image File Extension"),
   width: ParamTypes.stringUndefined("Image Width"),
-  questionContent:ParamTypes.string("Quesion Content"),
+  questionContent:ParamTypes.string("Question Content"),
 };
 
 const { pt, defaultProps } = buildPropTypes(
@@ -43,6 +43,6 @@ PageImage.propTypes = pt;
 PageImage.defaultProps = defaultProps;
 
 PageImage.paramsEditorComponent = ImageParamsEditor;
-PageImage.questionContent = "questionContent"
+
 
 export default PageImage;
