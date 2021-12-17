@@ -46,5 +46,4 @@ PageImage.defaultProps = defaultProps;
 PageImage.paramsEditorComponent = ImageParamsEditor;
 
 
-
 export default PageImage;
