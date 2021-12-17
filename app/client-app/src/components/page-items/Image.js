@@ -33,6 +33,7 @@ PageImage.params = {
   extension: ParamTypes.stringUndefined("Image File Extension"),
   width: ParamTypes.stringUndefined("Image Width"),
   questionContent:ParamTypes.string("Question Content"),
+  originalFilename:ParamTypes.string("Original File Name"),
 };
 
 const { pt, defaultProps } = buildPropTypes(

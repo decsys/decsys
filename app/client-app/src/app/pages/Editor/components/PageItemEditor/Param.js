@@ -61,7 +61,7 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
   const handleValueChange = (e) => {
     onChange(paramKey, e.target.value);
   };
-
+  
   const input = ((type) => {
     switch (type) {
       case types.string:
