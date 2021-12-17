@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Input, Stack, Flex } from "@chakra-ui/react";
+import { Button, Input, Stack, Flex, Text, Grid } from "@chakra-ui/react";
 import { uploadPageItemImage, deletePageItemImage } from "api/survey-images";
 
 const ImageParamsEditor = ({
@@ -19,7 +19,7 @@ const ImageParamsEditor = ({
     setFileExtension(`.${e.target.value.split(".").pop()}`);
     setOriginalFilename(`.${e.target.files[0].name}`);
   };
-  
+
   const handleAddClick = () => {
     if (!image) return;
     if (
@@ -40,8 +40,8 @@ const ImageParamsEditor = ({
   };
 
   // modify the params list so we only edit manually configurable ones
-  const editableParams = { ...renderComponent.params, extension: undefined };
-  
+  const editableParams = { ...renderComponent.params, extension: undefined, originalFilename:undefined };
+
   if (hasImage)
     return (
       <Stack w="100%">
@@ -50,17 +50,32 @@ const ImageParamsEditor = ({
             Remove Image
           </Button>
         </Flex>
-        <Input
-            size="sm"
-            type="text"
-            value={text}
-            readOnly
-          />
+
         <ParamsEditor // render the standard Params Editor too, but exclude params our custom editor handles
           component={{ ...renderComponent, params: editableParams }}
           params={params}
           handleParamChange={handleParamChange}
         />
+
+        <Grid
+          templateColumns="2fr 5fr"
+          gap={2}
+          alignItems="center"
+          width="100%"
+          p={2}>
+          <Text
+            textAlign="right"
+            fontWeight="bold"
+          >
+            Original File Name
+          </Text>
+          <Input
+            size="sm"
+            type="text"
+            value={originalFilename}
+            readOnly
+          />
+        </Grid>
       </Stack>
     );
 
