@@ -5,6 +5,7 @@ import ParamTypes, {
 import { Image, Flex } from "@chakra-ui/react";
 import ImageParamsEditor from "./Image.ParamsEditor";
 
+
 const PageImage = ({ _context: { surveyId, itemId }, extension, width }) => {
   // atm we do nothing if the param isn't set
   if (!extension) return null;
@@ -31,6 +32,7 @@ const PageImage = ({ _context: { surveyId, itemId }, extension, width }) => {
 PageImage.params = {
   extension: ParamTypes.stringUndefined("Image File Extension"),
   width: ParamTypes.stringUndefined("Image Width"),
+  questionContent:ParamTypes.string("Question Content"),
 };
 
 const { pt, defaultProps } = buildPropTypes(
@@ -41,5 +43,6 @@ PageImage.propTypes = pt;
 PageImage.defaultProps = defaultProps;
 
 PageImage.paramsEditorComponent = ImageParamsEditor;
+
 
 export default PageImage;
