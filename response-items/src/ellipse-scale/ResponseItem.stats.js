@@ -4,7 +4,8 @@ import IntervalAgreementApproach from "@decsys/iaa";
 const fixedVal = 3;
 const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
 
-const getPlotlyProps = (iaa) => {
+const getPlotlyProps = (iaa,minMax) => {
+  
   const reducer = (data, x) => {
     const y = iaa.membership(x) * 100;
 
@@ -33,7 +34,6 @@ const getPlotlyProps = (iaa) => {
   data = {...newData}
   const maxY = Math.max(...data.y);
   const centroidValue = iaa.centroid;
-
   const dataTrace = {
     x: data.x,
     y: data.y,
@@ -52,8 +52,8 @@ const getPlotlyProps = (iaa) => {
   return {
     data: [dataTrace, centroidTrace],
     layout: {
-      xaxis: { zeroline: false, title: "Scale Value" },
-      yaxis: { zeroline: false, title: "% Participants" },
+      xaxis: { zeroline: false, title: "Scale Value",range: minMax?[minMax.min-5, minMax.max+5]:null },
+      yaxis: { zeroline: false, title: "% Participants",range: minMax?[minMax.min-5, minMax.max+5]:null },
     },
   };
 };
@@ -76,7 +76,6 @@ export const stats = (_, results) => {
       maxValues: [],
     }
   );
-
   const iaa = new IntervalAgreementApproach();
   for (const interval of values) iaa.addInterval(interval);
   const centroidValue = iaa.centroid;
@@ -86,7 +85,7 @@ export const stats = (_, results) => {
       {
         name: "Ellipse Results",
         type: "plotly",
-        plotly: getPlotlyProps(iaa),
+        plotly: getPlotlyProps(iaa,{min:_.barMinValue,max:_.barMaxValue}),
       },
     ],
     stats: {
