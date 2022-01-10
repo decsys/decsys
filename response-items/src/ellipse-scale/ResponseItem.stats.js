@@ -14,10 +14,23 @@ const getPlotlyProps = (iaa) => {
     };
   };
 
-  const data = iaa.intervals.singletonKeys
+  let data = iaa.intervals.singletonKeys
     .sort((x1, x2) => x1 - x2)
     .reduce(reducer, { x: [], y: [] });
 
+  const newData = {...data}
+  let prev=data.y[0]
+  let added = 0
+  for(let i=1;i<data.y.length;i++){
+    const current = data.y[i]
+    if(current<prev){
+      newData.x.splice(i+added,0,data.x[i-1])
+      newData.y.splice(i+added,0,data.y[i])
+      added++
+    }
+    prev=current
+  }
+  data = {...newData}
   const maxY = Math.max(...data.y);
   const centroidValue = iaa.centroid;
 
