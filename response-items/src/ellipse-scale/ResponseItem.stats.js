@@ -19,7 +19,7 @@ const getPlotlyProps = (iaa,minMax) => {
     .sort((x1, x2) => x1 - x2)
     .reduce(reducer, { x: [], y: [] });
 
-  const newData = {...data}
+  const newData = {...JSON.parse(JSON.stringify(data))}
   let prev=data.y[0]
   let added = 0
   for(let i=1;i<data.y.length;i++){
