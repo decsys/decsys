@@ -43,6 +43,8 @@ const getPlotlyProps = (iaa, minMax) => {
   data = { ...newData }
   const maxY = Math.max(...data.y);
   const centroidValue = iaa.centroid;
+  const mean_of_midpoints = iaa.mean_of_midpoints
+  const mean_of_maxima = iaa.mean_of_maxima
   const dataTrace = {
     x: data.x,
     y: data.y,
@@ -58,8 +60,20 @@ const getPlotlyProps = (iaa, minMax) => {
     name: "Centroid",
   };
 
+  const mean_of_midpoints_trace = {
+    x: [mean_of_midpoints, mean_of_midpoints],
+    y: [0, maxY],
+    name: "Mean of Midpoints",
+  };
+
+  const mean_of_maxima_trace = {
+    x: [mean_of_maxima, mean_of_maxima],
+    y: [0, maxY],
+    name: "Mean of Maxima",
+  };
+
   return {
-    data: [dataTrace, centroidTrace],
+    data: [dataTrace, centroidTrace,mean_of_midpoints_trace,mean_of_maxima_trace],
     layout: {
       xaxis: { zeroline: false, title: "Scale Value", range: minMax ? [minMax.min - 5, minMax.max + 5] : null },
       yaxis: { zeroline: false, title: "% Participants", range: minMax ? [minMax.min - 5, minMax.max + 5] : null },
@@ -88,6 +102,8 @@ export const stats = (_, results) => {
   const iaa = new IntervalAgreementApproach();
   for (const interval of values) iaa.addInterval(interval);
   const centroidValue = iaa.centroid;
+  const mean_of_midpoints = 40//iaa.mean_of_midpoints
+  const mean_of_maxima = 85//iaa.mean_of_maxima
 
   return {
     visualizations: [
@@ -115,6 +131,8 @@ export const stats = (_, results) => {
         ...maxValues
       )}`,
       Centroid: fixed((args) => args, centroidValue),
+      "Mean of Midpoints": fixed((args) => args, mean_of_midpoints),
+      "Mean of Maxima": fixed((args) => args, mean_of_maxima),
     },
   };
 };
