@@ -22,7 +22,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@decsys/iaa": "^1.0.2",
+    "@decsys/iaa": "^1.1.0",
     "@decsys/param-types": "workspace:packages/param-types",
     "@decsys/rating-scales": "workspace:packages/rating-scales",
     "downshift": "^6.1.3"

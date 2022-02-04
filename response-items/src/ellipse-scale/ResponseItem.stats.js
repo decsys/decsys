@@ -102,8 +102,8 @@ export const stats = (_, results) => {
   const iaa = new IntervalAgreementApproach();
   for (const interval of values) iaa.addInterval(interval);
   const centroidValue = iaa.centroid;
-  const mean_of_midpoints = 40//iaa.mean_of_midpoints
-  const mean_of_maxima = 85//iaa.mean_of_maxima
+  const mean_of_midpoints = iaa.mean_of_midpoints
+  const mean_of_maxima = iaa.mean_of_maxima
 
   return {
     visualizations: [
