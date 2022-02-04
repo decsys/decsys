@@ -1,4 +1,6 @@
 dist
+# ignore the built SPA in .NET if publish testing locally
+app/Decsys/ClientApp
 
 # The sln is in the repo root, so .vs goes here too
 .vs

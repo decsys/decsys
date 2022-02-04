@@ -40,6 +40,7 @@ if (mode.IsHosted)
     var mongoClient = new MongoClient(builder.Configuration.GetConnectionString("mongo"));
 
     builder.Services
+        .AddApplicationInsightsTelemetry()
         .AddMongoDb(mongoClient)
         .AddAppIdentity(mongoClient, hostedDbSettings)
         .AddAppIdentityServer(builder.Configuration, builder.Environment)

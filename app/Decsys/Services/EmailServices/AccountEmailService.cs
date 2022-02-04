@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Decsys.Models.Emails;
 using Decsys.Services.Contracts;
-using Microsoft.Extensions.Configuration;
 
 namespace Decsys.Services.EmailServices
 {
@@ -11,15 +7,17 @@ namespace Decsys.Services.EmailServices
     {
         private readonly IEmailSender _emails;
         private readonly IConfiguration _config;
-
+        private readonly ILogger<AccountEmailService> _logger;
         private const string _serviceName = "DECSYS"; // TODO: Config
 
         public AccountEmailService(
             IEmailSender emails,
-            IConfiguration config)
+            IConfiguration config,
+            ILogger<AccountEmailService> logger)
         {
             _emails = emails;
             _config = config;
+            _logger = logger;
         }
 
         public async Task SendAccountConfirmation(EmailAddress to, string link)
@@ -38,10 +36,14 @@ namespace Decsys.Services.EmailServices
                 throw new InvalidOperationException(
                     "Account Approval is required, but no approvers have been configured!");
 
-            await _emails.SendEmail(
-                approvers.Split(",")
+            _logger.LogInformation(approvers);
+
+            var approverEmails = approvers.Split(",")
                     .Select(address => new EmailAddress(address))
-                    .ToList(),
+                    .ToList();
+
+            await _emails.SendEmail(
+                approverEmails,
                 $"{_serviceName} Account Approval Requested",
                 "Emails/AccountApprovalRequest",
                 new AccountEmailModel<AccountApprovalRequestModel>(
