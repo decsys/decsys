@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Decsys.Config;
@@ -65,11 +65,12 @@ namespace Decsys.Services.EmailSender
             {
                 var error = $"Error response from SendGrid: {response.StatusCode}";
                 _logger.LogError(error);
+                _logger.LogError(await response.Body.ReadAsStringAsync());
 
                 // Helpful bits
                 if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
                     _logger.LogError(
-                        $"Have you setup a verified Sender, and does it match the configured FromAddress ({_config.FromAddress})?");
+                         $"Have you setup a verified Sender, and does it match the configured FromAddress ({_config.FromAddress})?");
 
                 throw new InvalidOperationException(error);
             }
