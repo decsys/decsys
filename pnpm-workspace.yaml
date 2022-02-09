@@ -1,0 +1,6 @@
+packages:
+  - config
+  - docs
+  - app/client-app
+  - packages/*
+  - response-items
