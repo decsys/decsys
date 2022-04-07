@@ -175,7 +175,7 @@ app.UseEndpoints(app =>
 app.UseSpa(spa =>
 {
     spa.Options.SourcePath = "../client-app";
-    spa.Options.PackageManagerCommand = "yarn";
+    spa.Options.PackageManagerCommand = "pnpm";
 
     if (app.Environment.IsDevelopment())
         spa.UseReactDevelopmentServer(npmScript: "start");
