@@ -44,5 +44,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@algolia/client-search": "^4.13.0",
+    "typescript": "^4.6.3"
   }
 }
