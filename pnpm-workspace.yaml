@@ -1,6 +1,6 @@
 packages:
   - config
   - docs
-  # - app/client-app
+  - app/client-app
   - packages/*
   - response-items
