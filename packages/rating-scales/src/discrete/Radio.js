@@ -1,16 +1,16 @@
-import { ComponentPropsWithoutRef } from "react";
+// import { ComponentPropsWithoutRef } from "react";
 import { labelDistance } from "../constants";
 
-interface RadioLabelProps extends ComponentPropsWithoutRef<"label"> {
-  /** A valid CSS Color value for the label text. */
-  labelColor: string;
-  /** A valid CSS Font Family value for the label text. */
-  fontFamily: string;
-  /** A valid CSS Font Size value for the label text. */
-  fontSize: string;
-  /** Whether the label is above or below the radio button. */
-  above: boolean;
-}
+// interface RadioLabelProps extends ComponentPropsWithoutRef<"label"> {
+//   /** A valid CSS Color value for the label text. */
+//   labelColor: string;
+//   /** A valid CSS Font Family value for the label text. */
+//   fontFamily: string;
+//   /** A valid CSS Font Size value for the label text. */
+//   fontSize: string;
+//   /** Whether the label is above or below the radio button. */
+//   above: boolean;
+// }
 
 /**
  * A styled label that can be above or below a radio button.
@@ -22,7 +22,7 @@ const RadioLabel = ({
   above,
   style,
   ...p
-}: RadioLabelProps) => (
+}) => (
   <label
     style={{
       color: labelColor,
@@ -45,7 +45,7 @@ const RadioLabel = ({
  *
  * It's intended for use as a secondary label, further from the scale bar.
  */
-const SecondaryRadioLabel = ({ style, ...p }: RadioLabelProps) => (
+const SecondaryRadioLabel = ({ style, ...p }) => (
   <RadioLabel
     style={{
       marginTop: p.above
@@ -60,7 +60,7 @@ const SecondaryRadioLabel = ({ style, ...p }: RadioLabelProps) => (
 /**
  * A styled radio button input
  */
-const RadioInput = ({ style, ...p }: ComponentPropsWithoutRef<"input">) => (
+const RadioInput = ({ style, ...p }) => (
   <input
     type="radio"
     name="discrete"
@@ -72,41 +72,41 @@ const RadioInput = ({ style, ...p }: ComponentPropsWithoutRef<"input">) => (
 /**
  * A styled containing div for a single labelled radio button
  */
-const RadioContainer = ({ style, ...p }: ComponentPropsWithoutRef<"div">) => (
+const RadioContainer = ({ style, ...p }) => (
   <div
     style={{ position: "relative", zIndex: 1, top: "-0.55em", ...style }}
     {...p}
   />
 );
 
-export interface RadioProps {
-  /** The index of this Radio component in an array of Radio components. */
-  index: number;
+// export interface RadioProps {
+//   /** The index of this Radio component in an array of Radio components. */
+//   index: number;
 
-  /** The value of this Radio component. */
-  value: string;
+//   /** The value of this Radio component. */
+//   value: string;
 
-  /** Value to be used as the RadioInput's id. */
-  id: string;
+//   /** Value to be used as the RadioInput's id. */
+//   id: string;
 
-  /** CSS Color value for any labels associated with this Radio component. */
-  labelColor?: string;
+//   /** CSS Color value for any labels associated with this Radio component. */
+//   labelColor?: string;
 
-  /** A valid CSS Font Family value for any labels associated with this Radio component. */
-  fontFamily?: string;
+//   /** A valid CSS Font Family value for any labels associated with this Radio component. */
+//   fontFamily?: string;
 
-  /** A valid CSS Font Size value for any labels associated with this Radio component. */
-  fontSize?: string;
+//   /** A valid CSS Font Size value for any labels associated with this Radio component. */
+//   fontSize?: string;
 
-  /** Whether the RadioInput should default to being checked. */
-  defaultChecked: boolean;
+//   /** Whether the RadioInput should default to being checked. */
+//   defaultChecked: boolean;
 
-  /** Whether RadioLabels should be above or below the RadioInput. */
-  labelAbove: boolean;
+//   /** Whether RadioLabels should be above or below the RadioInput. */
+//   labelAbove: boolean;
 
-  /** Optional text for a secondary label */
-  secondaryLabel: string;
-}
+//   /** Optional text for a secondary label */
+//   secondaryLabel: string;
+// }
 
 /**
  * A Labelled Radio Button component for use on the Discrete Scale
@@ -121,7 +121,7 @@ const Radio = ({
   defaultChecked,
   labelAbove = false,
   secondaryLabel,
-}: RadioProps) => {
+}) => {
   const handleRadioClick = () => {
     document.dispatchEvent(
       new CustomEvent("DiscreteSelected", {

@@ -1,9 +1,9 @@
-import { ComponentPropsWithoutRef } from "react";
+// import { ComponentPropsWithoutRef } from "react";
 
-interface FrameProps extends ComponentPropsWithoutRef<"div"> {
-  /** A valid CSS Dimension value for the height of the Frame. */
-  frameHeight: string;
-}
+// interface FrameProps extends ComponentPropsWithoutRef<"div"> {
+//   /** A valid CSS Dimension value for the height of the Frame. */
+//   frameHeight: string;
+// }
 
 /**
  * A containing frame for a scale component.
@@ -11,7 +11,7 @@ interface FrameProps extends ComponentPropsWithoutRef<"div"> {
  * This component sets a base CSS font-size which many relative values
  * (`em`, `rem`, `%`) in sub-components are based on
  */
-export const Frame = ({ frameHeight = "400px", style, ...p }: FrameProps) => (
+export const Frame = ({ frameHeight = "400px", style, ...p }) => (
   <div
     style={{
       minHeight: frameHeight,

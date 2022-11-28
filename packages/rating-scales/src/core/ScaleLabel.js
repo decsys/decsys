@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef } from "react";
+// import { ComponentPropsWithoutRef } from "react";
 import { labelDistance } from "../constants";
 
 // TODO: work out a sensible way to write stories for this
@@ -6,29 +6,29 @@ import { labelDistance } from "../constants";
 // do it on a Scalebar, I guess?
 
 /** A point a label is relative to */
-const LabelPoint = ({ style, ...p }: ComponentPropsWithoutRef<"div">) => (
+const LabelPoint = ({ style, ...p }) => (
   <div style={{ position: "relative", ...style }} {...p} />
 );
 
-interface BarLabelProps extends ComponentPropsWithoutRef<"label"> {
-  /** A valid CSS Color value for the label text */
-  labelColor: string;
+// interface BarLabelProps extends ComponentPropsWithoutRef<"label"> {
+//   /** A valid CSS Color value for the label text */
+//   labelColor: string;
 
-  /** A valid CSS Font Family value for any labels associated with this Radio component. */
-  fontFamily: string;
+//   /** A valid CSS Font Family value for any labels associated with this Radio component. */
+//   fontFamily: string;
 
-  /** A valid CSS Font Size value for any labels associated with this Radio component. */
-  fontSize: string;
+//   /** A valid CSS Font Size value for any labels associated with this Radio component. */
+//   fontSize: string;
 
-  /** Vertical alignment of the label relative to its position */
-  yAlign: "above" | "center" | "below";
+//   /** Vertical alignment of the label relative to its position */
+//   yAlign: "above" | "center" | "below";
 
-  /**
-   * The index of the position of the label relative to the Scale Bar.
-   * 0 - hard left, 1 - center, 2 - hard right
-   */
-  labelIndex: number;
-}
+//   /**
+//    * The index of the position of the label relative to the Scale Bar.
+//    * 0 - hard left, 1 - center, 2 - hard right
+//    */
+//   labelIndex: number;
+// }
 
 /** A label at a position */
 const BarLabel = ({
@@ -39,10 +39,10 @@ const BarLabel = ({
   yAlign = "below",
   style,
   ...p
-}: BarLabelProps) => {
+}) => {
   const left = yAlign === "below" ? "0.05em" : "0";
 
-  let transform: string;
+  let transform;
   let yTransform = "";
   if (yAlign === "center") {
     yTransform = "translateY(-50%)";
@@ -79,13 +79,13 @@ const BarLabel = ({
   );
 };
 
-export interface ScaleLabelProps extends BarLabelProps {
-  /** The actual label text */
-  value: string;
-}
+// export interface ScaleLabelProps extends BarLabelProps {
+//   /** The actual label text */
+//   value: string;
+// }
 
 /** A positionable label for a ScaleBar */
-export const ScaleLabel = ({ value, ...p }: ScaleLabelProps) => (
+export const ScaleLabel = ({ value, ...p }) => (
   <LabelPoint>
     <BarLabel {...p}>{value}</BarLabel>
   </LabelPoint>
