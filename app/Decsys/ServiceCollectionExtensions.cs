@@ -120,16 +120,6 @@ namespace Decsys
             return s;
         }
 
-        public static IServiceCollection AddAppSpaServices(this IServiceCollection s)
-        {
-            // wrap these cos they don't return an ISC, interrupting chaining
-
-            // In production, the React files will be served from this directory
-            s.AddSpaStaticFiles(o => o.RootPath = "ClientApp");
-
-            return s;
-        }
-
         public static IServiceCollection AddAppAuthorization(this IServiceCollection s, AppMode mode)
             => s.AddAuthorization(opts =>
             {
