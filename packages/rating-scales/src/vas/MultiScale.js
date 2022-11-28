@@ -1,11 +1,7 @@
 import { useState, useCallback } from "react";
 import UnitValue from "unit-value/lib/unit-value";
-import {
-  FlexContainer,
-  ScaleBar,
-  scaleBarDefaultProps,
-} from "../core/ScaleBar";
-import ScaleLabel from "../core/ScaleLabel";
+import { FlexContainer, ScaleBar } from "../core/ScaleBar";
+import { ScaleLabel } from "../core/ScaleLabel";
 import { ScaleMarkerSet } from "../core/ScaleMarkerSet";
 import {
   getBounds,
@@ -58,7 +54,7 @@ export const Scale = ({
     minValue: 0,
     maxValue: 100,
     // we depend on this one for calculations
-    thickness: scaleBarDefaultProps.thickness,
+    thickness: "0.2em", //scaleBarDefaultProps.thickness,
   },
   scaleMarkerOptions = {},
   leftMarkerOptions = {},

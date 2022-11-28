@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { scaleBarDefaultProps } from "../core/ScaleBar";
 import { Frame } from "../core/Frame";
 import { Question } from "../core/Question";
 import { Scale } from "./MultiScale";
@@ -51,7 +50,7 @@ const MultiVisualAnalogScale = ({
     minValue: 0,
     maxValue: 100,
     // we depend on this one for calculations
-    thickness: scaleBarDefaultProps.thickness,
+    thickness: "0.2em", //scaleBarDefaultProps.thickness,
   },
   labelOptions = {},
   labels = {},
