@@ -23,12 +23,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- SPA paths used throughout this file -->
     <SpaSource>../client-app/</SpaSource>
-    <SpaDist>ClientApp/</SpaDist>
+    <SpaDist>../client-app/dist/</SpaDist>
 
-    <!-- Don't show built SPA files in VS if they are present locally -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaDist)**</DefaultItemExcludes>
+    <SpaProxyServerUrl>https://localhost:45789</SpaProxyServerUrl>
+    <SpaProxyLaunchCommand>pnpm dev</SpaProxyLaunchCommand>
 
     <!-- Tell VS never to build any ts/js it finds -->
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
@@ -80,48 +79,30 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
-
-  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' ">
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
     <Exec Command="node --version" ContinueOnError="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
     </Exec>
     <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-
-    <!-- Install Client App Dependencies-->
-    <Message Importance="high" Text="Restoring local dependencies using 'pnpm'. This may take several minutes..." />
-    <Exec WorkingDirectory="$(SpaSource)" Command="pnpm i" />
+    <Message Importance="high" Text="Restoring dependencies using 'pnpm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="pnpm i" />
   </Target>
 
-  <Target Name="PublishIncludeSpaBuild" AfterTargets="ComputeFilesToPublish">
+  <Target Name="PublishIncludeBuiltSpa" AfterTargets="ComputeFilesToPublish">
     <!--
-    Unlike the ASP.NET Core Template, which runs the Webpack build on publish,
-    we do the client app build independently in parallel during CI.
-    So this process appears more manual (but is automated in CI instead).
-
-    The resulting publish steps are therefore:
-    1. `yarn build` in `$(SpaSource)`
-    2. Copy the built output from `$(SpaSource)/build` to `$(SpaDist)`
-         - in CI this looks like the artifact output from step 1
-           being downloaded to $(SpaDist) in the working directory for step 3
-    3. `dotnet publish`, which will run this Target
-       and include the files from `$(SpaDist)` in the publish output
-
-    CI should therefore take care of the build steps, and copying the output
-    to the right place before publishing.
+      Unlike the template, before publishing we expect the JS resources
+      to have been built in production mode externally e.g. in CI
     -->
 
-    <!-- Include the SPA build files in the publish output -->
+    <!-- During Publish, we include the built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="$(SpaDist)**" />
       <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
-
 </Project>
