@@ -9,7 +9,6 @@ using Decsys.Services;
 using Decsys.Services.Contracts;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.OpenApi.Models;
 
@@ -169,15 +168,6 @@ app.MapGet("/surveys/images/{surveyId:int}/{filename}", async context =>
 });
 
 app.MapFallbackToFile("index.html").AllowAnonymous();
-
-// app.UseSpa(spa =>
-// {
-//     spa.Options.SourcePath = "../client-app";
-//     spa.Options.PackageManagerCommand = "pnpm";
-
-//     if (app.Environment.IsDevelopment())
-//         spa.UseReactDevelopmentServer(npmScript: "dev");
-// });
 
 #endregion
 
