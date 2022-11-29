@@ -8,6 +8,14 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig(({ mode }) => {
   const config = {
     plugins: [react(), tsconfigPaths()],
+    optimizeDeps: {
+      esbuildOptions: {
+        // Node.js global to browser globalThis
+        define: {
+          global: "globalThis",
+        },
+      },
+    },
   };
 
   switch (mode) {
