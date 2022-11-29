@@ -44,8 +44,13 @@ const Visualization = ({ index, visualization }) =>
       // TODO: Document the available built-in types
       case visTypes.plotly:
         const { config, ...plotly } = visualization.plotly; // throw away the config, if any
-        return null;
-        <Plot {...plotly} config={plotlyConfig} divId={`plotly-vis${index}`} />;
+        return (
+          <Plot
+            {...plotly}
+            config={plotlyConfig}
+            divId={`plotly-vis${index}`}
+          />
+        );
       case visTypes.wordcloud:
         return <ReactWordcloud {...visualization.wordcloud} />;
       default:

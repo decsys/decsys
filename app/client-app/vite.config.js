@@ -38,14 +38,17 @@ export default defineConfig(({ mode }) => {
             cert: env.SSL_CRT_FILE,
           },
           proxy: {
+            // most backend routes are here
             "/api": {
               target: proxyTarget,
               secure: false,
             },
+            // DECSYS serves components (and survey images?) from here
             "/static": {
               target: proxyTarget,
               secure: false,
             },
+            // This is all OIDC / Account related
             "/.well-known": {
               target: proxyTarget,
               secure: false,
@@ -58,6 +61,7 @@ export default defineConfig(({ mode }) => {
               target: proxyTarget,
               secure: false,
             },
+            // General backend Error route
             "/error": {
               target: proxyTarget,
               secure: false,
