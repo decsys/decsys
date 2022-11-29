@@ -142,6 +142,8 @@ if (mode.IsHosted)
 
 app.UseAuthorization();
 
+app.MapRazorPages();
+
 app.MapControllers()
     .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin));
 

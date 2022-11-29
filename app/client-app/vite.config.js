@@ -42,6 +42,26 @@ export default defineConfig(({ mode }) => {
               target: proxyTarget,
               secure: false,
             },
+            "/static": {
+              target: proxyTarget,
+              secure: false,
+            },
+            "/.well-known": {
+              target: proxyTarget,
+              secure: false,
+            },
+            "/Account": {
+              target: proxyTarget,
+              secure: false,
+            },
+            "/connect": {
+              target: proxyTarget,
+              secure: false,
+            },
+            "/error": {
+              target: proxyTarget,
+              secure: false,
+            },
           },
         },
       };

@@ -1,6 +1,6 @@
 import { Router } from "@reach/router";
 import Root from "./routes/root";
-import Admin from "./routes/admin.routes";
+// import Admin from "./routes/admin.routes";
 import { LayoutProvider } from "components/core/LayoutPage";
 import layouts from "./layouts";
 import Participant from "./routes/participant.routes";
@@ -20,7 +20,7 @@ const App = () => {
           <ErrorBoundary fallback={<Error message="Something went wrong!" />}>
             <Router>
               <Root path="/" />
-              <Admin path="admin/*" />
+              {/* <Admin path="admin/*" /> */}
               <Participant path="/survey/*" />
               <Auth path={`${Paths.Prefix(true)}/*`} />
               <User path={`/user/*`} />

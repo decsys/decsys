@@ -1,4 +1,4 @@
-﻿using AspNetCore.Identity.Mongo.Model;
+using AspNetCore.Identity.Mongo.Model;
 using AspNetCore.Identity.Mongo.Stores;
 
 using Decsys.Auth;
@@ -108,6 +108,8 @@ namespace Decsys
 
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
         {
+            s.AddRazorPages();
+
             // wrap these cos they don't return an ISC, interrupting chaining
             s.AddControllersWithViews()
 

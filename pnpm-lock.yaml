@@ -41,6 +41,7 @@ importers:
       gfycat-style-urls: ^1.0.3
       github-markdown-css: ^4.0.0
       immer: ^9.0.2
+      js-base64: ^3.7.3
       js-forms: ^2.0.0
       json2csv: ^4.5.4
       jszip: ^3.6.0
@@ -82,6 +83,7 @@ importers:
       gfycat-style-urls: 1.0.3
       github-markdown-css: 4.0.0
       immer: 9.0.12
+      js-base64: 3.7.3
       js-forms: 2.0.0
       json2csv: 4.5.4
       jszip: 3.10.1
@@ -17633,6 +17635,10 @@ packages:
       '@sideway/address': 4.1.4
       '@sideway/formula': 3.0.0
       '@sideway/pinpoint': 2.0.0
+    dev: false
+
+  /js-base64/3.7.3:
+    resolution: {integrity: sha512-PAr6Xg2jvd7MCR6Ld9Jg3BmTcjYsHEBx1VlwEwULb/qowPf5VD9kEMagj23Gm7JRnSvE/Da/57nChZjnvL8v6A==}
     dev: false
 
   /js-forms/2.0.0:

@@ -1,4 +1,4 @@
-import base64url from "base64url";
+import { Base64 } from "js-base64";
 
 /**
  * Returns an array of keys which have truthy, or falsey values in an object
@@ -41,12 +41,12 @@ export const isEmpty = (obj) => {
 };
 
 export const Base64UrlToUtf8 = (input) =>
-  (!!input && base64url.decode(input)) || null;
+  (!!input && Base64.decode(input)) || null;
 
 export const Base64UrlToJson = (input) => JSON.parse(Base64UrlToUtf8(input));
 
 export const Utf8ToBase64Url = (input) =>
-  (!!input && base64url.encode(input)) || "";
+  (!!input && Base64.encodeURL(input)) || "";
 
 export const stripBom = (content) => {
   content = content.toString();
