@@ -1,10 +1,11 @@
-import Plotly from "plotly.js";
+import domtoimage from "dom-to-image";
 import { saveSvgAsPng } from "save-svg-as-png";
 import { visTypes } from "./constants";
 
 // Helpers for saving visualisations as images
 
 const SAVE_SVG = "svg";
+const SAVE_DOM = "dom";
 
 /**
  * Determine if a defined visualisation supports saving as an image
@@ -26,6 +27,19 @@ export const saveSvg = (ref) => {
 };
 
 /**
+ * Save a DOM element and its children as a PNG
+ * @param {*} filename the output filename to use
+ * @param {*} element the DOM element
+ */
+export const saveDom = async (filename, element) => {
+  const dataUrl = await domtoimage.toPng(element);
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = dataUrl;
+  link.click();
+};
+
+/**
  * Save a visualisation as an image
  * @param {*} index The index of the visualisation in the visualisations collection
  * @param {*} visualization the visualisation itself
@@ -36,7 +50,9 @@ export const saveImage = (index, visualization, ref) => {
   // using "svg" or custom fn
   switch (visualization?.type) {
     case visTypes.plotly:
-      Plotly.downloadImage(`plotly-vis${index}`);
+      const id = `plotly-vis${index}`;
+      const plotElement = document.getElementById(id);
+      saveDom(id, plotElement);
       break;
     case visTypes.wordcloud:
       saveSvg(ref);
@@ -45,5 +61,7 @@ export const saveImage = (index, visualization, ref) => {
       if (typeof visualization?.saveImage === "function")
         visualization.saveImage();
       if (visualization.saveImage === SAVE_SVG) saveSvg(ref);
+      if (visualization.saveImage === SAVE_DOM)
+        saveDom("download", ref.current);
   }
 };

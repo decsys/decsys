@@ -1,4 +1,4 @@
-﻿using Decsys.Config;
+using Decsys.Config;
 using Decsys.Services.Contracts;
 
 using Microsoft.AspNetCore.StaticFiles;
@@ -63,10 +63,7 @@ namespace Decsys
                     FileProvider = new PhysicalFileProvider(paths.SurveyImages),
                     RequestPath = "/surveys/images"
                 });
-            } // else we map an endpoint later
-
-            // SPA
-            app.UseSpaStaticFiles();
+            }
         }
     }
 }

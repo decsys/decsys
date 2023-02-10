@@ -1,11 +1,11 @@
 import React, { useEffect } from "react"; // eslint-disable-line no-unused-vars
 import OriginalLayout from "@theme-original/Layout";
-import useThemeContext from "@theme/hooks/useThemeContext";
+import { useColorMode as useThemeColorMode } from "@docusaurus/theme-common";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { useColorMode } from "@chakra-ui/react";
 
 const ColorModeSync = () => {
-  const { isDarkTheme } = useThemeContext();
+  const isDarkTheme = useThemeColorMode().colorMode === "dark";
   const { colorMode, toggleColorMode } = useColorMode();
 
   useEffect(() => {

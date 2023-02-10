@@ -9,7 +9,6 @@ using Decsys.Services;
 using Decsys.Services.Contracts;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.OpenApi.Models;
 
@@ -90,7 +89,6 @@ builder.Services
     .AddSwaggerGenNewtonsoftSupport()
 
     .AddAppMvcServices()
-    .AddAppSpaServices()
 
     .AddAppVersionInformation();
 
@@ -144,42 +142,34 @@ if (mode.IsHosted)
 
 app.UseAuthorization();
 
-app.UseEndpoints(app =>
-{
-    app.MapControllers()
-        .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin));
+app.MapRazorPages();
 
-    // TODO: move this to formal middleware
-    app.MapGet("/surveys/images/{surveyId:int}/{filename}", async context =>
+app.MapControllers()
+    .RequireAuthorization(nameof(AuthPolicies.IsSurveyAdmin));
+
+// TODO: move this to formal middleware
+app.MapGet("/surveys/images/{surveyId:int}/{filename}", async context =>
+{
+    var surveyId = int.Parse(context.Request.RouteValues["surveyId"]?.ToString() ?? "0");
+    var filename = context.Request.RouteValues["filename"]?.ToString();
+    if (filename is null)
     {
-        var surveyId = int.Parse(context.Request.RouteValues["surveyId"]?.ToString() ?? "0");
-        var filename = context.Request.RouteValues["filename"]?.ToString();
-        if (filename is null)
-        {
-            context.Response.StatusCode = 404;
-            return;
-        }
-        var images = context.RequestServices.GetRequiredService<IImageService>();
-        var bytes = await images.GetImage(surveyId, filename);
+        context.Response.StatusCode = 404;
+        return;
+    }
+    var images = context.RequestServices.GetRequiredService<IImageService>();
+    var bytes = await images.GetImage(surveyId, filename);
 
-        if (new FileExtensionContentTypeProvider()
-            .TryGetContentType(filename, out var contentType))
-        {
-            context.Response.ContentType = contentType;
-        }
+    if (new FileExtensionContentTypeProvider()
+        .TryGetContentType(filename, out var contentType))
+    {
+        context.Response.ContentType = contentType;
+    }
 
-        await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
-    });
+    await context.Response.Body.WriteAsync(bytes.AsMemory(0, bytes.Length));
 });
 
-app.UseSpa(spa =>
-{
-    spa.Options.SourcePath = "../client-app";
-    spa.Options.PackageManagerCommand = "yarn";
-
-    if (app.Environment.IsDevelopment())
-        spa.UseReactDevelopmentServer(npmScript: "start");
-});
+app.MapFallbackToFile("index.html").AllowAnonymous();
 
 #endregion
 

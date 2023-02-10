@@ -1,4 +1,4 @@
-﻿using AspNetCore.Identity.Mongo.Model;
+using AspNetCore.Identity.Mongo.Model;
 using AspNetCore.Identity.Mongo.Stores;
 
 using Decsys.Auth;
@@ -108,6 +108,8 @@ namespace Decsys
 
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
         {
+            s.AddRazorPages();
+
             // wrap these cos they don't return an ISC, interrupting chaining
             s.AddControllersWithViews()
 
@@ -116,16 +118,6 @@ namespace Decsys
             // it doesn't really make sense to change this
             // (if System.Text.Json even does what we need)
             .AddNewtonsoftJson();
-
-            return s;
-        }
-
-        public static IServiceCollection AddAppSpaServices(this IServiceCollection s)
-        {
-            // wrap these cos they don't return an ISC, interrupting chaining
-
-            // In production, the React files will be served from this directory
-            s.AddSpaStaticFiles(o => o.RootPath = "ClientApp");
 
             return s;
         }

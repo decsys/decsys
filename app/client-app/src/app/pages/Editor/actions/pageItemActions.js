@@ -60,7 +60,9 @@ export const pageItemActions = (
       produce(({ pages }) => {
         const page = pages.find(({ id }) => id === pageId);
         const item = page.components.find(({ id }) => id === itemId);
-        const questionItem = page.components.find((item)=> item.isQuestionItem === true);  
+        const questionItem = page.components.find(
+          (item) => item.isQuestionItem === true
+        );
         questionItem.isQuestionItem = false;
         item.isQuestionItem = true;
       }),

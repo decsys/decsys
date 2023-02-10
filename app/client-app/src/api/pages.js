@@ -19,7 +19,7 @@ export const setSurveyPageOrder = async (surveyId, pageId, newOrder) =>
     withHeaders(contentType_AppJson, await authorization_BearerToken())
   );
 
-  export const setSurveyPageName = async (surveyId, pageId, newName) =>
+export const setSurveyPageName = async (surveyId, pageId, newName) =>
   await axios.put(
     `/api/surveys/${surveyId}/pages/${pageId}/name`,
     JSON.stringify(newName),

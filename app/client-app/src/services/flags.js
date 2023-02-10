@@ -8,7 +8,7 @@
  * @param {boolean} loose whether to test only for "truthy" rather than exactly true members
  */
 export const some = (flags, loose = false) =>
-  Object.keys(flags).some(k => isTruthy(flags[k], loose));
+  Object.keys(flags).some((k) => isTruthy(flags[k], loose));
 
 /**
  * Determine whether all members of an object are true
@@ -17,7 +17,7 @@ export const some = (flags, loose = false) =>
  */
 export const every = (flags, loose = false) => {
   const keys = Object.keys(flags);
-  return keys.length > 0 && keys.every(k => isTruthy(flags[k], loose));
+  return keys.length > 0 && keys.every((k) => isTruthy(flags[k], loose));
 };
 
 /**

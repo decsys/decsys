@@ -1,6 +1,6 @@
 import { exportDateFormat } from "services/date-formats";
 import download from "downloadjs";
-import { parse } from "json2csv";
+// import { parse } from "json2csv";
 import { getSurveyExport } from "api/surveys";
 
 /**
@@ -52,52 +52,54 @@ export const surveyExport = async (id, name, type) => {
 };
 
 export const getResultsCsvData = (results) => {
-  //figure out all the response columns we need
-  const responseColumns = results.participants.reduce(
-    (agg, p) => {
-      const responseColumns = p.responses
-        .map((x) => {
-          return !x.response
-            ? null
-            : Object.keys(x.response).map((r) => ({
-                label: `${x.responseType}_${r}`,
-                value: `responses.${x.responseType}.${r}`,
-              }));
-        })
-        .filter((x) => !!x); // drop the null ones
+  // TODO: need to move this to the server (.NET) anyway
+  return "TODO,CSV,EXPORT,BROKEN";
+  // //figure out all the response columns we need
+  // const responseColumns = results.participants.reduce(
+  //   (agg, p) => {
+  //     const responseColumns = p.responses
+  //       .map((x) => {
+  //         return !x.response
+  //           ? null
+  //           : Object.keys(x.response).map((r) => ({
+  //               label: `${x.responseType}_${r}`,
+  //               value: `responses.${x.responseType}.${r}`,
+  //             }));
+  //       })
+  //       .filter((x) => !!x); // drop the null ones
 
-      responseColumns.forEach((response) => {
-        response.forEach((column) => {
-          agg.columns.push(column)
-        });
-      });
-      return agg;
-    },
-    { lookup: {}, columns: [] }
-  ).columns;
-  const participants = results.participants.map(participant => {
-    participant.responses.map(response => {
-      response[response.responseType] = {}
-      Object.keys(response.response).forEach(key => {
-        response[response.responseType][key] = response.response[key]
-      })
-    })
-    return participant
-  })
-  
-  const data = parse(participants, {
-    fields: [
-      { label: "Participant", value: "id" },
-      { label: "Page", value: "responses.page" },
-      { label: "Page Name", value: "responses.pageName" },
-      { label: "Question", value: "responses.question" },
-      { label: "Order", value: "responses.order" },
-      { label: "Page Loaded", value: "responses.pageLoad" },
-      { label: "Response Type", value: "responses.responseType" },
-      { label: "Response Recorded", value: "responses.responseRecorded" },
-      ...responseColumns,
-    ],
-    unwind: "responses",
-  });
-  return data;
+  //     responseColumns.forEach((response) => {
+  //       response.forEach((column) => {
+  //         agg.columns.push(column);
+  //       });
+  //     });
+  //     return agg;
+  //   },
+  //   { lookup: {}, columns: [] }
+  // ).columns;
+  // const participants = results.participants.map((participant) => {
+  //   participant.responses.map((response) => {
+  //     response[response.responseType] = {};
+  //     Object.keys(response.response).forEach((key) => {
+  //       response[response.responseType][key] = response.response[key];
+  //     });
+  //   });
+  //   return participant;
+  // });
+
+  // const data = parse(participants, {
+  //   fields: [
+  //     { label: "Participant", value: "id" },
+  //     { label: "Page", value: "responses.page" },
+  //     { label: "Page Name", value: "responses.pageName" },
+  //     { label: "Question", value: "responses.question" },
+  //     { label: "Order", value: "responses.order" },
+  //     { label: "Page Loaded", value: "responses.pageLoad" },
+  //     { label: "Response Type", value: "responses.responseType" },
+  //     { label: "Response Recorded", value: "responses.responseRecorded" },
+  //     ...responseColumns,
+  //   ],
+  //   unwind: "responses",
+  // });
+  // return data;
 };

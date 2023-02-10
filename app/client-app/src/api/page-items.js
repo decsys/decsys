@@ -45,14 +45,14 @@ export const setSurveyPageItemParam = async (
     withHeaders(await authorization_BearerToken())
   );
 
-  export const setSurveyPageItemToQuestionItem = async (
-    surveyId,
-    pageId,
-    itemId
-  ) => {
-    await axios.put(
-      `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}/isQuestionItem`,
-      null,
-      withHeaders(contentType_AppJson, await authorization_BearerToken())
-    );
-  }
+export const setSurveyPageItemToQuestionItem = async (
+  surveyId,
+  pageId,
+  itemId
+) => {
+  await axios.put(
+    `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}/isQuestionItem`,
+    null,
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
+  );
+};

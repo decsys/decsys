@@ -1,20 +1,43 @@
-import PropTypes from "prop-types";
+// import { ComponentPropsWithoutRef } from "react";
 import { labelDistance } from "../constants";
 
 // TODO: work out a sensible way to write stories for this
-// cos there's some complex alignment shenanigans going on
+// cos there's some complex alignment shenanigans going on.
 // do it on a Scalebar, I guess?
 
 /** A point a label is relative to */
-const LabelPoint = (p) => <div css={{ position: "relative" }} {...p} />;
+const LabelPoint = ({ style, ...p }) => (
+  <div style={{ position: "relative", ...style }} {...p} />
+);
+
+// interface BarLabelProps extends ComponentPropsWithoutRef<"label"> {
+//   /** A valid CSS Color value for the label text */
+//   labelColor: string;
+
+//   /** A valid CSS Font Family value for any labels associated with this Radio component. */
+//   fontFamily: string;
+
+//   /** A valid CSS Font Size value for any labels associated with this Radio component. */
+//   fontSize: string;
+
+//   /** Vertical alignment of the label relative to its position */
+//   yAlign: "above" | "center" | "below";
+
+//   /**
+//    * The index of the position of the label relative to the Scale Bar.
+//    * 0 - hard left, 1 - center, 2 - hard right
+//    */
+//   labelIndex: number;
+// }
 
 /** A label at a position */
 const BarLabel = ({
-  labelColor,
-  fontFamily,
-  fontSize,
-  yAlign,
-  labelIndex,
+  labelColor = "black",
+  fontFamily = "Arial",
+  fontSize = "1.2em",
+  labelIndex = 0,
+  yAlign = "below",
+  style,
   ...p
 }) => {
   const left = yAlign === "below" ? "0.05em" : "0";
@@ -39,7 +62,7 @@ const BarLabel = ({
 
   return (
     <label
-      css={{
+      style={{
         color: labelColor,
         fontFamily,
         fontSize,
@@ -49,54 +72,21 @@ const BarLabel = ({
         transform,
         whiteSpace: "nowrap",
         marginTop,
+        ...style,
       }}
       {...p}
     />
   );
 };
 
-const barLabelPropTypes = {
-  /** A valid CSS Color value for the label text */
-  labelColor: PropTypes.string,
-
-  /** A valid CSS Font Family value for any labels associated with this Radio component. */
-  fontFamily: PropTypes.string,
-
-  /** A valid CSS Font Size value for any labels associated with this Radio component. */
-  fontSize: PropTypes.string,
-
-  /** Vertical alignment of the label relative to its position */
-  yAlign: PropTypes.oneOf(["above", "center", "below"]),
-
-  /**
-   * The index of the position of the label relative to the Scale Bar.
-   * 0 - hard left, 1 - center, 2 - hard right
-   */
-  labelIndex: PropTypes.number,
-};
-
-BarLabel.propTypes = barLabelPropTypes;
-BarLabel.defaultProps = {
-  labelColor: "black",
-  fontFamily: "Arial",
-  fontSize: "1.2em",
-  labelIndex: 0,
-  yAlign: "below",
-};
+// export interface ScaleLabelProps extends BarLabelProps {
+//   /** The actual label text */
+//   value: string;
+// }
 
 /** A positionable label for a ScaleBar */
-const ScaleLabel = ({ value, ...p }) => (
+export const ScaleLabel = ({ value, ...p }) => (
   <LabelPoint>
     <BarLabel {...p}>{value}</BarLabel>
   </LabelPoint>
 );
-
-export const scaleLabelPropTypes = {
-  ...barLabelPropTypes,
-  /** The actual label text */
-  value: PropTypes.string.isRequired,
-};
-
-ScaleLabel.propTypes = scaleLabelPropTypes;
-
-export default ScaleLabel;

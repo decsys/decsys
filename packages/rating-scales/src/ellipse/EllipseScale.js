@@ -1,21 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
-import { EllipseCanvas, ellipseCanvasPropTypes } from "./Canvas";
-import { Frame, framePropTypes } from "../core/Frame";
-import { Question, questionPropTypes } from "../core/Question";
-import {
-  ScaleBar,
-  scaleBarPropTypes,
-  FlexContainer,
-  scaleBarDefaultProps,
-} from "../core/ScaleBar";
-import ScaleLabel, { scaleLabelPropTypes } from "../core/ScaleLabel";
-import {
-  ScaleMarkerSet,
-  scaleMarkerSetPropTypes,
-  scaleMarkerPropTypes,
-  RangeMarker,
-} from "../core/ScaleMarkerSet";
+import { EllipseCanvas } from "./Canvas";
+import { Frame } from "../core/Frame";
+import { Question } from "../core/Question";
+import { ScaleBar, FlexContainer } from "../core/ScaleBar";
+import { ScaleLabel } from "../core/ScaleLabel";
+import { ScaleMarkerSet, RangeMarker } from "../core/ScaleMarkerSet";
 import UnitValue from "unit-value";
 import {
   getBounds,
@@ -197,84 +186,70 @@ const EllipseScale = ({
     </Frame>
   );
 };
-EllipseScale.propTypes = {
-  ...framePropTypes,
+// EllipseScale.propTypes = {
+//   ...framePropTypes,
 
-  /** Initial minimum range value */
-  minRangeValue: PropTypes.number,
+//   /** Initial minimum range value */
+//   minRangeValue: PropTypes.number,
 
-  /** Initial maximum range value */
-  maxRangeValue: PropTypes.number,
+//   /** Initial maximum range value */
+//   maxRangeValue: PropTypes.number,
 
-  /** Options for the Pen Line appearance */
-  penOptions: PropTypes.shape(ellipseCanvasPropTypes),
+//   /** Options for the Pen Line appearance */
+//   penOptions: PropTypes.shape(ellipseCanvasPropTypes),
 
-  /** Options for the scale's question text */
-  questionOptions: PropTypes.shape(questionPropTypes),
+//   /** Options for the scale's question text */
+//   questionOptions: PropTypes.shape(questionPropTypes),
 
-  /** Question text to display */
-  question: PropTypes.string,
+//   /** Question text to display */
+//   question: PropTypes.string,
 
-  /** Options for the scale's horizontal bar */
-  barOptions: PropTypes.shape({
-    ...scaleBarPropTypes,
-    /**
-     * The numeric value of the left hand end of the range bar
-     * (the minimum possible value of the range)
-     */
-    minValue: PropTypes.number.isRequired,
-    /**
-     * The numeric value of the right hand end of the range bar
-     * (the maximum possible value of the range)
-     */
-    maxValue: PropTypes.number.isRequired,
-  }),
+//   /** Options for the scale's horizontal bar */
+//   barOptions: PropTypes.shape({
+//     ...scaleBarPropTypes,
+//     /**
+//      * The numeric value of the left hand end of the range bar
+//      * (the minimum possible value of the range)
+//      */
+//     minValue: PropTypes.number.isRequired,
+//     /**
+//      * The numeric value of the right hand end of the range bar
+//      * (the maximum possible value of the range)
+//      */
+//     maxValue: PropTypes.number.isRequired,
+//   }),
 
-  /** Options for the range bar's fixed labels */
-  labelOptions: PropTypes.shape(
-    // sadly we don't use all of ScaleLabel's props
-    // ugh the doc comments aren't inherited either?
-    // TODO: better api docs
-    {
-      labelColor: scaleLabelPropTypes.labelColor,
-      fontFamily: scaleLabelPropTypes.fontFamily,
-      fontSize: scaleLabelPropTypes.fontSize,
-      yAlign: scaleLabelPropTypes.yAlign,
-    }
-  ),
+//   /** Options for the range bar's fixed labels */
+//   labelOptions: PropTypes.shape(
+//     // sadly we don't use all of ScaleLabel's props
+//     // ugh the doc comments aren't inherited either?
+//     // TODO: better api docs
+//     {
+//       labelColor: scaleLabelPropTypes.labelColor,
+//       fontFamily: scaleLabelPropTypes.fontFamily,
+//       fontSize: scaleLabelPropTypes.fontSize,
+//       yAlign: scaleLabelPropTypes.yAlign,
+//     }
+//   ),
 
-  /** Fixed label values for the range bar */
-  labels: PropTypes.shape({
-    /** Label value for the left hand end */
-    min: PropTypes.string,
-    /** Central label value */
-    mid: PropTypes.string,
-    /** Label value for the right hand end */
-    max: PropTypes.string,
-  }),
+//   /** Fixed label values for the range bar */
+//   labels: PropTypes.shape({
+//     /** Label value for the left hand end */
+//     min: PropTypes.string,
+//     /** Central label value */
+//     mid: PropTypes.string,
+//     /** Label value for the right hand end */
+//     max: PropTypes.string,
+//   }),
 
-  /** Options for the Scale Markers */
-  scaleMarkerOptions: PropTypes.shape(scaleMarkerSetPropTypes),
+//   /** Options for the Scale Markers */
+//   scaleMarkerOptions: PropTypes.shape(scaleMarkerSetPropTypes),
 
-  /** Options for the Range Markers appearance */
-  rangeMarkerOptions: PropTypes.shape(scaleMarkerPropTypes),
-};
+//   /** Options for the Range Markers appearance */
+//   rangeMarkerOptions: PropTypes.shape(scaleMarkerPropTypes),
+// };
 
-// we basically default all the object props to empty
-// to avoid needing nullish checks ;)
-EllipseScale.defaultProps = {
-  penOptions: {},
-  questionOptions: {},
-  barOptions: {
-    minValue: 0,
-    maxValue: 100,
-    // we depend on this one for calculations
-    thickness: scaleBarDefaultProps.thickness,
-  },
-  labelOptions: {},
-  labels: {},
-  rangeMarkerOptions: {},
-  scaleMarkerOptions: {},
-};
+// // we basically default all the object props to empty
+// // to avoid needing nullish checks ;)
 
 export { EllipseScale };

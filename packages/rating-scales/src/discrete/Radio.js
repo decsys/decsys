@@ -1,23 +1,30 @@
-import PropTypes from "prop-types";
+// import { ComponentPropsWithoutRef } from "react";
 import { labelDistance } from "../constants";
 
-const labelPropTypes = {
-  /** A valid CSS Color value for the label text. */
-  labelColor: PropTypes.string.isRequired,
-  /** A valid CSS Font Family value for the label text. */
-  fontFamily: PropTypes.string.isRequired,
-  /** A valid CSS Font Size value for the label text. */
-  fontSize: PropTypes.string.isRequired,
-  /** Whether the label is above or below the radio button. */
-  above: PropTypes.bool,
-};
+// interface RadioLabelProps extends ComponentPropsWithoutRef<"label"> {
+//   /** A valid CSS Color value for the label text. */
+//   labelColor: string;
+//   /** A valid CSS Font Family value for the label text. */
+//   fontFamily: string;
+//   /** A valid CSS Font Size value for the label text. */
+//   fontSize: string;
+//   /** Whether the label is above or below the radio button. */
+//   above: boolean;
+// }
 
 /**
  * A styled label that can be above or below a radio button.
  */
-const RadioLabel = ({ labelColor, fontFamily, fontSize, above, ...p }) => (
+const RadioLabel = ({
+  labelColor,
+  fontFamily,
+  fontSize,
+  above,
+  style,
+  ...p
+}) => (
   <label
-    css={{
+    style={{
       color: labelColor,
       fontFamily,
       fontSize,
@@ -27,42 +34,79 @@ const RadioLabel = ({ labelColor, fontFamily, fontSize, above, ...p }) => (
       transform: "translateX(-50%)",
       whiteSpace: "nowrap",
       marginTop: above ? `calc(${labelDistance} * -1)` : labelDistance,
+      ...style,
     }}
     {...p}
   />
 );
-RadioLabel.propTypes = labelPropTypes;
 
 /**
  * A styled label that can be above or below a radio button.
  *
  * It's intended for use as a secondary label, further from the scale bar.
  */
-const SecondaryRadioLabel = ({ above, ...p }) => (
+const SecondaryRadioLabel = ({ style, ...p }) => (
   <RadioLabel
-    css={{
-      marginTop: above
+    style={{
+      marginTop: p.above
         ? `calc(${labelDistance} * -2)`
         : `calc(${labelDistance} * 2)`,
+      ...style,
     }}
     {...p}
   />
 );
-SecondaryRadioLabel.propTypes = labelPropTypes;
 
 /**
  * A styled radio button input
  */
-const RadioInput = (p) => (
-  <input type="radio" name="discrete" css={{ transform: "scale(2)" }} {...p} />
+const RadioInput = ({ style, ...p }) => (
+  <input
+    type="radio"
+    name="discrete"
+    style={{ transform: "scale(2)", ...style }}
+    {...p}
+  />
 );
 
 /**
  * A styled containing div for a single labelled radio button
  */
-const RadioContainer = (p) => (
-  <div css={{ position: "relative", zIndex: 1, top: "-0.55em" }} {...p} />
+const RadioContainer = ({ style, ...p }) => (
+  <div
+    style={{ position: "relative", zIndex: 1, top: "-0.55em", ...style }}
+    {...p}
+  />
 );
+
+// export interface RadioProps {
+//   /** The index of this Radio component in an array of Radio components. */
+//   index: number;
+
+//   /** The value of this Radio component. */
+//   value: string;
+
+//   /** Value to be used as the RadioInput's id. */
+//   id: string;
+
+//   /** CSS Color value for any labels associated with this Radio component. */
+//   labelColor?: string;
+
+//   /** A valid CSS Font Family value for any labels associated with this Radio component. */
+//   fontFamily?: string;
+
+//   /** A valid CSS Font Size value for any labels associated with this Radio component. */
+//   fontSize?: string;
+
+//   /** Whether the RadioInput should default to being checked. */
+//   defaultChecked: boolean;
+
+//   /** Whether RadioLabels should be above or below the RadioInput. */
+//   labelAbove: boolean;
+
+//   /** Optional text for a secondary label */
+//   secondaryLabel: string;
+// }
 
 /**
  * A Labelled Radio Button component for use on the Discrete Scale
@@ -71,11 +115,11 @@ const Radio = ({
   index,
   value,
   id,
-  labelColor,
-  fontFamily,
-  fontSize,
+  labelColor = "black",
+  fontFamily = "Arial",
+  fontSize = "1.2em",
   defaultChecked,
-  labelAbove,
+  labelAbove = false,
   secondaryLabel,
 }) => {
   const handleRadioClick = () => {
@@ -127,41 +171,6 @@ const Radio = ({
       {!labelAbove && secondaryLabelComponent}
     </RadioContainer>
   );
-};
-
-Radio.propTypes = {
-  /** The index of this Radio component in an array of Radio components. */
-  index: PropTypes.number.isRequired,
-
-  /** The value of this Radio component. */
-  value: PropTypes.string.isRequired,
-
-  /** Value to be used as the RadioInput's id. */
-  id: PropTypes.string.isRequired,
-
-  /** CSS Color value for any labels associated with this Radio component. */
-  labelColor: PropTypes.string,
-
-  /** A valid CSS Font Family value for any labels associated with this Radio component. */
-  fontFamily: PropTypes.string,
-
-  /** A valid CSS Font Size value for any labels associated with this Radio component. */
-  fontSize: PropTypes.string,
-
-  /** Whether the RadioInput should default to being checked. */
-  defaultChecked: PropTypes.bool,
-
-  /** Whether RadioLabels should be above or below the RadioInput. */
-  labelAbove: PropTypes.bool,
-
-  /** Optional text for a secondary label */
-  secondaryLabel: PropTypes.string,
-};
-Radio.defaultProps = {
-  labelColor: "black",
-  fontFamily: "Arial",
-  fontSize: "1.2em",
-  labelAbove: false,
 };
 
 export { Radio };
