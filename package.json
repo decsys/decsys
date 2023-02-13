@@ -5,6 +5,7 @@
   "repository": "https://github.com/decsys/decsys.git",
   "author": "Jon Couldridge <jonathan.couldridge@nottingham.ac.uk>",
   "license": "AGPL-3.0-only",
+  "type": "module",
   "workspaces":[
     "packages/rating-scales"
   ],

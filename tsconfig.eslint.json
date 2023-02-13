@@ -1,0 +1,10 @@
+{
+  // This config is just for eslint to include files that otherwise
+  // might not be picked up in project config;
+  // usually tooling config files
+  "compilerOptions": {
+    // ensure that nobody can accidentally use this config for a build
+    "noEmit": true
+  },
+  "include": ["eslint.config.js", "**/vite.config.ts"]
+}
