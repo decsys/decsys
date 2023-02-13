@@ -1,0 +1,24 @@
+{
+  "name": "decsys",
+  "private": true,
+  "description": "DECSYS Monorepo Root Workspace",
+  "repository": "https://github.com/decsys/decsys.git",
+  "author": "Jon Couldridge <jonathan.couldridge@nottingham.ac.uk>",
+  "license": "AGPL-3.0-only",
+  "workspaces":[
+    "packages/rating-scales"
+  ],
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
+    "eslint": "^8.34.0",
+    "globals": "^13.20.0",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.4",
+    "pretty-quick": "^3.1.3",
+    "typescript": "^4.9.5"
+  }
+}

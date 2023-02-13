@@ -1,0 +1,11 @@
+# label affected logical areas of the repo
+"Area: CI":
+  - .github/**/*
+"Area: Frontend":
+  - app/client-app/**/*
+"Area: Backend API":
+  - app/Decsys/**/*
+
+# label types of changes contained in a PR
+"Contains: Migrations":
+  - app/**/Migrations/*.cs
