@@ -1,0 +1,52 @@
+name: Build Web Frontend
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - app/client-app/**
+      - .github/workflows/build.client-app.yml
+
+env:
+  # Configure these
+  CI_node-version: 19
+  CI_package: client-app
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.CI_node-version }}
+          cache: pnpm
+      - run: corepack enable
+
+      - run: >-
+          pnpm i
+          --frozen-lockfile
+          --filter ${{ env.CI_package }}
+
+      # Vitest
+
+      # - run: >-
+      #     pnpm
+      #     --filter ${{ env.CI_package }}
+      #     test:ci
+
+      # - name: Test Report
+      #   uses: phoenix-actions/test-reporting@v8
+      #   id: test-report # Set ID reference for step
+      #   if: success() || failure() # run this step even if previous step failed
+      #   with:
+      #     name: Vitest Tests # Name of the check run which will be created
+      #     path: app/client-app/vitest-results.xml # Path to test results
+      #     reporter: jest-junit # Format of test results
+
+      - run: >-
+          pnpm
+          --filter ${{ env.CI_package }}
+          build
