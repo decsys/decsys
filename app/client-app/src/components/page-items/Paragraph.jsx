@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import ParamTypes, { buildPropTypes } from "@decsys/param-types";
+import ParamTypes from "@decsys/param-types";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
 import "github-markdown-css";
@@ -20,14 +20,6 @@ PageParagraph.params = {
   textAlign: ParamTypes.oneOf("Alignment", ["left", "center", "right"], "left"),
   fontFamily: ParamTypes.stringUndefined("Font Family"),
 };
-
-const { pt, defaultProps } = buildPropTypes(PageParagraph.params, {
-  // Text is configurable, but edited by our custom editor component
-  // not the Platform's Params Editor
-  text: PropTypes.string,
-});
-PageParagraph.propTypes = pt;
-PageParagraph.defaultProps = defaultProps;
 
 PageParagraph.previewEditorComponent = PageParagraphEditor;
 

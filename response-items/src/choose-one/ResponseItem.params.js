@@ -1,10 +1,7 @@
-import ParamTypes, {
-  buildPropTypes,
-  renderContextPropTypes,
-} from "@decsys/param-types";
+import ParamTypes from "@decsys/param-types";
 
 // Specify Configurable Parameters
-const params = {
+export const params = {
   // Dropdown Flag
   dropDown: ParamTypes.bool("Drop Down?", false),
 
@@ -31,18 +28,3 @@ const params = {
   option8: ParamTypes.string("8", ""),
   option9: ParamTypes.string("9", ""),
 };
-
-// Specify PropTypes for non-Configurable Props
-const staticPropTypes = renderContextPropTypes;
-
-// Specify Defaults for non-Configurable Props
-const staticDefaultProps = {};
-
-// Create merged propTypes
-const { propTypes, defaultProps } = buildPropTypes(
-  params,
-  staticPropTypes,
-  staticDefaultProps
-);
-
-export { params, propTypes, defaultProps };

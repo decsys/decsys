@@ -1,4 +1,4 @@
-import ParamTypes, { buildPropTypes } from "@decsys/param-types";
+import ParamTypes from "@decsys/param-types";
 import { Box } from "@chakra-ui/react";
 
 const PageVerticalSpacer = ({ height }) => {
@@ -9,8 +9,5 @@ PageVerticalSpacer.params = {
   height: ParamTypes.number("Height (px)", 50),
   questionContent: ParamTypes.string("Question Content"),
 };
-const { pt, defaultProps } = buildPropTypes(PageVerticalSpacer.params);
-PageVerticalSpacer.propTypes = pt;
-PageVerticalSpacer.defaultProps = defaultProps;
 
 export default PageVerticalSpacer;

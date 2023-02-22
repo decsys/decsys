@@ -3,7 +3,7 @@ import {
   MultiVisualAnalogScale,
   useMultiVisualAnalogScale,
 } from "@decsys/rating-scales/mvas";
-import * as props from "./ResponseItem.props";
+import { params } from "./ResponseItem.params";
 import { stats } from "./ResponseItem.stats";
 
 export const behaviourKeyMap = {
@@ -150,9 +150,7 @@ const ResponseItem = ({
   );
 };
 
-ResponseItem.params = props.params;
-ResponseItem.propTypes = props.propTypes;
-ResponseItem.defaultProps = props.defaultProps;
+ResponseItem.params = params;
 ResponseItem.stats = stats;
 
 export default ResponseItem;

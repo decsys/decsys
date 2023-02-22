@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as props from "./ResponseItem.props";
+import { params } from "./ResponseItem.params";
 import { Flex, Checkbox } from "@chakra-ui/react";
 
 const ResponseItem = ({
@@ -24,8 +24,6 @@ const ResponseItem = ({
   );
 };
 
-ResponseItem.params = props.params;
-ResponseItem.propTypes = props.propTypes;
-ResponseItem.defaultProps = props.defaultProps;
+ResponseItem.params = params;
 
 export default ResponseItem;

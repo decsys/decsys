@@ -1,5 +1,4 @@
 import * as types from "./types";
-import PropTypes from "prop-types";
 
 /**
  * This is a parameter specification of sorts.
@@ -23,10 +22,6 @@ class ParamType {
     this._type = type;
     this._oneOf = oneOf;
     this._defaultValue = defaultValue;
-    this._propType =
-      this._type === types.oneOf
-        ? PropTypes[this._type](this._oneOf)
-        : PropTypes[this._type];
   }
 
   get label() {
@@ -43,10 +38,6 @@ class ParamType {
 
   get defaultValue() {
     return this._defaultValue;
-  }
-
-  get propType() {
-    return this._propType;
   }
 }
 

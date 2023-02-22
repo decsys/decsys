@@ -4,6 +4,9 @@
 
 // TODO: we can support UI tooltips in param specs :)
 
+// TODO: we might move away from builders
+// and towards decent typescript types instead
+
 import * as types from "./types";
 import ParamType from "./ParamType";
 
@@ -24,7 +27,6 @@ export const string = (label, defaultValue = "") =>
  * @param {*} label
  */
 export const stringUndefined = (label) => new ParamType(label, types.string);
-
 
 /**
  * Spec this Parameter as an enum,

@@ -1,6 +1,6 @@
 {
   "name": "@decsys/param-types",
-  "version": "2.0.0-beta.7",
+  "version": "2.2.0",
   "description": "The Parameter Types utilities package for DECSYS Components",
   "publishConfig": {
     "access": "public"
@@ -16,12 +16,5 @@
   "bugs": {
     "url": "https://github.com/decsys/decsys/issues"
   },
-  "homepage": "https://github.com/decsys/decsys#readme",
-  "peerDependencies": {
-    "prop-types": "~15",
-    "react-refresh": "^0.9.0"
-  },
-  "dependencies": {
-    "core-js": "^3.6.5"
-  }
+  "homepage": "https://github.com/decsys/decsys#readme"
 }

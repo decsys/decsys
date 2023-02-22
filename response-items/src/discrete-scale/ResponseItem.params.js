@@ -1,11 +1,7 @@
-import PropTypes from "prop-types";
-import ParamTypes, {
-  buildPropTypes,
-  renderContextPropTypes,
-} from "@decsys/param-types";
+import ParamTypes from "@decsys/param-types";
 
 // Specify Configurable Parameters
-const params = {
+export const params = {
   radio1: ParamTypes.string("Option 1", "1"),
   radio1Secondary: ParamTypes.string("Secondary Label 1", "Min"),
   radio2: ParamTypes.string("Option 2", "2"),
@@ -42,17 +38,3 @@ const params = {
     "below"
   ),
 };
-
-// Specify PropTypes for non-Configurable Props
-const staticPropTypes = {
-  initialIndex: PropTypes.number,
-  initialValue: PropTypes.string,
-  ...renderContextPropTypes,
-};
-
-// Create merged propTypes, defaultProps
-// for Configurable Parameters
-// and non-Configurable Props
-const { propTypes, defaultProps } = buildPropTypes(params, staticPropTypes);
-
-export { params, propTypes, defaultProps };

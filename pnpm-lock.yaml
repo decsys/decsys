@@ -160,10 +160,7 @@ importers:
       typescript: 4.6.3
 
   packages/param-types:
-    specifiers:
-      core-js: ^3.6.5
-    dependencies:
-      core-js: 3.21.1
+    specifiers: {}
 
   packages/rating-scales:
     specifiers:
