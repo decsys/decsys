@@ -1,4 +1,4 @@
-version: "3.8"
+name: decsys-dev
 services:
   database:
     image: "mongo:latest"
@@ -8,6 +8,6 @@ services:
     ports:
       - "27017-27019:27017-27019"
     volumes:
-      - mongodb_data_container:/data/db
+      - mongo_data:/data/db
 volumes:
-  mongodb_data_container:
+  mongo_data:
