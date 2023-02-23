@@ -19,11 +19,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      # we have to enable corepack before we install the desired version of node,
+      # so pnpm is available for cache configuration >.<
+      # GH runners have minimum latest node 16 so corepack is always available <3
+      - run: corepack enable
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ env.CI_node-version }}
           cache: pnpm
-      - run: corepack enable
 
       - run: >-
           pnpm i
