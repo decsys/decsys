@@ -1,5 +1,5 @@
 import { useState, createElement } from "react";
-import * as props from "./ResponseItem.props";
+import { params } from "./ResponseItem.params";
 import { filterOptions } from "./utils/option-params";
 import { Flex } from "@chakra-ui/react";
 import RadioList from "./components/RadioList";
@@ -53,9 +53,6 @@ const ResponseItem = ({
   );
 };
 
-// Props metadata - Edit these in `./Component.props.js`
-ResponseItem.params = props.params;
-ResponseItem.propTypes = props.propTypes;
-ResponseItem.defaultProps = props.defaultProps;
+ResponseItem.params = params;
 
 export default ResponseItem;

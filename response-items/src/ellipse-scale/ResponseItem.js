@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { EllipseScale } from "@decsys/rating-scales/ellipse";
-import * as props from "./ResponseItem.props";
+import { params } from "./ResponseItem.params";
 import { stats } from "./ResponseItem.stats";
 
 const ResponseItem = ({
@@ -94,9 +94,7 @@ const ResponseItem = ({
   );
 };
 
-ResponseItem.params = props.params;
-ResponseItem.propTypes = props.propTypes;
-ResponseItem.defaultProps = props.defaultProps;
+ResponseItem.params = params;
 ResponseItem.stats = stats;
 
 export default ResponseItem;

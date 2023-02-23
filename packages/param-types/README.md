@@ -14,16 +14,13 @@ It is possible to configure the `params` property without assistance from `param
 
 `param-types` provides helper functions and type constants to make specifying `params` easy.
 
-It also provides a helper for generating `propTypes` and `defaultProps` for the parameter props as well.
-
 1. Use the type builders `string`, `stringUndefined`, `number`, `bool` and `oneOf` to specify individual parameters easily
-2. Use `buildPropTypes()` to build `propTypes` and `defaultProps` objects based on the above, as well as any additional `propTypes` and `defaultProps` passed to it.
 
 ## Example
 
 ```javascript
 
-import ParamTypes, { buildPropTypes } from "@decsys/param-types";
+import ParamTypes from "@decsys/param-types";
 
 /**
  * A component which has two configurable parameters,
@@ -42,23 +39,6 @@ MyComponent.params = {
         ["valid", "values", "not", "default"],
         "default")
 }
-
-// use `buildPropTypes()` to generate `propTypes` and `defaultProps`
-// for the params, as well as those defined manually for other props
-const { propTypes, defaultProps } = buildPropTypes(
-    MyComponent.params,
-    // propTypes
-    {
-        results: // ...
-    },
-    // defaultProps
-    {
-        results: // ...
-    });
-
-// Set `propTypes` and `defaultProps` on the Component
-MyComponent.propTypes = propTypes;
-MyComponent.defaultProps = defaultProps;
 ```
 
 ## Imports
@@ -72,10 +52,11 @@ It's only a small package but it should support tree shaking if you use named im
 import { string as stringParam, oneOf } from "@decsys/param-types/builders";
 
 // default imports from specific modules
+// TODO: better example now `buildPropTypes` is gone
 import buildPropTypes from "@decsys/param-types/buildPropTypes";
 
 // default or named imports from the package
-import paramTypes, { buildPropTypes } from "@decsys/param-types";
+import paramTypes from "@decsys/param-types";
 ```
 
 ## ES Modules only?

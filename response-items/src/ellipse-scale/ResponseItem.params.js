@@ -1,11 +1,7 @@
-import PropTypes from "prop-types";
-import ParamTypes, {
-  buildPropTypes,
-  renderContextPropTypes,
-} from "@decsys/param-types";
+import ParamTypes from "@decsys/param-types";
 
 // Specify Configurable Parameters
-const params = {
+export const params = {
   barLeftMargin: ParamTypes.number("Bar Left Margin (%)", 10),
   barRightMargin: ParamTypes.number("Bar Right Margin (%)", 10),
   barTopMargin: ParamTypes.number("Bar Top Margin (%)", 50),
@@ -41,17 +37,3 @@ const params = {
   scaleMarkers: ParamTypes.number("Scale Markers", 5),
   scaleSubdivisions: ParamTypes.number("Scale Subdivisions", 4),
 };
-
-// Specify PropTypes for non-Configurable Props
-const staticPropTypes = {
-  minRangeValue: PropTypes.number,
-  maxRangeValue: PropTypes.number,
-  ...renderContextPropTypes,
-};
-
-// Create merged propTypes, defaultProps
-// for Configurable Parameters
-// and non-Configurable Props
-const { propTypes, defaultProps } = buildPropTypes(params, staticPropTypes);
-
-export { params, propTypes, defaultProps };

@@ -1,4 +1,4 @@
-import ParamTypes, { buildPropTypes } from "@decsys/param-types";
+import ParamTypes from "@decsys/param-types";
 import LightHeading from "components/core/LightHeading";
 
 const PageHeading = ({ text, xMargin, color, variant, ...p }) => {
@@ -39,8 +39,5 @@ PageHeading.params = {
   xMargin: ParamTypes.number("Horizontal Margin", 5),
   fontFamily: ParamTypes.stringUndefined("Font Family"),
 };
-const { pt, defaultProps } = buildPropTypes(PageHeading.params);
-PageHeading.propTypes = pt;
-PageHeading.defaultProps = defaultProps;
 
 export default PageHeading;

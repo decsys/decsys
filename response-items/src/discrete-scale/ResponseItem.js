@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import * as props from "./ResponseItem.props";
+import { params } from "./ResponseItem.params";
 import { DiscreteScale } from "@decsys/rating-scales/discrete";
 import { stats } from "./ResponseItem.stats";
 import { getRadios, getRadioParams } from "./utils/radio-params";
@@ -58,9 +58,7 @@ const ResponseItem = ({
   );
 };
 
-ResponseItem.params = props.params;
-ResponseItem.propTypes = props.propTypes;
-ResponseItem.defaultProps = props.defaultProps;
+ResponseItem.params = params;
 ResponseItem.stats = stats;
 
 export default ResponseItem;

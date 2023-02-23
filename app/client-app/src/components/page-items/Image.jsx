@@ -1,7 +1,4 @@
-import ParamTypes, {
-  buildPropTypes,
-  renderContextPropTypes,
-} from "@decsys/param-types";
+import ParamTypes from "@decsys/param-types";
 import { Image, Flex } from "@chakra-ui/react";
 import ImageParamsEditor from "./Image.ParamsEditor";
 
@@ -34,13 +31,6 @@ PageImage.params = {
   questionContent: ParamTypes.string("Question Content"),
   originalFilename: ParamTypes.string("Original File Name"),
 };
-
-const { pt, defaultProps } = buildPropTypes(
-  PageImage.params,
-  renderContextPropTypes
-);
-PageImage.propTypes = pt;
-PageImage.defaultProps = defaultProps;
 
 PageImage.paramsEditorComponent = ImageParamsEditor;
 
