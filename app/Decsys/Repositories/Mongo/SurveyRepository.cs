@@ -287,6 +287,10 @@ namespace Decsys.Repositories.Mongo
                             x.InstanceId == latestInstanceId)
                         .SingleOrDefault() is null;
 
+                if (latestInstanceId.HasValue)
+                    survey.ActiveInstanceParticipantCount =
+                        _events.GetParticipantCount(latestInstanceId.Value);
+                
                 return summary;
             }
 

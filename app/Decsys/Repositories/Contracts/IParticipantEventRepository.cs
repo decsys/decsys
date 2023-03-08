@@ -7,6 +7,13 @@ namespace Decsys.Repositories.Contracts
     public interface IParticipantEventRepository
     {
         /// <summary>
+        /// Get the current count of Participants for a given Survey Instance
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance</param>
+        /// <returns></returns>
+        int GetParticipantCount(int instanceId);
+        
+        /// <summary>
         /// List all Events for a Participant, ordered by Timestamp
         /// </summary>
         /// <param name="instanceId">ID of the Instance the Participant belongs to</param>

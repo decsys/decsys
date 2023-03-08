@@ -65,22 +65,13 @@ const InternalTypeInfo = ({ friendlyId }) => (
   </>
 );
 
-export const RespondentCountBadge = ({ friendlyId, isStudy }) => {
-  const [results, setResults] = useState({});
-  useEffect(() => {
-    (async () => {
-      const [surveyId, instanceId] = decode(friendlyId);
-      const { data } = await getInstanceResultsSummary(surveyId, instanceId);
-      setResults(data);
-    })();
-  }, [friendlyId]);
-
+export const RespondentCountBadge = ({ count, isStudy }) => {
   // TODO: fix for studies
   if (isStudy) return null;
 
   return (
     <Badge textAlign="center" colorScheme="cyan" variant="outline" p={1}>
-      {results?.participants?.length ?? 0} respondents
+      {count ?? 0} respondents
     </Badge>
   );
 };
@@ -93,6 +84,7 @@ const ActiveInstanceLine = ({
   settings,
   hasInvalidExternalLink,
   runCount,
+  activeInstanceParticipantCount,
   isStudy,
 }) => {
   const instanceValidIdModal = useDisclosure();
@@ -102,7 +94,10 @@ const ActiveInstanceLine = ({
     <>
       <Flex align="center" px={2} py={1}>
         <Stack direction="row" alignItems="center">
-          <RespondentCountBadge friendlyId={friendlyId} isStudy={isStudy} />
+          <RespondentCountBadge
+            count={activeInstanceParticipantCount}
+            isStudy={isStudy}
+          />
           {type ? (
             <ExternalTypeInfo
               friendlyId={friendlyId}

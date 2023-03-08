@@ -28,6 +28,8 @@ namespace Decsys.Models
         public int? ActiveInstanceId { get; set; }
 
         public int? ParentSurveyId { get; set; }
+        
+        public int ActiveInstanceParticipantCount { get; set; }
 
         public List<SurveySummary>? Children { get; set; }
     }

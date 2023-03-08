@@ -80,6 +80,10 @@ namespace Decsys.Repositories.LiteDb
                             x.InstanceId == latestInstanceId)
                         .SingleOrDefault() is null;
 
+                if (latestInstanceId.HasValue)
+                    survey.ActiveInstanceParticipantCount =
+                        _events.GetParticipantCount(latestInstanceId.Value);
+                
                 return summary;
             }
 

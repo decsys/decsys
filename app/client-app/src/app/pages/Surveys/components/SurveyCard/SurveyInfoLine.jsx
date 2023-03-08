@@ -62,6 +62,7 @@ const SurveyInfoLine = ({
   runCount,
   type,
   parentSurveyId,
+  activeInstanceParticipantCount,
   hasInvalidExternalLink,
   isStudy,
   friendlyId,
@@ -99,7 +100,7 @@ const SurveyInfoLine = ({
       </Flex>
       {parentSurveyId && friendlyId && (
         <Stack direction="row" alignItems="center">
-          <RespondentCountBadge friendlyId={friendlyId} />
+          <RespondentCountBadge count={activeInstanceParticipantCount} />
         </Stack>
       )}
     </>

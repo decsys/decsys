@@ -31,6 +31,9 @@ namespace Decsys.Repositories.Mongo
             _mapper = mapper;
         }
 
+        public int GetParticipantCount(int instanceId)
+            => ListLogs(instanceId).Count;
+
         private IMongoDatabase EventLogDb(int instanceId)
             => _mongo.GetDatabase(
                 $"{_config.DatabaseName}_{Collections.InstanceDb}{instanceId}");
