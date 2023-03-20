@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       build-config:
-        description: Build Configuration
+        description: .NET Build Configuration
         required: true
         default: release
   push:
@@ -13,6 +13,17 @@ on:
   # TODO: remove after testing
   pull_request:
     branches: [main]
+
+env:
+  ### Configure these
+
+  dotnet-build-config: ${{ github.event.inputs.build-config || 'release' }}
+  dotnet-version: 6.0.x
+
+  ###
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
 
 jobs:
   # publish all the JS bits that form part of the final app
@@ -64,16 +75,50 @@ jobs:
       package: ${{ matrix.package }}
       script: ${{ matrix.script }}
 
-  # publish-dotnet:
-  #   runs-on: ubuntu-latest
+  # TODO: do we need gh deployments?
 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-dotnet@v3
-  #       with:
-  #         dotnet-version: ${{ env.CI_dotnet-version }}
-  #     - name: dotnet build
-  #       run: >-
-  #         dotnet build
-  #         ${{ env.CI_project }}
-  #         -c ${{ env.CI_build-config }}
+  publish-dotnet:
+    needs: [publish-js]
+    runs-on: ubuntu-latest
+
+    env:
+      publish-dir: publish
+      project: ./app/Decsys/Decsys.csproj
+
+      responseItemsPath: $(Build.SourcesDirectory)/app/Decsys/components
+      responseItemsArtifactPattern: "**/*.js"
+
+    strategy:
+      matrix:
+        include:
+          - artifact: win-x64
+            args: >-
+              -r win-x64
+              -p:PublishSingleFile=true
+              -p:IncludeNativeLibrariesInSingleFile=true
+          - artifact: dotnet-${{ env.dotnet-version }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.dotnet-version }}
+
+      - name: dotnet publish
+        run: >-
+          dotnet publish
+          ${{ env.project }}
+          -c ${{ env.dotnet-build-config }}
+          -o ${{ env.publish-dir }}
+          -p:GitHash=${GITHUB_SHA::8}
+          ${{ matrix.args }}
+
+      # TODO: Do we need to zip? does it make life easier for az deployments?
+      # - uses: edgarrc/action-7z@v1.0.5
+      #   with:
+      #     args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ env.publish-dir }} #/${{ env.CI_artifact-name }}.zip
