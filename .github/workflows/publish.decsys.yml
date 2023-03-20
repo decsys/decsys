@@ -66,13 +66,12 @@ jobs:
             package: response-items
             script: build:visual-analog-scale
 
-    steps:
-      - uses: ./.github/workflows/template.publish.js.yml
-        with:
-          artifact: ${{ matrix.artifact }}
-          path: ${{ matrix.path }}
-          package: ${{ matrix.package }}
-          script: ${{ matrix.script }}
+    uses: ./.github/workflows/template.publish.js.yml
+    with:
+      artifact: ${{ matrix.artifact }}
+      path: ${{ matrix.path }}
+      package: ${{ matrix.package }}
+      script: ${{ matrix.script }}
 
   # publish-dotnet:
   #   runs-on: ubuntu-latest
