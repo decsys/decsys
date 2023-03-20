@@ -33,3 +33,5 @@ jobs:
           publish_dir: ./docs/build
           publish_branch: main
           force_orphan: true
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
