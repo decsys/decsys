@@ -28,5 +28,5 @@ jobs:
 
       - uses: ./.github/actions/template.build.js
         with:
-          package: ${{ env.CI_package }}
+          package: ${{ env.package }}
           script: build:${{ env.item-name }}
