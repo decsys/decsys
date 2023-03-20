@@ -12,7 +12,8 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: >-
+    - shell: bash
+      run: >-
         pnpm
         --filter ${{ inputs.package }}
         ${{ inputs.script }}
