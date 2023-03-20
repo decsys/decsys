@@ -84,9 +84,7 @@ jobs:
     env:
       publish-dir: publish
       project: ./app/Decsys/Decsys.csproj
-
-      responseItemsPath: $(Build.SourcesDirectory)/app/Decsys/components
-      responseItemsArtifactPattern: "**/*.js"
+      response-items-path: ./app/Decsys/components
 
     strategy:
       matrix:
@@ -96,6 +94,7 @@ jobs:
               -r win-x64
               -p:PublishSingleFile=true
               -p:IncludeNativeLibrariesInSingleFile=true
+              --self-contained
           - artifact: dotnet
 
     steps:
@@ -105,6 +104,42 @@ jobs:
           dotnet-version: ${{ env.dotnet-version }}
 
       # TODO: Fetch JS bits
+      - uses: actions/download-artifact@v3
+        with:
+          name: docs_embedded
+          path: ./app/Decsys/wwwroot/docs
+      - uses: actions/download-artifact@v3
+        with:
+          name: web-frontend
+          path: ./app/client-app/dist
+      - uses: actions/download-artifact@v3
+        with:
+          name: choose-one
+          path: ${{ env.response-items-path }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: confirmation
+          path: ${{ env.response-items-path }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: discrete-scale
+          path: ${{ env.response-items-path }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: ellipse-scale
+          path: ${{ env.response-items-path }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: freetext
+          path: ${{ env.response-items-path }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: multi-visual-analog-scale
+          path: ${{ env.response-items-path }}
+      - uses: actions/download-artifact@v3
+        with:
+          name: visual-analog-scale
+          path: ${{ env.response-items-path }}
 
       - name: dotnet publish
         run: >-
