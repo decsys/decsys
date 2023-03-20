@@ -1,0 +1,85 @@
+name: Publish DECSYS
+
+on:
+  workflow_dispatch:
+    inputs:
+      build-config:
+        description: Build Configuration
+        required: true
+        default: release
+  push:
+    branches: [main, support/*]
+
+env:
+  # Configure these
+  build-config: ${{ github.event.inputs.build-config || 'release' }}
+  dotnet-version: 6.0.x
+
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  # publish all the JS bits that form part of the final app
+  publish-js:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        includes:
+          - artifact: docs_embedded
+            path: ./docs/build
+            package: docs
+            script: build:decsyshosted
+          - artifact: web-frontend
+            path: ./app/client-app/dist
+            package: client-app
+          - artifact: choose-one
+            path: ./response-items/dist
+            package: response-items
+            script: build:choose-one
+          - artifact: confirmation
+            path: ./response-items/dist
+            package: response-items
+            script: build:confirmation
+          - artifact: discrete-scale
+            path: ./response-items/dist
+            package: response-items
+            script: build:discrete-scale
+          - artifact: ellipse-scale
+            path: ./response-items/dist
+            package: response-items
+            script: build:ellipse-scale
+          - artifact: freetext
+            path: ./response-items/dist
+            package: response-items
+            script: build:freetext
+          - artifact: multi-visual-analog-scale
+            path: ./response-items/dist
+            package: response-items
+            script: build:multi-visual-analog-scale
+          - artifact: visual-analog-scale
+            path: ./response-items/dist
+            package: response-items
+            script: build:visual-analog-scale
+
+    steps:
+      - uses: ./.github/workflows/template.publish.js.yml
+        with:
+          artifact: ${{ matrix.artifact }}
+          path: ${{ matrix.path }}
+          package: ${{ matrix.package }}
+          script: ${{ matrix.script }}
+
+  # publish-dotnet:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-dotnet@v3
+  #       with:
+  #         dotnet-version: ${{ env.CI_dotnet-version }}
+  #     - name: dotnet build
+  #       run: >-
+  #         dotnet build
+  #         ${{ env.CI_project }}
+  #         -c ${{ env.CI_build-config }}
