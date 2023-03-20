@@ -1,0 +1,32 @@
+name: Build Ellipse Scale
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - response-items/src/ellipse-scale/**
+      - response-items/.rollup/ellipse-scale.js
+      - response-items/package.json
+      - config/response-item*.js
+      - .github/workflows/build.response.ellipse-scale.yml
+
+env:
+  item-name: ellipse-scale
+  package: response-items
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/template.pnpm-install
+        with:
+          package: ${{ env.package }}
+
+      - uses: ./.github/actions/template.build.js
+        with:
+          package: ${{ env.CI_package }}
+          script: build:${{ env.item-name }}

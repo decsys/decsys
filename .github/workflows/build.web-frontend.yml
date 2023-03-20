@@ -9,7 +9,7 @@ on:
       - .github/workflows/build.web-frontend.yml
 
 env:
-  CI_package: client-app
+  package: client-app
 
 jobs:
   build:
@@ -20,14 +20,14 @@ jobs:
 
       - uses: ./.github/actions/template.pnpm-install
         with:
-          package: ${{ env.CI_package }}
+          package: ${{ env.package }}
 
       # Vitest
       # TODO: move to composite action?
 
       # - run: >-
       #     pnpm
-      #     --filter ${{ env.CI_package }}
+      #     --filter ${{ env.package }}
       #     test:ci
 
       # - name: Test Report
@@ -41,4 +41,4 @@ jobs:
 
       - uses: ./.github/actions/template.build.js
         with:
-          package: ${{ env.CI_package }}
+          package: ${{ env.package }}
