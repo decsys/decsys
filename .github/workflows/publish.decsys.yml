@@ -96,13 +96,15 @@ jobs:
               -r win-x64
               -p:PublishSingleFile=true
               -p:IncludeNativeLibrariesInSingleFile=true
-          - artifact: dotnet-${{ env.dotnet-version }}
+          - artifact: dotnet
 
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.dotnet-version }}
+
+      # TODO: Fetch JS bits
 
       - name: dotnet publish
         run: >-
@@ -120,5 +122,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.artifact }}
+          name: ${{ matrix.artifact == 'dotnet' && format('{0}-{1}', matrix.artifact, env.dotnet-version) || matrix.artifact }}
           path: ${{ env.publish-dir }} #/${{ env.CI_artifact-name }}.zip
