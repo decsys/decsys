@@ -27,6 +27,7 @@ jobs:
           - artifact: web-frontend
             path: ./app/client-app/dist
             package: client-app
+            script: build
           - artifact: choose-one
             path: ./response-items/dist
             package: response-items
