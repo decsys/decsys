@@ -1,0 +1,32 @@
+name: Build Visual Analog Scale
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - response-items/src/visual-analog-scale/**
+      - response-items/.rollup/visual-analog-scale.js
+      - response-items/package.json
+      - config/response-item*.js
+      - .github/workflows/build.response.visual-analog-scale.yml
+
+env:
+  item-name: visual-analog-scale
+  package: response-items
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/template.pnpm-install
+        with:
+          filter: ${{ env.package }}... # also install workspace dependencies!
+
+      - uses: ./.github/actions/template.build.js
+        with:
+          package: ${{ env.package }}
+          script: build:${{ env.item-name }}

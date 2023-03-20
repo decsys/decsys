@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <Version>2.2.2</Version>
+    <!-- Append GitHash to Version if provided -->
+    <Version Condition="'$(GitHash)' != ''">$(Version)+$(GitHash)</Version>
   </PropertyGroup>
 
   <PropertyGroup>

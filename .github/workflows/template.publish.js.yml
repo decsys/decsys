@@ -1,0 +1,36 @@
+on:
+  workflow_call:
+    inputs:
+      package:
+        required: true
+        type: string
+      script:
+        default: build
+        type: string
+      artifact:
+        required: true
+        type: string
+      path:
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/template.pnpm-install
+        with:
+          filter: ${{ inputs.package }}... # also install workspace dependencies!
+
+      - uses: ./.github/actions/template.build.js
+        with:
+          package: ${{ inputs.package }}
+          script: ${{ inputs.script }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.artifact }}
+          path: ${{ inputs.path }}
