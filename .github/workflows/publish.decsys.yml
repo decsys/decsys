@@ -19,7 +19,7 @@ jobs:
   publish-js:
     strategy:
       matrix:
-        includes:
+        include:
           - artifact: docs_embedded
             path: ./docs/build
             package: docs
