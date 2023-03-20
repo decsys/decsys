@@ -5,6 +5,8 @@
   - app/client-app/**/*
 "Area: Backend API":
   - app/Decsys/**/*
+"Area: Docs":
+  - docs/**/*
 
 # label types of changes contained in a PR
 "Contains: Migrations":
