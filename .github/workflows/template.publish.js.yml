@@ -23,7 +23,7 @@ jobs:
 
       - uses: ./.github/actions/template.pnpm-install
         with:
-          package: ${{ inputs.package }}
+          filter: ${{ inputs.package }}... # also install workspace dependencies!
 
       - uses: ./.github/actions/template.build.js
         with:

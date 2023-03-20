@@ -24,7 +24,7 @@ jobs:
 
       - uses: ./.github/actions/template.pnpm-install
         with:
-          package: ${{ env.package }}
+          filter: ${{ env.package }}
 
       - uses: ./.github/actions/template.build.js
         with:

@@ -5,7 +5,7 @@ inputs:
   node-version:
     default: "19"
     type: string
-  package:
+  filter:
     type: string
 
 runs:
@@ -25,4 +25,4 @@ runs:
       run: >-
         pnpm i
         --frozen-lockfile
-        ${{ inputs.package != '' && '--filter' || '' }} ${{ inputs.package }}
+        ${{ inputs.filter != '' && '--filter' || '' }} ${{ inputs.filter }}
