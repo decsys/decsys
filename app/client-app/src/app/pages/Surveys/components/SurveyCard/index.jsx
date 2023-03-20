@@ -31,7 +31,6 @@ const SurveyCard = () => {
   const { colorMode } = useColorMode();
   const style = themes.sharedStyles.card;
   const survey = useSurvey();
-  console.log(survey);
   const {
     id,
     activeInstanceId,
