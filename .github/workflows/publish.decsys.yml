@@ -10,10 +10,6 @@ on:
   push:
     branches: [main, support/*]
 
-  # TODO: remove after testing
-  pull_request:
-    branches: [main]
-
 env:
   ### Configure these
 
@@ -155,7 +151,7 @@ jobs:
       #   with:
       #     args: 7z a ${{ env.CI_publish-dir }}/${{ env.CI_artifact-name }}.zip ./${{ env.CI_publish-dir }}/*
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.artifact == 'dotnet' && format('{0}-{1}', matrix.artifact, env.dotnet-version) || matrix.artifact }}
+          name: decsys_${{ matrix.artifact == 'dotnet' && format('{0}-{1}', matrix.artifact, env.dotnet-version) || matrix.artifact }}
           path: ${{ env.publish-dir }} #/${{ env.CI_artifact-name }}.zip
