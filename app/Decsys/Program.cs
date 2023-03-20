@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.OpenApi.Models;
 
 using MongoDB.Driver;
+using UoN.AspNetCore.VersionMiddleware;
+using UoN.VersionInformation.DependencyInjection;
 
 #region Host Creation
 
@@ -90,7 +92,7 @@ builder.Services
 
     .AddAppMvcServices()
 
-    .AddAppVersionInformation();
+    .AddVersionInformation();
 
 if (mode.IsWorkshop)
 {
@@ -119,7 +121,7 @@ if (!builder.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAppVersion();
+app.UseVersion();
 
 app.UseDefaultFiles();
 

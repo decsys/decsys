@@ -90,22 +90,6 @@ namespace Decsys
                 .AddTransient<StudyAllocationService>()
                 .AddSingleton<MathService>();
 
-        public static IServiceCollection AddAppVersionInformation(this IServiceCollection s)
-        {
-            // We extension method wrap this for a cleaner Program.cs
-            // and also cos it's old and doesn't return an ISC,
-            // interrupting chaining
-
-            s.AddVersionInformation(o =>
-                o.KeyHandlers.Add("file",
-                    new KeyValueFileProvider
-                    {
-                        FileOptional = true
-                    }));
-
-            return s;
-        }
-
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
         {
             s.AddRazorPages();
