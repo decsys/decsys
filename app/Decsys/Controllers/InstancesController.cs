@@ -1,12 +1,9 @@
 using Decsys.Auth;
 using Decsys.Models;
 using Decsys.Services;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using Swashbuckle.AspNetCore.Annotations;
-
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,15 +15,18 @@ namespace Decsys.Controllers
     [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
     public class InstancesController : ControllerBase
     {
+        private readonly ILogger<InstancesController> _logger;
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _participantEvents;
         private readonly IAuthorizationService _auth;
 
         public InstancesController(
+            ILogger<InstancesController> logger,
             SurveyInstanceService instances,
             ParticipantEventService participantEvents,
             IAuthorizationService auth)
         {
+            _logger = logger;
             _instances = instances;
             _participantEvents = participantEvents;
             _auth = auth;
@@ -47,18 +47,34 @@ namespace Decsys.Controllers
         {
             try
             {
-                return Ok(_participantEvents.Results(instanceId));
+                _logger.LogInformation(
+                    "Started full results fetch for instance ID {instanceId}", instanceId);
+                var results = _participantEvents.Results(instanceId);
+                _logger.LogInformation(
+                    "Completed full results fetch for instance ID {instanceId}", instanceId);
+                return Ok(results);
             }
-            catch (KeyNotFoundException) { return NotFound(); }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         private IActionResult ResultsSummary(int instanceId)
         {
             try
             {
-                return Ok(_participantEvents.ResultsSummary(instanceId));
+                _logger.LogInformation(
+                    "Started summary results fetch for instance ID {instanceId}", instanceId);
+                var results = _participantEvents.ResultsSummary(instanceId);
+                _logger.LogInformation(
+                    "Completed summary results fetch for instance ID {instanceId}", instanceId);
+                return Ok(results);
             }
-            catch (KeyNotFoundException) { return NotFound(); }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]
@@ -71,7 +87,10 @@ namespace Decsys.Controllers
             {
                 return Ok(_instances.List(id));
             }
-            catch (KeyNotFoundException) { return NotFound(); }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("{instanceId}")]
@@ -84,7 +103,8 @@ namespace Decsys.Controllers
             try
             {
                 var instance = _instances.Get(id, instanceId);
-                var canManageSurvey = await _auth.AuthorizeAsync(User, HttpContext, nameof(AuthPolicies.CanManageSurvey));
+                var canManageSurvey =
+                    await _auth.AuthorizeAsync(User, HttpContext, nameof(AuthPolicies.CanManageSurvey));
 
                 if (!canManageSurvey.Succeeded)
                 {
@@ -95,7 +115,10 @@ namespace Decsys.Controllers
 
                 return instance;
             }
-            catch (KeyNotFoundException) { return NotFound(); }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost]
@@ -109,12 +132,18 @@ namespace Decsys.Controllers
             {
                 var instanceId = _instances.Activate(id);
                 var url = Url.Action("Get", "Instances", new { id, instanceId })
-                    ?? throw new InvalidOperationException("Failed to get URL for an Action Route.");
+                          ?? throw new InvalidOperationException("Failed to get URL for an Action Route.");
 
                 return Created(url, instanceId);
             }
-            catch (KeyNotFoundException) { return NotFound(); }
-            catch (ArgumentException e) { return BadRequest(e); }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [HttpPost("{instanceId}/close")]
@@ -128,7 +157,10 @@ namespace Decsys.Controllers
                 _instances.Close(id, instanceId);
                 return NoContent();
             }
-            catch (KeyNotFoundException) { return NotFound(); }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
         }
     }
 }

@@ -46,6 +46,34 @@ namespace Decsys.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult List(int instanceId, string participantId)
+        {
+            try
+            {
+                var e = _participantEvents.List(instanceId, participantId);
+                return Ok(e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+        
+        [HttpGet("summary")]
+        public IActionResult ResultsSummary(int instanceId, string participantId)
+        {
+            try
+            {
+                var e = _participantEvents.ResultsSummary(instanceId, participantId);
+                return Ok(e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
         [HttpGet("{type}")]
         [SwaggerOperation("Get the most recent Log entry for given criteria.")]
         [SwaggerResponse(200, "The requested most recent Log entry.", typeof(ParticipantEvent))]

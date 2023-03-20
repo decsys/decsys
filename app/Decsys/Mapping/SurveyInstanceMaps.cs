@@ -36,6 +36,7 @@ namespace Decsys.Mapping
             CreateMap<SurveyInstance, BaseSurveyInstanceResults>()
                 .ForMember(dest => dest.ExportGenerated, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
                 .ForMember(dest => dest.Survey, opt => opt.MapFrom(src => src.Survey.Name))
+                .ForMember(dest => dest.ResponsePages, opt => opt.Ignore()) // Clearer to do manually
                 .ForMember(dest => dest.ChildInstanceIds, opt => opt.Ignore()); // have to do these manually, for some reason
 
             CreateMap(typeof(SurveyInstance), typeof(SurveyInstanceResults<>))
