@@ -14,13 +14,13 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  # Configure these
-  build-config: ${{ github.event.inputs.build-config || 'release' }}
-  dotnet-version: 6.0.x
+# env:
+#   # Configure these
+#   build-config: ${{ github.event.inputs.build-config || 'release' }}
+#   dotnet-version: 6.0.x
 
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
-  DOTNET_NOLOGO: true
+#   DOTNET_CLI_TELEMETRY_OPTOUT: true
+#   DOTNET_NOLOGO: true
 
 jobs:
   # publish all the JS bits that form part of the final app
