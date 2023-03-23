@@ -30,5 +30,11 @@ namespace Decsys.Data.Entities
         /// content in aggregated results
         /// </summary>
         public bool IsQuestionItem { get; set; }
+
+        /// <summary>
+        /// Whether the response item is set to be Optional
+        /// </summary>
+        public bool IsOptional { get; set; }
+
     }
 }
