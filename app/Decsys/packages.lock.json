@@ -184,11 +184,11 @@
       },
       "Swashbuckle.AspNetCore.Annotations": {
         "type": "Direct",
-        "requested": "[6.2.1, )",
-        "resolved": "6.2.1",
-        "contentHash": "ws7lwcvKKRzPBEUEFecR2Qiv8tH+Dz9c8C14Z5KxCUPAYfqwH/VUCgugxJCfKjgsFyo7Rn0XT5jGZRi/gS6HgA==",
+        "requested": "[6.5.0, )",
+        "resolved": "6.5.0",
+        "contentHash": "EcHd1z2pEdnpaBMTI9qjVxk6mFVGVMZ1n0ySC3fjrkXCQQ8O9fMdt9TxPJRKyjiTiTjvO9700jKjmyl+hPBinQ==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.2.1"
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
         }
       },
       "Swashbuckle.AspNetCore.Newtonsoft": {
