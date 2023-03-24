@@ -104,6 +104,31 @@ namespace Decsys.Controllers
             }
         }
 
+        [HttpPut("{componentId}/isOptional")]
+        [SwaggerOperation("Set a response to have a property of being optional")]
+        [SwaggerResponse(204, "The Optional propoerty was set successfully.")]
+        [SwaggerResponse(404, "No Page, Survey, or Component, was found with the provided ID.")]
+        public IActionResult SetIsOptional(
+            [SwaggerParameter("ID of the Survey the Page belongs to.")]
+            int id,
+            [SwaggerParameter("ID of the Page to set the Question Item for.")]
+            Guid pageId,
+            [SwaggerParameter("ID of the Component to set as the Question Item.")]
+            Guid componentId,
+            [SwaggerParameter("Boolean value to set the IsOptional property to.")]
+            [FromBody] bool isOptional)
+
+        {
+            try
+            {
+                _components.SetOptional(id, pageId, componentId, isOptional);
+                return NoContent();
+            } catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         [SwaggerOperation("Add a new Component to a Survey Page.")]
         [SwaggerResponse(200, "The Component was added successfully.", typeof(Component))]

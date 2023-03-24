@@ -175,6 +175,24 @@ namespace Decsys.Services
         }
 
         /// <summary>
+        /// Set the IsOptional property of the component.
+        /// </summary>
+        /// <param name="surveyId"></param>
+        /// <param name="pageId"></param>
+        /// <param name="componentId"></param>
+        /// <param name="isOptional"></param>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public void SetOptional(int surveyId, Guid pageId, Guid componentId, bool isOptional)
+        {
+            var components = _components.List(surveyId, pageId);
+            var component = components.SingleOrDefault(x => x.Id == componentId)
+                ?? throw new KeyNotFoundException("Component could not be found.");
+
+            component.IsOptional = isOptional;
+            _components.Update(surveyId, pageId, component);
+        }
+
+        /// <summary>
         /// Duplicate a component in a Page
         /// </summary>
         /// <param name="surveyId">The ID of the Survey the Page belongs to.</param>

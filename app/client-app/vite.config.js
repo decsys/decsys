@@ -66,6 +66,11 @@ export default defineConfig(({ mode }) => {
               target: proxyTarget,
               secure: false,
             },
+            // Swagger defination
+            "/swagger": {
+              target: proxyTarget,
+              secure: false,
+            },
           },
         },
       };
