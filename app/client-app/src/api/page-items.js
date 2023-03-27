@@ -57,7 +57,7 @@ export const setSurveyPageItemToQuestionItem = async (
   );
 };
 
-export const setSurveyPageItemToMandatory = async (
+export const setSurveyPageItemIsOptional = async (
   surveyId,
   pageId,
   itemId,

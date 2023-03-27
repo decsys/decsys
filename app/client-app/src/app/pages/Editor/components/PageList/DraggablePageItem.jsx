@@ -96,6 +96,7 @@ const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
 };
 
 const OptionalButton = ({ isOptional, id, setIsOptional }) => {
+  console.log(id);
   const handleOptionalClick = () => setIsOptional(id, !isOptional);
   const { busy } = usePageListContext();
 
@@ -115,9 +116,9 @@ const OptionalButton = ({ isOptional, id, setIsOptional }) => {
           width={8}
           height={"100%"}
           cursor={"pointer"}
-          color="gray"
+          color="green"
           _hover={{
-            color: "red",
+            color: "green.400",
           }}
         >
           <Icon as={FaAsterisk} onClick={handleOptionalClick} />
@@ -131,9 +132,9 @@ const OptionalButton = ({ isOptional, id, setIsOptional }) => {
         width={8}
         height={"100%"}
         cursor={"pointer"}
-        color="gray"
+        color="red"
         _hover={{
-          color: "green",
+          color: "red.400",
         }}
       >
         <Icon as={FaAsterisk} onClick={handleOptionalClick} />
@@ -162,11 +163,13 @@ export const ItemInfo = ({
         id={id}
         type={type}
       />
-      <OptionalButton
-        isOptional={isOptional}
-        setIsOptional={setIsOptional}
-        id={id}
-      />
+      {id && (
+        <OptionalButton
+          isOptional={isOptional}
+          setIsOptional={setIsOptional}
+          id={id}
+        />
+      )}
     </Flex>
     <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
     <ItemIcon type={type} />
