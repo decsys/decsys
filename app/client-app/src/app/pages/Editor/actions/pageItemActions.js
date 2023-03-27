@@ -8,6 +8,7 @@ import {
   setSurveyPageItemToQuestionItem,
 } from "api/page-items";
 import { addSurveyPageItem } from "api/pages";
+import { setSurveyPageItemToMandatory } from "api/page-items";
 
 export const pageItemActions = (
   surveyId,
@@ -72,6 +73,21 @@ export const pageItemActions = (
     await setSurveyPageItemToQuestionItem(surveyId, pageId, itemId);
     mutate();
   },
+
+  setIsOptional: async (surveyId, pageId, itemId, optional) => {
+    mutate(
+      produce(({ pages }) => {
+        const page = pages.find(({ id }) => id === pageId);
+        const item = page.components.find(({ id }) => id === itemId);
+        item.isOptional = optional;
+      }),
+      false
+    );
+
+    await setSurveyPageItemToMandatory(surveyId, pageId, itemId, optional);
+    mutate();
+  },
+
   setParamValue: async (itemId, paramKey, value) => {
     mutate(
       produce(({ pages }) => {

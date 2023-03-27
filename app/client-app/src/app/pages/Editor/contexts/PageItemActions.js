@@ -6,6 +6,7 @@ const PageItemActionsContext = createContext({
   setQuestionItem: (itemId) => {},
   setParamValue: (itemId, paramKey, paramValue) => {},
   changePageResponseItem: (itemId, type, order) => {},
+  setIsOption: (itemId) => {},
 });
 
 export const usePageItemActions = () => useContext(PageItemActionsContext);

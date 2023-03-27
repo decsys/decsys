@@ -95,6 +95,53 @@ const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
   );
 };
 
+const OptionalButton = ({ isOptional, id, setIsOptional }) => {
+  const handleOptionalClick = () => setIsOptional(id, !isOptional);
+  const { busy } = usePageListContext();
+
+  if (some(busy)) {
+    const p = { p: "9px", dotSize: "14px" };
+    return (
+      <Center width={8}>
+        <PlaceholderDot {...p} />
+      </Center>
+    );
+  }
+
+  if (isOptional) {
+    return (
+      <Tooltip label={"Make Mandatory"}>
+        <Center
+          width={8}
+          height={"100%"}
+          cursor={"pointer"}
+          color="gray"
+          _hover={{
+            color: "red",
+          }}
+        >
+          <Icon as={FaAsterisk} onClick={handleOptionalClick} />
+        </Center>
+      </Tooltip>
+    );
+  }
+  return (
+    <Tooltip label={"Make Optional"}>
+      <Center
+        width={8}
+        height={"100%"}
+        cursor={"pointer"}
+        color="gray"
+        _hover={{
+          color: "green",
+        }}
+      >
+        <Icon as={FaAsterisk} onClick={handleOptionalClick} />
+      </Center>
+    </Tooltip>
+  );
+};
+
 export const ItemInfo = ({
   type,
   params: { text },
@@ -103,16 +150,22 @@ export const ItemInfo = ({
   onSelect,
   isQuestionItem,
   setQuestionItem,
+  isOptional,
+  setIsOptional,
   id,
 }) => (
   <Flex align="center" width="100%" {...dragHandleProps} onClick={onSelect}>
     <Flex width="20%" p="3px">
-      <Icon as={FaAsterisk} />
       <QuestionButton
         isQuestionItem={isQuestionItem}
         setQuestionItem={setQuestionItem}
         id={id}
         type={type}
+      />
+      <OptionalButton
+        isOptional={isOptional}
+        setIsOptional={setIsOptional}
+        id={id}
       />
     </Flex>
     <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
