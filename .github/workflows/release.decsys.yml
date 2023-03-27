@@ -6,7 +6,7 @@
 # downloads the published artifacts
 # creates a release using the app version of the commit
 # the artifacts were published from
-
+name: GitHub Release
 on:
   workflow_dispatch:
     inputs:
@@ -27,40 +27,31 @@ jobs:
   fetch-run:
     runs-on: ubuntu-latest
     outputs:
-      publish-commit: ${{ steps.run-info.outputs.result.head_sha }}
-      is-valid: ${{ steps.check-workflow.outputs.VALID && steps.check-success.outputs.VALID }}
+      publish-commit: ${{ fromJSON(steps.run-info.outputs.result).head_sha }}
     steps:
       - name: Get workflow run
         id: run-info
         uses: actions/github-script@v6
         with:
           script: |
-            octokit.rest.actions.getWorkflowRun({
-              decsys,
-              decsys,
-              ${{ env.run-id }},
-            });
-      - name: Check valid workflow
-        id: check-workflow
-        run: >-
-          echo "
-          VALID=
-          ${{ steps.run-info.outputs.result.workflow_id == env.valid-workflow-id}}"
-          >> $GITHUB_OUTPUT
-      - name: Check workflow run success
-        id: check-success
-        run: >-
-          echo "
-          VALID=
-          ${{ steps.run-info.outputs.result.conclusion == 'success' }}"
-          >> $GITHUB_OUTPUT
+            const { data: { workflow_id, head_sha, conclusion } } =
+              await github.rest.actions.getWorkflowRun({
+                owner: 'decsys',
+                repo: 'decsys',
+                run_id: ${{ env.run-id }}
+              });
+            return { workflow_id, head_sha, conclusion };
+
+      # Fail this run if anything about the target run is invalid
+      - name: Fail invalid workflow run
+        if: |
+          fromJSON(steps.run-info.outputs.result).workflow_id != env.valid-workflow-id || 
+          fromJSON(steps.run-info.outputs.result).conclusion != 'success'
+        run: exit 1
 
   release:
     runs-on: ubuntu-latest
-
     needs: [fetch-run]
-    if: needs.fetch-run.outputs.is-valid == 'true'
-
     steps:
       # determine version from the workflow run's commit
       - name: Checkout target workflow run's commit
