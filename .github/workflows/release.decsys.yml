@@ -85,6 +85,6 @@ jobs:
 
             - DECSYS for Windows (x64) native
             - DECSYS for the .NET Runtime (cross platform)
-          prerelease: ${{ steps.version.outputs.pre-release != "" }}
+          prerelease: ${{ steps.version.outputs.pre-release != '' }}
           artifacts: decsys*.zip
           artifactContentType: application/zip
