@@ -18,6 +18,7 @@ import {
   FaGripVertical,
   FaTimes,
   FaCopy,
+  FaAsterisk,
 } from "react-icons/fa";
 import { DotHoverIconButton } from "components/core";
 import { usePageItemActions } from "../../contexts/PageItemActions";
@@ -105,12 +106,15 @@ export const ItemInfo = ({
   id,
 }) => (
   <Flex align="center" width="100%" {...dragHandleProps} onClick={onSelect}>
-    <QuestionButton
-      isQuestionItem={isQuestionItem}
-      setQuestionItem={setQuestionItem}
-      id={id}
-      type={type}
-    />
+    <Flex width="20%" p="3px">
+      <Icon as={FaAsterisk} />
+      <QuestionButton
+        isQuestionItem={isQuestionItem}
+        setQuestionItem={setQuestionItem}
+        id={id}
+        type={type}
+      />
+    </Flex>
     <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
     <ItemIcon type={type} />
     <Text as={!text ? "em" : "p"} isTruncated>
