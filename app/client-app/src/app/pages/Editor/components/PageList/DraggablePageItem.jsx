@@ -109,7 +109,7 @@ const OptionalButton = ({ isOptional, id, setIsOptional }) => {
   }
 
   return (
-    <Tooltip label={isOptional ? "Make Mandotary" : "MakeOptional"}>
+    <Tooltip label={isOptional ? "Make Mandotary" : "Make Optional"}>
       <Center
         width={8}
         height={"100%"}
