@@ -1,0 +1,80 @@
+# This workflow is currently manually triggered
+# In future we could use some kind of repo version manifesting
+# or other conditions to automate releases
+
+# It takes a workflow run id (expected to be a `publish.decsys` run)
+# downloads the published artifacts
+# creates a release using the app version of the commit
+# the artifacts were published from
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish-run-id:
+        description: The Workflow Run ID for a successful Publish of DECSYS
+        required: true
+        type: string
+  pull_request: # TODO: testing only
+
+env:
+  valid-workflow-id: 51743832 # publish.decsys
+  run-id: ${{ github.event.inputs.publish-run-id || '4510929857' }} # TODO: testing only
+
+jobs:
+  # get some info on the workflow run so we can
+  # - validate it
+  # - check out its source for info
+  fetch-run:
+    runs-on: ubuntu-latest
+    outputs:
+      publish-commit: ${{ steps.run-info.outputs.result.head_sha }}
+      is-valid: ${{ steps.check-workflow.outputs.VALID && steps.check-success.outputs.VALID }}
+    steps:
+      - name: Get workflow run
+        id: run-info
+        uses: actions/github-script@v6
+        with:
+          script: |
+            octokit.rest.actions.getWorkflowRun({
+              decsys,
+              decsys,
+              ${{ env.run-id }},
+            });
+      - name: Check valid workflow
+        id: check-workflow
+        run: >-
+          echo "
+          VALID=
+          ${{ steps.run-info.outputs.result.workflow_id == env.valid-workflow-id}}"
+          >> $GITHUB_OUTPUT
+      - name: Check workflow run success
+        id: check-success
+        run: >-
+          echo "
+          VALID=
+          ${{ steps.run-info.outputs.result.conclusion == 'success' }}"
+          >> $GITHUB_OUTPUT
+
+  release:
+    runs-on: ubuntu-latest
+
+    needs: [fetch-run]
+    if: needs.fetch-run.outputs.is-valid == 'true'
+
+    steps:
+      # determine version from the workflow run's commit
+      - name: Checkout target workflow run's commit
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.fetch-run.outputs.publish-commit }}
+      - name: Read version
+        id: version-info
+        uses: bbonkr/get-version-action@v1
+        with:
+          project: app/Decsys/Decsys.csproj
+
+      # download artifacts from the run we want on the release
+      - name: Download workflow artifacts
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          run_id: ${{ env.run-id }}
