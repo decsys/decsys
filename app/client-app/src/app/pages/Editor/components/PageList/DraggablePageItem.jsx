@@ -96,7 +96,6 @@ const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
 };
 
 const OptionalButton = ({ isOptional, id, setIsOptional }) => {
-  console.log(id);
   const handleOptionalClick = () => setIsOptional(id, !isOptional);
   const { busy } = usePageListContext();
 

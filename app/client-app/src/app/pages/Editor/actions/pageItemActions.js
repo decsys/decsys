@@ -74,7 +74,6 @@ export const pageItemActions = (
   },
 
   setIsOptional: async (itemId, optional) => {
-    console.log(itemId, optional);
     mutate(
       produce(({ pages }) => {
         const page = pages.find(({ id }) => id === pageId);
