@@ -7,6 +7,10 @@
   - app/Decsys/**/*
 "Area: Docs":
   - docs/**/*
+"Area: Response Items":
+  - response-items/**/*
+"Area: Rating Scales":
+  - packages/rating-scales/**/*
 
 # label types of changes contained in a PR
 "Contains: Migrations":
