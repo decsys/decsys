@@ -14,11 +14,16 @@ on:
         description: The Workflow Run ID for a successful Publish of DECSYS
         required: true
         type: string
-  pull_request: # TODO: testing only
+      is-latest:
+        description: Should this release be marked as "latest"?
+        required: false
+        default: false
+        type: boolean
 
 env:
   valid-workflow-id: 51743832 # publish.decsys
-  run-id: ${{ github.event.inputs.publish-run-id || '4510929857' }} # TODO: testing only
+  run-id: ${{ github.event.inputs.publish-run-id }}
+  is-latest: ${{ github.event.inputs.is-latest }}
 
 jobs:
   # get some info on the workflow run so we can
@@ -75,11 +80,11 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.version.outputs.version }}
+          tag: v${{ steps.version.outputs.version }}
           commit: ${{ needs.fetch-run.outputs.publish-commit }}
-          name: ${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
           body: |
-            # DECSYS ${{ steps.version.outputs.version }}
+            # DECSYS v${{ steps.version.outputs.version }}
 
             ## Assets available for download:
 
@@ -87,5 +92,6 @@ jobs:
             - DECSYS for the .NET Runtime (cross platform)
           generateReleaseNotes: true
           prerelease: ${{ steps.version.outputs.pre-release != '' }}
+          makeLatest: ${{ env.is-latest }}
           artifacts: decsys*.zip
           artifactContentType: application/zip
