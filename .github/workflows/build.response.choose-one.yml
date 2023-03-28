@@ -3,7 +3,6 @@ name: Build Choose One
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
     paths:
       - response-items/src/choose-one/**
       - response-items/.rollup/choose-one.js

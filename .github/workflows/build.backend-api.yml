@@ -3,7 +3,6 @@ name: Build Backend API
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
     paths:
       - app/Decsys/**
       - .github/workflows/build.backend-api.yml
