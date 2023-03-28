@@ -3,7 +3,6 @@ name: Build Freetext
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
     paths:
       - response-items/src/freetext/**
       - response-items/.rollup/freetext.js

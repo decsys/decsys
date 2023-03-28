@@ -47,7 +47,7 @@ const ResponseItem = ({
         <Badge display="flex" p={1} colorScheme={colorSchemes[badgeVariant]}>
           <Text mr={1}>Characters remaining:</Text>
           <Text>
-            {maxLength - value.length}/{maxLength}
+            {maxLength - (value?.length ?? 0)}/{maxLength}
           </Text>
         </Badge>
       </Flex>
