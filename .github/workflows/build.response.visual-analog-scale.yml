@@ -3,7 +3,6 @@ name: Build Visual Analog Scale
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
     paths:
       - response-items/src/visual-analog-scale/**
       - response-items/.rollup/visual-analog-scale.js
