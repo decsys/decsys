@@ -138,21 +138,19 @@ export const ItemInfo = ({
   id,
 }) => (
   <Flex align="center" width="100%" {...dragHandleProps} onClick={onSelect}>
-    <Flex width="20%" p="3px">
-      <QuestionButton
-        isQuestionItem={isQuestionItem}
-        setQuestionItem={setQuestionItem}
+    <QuestionButton
+      isQuestionItem={isQuestionItem}
+      setQuestionItem={setQuestionItem}
+      id={id}
+      type={type}
+    />
+    {id && (
+      <OptionalButton
+        isOptional={isOptional}
+        setIsOptional={setIsOptional}
         id={id}
-        type={type}
       />
-      {id && (
-        <OptionalButton
-          isOptional={isOptional}
-          setIsOptional={setIsOptional}
-          id={id}
-        />
-      )}
-    </Flex>
+    )}
     <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
     <ItemIcon type={type} />
     <Text as={!text ? "em" : "p"} isTruncated>
