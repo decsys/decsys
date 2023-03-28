@@ -49,8 +49,18 @@ const SurveyPage = ({
       logEvent(page.id, PAGE_LOAD, {});
       // check if the page has any Response Items
       // and set Next Button appropriately
-      if (!getPageResponseItem(page.components)) setNextEnabled(true);
-      else setNextEnabled(false);
+      console.log(page);
+      if (
+        getPageResponseItem(page.components) &&
+        page.components[0].isOptional === true
+      )
+        setNextEnabled(true);
+      else if (
+        getPageResponseItem(page.components) &&
+        page.components[0].isOptional === false
+      )
+        setNextEnabled(false);
+      else setNextEnabled(true);
     }
   }, [previousPageId, page, logEvent]);
 
