@@ -56,3 +56,16 @@ export const setSurveyPageItemToQuestionItem = async (
     withHeaders(contentType_AppJson, await authorization_BearerToken())
   );
 };
+
+export const setSurveyPageItemIsOptional = async (
+  surveyId,
+  pageId,
+  itemId,
+  optional
+) => {
+  await axios.put(
+    `/api/surveys/${surveyId}/pages/${pageId}/components/${itemId}/isOptional`,
+    optional,
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
+  );
+};

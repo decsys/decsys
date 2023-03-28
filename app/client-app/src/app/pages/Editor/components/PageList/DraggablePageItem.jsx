@@ -18,6 +18,7 @@ import {
   FaGripVertical,
   FaTimes,
   FaCopy,
+  FaAsterisk,
 } from "react-icons/fa";
 import { DotHoverIconButton } from "components/core";
 import { usePageItemActions } from "../../contexts/PageItemActions";
@@ -94,6 +95,36 @@ const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
   );
 };
 
+const OptionalButton = ({ isOptional, id, setIsOptional }) => {
+  const handleOptionalClick = () => setIsOptional(id, !isOptional);
+  const { busy } = usePageListContext();
+
+  if (some(busy)) {
+    const p = { p: "9px", dotSize: "14px" };
+    return (
+      <Center width={8}>
+        <PlaceholderDot {...p} />
+      </Center>
+    );
+  }
+
+  return (
+    <Tooltip label={isOptional ? "Make Mandatory" : "Make Optional"}>
+      <Center
+        width={8}
+        height={"100%"}
+        cursor={"pointer"}
+        color={isOptional ? "green" : "red"}
+        _hover={{
+          color: isOptional ? "green.400" : "red.400",
+        }}
+      >
+        <Icon as={FaAsterisk} onClick={handleOptionalClick} />
+      </Center>
+    </Tooltip>
+  );
+};
+
 export const ItemInfo = ({
   type,
   params: { text },
@@ -102,6 +133,8 @@ export const ItemInfo = ({
   onSelect,
   isQuestionItem,
   setQuestionItem,
+  isOptional,
+  setIsOptional,
   id,
 }) => (
   <Flex align="center" width="100%" {...dragHandleProps} onClick={onSelect}>
@@ -111,6 +144,13 @@ export const ItemInfo = ({
       id={id}
       type={type}
     />
+    {id && (
+      <OptionalButton
+        isOptional={isOptional}
+        setIsOptional={setIsOptional}
+        id={id}
+      />
+    )}
     <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
     <ItemIcon type={type} />
     <Text as={!text ? "em" : "p"} isTruncated>
