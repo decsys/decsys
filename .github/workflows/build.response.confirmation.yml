@@ -3,7 +3,6 @@ name: Build Confirmation
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
     paths:
       - response-items/src/confirmation/**
       - response-items/.rollup/confirmation.js
