@@ -46,6 +46,29 @@ const SurveyPage = ({
   const [nextEnabled, setNextEnabled] = useState(false);
   const [isValidResponse, setIsValidResponse] = useState(false);
   const [resultLogged, setResultLogged] = useState(false);
+  // const optionalComponent = page.components[0]?.isOptional;
+  //const shouldEnableNext = optionalComponent || (isValidResponse && resultLogged);
+  //const previousPageId = usePrevious(page.id);
+  // useLayoutEffect(() => {
+  //   if (page.id !== previousPageId) {
+  //     logEvent(page.id, PAGE_LOAD, {});
+  //     // check if the page has any Response Items
+  //     // and set Next Button appropriately
+  //     if (
+  //       getPageResponseItem(page.components) &&
+  //       page.components[0].isOptional === true
+  //     )
+  //       setNextEnabled(true);
+  //     else if (
+  //       getPageResponseItem(page.components) &&
+  //       page.components[0].isOptional === false
+  //     )
+  //       setNextEnabled(false);
+  //     else if (shouldEnableNext && !optionalComponent)
+  //       setNextEnabled(true);
+  //     else setNextEnabled(true);
+  //   }
+  // }, [previousPageId, page, logEvent, isValidResponse, resultLogged]);
 
   const previousPageId = usePrevious(page.id);
   useLayoutEffect(() => {
@@ -71,7 +94,8 @@ const SurveyPage = ({
     const optionalComponent = page.components[0]?.isOptional;
     const shouldEnableNext =
       optionalComponent || (isValidResponse && resultLogged);
-    if (!optionalComponent && shouldEnableNext) {
+
+    if (shouldEnableNext && !optionalComponent) {
       setNextEnabled(true);
     }
   }, [isValidResponse, resultLogged]);
@@ -80,13 +104,16 @@ const SurveyPage = ({
     pageId: page.id,
     surveyId,
     setIsValidResponse,
-    setNextEnabled: setIsValidResponse,
+    setNextEnabled,
     logEvent,
   };
 
   const [isMore, setIsMore] = useState();
   const handleBodyBottomVisibilityChange = (isVisible) => setIsMore(!isVisible);
-  console.log(nextEnabled);
+  console.log("s");
+  console.log("nextEnabled:", nextEnabled);
+  console.log("isValidResponse:", isValidResponse);
+  console.log("resultLogged", resultLogged);
 
   return (
     <>
