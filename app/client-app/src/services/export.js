@@ -57,28 +57,23 @@ export const getResultsCsvData = async (results, filename) => {
   // TODO: need to move this to the server (.NET) anyway
 
   //figure out all the response columns we need
-  const responseColumns = results.participants.reduce(
-    (agg, p) => {
-      const responseColumns = p.responses
-        .map((x) => {
-          return !x.response
-            ? null
-            : Object.keys(x.response).map((r) => ({
-                label: `${x.responseType}_${r}`,
-                value: `responses.${x.responseType}.${r}`,
-              }));
-        })
-        .filter((x) => !!x); // drop the null ones
-
-      responseColumns.forEach((response) => {
-        response.forEach((column) => {
-          agg.columns.push(column);
-        });
-      });
+  const responseColumns = results.participants
+    .flatMap((p) =>
+      p.responses
+        .filter((x) => x.response)
+        .flatMap((x) =>
+          Object.keys(x.response).map((r) => ({
+            label: `${x.responseType}_${r}`,
+            value: `responses.${x.responseType}.${r}`,
+          }))
+        )
+    )
+    .reduce((agg, col) => {
+      if (!agg.some((c) => c.label === col.label)) {
+        agg.push(col);
+      }
       return agg;
-    },
-    { lookup: {}, columns: [] }
-  ).columns;
+    }, []);
 
   const participants = results.participants.map((participant) => {
     participant.responses.map((response) => {
