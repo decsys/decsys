@@ -1,8 +1,9 @@
 import { exportDateFormat } from "services/date-formats";
 import download from "downloadjs";
-import { Parser } from "@json2csv/plainjs";
+import { StreamParser } from "@json2csv/plainjs";
 import { unwind } from "@json2csv/transforms";
 import { getSurveyExport } from "api/surveys";
+import StreamSaver from "streamsaver";
 
 /**
  * Helper for Client-Side file downloads
@@ -52,7 +53,7 @@ export const surveyExport = async (id, name, type) => {
   return downloadFile(b64toByteArrays(data), `${filename}.zip`, mime);
 };
 
-export const getResultsCsvData = (results) => {
+export const getResultsCsvData = async (results, filename) => {
   // TODO: need to move this to the server (.NET) anyway
 
   //figure out all the response columns we need
@@ -91,6 +92,7 @@ export const getResultsCsvData = (results) => {
     return participant;
   });
 
+  // Define .csv fields and transformation
   const opts = {
     fields: [
       { label: "Participant", value: "id" },
@@ -105,8 +107,39 @@ export const getResultsCsvData = (results) => {
     ],
     transforms: [unwind({ paths: ["responses"] })],
   };
-  const parser = new Parser(opts);
-  const data = parser.parse(participants);
 
-  return data;
+  const streamOpts = {
+    delimiter: ",",
+    endOfLine: "\n",
+    quoting: 0,
+  };
+
+  const stream = new StreamParser(opts, streamOpts);
+  const filestream = StreamSaver.createWriteStream(`${filename}_Summary.csv`, {
+    size: "unknown",
+  });
+  const writer = filestream.getWriter();
+  const encoder = new TextEncoder();
+
+  // Encodes and writes each chunk
+  stream.onData = (chunk) => {
+    writer.write(encoder.encode(chunk));
+  };
+
+  // When StreamParser is finished
+  const endPromise = new Promise((resolve, reject) => {
+    stream.onEnd = () => {
+      writer.close();
+      resolve();
+    };
+    stream.onError = (err) => reject(err);
+  });
+
+  // Write JSON string to the Parser
+  stream.write(JSON.stringify(participants));
+
+  // Signal that the data is complete
+  stream.end();
+
+  return endPromise;
 };

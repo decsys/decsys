@@ -47,6 +47,7 @@
     "react-wordcloud": "^1.2.7",
     "remark-gfm": "^1.0.0",
     "save-svg-as-png": "^1.4.17",
+    "streamsaver": "^2.0.6",
     "swr": "^0.2.2",
     "uuid": "^8.1.0",
     "yup": "^0.29.3"
