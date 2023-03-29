@@ -20,8 +20,8 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
           ...renderContext,
           itemId: item.id,
           logResults: (payload) => {
-            renderContext.logEvent(item.id, COMPONENT_RESULTS, payload),
-              setResultLogged(true);
+            renderContext.logEvent(item.id, COMPONENT_RESULTS, payload);
+            setResultLogged(true);
           },
         }}
         component={renderComponent}
@@ -68,7 +68,7 @@ const SurveyPage = ({
   }, [previousPageId, page, logEvent]);
 
   useEffect(() => {
-    const optionalComponent = page.components[0].isOptional;
+    const optionalComponent = page.components[0]?.isOptional;
     const shouldEnableNext =
       optionalComponent || (isValidResponse && resultLogged);
     if (!optionalComponent && shouldEnableNext) {
@@ -86,8 +86,8 @@ const SurveyPage = ({
 
   const [isMore, setIsMore] = useState();
   const handleBodyBottomVisibilityChange = (isVisible) => setIsMore(!isVisible);
+  console.log(nextEnabled);
 
-  // console.log(page.components[0].isOptional)
   return (
     <>
       <Flex overflowY="auto" py={2}>
