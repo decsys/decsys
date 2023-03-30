@@ -62,7 +62,7 @@ const SurveyPage = ({
         setNextEnabled(true);
       else if (
         getPageResponseItem(page.components) &&
-        page.components?.some((component) => component.isOptional) === false
+        !page.components?.some((component) => component.isOptional)
       )
         setNextEnabled(false);
       else setNextEnabled(true);
