@@ -95,9 +95,12 @@ const QuestionButton = ({ isQuestionItem, id, setQuestionItem, type }) => {
   );
 };
 
-const OptionalButton = ({ isOptional, id, setIsOptional }) => {
+const OptionalButton = ({ isOptional, id, setIsOptional, type }) => {
   const handleOptionalClick = () => setIsOptional(id, !isOptional);
   const { busy } = usePageListContext();
+  if (isBuiltIn(type)) {
+    return <Flex pl={8} align="center"></Flex>;
+  }
 
   if (some(busy)) {
     const p = { p: "9px", dotSize: "14px" };
@@ -149,6 +152,7 @@ export const ItemInfo = ({
         isOptional={isOptional}
         setIsOptional={setIsOptional}
         id={id}
+        type={type}
       />
     )}
     <Icon as={!type || isBusy ? BsDot : FaGripVertical} color="gray.500" />
