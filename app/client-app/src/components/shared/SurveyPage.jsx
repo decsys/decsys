@@ -57,12 +57,12 @@ const SurveyPage = ({
       setResultLogged(false);
       if (
         getPageResponseItem(page.components) &&
-        page.components[0].isOptional === true
+        page.components?.some((component) => component.isOptional) === true
       )
         setNextEnabled(true);
       else if (
         getPageResponseItem(page.components) &&
-        page.components[0].isOptional === false
+        page.components?.some((component) => component.isOptional) === false
       )
         setNextEnabled(false);
       else setNextEnabled(true);
@@ -70,12 +70,16 @@ const SurveyPage = ({
   }, [previousPageId, page, logEvent]);
 
   useEffect(() => {
-    const optionalComponent = page.components[0]?.isOptional;
+    const hasOptionalComponent = page.components?.some(
+      (component) => component.isOptional
+    );
     const shouldEnableNext =
-      optionalComponent || (isValidResponse && resultLogged);
+      hasOptionalComponent ||
+      (isValidResponse && resultLogged) ||
+      !getPageResponseItem(page.components);
 
     setNextEnabled(shouldEnableNext);
-  }, [isValidResponse, resultLogged]);
+  }, [isValidResponse, resultLogged, page.components?.length]);
 
   const renderContext = {
     pageId: page.id,
