@@ -54,6 +54,7 @@
  * but might be useful for storybook?
  */
 export const renderContextDefaults = {
+  setIsValidResponse: () => {},
   setNextEnabled: () => {},
   logResults: () => {},
   logEvent: () => {},

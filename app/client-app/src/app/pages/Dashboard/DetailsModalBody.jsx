@@ -86,6 +86,7 @@ const DetailsModalBody = ({ surveyId, page, results, completion }) => {
   const renderContext = {
     pageId: page.id,
     surveyId,
+    setIsValidResponse: nop,
     setNextEnabled: nop,
     logEvent: nop,
   };
