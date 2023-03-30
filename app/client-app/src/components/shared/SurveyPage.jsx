@@ -87,9 +87,6 @@ const SurveyPage = ({
 
   const [isMore, setIsMore] = useState();
   const handleBodyBottomVisibilityChange = (isVisible) => setIsMore(!isVisible);
-  console.log("nextEnabled:", nextEnabled);
-  console.log("isValidResponse:", isValidResponse);
-  console.log("resultLogged", resultLogged);
 
   return (
     <>
