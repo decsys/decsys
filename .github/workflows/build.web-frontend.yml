@@ -3,7 +3,6 @@ name: Build Web Frontend
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
     paths:
       - app/client-app/**
       - .github/workflows/build.web-frontend.yml
