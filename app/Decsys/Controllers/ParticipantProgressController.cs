@@ -315,10 +315,10 @@ namespace Decsys.Controllers
                     $"{participantId} progress state doesn't allow further navigation");
             }
 
-            // TODO: confirm that mandatory response items have had responses recorded before leaving the current page!
+            //response mandatory check
             foreach (var component in progress.Page.Components)
             {
-                if (!component.IsOptional && !BuiltInPageItems.IsBuiltIn(component.Type)) // check if the component is mandatory
+                if (!component.IsOptional && !BuiltInPageItems.IsBuiltIn(component.Type))
                 {
                     var result = _events.Last(instance.Id, participantId, component.Id.ToString(), EventTypes.COMPONENT_RESULTS);
 
