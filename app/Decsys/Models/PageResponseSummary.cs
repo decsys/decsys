@@ -50,5 +50,10 @@ namespace Decsys.Models
         /// A timestamp of when the participant submitted their response
         /// </summary>
         public DateTimeOffset ResponseRecorded { get; set; }
+
+        /// <summary>
+        /// Whether the response is optional or not.
+        /// </summary>
+        public bool IsOptional { get; set; }
     }
 }
