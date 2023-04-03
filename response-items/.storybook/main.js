@@ -1,5 +1,3 @@
-/** @type { import('@storybook/react-vite').StorybookConfig } */
-
 export default {
   stories: ["../src/**/*.stories.js"],
   addons: [
