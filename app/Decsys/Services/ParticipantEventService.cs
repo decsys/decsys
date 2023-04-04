@@ -172,13 +172,6 @@ namespace Decsys.Services
             return ParticipantResultsSummary(instance, participantId);
         }
 
-        private ParticipantResultsSummary ParticipantPageResultsSummary(SurveyInstance instance, string participantId,
-            string pageId)
-        {
-            // TODO: implement page results
-            throw new NotImplementedException();
-        }
-
         private ParticipantResultsSummary ParticipantResultsSummary(
             SurveyInstance instance,
             string participantId)
