@@ -15,18 +15,15 @@ namespace Decsys.Controllers
     [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
     public class InstancesController : ControllerBase
     {
-        private readonly ILogger<InstancesController> _logger;
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _participantEvents;
         private readonly IAuthorizationService _auth;
 
         public InstancesController(
-            ILogger<InstancesController> logger,
             SurveyInstanceService instances,
             ParticipantEventService participantEvents,
             IAuthorizationService auth)
         {
-            _logger = logger;
             _instances = instances;
             _participantEvents = participantEvents;
             _auth = auth;
@@ -47,11 +44,7 @@ namespace Decsys.Controllers
         {
             try
             {
-                _logger.LogInformation(
-                    "Started full results fetch for instance ID {instanceId}", instanceId);
                 var results = _participantEvents.Results(instanceId);
-                _logger.LogInformation(
-                    "Completed full results fetch for instance ID {instanceId}", instanceId);
                 return Ok(results);
             }
             catch (KeyNotFoundException)
@@ -64,11 +57,7 @@ namespace Decsys.Controllers
         {
             try
             {
-                _logger.LogInformation(
-                    "Started summary results fetch for instance ID {instanceId}", instanceId);
                 var results = _participantEvents.ResultsSummary(instanceId);
-                _logger.LogInformation(
-                    "Completed summary results fetch for instance ID {instanceId}", instanceId);
                 return Ok(results);
             }
             catch (KeyNotFoundException)

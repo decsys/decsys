@@ -9,18 +9,15 @@ namespace Decsys.Services
 {
     public class ParticipantEventService
     {
-        private readonly ILogger<ParticipantEventService> _logger;
         private readonly IParticipantEventRepository _events;
         private readonly ISurveyInstanceRepository _instances;
         private readonly IMapper _mapper;
 
         public ParticipantEventService(
-            ILogger<ParticipantEventService> logger,
             IParticipantEventRepository events,
             ISurveyInstanceRepository instances,
             IMapper mapper)
         {
-            _logger = logger;
             _events = events;
             _instances = instances;
             _mapper = mapper;
@@ -134,12 +131,8 @@ namespace Decsys.Services
 
         public SurveyInstanceResults<ParticipantResultsSummary> ResultsSummary(int instanceId)
         {
-            _logger.LogInformation("Fetching instance {instanceId}...", instanceId);
-
             var instance = _instances.Find(instanceId) ??
                            throw new KeyNotFoundException("Survey Instance could not be found.");
-
-            _logger.LogInformation("Fetching Participants' events as summary...");
 
             var participants = _events
                 .ListLogs(instanceId)
@@ -147,9 +140,7 @@ namespace Decsys.Services
                     ParticipantResultsSummary(
                         instance,
                         _events.GetParticipantId(instanceId, participantId)));
-
-            _logger.LogInformation("Mapping to Results Summary format...");
-
+            
             var result = _mapper.Map<SurveyInstanceResults<ParticipantResultsSummary>>(instance);
             result.Participants = participants;
            
@@ -159,8 +150,7 @@ namespace Decsys.Services
                     pageItem => !BuiltInPageItems.IsBuiltIn(pageItem.Type)))
                 .Select(page => (page.Order, page.Id))
                 .ToList();
-
-            _logger.LogInformation("Returning Results Summary.");
+            
             return result;
         }
 

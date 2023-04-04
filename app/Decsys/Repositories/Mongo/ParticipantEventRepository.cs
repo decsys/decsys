@@ -18,18 +18,15 @@ namespace Decsys.Repositories.Mongo
     public class ParticipantEventRepository : IParticipantEventRepository
     {
         private readonly HostedDbSettings _config;
-        private readonly ILogger<ParticipantEventRepository> _logger;
         private readonly IMongoClient _mongo;
         private readonly IMapper _mapper;
 
         public ParticipantEventRepository(
-            ILogger<ParticipantEventRepository> logger,
             IOptions<HostedDbSettings> config,
             IMongoClient mongo,
             IMapper mapper)
         {
             _config = config.Value;
-            _logger = logger;
             _mongo = mongo;
             _mapper = mapper;
         }
