@@ -47,7 +47,16 @@ namespace Decsys.Controllers
         }
 
         [HttpGet]
-        public IActionResult List(int instanceId, string participantId)
+        [SwaggerOperation("Get all events for a participant.")]
+        [SwaggerResponse(200, "The requested list of Participant Events.", 
+            typeof(IEnumerable<ParticipantEvent>))]
+        [SwaggerResponse(404,
+            "No Survey Instance or no Participant was found with the provided ID.")]
+        public IActionResult List(
+            [SwaggerParameter("ID of the Survey Instance.")]
+            int instanceId, 
+            [SwaggerParameter("Identifier for a Survey Instance Participant.")]
+            string participantId)
         {
             try
             {
@@ -61,7 +70,16 @@ namespace Decsys.Controllers
         }
         
         [HttpGet("summary")]
-        public IActionResult ResultsSummary(int instanceId, string participantId)
+        [SwaggerOperation("Get the results summary for a participant.")]
+        [SwaggerResponse(200, "The requested Participant Results Summary.", 
+            typeof(ParticipantResultsSummary))]
+        [SwaggerResponse(404,
+            "No Survey Instance or no Participant was found with the provided ID.")]
+        public IActionResult ResultsSummary(
+            [SwaggerParameter("ID of the Survey Instance.")]
+            int instanceId, 
+            [SwaggerParameter("Identifier for a Survey Instance Participant.")]
+            string participantId)
         {
             try
             {

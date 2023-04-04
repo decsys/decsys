@@ -30,7 +30,18 @@ namespace Decsys.Controllers
         }
 
         [HttpGet("{instanceId}/results")]
-        public IActionResult Results(int instanceId, string? type = "summary")
+        [SwaggerOperation("Get results for a Survey Instance.")]
+        [SwaggerResponse(200, "The requested full results of an Survey Instance.", 
+            typeof(SurveyInstanceResults<ParticipantEvents>))]        
+        [SwaggerResponse(200, "The requested summary results of an Survey Instance.", 
+            typeof(SurveyInstanceResults<ParticipantResultsSummary>))]
+        [SwaggerResponse(404,
+            "No Survey Instance was found with the provided ID.")]
+        public IActionResult Results(
+            [SwaggerParameter("ID of the Survey Instance.")]
+            int instanceId,
+            [SwaggerParameter("Return results type")]
+            string? type = "summary")
             => type switch
             {
                 "summary" => ResultsSummary(instanceId),
