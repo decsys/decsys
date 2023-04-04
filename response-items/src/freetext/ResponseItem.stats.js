@@ -7,7 +7,7 @@ const getWordcloudProps = (values) => {
   // a value is the whole freetext value submitted
   const weightedWords = values.reduce((a, { text }) => {
     // split the text into single words
-    const words = text.split(/\s+/);
+    const words = text?.split(/\s+/) ?? [];
 
     words.forEach((w) => {
       const word = w.toLowerCase();
@@ -34,7 +34,7 @@ const getWordcloudProps = (values) => {
 };
 
 export const stats = (_, results) => {
-  const wordCounts = results.map((x) => x.text.split(/\s+/).length);
+  const wordCounts = results.map((x) => x.text?.split(/\s+/).length ?? 0);
   return {
     visualizations: [
       {

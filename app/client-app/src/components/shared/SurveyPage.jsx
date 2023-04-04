@@ -1,4 +1,4 @@
-import { useState, useCallback, useLayoutEffect } from "react";
+import { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
@@ -9,7 +9,7 @@ import VisibilitySensor from "react-visibility-sensor";
 import { usePrevious } from "hooks/usePrevious";
 import { LoadingIndicator } from "components/core";
 
-export const Body = ({ page, renderContext }) => {
+export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
     const renderComponent = getComponent(item.type);
 
@@ -19,8 +19,10 @@ export const Body = ({ page, renderContext }) => {
         _context={{
           ...renderContext,
           itemId: item.id,
-          logResults: (payload) =>
-            renderContext.logEvent(item.id, COMPONENT_RESULTS, payload),
+          logResults: (payload) => {
+            renderContext.logEvent(item.id, COMPONENT_RESULTS, payload);
+            setResultLogged(true);
+          },
         }}
         component={renderComponent}
         params={item.params}
@@ -42,22 +44,48 @@ const SurveyPage = ({
   logEvent = logEvent || nop;
 
   const [nextEnabled, setNextEnabled] = useState(false);
-  const previousPageId = usePrevious(page.id);
+  const [isValidResponse, setIsValidResponse] = useState(false);
+  const [resultLogged, setResultLogged] = useState(false);
 
+  const previousPageId = usePrevious(page.id);
   useLayoutEffect(() => {
     if (page.id !== previousPageId) {
       logEvent(page.id, PAGE_LOAD, {});
       // check if the page has any Response Items
       // and set Next Button appropriately
-      if (!getPageResponseItem(page.components)) setNextEnabled(true);
-      else setNextEnabled(false);
+      setIsValidResponse(false);
+      setResultLogged(false);
+      if (
+        getPageResponseItem(page.components) &&
+        page.components?.some((component) => component.isOptional)
+      )
+        setNextEnabled(true);
+      else if (
+        getPageResponseItem(page.components) &&
+        !page.components?.some((component) => component.isOptional)
+      )
+        setNextEnabled(false);
+      else setNextEnabled(true);
     }
   }, [previousPageId, page, logEvent]);
+
+  useEffect(() => {
+    const hasOptionalComponent = page.components?.some(
+      (component) => component.isOptional
+    );
+    const shouldEnableNext =
+      hasOptionalComponent ||
+      (isValidResponse && resultLogged) ||
+      !getPageResponseItem(page.components);
+
+    setNextEnabled(shouldEnableNext);
+  }, [isValidResponse, resultLogged, page.components?.length]);
 
   const renderContext = {
     pageId: page.id,
     surveyId,
-    setNextEnabled,
+    setIsValidResponse,
+    setNextEnabled: setIsValidResponse,
     logEvent,
   };
 
@@ -72,7 +100,12 @@ const SurveyPage = ({
             {isBusy ? (
               <LoadingIndicator />
             ) : (
-              <Body page={page} renderContext={renderContext} />
+              <Body
+                page={page}
+                renderContext={renderContext}
+                setResultLogged={setResultLogged}
+                setIsValidResponse={setIsValidResponse}
+              />
             )}
             <VisibilitySensor onChange={handleBodyBottomVisibilityChange}>
               <div style={{ height: "1px" }} />

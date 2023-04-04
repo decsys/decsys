@@ -1,4 +1,4 @@
-﻿using Decsys.Constants;
+using Decsys.Constants;
 using Decsys.Models;
 using Decsys.Models.EventPayloads;
 using Decsys.Services;
@@ -315,7 +315,32 @@ namespace Decsys.Controllers
                     $"{participantId} progress state doesn't allow further navigation");
             }
 
-            // TODO: confirm that mandatory response items have had responses recorded before leaving the current page!
+            //response mandatory check
+            foreach (var component in progress.Page.Components)
+            {
+                if (!component.IsOptional && !BuiltInPageItems.IsBuiltIn(component.Type))
+                {
+                    var result = _events.Last(instance.Id, participantId, component.Id.ToString(), EventTypes.COMPONENT_RESULTS);
+
+                    if (result is null)
+                    {
+                        // early return to keep the participant on the same page
+                        // Log the request and its outcome
+                        _events.Log(instance.Id, participantId, new()
+                        {
+                            Type = EventTypes.PAGE_NAVIGATION,
+                            Timestamp = DateTimeOffset.UtcNow,
+                            Source = progress.Page.Id.ToString(),
+                            Payload = JObject.FromObject(
+                                    new PageNavigationEventPayload(
+                                        requestedPageKey,
+                                        progress.Page.Id.ToString()))
+                        });
+
+                        return progress;
+                    }
+                }
+            }
 
             // Currently, we never allow page skips or back navigation.
             // So if a specific page is requested, we should check that it's the next page in order

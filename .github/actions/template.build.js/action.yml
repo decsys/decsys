@@ -1,0 +1,19 @@
+name: Build JS
+description: Runs the build script for a JS package
+
+inputs:
+  package:
+    required: true
+    type: string
+  script:
+    default: build
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: >-
+        pnpm
+        --filter ${{ inputs.package }}
+        ${{ inputs.script }}

@@ -1,0 +1,31 @@
+name: Build Confirmation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - response-items/src/confirmation/**
+      - response-items/.rollup/confirmation.js
+      - response-items/package.json
+      - config/response-item*.js
+      - .github/workflows/build.response.confirmation.yml
+
+env:
+  item-name: confirmation
+  package: response-items
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/actions/template.pnpm-install
+        with:
+          filter: ${{ env.package }}
+
+      - uses: ./.github/actions/template.build.js
+        with:
+          package: ${{ env.package }}
+          script: build:${{ env.item-name }}

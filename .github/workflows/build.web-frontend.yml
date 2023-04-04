@@ -3,15 +3,12 @@ name: Build Web Frontend
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
     paths:
       - app/client-app/**
-      - .github/workflows/build.client-app.yml
+      - .github/workflows/build.web-frontend.yml
 
 env:
-  # Configure these
-  CI_node-version: 19
-  CI_package: client-app
+  package: client-app
 
 jobs:
   build:
@@ -20,25 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # we have to enable corepack before we install the desired version of node,
-      # so pnpm is available for cache configuration >.<
-      # GH runners have minimum latest node 16 so corepack is always available <3
-      - run: corepack enable
-      - uses: actions/setup-node@v3
+      - uses: ./.github/actions/template.pnpm-install
         with:
-          node-version: ${{ env.CI_node-version }}
-          cache: pnpm
-
-      - run: >-
-          pnpm i
-          --frozen-lockfile
-          --filter ${{ env.CI_package }}
+          filter: ${{ env.package }}
 
       # Vitest
+      # TODO: move to composite action?
 
       # - run: >-
       #     pnpm
-      #     --filter ${{ env.CI_package }}
+      #     --filter ${{ env.package }}
       #     test:ci
 
       # - name: Test Report
@@ -50,7 +38,6 @@ jobs:
       #     path: app/client-app/vitest-results.xml # Path to test results
       #     reporter: jest-junit # Format of test results
 
-      - run: >-
-          pnpm
-          --filter ${{ env.CI_package }}
-          build
+      - uses: ./.github/actions/template.build.js
+        with:
+          package: ${{ env.package }}

@@ -235,7 +235,8 @@ namespace Decsys.Services
                     ResponseRecorded = finalResponse?.Timestamp
                                        ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
                     Response = finalResponse?.Payload,
-                    Order = order.IndexOf(page.Id.ToString()) + 1
+                    Order = order.IndexOf(page.Id.ToString()) + 1,
+                    IsOptional = responseComponent.IsOptional,
                 };
 
                 // If it looks like we haven't recorded a response, even though the page loaded
