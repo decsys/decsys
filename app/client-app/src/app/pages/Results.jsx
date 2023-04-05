@@ -113,8 +113,7 @@ const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
   );
 
   const handleExportCsvClick = async () => {
-    const data = getResultsCsvData(results);
-    download(data, `${filename}_Summary.csv`, "text/csv");
+    await getResultsCsvData(results, filename);
   };
 
   const handleExportSummaryClick = () =>

@@ -1,18 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
 using AutoMapper;
-
 using Decsys.Constants;
-using Decsys.Mapping;
 using Decsys.Models;
 using Decsys.Models.EventPayloads;
 using Decsys.Repositories.Contracts;
-
-using LiteDB;
-
 using Newtonsoft.Json.Linq;
 
 namespace Decsys.Services
@@ -68,17 +58,21 @@ namespace Decsys.Services
         public SurveyInstanceResults<ParticipantEvents> Results(int instanceId)
         {
             var instance = _instances.Find(instanceId) ??
-                throw new KeyNotFoundException("Survey Instance could not be found.");
+                           throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            var participants = _events.List(instanceId)
-                .Select(log =>
-                    new ParticipantEvents(log.Key)
+            var participants = _events
+                .ListLogs(instanceId)
+                .ConvertAll(eventLogCollection =>
+                {
+                    var id = _events.GetParticipantId(instanceId, eventLogCollection);
+                    return new ParticipantEvents(id)
                     {
-                        Events = log.Value
-                    })
-                .ToList();
+                        Events = _events.List(instanceId, participantId: id)
+                    };
+                });
 
             var result = _mapper.Map<SurveyInstanceResults<ParticipantEvents>>(instance);
+
             result.Participants = participants;
 
             return result;
@@ -138,66 +132,73 @@ namespace Decsys.Services
         public SurveyInstanceResults<ParticipantResultsSummary> ResultsSummary(int instanceId)
         {
             var instance = _instances.Find(instanceId) ??
-                throw new KeyNotFoundException("Survey Instance could not be found.");
+                           throw new KeyNotFoundException("Survey Instance could not be found.");
 
-            // summarize each one
             var participants = _events
-                .List(instanceId).Keys
-                .Select(participantId =>
-                    ParticipantResultsSummary(instance, participantId))
-                .ToList();
-
+                .ListLogs(instanceId)
+                .ConvertAll(participantId => 
+                    ParticipantResultsSummary(
+                        instance,
+                        _events.GetParticipantId(instanceId, participantId)));
+            
             var result = _mapper.Map<SurveyInstanceResults<ParticipantResultsSummary>>(instance);
             result.Participants = participants;
-
+           
+            result.ResponsePages = instance.Survey.Pages
+                .OrderBy(page => page.Order)
+                .Where(page => page.Components.Any(
+                    pageItem => !BuiltInPageItems.IsBuiltIn(pageItem.Type)))
+                .Select(page => (page.Order, page.Id))
+                .ToList();
+            
             return result;
         }
 
         public ParticipantResultsSummary ResultsSummary(int instanceId, string participantId)
         {
             var instance = _instances.Find(instanceId) ??
-                throw new KeyNotFoundException("Survey Instance could not be found.");
+                           throw new KeyNotFoundException("Survey Instance could not be found.");
 
             return ParticipantResultsSummary(instance, participantId);
         }
 
-        private ParticipantResultsSummary ParticipantResultsSummary(SurveyInstance instance, string participantId)
+        private ParticipantResultsSummary ParticipantResultsSummary(
+            SurveyInstance instance,
+            string participantId)
         {
-            var firstPageLoad = _events
-                .List(instance.Id, participantId, null, EventTypes.PAGE_LOAD)
-                .FirstOrDefault();
+            var events = _events.List(instance.Id, participantId, null);
 
+            var firstPageLoad = events.FirstOrDefault(x => x.Type == EventTypes.PAGE_LOAD);
+            
             var resultsSummary = new ParticipantResultsSummary(participantId)
             {
                 Responses = new List<PageResponseSummary>(),
                 SurveyStarted = firstPageLoad?.Timestamp
             };
 
-            var orderEvent = FindLast(
-                    instance.Id,
-                    participantId,
-                    instance.Survey.Id.ToString(),
-                    EventTypes.PAGE_RANDOMIZE);
+            var orderEvent = events.LastOrDefault(x =>
+                x.Type == EventTypes.PAGE_RANDOMIZE &&
+                x.Source == instance.Survey.Id.ToString());
             if (orderEvent is null) return resultsSummary;
-
+            
             var order = orderEvent.Payload.ToObject<PageRandomizeEventPayload>()?.Order;
             if (order is null) return resultsSummary;
 
             foreach (var page in instance.Survey.Pages.OrderBy(x => x.Order))
             {
-                var responseComponent = page.Components.SingleOrDefault( // find the one that's not a built in content item
+                var responseComponent =
+                    page.Components.SingleOrDefault( // find the one that's not a built in content item
                         x => !BuiltInPageItems.IsBuiltIn(x.Type));
                 if (responseComponent is null) continue; // we don't care about pages without responses
 
-                var finalResponse = FindLast(
-                    instance.Id, participantId,
-                    responseComponent.Id.ToString(),
-                    EventTypes.COMPONENT_RESULTS);
+                var finalResponse = events.LastOrDefault(x =>
+                    x.Type == EventTypes.COMPONENT_RESULTS &&
+                    x.Source == responseComponent.Id.ToString());
 
-                var pageLoadEvent = FindLast(
-                    instance.Id, participantId,
-                    page.Id.ToString(),
-                    EventTypes.PAGE_LOAD);
+                var pageLoadEvent =
+                    events.LastOrDefault(x =>
+                        x.Type == EventTypes.PAGE_LOAD &&
+                        x.Source == page.Id.ToString());
 
                 // don't try to add responses for pages we've never visited.
                 // e.g. if the survey is still in progress
@@ -209,16 +210,16 @@ namespace Decsys.Services
 
                 // If there isn't one (should only occur in older surveys),
                 // get the first content item (i.e. first built in)
-                if(questionItem is null)
+                if (questionItem is null)
                     questionItem = page.Components.FirstOrDefault(
                         x => BuiltInPageItems.IsBuiltIn(x.Type));
 
                 // If there's an item ,try and get content from it, else null
                 string? questionContent = null;
-                if(questionItem is not null)
+                if (questionItem is not null)
                 {
                     var contentKey = BuiltInPageItems.Metadata(questionItem.Type)?.QuestionContent;
-                    if(contentKey is not null)
+                    if (contentKey is not null)
                     {
                         questionContent = (string?)questionItem.Params.GetValue(contentKey) ?? string.Empty;
                     }
@@ -232,7 +233,7 @@ namespace Decsys.Services
                     ResponseType = responseComponent.Type,
                     PageLoad = pageLoadEvent.Timestamp,
                     ResponseRecorded = finalResponse?.Timestamp
-                        ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
+                                       ?? DateTimeOffset.MinValue, // TODO: not sure what the desired behaviour is here!
                     Response = finalResponse?.Payload,
                     Order = order.IndexOf(page.Id.ToString()) + 1,
                     IsOptional = responseComponent.IsOptional,
@@ -240,14 +241,12 @@ namespace Decsys.Services
 
                 // If it looks like we haven't recorded a response, even though the page loaded
                 // check if we have also left the page without a response, and have therefore skipped it
-                if(response.Response is null)
+                if (response.Response is null)
                 {
                     // This is the event for *leaving* this page; we can use it to calculate skipped pages
-                    var pageNavEvent = FindLast(
-                        instance.Id,
-                        participantId,
-                        page.Id.ToString(),
-                        EventTypes.PAGE_NAVIGATION);
+                    var pageNavEvent = events.LastOrDefault(x =>
+                        x.Type == EventTypes.PAGE_NAVIGATION &&
+                        x.Source == page.Id.ToString());
 
                     // only consider skipped if leaving was after loading;
                     // we may have returned to answer it!
@@ -263,8 +262,9 @@ namespace Decsys.Services
 
                 resultsSummary.Responses.Add(response);
             }
-
+            
             return resultsSummary;
         }
+        
     }
 }
