@@ -1,1 +1,1 @@
-export const responseItemName = "number";
+export const responseItemName = "Number";

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { params } from "./ResponseItem.params";
 import {
   NumberInput,
@@ -9,19 +9,17 @@ import {
 } from "@chakra-ui/react";
 
 const ResponseItem = ({
+  _context: { isValidResponse, logResults },
   min,
   max,
   defaultValue,
   precision,
-  _context: { isValidResponse, logResults },
 }) => {
   const [value, setValue] = useState(0);
   const handleChange = (value) => {
     setValue(value);
-    isValidResponse(true);
     logResults(JSON.parse(option));
   };
-
   return (
     <NumberInput
       defaultValue={value}

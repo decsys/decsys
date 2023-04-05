@@ -12,14 +12,12 @@ export default {
   component: ResponseItem,
 };
 
-export const Basic = () => (
-  <ResponseItem
-    label={text(
-      ResponseItem.params.label.label,
-      ResponseItem.params.label.defaultValue
-    )}
-    _context={_context}
-  />
+export const Basic = (args) => (
+  <ResponseItem label={args.label} _context={_context} />
 );
+
+Basic.args = {
+  label: "Default Label",
+};
 
 export const MetadataIcon = () => <Icon width="24px" />;
