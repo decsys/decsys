@@ -9,24 +9,26 @@ import {
 } from "@chakra-ui/react";
 
 const ResponseItem = ({
-  label,
-  confirmed: initialChecked,
+  min,
+  max,
+  defaultValue,
+  precision,
   _context: { isValidResponse, logResults },
 }) => {
-  const [checked, setChecked] = useState(initialChecked);
-  useEffect(() => isValidResponse(!!checked), [checked]);
-
-  const handleChange = (e) => {
-    logResults({ confirmed: e.target.checked });
-    setChecked(e.target.checked);
+  const [value, setValue] = useState(0);
+  const handleChange = (value) => {
+    setValue(value);
+    isValidResponse(true);
+    logResults(JSON.parse(option));
   };
 
   return (
     <NumberInput
-      defaultValue={defaultValue}
+      defaultValue={value}
       precision={precision}
       min={min}
       max={max}
+      onChange={handleChange}
     >
       <NumberInputField />
       <NumberInputStepper>
