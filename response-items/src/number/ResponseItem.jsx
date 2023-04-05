@@ -13,7 +13,7 @@ const ResponseItem = ({
   max,
   defaultValue,
   precision,
-  _context: { setIsValidResponse, logResults },
+  _context: { setIsValidResponse },
 }) => {
   const handleChange = () => {};
   useEffect(() => {
@@ -22,10 +22,10 @@ const ResponseItem = ({
 
   return (
     <NumberInput
-      defaultValue={defaultValue}
-      precision={precision}
       min={min}
       max={max}
+      precision={precision}
+      defaultValue={defaultValue}
       onChange={handleChange}
     >
       <NumberInputField />
