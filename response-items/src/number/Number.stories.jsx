@@ -1,4 +1,3 @@
-import ParamTypes from "@decsys/param-types";
 import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
 import { useState } from "react";
@@ -17,10 +16,7 @@ export default {
 
 export const Basic = {
   render: (args) => {
-    const [label, setLabel] = useState(15);
-
-    const handleLabelChange = (value) => {
-      setLabel(value);
+    const handleLabelChange = () => {
       _context.setIsValidResponse(true); // toggle the Next Button
     };
     return (
@@ -32,10 +28,10 @@ export const Basic = {
     );
   },
   args: {
-    min: 10,
-    max: 20,
-    defaultValue: 15,
-    precision: 2,
+    min: ResponseItem.params.min.defaultValue,
+    max: ResponseItem.params.max.defaultValue,
+    defaultValue: ResponseItem.params.defaultValue.defaultValue,
+    precision: ResponseItem.params.precision.defaultValue,
   },
 };
 
