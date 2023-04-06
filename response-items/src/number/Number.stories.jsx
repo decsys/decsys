@@ -1,6 +1,7 @@
-import { useState } from "react";
+import ParamTypes from "@decsys/param-types";
 import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
+import { useState } from "react";
 
 const _context = {
   surveyId: 0,
@@ -14,24 +15,28 @@ export default {
   component: ResponseItem,
 };
 
-export const Basic = () => {
-  const [label, setLabel] = useState(ResponseItem.params.label.defaultValue);
+export const Basic = {
+  render: (args) => {
+    const [label, setLabel] = useState(15);
 
-  const handleLabelChange = (value) => {
-    setLabel(value);
-    _context.setIsValidResponse(true); // toggle the Next Button
-  };
-
-  return (
-    <ResponseItem
-      label={label}
-      min={ResponseItem.params.label.min}
-      max={ResponseItem.params.label.max}
-      precision={ResponseItem.params.label.precision}
-      onLabelChange={handleLabelChange}
-      _context={_context}
-    />
-  );
+    const handleLabelChange = (value) => {
+      setLabel(value);
+      _context.setIsValidResponse(true); // toggle the Next Button
+    };
+    return (
+      <ResponseItem
+        {...args}
+        _context={_context}
+        onLabelChange={handleLabelChange}
+      />
+    );
+  },
+  args: {
+    min: 10,
+    max: 20,
+    defaultValue: 15,
+    precision: 2,
+  },
 };
 
 export const MetadataIcon = () => <Icon width="24px" />;
