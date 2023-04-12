@@ -6,6 +6,7 @@ const _context = {
   pageId: "",
   itemId: "",
   setIsValidResponse: () => {},
+  logResults: () => {},
 };
 
 export default {

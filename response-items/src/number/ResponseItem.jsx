@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { params } from "./ResponseItem.params";
 import {
   NumberInput,
@@ -13,18 +13,26 @@ const ResponseItem = ({
   max,
   defaultValue,
   precision,
-  _context: { setIsValidResponse },
+  _context: { setIsValidResponse, logResults },
 }) => {
+  const [value, setValue] = useState(defaultValue);
+
   useEffect(() => {
     setIsValidResponse(true);
   }, [setIsValidResponse]);
+
+  const handleChange = (value) => {
+    logResults(value);
+    setValue(value);
+  };
 
   return (
     <NumberInput
       min={min}
       max={max}
       precision={precision}
-      defaultValue={defaultValue}
+      defaultValue={value}
+      onChange={handleChange}
     >
       <NumberInputField />
       <NumberInputStepper>
