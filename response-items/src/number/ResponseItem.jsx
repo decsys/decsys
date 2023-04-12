@@ -15,7 +15,6 @@ const ResponseItem = ({
   precision,
   _context: { setIsValidResponse },
 }) => {
-  const handleChange = () => {};
   useEffect(() => {
     setIsValidResponse(true);
   }, [setIsValidResponse]);
@@ -26,7 +25,6 @@ const ResponseItem = ({
       max={max}
       precision={precision}
       defaultValue={defaultValue}
-      onChange={handleChange}
     >
       <NumberInputField />
       <NumberInputStepper>

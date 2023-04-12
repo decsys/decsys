@@ -1,6 +1,5 @@
 import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
-import { useState } from "react";
 
 const _context = {
   surveyId: 0,
@@ -16,16 +15,7 @@ export default {
 
 export const Basic = {
   render: (args) => {
-    const handleLabelChange = () => {
-      _context.setIsValidResponse(true); // toggle the Next Button
-    };
-    return (
-      <ResponseItem
-        {...args}
-        _context={_context}
-        onLabelChange={handleLabelChange}
-      />
-    );
+    return <ResponseItem {...args} _context={_context} />;
   },
   args: {
     min: ResponseItem.params.min.defaultValue,
