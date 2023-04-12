@@ -12,6 +12,10 @@ const _context = {
 export default {
   title: "Number",
   component: ResponseItem,
+  argTypes: {
+    setIsValidResponse: { action: "Next button toggled" },
+    logResults: { action: "Results logged" },
+  },
 };
 
 export const Basic = {
