@@ -23,10 +23,34 @@ export const Basic = {
     return <ResponseItem {...args} _context={_context} />;
   },
   args: {
-    min: ResponseItem.params.min.defaultValue,
-    max: ResponseItem.params.max.defaultValue,
-    defaultValue: ResponseItem.params.defaultValue.defaultValue,
-    precision: ResponseItem.params.precision.defaultValue,
+    defaultValue: 0,
+    min: 0,
+    max: 10,
+    precision: 0,
+  },
+};
+
+export const CustomRange = {
+  render: (args) => {
+    return <ResponseItem {...args} _context={_context} />;
+  },
+  args: {
+    defaultValue: 0,
+    min: -50,
+    max: 50,
+    precision: 0,
+  },
+};
+
+export const WithPrecision = {
+  render: (args) => {
+    return <ResponseItem {...args} _context={_context} />;
+  },
+  args: {
+    defaultValue: 0,
+    min: 0,
+    max: 10,
+    precision: 2,
   },
 };
 
