@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { params } from "./ResponseItem.params";
 import {
   NumberInput,
   NumberInputField,
@@ -9,32 +8,30 @@ import {
 } from "@chakra-ui/react";
 
 const ResponseItem = ({
-  onChange,
   min,
   max,
   precision,
   defaultValue,
-  _context: { logResults, setIsValidResponse },
-  ...props
+  _context: { setIsValidResponse, logResults },
 }) => {
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
-    setIsValidResponse(true);
-  }, [setIsValidResponse]);
+    setIsValidResponse(value !== null);
+  }, [value]);
 
-  const handleChange = (value) => {
-    logResults(value);
-    setValue(value);
+  const handleChange = (num) => {
+    logResults({ value: num });
+    setValue(num);
   };
+
   return (
     <NumberInput
-      onChange={handleChange}
       min={min}
       max={max}
       precision={precision}
-      defaultValue={value}
-      {...props}
+      defaultValue={defaultValue}
+      onChange={handleChange}
     >
       <NumberInputField />
       <NumberInputStepper>
