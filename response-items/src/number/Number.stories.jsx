@@ -25,7 +25,18 @@ export const Basic = {
   args: {
     defaultValue: 0,
     min: 0,
-    max: 10,
+    max: 100,
+    precision: 0,
+  },
+};
+
+export const NoDefaultValue = {
+  render: (args) => {
+    return <ResponseItem {...args} _context={_context} />;
+  },
+  args: {
+    min: 0,
+    max: 100,
     precision: 0,
   },
 };
@@ -49,7 +60,7 @@ export const WithPrecision = {
   args: {
     defaultValue: 0,
     min: 0,
-    max: 10,
+    max: 100,
     precision: 2,
   },
 };

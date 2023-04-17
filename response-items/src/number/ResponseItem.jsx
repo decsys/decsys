@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { params } from "./ResponseItem.params";
 import {
   NumberInput,
   NumberInputField,
@@ -24,13 +25,13 @@ const ResponseItem = ({
     logResults({ value: num });
     setValue(num);
   };
-
+  console.log("min:", min);
   return (
     <NumberInput
       min={min}
       max={max}
       precision={precision}
-      defaultValue={defaultValue}
+      defaultValue={value}
       onChange={handleChange}
     >
       <NumberInputField />
