@@ -7,7 +7,7 @@ import CheckboxList from "./components/CheckboxList";
 const ResponseItem = ({
   confirmed: initialChecked,
   _context: { setIsValidResponse, logResults },
-  width,
+  alignment,
   textColor,
   fontSize,
   fontFamily,
@@ -17,8 +17,11 @@ const ResponseItem = ({
   const [selectedOption, setSelectedOption] = useState(null);
 
   const options = filterOptions(props);
+
+  const align =
+    { left: "flex-start", right: "flex-end" }[alignment] ?? "center";
+
   const styles = {
-    width,
     textColor,
     fontSize,
     fontFamily,
@@ -35,11 +38,12 @@ const ResponseItem = ({
   };
 
   return (
-    <Flex w="100%">
+    <Flex w="100%" justify={align}>
       {createElement(CheckboxList, {
         selectedOption,
         options,
         onSelection: handleSelection,
+        ...styles,
       })}
     </Flex>
   );
