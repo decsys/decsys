@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { params } from "./ResponseItem.params";
-import { Flex, Checkbox } from "@chakra-ui/react";
+import { Stack, Checkbox } from "@chakra-ui/react";
 
 const ResponseItem = ({
   option0,
@@ -8,10 +8,10 @@ const ResponseItem = ({
   option2,
   option3,
   confirmed: initialChecked,
-  _context: { setNextEnabled, logResults },
+  _context: { setIsValidResponse, logResults },
 }) => {
   const [checked, setChecked] = useState(initialChecked);
-  useEffect(() => setNextEnabled(!!checked), [checked]);
+  useEffect(() => setIsValidResponse(!!checked), [checked]);
 
   const handleChange = (e) => {
     logResults({ confirmed: e.target.checked });
