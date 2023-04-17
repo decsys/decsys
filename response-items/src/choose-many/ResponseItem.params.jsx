@@ -2,6 +2,16 @@ import ParamTypes from "@decsys/param-types";
 
 // Specify Configurable Parameters
 export const params = {
+  // Styling Options
+  alignment: ParamTypes.oneOf(
+    "Alignment",
+    ["left", "center", "right"],
+    "center"
+  ),
+  textColor: ParamTypes.string("Text Color", "black"),
+  colorScheme: ParamTypes.string("Checkbox Color", "black"),
+  fontSize: ParamTypes.string("Text Size", "1em"),
+  fontFamily: ParamTypes.string("Text Font", "Arial"),
   // Qualitivative answers
   option0: ParamTypes.string("Options: 0", "Option 0"),
   option1: ParamTypes.string("1", "Option 1"),

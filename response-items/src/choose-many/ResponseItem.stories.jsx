@@ -13,6 +13,12 @@ export default {
   title: "Choose Many",
   component: ResponseItem,
   argTypes: {
+    alignment: {
+      options: ["left", "center", "right"],
+      control: { type: "radio" },
+    },
+    textColor: { control: { type: "color" } },
+    colorScheme: { control: { type: "color" } },
     setIsValidResponse: { action: "Next button toggled" },
     logResults: { action: "Results logged" },
   },

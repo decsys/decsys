@@ -7,12 +7,22 @@ import CheckboxList from "./components/CheckboxList";
 const ResponseItem = ({
   confirmed: initialChecked,
   _context: { setIsValidResponse, logResults },
+  width,
+  textColor,
+  fontSize,
+  fontFamily,
   ...props
 }) => {
   const [checked, setChecked] = useState(initialChecked);
   const [selectedOption, setSelectedOption] = useState(null);
 
   const options = filterOptions(props);
+  const styles = {
+    width,
+    textColor,
+    fontSize,
+    fontFamily,
+  };
 
   useEffect(() => setIsValidResponse(!!checked), [checked]);
   const handleSelection = (option) => {
