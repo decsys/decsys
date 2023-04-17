@@ -43,6 +43,8 @@ namespace Decsys.Models
         public List<int> ChildInstanceIds { get; set; } = new();
 
         public RandomisationStrategy? RandomisationStrategy { get; set; }
+
+        public List<(int Order, Guid Id)> ResponsePages { get; set; } = new();
     }
 
     /// <summary>
