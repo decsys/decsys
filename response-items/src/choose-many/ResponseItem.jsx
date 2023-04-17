@@ -1,38 +1,46 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createElement } from "react";
 import { params } from "./ResponseItem.params";
-import { Stack, Checkbox } from "@chakra-ui/react";
+import { filterOptions } from "../Choose-one/utils/option-params";
+import { Flex, Checkbox, CheckboxGroup, Stack } from "@chakra-ui/react";
 
 const ResponseItem = ({
-  option0,
-  option1,
-  option2,
-  option3,
   confirmed: initialChecked,
   _context: { setIsValidResponse, logResults },
+  ...props
 }) => {
   const [checked, setChecked] = useState(initialChecked);
-  useEffect(() => setIsValidResponse(!!checked), [checked]);
+  const [selectedOption, setSelectedOption] = useState(null);
 
-  const handleChange = (e) => {
-    logResults({ confirmed: e.target.checked });
-    setChecked(e.target.checked);
+  const options = filterOptions(props);
+
+  useEffect(() => setIsValidResponse(!!checked), [checked]);
+  const handleSelection = (option) => {
+    // keep our state consistent
+    setSelectedOption(option);
+
+    // also update the platform
+    setNextEnabled(true);
+    logResults(JSON.parse(option));
   };
 
+  const listComponent = () => (
+    <CheckboxGroup colorScheme="green" defaultValue={["naruto", "kakashi"]}>
+      <Stack>
+        {options.map((option, i) => (
+          <Checkbox key={i} option={option} {...props} />
+        ))}
+      </Stack>
+    </CheckboxGroup>
+  );
+
   return (
-    <Stack spacing={5} direction="column">
-      <Checkbox size="lg" isChecked={checked} onChange={handleChange}>
-        {option0}
-      </Checkbox>
-      <Checkbox size="lg" isChecked={checked} onChange={handleChange}>
-        {option1}
-      </Checkbox>
-      <Checkbox size="lg" isChecked={checked} onChange={handleChange}>
-        {option2}
-      </Checkbox>
-      <Checkbox size="lg" isChecked={checked} onChange={handleChange}>
-        {option3}
-      </Checkbox>
-    </Stack>
+    <Flex w="100%">
+      {createElement(listComponent, {
+        selectedOption,
+        options,
+        onSelection: handleSelection,
+      })}
+    </Flex>
   );
 };
 
