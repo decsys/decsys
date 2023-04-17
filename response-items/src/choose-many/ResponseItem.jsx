@@ -1,7 +1,8 @@
-import { useEffect, useState, createElement } from "react";
+import { useEffect, useState, createElement, useRef } from "react";
 import { params } from "./ResponseItem.params";
 import { filterOptions } from "../Choose-one/utils/option-params";
 import { Flex, Checkbox, CheckboxGroup, Stack } from "@chakra-ui/react";
+import CheckboxList from "./components/CheckboxList";
 
 const ResponseItem = ({
   confirmed: initialChecked,
@@ -23,19 +24,9 @@ const ResponseItem = ({
     logResults(JSON.parse(option));
   };
 
-  const listComponent = () => (
-    <CheckboxGroup colorScheme="green" defaultValue={["naruto", "kakashi"]}>
-      <Stack>
-        {options.map((option, i) => (
-          <Checkbox key={i} option={option} {...props} />
-        ))}
-      </Stack>
-    </CheckboxGroup>
-  );
-
   return (
     <Flex w="100%">
-      {createElement(listComponent, {
+      {createElement(CheckboxList, {
         selectedOption,
         options,
         onSelection: handleSelection,
