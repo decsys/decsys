@@ -11,6 +11,8 @@ const ResponseItem = ({
   fontSize,
   fontFamily,
   colorScheme,
+  setIsValidResponse,
+  logResults,
   ...props
 }) => {
   const options = filterOptions(props);
@@ -28,7 +30,10 @@ const ResponseItem = ({
   return (
     <Flex w="100%" justify={align}>
       {createElement(CheckboxList, {
+        confirmed: initialChecked,
         options,
+        setIsValidResponse,
+        logResults,
         ...styles,
       })}
     </Flex>

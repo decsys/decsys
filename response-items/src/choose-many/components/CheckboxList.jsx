@@ -10,12 +10,12 @@ const CheckboxListItem = ({
   checked,
   setChecked,
   index,
-  _context: { logResults },
+  logResults,
 }) => {
   const handleChange = (e) => {
     const newChecked = [...checked];
     newChecked[index] = e.target.checked;
-    logResults({ value: newChecked[index] });
+    logResults(JSON.parse(newChecked));
     setChecked(newChecked);
   };
 
@@ -38,9 +38,17 @@ const CheckboxListItem = ({
   );
 };
 
-const CheckboxList = ({ options, _context: { setIsValidResponse }, ...p }) => {
-  const [checked, setChecked] = useState(Array(options.length).fill(false));
-  useEffect(() => setIsValidResponse(checked), [checked]);
+const CheckboxList = ({
+  confirmed: initialChecked,
+  options,
+  setIsValidResponse,
+  logResults,
+  ...p
+}) => {
+  const [checked, setChecked] = useState(
+    Array(options.length).fill(initialChecked)
+  );
+  useEffect(() => setIsValidResponse(!!checked), [checked]);
 
   return (
     <CheckboxGroup>
@@ -51,6 +59,7 @@ const CheckboxList = ({ options, _context: { setIsValidResponse }, ...p }) => {
             option={option}
             checked={checked}
             setChecked={setChecked}
+            logResults={logResults}
             index={i}
             {...p}
           />

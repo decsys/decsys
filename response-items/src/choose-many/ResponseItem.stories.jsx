@@ -22,8 +22,9 @@ export default {
       options: ["red", "green", "blue", "yellow"],
       control: { type: "radio" },
     },
-    setIsValidResponse: { action: "Next button toggled" },
     logResults: { action: "Results logged" },
+    setIsValidResponse: { action: "Next button toggled" },
+    handleChange: { action: "clicked" },
   },
 };
 
@@ -42,6 +43,7 @@ export const Basic = {
     option7: ("Option 7", ""),
     option8: ("Option 8", ""),
     option9: ("Option 9", ""),
+    confirmed: false,
   },
 };
 
