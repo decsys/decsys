@@ -31,7 +31,10 @@ const pluginConfigs = {
     exclude: "node_modules/**",
     babelHelpers: "bundled",
   },
-  resolve: { preferBuiltins: false },
+  resolve: {
+    preferBuiltins: false,
+    extensions: [".mjs", ".js", ".json", ".node", ".jsx"],
+  },
 };
 
 /**
