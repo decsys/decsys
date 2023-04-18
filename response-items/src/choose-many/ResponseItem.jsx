@@ -11,6 +11,7 @@ const ResponseItem = ({
   textColor,
   fontSize,
   fontFamily,
+  colorScheme,
   ...props
 }) => {
   const [checked, setChecked] = useState(initialChecked);
@@ -25,6 +26,7 @@ const ResponseItem = ({
     textColor,
     fontSize,
     fontFamily,
+    colorScheme,
   };
 
   useEffect(() => setIsValidResponse(!!checked), [checked]);

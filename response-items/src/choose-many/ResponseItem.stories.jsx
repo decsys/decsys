@@ -18,7 +18,10 @@ export default {
       control: { type: "radio" },
     },
     textColor: { control: { type: "color" } },
-    colorScheme: { control: { type: "color" } },
+    colorScheme: {
+      options: ["red", "green", "blue", "yellow"],
+      control: { type: "radio" },
+    },
     setIsValidResponse: { action: "Next button toggled" },
     logResults: { action: "Results logged" },
   },
