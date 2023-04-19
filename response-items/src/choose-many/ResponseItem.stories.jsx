@@ -22,9 +22,6 @@ export default {
       options: ["red", "green", "blue", "yellow"],
       control: { type: "radio" },
     },
-    logResults: { action: "Results logged" },
-    setIsValidResponse: { action: "Next button toggled" },
-    handleChange: { action: "clicked" },
   },
 };
 
