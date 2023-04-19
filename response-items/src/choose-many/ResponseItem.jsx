@@ -32,8 +32,8 @@ const ResponseItem = ({
     <Flex w="100%" justify={align}>
       {createElement(CheckboxList, {
         confirmed: initialChecked,
-        minCheck: minCheck,
-        maxCheck: maxCheck,
+        minCheck,
+        maxCheck,
         options,
         _context: { logResults, setIsValidResponse },
         ...styles,

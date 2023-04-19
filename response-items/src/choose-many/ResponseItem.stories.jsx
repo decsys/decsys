@@ -5,8 +5,8 @@ const _context = {
   surveyId: 0,
   pageId: "",
   itemId: "",
-  setIsValidResponse: () => {},
-  logResults: () => {},
+  setIsValidResponse: { action: "set valid response" },
+  logResults: { action: "log result" },
 };
 
 export default {
