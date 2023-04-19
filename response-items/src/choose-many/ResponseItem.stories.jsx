@@ -46,6 +46,25 @@ export const Basic = {
     confirmed: false,
   },
 };
+export const MinCheck = {
+  render: (args) => {
+    return <ResponseItem {...args} _context={_context} />;
+  },
+  args: {
+    option0: ("Option 0", "Option 0"),
+    option1: ("Option 1", "Option 1"),
+    option2: ("Option 2", "Option 2"),
+    option3: ("Option 3", "Option 3"),
+    option4: ("Option 4", ""),
+    option5: ("Option 5", ""),
+    option6: ("Option 6", ""),
+    option7: ("Option 7", ""),
+    option8: ("Option 8", ""),
+    option9: ("Option 9", ""),
+    confirmed: false,
+    minChecks: ("minimum", 2),
+  },
+};
 
 export const OptionValueNotPropOrderBased = {
   render: (args) => {

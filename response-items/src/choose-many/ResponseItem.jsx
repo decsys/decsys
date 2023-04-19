@@ -1,4 +1,4 @@
-import { useState, createElement } from "react";
+import { createElement } from "react";
 import { params } from "./ResponseItem.params";
 import { filterOptions } from "../Choose-one/utils/option-params";
 import { Flex } from "@chakra-ui/react";
@@ -11,8 +11,7 @@ const ResponseItem = ({
   fontSize,
   fontFamily,
   colorScheme,
-  setIsValidResponse,
-  logResults,
+  _context: { logResults, setIsValidResponse },
   ...props
 }) => {
   const options = filterOptions(props);
@@ -32,8 +31,7 @@ const ResponseItem = ({
       {createElement(CheckboxList, {
         confirmed: initialChecked,
         options,
-        setIsValidResponse,
-        logResults,
+        _context: { logResults, setIsValidResponse },
         ...styles,
       })}
     </Flex>
