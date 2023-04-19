@@ -43,7 +43,7 @@ export const Basic = {
     confirmed: false,
   },
 };
-export const MinCheck = {
+export const MinMaxCheck = {
   render: (args) => {
     return <ResponseItem {...args} _context={_context} />;
   },
@@ -59,7 +59,8 @@ export const MinCheck = {
     option8: ("Option 8", ""),
     option9: ("Option 9", ""),
     confirmed: false,
-    minChecks: ("minimum", 2),
+    minCheck: ("minimum", 2),
+    maxCheck: ("maximum", 4),
   },
 };
 

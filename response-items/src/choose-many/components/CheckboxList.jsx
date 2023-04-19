@@ -11,18 +11,9 @@ const CheckboxListItem = ({
   setChecked,
   index,
   logResults,
-  maxCheck,
 }) => {
   const handleChange = (e) => {
     const newChecked = [...checked];
-    const checkedCount = newChecked.filter(Boolean).length;
-
-    if (e.target.checked) {
-      if (maxCheck && checkedCount >= maxCheck) {
-        return;
-      }
-    }
-
     newChecked[index] = e.target.checked;
     logResults(newChecked);
     setChecked(newChecked);
@@ -61,8 +52,10 @@ const CheckboxList = ({
 
   useEffect(() => {
     const checkedCount = checked.filter(Boolean).length;
-    setIsValidResponse(minCheck ? checkedCount >= minCheck : true);
-  }, [checked, setIsValidResponse, minCheck]);
+    if (minCheck >= checkedCount && maxCheck <= checkedCount) {
+      setIsValidResponse(true);
+    }
+  }, [checked, minCheck, maxCheck, setIsValidResponse]);
 
   return (
     <CheckboxGroup>

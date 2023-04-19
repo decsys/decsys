@@ -23,6 +23,6 @@ export const params = {
   option7: ParamTypes.string("7", ""),
   option8: ParamTypes.string("8", ""),
   option9: ParamTypes.string("9", ""),
-  minChecks: ParamTypes.number("Minimum Checks", 0),
-  maxChecks: ParamTypes.number("Maximum Checks", 10),
+  minChecks: ParamTypes.string("Minimum Checks"),
+  maxChecks: ParamTypes.string("Maximum Checks"),
 };
