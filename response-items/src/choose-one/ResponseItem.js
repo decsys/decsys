@@ -9,6 +9,7 @@ import DropDownList from "./components/DropDownList";
 const ResponseItem = ({
   _context: { logResults, setNextEnabled },
   dropDown,
+  width,
   alignment,
   textColor,
   fontSize,
