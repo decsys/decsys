@@ -8,50 +8,54 @@ const CheckboxListItem = ({
   fontFamily,
   colorScheme,
   checked,
-  setChecked,
+  handleChange,
   index,
-}) => {
-  const handleChange = (e) => {
-    const newChecked = [...checked];
-    newChecked[index] = e.target.checked;
-    setChecked(newChecked);
-  };
-
-  return (
-    <Checkbox
-      colorScheme={colorScheme}
-      isChecked={checked[index]}
-      onChange={handleChange}
-      value={JSON.stringify(option)}
+}) => (
+  <Checkbox
+    colorScheme={colorScheme}
+    isChecked={checked[index]}
+    onChange={handleChange}
+    value={JSON.stringify(option)}
+  >
+    <Text
+      as="span"
+      color={textColor}
+      fontSize={fontSize}
+      fontFamily={fontFamily}
     >
-      <Text
-        as="span"
-        color={textColor}
-        fontSize={fontSize}
-        fontFamily={fontFamily}
-      >
-        {option.label}
-      </Text>
-    </Checkbox>
-  );
-};
+      {option.label}
+    </Text>
+  </Checkbox>
+);
 
 const CheckboxList = ({
   confirmed,
   options,
   minCheck,
   maxCheck,
-  _context: { setIsValidResponse },
+  _context: { setIsValidResponse, logResults },
   ...p
 }) => {
   const [checked, setChecked] = useState(Array(options.length).fill(confirmed));
 
-  useEffect(() => {
-    const checkedCount = checked.filter(Boolean).length;
-    if (minCheck >= checkedCount && maxCheck <= checkedCount) {
-      setIsValidResponse(true);
+  const handleChange = (e, index) => {
+    const newChecked = [...checked];
+    newChecked[index] = e.target.checked;
+    setChecked(newChecked);
+
+    const newSelected = newChecked
+      .map((isChecked, idx) => (isChecked ? options[idx] : null))
+      .filter((option) => option !== null);
+
+    const checkedCount = newSelected.length;
+    const isValid = minCheck <= checkedCount && checkedCount <= maxCheck;
+
+    setIsValidResponse(isValid);
+
+    if (isValid) {
+      logResults(newSelected);
     }
-  }, [checked, minCheck, maxCheck, setIsValidResponse]);
+  };
 
   return (
     <CheckboxGroup>
@@ -62,6 +66,7 @@ const CheckboxList = ({
             option={option}
             checked={checked}
             setChecked={setChecked}
+            handleChange={(e) => handleChange(e, i)}
             maxCheck={maxCheck}
             index={i}
             {...p}
