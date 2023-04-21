@@ -4,6 +4,10 @@ namespace Decsys.Repositories.Contracts;
 
 public interface IWebhookRepository
 {
-    // Create a new webhook.
+    /// <summary>
+    /// Create a new webhook.
+    /// </summary>
+    /// <param name="webhook"></param>
+    /// <returns></returns>
     WebhookModel Create(WebhookModel webhook);
 }
