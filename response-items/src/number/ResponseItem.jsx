@@ -25,7 +25,6 @@ const ResponseItem = ({
     logResults({ value: num });
     setValue(num);
   };
-  console.log("min:", min);
   return (
     <NumberInput
       min={min}
