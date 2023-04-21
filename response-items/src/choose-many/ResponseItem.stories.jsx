@@ -63,8 +63,8 @@ export const MinMaxCheck = {
     option8: ("Option 8", ""),
     option9: ("Option 9", ""),
     confirmed: false,
-    minCheck: ("minimum", 2),
-    maxCheck: ("maximum", 4),
+    minChecks: ("minimum", 2),
+    maxChecks: ("maximum", 4),
   },
 };
 
