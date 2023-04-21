@@ -12,6 +12,20 @@ namespace Decsys.Repositories.Contracts
         /// <param name="instanceId">ID of the Instance</param>
         /// <returns></returns>
         int GetParticipantCount(int instanceId);
+
+        /// <summary>
+        /// List all Participant EventLog collections for this Instance
+        /// </summary>
+        /// <param name="instanceId">ID of the Instance to list EventLog collections for</param>
+        List<string> ListLogs(int instanceId);
+
+        /// <summary>
+        /// Get a Participant ID from an underlying Collection Name
+        /// </summary>
+        /// <param name="instanceId">ID of the instance the participant belongs to</param>
+        /// <param name="collectionName">The Participant's collection name</param>
+        /// <returns></returns>
+        string GetParticipantId(int instanceId, string collectionName);
         
         /// <summary>
         /// List all Events for a Participant, ordered by Timestamp

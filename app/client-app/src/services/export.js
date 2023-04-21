@@ -1,7 +1,9 @@
 import { exportDateFormat } from "services/date-formats";
 import download from "downloadjs";
-// import { parse } from "json2csv";
+import { StreamParser } from "@json2csv/plainjs";
+import { unwind } from "@json2csv/transforms";
 import { getSurveyExport } from "api/surveys";
+import StreamSaver from "streamsaver";
 
 /**
  * Helper for Client-Side file downloads
@@ -51,55 +53,88 @@ export const surveyExport = async (id, name, type) => {
   return downloadFile(b64toByteArrays(data), `${filename}.zip`, mime);
 };
 
-export const getResultsCsvData = (results) => {
+export const getResultsCsvData = async (results, filename) => {
   // TODO: need to move this to the server (.NET) anyway
-  return "TODO,CSV,EXPORT,BROKEN";
-  // //figure out all the response columns we need
-  // const responseColumns = results.participants.reduce(
-  //   (agg, p) => {
-  //     const responseColumns = p.responses
-  //       .map((x) => {
-  //         return !x.response
-  //           ? null
-  //           : Object.keys(x.response).map((r) => ({
-  //               label: `${x.responseType}_${r}`,
-  //               value: `responses.${x.responseType}.${r}`,
-  //             }));
-  //       })
-  //       .filter((x) => !!x); // drop the null ones
 
-  //     responseColumns.forEach((response) => {
-  //       response.forEach((column) => {
-  //         agg.columns.push(column);
-  //       });
-  //     });
-  //     return agg;
-  //   },
-  //   { lookup: {}, columns: [] }
-  // ).columns;
-  // const participants = results.participants.map((participant) => {
-  //   participant.responses.map((response) => {
-  //     response[response.responseType] = {};
-  //     Object.keys(response.response).forEach((key) => {
-  //       response[response.responseType][key] = response.response[key];
-  //     });
-  //   });
-  //   return participant;
-  // });
+  //figure out all the response columns we need
+  const responseColumns = results.participants
+    .flatMap((p) =>
+      p.responses
+        .filter((x) => x.response)
+        .flatMap((x) =>
+          Object.keys(x.response).map((r) => ({
+            label: `${x.responseType}_${r}`,
+            value: `responses.${x.responseType}.${r}`,
+          }))
+        )
+    )
+    .reduce((agg, col) => {
+      if (!agg.some((c) => c.label === col.label)) {
+        agg.push(col);
+      }
+      return agg;
+    }, []);
 
-  // const data = parse(participants, {
-  //   fields: [
-  //     { label: "Participant", value: "id" },
-  //     { label: "Page", value: "responses.page" },
-  //     { label: "Page Name", value: "responses.pageName" },
-  //     { label: "Question", value: "responses.question" },
-  //     { label: "Order", value: "responses.order" },
-  //     { label: "Page Loaded", value: "responses.pageLoad" },
-  //     { label: "Response Type", value: "responses.responseType" },
-  //     { label: "Response Recorded", value: "responses.responseRecorded" },
-  //     ...responseColumns,
-  //   ],
-  //   unwind: "responses",
-  // });
-  // return data;
+  const participants = results.participants.map((participant) => {
+    participant.responses.map((response) => {
+      response[response.responseType] = {};
+      if (response.response) {
+        Object.keys(response.response).forEach((key) => {
+          response[response.responseType][key] = response?.response[key];
+        });
+      }
+    });
+    return participant;
+  });
+
+  // Define .csv fields and transformation
+  const opts = {
+    fields: [
+      { label: "Participant", value: "id" },
+      { label: "Page", value: "responses.page" },
+      { label: "Page Name", value: "responses.pageName" },
+      { label: "Question", value: "responses.question" },
+      { label: "Order", value: "responses.order" },
+      { label: "Page Loaded", value: "responses.pageLoad" },
+      { label: "Response Type", value: "responses.responseType" },
+      { label: "Response Recorded", value: "responses.responseRecorded" },
+      ...responseColumns,
+    ],
+    transforms: [unwind({ paths: ["responses"] })],
+  };
+
+  const streamOpts = {
+    delimiter: ",",
+    endOfLine: "\n",
+    quoting: 0,
+  };
+
+  const stream = new StreamParser(opts, streamOpts);
+  const filestream = StreamSaver.createWriteStream(`${filename}_Summary.csv`, {
+    size: "unknown",
+  });
+  const writer = filestream.getWriter();
+  const encoder = new TextEncoder();
+
+  // Encodes and writes each chunk
+  stream.onData = (chunk) => {
+    writer.write(encoder.encode(chunk));
+  };
+
+  // When StreamParser is finished
+  const endPromise = new Promise((resolve, reject) => {
+    stream.onEnd = () => {
+      writer.close();
+      resolve();
+    };
+    stream.onError = (err) => reject(err);
+  });
+
+  // Write JSON string to the Parser
+  stream.write(JSON.stringify(participants));
+
+  // Signal that the data is complete
+  stream.end();
+
+  return endPromise;
 };

@@ -27,16 +27,6 @@ namespace Decsys.Repositories.LiteDb
         #region Private Helpers
 
         /// <summary>
-        /// List all Participant EventLog collections for this Instance
-        /// </summary>
-        /// <param name="instanceId">ID of the Instance to list EventLog collections for</param>
-        private List<string> ListLogs(int instanceId)
-            => _db.InstanceEventLogs(instanceId)
-                .GetCollectionNames()
-                .Where(x => x.StartsWith(Collections.EventLog))
-                .ToList();
-
-        /// <summary>
         /// Find the EventLog collection for a specific Participant
         /// </summary>
         /// <param name="instanceId">ID of the Instance to search</param>
@@ -67,12 +57,11 @@ namespace Decsys.Repositories.LiteDb
         private ILiteCollection<ParticipantEvent> GetLog(int instanceId, string collectionName)
             => _db.InstanceEventLogs(instanceId).GetCollection<ParticipantEvent>(collectionName);
 
-        /// <summary>
-        /// Get a Participant ID back from a collection name
-        /// </summary>
-        /// <param name="instanceId"></param>
-        /// <param name="collectionName"></param>
-        private string GetParticipantId(int instanceId, string collectionName)
+        
+        #endregion
+        
+        
+        public string GetParticipantId(int instanceId, string collectionName)
             => _db.InstanceEventLogs(instanceId)
                     .GetCollection<EventLogLookup>(Collections.EventLogLookup)
                     .FindOne(x => x.Id.ToString() == collectionName.Substring(1))?
@@ -80,9 +69,13 @@ namespace Decsys.Repositories.LiteDb
                 ?? throw new KeyNotFoundException(
                     $"Couldn't find the requested logs collection (id: {collectionName}) " +
                     $"for the specified Survey Instance (id: {instanceId})");
-
-        #endregion
-
+        
+        public List<string> ListLogs(int instanceId)
+            => _db.InstanceEventLogs(instanceId)
+                .GetCollectionNames()
+                .Where(x => x.StartsWith(Collections.EventLog))
+                .ToList();
+        
         public int GetParticipantCount(int instanceId)
             => ListLogs(instanceId).Count;
         

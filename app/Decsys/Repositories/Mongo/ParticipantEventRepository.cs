@@ -38,7 +38,7 @@ namespace Decsys.Repositories.Mongo
             => _mongo.GetDatabase(
                 $"{_config.DatabaseName}_{Collections.InstanceDb}{instanceId}");
 
-        private List<string> ListLogs(int instanceId)
+        public List<string> ListLogs(int instanceId)
             => EventLogDb(instanceId)
                 .ListCollectionNames().ToList()
                 .Where(x => x.StartsWith($"{Collections.EventLog}_"))
@@ -51,6 +51,9 @@ namespace Decsys.Repositories.Mongo
         private IMongoCollection<ParticipantEvent> GetLog(int instanceId, string collectionName)
             => EventLogDb(instanceId).GetCollection<ParticipantEvent>(collectionName);
 
+        public string GetParticipantId(int instanceId, string collectionName)
+            => GetParticipantId(collectionName);
+        
         private string GetParticipantId(string collectionName)
             => collectionName.Substring($"{Collections.EventLog}_".Length);
 
@@ -76,11 +79,14 @@ namespace Decsys.Repositories.Mongo
             => ListLogs(instanceId)
                 .ToDictionary(
                     GetParticipantId,
-                    x => _mapper.Map<List<Models.ParticipantEvent>>(
-                        GetLog(instanceId, x)
-                            .Find(x => type == null || x.Type == type)
-                            .SortBy(x => x.Timestamp)
-                            .ToList()));
+                    x =>
+                    {
+                        return _mapper.Map<List<Models.ParticipantEvent>>(
+                            GetLog(instanceId, x)
+                                .Find(x => type == null || x.Type == type)
+                                .SortBy(x => x.Timestamp)
+                                .ToList());
+                    });
 
         public string NextParticipantId(int instanceId, string participantIdPrefix)
         {

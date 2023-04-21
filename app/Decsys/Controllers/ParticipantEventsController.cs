@@ -46,6 +46,52 @@ namespace Decsys.Controllers
             }
         }
 
+        [HttpGet]
+        [SwaggerOperation("Get all events for a participant.")]
+        [SwaggerResponse(200, "The requested list of Participant Events.", 
+            typeof(IEnumerable<ParticipantEvent>))]
+        [SwaggerResponse(404,
+            "No Survey Instance or no Participant was found with the provided ID.")]
+        public IActionResult List(
+            [SwaggerParameter("ID of the Survey Instance.")]
+            int instanceId, 
+            [SwaggerParameter("Identifier for a Survey Instance Participant.")]
+            string participantId)
+        {
+            try
+            {
+                var e = _participantEvents.List(instanceId, participantId);
+                return Ok(e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+        
+        [HttpGet("summary")]
+        [SwaggerOperation("Get the results summary for a participant.")]
+        [SwaggerResponse(200, "The requested Participant Results Summary.", 
+            typeof(ParticipantResultsSummary))]
+        [SwaggerResponse(404,
+            "No Survey Instance or no Participant was found with the provided ID.")]
+        public IActionResult ResultsSummary(
+            [SwaggerParameter("ID of the Survey Instance.")]
+            int instanceId, 
+            [SwaggerParameter("Identifier for a Survey Instance Participant.")]
+            string participantId)
+        {
+            try
+            {
+                var e = _participantEvents.ResultsSummary(instanceId, participantId);
+                return Ok(e);
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
         [HttpGet("{type}")]
         [SwaggerOperation("Get the most recent Log entry for given criteria.")]
         [SwaggerResponse(200, "The requested most recent Log entry.", typeof(ParticipantEvent))]
