@@ -23,7 +23,7 @@ public class WebhooksController : ControllerBase
     [HttpPost]
     [SwaggerOperation("Create a webhook")]
     [SwaggerResponse(200, "Webhook created.")]
-    public async Task<IActionResult> Create(WebhookModel webhook)
-        => Ok(_webhooks.Create(webhook));
+    public Task<IActionResult> Create(WebhookModel webhook)
+        => Task.FromResult<IActionResult>(Ok(_webhooks.Create(webhook)));
     
 }
