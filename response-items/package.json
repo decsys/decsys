@@ -19,6 +19,7 @@
     "build:visual-analog-scale": "rollup -c .rollup/visual-analog-scale.js",
     "build:multi-visual-analog-scale": "rollup -c .rollup/multi-visual-analog-scale.js",
     "build:number": "rollup -c .rollup/number.js",
+    "build:choose-many": "rollup -c .rollup/choose-many.js",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },

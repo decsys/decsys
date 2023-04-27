@@ -5,15 +5,15 @@ import { Flex } from "@chakra-ui/react";
 import CheckboxList from "./components/CheckboxList";
 
 const ResponseItem = ({
+  _context: { logResults, setIsValidResponse },
   confirmed: initialChecked,
   alignment,
   textColor,
   fontSize,
   fontFamily,
   colorScheme,
-  _context: { logResults, setIsValidResponse },
-  minCheck,
-  maxCheck,
+  minChecks,
+  maxChecks,
   ...props
 }) => {
   const options = filterOptions(props);
@@ -32,10 +32,11 @@ const ResponseItem = ({
     <Flex w="100%" justify={align}>
       {createElement(CheckboxList, {
         confirmed: initialChecked,
-        minCheck,
-        maxCheck,
+        minChecks,
+        maxChecks,
         options,
-        _context: { logResults, setIsValidResponse },
+        logResults,
+        setIsValidResponse,
         ...styles,
       })}
     </Flex>

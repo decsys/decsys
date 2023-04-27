@@ -9,7 +9,11 @@ export const params = {
     "center"
   ),
   textColor: ParamTypes.string("Text Color", "black"),
-  colorScheme: ParamTypes.string("Checkbox Color", "black"),
+  colorScheme: ParamTypes.oneOf(
+    "Color Scheme",
+    ["red", "green", "blue", "yellow"],
+    "green"
+  ),
   fontSize: ParamTypes.string("Text Size", "1em"),
   fontFamily: ParamTypes.string("Text Font", "Arial"),
   // Qualitivative answers
