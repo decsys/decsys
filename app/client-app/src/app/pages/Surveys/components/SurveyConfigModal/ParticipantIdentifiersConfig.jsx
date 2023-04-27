@@ -9,7 +9,7 @@ import {
   Stack,
   Icon,
 } from "@chakra-ui/react";
-import { generateCombination } from "gfycat-style-urls";
+import { generateCombination } from "services/generate-combination";
 import produce from "immer";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
