@@ -9,7 +9,7 @@ import {
   Stack,
   Icon,
 } from "@chakra-ui/react";
-import generateCombination from "services/generate-combination";
+import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
@@ -22,7 +22,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       produce((config) => {
         config.validIdentifiers.push(
           ...Array(idGenCount)
-            .fill(() => generateCombination(1, "", true))
+            .fill(() => generateGfyCatStyleUrl(1, "", true))
             .map((x) => x())
         );
       }),
