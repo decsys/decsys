@@ -1,5 +1,5 @@
 //Taken from https://gist.github.com/ijmacdowell/8325491#file-adjectives-js
-module.exports = [
+export default [
   "aback",
   "abaft",
   "abandoned",
