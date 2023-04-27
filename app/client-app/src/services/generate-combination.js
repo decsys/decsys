@@ -1,7 +1,7 @@
 import adjectives from "./adjectives";
 import animals from "./animals";
 
-export default generateCombination = (
+const generateCombination = (
   numAdjectives,
   delimiter,
   capitalizeFirstLetter
@@ -22,3 +22,5 @@ export default generateCombination = (
     : animal;
   return combination;
 };
+
+export default generateCombination;
