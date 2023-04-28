@@ -12,6 +12,14 @@ import {
 import { useDerivedState } from "hooks/useDerivedState";
 import useDeferredAction from "hooks/useDeferredAction";
 
+/**
+ * Try and convert a string to a number, else use a fallback value
+ */
+const convertStringToNumber = (text, fallback) => {
+  const n = parseFloat(text);
+  return isNaN(n) ? fallback : n;
+};
+
 const useDeferredChangeHandler = (paramKey, init, onChange) => {
   const [value, setValue] = useDerivedState(init);
 
@@ -29,8 +37,7 @@ const useDeferredChangeHandler = (paramKey, init, onChange) => {
       case "string":
         // make sure we convert back to a number, though!
         // else items may receive strings they weren't expecting, and do invalid math!
-        const n = parseFloat(e);
-        inputValue = isNaN(n) ? init : n;
+        inputValue = convertStringToNumber(e, init);
         break;
       case "object":
         inputValue = e.target.value;
@@ -95,8 +102,8 @@ const Param = ({ paramKey, value, type, oneOf, onChange }) => {
           >
             <NumberInputField />
             <NumberInputStepper>
-              <NumberIncrementStepper onClick={handleValueChange} />
-              <NumberDecrementStepper onClick={handleValueChange} />
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
             </NumberInputStepper>
           </NumberInput>
         );
