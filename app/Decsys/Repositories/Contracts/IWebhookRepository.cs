@@ -8,6 +8,6 @@ public interface IWebhookRepository
     /// Create a new webhook.
     /// </summary>
     /// <param name="webhook"></param>
-    /// <returns></returns>
-    WebhookModel Create(WebhookModel webhook);
+    /// <returns>The created Webhook Id</returns>
+    int Create(WebhookModel webhook);
 }

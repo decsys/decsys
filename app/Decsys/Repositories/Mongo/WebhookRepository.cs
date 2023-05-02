@@ -1,4 +1,5 @@
 using AutoMapper;
+using Decsys.Data.Entities.Mongo;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using MongoDB.Driver;
@@ -7,11 +8,11 @@ namespace Decsys.Repositories.Mongo;
 
 public class WebhookRepository : IWebhookRepository
 {
-    private readonly IMongoCollection<WebhookModel> _webhooks;
+    private readonly IMongoCollection<Webhook> _webhooks;
     private readonly IMapper _mapper;
     
     public WebhookRepository(
-        IMongoCollection<WebhookModel> webhooks,
+        IMongoCollection<Webhook> webhooks,
         IMapper mapper
         )
     {
@@ -19,10 +20,12 @@ public class WebhookRepository : IWebhookRepository
         _mapper = mapper;
     }
     
-    public WebhookModel Create(WebhookModel webhook)
+    public int Create(WebhookModel webhook)
     {
-        var entity = _mapper.Map<WebhookModel>(webhook);
+        var entity = _mapper.Map<Webhook>(webhook);
+        
+        _webhooks.InsertOne(entity);
 
-        return entity;
+        return entity.Id;
     }
 }

@@ -17,9 +17,9 @@ public class WebhookService
     /// <summary>
     /// Creates a Webhook
     /// </summary>
-    /// <param name="model"></param>
-    /// <returns></returns>
-    public WebhookModel Create(WebhookModel model)
+    /// <param name="model">Webhook model to create</param>
+    /// <returns>The created Webhook</returns>
+    public int Create(WebhookModel model)
         => _webhooks.Create(model);
     
 }
