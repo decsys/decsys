@@ -38,7 +38,6 @@ importers:
       downloadjs: ^1.4.7
       formik: ^2.1.5
       framer-motion: ^4.1.17
-      gfycat-style-urls: ^1.0.3
       github-markdown-css: ^4.0.0
       immer: ^9.0.2
       js-base64: ^3.7.3
@@ -82,7 +81,6 @@ importers:
       downloadjs: 1.4.7
       formik: 2.2.9_react@17.0.2
       framer-motion: 4.1.17_sfoxds7t5ydpegc3knd667wn6m
-      gfycat-style-urls: 1.0.3
       github-markdown-css: 4.0.0
       immer: 9.0.12
       js-base64: 3.7.3
@@ -18299,10 +18297,6 @@ packages:
     resolution: {integrity: sha512-Ln0UQDlxH1BapMu3GPtf7CuYNwRZf2gwCuPqbyG6pB8WfmFpzqcy4xtAaAMUhnNqjMKTiCPZG2oMT3YSx8U2NA==}
     engines: {node: '>=0.10.0'}
     dev: true
-
-  /gfycat-style-urls/1.0.3:
-    resolution: {integrity: sha512-HirQ+dsQWChjnfwZXB07ytzh3eZQFVlOdO2ML1YvpHBOXplumtzGIAejVu91wmj4Cw7t4760M2fKtgI+NAi/2w==}
-    dev: false
 
   /giget/1.1.2:
     resolution: {integrity: sha512-HsLoS07HiQ5oqvObOI+Qb2tyZH4Gj5nYGfF9qQcZNrPw+uEFhdXtgJr01aO2pWadGHucajYDLxxbtQkm97ON2A==}

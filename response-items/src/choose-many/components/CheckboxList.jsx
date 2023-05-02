@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CheckboxGroup, Checkbox, Stack, Text } from "@chakra-ui/react";
 
 const CheckboxListItem = ({
@@ -29,11 +29,12 @@ const CheckboxListItem = ({
 );
 
 const CheckboxList = ({
+  setIsValidResponse,
+  logResults,
   confirmed,
   options,
-  minCheck,
-  maxCheck,
-  _context: { setIsValidResponse, logResults },
+  minChecks,
+  maxChecks,
   ...p
 }) => {
   const [checked, setChecked] = useState(Array(options.length).fill(confirmed));
@@ -48,7 +49,7 @@ const CheckboxList = ({
       .filter((option) => option !== null);
 
     const checkedCount = newSelected.length;
-    const isValid = minCheck <= checkedCount && checkedCount <= maxCheck;
+    const isValid = minChecks <= checkedCount && checkedCount <= maxChecks;
 
     setIsValidResponse(isValid);
 
@@ -67,7 +68,6 @@ const CheckboxList = ({
             checked={checked}
             setChecked={setChecked}
             handleChange={(e) => handleChange(e, i)}
-            maxCheck={maxCheck}
             index={i}
             {...p}
           />
