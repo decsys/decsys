@@ -1,4 +1,3 @@
-using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data.Entities.Mongo;
