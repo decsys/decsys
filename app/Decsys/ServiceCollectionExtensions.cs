@@ -77,7 +77,8 @@ namespace Decsys
                 .AddTransient<IComponentRepository, LiteDbComponentRepository>()
                 .AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>()
                 .AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>()
-                .AddTransient<IStudyInstanceRepository, LiteDbStudyInstanceRepository>();
+                .AddTransient<IStudyInstanceRepository, LiteDbStudyInstanceRepository>()
+                .AddTransient<IWebhookRepository, LiteDbWebhookRepository>();
 
         public static IServiceCollection AddAppServices(this IServiceCollection s)
             => s.AddTransient<SurveyService>()
