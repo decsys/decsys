@@ -1,7 +1,10 @@
 using AutoMapper;
+using Decsys.Config;
+using Decsys.Constants;
 using Decsys.Data.Entities.Mongo;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace Decsys.Repositories.Mongo;
@@ -9,20 +12,28 @@ namespace Decsys.Repositories.Mongo;
 public class WebhookRepository : IWebhookRepository
 {
     private readonly IMongoCollection<Webhook> _webhooks;
-    private readonly IMapper _mapper;
-    
+
     public WebhookRepository(
-        IMongoCollection<Webhook> webhooks,
-        IMapper mapper
-        )
+        IOptions<HostedDbSettings> config,
+        IMongoClient mongo
+    )
     {
-        _webhooks = webhooks;
-        _mapper = mapper;
+        var db = mongo.GetDatabase(config.Value.DatabaseName);
+        _webhooks = db.GetCollection<Webhook>(Collections.Webhooks);
     }
     
     public int Create(WebhookModel webhook)
     {
-        var entity = _mapper.Map<Webhook>(webhook);
+        var entity = new Webhook
+        {
+            SurveyId = webhook.SurveyId,
+            CallbackUrl = webhook.CallbackUrl,
+            Secret = webhook.Secret,
+            VerifySsl = webhook.VerifySsl,
+            EventType = webhook.EventType,
+            TriggerParameters = webhook.TriggerParameters,
+            TriggerFilters = webhook.TriggerFilters
+        };
         
         _webhooks.InsertOne(entity);
 

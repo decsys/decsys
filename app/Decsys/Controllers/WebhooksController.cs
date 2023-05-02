@@ -25,7 +25,7 @@ public class WebhooksController : ControllerBase
     [SwaggerResponse(200, "Webhook created.")]
     [SwaggerResponse(400, "Webhook model was invalid.")]
     [SwaggerResponse(500, "Server failed to create the Webhook.")]
-    public async Task<IActionResult> Create(WebhookModel model)
+    public IActionResult Create(WebhookModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -37,7 +37,7 @@ public class WebhooksController : ControllerBase
             var webhookId  = _webhooks.Create(model);
             return Ok(webhookId);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
