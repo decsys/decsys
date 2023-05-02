@@ -3,9 +3,9 @@ using Decsys.Models.Webhooks;
 
 namespace Decsys.Mapping;
 
-public class WebookMap : Profile
+public class WebhookMap : Profile
 {
-    public WebookMap()
+    public WebhookMap()
     {
         CreateMap<Data.Entities.Mongo.Webhook, WebhookModel>();
     }

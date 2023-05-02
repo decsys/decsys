@@ -88,6 +88,7 @@ namespace Decsys
                 .AddTransient<ExportService>()
                 .AddTransient<ParticipantEventService>()
                 .AddTransient<StudyAllocationService>()
+                .AddTransient<WebhookService>()
                 .AddSingleton<MathService>();
 
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
@@ -223,6 +224,7 @@ namespace Decsys
                 .AddTransient<IComponentRepository, ComponentRepository>()
                 .AddTransient<ISurveyInstanceRepository, SurveyInstanceRepository>()
                 .AddTransient<IParticipantEventRepository, ParticipantEventRepository>()
-                .AddTransient<IStudyInstanceRepository, StudyInstanceRepository>();
+                .AddTransient<IStudyInstanceRepository, StudyInstanceRepository>()
+                .AddTransient<IWebhookRepository, WebhookRepository>();
     }
 }
