@@ -72,12 +72,22 @@ const SurveyPage = ({
     const hasOptionalComponent = page.components?.some(
       (component) => component.isOptional
     );
-    const shouldEnableNext =
+    const hasMandatoryComponent = page.components?.some(
+      (component) => !component.isOptional
+    );
+
+    const canProceedWithOptional =
       (hasOptionalComponent &&
         resultLogged === false &&
         isValidResponse === null) ||
-      (hasOptionalComponent && resultLogged && isValidResponse) ||
-      (!hasOptionalComponent && resultLogged && isValidResponse) ||
+      (hasOptionalComponent && resultLogged && isValidResponse);
+
+    const canProceedWithMandatory =
+      hasMandatoryComponent && resultLogged && isValidResponse === true;
+
+    const shouldEnableNext =
+      canProceedWithOptional ||
+      canProceedWithMandatory ||
       !getPageResponseItem(page.components);
 
     setNextEnabled(shouldEnableNext);
