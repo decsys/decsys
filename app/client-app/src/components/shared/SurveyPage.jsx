@@ -44,7 +44,7 @@ const SurveyPage = ({
   logEvent = logEvent || nop;
 
   const [nextEnabled, setNextEnabled] = useState(false);
-  const [isValidResponse, setIsValidResponse] = useState(false);
+  const [isValidResponse, setIsValidResponse] = useState(null);
   const [resultLogged, setResultLogged] = useState(false);
 
   const previousPageId = usePrevious(page.id);
@@ -53,7 +53,6 @@ const SurveyPage = ({
       logEvent(page.id, PAGE_LOAD, {});
       // check if the page has any Response Items
       // and set Next Button appropriately
-      setIsValidResponse(false);
       setResultLogged(false);
       if (
         getPageResponseItem(page.components) &&
@@ -74,8 +73,11 @@ const SurveyPage = ({
       (component) => component.isOptional
     );
     const shouldEnableNext =
-      hasOptionalComponent ||
-      (isValidResponse && resultLogged) ||
+      (hasOptionalComponent &&
+        resultLogged === false &&
+        isValidResponse === null) ||
+      (hasOptionalComponent && resultLogged && isValidResponse) ||
+      (!hasOptionalComponent && resultLogged && isValidResponse) ||
       !getPageResponseItem(page.components);
 
     setNextEnabled(shouldEnableNext);
