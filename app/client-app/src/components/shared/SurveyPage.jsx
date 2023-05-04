@@ -158,6 +158,14 @@ const SurveyPage = ({
           >
             {lastPage ? "Finish" : "Next"}
           </Button>
+          <Button
+            size="md"
+            colorScheme="gray"
+            variant="outline"
+            borderColor="red.200"
+          >
+            Clear Response
+          </Button>
         </DefaultContainer>
       </Flex>
     </>
