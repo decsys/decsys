@@ -46,6 +46,7 @@ const SurveyPage = ({
   const [nextEnabled, setNextEnabled] = useState(false);
   const [isValidResponse, setIsValidResponse] = useState(null);
   const [resultLogged, setResultLogged] = useState(false);
+  const [itemKey, setItemKey] = useState(Date.now());
 
   const previousPageId = usePrevious(page.id);
   useLayoutEffect(() => {
@@ -95,10 +96,10 @@ const SurveyPage = ({
 
   const clearResult = () => {
     const responseItemComponent = getPageResponseItem(page.components);
-
     setResultLogged(false);
     setIsValidResponse(null);
     logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
+    setItemKey(Date.now());
   };
 
   const renderContext = {
@@ -107,6 +108,7 @@ const SurveyPage = ({
     setIsValidResponse,
     setNextEnabled: setIsValidResponse,
     logEvent,
+    clearResult,
   };
 
   const [isMore, setIsMore] = useState();
@@ -122,6 +124,7 @@ const SurveyPage = ({
             ) : (
               <Body
                 page={page}
+                key={itemKey}
                 renderContext={renderContext}
                 setResultLogged={setResultLogged}
                 setIsValidResponse={setIsValidResponse}
@@ -156,25 +159,28 @@ const SurveyPage = ({
               </Badge>
             )}
           </div>
-          <Button
-            size="lg"
-            disabled={!nextEnabled || isBusy}
-            isLoading={isBusy}
-            colorScheme={nextEnabled ? "blue" : "gray"}
-            onClick={handleNextClick}
-            rightIcon={!lastPage && <FaChevronRight />}
-          >
-            {lastPage ? "Finish" : "Next"}
-          </Button>
-          <Button
-            size="md"
-            colorScheme="gray"
-            variant="outline"
-            borderColor="red.300"
-            onClick={clearResult}
-          >
-            Clear Response
-          </Button>
+          <Stack spacing={3} direction="row" align="center">
+            <Button
+              size="md"
+              colorScheme="gray"
+              variant="outline"
+              borderColor="red.500"
+              onClick={clearResult}
+              mr={2}
+            >
+              Clear Response
+            </Button>
+            <Button
+              size="lg"
+              disabled={!nextEnabled || isBusy}
+              isLoading={isBusy}
+              colorScheme={nextEnabled ? "blue" : "gray"}
+              onClick={handleNextClick}
+              rightIcon={!lastPage && <FaChevronRight />}
+            >
+              {lastPage ? "Finish" : "Next"}
+            </Button>
+          </Stack>
         </DefaultContainer>
       </Flex>
     </>
