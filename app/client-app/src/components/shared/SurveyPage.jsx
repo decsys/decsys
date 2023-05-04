@@ -93,6 +93,14 @@ const SurveyPage = ({
     setNextEnabled(shouldEnableNext);
   }, [isValidResponse, resultLogged, page.components?.length]);
 
+  const clearResult = () => {
+    const responseItemComponent = getPageResponseItem(page.components);
+
+    setResultLogged(false);
+    setIsValidResponse(null);
+    logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
+  };
+
   const renderContext = {
     pageId: page.id,
     surveyId,
@@ -162,7 +170,8 @@ const SurveyPage = ({
             size="md"
             colorScheme="gray"
             variant="outline"
-            borderColor="red.200"
+            borderColor="red.300"
+            onClick={clearResult}
           >
             Clear Response
           </Button>
