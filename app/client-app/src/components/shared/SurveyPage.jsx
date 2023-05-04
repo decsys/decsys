@@ -21,7 +21,7 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
           itemId: item.id,
           logResults: (payload) => {
             renderContext.logEvent(item.id, COMPONENT_RESULTS, payload);
-            setResultLogged(true);
+            setResultLogged(item.isOptional && payload === null ? null : true);
           },
         }}
         component={renderComponent}
