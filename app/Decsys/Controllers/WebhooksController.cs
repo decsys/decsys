@@ -37,9 +37,9 @@ public class WebhooksController : ControllerBase
             var webhookId  = _webhooks.Create(model);
             return Ok(webhookId);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return BadRequest(e.Message);
         }
     }
 
