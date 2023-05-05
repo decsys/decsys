@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Decsys.Models.Webhooks;
 
 namespace Decsys.Controllers
 {
@@ -24,17 +25,20 @@ namespace Decsys.Controllers
         private readonly ParticipantEventService _events;
         private readonly StudyAllocationService _random;
         private readonly MathService _math;
+        private readonly WebhookService _webhooks;
 
         public ParticipantProgressController(
             SurveyInstanceService instances,
             ParticipantEventService events,
             StudyAllocationService random,
-            MathService math)
+            MathService math,
+            WebhookService webhooks)
         {
             _instances = instances;
             _events = events;
             _random = random;
             _math = math;
+            _webhooks = webhooks;
         }
 
         /// <summary>
@@ -386,6 +390,28 @@ namespace Decsys.Controllers
             {
                 progress.Page = instance.Survey.Pages.Single(p => p.Id.ToString() == pageOrder[iNextPage]);
                 progress.IsLastPage = iNextPage >= pageOrder.Count - 1;
+            }
+            
+            // Trigger webhook
+            try
+            {
+                // TODO: Get participant results summary
+                await _webhooks.Trigger(new PayloadModel()
+                {
+                    Timestamp = DateTimeOffset.UtcNow,
+                    SourcePage = iCurrentPage,
+                    RequestedTargetPage = iNextPage,
+                    ResolvedTargetPage = iCurrentPage,
+                    NavigationStatus = "Success",
+                    ParticipantId = participantId,
+                    SurveyId = surveyId,
+                    InstanceId = instanceId,
+                    ParticipantResultsSummary = null,
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
 
             // Log the request and its outcome

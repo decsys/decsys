@@ -38,4 +38,8 @@ public class WebhookRepository : IWebhookRepository
 
         return entity.Id;
     }
+
+    public List<Webhook> GetWebhooksBySurvey(int surveyId)
+        => _webhooks.Find(x => x.SurveyId == surveyId).ToList();
+    
 }
