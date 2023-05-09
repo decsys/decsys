@@ -5,7 +5,7 @@ import { Flex } from "@chakra-ui/react";
 import CheckboxList from "./components/CheckboxList";
 
 const ResponseItem = ({
-  _context: { logResults, setIsValidResponse },
+  _context: { logResults, setIsValidResponse, clearResult },
   confirmed: initialChecked,
   alignment,
   textColor,
@@ -37,6 +37,7 @@ const ResponseItem = ({
         options,
         logResults,
         setIsValidResponse,
+        clearResult,
         ...styles,
       })}
     </Flex>

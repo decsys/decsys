@@ -96,10 +96,11 @@ const SurveyPage = ({
 
   const clearResult = () => {
     const responseItemComponent = getPageResponseItem(page.components);
-    setResultLogged(false);
-    setIsValidResponse(null);
+    setResultLogged(null);
+    setIsValidResponse(false);
     logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
     setItemKey(Date.now());
+    console.log(isValidResponse);
   };
 
   const renderContext = {
