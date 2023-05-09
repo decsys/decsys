@@ -100,7 +100,6 @@ const SurveyPage = ({
     setIsValidResponse(null);
     logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
     setItemKey(Date.now());
-    console.log(isValidResponse);
   };
 
   const renderContext = {
@@ -129,6 +128,7 @@ const SurveyPage = ({
                 renderContext={renderContext}
                 setResultLogged={setResultLogged}
                 setIsValidResponse={setIsValidResponse}
+                clearResult={clearResult}
               />
             )}
             <VisibilitySensor onChange={handleBodyBottomVisibilityChange}>
