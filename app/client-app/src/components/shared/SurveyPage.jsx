@@ -8,7 +8,7 @@ import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import VisibilitySensor from "react-visibility-sensor";
 import { usePrevious } from "hooks/usePrevious";
 import { LoadingIndicator } from "components/core";
-import { FaTimes } from "react-icons/fa";
+
 export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
     const renderComponent = getComponent(item.type);
