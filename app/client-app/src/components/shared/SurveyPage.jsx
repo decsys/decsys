@@ -96,8 +96,8 @@ const SurveyPage = ({
 
   const clearResult = () => {
     const responseItemComponent = getPageResponseItem(page.components);
-    setResultLogged(null);
-    setIsValidResponse(false);
+    setResultLogged(false);
+    setIsValidResponse(null);
     logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
     setItemKey(Date.now());
     console.log(isValidResponse);
