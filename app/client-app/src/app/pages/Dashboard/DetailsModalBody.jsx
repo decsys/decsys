@@ -89,6 +89,7 @@ const DetailsModalBody = ({ surveyId, page, results, completion }) => {
     setIsValidResponse: nop,
     setNextEnabled: nop,
     logEvent: nop,
+    clearResult: nop,
   };
 
   return (
