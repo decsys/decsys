@@ -11,13 +11,13 @@ const ResponseItem = ({
   useEffect(() => setIsValidResponse(!!checked), [checked]);
 
   const handleChange = (e) => {
-    logResults({ confirmed: e.target.checked });
+    if (e.target.checked) {
+      logResults({ confirmed: true });
+    } else {
+      clearResult();
+    }
     setChecked(e.target.checked);
   };
-
-  if (!checked) {
-    clearResult();
-  }
 
   return (
     <Flex>
