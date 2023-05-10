@@ -1,18 +1,24 @@
 namespace Decsys.Models.Webhooks;
 
 public class PayloadModel
-{
-    
-    public DateTimeOffset Timestamp { get; set; }
-    public string ParticipantId { get; set; } = string.Empty;
-    public int SurveyId { get; set; }
-    public int InstanceId { get; set; }
-    
-    public BaseEventType? EventType { get; set; }
-    public ParticipantResultsSummary? ParticipantResultsSummary
+{ 
+    public PayloadModel(int surveyId, int instanceId, string participantId, BaseEventType eventType, ParticipantResultsSummary participantResultsSummary)
+    {
+        Timestamp = DateTimeOffset.UtcNow;
+        SurveyId = surveyId;
+        InstanceId = instanceId;
+        EventType = eventType;
+        ParticipantResultsSummary = participantResultsSummary;
+        ParticipantId = participantId;
+    }
+    public DateTimeOffset Timestamp { get; }
+    public string ParticipantId { get; }
+    public int SurveyId { get; }
+    public int InstanceId { get; }
+    public BaseEventType EventType { get; }
+    public ParticipantResultsSummary ParticipantResultsSummary
     {
         get;
-        set;
     } 
 
 }

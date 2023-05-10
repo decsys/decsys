@@ -1,4 +1,3 @@
-using Decsys.Data.Entities.Mongo;
 using Decsys.Models.Webhooks;
 
 namespace Decsys.Repositories.Contracts;
@@ -12,5 +11,10 @@ public interface IWebhookRepository
     /// <returns>The created Webhook Id</returns>
     int Create(WebhookModel webhook);
 
-    List<Webhook> GetWebhooksBySurvey(int surveyId);
+    /// <summary>
+    /// Gets a list of webhooks for a given survey Id.
+    /// </summary>
+    /// <param name="surveyId">The survey id to filter by</param>
+    /// <returns>A list of Webhook models.</returns>
+    List<WebhookModel> GetWebhooksBySurvey(int surveyId);
 }

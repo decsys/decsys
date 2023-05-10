@@ -393,25 +393,18 @@ namespace Decsys.Controllers
                 progress.IsLastPage = iNextPage >= pageOrder.Count - 1;
             }
             
-            // TODO: Generate participants results summary
-            var summary = _events.ResultsSummary(instanceId);
             // Trigger webhook
             try
             {
-                await _webhooks.Trigger(new PayloadModel
+                var summary = _events.ResultsSummary(instanceId, participantId);
+                var eventType = new PageNavigation
                 {
-                    Timestamp = DateTimeOffset.UtcNow,
-                    ParticipantId = participantId,
-                    SurveyId = surveyId,
-                    InstanceId = instanceId,
-                    EventType = new PageNavigation
-                    {
-                        ResolvedPage = iNextPage,
-                        SourcePage = iCurrentPage,
-                        TargetPage = 0
-                    },
-                    ParticipantResultsSummary = summary,
-                });
+                    ResolvedPage = iNextPage,
+                    SourcePage = iCurrentPage,
+                    TargetPage = 0
+                };
+                await _webhooks.Trigger(new PayloadModel(surveyId, instanceId, participantId, eventType, summary
+                ));
             }
             catch (Exception e)
             {

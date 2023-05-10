@@ -53,7 +53,3 @@ public class PageNavigation : BaseEventType
     /// </summary>
     public bool ResolvedSuccess;
 }
-
-public class SurveyComplete : BaseEventType
-{
-}
