@@ -24,18 +24,22 @@ namespace Decsys.Controllers
         private readonly SurveyInstanceService _instances;
         private readonly ParticipantEventService _events;
         private readonly StudyAllocationService _random;
+        private readonly WebhookService _webhooks;
         private readonly MathService _math;
 
         public ParticipantProgressController(
             SurveyInstanceService instances,
             ParticipantEventService events,
             StudyAllocationService random,
+            WebhookService webhooks,
             MathService math)
         {
             _instances = instances;
             _events = events;
             _random = random;
+            _webhooks = webhooks;
             _math = math;
+            
         }
 
         /// <summary>
@@ -394,16 +398,18 @@ namespace Decsys.Controllers
             // Trigger webhook
             try
             {
-                await _webhooks.Trigger(new PayloadModel()
+                await _webhooks.Trigger(new PayloadModel
                 {
                     Timestamp = DateTimeOffset.UtcNow,
-                    SourcePage = iCurrentPage,
-                    RequestedTargetPage = iNextPage,
-                    ResolvedTargetPage = iCurrentPage,
-                    NavigationStatus = "Success",
                     ParticipantId = participantId,
                     SurveyId = surveyId,
                     InstanceId = instanceId,
+                    EventType = new PageNavigation
+                    {
+                        ResolvedPage = iNextPage,
+                        SourcePage = iCurrentPage,
+                        TargetPage = 0
+                    },
                     ParticipantResultsSummary = summary,
                 });
             }

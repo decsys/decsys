@@ -28,7 +28,7 @@ public class TriggerCriteria
 /// </summary>
 public abstract class BaseEventType
 {
-    public string Name { get; set; } = string.Empty;
+    public string? Name { get; set; } = string.Empty;
 }
 
 public class PageNavigation : BaseEventType
@@ -54,3 +54,6 @@ public class PageNavigation : BaseEventType
     public bool ResolvedSuccess;
 }
 
+public class SurveyComplete : BaseEventType
+{
+}

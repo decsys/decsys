@@ -1,3 +1,4 @@
+using System.Text;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using Newtonsoft.Json;
@@ -26,56 +27,68 @@ public class WebhookService
     public int Create(WebhookModel model)
         => _webhooks.Create(model);
 
+    
     /// <summary>
     /// Triggers webhooks
-    /// Triggers every webhook for a survey where the page number matches.
+    /// Triggers 
     /// </summary>
-    /// <param name="payload"></param>
+    /// <param name="payload">The payload to trigger and Post.</param>
     public async Task Trigger(PayloadModel payload)
     {
-        // TODO: Maybe this should be the instance of the survey...?
         var webhooks = _webhooks.GetWebhooksBySurvey(payload.SurveyId);
         
         foreach (var webhook in webhooks)
         {
-            foreach (var filter in webhook.TriggerFilters)
+            if (await Filter(payload, webhook))
             {
-                // If pages match.
-                // TODO: Can simplify the source page 
-                if (filter.Name == "SourcePage" && filter.Value == payload.SourcePage.ToString())
-                {
-                    // Post data
-                    await SendWebhook(payload, webhook);
-                }
+                await SendWebhook(payload, webhook.CallbackUrl);
             }
         }
     }
 
     /// <summary>
-    /// Posts webhook data
+    /// Filters the webhooks
     /// </summary>
     /// <param name="payload"></param>
     /// <param name="webhook"></param>
-    private async Task SendWebhook(PayloadModel payload, WebhookModel webhook)
+    /// <returns>True if filter matches</returns>
+    private static Task<bool> Filter(PayloadModel payload, WebhookModel webhook)
     {
-        var resultsJson = JsonConvert.SerializeObject(payload.ParticipantResultsSummary);
-    
-        // TODO: Note this is the redcap POST format.
-        var parameters = new Dictionary<string, string>()
+        foreach (var eventType in webhook.TriggerCriteria.SelectMany(filter => filter.EventTypes))
         {
-            { "token", webhook.Secret }, 
-            { "content", "record" },
-            { "format", "json" },
-            { "type", "flat" },
-            { "overwriteBehavior", "normal" },
-            { "forceAutoNumber", "false" },
-            { "data", resultsJson },
-            { "returnContent", "ids" },
-            { "returnFormat", "json" }
-        };
-    
-        var content = new FormUrlEncodedContent(parameters);
-        var resp = await _client.PostAsync(webhook.CallbackUrl, content);
+            switch (payload.EventType)
+            {
+                case PageNavigation pageNavigationEvent:
+                    if (eventType.GetType() == typeof(PageNavigation))
+                    {
+                        var pageEvent = (PageNavigation) eventType;
+                        if (pageNavigationEvent.SourcePage == pageEvent.SourcePage)
+                        {
+                            return Task.FromResult(true);
+                        }
+                    }
+                    break;
+                
+                default:
+                    throw new NotSupportedException($"Event type is not supported.");
+                    break;
+            }
+        }
+
+        return Task.FromResult(false);
+    }
+
+    /// <summary>
+    /// Posts webhook data
+    /// </summary>
+    /// <param name="payload">Payload to Post</param>
+    /// <param name="webhook">Webhook to activate</param>
+    private async Task SendWebhook(PayloadModel payload, string callbackUrl)
+    {
+        var json = JsonConvert.SerializeObject(payload);
+        
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var resp = await _client.PostAsync(callbackUrl, content);
         resp.EnsureSuccessStatusCode();
     }
 
