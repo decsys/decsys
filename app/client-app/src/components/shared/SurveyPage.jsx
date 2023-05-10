@@ -49,6 +49,11 @@ const SurveyPage = ({
   const [itemKey, setItemKey] = useState(Date.now());
 
   const previousPageId = usePrevious(page.id);
+
+  useEffect(() => {
+    console.log(isValidResponse);
+  }, [isValidResponse]);
+
   useLayoutEffect(() => {
     if (page.id !== previousPageId) {
       logEvent(page.id, PAGE_LOAD, {});
@@ -101,7 +106,6 @@ const SurveyPage = ({
     setIsValidResponse(null);
     logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
     setItemKey(Date.now());
-    console.log(isValidResponse);
   };
 
   const renderContext = {
