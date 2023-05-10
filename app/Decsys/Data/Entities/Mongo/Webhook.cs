@@ -9,7 +9,6 @@ public class Webhook
     public string CallbackUrl { get; set; } = string.Empty;
     public string Secret { get; set; } = string.Empty;
     public bool VerifySsl { get; set; }
-    public EventType EventType { get; set; }
-    public Dictionary<string, string> TriggerParameters { get; set; } = new Dictionary<string, string>();
-    public List<TriggerFilter> TriggerFilters { get; set; } = new List<TriggerFilter>();
+
+    public List<TriggerCriteria> TriggerCriteria { get; set; } = new List<TriggerCriteria>();
 }

@@ -29,9 +29,7 @@ public class WebhookRepository : IWebhookRepository
             CallbackUrl = webhook.CallbackUrl,
             Secret = webhook.Secret,
             VerifySsl = webhook.VerifySsl,
-            EventType = webhook.EventType,
-            TriggerParameters = webhook.TriggerParameters,
-            TriggerFilters = webhook.TriggerFilters
+            TriggerCriteria = webhook.TriggerCriteria
         };
         
         _webhooks.InsertOne(entity);

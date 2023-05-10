@@ -21,7 +21,7 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
           itemId: item.id,
           logResults: (payload) => {
             renderContext.logEvent(item.id, COMPONENT_RESULTS, payload);
-            setResultLogged(true);
+            setResultLogged(item.isOptional && payload === null ? null : true);
           },
         }}
         component={renderComponent}
@@ -44,8 +44,9 @@ const SurveyPage = ({
   logEvent = logEvent || nop;
 
   const [nextEnabled, setNextEnabled] = useState(false);
-  const [isValidResponse, setIsValidResponse] = useState(false);
+  const [isValidResponse, setIsValidResponse] = useState(null);
   const [resultLogged, setResultLogged] = useState(false);
+  const [itemKey, setItemKey] = useState(Date.now());
 
   const previousPageId = usePrevious(page.id);
   useLayoutEffect(() => {
@@ -53,7 +54,6 @@ const SurveyPage = ({
       logEvent(page.id, PAGE_LOAD, {});
       // check if the page has any Response Items
       // and set Next Button appropriately
-      setIsValidResponse(false);
       setResultLogged(false);
       if (
         getPageResponseItem(page.components) &&
@@ -73,13 +73,34 @@ const SurveyPage = ({
     const hasOptionalComponent = page.components?.some(
       (component) => component.isOptional
     );
+    const hasMandatoryComponent = page.components?.some(
+      (component) => !component.isOptional
+    );
+
+    const canProceedWithOptional =
+      (hasOptionalComponent &&
+        resultLogged === false &&
+        isValidResponse === null) ||
+      (hasOptionalComponent && resultLogged && isValidResponse);
+
+    const canProceedWithMandatory =
+      hasMandatoryComponent && resultLogged && isValidResponse === true;
+
     const shouldEnableNext =
-      hasOptionalComponent ||
-      (isValidResponse && resultLogged) ||
+      canProceedWithOptional ||
+      canProceedWithMandatory ||
       !getPageResponseItem(page.components);
 
     setNextEnabled(shouldEnableNext);
   }, [isValidResponse, resultLogged, page.components?.length]);
+
+  const clearResult = () => {
+    const responseItemComponent = getPageResponseItem(page.components);
+    setResultLogged(false);
+    setIsValidResponse(null);
+    logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
+    setItemKey(Date.now());
+  };
 
   const renderContext = {
     pageId: page.id,
@@ -87,6 +108,7 @@ const SurveyPage = ({
     setIsValidResponse,
     setNextEnabled: setIsValidResponse,
     logEvent,
+    clearResult,
   };
 
   const [isMore, setIsMore] = useState();
@@ -102,6 +124,7 @@ const SurveyPage = ({
             ) : (
               <Body
                 page={page}
+                key={itemKey}
                 renderContext={renderContext}
                 setResultLogged={setResultLogged}
                 setIsValidResponse={setIsValidResponse}
@@ -136,16 +159,28 @@ const SurveyPage = ({
               </Badge>
             )}
           </div>
-          <Button
-            size="lg"
-            disabled={!nextEnabled || isBusy}
-            isLoading={isBusy}
-            colorScheme={nextEnabled ? "blue" : "gray"}
-            onClick={handleNextClick}
-            rightIcon={!lastPage && <FaChevronRight />}
-          >
-            {lastPage ? "Finish" : "Next"}
-          </Button>
+          <Stack spacing={3} direction="row" align="center">
+            <Button
+              size="md"
+              colorScheme="red"
+              variant="outline"
+              borderWidth="2px"
+              onClick={clearResult}
+              mr={2}
+            >
+              Clear Response
+            </Button>
+            <Button
+              size="lg"
+              disabled={!nextEnabled || isBusy}
+              isLoading={isBusy}
+              colorScheme={nextEnabled ? "blue" : "gray"}
+              onClick={handleNextClick}
+              rightIcon={!lastPage && <FaChevronRight />}
+            >
+              {lastPage ? "Finish" : "Next"}
+            </Button>
+          </Stack>
         </DefaultContainer>
       </Flex>
     </>
