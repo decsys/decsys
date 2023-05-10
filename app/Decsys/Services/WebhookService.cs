@@ -33,7 +33,7 @@ public class WebhookService
     /// <param name="payload"></param>
     public async Task Trigger(PayloadModel payload)
     {
-        // TODO: Maybe this should be the instance of it...?
+        // TODO: Maybe this should be the instance of the survey...?
         var webhooks = _webhooks.GetWebhooksBySurvey(payload.SurveyId);
         
         foreach (var webhook in webhooks)
@@ -41,6 +41,7 @@ public class WebhookService
             foreach (var filter in webhook.TriggerFilters)
             {
                 // If pages match.
+                // TODO: Can simplify the source page 
                 if (filter.Name == "SourcePage" && filter.Value == payload.SourcePage.ToString())
                 {
                     // Post data
@@ -59,7 +60,7 @@ public class WebhookService
     {
         var resultsJson = JsonConvert.SerializeObject(payload.ParticipantResultsSummary);
     
-        // note this is the redcap format.
+        // TODO: Note this is the redcap POST format.
         var parameters = new Dictionary<string, string>()
         {
             { "token", webhook.Secret }, 
@@ -71,7 +72,6 @@ public class WebhookService
             { "data", resultsJson },
             { "returnContent", "ids" },
             { "returnFormat", "json" }
-    
         };
     
         var content = new FormUrlEncodedContent(parameters);

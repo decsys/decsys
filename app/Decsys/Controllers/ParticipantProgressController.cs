@@ -25,20 +25,17 @@ namespace Decsys.Controllers
         private readonly ParticipantEventService _events;
         private readonly StudyAllocationService _random;
         private readonly MathService _math;
-        private readonly WebhookService _webhooks;
 
         public ParticipantProgressController(
             SurveyInstanceService instances,
             ParticipantEventService events,
             StudyAllocationService random,
-            MathService math,
-            WebhookService webhooks)
+            MathService math)
         {
             _instances = instances;
             _events = events;
             _random = random;
             _math = math;
-            _webhooks = webhooks;
         }
 
         /// <summary>
@@ -392,10 +389,11 @@ namespace Decsys.Controllers
                 progress.IsLastPage = iNextPage >= pageOrder.Count - 1;
             }
             
+            // TODO: Generate participants results summary
+            var summary = _events.ResultsSummary(instanceId);
             // Trigger webhook
             try
             {
-                // TODO: Get participant results summary
                 await _webhooks.Trigger(new PayloadModel()
                 {
                     Timestamp = DateTimeOffset.UtcNow,
@@ -406,7 +404,7 @@ namespace Decsys.Controllers
                     ParticipantId = participantId,
                     SurveyId = surveyId,
                     InstanceId = instanceId,
-                    ParticipantResultsSummary = null,
+                    ParticipantResultsSummary = summary,
                 });
             }
             catch (Exception e)
