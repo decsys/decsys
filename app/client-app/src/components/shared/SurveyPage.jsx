@@ -163,9 +163,9 @@ const SurveyPage = ({
           <Stack spacing={3} direction="row" align="center">
             <Button
               size="md"
-              colorScheme="gray"
+              colorScheme="red"
               variant="outline"
-              borderColor="red.500"
+              borderWidth="2px"
               onClick={clearResult}
               mr={2}
             >
