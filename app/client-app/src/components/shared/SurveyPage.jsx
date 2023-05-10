@@ -54,6 +54,7 @@ const SurveyPage = ({
       logEvent(page.id, PAGE_LOAD, {});
       // check if the page has any Response Items
       // and set Next Button appropriately
+      setIsValidResponse(null);
       setResultLogged(false);
       if (
         getPageResponseItem(page.components) &&
@@ -100,6 +101,7 @@ const SurveyPage = ({
     setIsValidResponse(null);
     logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
     setItemKey(Date.now());
+    console.log(isValidResponse);
   };
 
   const renderContext = {

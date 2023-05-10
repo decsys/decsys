@@ -26,7 +26,7 @@ export const Basic = {
     return <ResponseItem {...args} _context={_context} />;
   },
   args: {
-    label: "Click this please",
+    label: "Confirm to continue",
     defaultValue: "something",
   },
 };
@@ -36,8 +36,8 @@ export const InitiallyChecked = {
     return <ResponseItem {...args} _context={_context} />;
   },
   args: {
-    label: "Click this please",
-    defaultValue: "something",
+    label: "Confirm to continue",
+    defaultValue: "Default Value",
     confirmed: true,
   },
 };

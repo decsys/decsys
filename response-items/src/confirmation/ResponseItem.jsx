@@ -8,13 +8,16 @@ const ResponseItem = ({
   _context: { setIsValidResponse, logResults, clearResult },
 }) => {
   const [checked, setChecked] = useState(initialChecked);
+
   useEffect(() => setIsValidResponse(!!checked), [checked]);
 
   const handleChange = (e) => {
     if (e.target.checked) {
       logResults({ confirmed: true });
+      setIsValidResponse(true);
     } else {
       clearResult();
+      setIsValidResponse(null);
     }
     setChecked(e.target.checked);
   };
