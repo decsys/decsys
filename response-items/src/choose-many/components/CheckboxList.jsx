@@ -52,12 +52,15 @@ const CheckboxList = ({
     const checkedCount = newSelected.length;
     const isValid = minChecks <= checkedCount && checkedCount <= maxChecks;
 
-    setIsValidResponse(isValid);
-
-    if (isValid) {
-      logResults(newSelected);
-    } else if (checkedCount === 0) {
+    if (checkedCount !== 0) {
+      setIsValidResponse(isValid);
+      if (isValid) {
+        logResults(newSelected);
+      }
+    } else {
+      setIsValidResponse(null);
       clearResult();
+      setIsValidResponse(null);
     }
   };
 

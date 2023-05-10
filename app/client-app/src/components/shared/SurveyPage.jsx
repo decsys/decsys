@@ -54,6 +54,7 @@ const SurveyPage = ({
       logEvent(page.id, PAGE_LOAD, {});
       // check if the page has any Response Items
       // and set Next Button appropriately
+      setIsValidResponse(null);
       setResultLogged(false);
       if (
         getPageResponseItem(page.components) &&
@@ -63,9 +64,9 @@ const SurveyPage = ({
       else if (
         getPageResponseItem(page.components) &&
         !page.components?.some((component) => component.isOptional)
-      )
+      ) {
         setNextEnabled(false);
-      else setNextEnabled(true);
+      } else setNextEnabled(true);
     }
   }, [previousPageId, page, logEvent]);
 
@@ -100,6 +101,8 @@ const SurveyPage = ({
     setIsValidResponse(null);
     logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
     setItemKey(Date.now());
+    console.log("results cleared");
+    console.log(isValidResponse);
   };
 
   const renderContext = {
