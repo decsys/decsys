@@ -401,7 +401,6 @@ namespace Decsys.Controllers
                 {
                     ResolvedPage = iNextPage,
                     SourcePage = iCurrentPage,
-                    TargetPage = 0
                 };
                 await _webhooks.Trigger(new PayloadModel(surveyId, instanceId, participantId, eventType, summary
                 ));

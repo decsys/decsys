@@ -71,7 +71,6 @@ public class WebhookService
                 
                 default:
                     throw new NotSupportedException($"Event type is not supported.");
-                    break;
             }
         }
 
