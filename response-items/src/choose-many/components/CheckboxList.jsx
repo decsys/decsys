@@ -60,7 +60,7 @@ const CheckboxList = ({
     } else {
       setIsValidResponse(null);
       clearResult();
-      setIsValidResponse(null);
+      console.log("ran");
     }
   };
 
