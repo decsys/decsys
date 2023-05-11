@@ -49,6 +49,7 @@ const SurveyPage = ({
   const [itemKey, setItemKey] = useState(Date.now());
 
   const previousPageId = usePrevious(page.id);
+
   useLayoutEffect(() => {
     if (page.id !== previousPageId) {
       logEvent(page.id, PAGE_LOAD, {});
