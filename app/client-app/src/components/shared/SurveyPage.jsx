@@ -9,12 +9,7 @@ import VisibilitySensor from "react-visibility-sensor";
 import { usePrevious } from "hooks/usePrevious";
 import { LoadingIndicator } from "components/core";
 
-export const Body = ({
-  page,
-  renderContext,
-  setResultLogged,
-  resultLogged,
-}) => {
+export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
     const renderComponent = getComponent(item.type);
 
@@ -134,7 +129,6 @@ const SurveyPage = ({
                 renderContext={renderContext}
                 setResultLogged={setResultLogged}
                 setIsValidResponse={setIsValidResponse}
-                resultLogged={resultLogged}
               />
             )}
             <VisibilitySensor onChange={handleBodyBottomVisibilityChange}>
