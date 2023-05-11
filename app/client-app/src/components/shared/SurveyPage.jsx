@@ -9,7 +9,12 @@ import VisibilitySensor from "react-visibility-sensor";
 import { usePrevious } from "hooks/usePrevious";
 import { LoadingIndicator } from "components/core";
 
-export const Body = ({ page, renderContext, setResultLogged }) => {
+export const Body = ({
+  page,
+  renderContext,
+  setResultLogged,
+  resultLogged,
+}) => {
   return page.components.map((item) => {
     const renderComponent = getComponent(item.type);
 
@@ -50,16 +55,11 @@ const SurveyPage = ({
 
   const previousPageId = usePrevious(page.id);
 
-  useEffect(() => {
-    console.log(isValidResponse);
-  }, [isValidResponse]);
-
   useLayoutEffect(() => {
     if (page.id !== previousPageId) {
       logEvent(page.id, PAGE_LOAD, {});
       // check if the page has any Response Items
       // and set Next Button appropriately
-      setIsValidResponse(null);
       setResultLogged(false);
       if (
         getPageResponseItem(page.components) &&
@@ -134,6 +134,7 @@ const SurveyPage = ({
                 renderContext={renderContext}
                 setResultLogged={setResultLogged}
                 setIsValidResponse={setIsValidResponse}
+                resultLogged={resultLogged}
               />
             )}
             <VisibilitySensor onChange={handleBodyBottomVisibilityChange}>
