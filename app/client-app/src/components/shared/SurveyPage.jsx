@@ -50,6 +50,10 @@ const SurveyPage = ({
 
   const previousPageId = usePrevious(page.id);
 
+  // useEffect(()=> {
+  // })
+  console.log(isValidResponse);
+
   useLayoutEffect(() => {
     if (page.id !== previousPageId) {
       logEvent(page.id, PAGE_LOAD, {});
