@@ -11,6 +11,9 @@ const _context = {
   logResults: (results) => {
     console.log("log result", results);
   },
+  clearResult: () => {
+    console.log("result cleared");
+  },
 };
 
 export default {
