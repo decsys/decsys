@@ -29,8 +29,9 @@ const ResponseItem = ({
 
     if (inputLength === 0) {
       clearResult();
+    } else {
+      setIsValidResponse(true);
     }
-    setIsValidResponse(true);
 
     const count = maxLength - inputLength;
     if (count === 0) {
