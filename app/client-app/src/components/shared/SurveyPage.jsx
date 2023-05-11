@@ -102,8 +102,6 @@ const SurveyPage = ({
     setIsValidResponse(null);
     logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
     setItemKey(Date.now());
-    console.log("results cleared");
-    console.log(isValidResponse);
   };
 
   const renderContext = {

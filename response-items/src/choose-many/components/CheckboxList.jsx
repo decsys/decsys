@@ -58,9 +58,7 @@ const CheckboxList = ({
         logResults(newSelected);
       }
     } else {
-      setIsValidResponse(null);
       clearResult();
-      console.log("ran");
     }
   };
 
