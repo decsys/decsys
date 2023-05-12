@@ -39,7 +39,6 @@ namespace Decsys.Controllers
             _random = random;
             _webhooks = webhooks;
             _math = math;
-            
         }
 
         /// <summary>
