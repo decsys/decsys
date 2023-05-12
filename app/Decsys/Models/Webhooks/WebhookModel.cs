@@ -36,20 +36,20 @@ public class PageNavigation : BaseEventType
     /// <summary>
     /// The page the user is leaving.
     /// </summary>
-    public int SourcePage;
+    public int SourcePage { get; set; }
     
     /// <summary>
     /// The requested page of the user.
     /// </summary>
-    public int TargetPage;
+    public int TargetPage { get; set; }
 
     /// <summary>
     /// The actual page the user is navigated to.
     /// </summary>
-    public int ResolvedPage;
+    public int ResolvedPage { get; set; }
     
     /// <summary>
     /// Whether the navigation was successful.
     /// </summary>
-    public bool ResolvedSuccess;
+    public bool ResolvedSuccess { get; set; }
 }
