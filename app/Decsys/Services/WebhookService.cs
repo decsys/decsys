@@ -29,8 +29,7 @@ public class WebhookService
 
     
     /// <summary>
-    /// Triggers webhooks
-    /// Triggers 
+    /// Triggers webhooks from a given payload.
     /// </summary>
     /// <param name="payload">The payload to trigger and Post.</param>
     public async Task Trigger(PayloadModel payload)
@@ -47,10 +46,11 @@ public class WebhookService
     }
 
     /// <summary>
-    /// Filters the webhooks
+    /// Filters the webhooks based on matching criteria.
+    /// Currently focussed on matching page numbers on page navigation.
     /// </summary>
-    /// <param name="payload"></param>
-    /// <param name="webhook"></param>
+    /// <param name="payload">Payload to check</param>
+    /// <param name="webhook">Webhook to match against.</param>
     /// <returns>True if filter matches</returns>
     private static Task<bool> FilterCriteria(PayloadModel payload, WebhookModel webhook)
     {
@@ -78,10 +78,10 @@ public class WebhookService
     }
 
     /// <summary>
-    /// Posts webhook data
+    /// Posts webhook data to a given URL.
     /// </summary>
     /// <param name="payload">Payload to Post</param>
-    /// <param name="webhook">Webhook to activate</param>
+    /// <param name="callbackUrl">Callback url to post to</param>
     private async Task SendWebhook(PayloadModel payload, string callbackUrl)
     {
         var json = JsonConvert.SerializeObject(payload);

@@ -11,14 +11,15 @@ public class PayloadModel
         ParticipantResultsSummary = participantResultsSummary;
         ParticipantId = participantId;
     }
-    public DateTimeOffset Timestamp { get; }
-    public string ParticipantId { get; }
-    public int SurveyId { get; }
-    public int InstanceId { get; }
-    public BaseEventType EventType { get; }
+    public DateTimeOffset Timestamp { get; set; }
+    public string ParticipantId { get; set; }
+    public int SurveyId { get; set; }
+    public int InstanceId { get; set; }
+    public BaseEventType EventType { get; set; }
     public ParticipantResultsSummary ParticipantResultsSummary
     {
         get;
+        set;
     } 
 
 }
