@@ -17,6 +17,8 @@ namespace Decsys.Constants
         public const string Roles = "Roles";
         public const string Grants = "Grants";
 
+        public const string Webhooks = "Webhooks";
+
         #endregion
 
         #region Instance DBs

@@ -13,7 +13,7 @@ const colorSchemes = {
 const ResponseItem = ({
   maxLength,
   text,
-  _context: { logResults, setNextEnabled },
+  _context: { logResults, setIsValidResponse, clearResult },
 }) => {
   const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
 
@@ -21,12 +21,19 @@ const ResponseItem = ({
   const [value, setValue] = useState(text);
   useEffect(() => {
     setValue(text);
-    setNextEnabled(true);
-  }, [text, setNextEnabled]);
+  }, [text]);
 
   const handleInput = ({ target }) => {
     setValue(target.value);
-    const count = maxLength - target.value.length;
+    const inputLength = target.value.length;
+
+    if (inputLength === 0) {
+      clearResult();
+    } else {
+      setIsValidResponse(true);
+    }
+
+    const count = maxLength - inputLength;
     if (count === 0) {
       setBadgeVariant("danger");
     } else if (count <= threshold) {
