@@ -35,6 +35,7 @@ const CheckboxList = ({
   options,
   minChecks,
   maxChecks,
+  clearResult,
   ...p
 }) => {
   const [checked, setChecked] = useState(Array(options.length).fill(confirmed));
@@ -51,10 +52,13 @@ const CheckboxList = ({
     const checkedCount = newSelected.length;
     const isValid = minChecks <= checkedCount && checkedCount <= maxChecks;
 
-    setIsValidResponse(isValid);
-
-    if (isValid) {
-      logResults(newSelected);
+    if (checkedCount !== 0) {
+      setIsValidResponse(isValid);
+      if (isValid) {
+        logResults(newSelected);
+      }
+    } else {
+      clearResult();
     }
   };
 
