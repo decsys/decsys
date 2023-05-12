@@ -26,6 +26,8 @@ const ResponseItem = ({
     if (min <= num && num <= max) {
       setIsValidResponse(true);
       logResults({ value: num });
+    } else {
+      setIsValidResponse(false);
     }
   };
 
