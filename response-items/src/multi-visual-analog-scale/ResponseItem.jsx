@@ -1,5 +1,8 @@
 import { useEffect } from "react";
-import { VisualAnalogScale, useVisualAnalogScale } from "@decsys/rating-scales";
+import {
+  MultiVisualAnalogScale,
+  useMultiVisualAnalogScale,
+} from "@decsys/rating-scales";
 
 import { params } from "./ResponseItem.params";
 import { stats } from "./ResponseItem.stats";
@@ -47,7 +50,7 @@ const ResponseItem = ({
   confidenceTextFontSize,
   behaviour,
   buttons,
-  _context: { setNextEnabled, logResults },
+  _context: { setIsValidResponse, logResults },
 }) => {
   // Convert params to expected prop values
   useConfidenceInput =
@@ -75,9 +78,9 @@ const ResponseItem = ({
 
     if (isComplete) {
       logResults(mvasProps.values);
-      setNextEnabled(true);
+      setIsValidResponse(true);
     }
-  }, [mvasProps.values, useConfidenceInput, logResults, setNextEnabled]);
+  }, [mvasProps.values, useConfidenceInput, logResults, setIsValidResponse]);
 
   return (
     <MultiVisualAnalogScale
