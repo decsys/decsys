@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { params } from "./ResponseItem.params";
 import {
   NumberInput,
@@ -13,18 +13,24 @@ const ResponseItem = ({
   max,
   precision,
   defaultValue,
-  _context: { setIsValidResponse, logResults },
+  _context: { setIsValidResponse, logResults, clearResult },
 }) => {
   const [value, setValue] = useState(defaultValue);
 
-  useEffect(() => {
-    setIsValidResponse(value !== null);
-  }, [value]);
-
   const handleChange = (num) => {
-    logResults({ value: num });
     setValue(num);
+
+    if (num === null || num === "") {
+      clearResult();
+    }
+    if (min <= num && num <= max) {
+      setIsValidResponse(true);
+      logResults({ value: num });
+    } else {
+      setIsValidResponse(false);
+    }
   };
+
   return (
     <NumberInput
       min={min}

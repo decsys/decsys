@@ -58,4 +58,5 @@ export const renderContextDefaults = {
   setNextEnabled: () => {},
   logResults: () => {},
   logEvent: () => {},
+  clearResult: () => {},
 };
