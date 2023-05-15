@@ -50,7 +50,7 @@ const ResponseItem = ({
   confidenceTextFontSize,
   behaviour,
   buttons,
-  _context: { setIsValidResponse, logResults },
+  _context: { setIsValidResponse, logResults, clearResult },
 }) => {
   // Convert params to expected prop values
   useConfidenceInput =
@@ -70,12 +70,20 @@ const ResponseItem = ({
     // only log on "completions"
     // and only consider complete when the "last" expected input has a value
     // which is either scale or confidence, depending if confidence is being captured.
+    const markerKeys = ["left", "right", "bestEstimate"];
     const isComplete = useConfidenceInput
       ? mvasProps.values.confidence != null
-      : ["left", "right", "bestEstimate"].every(
-          (valueId) => mvasProps.values[valueId] != null
-        );
+      : markerKeys.every((valueId) => mvasProps.values[valueId] != null);
 
+    const noMarkerValues = !markerKeys.some(
+      (valueId) => mvasProps.values[valueId] != null
+    );
+
+    if (noMarkerValues) return;
+
+    if (!noMarkerValues && !isComplete) {
+      setIsValidResponse(false);
+    }
     if (isComplete) {
       logResults(mvasProps.values);
       setIsValidResponse(true);
@@ -145,6 +153,7 @@ const ResponseItem = ({
       }}
       frameHeight="300px"
       behaviour={behaviourKeyMap[behaviour]}
+      clearResult={clearResult}
       {...mvasProps}
       {...mvasHandlers}
     />

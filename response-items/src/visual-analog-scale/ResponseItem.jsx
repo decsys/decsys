@@ -54,7 +54,7 @@ const ResponseItem = ({
       ? vasProps.values.confidence != null
       : vasProps.values.value != null;
 
-    if (vasProps.values.value === null) return;
+    if (vasProps.values.value == null) return;
 
     if (vasProps.values.value && !isComplete) {
       setIsValidResponse(false);
