@@ -41,10 +41,7 @@ const ResponseItem = ({
     useConfidenceInput &&
     (useConfidenceInput === "None"
       ? false
-      : typeof useConfidenceInput === "string"
-      ? useConfidenceInput.toLocaleLowerCase()
-      : useConfidenceInput);
-  // : useConfidenceInput.toLocaleLowerCase())
+      : useConfidenceInput.toLocaleLowerCase());
 
   const { props: vasProps, handlers: vasHandlers } = useVisualAnalogScale();
 
@@ -52,18 +49,14 @@ const ResponseItem = ({
     // only log on "completions"
     // and only consider complete when the "last" expected input has a value
     // which is either scale or confidence, depending if confidence is being captured.
+
     const isComplete = useConfidenceInput
       ? vasProps.values.confidence != null
       : vasProps.values.value != null;
 
-    console.log(vasProps.values);
-    console.log(isComplete);
+    if (vasProps.values.value === null) return;
 
-    if (vasProps.values == null) {
-      console.log(vasProps.values + "value is null");
-    }
-
-    if (vasProps.values != null && !isComplete) {
+    if (vasProps.values.value && !isComplete) {
       setIsValidResponse(false);
     }
 
