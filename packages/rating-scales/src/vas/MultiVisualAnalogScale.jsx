@@ -106,7 +106,7 @@ const MultiVisualAnalogScale = ({
     if (lastKey) {
       onResetValue(lastKey);
       setResetStack(newStack);
-      if (newStack.length === null) {
+      if (newStack.length == null) {
         clearResult();
       }
     }
