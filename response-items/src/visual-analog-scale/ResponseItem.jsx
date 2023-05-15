@@ -56,6 +56,17 @@ const ResponseItem = ({
       ? vasProps.values.confidence != null
       : vasProps.values.value != null;
 
+    console.log(vasProps.values);
+    console.log(isComplete);
+
+    if (vasProps.values == null) {
+      console.log(vasProps.values + "value is null");
+    }
+
+    if (vasProps.values != null && !isComplete) {
+      setIsValidResponse(false);
+    }
+
     if (isComplete) {
       logResults(vasProps.values);
       setIsValidResponse(true);

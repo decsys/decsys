@@ -78,7 +78,7 @@ export const Basic = {
 };
 
 export const NumericStats = stats(
-  ResponseItem.stats({ ...ResponseItem.args, ...props }, dummyResults)
+  ResponseItem.stats({ ...ResponseItem.defaultProps, ...props }, dummyResults)
 );
 
 export const NumericStatsMissingConfidence = stats(
