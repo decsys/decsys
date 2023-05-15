@@ -34,14 +34,17 @@ const ResponseItem = ({
   confidenceTextColor,
   confidenceTextFontFamily,
   confidenceTextFontSize,
-  _context: { setNextEnabled, logResults },
+  _context: { setIsValidResponse, logResults },
 }) => {
   // remap some param values to expected prop values
   useConfidenceInput =
     useConfidenceInput &&
     (useConfidenceInput === "None"
       ? false
-      : useConfidenceInput.toLocaleLowerCase());
+      : typeof useConfidenceInput === "string"
+      ? useConfidenceInput.toLocaleLowerCase()
+      : useConfidenceInput);
+  // : useConfidenceInput.toLocaleLowerCase())
 
   const { props: vasProps, handlers: vasHandlers } = useVisualAnalogScale();
 
@@ -55,9 +58,9 @@ const ResponseItem = ({
 
     if (isComplete) {
       logResults(vasProps.values);
-      setNextEnabled(true);
+      setIsValidResponse(true);
     }
-  }, [vasProps.values, logResults, setNextEnabled, useConfidenceInput]);
+  }, [vasProps.values, logResults, setIsValidResponse, useConfidenceInput]);
 
   return (
     <VisualAnalogScale

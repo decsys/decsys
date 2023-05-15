@@ -78,7 +78,7 @@ export const Confidence = ({
     )}
     {style !== confidenceInputStyles.scale && (
       <div
-        css={{
+        style={{
           width: "100%",
           display: "flex",
           justifyContent: "center",

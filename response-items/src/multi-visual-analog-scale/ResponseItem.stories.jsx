@@ -2,6 +2,9 @@ import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
 
 const _context = {
+  surveyId: 0,
+  pageId: "",
+  itemId: "",
   setIsValidResponse: (isValid) => {
     console.log("set valid response", isValid);
   },
@@ -14,25 +17,20 @@ const _context = {
 };
 
 export default {
-  title: "Visual Analog Scale",
+  title: "Multi Visual Analog Scale",
   component: ResponseItem,
-  argTypes: {
-    behaviour: {
-      options: ["Speirs-Bridge 2010", "Hesketh, Pryor & Hesketh 1988"],
-      control: { type: "radio" },
-    },
-
+};
+export const Basic = {
+  render: (args) => {
+    return <ResponseItem {...args} _context={_context} />;
+  },
+  args: {
     useConfidenceInput: {
       options: ["None", "input", "scale"],
-      control: { type: "radio" },
-    },
-    labelAlignment: {
-      options: ["above", "below"],
-      control: { type: "radio" },
-    },
-    buttons: {
-      options: ["None", "Undo", "Reset", "Both"],
-      control: { type: "radio" },
+      control: {
+        type: "radio",
+        labels: { None: "None", input: "Input", scale: "Scale" },
+      },
     },
   },
 };
@@ -44,13 +42,10 @@ export const primary = {
   args: {
     barLeftMargin: 10,
     barTopMargin: 50,
-    barColor: "black",
-    barThickness: 8,
     barRightMargin: 10,
+    barThickness: 8,
     barMaxValue: 100,
     barMinValue: 0,
-    labelColor: "black",
-    scaleMarkerColor: "black",
   },
 };
 
