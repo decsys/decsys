@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import {
   MultiVisualAnalogScale,
   useMultiVisualAnalogScale,
-} from "@decsys/rating-scales";
+} from "@decsys/rating-scales/mvas";
 import { params } from "./ResponseItem.params";
 import { stats } from "./ResponseItem.stats";
 
