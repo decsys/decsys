@@ -69,6 +69,7 @@ const MultiVisualAnalogScale = ({
   onChange = () => {},
   onResetAll = () => {},
   onResetValue = () => {},
+  clearResult = () => {},
 }) => {
   leftMarkerOptions = { ...dragMarkerDefaults, ...leftMarkerOptions };
   rightMarkerOptions = { ...dragMarkerDefaults, ...rightMarkerOptions };
@@ -105,12 +106,16 @@ const MultiVisualAnalogScale = ({
     if (lastKey) {
       onResetValue(lastKey);
       setResetStack(newStack);
+      if (newStack.length == null) {
+        clearResult();
+      }
     }
   };
 
   const handleResetAll = () => {
     setResetStack([]);
     onResetAll();
+    clearResult();
   };
 
   return (

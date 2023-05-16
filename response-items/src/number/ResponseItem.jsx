@@ -20,7 +20,7 @@ const ResponseItem = ({
   const handleChange = (num) => {
     setValue(num);
 
-    if (num === null || num === "") {
+    if (num == null || num === "") {
       clearResult();
     }
     if (min <= num && num <= max) {

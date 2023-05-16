@@ -21,7 +21,7 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
           itemId: item.id,
           logResults: (payload) => {
             renderContext.logEvent(item.id, COMPONENT_RESULTS, payload);
-            setResultLogged(item.isOptional && payload === null ? null : true);
+            setResultLogged(item.isOptional && payload == null ? null : true);
           },
         }}
         component={renderComponent}
@@ -81,7 +81,7 @@ const SurveyPage = ({
     const canProceedWithOptional =
       (hasOptionalComponent &&
         resultLogged === false &&
-        isValidResponse === null) ||
+        isValidResponse == null) ||
       (hasOptionalComponent && resultLogged && isValidResponse);
 
     const canProceedWithMandatory =

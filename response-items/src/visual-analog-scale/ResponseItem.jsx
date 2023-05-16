@@ -1,15 +1,10 @@
 import { useEffect } from "react";
 import {
-  MultiVisualAnalogScale,
-  useMultiVisualAnalogScale,
-} from "@decsys/rating-scales/mvas";
+  VisualAnalogScale,
+  useVisualAnalogScale,
+} from "@decsys/rating-scales/vas";
 import { params } from "./ResponseItem.params";
 import { stats } from "./ResponseItem.stats";
-
-export const behaviourKeyMap = {
-  "Speirs-Bridge 2010": "SpeirsBridge2010",
-  "Hesketh, Pryor & Hesketh 1988": "HeskethPryorHesketh1988",
-};
 
 const ResponseItem = ({
   barLeftMargin,
@@ -34,59 +29,48 @@ const ResponseItem = ({
   scaleSubdivisionHeight,
   scaleMarkers,
   scaleSubdivisions,
+  dragMarkerColor,
   dragMarkerInteractColor,
   dragMarkerInitDistance,
-  leftDragMarkerColor,
-  leftDragMarkerLabel,
-  rightDragMarkerColor,
-  rightDragMarkerLabel,
-  centerDragMarkerColor,
-  centerDragMarkerLabel,
   useConfidenceInput,
   confidenceText,
   confidenceTextColor,
   confidenceTextFontFamily,
   confidenceTextFontSize,
-  behaviour,
-  buttons,
-  _context: { setNextEnabled, logResults },
+  _context: { setIsValidResponse, logResults },
 }) => {
-  // Convert params to expected prop values
+  // remap some param values to expected prop values
   useConfidenceInput =
     useConfidenceInput &&
     (useConfidenceInput === "None"
       ? false
-      : useConfidenceInput === true
-      ? "input"
       : useConfidenceInput.toLocaleLowerCase());
-  const showResetLastButton = ["Undo", "Reset Last", "Both"].includes(buttons);
-  const showResetAllButton = ["Reset", "Reset All", "Both"].includes(buttons);
 
-  const { props: mvasProps, handlers: mvasHandlers } =
-    useMultiVisualAnalogScale();
+  const { props: vasProps, handlers: vasHandlers } = useVisualAnalogScale();
 
   useEffect(() => {
     // only log on "completions"
     // and only consider complete when the "last" expected input has a value
     // which is either scale or confidence, depending if confidence is being captured.
+
     const isComplete = useConfidenceInput
-      ? mvasProps.values.confidence != null
-      : ["left", "right", "bestEstimate"].every(
-          (valueId) => mvasProps.values[valueId] != null
-        );
+      ? vasProps.values.confidence != null
+      : vasProps.values.value != null;
+
+    if (vasProps.values.value == null) return;
+
+    if (vasProps.values.value && !isComplete) {
+      setIsValidResponse(false);
+    }
 
     if (isComplete) {
-      logResults(mvasProps.values);
-      setNextEnabled(true);
+      logResults(vasProps.values);
+      setIsValidResponse(true);
     }
-  }, [mvasProps.values, useConfidenceInput, logResults, setNextEnabled]);
+  }, [vasProps.values, logResults, setIsValidResponse, useConfidenceInput]);
 
   return (
-    <MultiVisualAnalogScale
-      buttons={{
-        resetLast: showResetLastButton,
-        resetAll: showResetAllButton,
-      }}
+    <VisualAnalogScale
       barOptions={{
         minValue: barMinValue,
         maxValue: barMaxValue,
@@ -117,22 +101,12 @@ const ResponseItem = ({
         markers: scaleMarkers,
         subdivisions: scaleSubdivisions,
       }}
-      dragMarkerDefaults={{
+      dragMarkerOptions={{
+        color: dragMarkerColor,
         interactColor: dragMarkerInteractColor,
         yInitDistance: dragMarkerInitDistance,
       }}
-      leftMarkerOptions={{
-        label: leftDragMarkerLabel,
-        color: leftDragMarkerColor,
-      }}
-      rightMarkerOptions={{
-        label: rightDragMarkerLabel,
-        color: rightDragMarkerColor,
-      }}
-      centerMarkerOptions={{
-        label: centerDragMarkerLabel,
-        color: centerDragMarkerColor,
-      }}
+      frameHeight="300px"
       useConfidenceInput={useConfidenceInput}
       confidenceText={confidenceText}
       confidenceTextOptions={{
@@ -142,10 +116,8 @@ const ResponseItem = ({
         fontSize: confidenceTextFontSize,
         textColor: confidenceTextColor,
       }}
-      frameHeight="300px"
-      behaviour={behaviourKeyMap[behaviour]}
-      {...mvasProps}
-      {...mvasHandlers}
+      {...vasProps}
+      {...vasHandlers}
     />
   );
 };

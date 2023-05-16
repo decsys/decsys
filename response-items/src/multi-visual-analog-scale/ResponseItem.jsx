@@ -1,10 +1,15 @@
 import { useEffect } from "react";
 import {
-  VisualAnalogScale,
-  useVisualAnalogScale,
-} from "@decsys/rating-scales/vas";
+  MultiVisualAnalogScale,
+  useMultiVisualAnalogScale,
+} from "@decsys/rating-scales/mvas";
 import { params } from "./ResponseItem.params";
 import { stats } from "./ResponseItem.stats";
+
+export const behaviourKeyMap = {
+  "Speirs-Bridge 2010": "SpeirsBridge2010",
+  "Hesketh, Pryor & Hesketh 1988": "HeskethPryorHesketh1988",
+};
 
 const ResponseItem = ({
   barLeftMargin,
@@ -29,41 +34,67 @@ const ResponseItem = ({
   scaleSubdivisionHeight,
   scaleMarkers,
   scaleSubdivisions,
-  dragMarkerColor,
   dragMarkerInteractColor,
   dragMarkerInitDistance,
+  leftDragMarkerColor,
+  leftDragMarkerLabel,
+  rightDragMarkerColor,
+  rightDragMarkerLabel,
+  centerDragMarkerColor,
+  centerDragMarkerLabel,
   useConfidenceInput,
   confidenceText,
   confidenceTextColor,
   confidenceTextFontFamily,
   confidenceTextFontSize,
-  _context: { setNextEnabled, logResults },
+  behaviour,
+  buttons,
+  _context: { setIsValidResponse, logResults, clearResult },
 }) => {
-  // remap some param values to expected prop values
+  // Convert params to expected prop values
   useConfidenceInput =
     useConfidenceInput &&
     (useConfidenceInput === "None"
       ? false
+      : useConfidenceInput === true
+      ? "input"
       : useConfidenceInput.toLocaleLowerCase());
+  const showResetLastButton = ["Undo", "Reset Last", "Both"].includes(buttons);
+  const showResetAllButton = ["Reset", "Reset All", "Both"].includes(buttons);
 
-  const { props: vasProps, handlers: vasHandlers } = useVisualAnalogScale();
+  const { props: mvasProps, handlers: mvasHandlers } =
+    useMultiVisualAnalogScale();
 
   useEffect(() => {
     // only log on "completions"
     // and only consider complete when the "last" expected input has a value
     // which is either scale or confidence, depending if confidence is being captured.
+    const markerKeys = ["left", "right", "bestEstimate"];
     const isComplete = useConfidenceInput
-      ? vasProps.values.confidence != null
-      : vasProps.values.value != null;
+      ? mvasProps.values.confidence != null
+      : markerKeys.every((valueId) => mvasProps.values[valueId] != null);
 
-    if (isComplete) {
-      logResults(vasProps.values);
-      setNextEnabled(true);
+    const noMarkerValues = !markerKeys.some(
+      (valueId) => mvasProps.values[valueId] != null
+    );
+
+    if (noMarkerValues) return;
+
+    if (!noMarkerValues && !isComplete) {
+      setIsValidResponse(false);
     }
-  }, [vasProps.values, logResults, setNextEnabled, useConfidenceInput]);
+    if (isComplete) {
+      logResults(mvasProps.values);
+      setIsValidResponse(true);
+    }
+  }, [mvasProps.values, useConfidenceInput, logResults, setIsValidResponse]);
 
   return (
-    <VisualAnalogScale
+    <MultiVisualAnalogScale
+      buttons={{
+        resetLast: showResetLastButton,
+        resetAll: showResetAllButton,
+      }}
       barOptions={{
         minValue: barMinValue,
         maxValue: barMaxValue,
@@ -94,12 +125,22 @@ const ResponseItem = ({
         markers: scaleMarkers,
         subdivisions: scaleSubdivisions,
       }}
-      dragMarkerOptions={{
-        color: dragMarkerColor,
+      dragMarkerDefaults={{
         interactColor: dragMarkerInteractColor,
         yInitDistance: dragMarkerInitDistance,
       }}
-      frameHeight="300px"
+      leftMarkerOptions={{
+        label: leftDragMarkerLabel,
+        color: leftDragMarkerColor,
+      }}
+      rightMarkerOptions={{
+        label: rightDragMarkerLabel,
+        color: rightDragMarkerColor,
+      }}
+      centerMarkerOptions={{
+        label: centerDragMarkerLabel,
+        color: centerDragMarkerColor,
+      }}
       useConfidenceInput={useConfidenceInput}
       confidenceText={confidenceText}
       confidenceTextOptions={{
@@ -109,8 +150,11 @@ const ResponseItem = ({
         fontSize: confidenceTextFontSize,
         textColor: confidenceTextColor,
       }}
-      {...vasProps}
-      {...vasHandlers}
+      frameHeight="300px"
+      behaviour={behaviourKeyMap[behaviour]}
+      clearResult={clearResult}
+      {...mvasProps}
+      {...mvasHandlers}
     />
   );
 };
