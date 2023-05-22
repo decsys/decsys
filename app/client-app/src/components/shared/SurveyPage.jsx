@@ -21,7 +21,9 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
           itemId: item.id,
           logResults: (payload) => {
             renderContext.logEvent(item.id, COMPONENT_RESULTS, payload);
-            setResultLogged(item.isOptional && payload == null ? null : true);
+            setResultLogged(
+              item.isOptional && Object.keys(payload).length == 0 ? null : true
+            );
           },
         }}
         component={renderComponent}
@@ -56,16 +58,15 @@ const SurveyPage = ({
       // check if the page has any Response Items
       // and set Next Button appropriately
       setResultLogged(false);
-      if (
-        getPageResponseItem(page.components) &&
-        page.components?.some((component) => component.isOptional)
-      )
-        setNextEnabled(true);
-      else if (
-        getPageResponseItem(page.components) &&
-        !page.components?.some((component) => component.isOptional)
-      )
-        setNextEnabled(false);
+      const hasResponseItem = !!getPageResponseItem(page.components);
+      let hasOptionalItems;
+      if (hasResponseItem)
+        hasOptionalItems = page.components?.some(
+          (component) => component.isOptional
+        );
+
+      if (hasResponseItem && hasOptionalItems) setNextEnabled(true);
+      else if (hasResponseItem && !hasOptionalItems) setNextEnabled(false);
       else setNextEnabled(true);
     }
   }, [previousPageId, page, logEvent]);
@@ -74,9 +75,7 @@ const SurveyPage = ({
     const hasOptionalComponent = page.components?.some(
       (component) => component.isOptional
     );
-    const hasMandatoryComponent = page.components?.some(
-      (component) => !component.isOptional
-    );
+    const hasMandatoryComponent = !hasOptionalComponent;
 
     const canProceedWithOptional =
       (hasOptionalComponent &&
@@ -85,7 +84,7 @@ const SurveyPage = ({
       (hasOptionalComponent && resultLogged && isValidResponse);
 
     const canProceedWithMandatory =
-      hasMandatoryComponent && resultLogged && isValidResponse === true;
+      hasMandatoryComponent && resultLogged && isValidResponse;
 
     const shouldEnableNext =
       canProceedWithOptional ||
@@ -99,7 +98,7 @@ const SurveyPage = ({
     const responseItemComponent = getPageResponseItem(page.components);
     setResultLogged(false);
     setIsValidResponse(null);
-    logEvent(responseItemComponent?.id, COMPONENT_RESULTS, null);
+    logEvent(responseItemComponent?.id, COMPONENT_RESULTS, {});
     setItemKey(Date.now());
   };
 
