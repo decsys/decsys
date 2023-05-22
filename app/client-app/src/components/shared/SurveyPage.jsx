@@ -58,6 +58,7 @@ const SurveyPage = ({
       // check if the page has any Response Items
       // and set Next Button appropriately
       setResultLogged(false);
+      setIsValidResponse(null);
       const hasResponseItem = !!getPageResponseItem(page.components);
       let hasOptionalItems;
       if (hasResponseItem)
@@ -92,7 +93,7 @@ const SurveyPage = ({
       !getPageResponseItem(page.components);
 
     setNextEnabled(shouldEnableNext);
-  }, [isValidResponse, resultLogged, page.components?.length]);
+  }, [isValidResponse, resultLogged, page.components]);
 
   const clearResult = () => {
     const responseItemComponent = getPageResponseItem(page.components);
