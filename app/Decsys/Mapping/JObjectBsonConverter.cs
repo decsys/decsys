@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using AutoMapper;
 using LiteDB;
 using Newtonsoft.Json.Bson;

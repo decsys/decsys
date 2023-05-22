@@ -10,12 +10,14 @@ const CheckboxListItem = ({
   checked,
   handleChange,
   index,
+  isDisabled,
 }) => (
   <Checkbox
     colorScheme={colorScheme}
     isChecked={checked[index]}
     onChange={handleChange}
     value={JSON.stringify(option)}
+    isDisabled={isDisabled}
   >
     <Text
       as="span"
@@ -27,6 +29,8 @@ const CheckboxListItem = ({
     </Text>
   </Checkbox>
 );
+
+const getCheckedCount = (checked) => checked?.filter((x) => !!x).length ?? 0;
 
 const CheckboxList = ({
   setIsValidResponse,
@@ -49,13 +53,13 @@ const CheckboxList = ({
       .map((isChecked, idx) => (isChecked ? options[idx] : null))
       .filter((option) => option !== null);
 
-    const checkedCount = newSelected.length;
+    const checkedCount = getCheckedCount(newChecked);
     const isValid = minChecks <= checkedCount && checkedCount <= maxChecks;
 
     if (checkedCount !== 0) {
       setIsValidResponse(isValid);
       if (isValid) {
-        logResults(newSelected);
+        logResults({ checked: newSelected });
       }
     } else {
       clearResult();
@@ -73,6 +77,7 @@ const CheckboxList = ({
             setChecked={setChecked}
             handleChange={(e) => handleChange(e, i)}
             index={i}
+            isDisabled={getCheckedCount(checked) >= maxChecks && !checked[i]}
             {...p}
           />
         ))}
