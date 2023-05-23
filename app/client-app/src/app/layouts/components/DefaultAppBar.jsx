@@ -70,6 +70,9 @@ const AdminMenu = () => (
       <MenuItem as="a" href="/admin/surveys/">
         Surveys
       </MenuItem>
+      <MenuItem as="a" href="/admin/wordlist/">
+        Wordlist
+      </MenuItem>
     </MenuList>
   </Menu>
 );

@@ -5,6 +5,7 @@ import Editor from "app/pages/Editor";
 import Preview from "app/pages/Preview";
 import Results from "app/pages/Results";
 import Dashboard from "app/pages/Dashboard";
+import Wordlist from "app/pages/Wordlist";
 import { useAuth } from "auth/AuthContext";
 import { LoadingIndicator } from "components/core";
 
@@ -21,6 +22,7 @@ const Admin = () => {
   return (
     <Router>
       <Surveys path="/surveys" />
+      <Wordlist path="/wordlist" />
       <Editor path="/survey/:id" />
       <Preview path="/survey/:id/preview" />
       <Results path="/survey/:id/results" />
