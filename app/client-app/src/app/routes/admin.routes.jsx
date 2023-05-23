@@ -20,7 +20,7 @@ const Admin = () => {
 
   return (
     <Router>
-      <Surveys path="/" />
+      <Surveys path="/surveys" />
       <Editor path="/survey/:id" />
       <Preview path="/survey/:id/preview" />
       <Results path="/survey/:id/results" />

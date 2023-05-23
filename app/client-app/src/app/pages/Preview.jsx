@@ -14,7 +14,7 @@ import {
 import { pickRandomItem } from "services/randomizer";
 
 const navigateBack = (location) =>
-  navigate(location?.state?.backRedirect ?? `/admin`);
+  navigate(location?.state?.backRedirect ?? `/admin/surveys/`);
 
 const pickRandomChildOrDefault = (parentId, childIds = []) =>
   childIds.length ? pickRandomItem(childIds) : parentId;
