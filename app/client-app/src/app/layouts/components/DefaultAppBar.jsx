@@ -22,6 +22,7 @@ import {
   FaSignOutAlt,
   FaUserPlus,
   FaUserCog,
+  FaChevronDown,
 } from "react-icons/fa";
 import { Link, useLocation } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
@@ -53,6 +54,21 @@ const HelpMenu = () => (
             <Icon as={FaExternalLinkAlt} />
           </sup>
         </Stack>
+      </MenuItem>
+    </MenuList>
+  </Menu>
+);
+
+const AdminMenu = () => (
+  <Menu>
+    <DarkMode>
+      <MenuButton as={Button} variant="ghost" rightIcon={<FaChevronDown />}>
+        Admin
+      </MenuButton>
+    </DarkMode>
+    <MenuList>
+      <MenuItem as="a" href="/admin/surveys/">
+        Surveys
       </MenuItem>
     </MenuList>
   </Menu>
@@ -143,13 +159,7 @@ const DefaultAppBar = ({ brandLink }) => {
           </Button>
         </DarkMode>
       )}
-      {isAdmin && (
-        <DarkMode>
-          <Button as={Link} variant="ghost" to="/admin">
-            Admin
-          </Button>
-        </DarkMode>
-      )}
+      {isAdmin && <AdminMenu />}
 
       {mode !== WORKSHOP && <UserMenu />}
 
