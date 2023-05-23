@@ -93,9 +93,7 @@ const DashboardButton = ({ surveyId, instanceId }) => (
     colorScheme="green"
     onClick={() =>
       instanceId &&
-      navigate(
-        `/admin/surveys/survey/dashboard/${encode(surveyId, instanceId)}`
-      )
+      navigate(`/admin/survey/dashboard/${encode(surveyId, instanceId)}`)
     }
   >
     Dashboard
