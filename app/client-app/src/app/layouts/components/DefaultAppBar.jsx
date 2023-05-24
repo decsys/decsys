@@ -23,6 +23,8 @@ import {
   FaUserPlus,
   FaUserCog,
   FaChevronDown,
+  FaFileAlt,
+  FaList,
 } from "react-icons/fa";
 import { Link, useLocation } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
@@ -67,8 +69,11 @@ const AdminMenu = () => (
       </MenuButton>
     </DarkMode>
     <MenuList>
-      <MenuItem as="a" href="/admin/surveys/">
+      <MenuItem as="a" href="/admin/surveys/" icon={<FaFileAlt />}>
         Surveys
+      </MenuItem>
+      <MenuItem as="a" href="/admin/wordlist/" icon={<FaList />}>
+        Wordlist
       </MenuItem>
     </MenuList>
   </Menu>
