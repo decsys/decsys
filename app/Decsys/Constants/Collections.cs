@@ -34,5 +34,14 @@ namespace Decsys.Constants
         public const string RandList = "RandList";
 
         #endregion
+
+        #region Wordlist DBs
+
+        public const string UserWordlist = "UserWordlist";
+        public const string WordlistOptions = "WordlistOptions";
+        public const string WordlistRules = "WordlistRules";
+        public const string WordlistWord = "WordlistWord";
+
+        #endregion
     }
 }
