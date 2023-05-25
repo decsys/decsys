@@ -25,9 +25,9 @@ namespace Decsys.Mapping
 
     }
 
-    public class JTokenLiteDbBsonConverter : IValueConverter<JToken, LiteDB.BsonDocument>
+    public class JTokenLiteDbBsonConverter : IValueConverter<JToken, BsonDocument>
     {
-        public LiteDB.BsonDocument Convert(JToken value,  ResolutionContext context)
+        public BsonDocument Convert(JToken value,  ResolutionContext context)
         {
             using var ms = new MemoryStream();
             using BsonDataWriter writer = new BsonDataWriter(ms);
