@@ -8,15 +8,21 @@ public class WordlistMap : Profile
 {
     public WordlistMap()
     {
+
         CreateMap<WordlistRules, Data.Entities.LiteDb.WordlistRules>()
-            .ForMember(dest => dest.Value, opt => opt.ConvertUsing(new JTokenLiteDbBsonConverter()));
+                .ForMember(dest => dest.Value,
+                    opt => opt.ConvertUsing(new LiteDbBsonJTokenConverter()));
         CreateMap<Data.Entities.LiteDb.WordlistRules, WordlistRules>()
-            .ForMember(dest => dest.Value, opt => opt.ConvertUsing(new LiteDbBsonJTokenConverter()));
+                .ForMember(dest => dest.Value,
+                    opt => opt.ConvertUsing(new JTokenLiteDbBsonConverter()));
 
         CreateMap<WordlistRules, Data.Entities.Mongo.WordlistRules>()
-            .ForMember(dest => dest.Value, opt => opt.ConvertUsing(new JTokenMongoBsonConverter()));
+               .ForMember(dest => dest.Value,
+                   opt => opt.ConvertUsing(new MongoBsonJTokenConverter()));
+
         CreateMap<Data.Entities.Mongo.WordlistRules, WordlistRules>()
-            .ForMember(dest => dest.Value, opt => opt.ConvertUsing(new MongoBsonJTokenConverter()));
+                .ForMember(dest => dest.Value,
+                    opt => opt.ConvertUsing(new JTokenMongoBsonConverter()));
 
 
     }

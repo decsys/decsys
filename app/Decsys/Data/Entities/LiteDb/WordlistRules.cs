@@ -2,7 +2,7 @@ using LiteDB;
 
 namespace Decsys.Data.Entities.LiteDb;
 
-public class Wordlist : BaseWordlistRules
+public class WordlistRules : BaseWordlistRules
 {
 
     /// <summary>
