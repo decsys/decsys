@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Decsys.Models;
 
 namespace Decsys.Mapping
@@ -22,6 +22,7 @@ namespace Decsys.Mapping
             CreateMap<Data.Entities.Mongo.ParticipantEvent, ParticipantEvent>()
                .ForMember(dest => dest.Payload,
                    opt => opt.ConvertUsing(new MongoBsonJObjectConverter()));
+
         }
     }
 }
