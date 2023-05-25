@@ -46,4 +46,27 @@ namespace Decsys.Mapping
         public static JObject Convert(MongoDB.Bson.BsonDocument bson)
             => JObject.Parse(bson.ToJson());
     }
+    public class LiteDbBsonJTokenConverter : IValueConverter<JToken, LiteDB.BsonDocument>
+    {
+        public LiteDB.BsonDocument Convert(JToken source, ResolutionContext context)
+        {
+            var json = source.ToString();
+            var doc = JsonSerializer.Deserialize(json).AsDocument;
+            return doc;
+        }
+    }
+    public class MongoBsonJTokenConverter : IValueConverter<JToken, MongoDB.Bson.BsonDocument>
+    {
+        public MongoDB.Bson.BsonDocument Convert(JToken source, ResolutionContext context)
+        {
+            
+            var json = source.ToString();
+            return MongoDB.Bson.BsonDocument.Parse(json);
+
+        }
+    }
 }
+
+
+
+

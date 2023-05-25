@@ -1,6 +1,6 @@
 using AutoMapper;
 using Decsys.Models.Wordlist;
-
+using Newtonsoft.Json.Linq;
 
 namespace Decsys.Mapping;
 
@@ -9,21 +9,18 @@ public class WordlistMap : Profile
     public WordlistMap()
     {
 
+        CreateMap<LiteDB.BsonValue, JToken>()
+            .ConvertUsing<JTokenLiteDbBsonConverter>();
+
+        CreateMap<MongoDB.Bson.BsonValue, JToken>()
+            .ConvertUsing<JTokenMongoBsonConverter>();
+
         CreateMap<WordlistRules, Data.Entities.LiteDb.WordlistRules>()
-                .ForMember(dest => dest.Value,
-                    opt => opt.ConvertUsing(new LiteDbBsonJTokenConverter()));
-        CreateMap<Data.Entities.LiteDb.WordlistRules, WordlistRules>()
-                .ForMember(dest => dest.Value,
-                    opt => opt.ConvertUsing(new JTokenLiteDbBsonConverter()));
+            .ForMember(dest => dest.Value,
+                opt => opt.ConvertUsing<LiteDbBsonJTokenConverter, JToken>());
 
         CreateMap<WordlistRules, Data.Entities.Mongo.WordlistRules>()
-               .ForMember(dest => dest.Value,
-                   opt => opt.ConvertUsing(new MongoBsonJTokenConverter()));
-
-        CreateMap<Data.Entities.Mongo.WordlistRules, WordlistRules>()
-                .ForMember(dest => dest.Value,
-                    opt => opt.ConvertUsing(new JTokenMongoBsonConverter()));
-
-
+            .ForMember(dest => dest.Value,
+                opt => opt.ConvertUsing<MongoBsonJTokenConverter, JToken>());
     }
 }

@@ -1,6 +1,7 @@
 using System.IO;
 using AutoMapper;
 using LiteDB;
+using MongoDB.Bson;
 using Newtonsoft.Json.Bson;
 using Newtonsoft.Json.Linq;
 
@@ -24,4 +25,25 @@ namespace Decsys.Mapping
             => MongoDB.Bson.BsonDocument.Parse(sourceMember.ToString());
 
     }
+
+    public class JTokenLiteDbBsonConverter : ITypeConverter<LiteDB.BsonValue, JToken>
+    {
+        public JToken Convert(LiteDB.BsonValue source, JToken destination, ResolutionContext context)
+        {
+            var json = source.AsString;  
+            var token = JToken.Parse(json);
+            return token;
+        }
+    }
+
+    public class JTokenMongoBsonConverter : ITypeConverter<MongoDB.Bson.BsonValue, JToken>
+    {
+        public JToken Convert(MongoDB.Bson.BsonValue source, JToken destination, ResolutionContext context)
+        {
+            var json = source.AsString;
+            var token = JToken.Parse(json);
+            return token;
+        }
+    }
+
 }
