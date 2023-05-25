@@ -26,24 +26,23 @@ namespace Decsys.Mapping
 
     }
 
-    public class JTokenLiteDbBsonConverter : ITypeConverter<LiteDB.BsonValue, JToken>
+    public class JTokenLiteDbBsonConverter : IValueConverter<JToken, LiteDB.BsonDocument>
     {
-        public JToken Convert(LiteDB.BsonValue source, JToken destination, ResolutionContext context)
+        public LiteDB.BsonDocument Convert(JToken value,  ResolutionContext context)
         {
-            var json = source.AsString;  
-            var token = JToken.Parse(json);
-            return token;
+            using var ms = new MemoryStream();
+            using BsonDataWriter writer = new BsonDataWriter(ms);
+
+            value.WriteTo(writer);
+            return BsonSerializer.Deserialize(ms.ToArray());
         }
     }
 
-    public class JTokenMongoBsonConverter : ITypeConverter<MongoDB.Bson.BsonValue, JToken>
+    public class JTokenMongoBsonConverter : IValueConverter<JToken, MongoDB.Bson.BsonDocument>
     {
-        public JToken Convert(MongoDB.Bson.BsonValue source, JToken destination, ResolutionContext context)
-        {
-            var json = source.AsString;
-            var token = JToken.Parse(json);
-            return token;
-        }
+        public MongoDB.Bson.BsonDocument Convert(JToken sourceMember, ResolutionContext context)
+            => MongoDB.Bson.BsonDocument.Parse(sourceMember.ToString());
+
     }
 
 }
