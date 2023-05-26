@@ -37,6 +37,7 @@ namespace Decsys.Constants
 
         #region Wordlist DBs
 
+        public const string UserWordlists = "UserWordlists";
         public const string Wordlists = "Wordlists";
 
         #endregion
