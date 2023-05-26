@@ -50,16 +50,15 @@ namespace Decsys.Mapping
     public class LiteDbBsonJTokenConverter : IValueConverter<LiteDB.BsonDocument, JToken>
     {
         public JToken Convert(LiteDB.BsonDocument sourceMember, ResolutionContext context)
-             => Convert(sourceMember);
+            => Convert(sourceMember);
         public static JToken Convert(LiteDB.BsonDocument bson)
-          => JObject.Parse(bson.ToJson());
+            => JObject.Parse(bson.ToJson());
     }
     
     public class MongoBsonJTokenConverter : IValueConverter<MongoDB.Bson.BsonDocument, JToken>
     {
         public JToken Convert(MongoDB.Bson.BsonDocument sourceMember, ResolutionContext context)
-              => Convert(sourceMember);
-
+            => Convert(sourceMember);
         public static JToken Convert(MongoDB.Bson.BsonDocument bson)
             => JToken.Parse(bson.ToJson());
     }
