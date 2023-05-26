@@ -1,6 +1,7 @@
 using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
+using Decsys.Data.Entities;
 using Decsys.Models.Wordlist;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -22,9 +23,20 @@ public class WordlistRepository
         _mapper = mapper;
     }
 
-    public List<UserWordlist> List(int userId)
+    public List<UserWordlist> List(string ownerId)
     {
-        var words = _wordList.Find(x => x.Id == userId) ?? throw new KeyNotFoundException();
+        var words = _wordList.Find(ownerId) ?? throw new KeyNotFoundException();
         return _mapper.Map<List<UserWordlist>>(words);
+    }
+    public UserWordlist Create(string ownerId)
+    {
+        var wordlist = new UserWordlist
+        {
+            Owner = ownerId
+        };
+
+        _wordList.InsertOne(wordlist);
+
+        return _mapper.Map<UserWordlist>(wordlist);
     }
 }

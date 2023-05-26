@@ -4,10 +4,6 @@ namespace Decsys.Repositories.Contracts;
 
 public interface IWordlistRepository
 {
-    /// <summary>
-    /// Lits words
-    /// </summary>
-    /// <param name="userId">User Id</param>
-    /// <returns>List of words</returns>
-    List<UserWordlist> List(int userId);
+    List<UserWordlist> List(string userId);
+    int Create(string ownerId);
 }

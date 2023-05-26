@@ -4,7 +4,7 @@ namespace Decsys.Models.Wordlist;
 public class UserWordlist
 {
     public int Id { get; set; }
-    public DecsysUser Owner { get; set; } = null!;
+    public string Owner { get; set; } = null!;
     public WordListOptions Options { get; set; } = new();
     public List<WordlistRules> Rules { get; set; } = new();
     public List<WordlistWord> ExcludeWords { get; set; } = new();
