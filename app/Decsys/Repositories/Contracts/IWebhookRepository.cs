@@ -12,9 +12,9 @@ public interface IWebhookRepository
     int Create(WebhookModel webhook);
 
     /// <summary>
-    /// Gets a list of webhooks for a given survey Id.
+    /// List all webhooks for a given survey Id.
     /// </summary>
     /// <param name="surveyId">The survey id to filter by</param>
     /// <returns>A list of Webhook models.</returns>
-    List<WebhookModel> GetWebhooksBySurvey(int surveyId);
+    List<WebhookModel> List(int surveyId);
 }

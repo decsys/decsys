@@ -34,7 +34,7 @@ public class WebhookService
     /// <param name="payload">The payload to trigger and Post.</param>
     public async Task Trigger(PayloadModel payload)
     {
-        var webhooks = _webhooks.GetWebhooksBySurvey(payload.SurveyId);
+        var webhooks = _webhooks.List(payload.SurveyId);
         
         foreach (var webhook in webhooks)
         {
@@ -87,8 +87,7 @@ public class WebhookService
         var json = JsonConvert.SerializeObject(payload);
         
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var resp = await _client.PostAsync(callbackUrl, content);
-        resp.EnsureSuccessStatusCode();
+        await _client.PostAsync(callbackUrl, content);
     }
 
 }

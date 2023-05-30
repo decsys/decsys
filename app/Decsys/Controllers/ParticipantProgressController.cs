@@ -406,7 +406,7 @@ namespace Decsys.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                // ignored
             }
 
             // Log the request and its outcome

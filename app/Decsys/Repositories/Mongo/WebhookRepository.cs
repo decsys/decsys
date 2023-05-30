@@ -37,10 +37,10 @@ public class WebhookRepository : IWebhookRepository
         return entity.Id;
     }
 
-    public List<WebhookModel> GetWebhooksBySurvey(int surveyId)
+    public List<WebhookModel> List(int surveyId)
     {
-        var webhooks = _webhooks.Find(x => x.SurveyId == surveyId).ToList();
-        return webhooks.Select(x => new WebhookModel
+        var webhooks = _webhooks.Find(x => x.SurveyId == surveyId);
+        return webhooks.ToList().Select(x => new WebhookModel
         {
             SurveyId = x.SurveyId,
             CallbackUrl = x.CallbackUrl,
