@@ -1,6 +1,7 @@
 using AutoMapper;
 using Decsys.Models.Wordlist;
 using Decsys.Repositories.Contracts;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Decsys.Services;
 
@@ -20,12 +21,7 @@ public class WordlistService
     public UserWordlist List(int wordlistId)
         => _wordlist.List(wordlistId);
 
-    public int Create(int userId)
-    {
-        var wordlist = new UserWordlist 
-        {
-        
-        };
-    }
+    public void Create(string userId)
+    => _wordlist.Create(userId);
 
 }

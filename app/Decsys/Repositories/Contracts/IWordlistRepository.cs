@@ -5,5 +5,6 @@ namespace Decsys.Repositories.Contracts;
 public interface IWordlistRepository
 {
     UserWordlist List(int userId);
-    int Create(int userId);
+    void Create(string userId);
+
 }

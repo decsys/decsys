@@ -4,7 +4,6 @@ using Decsys.Data.Entities;
 using Decsys.Models.Wordlist;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
@@ -31,20 +30,20 @@ namespace Decsys.Controllers
         [SwaggerResponse(200, "Wordlist created or recieved.")]
         [SwaggerResponse(401, "User is not authenticated")]
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
-        public ActionResult<UserWordlist> GetOrCreate(int userId)
+        public IActionResult GetOrCreate(string userId, int ownerId)
         {
 
-            var wordlist = _service.List(userId).FirstOrDefault();
+            var wordlist = _service.List(ownerId);
 
             if (wordlist == null)
             {
-                var newId = _service.Create(userId);
-                wordlist = _service.List(userId).FirstOrDefault(w => w.Id == newId);
+                _service.Create(userId);
+                wordlist = _service.List(ownerId);
             }
 
-            var model = _mapper.Map<UserWordlist>(wordlist);
+            var wordlistModel = _mapper.Map <Models.Wordlist.UserWordlist > (wordlist);
 
-            return Ok(model);
+            return Ok(wordlistModel);
         }
     }
 }

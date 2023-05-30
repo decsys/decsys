@@ -1,13 +1,10 @@
 using AutoMapper;
-using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Data;
-using Decsys.Data.Entities;
 using Decsys.Models.Wordlist;
 using Decsys.Repositories.Contracts;
 using LiteDB;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+
 
 namespace Decsys.Repositories.LiteDb;
 
@@ -21,19 +18,17 @@ public class LiteDbWordlistRepository : IWordlistRepository
         LiteDbFactory db,
         IMapper mapper)
     {
-        _wordlists = db.Surveys.GetCollection<UserWordlist>(Collections.Wordlists);
+        _wordlists = db.Surveys.GetCollection<UserWordlist>(Collections.UserWordlists);
         _mapper = mapper;
     }
 
-    public UserWordlist List(int ownerId) //return a model as its leaving a dl
+    public UserWordlist List(int ownerId) 
     {
         var wordlists = _wordlists.FindById(ownerId);
         return wordlists;
     }
-    public int Create() // an entity for liteDb throw an exception
+    public void Create(string userId)
     {
-        var wordlist = new UserWordlist { };
-        var wordlistId = _wordlists.Insert(wordlist);
-        return wordlistId;
+        throw new NotImplementedException();
     }
 } 
