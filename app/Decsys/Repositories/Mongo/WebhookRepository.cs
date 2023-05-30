@@ -38,16 +38,15 @@ public class WebhookRepository : IWebhookRepository
     }
 
     public List<WebhookModel> List(int surveyId)
-    {
-        var webhooks = _webhooks.Find(x => x.SurveyId == surveyId);
-        return webhooks.ToList().Select(x => new WebhookModel
-        {
-            SurveyId = x.SurveyId,
-            CallbackUrl = x.CallbackUrl,
-            Secret = x.Secret,
-            VerifySsl = x.VerifySsl,
-            TriggerCriteria = x.TriggerCriteria
-        }).ToList();
-    }
+        => _webhooks.Find(x => x.SurveyId == surveyId)
+            .Project(Builders<Webhook>.Projection.Expression(
+                x => new WebhookModel
+                {
+                    SurveyId = x.SurveyId,
+                    CallbackUrl = x.CallbackUrl,
+                    Secret = x.Secret,
+                    VerifySsl = x.VerifySsl,
+                    TriggerCriteria = x.TriggerCriteria
+                })).ToList();
     
 }
