@@ -1,12 +1,11 @@
-using Decsys.Data.Entities;
 namespace Decsys.Models.Wordlist;
 
-public class UserWordlist
+public class Wordlist
 {
     public int Id { get; set; }
-    public DecsysUser Owner { get; set; } = null!;
     public WordListOptions Options { get; set; } = new();
     public List<WordlistRules> Rules { get; set; } = new();
     public List<WordlistWord> ExcludeWords { get; set; } = new();
     public List<WordlistWord> IncludeWords { get; set; } = new();
 }
+

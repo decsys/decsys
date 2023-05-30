@@ -21,19 +21,18 @@ public class LiteDbWordlistRepository : IWordlistRepository
         LiteDbFactory db,
         IMapper mapper)
     {
-        _wordlists = db.Surveys.GetCollection<UserWordlist>(Collections.UserWordlists);
+        _wordlists = db.Surveys.GetCollection<UserWordlist>(Collections.Wordlists);
         _mapper = mapper;
     }
 
-    public List<UserWordlist> List(string userId)
+    public UserWordlist List(int userId)
     {
-        var entities = _wordlists.Find(x => x.Owner == userId).ToList();
-        var wordlists = _mapper.Map<List<UserWordlist>>(entities);
+        var wordlists = _wordlists.FindById(userId);
         return wordlists;
     }
-    public int Create(string ownerId)
+    public int Create()
     {
-        var wordlist = new UserWordlist { Owner = ownerId };
+        var wordlist = new UserWordlist { };
         var wordlistId = _wordlists.Insert(wordlist);
         return wordlistId;
     }

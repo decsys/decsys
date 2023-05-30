@@ -17,10 +17,16 @@ public class WordlistService
         _mapper = mapper;
     }
 
-    public IEnumerable<UserWordlist> List(string userId)
-        => _wordlist.List(userId);
+    public UserWordlist List(int wordlistId)
+        => _wordlist.List(wordlistId);
 
-    public int Create(string userId) => _wordlist.Create(userId);
+    public int Create(int userId)
+    {
+        var wordlist = new UserWordlist 
+        {
+        
+        };
+    }
 
 
 }

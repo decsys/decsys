@@ -1,5 +1,6 @@
-using Decsys.Data.Entities;
-namespace Decsys.Models.Wordlist;
+using Decsys.Models.Wordlist;
+
+namespace Decsys.Data.Entities;
 
 public class UserWordlist
 {

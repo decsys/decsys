@@ -31,9 +31,8 @@ namespace Decsys.Controllers
         [SwaggerResponse(200, "Wordlist created or recieved.")]
         [SwaggerResponse(401, "User is not authenticated")]
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
-        public ActionResult<UserWordlist> GetOrCreate()
+        public ActionResult<UserWordlist> GetOrCreate(int userId)
         {
-            var userId = "userID";
 
             var wordlist = _service.List(userId).FirstOrDefault();
 
