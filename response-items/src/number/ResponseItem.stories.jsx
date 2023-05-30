@@ -5,8 +5,15 @@ const _context = {
   surveyId: 0,
   pageId: "",
   itemId: "",
-  setIsValidResponse: () => {},
-  logResults: () => {},
+  setIsValidResponse: (isValid) => {
+    console.log("set valid response", isValid);
+  },
+  logResults: (results) => {
+    console.log("log result", results);
+  },
+  clearResult: (results) => {
+    console.log("results cleared", results);
+  },
 };
 
 export default {
