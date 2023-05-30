@@ -1,4 +1,4 @@
-namespace Decsys.Models.Wordlist;
+namespace Decsys.Data.Entities;
 
 public class WordlistOptions
 {
