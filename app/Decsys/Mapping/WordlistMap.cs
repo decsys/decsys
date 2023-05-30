@@ -10,7 +10,7 @@ public class WordlistMap : Profile
     {
 
         CreateMap<WordlistRules, Data.Entities.Mongo.WordlistRules>()
-             .ForMember(dest => dest.Value, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
+             .ForMember(dest => dest.Value, opt => opt.ConvertUsing(new JTokenMongoBsonConverter()));
 
         CreateMap<Data.Entities.Mongo.WordlistRules, WordlistRules>()
              .ForMember(dest => dest.Value, opt => opt.ConvertUsing(new MongoBsonJTokenConverter()));
