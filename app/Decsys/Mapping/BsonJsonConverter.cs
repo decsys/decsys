@@ -52,7 +52,7 @@ namespace Decsys.Mapping
         public JToken Convert(LiteDB.BsonDocument sourceMember, ResolutionContext context)
             => Convert(sourceMember);
         public static JToken Convert(LiteDB.BsonDocument bson)
-            => JObject.Parse(bson.ToJson());
+            => JToken.Parse(bson.ToJson());
     }
     
     public class MongoBsonJTokenConverter : IValueConverter<MongoDB.Bson.BsonDocument, JToken>
