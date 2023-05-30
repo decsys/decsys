@@ -4,9 +4,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Decsys.Mapping;
 
-public class WordlistMap : Profile
+public class WordlistMaps : Profile
 {
-    public WordlistMap()
+    public WordlistMaps()
     {
 
         CreateMap<WordlistRules, Data.Entities.Mongo.WordlistRules>()
