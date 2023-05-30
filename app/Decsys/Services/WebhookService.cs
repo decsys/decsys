@@ -74,11 +74,11 @@ public class WebhookService
         return Task.FromResult(false);
     }
     
-    private static bool CheckIsValid(PageNavigation pageNavigation, PageNavigation payload)
+    private static bool CheckIsValid(PageNavigation pageNavigation, PageNavigation? payload)
     {
-        // TODO: Nearly there - just finish off to check the page number... 
-        if (pageNavigation.SourcePage != payload.SourcePage) return false;
-        return true;
+        if (payload == null) return false;
+
+        return pageNavigation.SourcePage == payload.SourcePage;
     }
 
     /// <summary>
