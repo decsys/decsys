@@ -38,7 +38,7 @@ public class WebhookService
         
         foreach (var webhook in webhooks)
         {
-            if (await FilterCriteria(payload, webhook))
+            if (await FilterCriteria(webhook, payload))
             {
                 await SendWebhook(payload, webhook.CallbackUrl);
             }
@@ -52,29 +52,33 @@ public class WebhookService
     /// <param name="payload">Payload to check</param>
     /// <param name="webhook">Webhook to match against.</param>
     /// <returns>True if filter matches</returns>
-    private static Task<bool> FilterCriteria(PayloadModel payload, WebhookModel webhook)
+    private static Task<bool> FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
         foreach (var eventType in webhook.TriggerCriteria.SelectMany(filter => filter.EventTypes))
         {
-            switch (payload.EventType)
-            {
-                case PageNavigation pageNavigationEvent:
-                    if (eventType.GetType() == typeof(PageNavigation))
-                    {
-                        var pageEvent = (PageNavigation) eventType;
-                        if (pageNavigationEvent.SourcePage == pageEvent.SourcePage)
-                        {
-                            return Task.FromResult(true);
-                        }
-                    }
-                    break;
-                
-                default:
-                    throw new NotSupportedException($"Event type is not supported.");
-            }
-        }
+            // check 1: if they are the same event types
+            var result = eventType.GetType() == payload.EventType.GetType();
 
+            if(result)
+                // check 2 is type specific validation criteria
+                // add further criteria for further types
+            
+                result = eventType switch {
+                    PageNavigation tt => CheckIsValid(tt, payload.EventType as PageNavigation),
+                    _ => false
+                };
+
+            return Task.FromResult(result);
+        }
+        
         return Task.FromResult(false);
+    }
+    
+    private static bool CheckIsValid(PageNavigation pageNavigation, PageNavigation payload)
+    {
+        // TODO: Nearly there - just finish off to check the page number... 
+        if (pageNavigation.SourcePage != payload.SourcePage) return false;
+        return true;
     }
 
     /// <summary>
