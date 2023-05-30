@@ -38,10 +38,6 @@ namespace Decsys.Constants
         #region Wordlist DBs
 
         public const string UserWordlists = "UserWordlists";
-<<<<<<< HEAD
-        public const string Wordlists = "Wordlists";
-=======
->>>>>>> wordlist-entity
 
         #endregion
     }
