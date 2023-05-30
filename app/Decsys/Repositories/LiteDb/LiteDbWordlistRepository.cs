@@ -25,15 +25,15 @@ public class LiteDbWordlistRepository : IWordlistRepository
         _mapper = mapper;
     }
 
-    public UserWordlist List(int userId)
+    public UserWordlist List(int ownerId) //return a model as its leaving a dl
     {
-        var wordlists = _wordlists.FindById(userId);
+        var wordlists = _wordlists.FindById(ownerId);
         return wordlists;
     }
-    public int Create()
+    public int Create() // an entity for liteDb throw an exception
     {
         var wordlist = new UserWordlist { };
         var wordlistId = _wordlists.Insert(wordlist);
         return wordlistId;
     }
-}
+} 
