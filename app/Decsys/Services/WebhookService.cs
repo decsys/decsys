@@ -38,7 +38,7 @@ public class WebhookService
         
         foreach (var webhook in webhooks)
         {
-            if (await FilterCriteria(webhook, payload))
+            if (FilterCriteria(webhook, payload))
             {
                 await SendWebhook(payload, webhook.CallbackUrl);
             }
@@ -52,7 +52,7 @@ public class WebhookService
     /// <param name="payload">Payload to check</param>
     /// <param name="webhook">Webhook to match against.</param>
     /// <returns>True if filter matches</returns>
-    private static Task<bool> FilterCriteria(WebhookModel webhook, PayloadModel payload)
+    private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
         foreach (var eventType in webhook.TriggerCriteria.SelectMany(filter => filter.EventTypes))
         {
@@ -67,10 +67,10 @@ public class WebhookService
                     _ => false
                 };
 
-            return Task.FromResult(result);
+            return result;
         }
         
-        return Task.FromResult(false);
+        return false;
     }
     
     private static bool CheckIsValid(PageNavigation webhookNavigation, PageNavigation? payloadNavigation)
