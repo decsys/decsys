@@ -267,13 +267,13 @@ namespace Decsys.Services
         }
 
         /// <summary>
-        /// 
+        /// Get a page response summary for the given parameters 
         /// </summary>
-        /// <param name="instanceId"></param>
-        /// <param name="participantId"></param>
-        /// <param name="pageNumber"></param>
-        /// <returns></returns>
-        /// <exception cref="KeyNotFoundException"></exception>
+        /// <param name="instanceId">ID of a Survey Instance</param>
+        /// <param name="participantId">Identifier for a Survey Instance Participant</param>
+        /// <param name="pageNumber">Page number to filter by.</param>
+        /// <returns>The Page Response summary, or null if there isn't one matching the criteria.</returns>
+        /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
         public PageResponseSummary? PageResponseSummary(int instanceId, string participantId, int pageNumber)
         {
             var instance = _instances.Find(instanceId) ??
