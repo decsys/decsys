@@ -60,10 +60,10 @@ public class WebhookService
             var result = eventType.GetType() == payload.EventType.GetType();
 
             if(result)
-                // check 2 is type specific validation criteria
+                // check 2: type specific validation criteria
                 // add further criteria for further types
                 result = eventType switch {
-                    PageNavigation tt => CheckIsValid(tt, payload.EventType as PageNavigation),
+                    PageNavigation nav => CheckIsValid(nav, payload.EventType as PageNavigation),
                     _ => false
                 };
 
