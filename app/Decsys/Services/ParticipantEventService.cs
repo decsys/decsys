@@ -274,10 +274,15 @@ namespace Decsys.Services
         /// <param name="pageNumber">Page number to filter by.</param>
         /// <returns>The Page Response summary, or null if there isn't one matching the criteria.</returns>
         /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
-        public PageResponseSummary? PageResponseSummary(int instanceId, string participantId, int pageNumber)
+        public PageResponseSummary? PageResponseSummary(int instanceId, string participantId, Guid pageId, int pageNumber)
         {
             var instance = _instances.Find(instanceId) ??
                            throw new KeyNotFoundException("Survey Instance could not be found.");
+            
+            // Set the instance pages to only include the desired page
+            var page = instance.Survey.Pages.Find(x => x.Id == pageId);
+            if (page is not null) instance.Survey.Pages = new List<Page>() { page };
+            
             return ParticipantResultsSummary(instance, participantId).Responses.Find(x => x.Page == pageNumber);
         }
         
