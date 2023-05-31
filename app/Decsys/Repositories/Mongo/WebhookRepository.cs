@@ -36,4 +36,17 @@ public class WebhookRepository : IWebhookRepository
 
         return entity.Id;
     }
+
+    public List<WebhookModel> List(int surveyId)
+        => _webhooks.Find(x => x.SurveyId == surveyId)
+            .Project(Builders<Webhook>.Projection.Expression(
+                x => new WebhookModel
+                {
+                    SurveyId = x.SurveyId,
+                    CallbackUrl = x.CallbackUrl,
+                    Secret = x.Secret,
+                    VerifySsl = x.VerifySsl,
+                    TriggerCriteria = x.TriggerCriteria
+                })).ToList();
+    
 }
