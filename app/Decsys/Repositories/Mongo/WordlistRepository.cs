@@ -1,53 +1,51 @@
 using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
-
+using Decsys.Data.Entities;
+using Decsys.Models.Wordlist;
+using Decsys.Repositories.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Decsys.Repositories.Mongo;
 
-public class WordlistRepository
+public class WordlistRepository :IWordlistRepository
 {
-    private readonly IMongoCollection<Models.Wordlist.UserWordlist> _wordList;
-    private readonly UserManager<Data.Entities.DecsysUser> _users;
+    private readonly IMongoCollection<Data.Entities.UserWordlist> _wordlist;
     private readonly IMapper _mapper;
 
 
     public WordlistRepository(IMongoClient mongo,
-        UserManager<Data.Entities.DecsysUser> users,
         IOptions<HostedDbSettings> config,
         IMapper mapper)
     {
-        _wordList = mongo.GetDatabase(config.Value.DatabaseName)
-            .GetCollection<Models.Wordlist.UserWordlist>(Collections.UserWordlists);
-        _users = users;
+        _wordlist = mongo.GetDatabase(config.Value.DatabaseName)
+            .GetCollection<Data.Entities.UserWordlist>(Collections.UserWordlists);
         _mapper = mapper;
     }
 
-    public Models.Wordlist.UserWordlist List(int ownerId)
+    public Models.Wordlist.UserWordlist List(string ownerId)
     {
-        var words = _wordList.Find(x=>x.Id==ownerId) ?? throw new KeyNotFoundException();
+        var words = _wordlist.Find(ownerId);
         return _mapper.Map<Models.Wordlist.UserWordlist>(words);
     }
 
-    public async void Create(string userId)
+    public async Task<Models.Wordlist.UserWordlist> Create(string id)
     {
-        var user = await _users.FindByIdAsync(userId);
+        var objectId = new ObjectId(id);
 
-        var wordlist = new Data.Entities.Mongo.UserWordlist()
+        var userWordlistEntity = new Data.Entities.UserWordlist
         {
-            Owner = user
+            Owner = new DecsysUser { Id = objectId }
         };
 
-        var model = _mapper.Map<Models.Wordlist.UserWordlist>(wordlist);
+        await _wordlist.InsertOneAsync(userWordlistEntity);
 
-        _wordList.InsertOne(model);
- 
+        var userWordlistModel = _mapper.Map<Models.Wordlist.UserWordlist>(userWordlistEntity);
+
+        return userWordlistModel;
     }
-
-
 
 }

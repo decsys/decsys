@@ -22,12 +22,13 @@ public class LiteDbWordlistRepository : IWordlistRepository
         _mapper = mapper;
     }
 
-    public UserWordlist List(int ownerId) 
+    public UserWordlist List(string ownerId) 
     {
         var wordlists = _wordlists.FindById(ownerId);
         return wordlists;
     }
-    public void Create(string userId)
+
+    public Task<UserWordlist> Create(string id)
     {
         throw new NotImplementedException();
     }

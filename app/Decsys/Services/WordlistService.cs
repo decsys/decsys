@@ -1,27 +1,22 @@
-using AutoMapper;
 using Decsys.Models.Wordlist;
 using Decsys.Repositories.Contracts;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Decsys.Services;
 
-public class WordlistService
+public class WordlistService : IWordlistRepository
 {
     private readonly IWordlistRepository _wordlist;
-    private readonly IMapper _mapper;
 
     public WordlistService(
-        IWordlistRepository wordlist,
-        IMapper mapper)
+        IWordlistRepository wordlist)
     {
         _wordlist = wordlist;
-        _mapper = mapper;
     }
 
-    public UserWordlist List(int wordlistId)
-        => _wordlist.List(wordlistId);
+    public UserWordlist List(string ownerId)
+        => _wordlist.List(ownerId);
 
-    public void Create(string userId)
-    => _wordlist.Create(userId);
+    public async Task<UserWordlist> Create(string id)
+    => await _wordlist.Create(id);
 
 }
