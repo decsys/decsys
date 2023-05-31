@@ -16,10 +16,6 @@ public class PayloadModel
     public int SurveyId { get; set; }
     public int InstanceId { get; set; }
     public BaseEventType EventType { get; set; }
-    public PageResponseSummary? PageResponseSummary
-    {
-        get;
-        set;
-    } 
+    public PageResponseSummary? PageResponseSummary { get; set; } 
 
 }
