@@ -395,11 +395,11 @@ namespace Decsys.Controllers
             // Trigger webhook
             try
             {
-                var summary = _events.ResultsSummary(instanceId, participantId);
+                var summary = _events.PageResponseSummary(instanceId, participantId, iCurrentPage + 1);
                 var eventType = new PageNavigation
                 {
-                    ResolvedPage = iNextPage,
-                    SourcePage = iCurrentPage,
+                    ResolvedPage = iNextPage + 1,
+                    SourcePage = iCurrentPage + 1,
                 };
                 await _webhooks.Trigger(new PayloadModel(surveyId, instanceId, participantId, eventType, summary
                 ));

@@ -265,6 +265,21 @@ namespace Decsys.Services
             
             return resultsSummary;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="instanceId"></param>
+        /// <param name="participantId"></param>
+        /// <param name="pageNumber"></param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException"></exception>
+        public PageResponseSummary? PageResponseSummary(int instanceId, string participantId, int pageNumber)
+        {
+            var instance = _instances.Find(instanceId) ??
+                           throw new KeyNotFoundException("Survey Instance could not be found.");
+            return ParticipantResultsSummary(instance, participantId).Responses.Find(x => x.Page == pageNumber);
+        }
         
     }
 }

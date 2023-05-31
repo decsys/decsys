@@ -62,7 +62,6 @@ public class WebhookService
             if(result)
                 // check 2 is type specific validation criteria
                 // add further criteria for further types
-            
                 result = eventType switch {
                     PageNavigation tt => CheckIsValid(tt, payload.EventType as PageNavigation),
                     _ => false
@@ -74,11 +73,11 @@ public class WebhookService
         return Task.FromResult(false);
     }
     
-    private static bool CheckIsValid(PageNavigation pageNavigation, PageNavigation? payload)
+    private static bool CheckIsValid(PageNavigation webhookNavigation, PageNavigation? payloadNavigation)
     {
-        if (payload == null) return false;
+        if (payloadNavigation == null) return false;
 
-        return pageNavigation.SourcePage == payload.SourcePage;
+        return webhookNavigation.SourcePage == payloadNavigation.SourcePage;
     }
 
     /// <summary>
