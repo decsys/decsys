@@ -10,7 +10,7 @@ namespace Decsys.Repositories.Mongo;
 
 public class WordlistRepository :IWordlistRepository
 {
-    private readonly IMongoCollection<Data.Entities.UserWordlist> _wordlists;
+    private readonly IMongoCollection<Data.Entities.Mongo.UserWordlist> _wordlists;
     private readonly IMapper _mapper;
 
 
@@ -19,7 +19,7 @@ public class WordlistRepository :IWordlistRepository
         IMapper mapper)
     {
         _wordlists = mongo.GetDatabase(config.Value.DatabaseName)
-            .GetCollection<Data.Entities.UserWordlist>(Collections.UserWordlists);
+            .GetCollection<Data.Entities.Mongo.UserWordlist>(Collections.UserWordlists);
         _mapper = mapper;
     }
 
@@ -34,7 +34,7 @@ public class WordlistRepository :IWordlistRepository
     public async Task<Models.Wordlist.UserWordlist> Create(string ownerId)
     {
 
-        var userWordlistEntity = new Data.Entities.UserWordlist
+        var userWordlistEntity = new Data.Entities.Mongo.UserWordlist
         {
             Owner =  ownerId 
         };
