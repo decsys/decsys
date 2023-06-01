@@ -40,7 +40,7 @@ public class WebhookService
         {
             if (FilterCriteria(webhook, payload))
             {
-                await SendWebhook(payload, webhook.CallbackUrl);
+                await SendWebhook(webhook, payload);
             }
         }
     }
@@ -84,13 +84,15 @@ public class WebhookService
     /// Posts webhook data to a given URL.
     /// </summary>
     /// <param name="payload">Payload to Post</param>
-    /// <param name="callbackUrl">Callback url to post to</param>
-    private async Task SendWebhook(PayloadModel payload, string callbackUrl)
+    /// <param name="webhook">Webhook to Post to</param>
+    private async Task SendWebhook(WebhookModel webhook, PayloadModel payload)
     {
         var json = JsonConvert.SerializeObject(payload);
-        
+
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        await _client.PostAsync(callbackUrl, content);
+        if (webhook.SecretHash is not null) content.Headers.Add("X-Decsys-Signature", webhook.SecretHash);
+
+        await _client.PostAsync(webhook.CallbackUrl, content);
     }
 
 }

@@ -4,7 +4,7 @@ public class WebhookModel
 {
     public int SurveyId { get; set; }
     public string CallbackUrl { get; set; } = string.Empty;
-    public string Secret { get; set; } = string.Empty;
+    public string? SecretHash { get; set; }
     public bool VerifySsl { get; set; }
     
     /// <summary>

@@ -24,4 +24,24 @@ namespace Decsys.Mapping
             => MongoDB.Bson.BsonDocument.Parse(sourceMember.ToString());
 
     }
+
+    public class JTokenLiteDbBsonConverter : IValueConverter<JToken, BsonDocument>
+    {
+        public BsonDocument Convert(JToken value,  ResolutionContext context)
+        {
+            using var ms = new MemoryStream();
+            using BsonDataWriter writer = new BsonDataWriter(ms);
+
+            value.WriteTo(writer);
+            return BsonSerializer.Deserialize(ms.ToArray());
+        }
+    }
+
+    public class JTokenMongoBsonConverter : IValueConverter<JToken, MongoDB.Bson.BsonDocument>
+    {
+        public MongoDB.Bson.BsonDocument Convert(JToken sourceMember, ResolutionContext context)
+            => MongoDB.Bson.BsonDocument.Parse(sourceMember.ToString());
+
+    }
+
 }

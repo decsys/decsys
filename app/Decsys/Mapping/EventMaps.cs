@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Decsys.Models;
 
 namespace Decsys.Mapping
