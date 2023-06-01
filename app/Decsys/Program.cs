@@ -1,6 +1,6 @@
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
-using Decsys.Commands.Directory;
+using Decsys.Commands.Helpers;
 using Decsys.Startup.Cli;
 using Decsys.Startup.Web;
 
