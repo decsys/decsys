@@ -6,5 +6,4 @@ public interface IWordlistRepository
 {
     UserWordlist List(string ownerId);
     Task<UserWordlist> Create(string ownerId);
-
 }
