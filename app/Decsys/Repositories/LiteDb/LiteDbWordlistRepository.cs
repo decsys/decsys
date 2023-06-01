@@ -28,7 +28,7 @@ public class LiteDbWordlistRepository : IWordlistRepository
         return wordlists;
     }
 
-    public Task<UserWordlist> Create(string id)
+    public Task<UserWordlist> Create(string ownerId)
     {
         throw new NotImplementedException();
     }

@@ -1,10 +1,7 @@
 using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
-using Decsys.Data.Entities;
-using Decsys.Models.Wordlist;
 using Decsys.Repositories.Contracts;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -13,7 +10,7 @@ namespace Decsys.Repositories.Mongo;
 
 public class WordlistRepository :IWordlistRepository
 {
-    private readonly IMongoCollection<Data.Entities.UserWordlist> _wordlist;
+    private readonly IMongoCollection<Data.Entities.UserWordlist> _wordlists;
     private readonly IMapper _mapper;
 
 
@@ -21,27 +18,28 @@ public class WordlistRepository :IWordlistRepository
         IOptions<HostedDbSettings> config,
         IMapper mapper)
     {
-        _wordlist = mongo.GetDatabase(config.Value.DatabaseName)
+        _wordlists = mongo.GetDatabase(config.Value.DatabaseName)
             .GetCollection<Data.Entities.UserWordlist>(Collections.UserWordlists);
         _mapper = mapper;
     }
 
     public Models.Wordlist.UserWordlist List(string ownerId)
     {
-        var words = _wordlist.Find(ownerId);
-        return _mapper.Map<Models.Wordlist.UserWordlist>(words);
+
+        var wordlist = _wordlists.Find(wl => wl.Owner == ownerId).FirstOrDefault();
+
+        return _mapper.Map<Models.Wordlist.UserWordlist>(wordlist);
     }
 
-    public async Task<Models.Wordlist.UserWordlist> Create(string id)
+    public async Task<Models.Wordlist.UserWordlist> Create(string ownerId)
     {
-        var objectId = new ObjectId(id);
 
         var userWordlistEntity = new Data.Entities.UserWordlist
         {
-            Owner = new DecsysUser { Id = objectId }
+            Owner =  ownerId 
         };
 
-        await _wordlist.InsertOneAsync(userWordlistEntity);
+        await _wordlists.InsertOneAsync(userWordlistEntity);
 
         var userWordlistModel = _mapper.Map<Models.Wordlist.UserWordlist>(userWordlistEntity);
 

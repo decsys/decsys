@@ -21,5 +21,16 @@ public class WordlistMaps : Profile
         CreateMap<Data.Entities.LiteDb.WordlistRules, WordlistRules>()
              .ForMember(dest => dest.Value, opt => opt.ConvertUsing(new LiteDbBsonJTokenConverter()));
 
+        CreateMap<WordlistOptions, Data.Entities.WordlistOptions>();
+        CreateMap<Data.Entities.WordlistOptions, WordlistOptions>();
+
+
+        CreateMap<WordlistWord, Data.Entities.WordlistWord>();
+        CreateMap<Data.Entities.WordlistWord, WordlistWord>();
+
+
+        CreateMap<UserWordlist, Data.Entities.UserWordlist>();
+        CreateMap<Data.Entities.UserWordlist, UserWordlist>();
+
     }
 }
