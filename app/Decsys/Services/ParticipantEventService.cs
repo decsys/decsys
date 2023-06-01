@@ -265,6 +265,33 @@ namespace Decsys.Services
             
             return resultsSummary;
         }
+
+        /// <summary>
+        /// Get a page response summary for the given parameters 
+        /// </summary>
+        /// <param name="instanceId">ID of a Survey Instance</param>
+        /// <param name="participantId">Identifier for a Survey Instance Participant</param>
+        /// <param name="pageNumber">Page number to filter by.</param>
+        /// <returns>The Page Response summary, or null if there isn't one matching the criteria.</returns>
+        /// <exception cref="KeyNotFoundException">When the Survey Instance couldn't be found</exception>
+        public PageResponseSummary? PageResponseSummary(int instanceId, string participantId, Guid pageId)
+        {
+            var instance = _instances.Find(instanceId) ??
+                           throw new KeyNotFoundException("Survey Instance could not be found.");
+            
+            // Set the instance pages to only include the desired page
+            var page = instance.Survey.Pages.Find(x => x.Id == pageId);
+            if (page is not null)
+            {
+                instance.Survey.Pages = new List<Page>() { page };
+            }
+            else
+            {
+                instance.Survey.Pages.Clear();
+            }
+
+            return ParticipantResultsSummary(instance, participantId).Responses.SingleOrDefault();
+        }
         
     }
 }
