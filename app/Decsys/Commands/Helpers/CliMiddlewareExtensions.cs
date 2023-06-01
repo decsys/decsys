@@ -1,6 +1,6 @@
 using System.CommandLine.Builder;
 
-namespace Decsys.Commands.Directory;
+namespace Decsys.Commands.Helpers;
 
 public static class CommandLineExtensions
 {
