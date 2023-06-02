@@ -1,6 +1,7 @@
 using AutoMapper;
 using Decsys.Auth;
 using Decsys.Data.Entities;
+using Decsys.Models.Wordlist;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -43,6 +44,19 @@ namespace Decsys.Controllers
 
             return Ok(wordlist);
         }
+
+        [HttpPut("wordlists/{wordlistId}/rules/{ruleIndex:int}")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Update or create a rule for a specified wordlist")]
+        [SwaggerResponse(200, "Rule updated or created.")]
+        [SwaggerResponse(400, "Bad request: Index does not match any existing rule and is not the next available index.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        public async Task<IActionResult> PutRule(string wordlistId, int ruleIndex, [FromBody] WordlistRules rule)
+        {
+            //Controller Logic
+        }
+
     }
 }
 

@@ -46,4 +46,8 @@ public class WordlistRepository :IWordlistRepository
         return userWordlistModel;
     }
 
+    public async Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
+    {
+        //Survice Logic
+    }
 }
