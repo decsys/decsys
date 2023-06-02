@@ -78,7 +78,8 @@ namespace Decsys
                 .AddTransient<ISurveyInstanceRepository, LiteDbSurveyInstanceRepository>()
                 .AddTransient<IParticipantEventRepository, LiteDbParticipantEventRepository>()
                 .AddTransient<IStudyInstanceRepository, LiteDbStudyInstanceRepository>()
-                .AddTransient<IWebhookRepository, LiteDbWebhookRepository>();
+                .AddTransient<IWebhookRepository, LiteDbWebhookRepository>()
+                .AddTransient<IWordlistRepository, LiteDbWordlistRepository>();
 
         public static IServiceCollection AddAppServices(this IServiceCollection s)
             => s.AddTransient<SurveyService>()
@@ -90,6 +91,7 @@ namespace Decsys
                 .AddTransient<ParticipantEventService>()
                 .AddTransient<StudyAllocationService>()
                 .AddTransient<WebhookService>()
+                .AddTransient<WordlistService>()
                 .AddSingleton<MathService>();
 
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
@@ -226,6 +228,8 @@ namespace Decsys
                 .AddTransient<ISurveyInstanceRepository, SurveyInstanceRepository>()
                 .AddTransient<IParticipantEventRepository, ParticipantEventRepository>()
                 .AddTransient<IStudyInstanceRepository, StudyInstanceRepository>()
-                .AddTransient<IWebhookRepository, WebhookRepository>();
+                .AddTransient<IWebhookRepository, WebhookRepository>()
+                .AddTransient<IWordlistRepository, WordlistRepository>();
+
     }
 }
