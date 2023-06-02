@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Decsys.Controllers
 {
@@ -54,7 +55,22 @@ namespace Decsys.Controllers
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
         public async Task<IActionResult> PutRule(string wordlistId, int ruleIndex, [FromBody] WordlistRules rule)
         {
-            //Controller Logic
+            string ownerId = User.GetUserId();
+
+            var wordlist = _service.List(ownerId);
+
+            //Handling existing or new rule
+            if (ruleIndex >= 0 && ruleIndex <= wordlist.Rules.Count)
+            {
+                //Update or Add the rule
+                await _service.PutRule(wordlistId, ruleIndex, rule);
+            }
+            else
+            {
+                return BadRequest("Invalid rule index.");
+            }
+            return Ok(wordlist); // doesnt return the updated wordlist
+
         }
 
     }

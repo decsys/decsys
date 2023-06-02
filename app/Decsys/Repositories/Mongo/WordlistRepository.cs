@@ -48,6 +48,38 @@ public class WordlistRepository :IWordlistRepository
 
     public async Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
     {
-        //Survice Logic
+        // Convert string to ObjectId
+        ObjectId objectId;
+        if (!ObjectId.TryParse(wordlistId, out objectId))
+        {
+            throw new Exception("Invalid ObjectId format.");
+        }
+
+        // Fetch the wordlist using the given wordlistId
+        var wordlist = await _wordlists.Find(wl => wl.Id == objectId).FirstOrDefaultAsync();
+
+        if (wordlist == null)
+        {
+            throw new Exception("Wordlist not found.");
+        }
+
+        // Modify the specific rule at the given ruleIndex
+        if (ruleIndex < wordlist.Rules.Count)
+        {
+            wordlist.Rules[ruleIndex] = _mapper.Map<Data.Entities.Mongo.WordlistRules>(rule);
+        }
+        else if (ruleIndex == wordlist.Rules.Count)
+        {
+            wordlist.Rules.Add(_mapper.Map<Data.Entities.Mongo.WordlistRules>(rule));
+        }
+        else
+        {
+            throw new Exception("Invalid rule index.");
+        }
+
+        // Update the modified wordlist in the database
+        var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.Rules, wordlist.Rules);
+        await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
     }
+
 }
