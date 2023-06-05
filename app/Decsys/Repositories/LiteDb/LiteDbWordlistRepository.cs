@@ -24,4 +24,9 @@ public class LiteDbWordlistRepository : IWordlistRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task DeleteRule(string wordlistId, int ruleIndex)
+    {
+        throw new NotImplementedException();
+    }
 } 
