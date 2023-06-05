@@ -139,4 +139,34 @@ public class WordlistRepository :IWordlistRepository
         return _mapper.Map<Models.Wordlist.WordlistWord>(newExcludedWord);
     }
 
+    public async Task DeleteExcludedWord(string wordlistId, string type,string word)
+    {
+        // Convert string to ObjectId
+        ObjectId objectId;
+        if (!ObjectId.TryParse(wordlistId, out objectId))
+        {
+            throw new Exception("Invalid ObjectId format.");
+        }
+
+        var wordlist = await _wordlists.Find(wl => wl.Id == objectId).FirstOrDefaultAsync();
+
+        if (wordlist == null)
+        {
+            throw new Exception("Wordlist not found.");
+        }
+
+        var wordToExclude = wordlist.ExcludeWords.FirstOrDefault(w => w.Type == type && w.Word == word);
+
+        if (wordToExclude != null)
+        {
+            wordlist.ExcludeWords.Remove(wordToExclude);
+
+            var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.ExcludeWords, wordlist.ExcludeWords);
+            await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
+        }
+        else
+        {
+            throw new Exception("Excluded word not found in the wordlist.");
+        }
+    }
 }

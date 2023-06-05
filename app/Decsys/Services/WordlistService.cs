@@ -30,4 +30,7 @@ public class WordlistService : IWordlistRepository
 
     public async Task<WordlistWord> SetExcludedWord(string wordlistId, string type, string word)
     => await _wordlist.SetExcludedWord(wordlistId, type, word);
+
+    public async Task DeleteExcludedWord(string wordlistId, string type, string word)
+    => await _wordlist.DeleteExcludedWord(wordlistId, type, word);
 }
