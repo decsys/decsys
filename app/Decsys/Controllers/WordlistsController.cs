@@ -46,7 +46,7 @@ namespace Decsys.Controllers
             return Ok(wordlist);
         }
 
-        [HttpPut("wordlists/{wordlistId}/rules/{ruleIndex:int}")]
+        [HttpPut("{wordlistId}/rules/{ruleIndex:int}")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Update or create a rule for a specified wordlist")]
         [SwaggerResponse(200, "Rule updated or created.")]
@@ -59,18 +59,18 @@ namespace Decsys.Controllers
 
             var wordlist = _service.List(ownerId);
 
-            //Handling existing or new rule
             if (ruleIndex >= 0 && ruleIndex <= wordlist.Rules.Count)
             {
                 //Update or Add the rule
                 await _service.PutRule(wordlistId, ruleIndex, rule);
+                wordlist = _service.List(ownerId);
             }
             else
             {
                 return BadRequest("Invalid rule index.");
             }
-            return Ok(wordlist); // doesnt return the updated wordlist
 
+            return Ok(wordlist); 
         }
 
     }
