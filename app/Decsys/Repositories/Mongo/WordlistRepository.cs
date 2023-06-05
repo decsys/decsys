@@ -46,4 +46,37 @@ public class WordlistRepository :IWordlistRepository
         return userWordlistModel;
     }
 
+    public async Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
+    {
+        // Convert string to ObjectId
+        ObjectId objectId;
+        if (!ObjectId.TryParse(wordlistId, out objectId))
+        {
+            throw new Exception("Invalid ObjectId format.");
+        }
+
+        var wordlist = await _wordlists.Find(wl => wl.Id == objectId).FirstOrDefaultAsync();
+
+        if (wordlist == null)
+        {
+            throw new Exception("Wordlist not found.");
+        }
+
+        if (ruleIndex < wordlist.Rules.Count)
+        {
+            wordlist.Rules[ruleIndex] = _mapper.Map<Data.Entities.Mongo.WordlistRules>(rule);
+        }
+        else if (ruleIndex == wordlist.Rules.Count)
+        {
+            wordlist.Rules.Add(_mapper.Map<Data.Entities.Mongo.WordlistRules>(rule));
+        }
+        else
+        {
+            throw new Exception("Invalid rule index.");
+        }
+
+        var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.Rules, wordlist.Rules);
+        await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
+    }
+
 }

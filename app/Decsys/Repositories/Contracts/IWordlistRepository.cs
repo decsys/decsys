@@ -6,4 +6,5 @@ public interface IWordlistRepository
 {
     UserWordlist List(string ownerId);
     Task<UserWordlist> Create(string ownerId);
+    Task PutRule(string wordlistId, int ruleIndex, WordlistRules ruled);
 }
