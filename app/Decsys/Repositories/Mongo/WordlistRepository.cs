@@ -55,7 +55,6 @@ public class WordlistRepository :IWordlistRepository
             throw new Exception("Invalid ObjectId format.");
         }
 
-        // Fetch the wordlist using the given wordlistId
         var wordlist = await _wordlists.Find(wl => wl.Id == objectId).FirstOrDefaultAsync();
 
         if (wordlist == null)
@@ -63,7 +62,6 @@ public class WordlistRepository :IWordlistRepository
             throw new Exception("Wordlist not found.");
         }
 
-        // Modify the specific rule at the given ruleIndex
         if (ruleIndex < wordlist.Rules.Count)
         {
             wordlist.Rules[ruleIndex] = _mapper.Map<Data.Entities.Mongo.WordlistRules>(rule);
@@ -77,7 +75,6 @@ public class WordlistRepository :IWordlistRepository
             throw new Exception("Invalid rule index.");
         }
 
-        // Update the modified wordlist in the database
         var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.Rules, wordlist.Rules);
         await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
     }
