@@ -66,7 +66,37 @@ namespace Decsys.Controllers
                 return BadRequest("Invalid rule index.");
             }
 
-            return Ok(wordlist); 
+            return Ok(wordlist.Rules); 
+        }
+
+        [HttpDelete("{wordlistId}/rules/{ruleIndex:int}")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Delete wordlist rules for the current user")]
+        [SwaggerResponse(200, "Wordlist deleted.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        [SwaggerResponse(404, "Wordlist not found.")]
+        public async Task<IActionResult> DeleteRule(string wordlistId, int ruleIndex)
+        {
+            string ownerId = User.GetUserId();
+
+            var wordlist = _service.List(ownerId);
+
+            if (wordlist == null)
+            {
+                return NotFound("Wordlist not found.");
+            }
+
+            if (ruleIndex < 0 || ruleIndex >= wordlist.Rules.Count)
+            {
+                return BadRequest("Invalid rule index.");
+            }
+
+            await _service.DeleteRule(wordlistId, ruleIndex);
+            
+            wordlist = _service.List(ownerId);
+
+            return Ok(wordlist.Rules);
         }
 
     }
