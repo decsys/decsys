@@ -69,6 +69,44 @@ namespace Decsys.Controllers
             return Ok(wordlist); 
         }
 
+        [HttpPut("{wordlistId}/exclude/{type}/{word}")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Update or create an exclusion for a specific word in a specified wordlist")]
+        [SwaggerResponse(200, "Word exclusion updated or created.")]
+        [SwaggerResponse(400, "Bad request: Invalid type or word.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        [SwaggerResponse(404, "Wordlist not found")]
+        public async Task<IActionResult> SetExcludedWord(string wordlistId, string type, string word)
+        {
+            if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
+            {
+                return BadRequest("Invalid type or word.");
+            }
+
+            if (type != "Noun" && type != "Adjective")
+            {
+                return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
+            }
+
+            if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
+            {
+                return BadRequest("Invalid type or word.");
+            }
+
+            string ownerId = User.GetUserId();
+
+            var wordlist = _service.List(ownerId);
+
+            if (wordlist == null)
+            {
+                return NotFound("Wordlist not found");
+            }
+
+            var result = await _service.SetExcludedWord(wordlistId, type, word);
+
+            return Ok(result);
+        }
     }
 }
 
