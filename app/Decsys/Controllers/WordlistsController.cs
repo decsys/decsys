@@ -114,11 +114,6 @@ namespace Decsys.Controllers
                 return BadRequest("Invalid type or word.");
             }
 
-            if (type != "Noun" && type != "Adjective")
-            {
-                return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
-            }
-
             if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
             {
                 return BadRequest("Invalid type or word.");
