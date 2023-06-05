@@ -114,6 +114,8 @@ namespace Decsys.Controllers
                 return BadRequest("Invalid type or word.");
             }
 
+            type = type.ToLowerInvariant();
+
             if (type != "noun" && type != "adjective")
             {
                 return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
