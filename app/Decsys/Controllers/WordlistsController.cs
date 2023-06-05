@@ -114,9 +114,9 @@ namespace Decsys.Controllers
                 return BadRequest("Invalid type or word.");
             }
 
-            if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
+            if (type != "noun" && type != "adjective")
             {
-                return BadRequest("Invalid type or word.");
+                return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
             }
 
             string ownerId = User.GetUserId();
