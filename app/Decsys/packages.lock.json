@@ -41,6 +41,12 @@
           "Microsoft.AspNetCore.Http.Abstractions": "2.0.0"
         }
       },
+      "ConsoleTableExt": {
+        "type": "Direct",
+        "requested": "[3.2.0, )",
+        "resolved": "3.2.0",
+        "contentHash": "IhaHj6R2vSbb781aRXngan6nKRp8R5rnL2X5fL0uRW2wRiFyCIUh81T/QOih0//PjzoXMk2Uv4ayBAGDLH338A=="
+      },
       "IdentityServer4": {
         "type": "Direct",
         "requested": "[4.1.2, )",
@@ -200,6 +206,12 @@
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.0-rc.1.21452.15",
           "Swashbuckle.AspNetCore.SwaggerGen": "6.5.0"
         }
+      },
+      "System.CommandLine": {
+        "type": "Direct",
+        "requested": "[2.0.0-beta4.22272.1, )",
+        "resolved": "2.0.0-beta4.22272.1",
+        "contentHash": "1uqED/q2H0kKoLJ4+hI2iPSBSEdTuhfCYADeJrAqERmiGQ2NNacYKRNEQ+gFbU4glgVyK8rxI+ZOe1onEtr/Pg=="
       },
       "UoN.AspNetCore.RazorViewRenderer": {
         "type": "Direct",
