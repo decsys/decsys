@@ -114,6 +114,13 @@ namespace Decsys.Controllers
                 return BadRequest("Invalid type or word.");
             }
 
+            type = type.ToLowerInvariant();
+
+            if (type != "noun" && type != "adjective")
+            {
+                return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
+            }
+
             string ownerId = User.GetUserId();
 
             var wordlist = _service.List(ownerId);
@@ -137,6 +144,8 @@ namespace Decsys.Controllers
         [SwaggerResponse(404, "Wordlist not found.")]
         public async Task<IActionResult> DeleteExcludedWord(string wordlistId, string type, string word)
         {
+            type = type.ToLowerInvariant();
+
             string ownerId = User.GetUserId();
 
             var wordlist = _service.List(ownerId);
