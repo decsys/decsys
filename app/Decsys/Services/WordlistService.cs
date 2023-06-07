@@ -27,4 +27,7 @@ public class WordlistService : IWordlistRepository
     {
         await _wordlist.DeleteRule(wordlistId, ruleIndex);
     }
+
+    public async Task<WordlistWord> SetExcludedWord(string wordlistId, string type, string word)
+    => await _wordlist.SetExcludedWord(wordlistId, type, word);
 }

@@ -29,4 +29,9 @@ public class LiteDbWordlistRepository : IWordlistRepository
     {
         throw new NotImplementedException();
     }
+
+    public Task<WordlistWord> SetExcludedWord(string wordlistId, string type, string word)
+    {
+        throw new NotImplementedException();
+    }
 } 
