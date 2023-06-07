@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-
+using Microsoft.FeatureManagement;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
@@ -93,6 +93,9 @@ namespace Decsys
                 .AddTransient<WebhookService>()
                 .AddTransient<WordlistService>()
                 .AddSingleton<MathService>();
+
+        public static IServiceCollection AddFeatureManagement(this IServiceCollection s)
+            => s.AddFeatureManagement();
 
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
         {
