@@ -94,9 +94,6 @@ namespace Decsys
                 .AddTransient<WordlistService>()
                 .AddSingleton<MathService>();
 
-        public static IServiceCollection AddFeatureManagement(this IServiceCollection s)
-            => s.AddFeatureManagement();
-
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
         {
             s.AddRazorPages();
@@ -109,6 +106,8 @@ namespace Decsys
             // it doesn't really make sense to change this
             // (if System.Text.Json even does what we need)
             .AddNewtonsoftJson();
+
+            s.AddFeatureManagement();
 
             return s;
         }

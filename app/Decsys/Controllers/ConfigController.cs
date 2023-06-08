@@ -1,8 +1,10 @@
-﻿using Decsys.Config;
+using Decsys.Config;
+using Decsys.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 
 namespace Decsys.Controllers
 {
@@ -13,19 +15,22 @@ namespace Decsys.Controllers
     {
         private readonly AppMode _mode;
         private readonly IConfiguration _config;
+        private readonly IFeatureManagerSnapshot _featureManager;
 
-        public ConfigController(IOptions<AppMode> mode, IConfiguration config)
+        public ConfigController(IOptions<AppMode> mode, IConfiguration config, IFeatureManagerSnapshot featureManager)
         {
             _mode = mode.Value;
             _config = config;
+            _featureManager = featureManager;
         }
 
         [HttpGet]
-        public IActionResult Index() => new JsonResult(new
+        public async Task<IActionResult> Index() => new JsonResult(new
         {
             mode = _mode.IsWorkshop ? "workshop" : "hosted",
             allowRegistration = _config.GetValue<bool>("Hosted:AllowRegistration"),
-            accountApprovalRequired = _config.GetValue<bool>("Hosted:AccountApprovalRequired")
+            accountApprovalRequired = _config.GetValue<bool>("Hosted:AccountApprovalRequired"),
+            userWordlistsEnabled = await _featureManager.IsEnabledAsync(FeatureFlags.UserWordlists)
         });
     }
 }
