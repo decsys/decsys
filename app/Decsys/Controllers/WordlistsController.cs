@@ -134,6 +134,30 @@ namespace Decsys.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("{wordlistId}/exclude/{type}/{word}")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Delete Word Exclusion for the current user")]
+        [SwaggerResponse(204, "Excluded word deleted.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        [SwaggerResponse(404, "Wordlist not found.")]
+        public async Task<IActionResult> DeleteExcludedWord(string wordlistId, string type, string word)
+        {
+            type = type.ToLowerInvariant();
+
+            string ownerId = User.GetUserId();
+
+            var wordlist = _service.List(ownerId);
+
+            if (wordlist == null)
+            {
+                return NotFound("Wordlist not found.");
+            }
+            await _service.DeleteExcludedWord(wordlistId,type,word);
+            return NoContent();
+        }
+
     }
 }
 
