@@ -1,3 +1,4 @@
+//Replace addon-knobs with controls
 //import { text, number, optionsKnob } from "@storybook/addon-knobs";
 import { Heading } from "components/page-items";
 
@@ -27,16 +28,20 @@ export const Basic = () => (
       //text
       (getLabel("color"), getDefault("color"))
     }
-    variant={
-      // optionsKnob
-      (getLabel("variant"), getEnum("variant"), getDefault("variant"), options)
-    }
-    textAlign={optionsKnob(
-      getLabel("textAlign"),
+    // variant={
+    //   // optionsKnob
+    //   (getLabel("variant"), getEnum("variant"), getDefault("variant"), options)
+    // }
+    textAlign={
+      //optionsKnob
+      (getLabel("textAlign"),
       getEnum("textAlign"),
       getDefault("textAlign"),
-      options
-    )}
-    fontFamily={text(getLabel("fontFamily"), undefined)}
+      options)
+    }
+    fontFamily={
+      //text
+      (getLabel("fontFamily"), undefined)
+    }
   />
 );

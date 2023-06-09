@@ -1,4 +1,4 @@
-import { ProgressCard } from "components/core";
+import ProgressCard from "components/core";
 
 const title = "Page 1";
 
