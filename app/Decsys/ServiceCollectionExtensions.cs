@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-
+using Microsoft.FeatureManagement;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
@@ -106,6 +106,8 @@ namespace Decsys
             // it doesn't really make sense to change this
             // (if System.Text.Json even does what we need)
             .AddNewtonsoftJson();
+
+            s.AddFeatureManagement();
 
             return s;
         }
