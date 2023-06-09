@@ -1,12 +1,15 @@
 using AutoMapper;
 using Decsys.Auth;
+using Decsys.Constants;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
 {
+    [FeatureGate(FeatureFlags.UserWordlists)]
     [Route("api/[controller]")]
     [ApiController]
     public class WordlistsController : ControllerBase

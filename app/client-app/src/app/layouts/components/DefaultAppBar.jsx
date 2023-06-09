@@ -61,23 +61,29 @@ const HelpMenu = () => (
   </Menu>
 );
 
-const AdminMenu = () => (
-  <Menu>
-    <DarkMode>
-      <MenuButton as={Button} variant="ghost" rightIcon={<FaChevronDown />}>
-        Admin
-      </MenuButton>
-    </DarkMode>
-    <MenuList>
-      <MenuItem as="a" href="/admin/surveys/" icon={<FaFileAlt />}>
-        Surveys
-      </MenuItem>
-      <MenuItem as="a" href="/admin/wordlist/" icon={<FaList />}>
-        Wordlist
-      </MenuItem>
-    </MenuList>
-  </Menu>
-);
+const AdminMenu = () => {
+  const { userWordlistsEnabled } = useServerConfig();
+
+  return (
+    <Menu>
+      <DarkMode>
+        <MenuButton as={Button} variant="ghost" rightIcon={<FaChevronDown />}>
+          Admin
+        </MenuButton>
+      </DarkMode>
+      <MenuList>
+        <MenuItem as="a" href="/admin/surveys/" icon={<FaFileAlt />}>
+          Surveys
+        </MenuItem>
+        {userWordlistsEnabled && (
+          <MenuItem as="a" href="/admin/wordlist/" icon={<FaList />}>
+            Wordlist
+          </MenuItem>
+        )}
+      </MenuList>
+    </Menu>
+  );
+};
 
 const UserMenu = () => {
   const { allowRegistration } = useServerConfig();
