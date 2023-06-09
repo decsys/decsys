@@ -1,4 +1,5 @@
-import { action } from "@storybook/addon-actions";
+//TODO: Replace action with controls
+//import { action } from "@storybook/addon-actions";
 import { text } from "@storybook/addon-knobs";
 import { FiCoffee } from "react-icons/fi";
 import { FaPizzaSlice } from "react-icons/fa";
@@ -19,7 +20,7 @@ export const CallToAction = () => (
   <EmptyState
     callToAction={{
       label: "Order for me",
-      onClick: action("Pizza ordered"),
+      //onClick: action("Pizza ordered"),
     }}
     splash={FaPizzaSlice}
     message="Everything's done. Guess it's Pizza time."

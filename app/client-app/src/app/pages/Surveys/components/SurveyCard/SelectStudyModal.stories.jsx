@@ -1,6 +1,7 @@
 import { SelectStudyModal } from "./SelectStudyModal";
 import { surveys } from "./StudySelectList.stories";
-import { action } from "@storybook/addon-actions";
+//TODO: Replace action with controls
+//import { action } from "@storybook/addon-actions";
 import { SurveysListProvider } from "../../contexts/SurveysList";
 import { SurveyCardActionsProvider } from "../../contexts/SurveyCardActions";
 
@@ -12,9 +13,11 @@ export default {
     (Story) => (
       <SurveysListProvider value={{ surveys, mutateSurveys: () => {} }}>
         <SurveyCardActionsProvider
-          value={{
-            changeStudy: action("Study Change recorded"),
-          }}
+          value={
+            {
+              //changeStudy: action("Study Change recorded"),
+            }
+          }
         >
           <Story />
         </SurveyCardActionsProvider>
@@ -25,9 +28,9 @@ export default {
 
 const modalState = {
   isOpen: true,
-  onOpen: action("Modal opened"),
-  onClose: action("Modal closed"),
-  onToggle: action("Modal toggled"),
+  // onOpen: action("Modal opened"),
+  // onClose: action("Modal closed"),
+  //onToggle: action("Modal toggled"),
 };
 
 export const Basic = () => (
