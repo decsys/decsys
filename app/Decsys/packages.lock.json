@@ -135,6 +135,15 @@
         "resolved": "6.0.11",
         "contentHash": "dZBapO26vgxfH5YsWQWiQZu3vDW4TRJ42MThxJKYG9OTI3wItWOvbMcQnecErVUHAxbJVw9R0uxyUQrynIwy0w=="
       },
+      "Microsoft.FeatureManagement.AspNetCore": {
+        "type": "Direct",
+        "requested": "[2.5.1, )",
+        "resolved": "2.5.1",
+        "contentHash": "7jV53GPdAMUphiTQX6rIJAdDe8JRb8yRUIbFixYKhqIkcpba4sADMacovOzVWU+SOKeGqWrm5YDpQSNNy6IoDw==",
+        "dependencies": {
+          "Microsoft.FeatureManagement": "2.5.1"
+        }
+      },
       "MongoDB.Driver": {
         "type": "Direct",
         "requested": "[2.13.1, )",
@@ -1203,6 +1212,15 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "2.2.0",
           "Microsoft.Extensions.Options": "2.2.0",
           "System.Text.Encodings.Web": "4.5.0"
+        }
+      },
+      "Microsoft.FeatureManagement": {
+        "type": "Transitive",
+        "resolved": "2.5.1",
+        "contentHash": "ERbRjk0etZs4d5Pv17unfogO4iBwV2c/HoBt4jqIJmfbKbmTLV+GbjBPYzidIg2RgYIFi8yA+EoEapSAIOp19g==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Binder": "2.1.10",
+          "Microsoft.Extensions.Logging": "2.1.1"
         }
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
