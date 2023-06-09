@@ -1,4 +1,4 @@
-import { text, number, optionsKnob } from "@storybook/addon-knobs";
+//import { text, number, optionsKnob } from "@storybook/addon-knobs";
 import { Heading } from "components/page-items";
 
 // Actually load the params as knobs
@@ -15,15 +15,22 @@ export default {
 
 export const Basic = () => (
   <Heading
-    text={text(getLabel("text"), getDefault("text"))}
-    xMargin={number(getLabel("xMargin"), getDefault("xMargin"))}
-    color={text(getLabel("color"), getDefault("color"))}
-    variant={optionsKnob(
-      getLabel("variant"),
-      getEnum("variant"),
-      getDefault("variant"),
-      options
-    )}
+    text={
+      //text
+      (getLabel("text"), getDefault("text"))
+    }
+    xMargin={
+      //number
+      (getLabel("xMargin"), getDefault("xMargin"))
+    }
+    color={
+      //text
+      (getLabel("color"), getDefault("color"))
+    }
+    variant={
+      // optionsKnob
+      (getLabel("variant"), getEnum("variant"), getDefault("variant"), options)
+    }
     textAlign={optionsKnob(
       getLabel("textAlign"),
       getEnum("textAlign"),

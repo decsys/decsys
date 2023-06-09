@@ -1,6 +1,6 @@
 //TODO: Replace action with controls
 //import { action } from "@storybook/addon-actions";
-import { text } from "@storybook/addon-knobs";
+//import { text } from "@storybook/addon-knobs";
 import { FiCoffee } from "react-icons/fi";
 import { FaPizzaSlice } from "react-icons/fa";
 import EmptyState from "./EmptyState";
@@ -10,7 +10,14 @@ export default {
   component: EmptyState,
 };
 
-export const Basic = () => <EmptyState message={text("Message", undefined)} />;
+export const Basic = () => (
+  <EmptyState
+    message={
+      //text
+      ("Message", undefined)
+    }
+  />
+);
 
 export const AlternateIcon = () => (
   <EmptyState splash={FiCoffee} message="Take a break, you've earned it." />

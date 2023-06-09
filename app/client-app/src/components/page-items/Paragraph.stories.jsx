@@ -1,4 +1,4 @@
-import { text, optionsKnob } from "@storybook/addon-knobs";
+//import { text, optionsKnob } from "@storybook/addon-knobs";
 import { Paragraph } from "components/page-items";
 
 const getLabel = (param) => Paragraph.params[param].label;
@@ -14,19 +14,21 @@ export default {
 
 export const Basic = () => (
   <Paragraph
-    text={text(
-      "Markdown",
+    text={
+      //text
+      ("Markdown",
       `# Hello
 
-here's *some* **text**`
-    )}
+here's *some* **text**`)
+    }
     color={text(getLabel("color"), getDefault("color"))}
-    textAlign={optionsKnob(
-      getLabel("textAlign"),
+    textAlign={
+      //optionsKnob
+      (getLabel("textAlign"),
       getEnum("textAlign"),
       getDefault("textAlign"),
-      options
-    )}
+      options)
+    }
     fontFamily={text(getLabel("fontFamily"), undefined)}
   />
 );
