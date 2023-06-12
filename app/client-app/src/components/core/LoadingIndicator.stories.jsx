@@ -1,4 +1,4 @@
-import { text } from "@storybook/addon-knobs";
+//import { text } from "@storybook/addon-knobs";
 import LoadingIndicator from "./LoadingIndicator";
 
 export default {
@@ -8,7 +8,13 @@ export default {
 
 export const Basic = () => (
   <LoadingIndicator
-    verb={text("Verb", "Reticulating")}
-    noun={text("Noun", "splines")}
+    verb={
+      //text
+      ("Verb", "Reticulating")
+    }
+    noun={
+      //text
+      ("Noun", "splines")
+    }
   />
 );

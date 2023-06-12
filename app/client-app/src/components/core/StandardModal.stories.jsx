@@ -1,13 +1,15 @@
-import { action } from "@storybook/addon-actions";
+//TODO: Replace action with controls
+
+//import { action } from "@storybook/addon-actions";
 import StandardModal from "./StandardModal";
 import { Text, Flex } from "@chakra-ui/react";
 import { FaExclamationTriangle, FaArrowLeft } from "react-icons/fa";
 
 const modalState = {
   isOpen: true,
-  onOpen: action("Modal opened"),
-  onClose: action("Modal closed"),
-  onToggle: action("Modal toggled"),
+  // onOpen: action("Modal opened"),
+  // onClose: action("Modal closed"),
+  // onToggle: action("Modal toggled"),
 };
 
 /* eslint-disable-next-line */
@@ -53,7 +55,7 @@ export const CustomButtons = () => (
     confirmButton={{
       children: "Delete",
       colorScheme: "red",
-      onClick: action("Delete clicked"),
+      //onClick: action("Delete clicked"),
     }}
   >
     Are you sure?
