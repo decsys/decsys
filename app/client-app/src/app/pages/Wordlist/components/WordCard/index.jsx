@@ -19,24 +19,31 @@ export const WordCard = ({ type, word, isExcluded }) => {
       marginBottom="10px"
       display="flex"
       justifyContent="space-between"
+      alignItems="center" // Ensure children items are aligned to center
     >
-      <Heading size="md">{word}</Heading>
-      <Badge
-        variant="outline"
-        colorScheme="blue"
-        padding="5px"
-        fontSize="l"
-        fontWeight="bold"
-      >
-        {type}
-      </Badge>
-      <Button
-        onClick={handleAction}
-        leftIcon={isExcluded ? <FaPlusCircle /> : <FaMinusCircle />}
-        colorScheme={isExcluded ? "red" : "green"}
-      >
-        {isExcluded ? "Unblock" : "Block"}
-      </Button>
+      <Box flex="1">
+        <Heading size="md">{word}</Heading>
+      </Box>
+      <Box flex="1" display="flex" justifyContent="center">
+        <Badge
+          variant="subtle"
+          colorScheme="blue"
+          padding="5px"
+          fontSize="l"
+          fontWeight="bold"
+        >
+          {type}
+        </Badge>
+      </Box>
+      <Box flex="1" display="flex" justifyContent="flex-end">
+        <Button
+          onClick={handleAction}
+          leftIcon={isExcluded ? <FaPlusCircle /> : <FaMinusCircle />}
+          colorScheme={isExcluded ? "red" : "green"}
+        >
+          {isExcluded ? "Unblock" : "Block"}
+        </Button>
+      </Box>
     </Box>
   );
 };

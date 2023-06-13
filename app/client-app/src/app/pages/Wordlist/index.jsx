@@ -4,9 +4,9 @@ import { WordCard } from "./components/WordCard";
 const Wordlist = () => {
   return (
     <>
-      <WordCard type={"noun"} word={"Rabbit"} isExcluded={"F"} />
-      <WordCard type={"adjective"} word={"Happy"} />
-      <WordCard type={"adjective"} word={"Sad"} isExcluded={"F"} />
+      <WordCard type={"noun"} word={"Rabbit"} isExcluded={true} />
+      <WordCard type={"adjective"} word={"Happy"} isExcluded={false} />
+      <WordCard type={"adjective"} word={"Sad"} isExcluded={true} />
     </>
   );
 };
