@@ -2,8 +2,8 @@ import { Box } from "@chakra-ui/react";
 import { WordCardList } from "./components/WordCardList";
 import LightHeading from "components/core/LightHeading";
 
-//placeholder
 const Wordlist = () => {
+  //sample data
   const adjectives = ["happy", "sad", "angry"];
   const nouns = ["cat", "dog", "bird"];
   const excludedWords = ["sad", "cat", "bird"];
