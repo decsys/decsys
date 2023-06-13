@@ -1,6 +1,6 @@
 import { WordCard } from "./WordCard";
 import { getFilteredWordList } from "./helpers";
-import { Flex } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 
 export const WordCardList = ({ adjectives, nouns, excludedWords }) => {
   const excludedWordsDict = excludedWords.reduce((dict, word) => {
@@ -19,14 +19,12 @@ export const WordCardList = ({ adjectives, nouns, excludedWords }) => {
   return (
     <>
       {allCards.map((card, index) => (
-        <Flex
-          borderTopRadius={5}
-          align="center"
-          justify="space-between"
-          role="group"
+        <Stack
+          borderColor="gray.200"
+          boxShadow="rgba(0, 0, 0, 0.24) 0px 3px 8px;"
         >
           <WordCard key={index} {...card} />
-        </Flex>
+        </Stack>
       ))}
     </>
   );
