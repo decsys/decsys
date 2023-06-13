@@ -72,7 +72,7 @@ const AdminMenu = () => {
         </MenuButton>
       </DarkMode>
       <MenuList>
-        <MenuItem as="a" href="/admin/surveys/" icon={<FaFileAlt />}>
+        <MenuItem as="a" href="/admin/" icon={<FaFileAlt />}>
           Surveys
         </MenuItem>
         {userWordlistsEnabled && (

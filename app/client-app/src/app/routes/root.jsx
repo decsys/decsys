@@ -7,7 +7,7 @@ const Root = () => {
   if (user === undefined) {
     return <LoadingIndicator verb="Checking" noun="user" />;
   } else {
-    if (isAdmin) navigate("/admin/surveys/");
+    if (isAdmin) navigate("/admin/");
     else navigate("/survey");
     return null;
   }
