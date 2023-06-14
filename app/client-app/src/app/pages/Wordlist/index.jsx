@@ -3,6 +3,7 @@ import { WordCardList } from "./components/WordCardList";
 import LightHeading from "components/core/LightHeading";
 
 const Wordlist = () => {
+  //Sample Data
   const adjectives = ["happy", "sad", "excited"];
   const nouns = ["apple", "car", "house"];
   const excludedWords = [
@@ -15,6 +16,7 @@ const Wordlist = () => {
       word: "apple",
     },
   ];
+
   return (
     <Box p={2}>
       <LightHeading as="h1" size="xl" py={2}>

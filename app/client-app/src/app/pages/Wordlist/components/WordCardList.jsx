@@ -5,15 +5,12 @@ import { toDictionary } from "services/data-structures";
 
 export const WordCardList = ({ adjectives, nouns, excludedWords }) => {
   const excludedWordsDict = toDictionary(excludedWords, "word");
-
   const adjectiveCards = getFilteredWordList(
     adjectives,
     excludedWordsDict,
     "adjective"
   );
   const nounCards = getFilteredWordList(nouns, excludedWordsDict, "noun");
-
-  console.log(adjectiveCards);
   const allCards = [...adjectiveCards, ...nounCards];
 
   return (
