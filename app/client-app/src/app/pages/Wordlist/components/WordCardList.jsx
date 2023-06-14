@@ -1,10 +1,10 @@
-import { reduceObjectsToDictionary } from "services/data-structures";
 import { getFilteredWordList } from "./helpers";
 import { WordCard } from "./WordCard";
 import { Stack } from "@chakra-ui/react";
+import { toDictionary } from "services/data-structures";
 
 export const WordCardList = ({ adjectives, nouns, excludedWords }) => {
-  const excludedWordsDict = reduceObjectsToDictionary(excludedWords);
+  const excludedWordsDict = toDictionary(excludedWords, "word");
 
   const adjectiveCards = getFilteredWordList(
     adjectives,
@@ -13,6 +13,7 @@ export const WordCardList = ({ adjectives, nouns, excludedWords }) => {
   );
   const nounCards = getFilteredWordList(nouns, excludedWordsDict, "noun");
 
+  console.log(adjectiveCards);
   const allCards = [...adjectiveCards, ...nounCards];
 
   return (

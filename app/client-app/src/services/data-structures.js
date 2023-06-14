@@ -30,19 +30,6 @@ export const toDictionary = (data, keyProp = "id") =>
   }, {});
 
 /**
- * Reduce an array of objects to a keyed dictionary of those objects.
- * Each object is assigned as a value with its specified key property.
- * @param {object[]} data - A list of objects.
- * @param {any} [keyProp] - The property of each object to use as a unique dictionary key.
- */
-
-export const reduceObjectsToDictionary = (data) =>
-  data.reduce((acc, datum) => {
-    acc[datum] = true;
-    return acc;
-  }, {});
-
-/**
  * Is an Object empty?
  * @param {Object} obj
  */
