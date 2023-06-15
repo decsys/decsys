@@ -19,7 +19,7 @@ export const Basic = {
       },
       {
         type: "noun",
-        word: "dog",
+        word: "rabbit",
       },
     ],
   },

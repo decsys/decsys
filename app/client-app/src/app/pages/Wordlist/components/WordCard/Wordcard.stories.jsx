@@ -5,7 +5,7 @@ export default {
   component: WordCard,
 };
 
-export const ExcludedNoun = {
+export const IncludedNoun = {
   render: (args) => {
     return <WordCard {...args} />;
   },
@@ -16,7 +16,7 @@ export const ExcludedNoun = {
   },
 };
 
-export const ExcludedAdjective = {
+export const IncludedAdjective = {
   render: (args) => {
     return <WordCard {...args} />;
   },
@@ -27,7 +27,7 @@ export const ExcludedAdjective = {
   },
 };
 
-export const IncludedNoun = {
+export const ExcludedNoun = {
   render: (args) => {
     return <WordCard {...args} />;
   },
@@ -38,7 +38,7 @@ export const IncludedNoun = {
   },
 };
 
-export const IncludedAdjective = {
+export const ExcludedAdjective = {
   render: (args) => {
     return <WordCard {...args} />;
   },

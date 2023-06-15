@@ -3,7 +3,6 @@ import { Box, Badge, Heading, Button, Icon, Stack } from "@chakra-ui/react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { ActiveIndicator } from "components/core";
 
-// WordCard component
 export const WordCard = ({ type, word, isExcluded }) => {
   const [isBlocked, setIsBlocked] = useState(isExcluded);
 

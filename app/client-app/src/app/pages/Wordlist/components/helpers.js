@@ -1,6 +1,5 @@
 /**
- * Generates a list of WordCard models based on the source word list,
- * excluded words dictionary, and word type.
+ * Transforms an array of words into an array of WordCard models, marking excluded words based on the provided exclusion dictionary and word type.
  * @param {string[]} words - The source word list.
  * @param {Object} excludeWordsDict - The dictionary of words to check for exclusion.
  * @param {string} wordsType - The type of the words (e.g., 'adjective', 'noun').
