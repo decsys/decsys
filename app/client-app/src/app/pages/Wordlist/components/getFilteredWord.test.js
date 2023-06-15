@@ -26,4 +26,25 @@ describe("getFilteredWordList", () => {
 
     expect(result).toEqual(expected);
   });
+
+  it("should map a list of words to WordCard models and correctly exclude words", () => {
+    const words = ["apple", "banana", "cherry"];
+    const excludeWordsDict = {
+      banana: { type: "noun" },
+      cherry: { type: "noun" },
+    };
+    const wordsType = "adjective";
+
+    const result = getFilteredWordList(words, excludeWordsDict, wordsType);
+
+    const expected = words.map((word) => ({
+      type: wordsType,
+      word,
+      isCustomWord: false,
+      isExcluded:
+        !!excludeWordsDict[word] && excludeWordsDict[word].type === wordsType,
+    }));
+
+    expect(result).toEqual(expected);
+  });
 });
