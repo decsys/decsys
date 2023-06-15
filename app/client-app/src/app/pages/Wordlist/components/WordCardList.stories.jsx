@@ -11,7 +11,7 @@ export const Basic = {
   },
   args: {
     adjectives: ["happy", "sad", "excited"],
-    nouns: ["apple", "car", "house"],
+    nouns: ["rabbit", "cat", "dog"],
     excludedWords: [
       {
         type: "adjective",
@@ -19,7 +19,7 @@ export const Basic = {
       },
       {
         type: "noun",
-        word: "apple",
+        word: "dog",
       },
     ],
   },
@@ -31,7 +31,7 @@ export const AllBlocked = {
   },
   args: {
     adjectives: ["happy", "sad", "excited"],
-    nouns: ["apple", "car", "house"],
+    nouns: ["rabbit", "cat", "dog"],
     excludedWords: [
       {
         type: "adjective",
@@ -39,7 +39,7 @@ export const AllBlocked = {
       },
       {
         type: "noun",
-        word: "apple",
+        word: "rabbit",
       },
       {
         type: "adjective",
@@ -47,7 +47,7 @@ export const AllBlocked = {
       },
       {
         type: "noun",
-        word: "car",
+        word: "cat",
       },
       {
         type: "adjective",
@@ -55,7 +55,7 @@ export const AllBlocked = {
       },
       {
         type: "noun",
-        word: "house",
+        word: "dog",
       },
     ],
   },
@@ -67,7 +67,7 @@ export const AllUnblocked = {
   },
   args: {
     adjectives: ["happy", "sad", "excited"],
-    nouns: ["apple", "car", "house"],
+    nouns: ["rabbit", "cat", "dog"],
     excludedWords: [],
   },
 };
@@ -78,15 +78,15 @@ export const MismatachWordsType = {
   },
   args: {
     adjectives: [],
-    nouns: ["cherry", "banana"],
+    nouns: ["cat", "rabbit"],
     excludedWords: [
       {
         type: "adjective",
-        word: "cherry",
+        word: "cat",
       },
       {
         type: "adjective",
-        word: "banana",
+        word: "rabbit",
       },
     ],
   },

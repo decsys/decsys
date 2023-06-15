@@ -23,7 +23,7 @@ describe("getFilteredWordList", () => {
   });
 
   it("should map a list of words to WordCard models and correctly exclude words", () => {
-    const words = ["apple", "banana", "cherry"];
+    const words = ["happy", "sad", "excited"];
     const excludeWordsDict = {
       cat: { type: "noun" },
       dog: { type: "noun" },
@@ -32,19 +32,19 @@ describe("getFilteredWordList", () => {
     const expected = [
       {
         type: "adjective",
-        word: "apple",
+        word: "happy",
         isCustomWord: false,
         isExcluded: false,
       },
       {
         type: "adjective",
-        word: "banana",
+        word: "sad",
         isCustomWord: false,
         isExcluded: false,
       },
       {
         type: "adjective",
-        word: "cherry",
+        word: "excited",
         isCustomWord: false,
         isExcluded: false,
       },
@@ -54,7 +54,7 @@ describe("getFilteredWordList", () => {
   });
 
   it("should return a complete list mapped to WordCard models when a dictionary of excluded words and a different type argument are provided", () => {
-    const words = ["apple", "banana", "cherry"];
+    const words = ["happy", "sad", "excited"];
     const excludeWordsDict = {
       cat: { type: "noun" },
       dog: { type: "noun" },
@@ -63,19 +63,19 @@ describe("getFilteredWordList", () => {
     const expected = [
       {
         type: "adjective",
-        word: "apple",
+        word: "happy",
         isCustomWord: false,
         isExcluded: false,
       },
       {
         type: "adjective",
-        word: "banana",
+        word: "sad",
         isCustomWord: false,
         isExcluded: false,
       },
       {
         type: "adjective",
-        word: "cherry",
+        word: "excited",
         isCustomWord: false,
         isExcluded: false,
       },
