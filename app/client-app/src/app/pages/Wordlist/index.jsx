@@ -18,7 +18,6 @@ const Wordlist = () => {
     getWordList();
   }, []);
 
-  console.log(wordList);
   //Sample Data
   const excludedWords = [
     {
