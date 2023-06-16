@@ -7,11 +7,7 @@ export const WordCard = ({ type, word, isExcluded }) => {
   const [isBlocked, setIsBlocked] = useState(isExcluded);
 
   const handleAction = () => {
-    if (isBlocked) {
-      setIsBlocked(false);
-    } else {
-      setIsBlocked(true);
-    }
+    setIsBlocked(!isBlocked);
   };
 
   return (
