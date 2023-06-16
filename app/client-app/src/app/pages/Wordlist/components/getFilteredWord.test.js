@@ -9,7 +9,7 @@ describe("getFilteredWordList", () => {
     expect(getFilteredWordList(words, excludeWordsDict, "noun")).toEqual([]);
   });
 
-  it("should map a list of words to WordCard models, even if no dictionary or type is provided", () => {
+  it("should map a list of words to WordCard models, for an empty dictionary", () => {
     const words = ["rabbit", "cat", "dog"];
     const excludeWordsDict = {};
     const result = getFilteredWordList(words, excludeWordsDict, "noun");
@@ -23,28 +23,21 @@ describe("getFilteredWordList", () => {
   });
 
   it("should map a list of words to WordCard models and correctly exclude words", () => {
-    const words = ["happy", "sad", "excited"];
+    const words = ["cat", "dog"];
     const excludeWordsDict = {
-      cat: { type: "noun" },
-      dog: { type: "noun" },
+      cat: { type: "adjective" },
     };
     const result = getFilteredWordList(words, excludeWordsDict, "adjective");
     const expected = [
       {
         type: "adjective",
-        word: "happy",
+        word: "cat",
         isCustomWord: false,
-        isExcluded: false,
+        isExcluded: true,
       },
       {
         type: "adjective",
-        word: "sad",
-        isCustomWord: false,
-        isExcluded: false,
-      },
-      {
-        type: "adjective",
-        word: "excited",
+        word: "dog",
         isCustomWord: false,
         isExcluded: false,
       },
@@ -56,8 +49,8 @@ describe("getFilteredWordList", () => {
   it("should return a complete list mapped to WordCard models when a dictionary of excluded words and a different type argument are provided", () => {
     const words = ["happy", "sad", "excited"];
     const excludeWordsDict = {
-      cat: { type: "noun" },
-      dog: { type: "noun" },
+      happy: { type: "noun" },
+      sad: { type: "noun" },
     };
     const result = getFilteredWordList(words, excludeWordsDict, "adjective");
     const expected = [
@@ -84,7 +77,7 @@ describe("getFilteredWordList", () => {
     expect(result).toEqual(expected);
   });
 
-  it("should return a modified list, containing only the words not matched by the excluded words of the matching type", () => {
+  it("should correctly mark words as excluded in the mapped WordCard models when both word and type match those in the exclusion dictionary", () => {
     const words = ["cat", "dog", "rabbit"];
     const excludeWordsDict = {
       cat: { type: "noun" },
