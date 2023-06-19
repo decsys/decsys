@@ -1,19 +1,32 @@
 import { Box } from "@chakra-ui/react";
 import { WordCardList } from "./components/WordCardList";
 import LightHeading from "components/core/LightHeading";
+import adjectives from "services/adjectives";
+import animals from "services/animals";
+import { fetchWordList } from "api/wordlist";
+import { useEffect, useState } from "react";
 
 const Wordlist = () => {
+  const [wordList, setWordList] = useState([]);
+
+  useEffect(() => {
+    const getWordList = async () => {
+      const data = await fetchWordList();
+      setWordList(data);
+    };
+
+    getWordList();
+  }, []);
+
   //Sample Data
-  const adjectives = ["happy", "sad", "excited"];
-  const nouns = ["apple", "car", "house"];
   const excludedWords = [
     {
       type: "adjective",
-      word: "happy",
+      word: "aback",
     },
     {
-      type: "noun",
-      word: "apple",
+      type: "adjective",
+      word: "abaft",
     },
   ];
 
@@ -25,7 +38,7 @@ const Wordlist = () => {
 
       <WordCardList
         adjectives={adjectives}
-        nouns={nouns}
+        nouns={animals}
         excludedWords={excludedWords}
       />
     </Box>
