@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { Box, Badge, Heading, Button, Icon, Stack } from "@chakra-ui/react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { ActiveIndicator } from "components/core";
+import { fetchWordList } from "api/wordlist";
+import { excludeBuiltinWords } from "api/wordlist";
 
 export const WordCard = ({ type, word, isExcluded }) => {
   const [isBlocked, setIsBlocked] = useState(isExcluded);
 
-  const handleAction = () => {
+  const handleAction = async () => {
     setIsBlocked(!isBlocked);
+    const data = await fetchWordList();
+    const id = data.id;
+    await excludeBuiltinWords(id, type, word);
   };
 
   return (

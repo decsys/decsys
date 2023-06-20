@@ -11,7 +11,7 @@ export const fetchWordList = async () => {
 };
 
 export const excludeBuiltinWords = async (id, type, word) => {
-  const response = await axios.post(
+  const response = await axios.put(
     `/api/wordlists/${id}/exclude/${type}/${word}`,
     {},
     withHeaders(await authorization_BearerToken())

@@ -7,7 +7,7 @@ import { fetchWordList } from "api/wordlist";
 import { useEffect, useState } from "react";
 
 const Wordlist = () => {
-  const [wordList, setWordList] = useState([]);
+  const [wordList, setWordList] = useState(null);
 
   useEffect(() => {
     const getWordList = async () => {
@@ -18,29 +18,19 @@ const Wordlist = () => {
     getWordList();
   }, []);
 
-  //Sample Data
-  const excludedWords = [
-    {
-      type: "adjective",
-      word: "aback",
-    },
-    {
-      type: "adjective",
-      word: "abaft",
-    },
-  ];
-
   return (
     <Box p={2}>
       <LightHeading as="h1" size="xl" py={2}>
         My Wordlist
       </LightHeading>
 
-      <WordCardList
-        adjectives={adjectives}
-        nouns={animals}
-        excludedWords={excludedWords}
-      />
+      {wordList && (
+        <WordCardList
+          adjectives={adjectives}
+          nouns={animals}
+          excludedWords={wordList.excludedBuiltins}
+        />
+      )}
     </Box>
   );
 };
