@@ -28,9 +28,9 @@ public class WordlistService : IWordlistRepository
         await _wordlist.DeleteRule(wordlistId, ruleIndex);
     }
 
-    public async Task<WordlistWord> SetExcludedWord(string wordlistId, string type, string word)
-    => await _wordlist.SetExcludedWord(wordlistId, type, word);
+    public async Task<WordlistWord> SetExcludedBuiltins (string wordlistId, string type, string word)
+    => await _wordlist.SetExcludedBuiltins(wordlistId, type, word);
 
-    public async Task DeleteExcludedWord(string wordlistId, string type, string word)
-    => await _wordlist.DeleteExcludedWord(wordlistId, type, word);
+    public async Task DeleteExcludedBuiltins(string wordlistId, string type, string word)
+    => await _wordlist.DeleteExcludedBuiltins(wordlistId, type, word);
 }

@@ -110,7 +110,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(401, "User is not authenticated")]
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
         [SwaggerResponse(404, "Wordlist not found")]
-        public async Task<IActionResult> SetExcludedWord(string wordlistId, string type, string word)
+        public async Task<IActionResult> SetExcludedBuiltins(string wordlistId, string type, string word)
         {
             if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
             {
@@ -133,7 +133,7 @@ namespace Decsys.Controllers
                 return NotFound("Wordlist not found");
             }
 
-            var result = await _service.SetExcludedWord(wordlistId, type, word);
+            var result = await _service.SetExcludedBuiltins(wordlistId, type, word);
 
             return Ok(result);
         }
@@ -145,7 +145,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(401, "User is not authenticated")]
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
         [SwaggerResponse(404, "Wordlist not found.")]
-        public async Task<IActionResult> DeleteExcludedWord(string wordlistId, string type, string word)
+        public async Task<IActionResult> DeleteExcludedBuiltins(string wordlistId, string type, string word)
         {
             type = type.ToLowerInvariant();
 
@@ -157,7 +157,7 @@ namespace Decsys.Controllers
             {
                 return NotFound("Wordlist not found.");
             }
-            await _service.DeleteExcludedWord(wordlistId,type,word);
+            await _service.DeleteExcludedBuiltins(wordlistId,type,word);
             return NoContent();
         }
 

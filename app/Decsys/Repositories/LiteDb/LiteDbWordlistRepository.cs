@@ -30,12 +30,12 @@ public class LiteDbWordlistRepository : IWordlistRepository
         throw new NotImplementedException();
     }
 
-    public Task<WordlistWord> SetExcludedWord(string wordlistId, string type, string word)
+    public Task<WordlistWord> SetExcludedBuiltins(string wordlistId, string type, string word)
     {
         throw new NotImplementedException();
     }
     
-    public Task DeleteExcludedWord(string wordlistId, string type, string word)
+    public Task DeleteExcludedBuiltins(string wordlistId, string type, string word)
     {
         throw new NotImplementedException();
     }
