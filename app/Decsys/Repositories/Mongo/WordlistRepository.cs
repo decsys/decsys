@@ -105,7 +105,7 @@ public class WordlistRepository :IWordlistRepository
         await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
     }
 
-    public async Task<Models.Wordlist.WordlistWord> SetExcludedWord(string wordlistId, string type, string word)
+    public async Task<Models.Wordlist.WordlistWord> SetExcludedBuiltins(string wordlistId, string type, string word)
     {
         // Convert string to ObjectId
         ObjectId objectId;
@@ -122,7 +122,7 @@ public class WordlistRepository :IWordlistRepository
         }
 
         // Look for existing word of same type in the exclusion list
-        var existingWord = wordlist.ExcludeWords.FirstOrDefault(w => w.Type == type && w.Word == word);
+        var existingWord = wordlist.ExcludedBuiltins.FirstOrDefault(w => w.Type == type && w.Word == word);
 
         if (existingWord != null)
         {
@@ -130,16 +130,16 @@ public class WordlistRepository :IWordlistRepository
         }
 
         // If word doesn't exist, create a new one and add to list
-        var newExcludedWord = new Data.Entities.WordlistWord { Type = type, Word = word };
-        wordlist.ExcludeWords.Add(newExcludedWord);
+        var newExcludedBuiltins = new Data.Entities.WordlistWord { Type = type, Word = word };
+        wordlist.ExcludedBuiltins.Add(newExcludedBuiltins);
 
-        var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.ExcludeWords, wordlist.ExcludeWords);
+        var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.ExcludedBuiltins, wordlist.ExcludedBuiltins);
         await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
 
-        return _mapper.Map<Models.Wordlist.WordlistWord>(newExcludedWord);
+        return _mapper.Map<Models.Wordlist.WordlistWord>(newExcludedBuiltins);
     }
 
-    public async Task DeleteExcludedWord(string wordlistId, string type,string word)
+    public async Task DeleteExcludedBuiltins(string wordlistId, string type,string word)
     {
         // Convert string to ObjectId
         ObjectId objectId;
@@ -155,13 +155,13 @@ public class WordlistRepository :IWordlistRepository
             throw new Exception("Wordlist not found.");
         }
 
-        var wordToExclude = wordlist.ExcludeWords.FirstOrDefault(w => w.Type == type && w.Word == word);
+        var builtinsToExclude = wordlist.ExcludedBuiltins.FirstOrDefault(w => w.Type == type && w.Word == word);
 
-        if (wordToExclude != null)
+        if (builtinsToExclude != null)
         {
-            wordlist.ExcludeWords.Remove(wordToExclude);
+            wordlist.ExcludedBuiltins.Remove(builtinsToExclude);
 
-            var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.ExcludeWords, wordlist.ExcludeWords);
+            var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.ExcludedBuiltins, wordlist.ExcludedBuiltins);
             await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
         }
         else
