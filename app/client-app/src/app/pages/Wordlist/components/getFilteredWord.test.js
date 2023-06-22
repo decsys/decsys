@@ -4,15 +4,17 @@ import { describe, expect, it } from "vitest";
 describe("getFilteredWordList", () => {
   it("should return an empty list when no words are passed", () => {
     const words = [];
-    const excludedBultinDict = { rabbit: { type: "noun" } };
+    const excludedBuiltinsDict = { rabbit: { type: "noun" } };
 
-    expect(getFilteredWordList(words, excludedBultinDict, "noun")).toEqual([]);
+    expect(getFilteredWordList(words, excludedBuiltinsDict, "noun")).toEqual(
+      []
+    );
   });
 
   it("should map a list of words to WordCard models, for an empty dictionary", () => {
     const words = ["rabbit", "cat", "dog"];
-    const excludedBultinDict = {};
-    const result = getFilteredWordList(words, excludedBultinDict, "noun");
+    const excludedBuiltinsDict = {};
+    const result = getFilteredWordList(words, excludedBuiltinsDict, "noun");
     const expected = [
       { type: "noun", word: "rabbit", isCustomWord: false, isExcluded: false },
       { type: "noun", word: "cat", isCustomWord: false, isExcluded: false },
@@ -24,10 +26,14 @@ describe("getFilteredWordList", () => {
 
   it("should map a list of words to WordCard models and correctly exclude words", () => {
     const words = ["cat", "dog"];
-    const excludedBultinDict = {
+    const excludedBuiltinsDict = {
       cat: { type: "adjective" },
     };
-    const result = getFilteredWordList(words, excludedBultinDict, "adjective");
+    const result = getFilteredWordList(
+      words,
+      excludedBuiltinsDict,
+      "adjective"
+    );
     const expected = [
       {
         type: "adjective",
@@ -48,11 +54,15 @@ describe("getFilteredWordList", () => {
 
   it("should return a complete list mapped to WordCard models when a dictionary of excluded words and a different type argument are provided", () => {
     const words = ["happy", "sad", "excited"];
-    const excludedBultinDict = {
+    const excludedBuiltinsDict = {
       happy: { type: "noun" },
       sad: { type: "noun" },
     };
-    const result = getFilteredWordList(words, excludedBultinDict, "adjective");
+    const result = getFilteredWordList(
+      words,
+      excludedBuiltinsDict,
+      "adjective"
+    );
     const expected = [
       {
         type: "adjective",
@@ -79,11 +89,11 @@ describe("getFilteredWordList", () => {
 
   it("should correctly mark words as excluded in the mapped WordCard models when both word and type match those in the exclusion dictionary", () => {
     const words = ["cat", "dog", "rabbit"];
-    const excludedBultinDict = {
+    const excludedBuiltinsDict = {
       cat: { type: "noun" },
       dog: { type: "noun" },
     };
-    const result = getFilteredWordList(words, excludedBultinDict, "noun");
+    const result = getFilteredWordList(words, excludedBuiltinsDict, "noun");
     const expected = [
       {
         type: "noun",
