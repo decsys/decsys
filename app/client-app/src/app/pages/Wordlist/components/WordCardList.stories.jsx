@@ -12,7 +12,7 @@ export const Basic = {
   args: {
     adjectives: ["happy", "sad", "excited"],
     nouns: ["rabbit", "cat", "dog"],
-    excludedWords: [
+    excludedBuiltins: [
       {
         type: "adjective",
         word: "happy",
@@ -32,7 +32,7 @@ export const AllBlocked = {
   args: {
     adjectives: ["happy", "sad", "excited"],
     nouns: ["rabbit", "cat", "dog"],
-    excludedWords: [
+    excludedBuiltins: [
       {
         type: "adjective",
         word: "happy",
@@ -68,7 +68,7 @@ export const AllUnblocked = {
   args: {
     adjectives: ["happy", "sad", "excited"],
     nouns: ["rabbit", "cat", "dog"],
-    excludedWords: [],
+    excludedBuiltins: [],
   },
 };
 
@@ -79,7 +79,7 @@ export const MismatachWordsType = {
   args: {
     adjectives: [],
     nouns: ["cat", "rabbit"],
-    excludedWords: [
+    excludedBuiltins: [
       {
         type: "adjective",
         word: "cat",

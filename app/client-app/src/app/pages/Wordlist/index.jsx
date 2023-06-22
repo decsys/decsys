@@ -28,7 +28,7 @@ const Wordlist = () => {
         <WordCardList
           adjectives={adjectives}
           nouns={animals}
-          excludedWords={wordList.excludedBuiltins}
+          excludedBuiltins={wordList.excludedBuiltins}
         />
       )}
     </Box>
