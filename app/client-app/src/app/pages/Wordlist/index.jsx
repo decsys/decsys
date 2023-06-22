@@ -5,6 +5,7 @@ import adjectives from "services/adjectives";
 import animals from "services/animals";
 import { fetchWordList } from "api/wordlist";
 import { useEffect, useState } from "react";
+import { Page } from "components/core";
 
 const Wordlist = () => {
   const [wordList, setWordList] = useState(null);
@@ -19,19 +20,21 @@ const Wordlist = () => {
   }, []);
 
   return (
-    <Box p={2}>
-      <LightHeading as="h1" size="xl" py={2}>
-        My Wordlist
-      </LightHeading>
+    <Page layout="default">
+      <Box p={2}>
+        <LightHeading as="h1" size="xl" py={2}>
+          My Wordlist
+        </LightHeading>
 
-      {wordList && (
-        <WordCardList
-          adjectives={adjectives}
-          nouns={animals}
-          excludedBuiltins={wordList.excludedBuiltins}
-        />
-      )}
-    </Box>
+        {wordList && (
+          <WordCardList
+            adjectives={adjectives}
+            nouns={animals}
+            excludedBuiltins={wordList.excludedBuiltins}
+          />
+        )}
+      </Box>
+    </Page>
   );
 };
 
