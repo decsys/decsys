@@ -4,6 +4,7 @@ import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { ActiveIndicator } from "components/core";
 import { fetchWordList } from "api/wordlist";
 import { excludeBuiltinWords } from "api/wordlist";
+import { includeBuiltinWords } from "api/wordlist";
 
 export const WordCard = ({ type, word, isExcluded }) => {
   const [isBlocked, setIsBlocked] = useState(isExcluded);
@@ -12,7 +13,12 @@ export const WordCard = ({ type, word, isExcluded }) => {
     setIsBlocked(!isBlocked);
     const data = await fetchWordList();
     const id = data.id;
-    await excludeBuiltinWords(id, type, word);
+
+    if (isBlocked) {
+      await includeBuiltinWords(id, type, word);
+    } else {
+      await excludeBuiltinWords(id, type, word);
+    }
   };
 
   return (
