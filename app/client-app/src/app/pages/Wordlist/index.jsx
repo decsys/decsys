@@ -5,9 +5,10 @@ import adjectives from "services/adjectives";
 import animals from "services/animals";
 import { fetchWordList } from "api/wordlist";
 import { useEffect, useState } from "react";
+import { Page } from "components/core";
 
 const Wordlist = () => {
-  const [wordList, setWordList] = useState([]);
+  const [wordList, setWordList] = useState(null);
 
   useEffect(() => {
     const getWordList = async () => {
@@ -18,30 +19,22 @@ const Wordlist = () => {
     getWordList();
   }, []);
 
-  //Sample Data
-  const excludedWords = [
-    {
-      type: "adjective",
-      word: "aback",
-    },
-    {
-      type: "adjective",
-      word: "abaft",
-    },
-  ];
-
   return (
-    <Box p={2}>
-      <LightHeading as="h1" size="xl" py={2}>
-        My Wordlist
-      </LightHeading>
+    <Page layout="default">
+      <Box p={2}>
+        <LightHeading as="h1" size="xl" py={2}>
+          My Wordlist
+        </LightHeading>
 
-      <WordCardList
-        adjectives={adjectives}
-        nouns={animals}
-        excludedWords={excludedWords}
-      />
-    </Box>
+        {wordList && (
+          <WordCardList
+            adjectives={adjectives}
+            nouns={animals}
+            excludedBuiltins={wordList.excludedBuiltins}
+          />
+        )}
+      </Box>
+    </Page>
   );
 };
 
