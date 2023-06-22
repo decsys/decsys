@@ -18,3 +18,9 @@ export const excludeBuiltinWords = async (id, type, word) => {
   );
   return response.data;
 };
+
+export const includeBuiltinWords = async (id, type, word) =>
+  await axios.delete(
+    `/api/wordlists/${id}/exclude/${type}/${word}`,
+    withHeaders(await authorization_BearerToken())
+  );
