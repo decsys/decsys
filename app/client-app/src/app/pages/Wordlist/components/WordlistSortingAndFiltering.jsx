@@ -1,5 +1,5 @@
-const { Flex, Text } = require("@chakra-ui/react");
-const { default: SortPanel } = require("components/shared/SortPanel");
+import { Flex, Text } from "@chakra-ui/react";
+import SortPanel from "components/shared/SortPanel";
 
 const WordlistSortingAndFiltering = ({ sorting, setSorting }) => {
   const handleSort = (key) => {
@@ -9,6 +9,7 @@ const WordlistSortingAndFiltering = ({ sorting, setSorting }) => {
       [key]: sorting.key === key ? !sorting[key] : sorting[key],
     });
   };
+
   return (
     <Flex alignItems="center">
       <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
@@ -17,7 +18,7 @@ const WordlistSortingAndFiltering = ({ sorting, setSorting }) => {
       <SortPanel
         state={sorting}
         onSortButtonClick={handleSort}
-        keys={["Active", ["Run Count", "runCount"], "Name"]}
+        keys={["Value", "Type"]}
       />
     </Flex>
   );
