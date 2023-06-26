@@ -1,17 +1,13 @@
-import { useSortingAndFiltering } from "./useSortingAndFiltering";
-
-const storageKey = "wordlists.sorting";
+import { useSortingAndFiltering } from "components/shared/SortPanel";
 
 export const useWordlistSortingAndFiltering = (wordList) => {
-  const initialSorting = JSON.parse(localStorage.getItem(storageKey)) || {
-    key: "word",
-    word: true,
-  };
-
-  const sortingAndFiltering = useSortingAndFiltering(wordList, initialSorting);
+  const sortingAndFiltering = useSortingAndFiltering(wordList);
 
   return {
-    ...sortingAndFiltering,
-    wordList: sortingAndFiltering.surveyList,
+    wordCardList: sortingAndFiltering.surveyList,
+    sorting: sortingAndFiltering.sorting,
+    setSorting: sortingAndFiltering.setSorting,
+    filter: sortingAndFiltering.filter,
+    setFilter: sortingAndFiltering.setFilter,
   };
 };
