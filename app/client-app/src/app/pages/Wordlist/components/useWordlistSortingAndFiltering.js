@@ -1,22 +1,17 @@
-import { useState } from "react";
+import { useSortingAndFiltering } from "./useSortingAndFiltering";
 
-const useWordlistSortingAndFiltering = () => {
-  const [sorting, setSorting] = useState({
-    key: "", // Initial sorting key (e.g., "Value", "Type")
-    ascending: true, // Initial sorting order
-  });
+const storageKey = "wordlists.sorting";
 
-  // Handle sorting by a specific key
-  const handleSort = (key) => {
-    const ascending = sorting.key === key ? !sorting.ascending : true;
-    setSorting({ key, ascending });
+export const useWordlistSortingAndFiltering = (wordList) => {
+  const initialSorting = JSON.parse(localStorage.getItem(storageKey)) || {
+    key: "word",
+    word: true,
   };
+
+  const sortingAndFiltering = useSortingAndFiltering(wordList, initialSorting);
 
   return {
-    sorting,
-    setSorting,
-    handleSort,
+    ...sortingAndFiltering,
+    wordList: sortingAndFiltering.surveyList,
   };
 };
-
-export default useWordlistSortingAndFiltering;

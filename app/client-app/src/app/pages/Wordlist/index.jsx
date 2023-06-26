@@ -1,14 +1,17 @@
+import { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import { WordCardList } from "./components/WordCardList";
 import LightHeading from "components/core/LightHeading";
 import adjectives from "services/adjectives";
 import animals from "services/animals";
 import { fetchWordList } from "api/wordlist";
-import { useEffect, useState } from "react";
 import { Page } from "components/core";
+import { toDictionary } from "services/data-structures";
+import { getFilteredWordList } from "./components/helpers";
 
 const Wordlist = () => {
   const [wordList, setWordList] = useState(null);
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
     const getWordList = async () => {
@@ -19,6 +22,26 @@ const Wordlist = () => {
     getWordList();
   }, []);
 
+  useEffect(() => {
+    if (wordList) {
+      const excludedBuiltinsDict = toDictionary(
+        wordList.excludedBuiltins,
+        "word"
+      );
+      const adjectiveCards = getFilteredWordList(
+        adjectives,
+        excludedBuiltinsDict,
+        "adjective"
+      );
+      const nounCards = getFilteredWordList(
+        animals,
+        excludedBuiltinsDict,
+        "noun"
+      );
+      setCards([...adjectiveCards, ...nounCards]);
+    }
+  }, [wordList]);
+
   return (
     <Page layout="default">
       <Box p={2}>
@@ -26,13 +49,7 @@ const Wordlist = () => {
           My Wordlist
         </LightHeading>
 
-        {wordList && (
-          <WordCardList
-            adjectives={adjectives}
-            nouns={animals}
-            excludedBuiltins={wordList.excludedBuiltins}
-          />
-        )}
+        {cards.length > 0 && <WordCardList cards={cards} />}
       </Box>
     </Page>
   );
