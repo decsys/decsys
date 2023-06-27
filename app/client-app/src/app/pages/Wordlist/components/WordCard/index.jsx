@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { Box, Badge, Heading, Button, Icon, Stack } from "@chakra-ui/react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { ActiveIndicator } from "components/core";

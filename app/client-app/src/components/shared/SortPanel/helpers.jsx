@@ -40,7 +40,7 @@ export const getSortedLookup = (input, key, asc) =>
   Object.keys(input)
     .map((id) => input[id])
     .sort(getPropertySorter(key, asc))
-    .map((card) => ({ ...card }));
+    .map(({ id, name }) => ({ id, name }));
 
 /**
  * Filters a list of objects with a `name` property
