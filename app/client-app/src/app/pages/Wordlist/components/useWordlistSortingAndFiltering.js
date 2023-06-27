@@ -1,11 +1,19 @@
-import { useSortingAndFiltering } from "components/shared/SortPanel";
+import { useSortingAndFiltering } from "hooks/useSortingAndFiltering";
 
-export const useWordlistSortingAndFiltering = (cards) => {
-  const sortingAndFiltering = useSortingAndFiltering(cards);
-
-  return {
-    wordCardList: sortingAndFiltering.surveyList,
-    sorting: sortingAndFiltering.sorting,
-    setSorting: sortingAndFiltering.setSorting,
-  };
-};
+export const useWordlistSortingAndFiltering = (data, storageKey) =>
+  useSortingAndFiltering(data, "word", {
+    initialSort: {
+      key: "word",
+    },
+    sorters: {
+      word: {
+        sorter: (asc) => (a, b) =>
+          asc ? a.localeCompare(b) : b.localeCompare(a),
+      },
+      type: {
+        sorter: (asc) => (a, b) =>
+          asc ? a.localeCompare(b) : b.localeCompare(a),
+      },
+    },
+    storageKey: "wordlist",
+  });
