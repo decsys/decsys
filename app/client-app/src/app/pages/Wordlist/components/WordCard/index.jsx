@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Badge, Heading, Button, Icon, Stack } from "@chakra-ui/react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { ActiveIndicator } from "components/core";
@@ -7,14 +7,12 @@ import { excludeBuiltinWords } from "api/wordlist";
 import { includeBuiltinWords } from "api/wordlist";
 
 export const WordCard = ({ type, word, isExcluded }) => {
-  const [isBlocked, setIsBlocked] = useState(isExcluded);
-
   const handleAction = async () => {
-    setIsBlocked(!isBlocked);
+    setIsBlocked(!isExcluded);
     const data = await fetchWordList();
     const id = data.id;
 
-    if (isBlocked) {
+    if (isExcluded) {
       await includeBuiltinWords(id, type, word);
     } else {
       await excludeBuiltinWords(id, type, word);
@@ -23,7 +21,7 @@ export const WordCard = ({ type, word, isExcluded }) => {
 
   return (
     <Stack spacing={0} direction="row" bg="gray.200">
-      <ActiveIndicator active={isBlocked ? false : true} />
+      <ActiveIndicator active={isExcluded ? false : true} />
       <Stack w="100%">
         <Box
           backgroundColor="gray.100"
@@ -50,14 +48,14 @@ export const WordCard = ({ type, word, isExcluded }) => {
           <Box flex="1" display="flex" justifyContent="flex-end">
             <Button
               onClick={handleAction}
-              leftIcon={isBlocked ? <FaPlusCircle /> : <FaMinusCircle />}
-              bg={isBlocked ? "blue.500" : "red.500"}
+              leftIcon={isExcluded ? <FaPlusCircle /> : <FaMinusCircle />}
+              bg={isExcluded ? "blue.500" : "red.500"}
               color="white"
               _hover={{
-                bg: isBlocked ? "blue.600" : "red.600",
+                bg: isExcluded ? "blue.600" : "red.600",
               }}
             >
-              {isBlocked ? "Unblock" : "Block"}
+              {isExcluded ? "Unblock" : "Block"}
             </Button>
           </Box>
         </Box>

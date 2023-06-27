@@ -12,7 +12,11 @@ const WordlistSortingAndFilteringPanel = ({ data, sorting, onSort }) => {
           <SortPanel
             state={sorting}
             onSortButtonClick={onSort}
-            keys={["word", "type"]}
+            keys={[
+              ["Word", "word"],
+              ["Type", "type"],
+              ["Active", "isExcluded"],
+            ]}
           />
         </>
       )}

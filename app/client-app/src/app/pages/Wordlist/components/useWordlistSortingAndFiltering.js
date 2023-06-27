@@ -1,6 +1,6 @@
 import { useSortingAndFiltering } from "hooks/useSortingAndFiltering";
 
-export const useWordlistSortingAndFiltering = (data, storageKey) =>
+export const useWordlistSortingAndFiltering = (data) =>
   useSortingAndFiltering(data, "word", {
     initialSort: {
       key: "word",
@@ -13,6 +13,9 @@ export const useWordlistSortingAndFiltering = (data, storageKey) =>
       type: {
         sorter: (asc) => (a, b) =>
           asc ? a.localeCompare(b) : b.localeCompare(a),
+      },
+      isExcluded: {
+        sorter: (asc) => (a, b) => asc ? +a - +b : +b - +a,
       },
     },
     storageKey: "wordlist",
