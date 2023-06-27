@@ -6,6 +6,8 @@ import WordlistSortingAndFiltering from "../WordlistSortingAndFiltering";
 export const WordCardList = ({ cards }) => {
   const sortingAndFiltering = useWordlistSortingAndFiltering(cards);
 
+  console.log(sortingAndFiltering.wordCardList);
+  console.log(cards);
   return (
     <Stack mt={2}>
       <Box py={4}>

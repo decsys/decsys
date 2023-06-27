@@ -35,11 +35,12 @@ const getPropertySorter = (key, asc) => {
  * @param {string} key The object property to sort by.
  * @param {boolean} asc Sort ascending or descending.
  */
+
 export const getSortedLookup = (input, key, asc) =>
   Object.keys(input)
     .map((id) => input[id])
     .sort(getPropertySorter(key, asc))
-    .map(({ id, name }) => ({ id, name }));
+    .map((card) => ({ ...card }));
 
 /**
  * Filters a list of objects with a `name` property

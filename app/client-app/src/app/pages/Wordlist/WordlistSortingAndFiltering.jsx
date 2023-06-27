@@ -1,12 +1,7 @@
-import { Flex, Input, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import SortPanel from "components/shared/SortPanel";
 
-const WordlistSortingAndFiltering = ({
-  sorting,
-  setSorting,
-  filter,
-  setFilter,
-}) => {
+const WordlistSortingAndFiltering = ({ sorting, setSorting }) => {
   const handleSort = (key) => {
     setSorting({
       ...sorting,
@@ -23,7 +18,7 @@ const WordlistSortingAndFiltering = ({
       <SortPanel
         state={sorting}
         onSortButtonClick={handleSort}
-        keys={["word", "wordType"]}
+        keys={["word", "type"]}
       />
     </Flex>
   );
