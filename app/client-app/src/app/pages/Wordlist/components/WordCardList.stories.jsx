@@ -10,18 +10,35 @@ export const Basic = {
     return <WordCardList {...args} />;
   },
   args: {
-    adjectives: ["happy", "sad", "excited"],
-    nouns: ["rabbit", "cat", "dog"],
-    excludedBuiltins: [
+    cards: [
       {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
         type: "adjective",
-        word: "happy",
+        word: "aback",
       },
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "noun",
-        word: "rabbit",
+        word: "Aardvark",
+      },
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "adjective",
+        word: "woozy",
       },
     ],
+  },
+};
+
+export const EmptyList = {
+  render: (args) => {
+    return <WordCardList {...args} />;
+  },
+  args: {
+    cards: [],
   },
 };
 
@@ -30,30 +47,40 @@ export const AllBlocked = {
     return <WordCardList {...args} />;
   },
   args: {
-    adjectives: ["happy", "sad", "excited"],
-    nouns: ["rabbit", "cat", "dog"],
-    excludedBuiltins: [
+    cards: [
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "adjective",
         word: "happy",
       },
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "noun",
         word: "rabbit",
       },
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "adjective",
         word: "sad",
       },
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "noun",
         word: "cat",
       },
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "adjective",
         word: "excited",
       },
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "noun",
         word: "dog",
       },
@@ -66,27 +93,76 @@ export const AllUnblocked = {
     return <WordCardList {...args} />;
   },
   args: {
-    adjectives: ["happy", "sad", "excited"],
-    nouns: ["rabbit", "cat", "dog"],
-    excludedBuiltins: [],
+    cards: [
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "adjective",
+        word: "happy",
+      },
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "noun",
+        word: "rabbit",
+      },
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "adjective",
+        word: "sad",
+      },
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "noun",
+        word: "cat",
+      },
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "adjective",
+        word: "excited",
+      },
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "noun",
+        word: "dog",
+      },
+    ],
   },
 };
 
-export const MismatachWordsType = {
+export const MixedExcludedAndIncluded = {
   render: (args) => {
     return <WordCardList {...args} />;
   },
   args: {
-    adjectives: [],
-    nouns: ["cat", "rabbit"],
-    excludedBuiltins: [
+    cards: [
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "adjective",
-        word: "cat",
+        word: "happy",
       },
       {
-        type: "adjective",
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "noun",
         word: "rabbit",
+      },
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
+        type: "adjective",
+        word: "sad",
+      },
+      {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+        type: "noun",
+        word: "cat",
       },
     ],
   },

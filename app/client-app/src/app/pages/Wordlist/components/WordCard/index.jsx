@@ -4,27 +4,23 @@ import { ActiveIndicator } from "components/core";
 import { fetchWordList } from "api/wordlist";
 import { excludeBuiltinWords } from "api/wordlist";
 import { includeBuiltinWords } from "api/wordlist";
-import { useState } from "react";
 
 export const WordCard = ({
   type,
   word,
-  isExcludedBuiltin: initialIsExcludedBuiltin,
+  isExcludedBuiltin,
+  onIsExcludedBuiltinChange,
 }) => {
-  const [isExcludedBuiltin, setIsExcludedBuiltin] = useState(
-    initialIsExcludedBuiltin
-  );
-
   const handleAction = async () => {
     const data = await fetchWordList();
     const id = data.id;
 
     if (isExcludedBuiltin) {
       await includeBuiltinWords(id, type, word);
-      setIsExcludedBuiltin(false);
+      onIsExcludedBuiltinChange(word, false);
     } else {
       await excludeBuiltinWords(id, type, word);
-      setIsExcludedBuiltin(true);
+      onIsExcludedBuiltinChange(word, true);
     }
   };
 
