@@ -12,13 +12,13 @@ export const getFilteredWordList = (
 ) => {
   return words.map((word) => {
     const excludedWord = excludedBuiltinsDict[word];
-    const isExcluded = excludedWord && excludedWord.type === wordsType;
+    const isExcludedBuiltin = excludedWord && excludedWord.type === wordsType;
 
     return {
       type: wordsType,
       word,
       isCustomWord: false,
-      isExcluded: isExcluded || false,
+      isExcludedBuiltin: isExcludedBuiltin || false,
     };
   });
 };

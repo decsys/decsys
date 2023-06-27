@@ -14,7 +14,7 @@ export const useWordlistSortingAndFiltering = (data) =>
         sorter: (asc) => (a, b) =>
           asc ? a.localeCompare(b) : b.localeCompare(a),
       },
-      isExcluded: {
+      isExcludedBuiltin: {
         sorter: (asc) => (a, b) => asc ? +a - +b : +b - +a,
       },
     },

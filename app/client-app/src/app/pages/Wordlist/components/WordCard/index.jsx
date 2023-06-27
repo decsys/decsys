@@ -4,23 +4,33 @@ import { ActiveIndicator } from "components/core";
 import { fetchWordList } from "api/wordlist";
 import { excludeBuiltinWords } from "api/wordlist";
 import { includeBuiltinWords } from "api/wordlist";
+import { useState } from "react";
 
-export const WordCard = ({ type, word, isExcluded }) => {
+export const WordCard = ({
+  type,
+  word,
+  isExcludedBuiltin: initialIsExcludedBuiltin,
+}) => {
+  const [isExcludedBuiltin, setIsExcludedBuiltin] = useState(
+    initialIsExcludedBuiltin
+  );
+
   const handleAction = async () => {
-    setIsBlocked(!isExcluded);
     const data = await fetchWordList();
     const id = data.id;
 
-    if (isExcluded) {
+    if (isExcludedBuiltin) {
       await includeBuiltinWords(id, type, word);
+      setIsExcludedBuiltin(false);
     } else {
       await excludeBuiltinWords(id, type, word);
+      setIsExcludedBuiltin(true);
     }
   };
 
   return (
     <Stack spacing={0} direction="row" bg="gray.200">
-      <ActiveIndicator active={isExcluded ? false : true} />
+      <ActiveIndicator active={isExcludedBuiltin ? false : true} />
       <Stack w="100%">
         <Box
           backgroundColor="gray.100"
@@ -47,14 +57,16 @@ export const WordCard = ({ type, word, isExcluded }) => {
           <Box flex="1" display="flex" justifyContent="flex-end">
             <Button
               onClick={handleAction}
-              leftIcon={isExcluded ? <FaPlusCircle /> : <FaMinusCircle />}
-              bg={isExcluded ? "blue.500" : "red.500"}
+              leftIcon={
+                isExcludedBuiltin ? <FaPlusCircle /> : <FaMinusCircle />
+              }
+              bg={isExcludedBuiltin ? "blue.500" : "red.500"}
               color="white"
               _hover={{
-                bg: isExcluded ? "blue.600" : "red.600",
+                bg: isExcludedBuiltin ? "blue.600" : "red.600",
               }}
             >
-              {isExcluded ? "Unblock" : "Block"}
+              {isExcludedBuiltin ? "Unblock" : "Block"}
             </Button>
           </Box>
         </Box>

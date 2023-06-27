@@ -15,7 +15,7 @@ const WordlistSortingAndFilteringPanel = ({ data, sorting, onSort }) => {
             keys={[
               ["Word", "word"],
               ["Type", "type"],
-              ["Active", "isExcluded"],
+              ["Active", "isExcludedBuiltin"],
             ]}
           />
         </>

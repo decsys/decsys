@@ -16,9 +16,24 @@ describe("getFilteredWordList", () => {
     const excludedBuiltinsDict = {};
     const result = getFilteredWordList(words, excludedBuiltinsDict, "noun");
     const expected = [
-      { type: "noun", word: "rabbit", isCustomWord: false, isExcluded: false },
-      { type: "noun", word: "cat", isCustomWord: false, isExcluded: false },
-      { type: "noun", word: "dog", isCustomWord: false, isExcluded: false },
+      {
+        type: "noun",
+        word: "rabbit",
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+      },
+      {
+        type: "noun",
+        word: "cat",
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+      },
+      {
+        type: "noun",
+        word: "dog",
+        isCustomWord: false,
+        isExcludedBuiltin: false,
+      },
     ];
 
     expect(result).toEqual(expected);
@@ -39,13 +54,13 @@ describe("getFilteredWordList", () => {
         type: "adjective",
         word: "cat",
         isCustomWord: false,
-        isExcluded: true,
+        isExcludedBuiltin: true,
       },
       {
         type: "adjective",
         word: "dog",
         isCustomWord: false,
-        isExcluded: false,
+        isExcludedBuiltin: false,
       },
     ];
 
@@ -68,19 +83,19 @@ describe("getFilteredWordList", () => {
         type: "adjective",
         word: "happy",
         isCustomWord: false,
-        isExcluded: false,
+        isExcludedBuiltin: false,
       },
       {
         type: "adjective",
         word: "sad",
         isCustomWord: false,
-        isExcluded: false,
+        isExcludedBuiltin: false,
       },
       {
         type: "adjective",
         word: "excited",
         isCustomWord: false,
-        isExcluded: false,
+        isExcludedBuiltin: false,
       },
     ];
 
@@ -99,19 +114,19 @@ describe("getFilteredWordList", () => {
         type: "noun",
         word: "cat",
         isCustomWord: false,
-        isExcluded: true,
+        isExcludedBuiltin: true,
       },
       {
         type: "noun",
         word: "dog",
         isCustomWord: false,
-        isExcluded: true,
+        isExcludedBuiltin: true,
       },
       {
         type: "noun",
         word: "rabbit",
         isCustomWord: false,
-        isExcluded: false,
+        isExcludedBuiltin: false,
       },
     ];
     expect(result).toEqual(expected);
