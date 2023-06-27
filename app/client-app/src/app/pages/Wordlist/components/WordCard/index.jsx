@@ -1,32 +1,16 @@
 import { Box, Badge, Heading, Button, Icon, Stack } from "@chakra-ui/react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { ActiveIndicator } from "components/core";
-import { fetchWordList } from "api/wordlist";
-import { excludeBuiltinWords } from "api/wordlist";
-import { includeBuiltinWords } from "api/wordlist";
 
 export const WordCard = ({
   type,
   word,
   isExcludedBuiltin,
-  onIsExcludedBuiltinChange,
+  onToggleExclude,
 }) => {
-  const handleAction = async () => {
-    const data = await fetchWordList();
-    const id = data.id;
-
-    if (isExcludedBuiltin) {
-      await includeBuiltinWords(id, type, word);
-      onIsExcludedBuiltinChange(word, false);
-    } else {
-      await excludeBuiltinWords(id, type, word);
-      onIsExcludedBuiltinChange(word, true);
-    }
-  };
-
   return (
     <Stack spacing={0} direction="row" bg="gray.200">
-      <ActiveIndicator active={isExcludedBuiltin ? false : true} />
+      <ActiveIndicator active={!isExcludedBuiltin} />
       <Stack w="100%">
         <Box
           backgroundColor="gray.100"
@@ -52,7 +36,7 @@ export const WordCard = ({
           </Box>
           <Box flex="1" display="flex" justifyContent="flex-end">
             <Button
-              onClick={handleAction}
+              onClick={() => onToggleExclude(word, type, isExcludedBuiltin)}
               leftIcon={
                 isExcludedBuiltin ? <FaPlusCircle /> : <FaMinusCircle />
               }
