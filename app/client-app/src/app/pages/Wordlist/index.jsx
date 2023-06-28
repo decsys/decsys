@@ -14,7 +14,8 @@ import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingA
 const Wordlist = () => {
   const [wordList, setWordList] = useState(null);
   const [cards, setCards] = useState([]);
-  const { sorting, onSort, outputList } = useWordlistSortingAndFiltering(cards);
+  const { sorting, onSort, outputList, filter, setFilter } =
+    useWordlistSortingAndFiltering(cards);
 
   useEffect(() => {
     const getWordList = async () => {
@@ -75,6 +76,8 @@ const Wordlist = () => {
             cards={cards}
             sorting={sorting}
             onSort={onSort}
+            filter={filter}
+            setFilter={setFilter}
             toggleExclude={toggleExclude}
             outputList={outputList}
           />
