@@ -8,7 +8,6 @@ import {
   Textarea,
   Stack,
   Icon,
-  Heading,
   Accordion,
   AccordionItem,
   AccordionPanel,
