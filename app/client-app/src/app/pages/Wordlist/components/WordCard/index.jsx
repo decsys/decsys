@@ -1,29 +1,16 @@
-import React, { useState } from "react";
 import { Box, Badge, Heading, Button, Icon, Stack } from "@chakra-ui/react";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
 import { ActiveIndicator } from "components/core";
-import { fetchWordList } from "api/wordlist";
-import { excludeBuiltinWords } from "api/wordlist";
-import { includeBuiltinWords } from "api/wordlist";
 
-export const WordCard = ({ type, word, isExcluded }) => {
-  const [isBlocked, setIsBlocked] = useState(isExcluded);
-
-  const handleAction = async () => {
-    setIsBlocked(!isBlocked);
-    const data = await fetchWordList();
-    const id = data.id;
-
-    if (isBlocked) {
-      await includeBuiltinWords(id, type, word);
-    } else {
-      await excludeBuiltinWords(id, type, word);
-    }
-  };
-
+export const WordCard = ({
+  type,
+  word,
+  isExcludedBuiltin,
+  onToggleExclude,
+}) => {
   return (
     <Stack spacing={0} direction="row" bg="gray.200">
-      <ActiveIndicator active={isBlocked ? false : true} />
+      <ActiveIndicator active={!isExcludedBuiltin} />
       <Stack w="100%">
         <Box
           backgroundColor="gray.100"
@@ -49,15 +36,17 @@ export const WordCard = ({ type, word, isExcluded }) => {
           </Box>
           <Box flex="1" display="flex" justifyContent="flex-end">
             <Button
-              onClick={handleAction}
-              leftIcon={isBlocked ? <FaPlusCircle /> : <FaMinusCircle />}
-              bg={isBlocked ? "blue.500" : "red.500"}
+              onClick={() => onToggleExclude(word, type, isExcludedBuiltin)}
+              leftIcon={
+                isExcludedBuiltin ? <FaPlusCircle /> : <FaMinusCircle />
+              }
+              bg={isExcludedBuiltin ? "blue.500" : "red.500"}
               color="white"
               _hover={{
-                bg: isBlocked ? "blue.600" : "red.600",
+                bg: isExcludedBuiltin ? "blue.600" : "red.600",
               }}
             >
-              {isBlocked ? "Unblock" : "Block"}
+              {isExcludedBuiltin ? "Unblock" : "Block"}
             </Button>
           </Box>
         </Box>

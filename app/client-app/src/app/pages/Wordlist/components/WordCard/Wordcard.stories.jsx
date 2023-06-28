@@ -12,7 +12,7 @@ export const IncludedNoun = {
   args: {
     type: "Noun",
     word: "Rabbit",
-    isExcluded: false,
+    isExcludedBuiltin: false,
   },
 };
 
@@ -23,7 +23,7 @@ export const IncludedAdjective = {
   args: {
     type: "Adjective",
     word: "Energetic",
-    isExcluded: false,
+    isExcludedBuiltin: false,
   },
 };
 
@@ -34,7 +34,7 @@ export const ExcludedNoun = {
   args: {
     type: "Noun",
     word: "Fox",
-    isExcluded: true,
+    isExcludedBuiltin: true,
   },
 };
 
@@ -45,6 +45,6 @@ export const ExcludedAdjective = {
   args: {
     type: "Adjective",
     word: "Sad",
-    isExcluded: true,
+    isExcludedBuiltin: true,
   },
 };

@@ -10,83 +10,28 @@ export const Basic = {
     return <WordCardList {...args} />;
   },
   args: {
-    adjectives: ["happy", "sad", "excited"],
-    nouns: ["rabbit", "cat", "dog"],
-    excludedBuiltins: [
+    sorting: {},
+    onSort: () => {},
+    toggleExclude: () => {},
+    cards: [{}],
+    outputList: [
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "adjective",
-        word: "happy",
+        word: "aback",
       },
       {
+        isCustomWord: false,
+        isExcludedBuiltin: false,
         type: "noun",
-        word: "rabbit",
+        word: "Aardvark",
       },
-    ],
-  },
-};
-
-export const AllBlocked = {
-  render: (args) => {
-    return <WordCardList {...args} />;
-  },
-  args: {
-    adjectives: ["happy", "sad", "excited"],
-    nouns: ["rabbit", "cat", "dog"],
-    excludedBuiltins: [
       {
+        isCustomWord: false,
+        isExcludedBuiltin: true,
         type: "adjective",
-        word: "happy",
-      },
-      {
-        type: "noun",
-        word: "rabbit",
-      },
-      {
-        type: "adjective",
-        word: "sad",
-      },
-      {
-        type: "noun",
-        word: "cat",
-      },
-      {
-        type: "adjective",
-        word: "excited",
-      },
-      {
-        type: "noun",
-        word: "dog",
-      },
-    ],
-  },
-};
-
-export const AllUnblocked = {
-  render: (args) => {
-    return <WordCardList {...args} />;
-  },
-  args: {
-    adjectives: ["happy", "sad", "excited"],
-    nouns: ["rabbit", "cat", "dog"],
-    excludedBuiltins: [],
-  },
-};
-
-export const MismatachWordsType = {
-  render: (args) => {
-    return <WordCardList {...args} />;
-  },
-  args: {
-    adjectives: [],
-    nouns: ["cat", "rabbit"],
-    excludedBuiltins: [
-      {
-        type: "adjective",
-        word: "cat",
-      },
-      {
-        type: "adjective",
-        word: "rabbit",
+        word: "woozy",
       },
     ],
   },
