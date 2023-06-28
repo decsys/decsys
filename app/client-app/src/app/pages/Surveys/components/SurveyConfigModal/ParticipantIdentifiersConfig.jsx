@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaInfoCircle, FaClipboardList } from "react-icons/fa";
 import {
   Flex,
   Text,
@@ -8,6 +8,14 @@ import {
   Textarea,
   Stack,
   Icon,
+  Heading,
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionIcon,
+  Box,
+  AccordionButton,
+  VStack,
 } from "@chakra-ui/react";
 import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
@@ -48,20 +56,42 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
         </Flex>
       </Flex>
 
-      <Stack direction="row" my={2}>
-        <Flex>
-          <Input
-            size="sm"
-            type="number"
-            value={idGenCount}
-            onChange={handleGenCountChange}
-          />
-        </Flex>
-        <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
-          Generate Random IDs
-        </Button>
-      </Stack>
-
+      <Accordion allowToggle>
+        <AccordionItem>
+          <AccordionButton>
+            <Box as="span" flex="1" textAlign="left">
+              Generate Random Identifiers
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+            <VStack align="stretch">
+              <Button
+                size="md"
+                colorScheme="blue"
+                as="a"
+                href="/admin/wordlist/"
+                leftIcon={<FaClipboardList />}
+              >
+                Manage Wordlist
+              </Button>
+              <Stack direction="row">
+                <Flex>
+                  <Input
+                    size="sm"
+                    type="number"
+                    value={idGenCount}
+                    onChange={handleGenCountChange}
+                  />
+                </Flex>
+                <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
+                  Generate Random IDs
+                </Button>
+              </Stack>
+            </VStack>
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
       <Textarea
         height="inherit"
         rows="6"
