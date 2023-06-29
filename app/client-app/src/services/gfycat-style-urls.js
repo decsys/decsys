@@ -23,9 +23,7 @@ const generateGfyCatStyleUrl = (
   const filteredAdjectives = adjectives.filter(
     (adjective) => !excludedBuitinWords[adjective]
   );
-  const filteredNouns = animals.filter(
-    (adjective) => !excludedBuitinWords[adjective]
-  );
+  const filteredNouns = animals.filter((noun) => !excludedBuitinWords[noun]);
 
   for (let i = 0; i < numAdjectives; i++) {
     const adjective =
