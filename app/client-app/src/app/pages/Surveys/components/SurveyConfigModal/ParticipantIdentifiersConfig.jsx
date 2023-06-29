@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaInfoCircle, FaClipboardList } from "react-icons/fa";
 import {
   Flex,
@@ -32,19 +32,21 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
     setWordList(data);
   };
 
-  const handleIdGenClick = async () => {
-    await getWordList();
+  useEffect(() => {
+    getWordList(wordList);
+  }, []);
+
+  const handleIdGenClick = () =>
     mutate(
       produce((config) => {
         config.validIdentifiers.push(
           ...Array(idGenCount)
-            .fill(() => generateGfyCatStyleUrl(1, "", true))
+            .fill(() => generateGfyCatStyleUrl(wordList, 1, "", true))
             .map((x) => x())
         );
       }),
       false
     );
-  };
 
   return (
     <>

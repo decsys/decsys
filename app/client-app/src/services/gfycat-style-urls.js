@@ -7,26 +7,40 @@
 
 import adjectives from "./adjectives";
 import animals from "./animals";
+import { toDictionary } from "./data-structures";
 
 const generateGfyCatStyleUrl = (
+  wordlist,
   numAdjectives,
   delimiter,
   capitalizeFirstLetter
 ) => {
   let combination = "";
-  const animal = animals[Math.floor(Math.random() * animals.length)];
+
+  const excludedBuitinWords = toDictionary(wordlist.excludedBuiltins, "word");
+
+  // Filter adjectives array
+  const filteredAdjectives = adjectives.filter(
+    (adjective) => !excludedBuitinWords[adjective]
+  );
+  const filteredNouns = animals.filter(
+    (adjective) => !excludedBuitinWords[adjective]
+  );
 
   for (let i = 0; i < numAdjectives; i++) {
-    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const adjective =
+      filteredAdjectives[Math.floor(Math.random() * filteredAdjectives.length)];
 
     combination += capitalizeFirstLetter
       ? adjective.charAt(0).toUpperCase() + adjective.slice(1) + delimiter
       : adjective + delimiter;
   }
 
+  const noun = filteredNouns[Math.floor(Math.random() * filteredNouns.length)];
   combination += capitalizeFirstLetter
-    ? animal.charAt(0).toUpperCase() + animal.slice(1)
-    : animal;
+    ? noun.charAt(0).toUpperCase() + noun.slice(1)
+    : noun;
+
   return combination;
 };
 
