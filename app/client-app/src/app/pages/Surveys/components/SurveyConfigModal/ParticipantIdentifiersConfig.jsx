@@ -18,13 +18,22 @@ import {
 } from "@chakra-ui/react";
 import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
+import { fetchWordList } from "api/wordlist";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const [idGenCount, setIdGenCount] = useState(10);
+  const [wordList, setWordList] = useState(null);
+
   const handleGenCountChange = ({ target: { value } }) =>
     setIdGenCount(parseInt(value));
 
-  const handleIdGenClick = () =>
+  const getWordList = async () => {
+    const data = await fetchWordList();
+    setWordList(data);
+  };
+
+  const handleIdGenClick = async () => {
+    await getWordList();
     mutate(
       produce((config) => {
         config.validIdentifiers.push(
@@ -35,6 +44,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       }),
       false
     );
+  };
 
   return (
     <>
