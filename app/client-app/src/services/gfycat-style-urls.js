@@ -10,14 +10,14 @@ import animals from "./animals";
 import { toDictionary } from "./data-structures";
 
 const generateGfyCatStyleUrl = (
-  wordlist,
+  excludedBuiltins,
   numAdjectives,
   delimiter,
   capitalizeFirstLetter
 ) => {
   let combination = "";
 
-  const excludedBuitinWords = toDictionary(wordlist.excludedBuiltins, "word");
+  const excludedBuitinWords = toDictionary(excludedBuiltins, "word");
 
   // Filter adjectives array
   const filteredAdjectives = adjectives.filter(

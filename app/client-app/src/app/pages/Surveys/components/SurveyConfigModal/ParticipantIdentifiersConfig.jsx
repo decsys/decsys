@@ -41,7 +41,9 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       produce((config) => {
         config.validIdentifiers.push(
           ...Array(idGenCount)
-            .fill(() => generateGfyCatStyleUrl(wordList, 1, "", true))
+            .fill(() =>
+              generateGfyCatStyleUrl(wordList.excludedBuiltins, 1, "", true)
+            )
             .map((x) => x())
         );
       }),
