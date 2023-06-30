@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaInfoCircle, FaClipboardList } from "react-icons/fa";
 import {
   Flex,
@@ -18,18 +18,32 @@ import {
 } from "@chakra-ui/react";
 import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
+import { fetchWordList } from "api/wordlist";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const [idGenCount, setIdGenCount] = useState(10);
+  const [wordList, setWordList] = useState(null);
+
   const handleGenCountChange = ({ target: { value } }) =>
     setIdGenCount(parseInt(value));
+
+  const getWordList = async () => {
+    const data = await fetchWordList();
+    setWordList(data);
+  };
+
+  useEffect(() => {
+    getWordList(wordList);
+  }, []);
 
   const handleIdGenClick = () =>
     mutate(
       produce((config) => {
         config.validIdentifiers.push(
           ...Array(idGenCount)
-            .fill(() => generateGfyCatStyleUrl(1, "", true))
+            .fill(() =>
+              generateGfyCatStyleUrl(wordList.excludedBuiltins, 1, "", true)
+            )
             .map((x) => x())
         );
       }),
