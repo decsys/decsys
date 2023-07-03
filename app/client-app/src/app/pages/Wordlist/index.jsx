@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box } from "@chakra-ui/react";
-import { WordCardList } from "./components/WordCardList";
+import { Box, Stack, Flex } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
 import adjectives from "services/adjectives";
@@ -10,9 +9,12 @@ import { Page } from "components/core";
 import { toDictionary } from "services/data-structures";
 import { getFilteredWordList } from "./components/helpers";
 import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingAndFiltering";
+import { FixedSizeList as List } from "react-window";
+import { WordCard } from "./components/WordCard";
+import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
 
 const Wordlist = () => {
-  const [wordList, setWordList] = useState(null);
+  const [wordlist, setWordlist] = useState(null);
   const [cards, setCards] = useState([]);
   const { sorting, onSort, outputList, filter, setFilter } =
     useWordlistSortingAndFiltering(cards);
@@ -20,16 +22,16 @@ const Wordlist = () => {
   useEffect(() => {
     const getWordList = async () => {
       const data = await fetchWordList();
-      setWordList(data);
+      setWordlist(data);
     };
 
     getWordList();
   }, []);
 
   useEffect(() => {
-    if (wordList) {
+    if (wordlist) {
       const excludedBuiltinsDict = toDictionary(
-        wordList.excludedBuiltins,
+        wordlist.excludedBuiltins,
         "word"
       );
       const adjectiveCards = getFilteredWordList(
@@ -44,10 +46,10 @@ const Wordlist = () => {
       );
       setCards([...adjectiveCards, ...nounCards]);
     }
-  }, [wordList]);
+  }, [wordlist]);
 
   const toggleExclude = async (word, type, isExcludedBuiltin) => {
-    const id = wordList.id;
+    const id = wordlist.id;
 
     if (isExcludedBuiltin) {
       await includeBuiltinWords(id, type, word);
@@ -64,27 +66,49 @@ const Wordlist = () => {
     );
   };
 
+  const RenderWordCard = ({ index, style }) => {
+    const card = outputList[index];
+    return card ? (
+      <div style={style}>
+        <WordCard
+          word={card.word}
+          type={card.type}
+          isExcludedBuiltin={card.isExcludedBuiltin}
+          onToggleExclude={() =>
+            toggleExclude(card.word, card.type, card.isExcludedBuiltin)
+          }
+        />
+      </div>
+    ) : null;
+  };
+
   return (
     <Page layout="default">
       <Box p={2}>
         <LightHeading as="h1" size="xl" py={2}>
           My Wordlist
         </LightHeading>
-
-        {cards.length > 0 && (
-          <WordCardList
-            cards={cards}
+        <Stack mt={2} spacing={4} h="80vh">
+          <WordlistSortingAndFilteringPanel
+            data={cards}
             sorting={sorting}
             onSort={onSort}
             filter={filter}
             setFilter={setFilter}
-            toggleExclude={toggleExclude}
-            outputList={outputList}
           />
-        )}
+          {cards.length > 0 && (
+            <List
+              height={1000}
+              width={1000}
+              itemCount={cards.length}
+              itemSize={80}
+            >
+              {RenderWordCard}
+            </List>
+          )}
+        </Stack>
       </Box>
     </Page>
   );
 };
-
 export default Wordlist;

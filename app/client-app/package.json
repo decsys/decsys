@@ -46,6 +46,7 @@
     "react-plotly.js": "^2.6.0",
     "react-table": "^7.3.3",
     "react-visibility-sensor": "^5.1.1",
+    "react-window": "^1.8.9",
     "react-wordcloud": "^1.2.7",
     "remark-gfm": "^1.0.0",
     "save-svg-as-png": "^1.4.17",

@@ -66,6 +66,7 @@ importers:
       react-plotly.js: ^2.6.0
       react-table: ^7.3.3
       react-visibility-sensor: ^5.1.1
+      react-window: ^1.8.9
       react-wordcloud: ^1.2.7
       remark-gfm: ^1.0.0
       save-svg-as-png: ^1.4.17
@@ -111,6 +112,7 @@ importers:
       react-plotly.js: 2.6.0_h465lbwfxgqlau7tptcrjaivvu
       react-table: 7.8.0_react@17.0.2
       react-visibility-sensor: 5.1.1_sfoxds7t5ydpegc3knd667wn6m
+      react-window: 1.8.9_sfoxds7t5ydpegc3knd667wn6m
       react-wordcloud: 1.2.7_react@17.0.2
       remark-gfm: 1.0.0
       save-svg-as-png: 1.4.17
@@ -25815,6 +25817,19 @@ packages:
       react-dom: '>=16.0.0 || 17'
     dependencies:
       prop-types: 15.8.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /react-window/1.8.9_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-+Eqx/fj1Aa5WnhRfj9dJg4VYATGwIUP2ItwItiJ6zboKWA6EX3lYDAXfGF2hyNqplEprhbtjbipiADEcwQ823Q==}
+    engines: {node: '>8.0.0'}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || 17
+      react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0 || 17
+    dependencies:
+      '@babel/runtime': 7.17.9
+      memoize-one: 5.2.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
