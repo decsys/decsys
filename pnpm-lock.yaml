@@ -65,6 +65,7 @@ importers:
       react-markdown: ^5.0.3
       react-plotly.js: ^2.6.0
       react-table: ^7.3.3
+      react-virtualized-auto-sizer: ^1.0.20
       react-visibility-sensor: ^5.1.1
       react-window: ^1.8.9
       react-wordcloud: ^1.2.7
@@ -111,6 +112,7 @@ importers:
       react-markdown: 5.0.3_jguntkfjozdfrzd4l22x7bdnx4
       react-plotly.js: 2.6.0_h465lbwfxgqlau7tptcrjaivvu
       react-table: 7.8.0_react@17.0.2
+      react-virtualized-auto-sizer: 1.0.20_sfoxds7t5ydpegc3knd667wn6m
       react-visibility-sensor: 5.1.1_sfoxds7t5ydpegc3knd667wn6m
       react-window: 1.8.9_sfoxds7t5ydpegc3knd667wn6m
       react-wordcloud: 1.2.7_react@17.0.2
@@ -25809,6 +25811,16 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: true
+
+  /react-virtualized-auto-sizer/1.0.20_sfoxds7t5ydpegc3knd667wn6m:
+    resolution: {integrity: sha512-OdIyHwj4S4wyhbKHOKM1wLSj/UDXm839Z3Cvfg2a9j+He6yDa6i5p0qQvEiCnyQlGO/HyfSnigQwuxvYalaAXA==}
+    peerDependencies:
+      react: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc || 17
+      react-dom: ^15.3.0 || ^16.0.0-alpha || ^17.0.0 || ^18.0.0-rc || 17
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /react-visibility-sensor/5.1.1_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-cTUHqIK+zDYpeK19rzW6zF9YfT4486TIgizZW53wEZ+/GPBbK7cNS0EHyJVyHYacwFEvvHLEKfgJndbemWhB/w==}

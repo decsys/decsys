@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Stack, Flex } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
 import adjectives from "services/adjectives";
@@ -10,6 +10,7 @@ import { toDictionary } from "services/data-structures";
 import { getFilteredWordList } from "./components/helpers";
 import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingAndFiltering";
 import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
 
@@ -91,7 +92,7 @@ const Wordlist = () => {
         <LightHeading as="h1" size="xl" py={2}>
           My Wordlist
         </LightHeading>
-        <Stack mt={2}>
+        <Stack mt={2} spacing={4} h="80vh">
           <WordlistSortingAndFilteringPanel
             data={cards}
             sorting={sorting}
@@ -99,29 +100,23 @@ const Wordlist = () => {
             filter={filter}
             setFilter={setFilter}
           />
-          {cards.length > 0 && (
-            <List
-              height={1000}
-              itemCount={cards.length}
-              itemSize={100} //
-              width="100%"
-            >
-              {({ index, style }) => (
-                <RenderWordCard
-                  index={index}
-                  style={style}
-                  sorting={sorting}
-                  onSort={onSort}
-                  filter={filter}
-                  setFilter={setFilter}
-                />
-              )}
-            </List>
-          )}
+          <AutoSizer>
+            {({ height, width }) =>
+              cards.length > 0 && (
+                <List
+                  height={height}
+                  width={width}
+                  itemCount={cards.length}
+                  itemSize={80}
+                >
+                  {RenderWordCard}
+                </List>
+              )
+            }
+          </AutoSizer>
         </Stack>
       </Box>
     </Page>
   );
 };
-
 export default Wordlist;
