@@ -12,10 +12,9 @@ import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingA
 import { FixedSizeList as List } from "react-window";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
-import AutoSizer from "react-virtualized-auto-sizer";
 
 const Wordlist = () => {
-  const [wordList, setWordList] = useState(null);
+  const [wordlist, setWordlist] = useState(null);
   const [cards, setCards] = useState([]);
   const { sorting, onSort, outputList, filter, setFilter } =
     useWordlistSortingAndFiltering(cards);
@@ -23,16 +22,16 @@ const Wordlist = () => {
   useEffect(() => {
     const getWordList = async () => {
       const data = await fetchWordList();
-      setWordList(data);
+      setWordlist(data);
     };
 
     getWordList();
   }, []);
 
   useEffect(() => {
-    if (wordList) {
+    if (wordlist) {
       const excludedBuiltinsDict = toDictionary(
-        wordList.excludedBuiltins,
+        wordlist.excludedBuiltins,
         "word"
       );
       const adjectiveCards = getFilteredWordList(
@@ -47,10 +46,10 @@ const Wordlist = () => {
       );
       setCards([...adjectiveCards, ...nounCards]);
     }
-  }, [wordList]);
+  }, [wordlist]);
 
   const toggleExclude = async (word, type, isExcludedBuiltin) => {
-    const id = wordList.id;
+    const id = wordlist.id;
 
     if (isExcludedBuiltin) {
       await includeBuiltinWords(id, type, word);
@@ -97,20 +96,16 @@ const Wordlist = () => {
             filter={filter}
             setFilter={setFilter}
           />
-          <AutoSizer>
-            {({ height, width }) =>
-              cards.length > 0 && (
-                <List
-                  height={height}
-                  width={width}
-                  itemCount={cards.length}
-                  itemSize={80}
-                >
-                  {RenderWordCard}
-                </List>
-              )
-            }
-          </AutoSizer>
+          {cards.length > 0 && (
+            <List
+              height={1000}
+              width={1000}
+              itemCount={cards.length}
+              itemSize={80}
+            >
+              {RenderWordCard}
+            </List>
+          )}
         </Stack>
       </Box>
     </Page>
