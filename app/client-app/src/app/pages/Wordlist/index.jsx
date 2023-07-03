@@ -10,9 +10,9 @@ import { toDictionary } from "services/data-structures";
 import { getFilteredWordList } from "./components/helpers";
 import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingAndFiltering";
 import { FixedSizeList as List } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 const Wordlist = () => {
   const [wordList, setWordList] = useState(null);
@@ -69,10 +69,7 @@ const Wordlist = () => {
 
   const RenderWordCard = ({ index, style }) => {
     const card = outputList[index];
-
-    if (!card) return null;
-
-    return (
+    return card ? (
       <div style={style}>
         <WordCard
           word={card.word}
@@ -83,7 +80,7 @@ const Wordlist = () => {
           }
         />
       </div>
-    );
+    ) : null;
   };
 
   return (
