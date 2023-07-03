@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box } from "@chakra-ui/react";
-import { WordCardList } from "./components/WordCardList";
+import { Box, Stack } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
 import adjectives from "services/adjectives";
@@ -10,6 +9,9 @@ import { Page } from "components/core";
 import { toDictionary } from "services/data-structures";
 import { getFilteredWordList } from "./components/helpers";
 import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingAndFiltering";
+import { FixedSizeList as List } from "react-window";
+import { WordCard } from "./components/WordCard";
+import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
 
 const Wordlist = () => {
   const [wordList, setWordList] = useState(null);
@@ -64,24 +66,59 @@ const Wordlist = () => {
     );
   };
 
+  const RenderWordCard = ({ index, style }) => {
+    const card = outputList[index];
+
+    if (!card) return null;
+
+    return (
+      <div style={style}>
+        <WordCard
+          word={card.word}
+          type={card.type}
+          isExcludedBuiltin={card.isExcludedBuiltin}
+          onToggleExclude={() =>
+            toggleExclude(card.word, card.type, card.isExcludedBuiltin)
+          }
+        />
+      </div>
+    );
+  };
+
   return (
     <Page layout="default">
       <Box p={2}>
         <LightHeading as="h1" size="xl" py={2}>
           My Wordlist
         </LightHeading>
-
-        {cards.length > 0 && (
-          <WordCardList
-            cards={cards}
+        <Stack mt={2}>
+          <WordlistSortingAndFilteringPanel
+            data={cards}
             sorting={sorting}
             onSort={onSort}
             filter={filter}
             setFilter={setFilter}
-            toggleExclude={toggleExclude}
-            outputList={outputList}
           />
-        )}
+          {cards.length > 0 && (
+            <List
+              height={1000}
+              itemCount={cards.length}
+              itemSize={100} //
+              width="100%"
+            >
+              {({ index, style }) => (
+                <RenderWordCard
+                  index={index}
+                  style={style}
+                  sorting={sorting}
+                  onSort={onSort}
+                  filter={filter}
+                  setFilter={setFilter}
+                />
+              )}
+            </List>
+          )}
+        </Stack>
       </Box>
     </Page>
   );
