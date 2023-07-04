@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Stack, Flex } from "@chakra-ui/react";
+import { Box, Stack, Flex, Heading } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
 import adjectives from "services/adjectives";
@@ -12,6 +12,7 @@ import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingA
 import { FixedSizeList as List } from "react-window";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
+import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 
 const Wordlist = () => {
@@ -84,39 +85,31 @@ const Wordlist = () => {
   };
 
   return (
-    <Page layout={null}>
-      <Box p={2}>
-        <LightHeading as="h1" size="xl" py={2}>
-          My Wordlist
-        </LightHeading>
-        <Flex direction="column" mt={2} h="80vh" overflow="hidden">
-          <WordlistSortingAndFilteringPanel
-            data={cards}
-            sorting={sorting}
-            onSort={onSort}
-            filter={filter}
-            setFilter={setFilter}
-          />
-          {cards.length > 0 && (
-            <Box flex="1 1 auto" overflow="hidden" py={2}>
-              <div style={{ width: "100%", height: "100%" }}>
-                <AutoSizer>
-                  {({ height, width }) => (
-                    <List
-                      height={height}
-                      width={width}
-                      itemCount={cards.length}
-                      itemSize={80}
-                    >
-                      {RenderWordCard}
-                    </List>
-                  )}
-                </AutoSizer>
-              </div>
-            </Box>
-          )}
-        </Flex>
-      </Box>
+    <Page layout="wordlist">
+      <Flex direction="column" height="100vh" width="100%">
+        <Heading>My Wordlist</Heading>
+        <WordlistSortingAndFilteringPanel
+          data={cards}
+          sorting={sorting}
+          onSort={onSort}
+          filter={filter}
+          setFilter={setFilter}
+        />
+        <Box flex="1" overflow="auto">
+          <AutoSizer>
+            {({ height, width }) => (
+              <FixedSizeList
+                height={height}
+                width={width}
+                itemCount={outputList.length}
+                itemSize={80}
+              >
+                {RenderWordCard}
+              </FixedSizeList>
+            )}
+          </AutoSizer>
+        </Box>
+      </Flex>
     </Page>
   );
 };
