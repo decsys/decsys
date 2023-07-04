@@ -9,9 +9,10 @@ import { Page } from "components/core";
 import { toDictionary } from "services/data-structures";
 import { getFilteredWordList } from "./components/helpers";
 import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingAndFiltering";
-import { FixedSizeList as List } from "react-window";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
+import { FixedSizeList } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 const Wordlist = () => {
   const [wordlist, setWordlist] = useState(null);
@@ -83,12 +84,12 @@ const Wordlist = () => {
   };
 
   return (
-    <Page layout="default">
-      <Box p={2}>
-        <LightHeading as="h1" size="xl" py={2}>
+    <Page layout="wordlist">
+      <Flex direction="column" height={`calc(100vh - 54px)`} width="100%">
+        <LightHeading p={2} as="h2" size="lg">
           My Wordlist
         </LightHeading>
-        <Stack mt={2} spacing={4} h="80vh">
+        <Stack mt={2} spacing={4} h="100vh" p={2}>
           <WordlistSortingAndFilteringPanel
             data={cards}
             sorting={sorting}
@@ -96,18 +97,22 @@ const Wordlist = () => {
             filter={filter}
             setFilter={setFilter}
           />
-          {cards.length > 0 && (
-            <List
-              height={1000}
-              width={1000}
-              itemCount={cards.length}
-              itemSize={80}
-            >
-              {RenderWordCard}
-            </List>
-          )}
+          <Box flex="1" overflow="auto">
+            <AutoSizer>
+              {({ height, width }) => (
+                <FixedSizeList
+                  height={height}
+                  width={width}
+                  itemCount={outputList.length}
+                  itemSize={80}
+                >
+                  {RenderWordCard}
+                </FixedSizeList>
+              )}
+            </AutoSizer>
+          </Box>
         </Stack>
-      </Box>
+      </Flex>
     </Page>
   );
 };
