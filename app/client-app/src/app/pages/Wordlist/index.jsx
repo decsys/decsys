@@ -86,29 +86,33 @@ const Wordlist = () => {
 
   return (
     <Page layout="wordlist">
-      <Flex direction="column" height="100vh" width="100%">
-        <Heading>My Wordlist</Heading>
-        <WordlistSortingAndFilteringPanel
-          data={cards}
-          sorting={sorting}
-          onSort={onSort}
-          filter={filter}
-          setFilter={setFilter}
-        />
-        <Box flex="1" overflow="auto">
-          <AutoSizer>
-            {({ height, width }) => (
-              <FixedSizeList
-                height={height}
-                width={width}
-                itemCount={outputList.length}
-                itemSize={80}
-              >
-                {RenderWordCard}
-              </FixedSizeList>
-            )}
-          </AutoSizer>
-        </Box>
+      <Flex direction="column" height={`calc(100vh - 54px)`} width="100%">
+        <LightHeading p={2} as="h2" size="lg">
+          My Wordlist
+        </LightHeading>
+        <Stack mt={2} spacing={4} h="100vh" p={2}>
+          <WordlistSortingAndFilteringPanel
+            data={cards}
+            sorting={sorting}
+            onSort={onSort}
+            filter={filter}
+            setFilter={setFilter}
+          />
+          <Box flex="1" overflow="auto">
+            <AutoSizer>
+              {({ height, width }) => (
+                <FixedSizeList
+                  height={height}
+                  width={width}
+                  itemCount={outputList.length}
+                  itemSize={80}
+                >
+                  {RenderWordCard}
+                </FixedSizeList>
+              )}
+            </AutoSizer>
+          </Box>
+        </Stack>
       </Flex>
     </Page>
   );
