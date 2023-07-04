@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Stack, Flex, Heading } from "@chakra-ui/react";
+import { Box, Stack, Flex } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
 import adjectives from "services/adjectives";
@@ -9,7 +9,6 @@ import { Page } from "components/core";
 import { toDictionary } from "services/data-structures";
 import { getFilteredWordList } from "./components/helpers";
 import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingAndFiltering";
-import { FixedSizeList as List } from "react-window";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
 import { FixedSizeList } from "react-window";
