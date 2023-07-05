@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { Box, Stack, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Stack,
+  Flex,
+  RangeSlider,
+  RangeSliderTrack,
+  RangeSliderFilledTrack,
+  RangeSliderThumb,
+  Text,
+  HStack,
+  VStack,
+} from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
 import adjectives from "services/adjectives";
@@ -13,6 +24,7 @@ import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
 import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import { FormControl, FormLabel } from "@chakra-ui/react";
 
 const Wordlist = () => {
   const [wordlist, setWordlist] = useState(null);
@@ -97,6 +109,24 @@ const Wordlist = () => {
             filter={filter}
             setFilter={setFilter}
           />
+
+          <FormControl id="word-length" display="flex" alignItems="center">
+            <FormLabel mb="0">Word Length:</FormLabel>
+            <RangeSlider
+              defaultValue={[0, 15]}
+              min={0}
+              max={15}
+              width="30%"
+              step={1}
+            >
+              <RangeSliderTrack bg="blue.100">
+                <RangeSliderFilledTrack bg="blue.500" />
+              </RangeSliderTrack>
+              <RangeSliderThumb boxSize={6} index={0} />
+              <RangeSliderThumb boxSize={6} index={1} />
+            </RangeSlider>
+          </FormControl>
+
           <Box flex="1" overflow="auto">
             <AutoSizer>
               {({ height, width }) => (
