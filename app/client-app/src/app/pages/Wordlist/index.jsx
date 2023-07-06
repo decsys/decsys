@@ -9,6 +9,7 @@ import {
   RangeSliderThumb,
   Tooltip,
   HStack,
+  RangeSliderMark,
 } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
@@ -128,6 +129,22 @@ const Wordlist = () => {
                 onChange={handleSliderChange}
                 value={sliderValues}
               >
+                <RangeSliderMark
+                  value={sliderValues[0]}
+                  textAlign="center"
+                  mt="6px"
+                  ml="-6px"
+                >
+                  {sliderValues[0]}
+                </RangeSliderMark>
+                <RangeSliderMark
+                  value={sliderValues[1]}
+                  textAlign="center"
+                  mt="6px"
+                  ml="-6px"
+                >
+                  {sliderValues[1]}
+                </RangeSliderMark>
                 <RangeSliderTrack bg="blue.100">
                   <RangeSliderFilledTrack bg="blue.500" />
                 </RangeSliderTrack>
@@ -137,46 +154,9 @@ const Wordlist = () => {
                 <Tooltip label={String(sliderValues[1])} placement="top">
                   <RangeSliderThumb boxSize={4} index={1} />
                 </Tooltip>
-                <Box
-                  position="absolute"
-                  left="0%"
-                  bottom="-20px"
-                  textAlign="center"
-                  ml="-10px"
-                >
-                  1
-                </Box>
-                <Box
-                  position="absolute"
-                  left="31%"
-                  bottom="-20px"
-                  textAlign="center"
-                  ml="-10px"
-                >
-                  5
-                </Box>
-                <Box
-                  position="absolute"
-                  left="65%"
-                  bottom="-20px"
-                  textAlign="center"
-                  ml="-10px"
-                >
-                  10
-                </Box>
-                <Box
-                  position="absolute"
-                  left="100%"
-                  bottom="-20px"
-                  textAlign="center"
-                  ml="-10px"
-                >
-                  15
-                </Box>
               </RangeSlider>
             </Box>
           </HStack>
-
           <Box flex="1" overflow="auto">
             <AutoSizer>
               {({ height, width }) => (
