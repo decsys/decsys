@@ -10,6 +10,7 @@ import {
   Tooltip,
   HStack,
   RangeSliderMark,
+  useRadioGroup,
 } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
@@ -24,7 +25,8 @@ import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
 import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FormControl, FormLabel } from "@chakra-ui/react";
+import { FormLabel } from "@chakra-ui/react";
+import { RadioCard } from "./components/RadioCard";
 
 const Wordlist = () => {
   const [wordlist, setWordlist] = useState(null);
@@ -37,6 +39,15 @@ const Wordlist = () => {
     setSliderValues(values);
   };
 
+  const options = ["Word", "Type", "Active"];
+
+  const { getRootProps, getRadioProps } = useRadioGroup({
+    name: "framework",
+    defaultValue: "react",
+    onChange: console.log,
+  });
+
+  const group = getRootProps();
   useEffect(() => {
     const getWordList = async () => {
       const data = await fetchWordList();
@@ -114,6 +125,17 @@ const Wordlist = () => {
             filter={filter}
             setFilter={setFilter}
           />
+
+          <HStack {...group}>
+            {options.map((value) => {
+              const radio = getRadioProps({ value });
+              return (
+                <RadioCard key={value} {...radio}>
+                  {value}
+                </RadioCard>
+              );
+            })}
+          </HStack>
 
           <HStack spacing={5} align="center">
             <FormLabel mb="0" mr={2} htmlFor="word-length">
