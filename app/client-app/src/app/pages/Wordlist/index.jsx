@@ -7,9 +7,8 @@ import {
   RangeSliderTrack,
   RangeSliderFilledTrack,
   RangeSliderThumb,
-  Text,
+  Tooltip,
   HStack,
-  VStack,
 } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
@@ -31,6 +30,11 @@ const Wordlist = () => {
   const [cards, setCards] = useState([]);
   const { sorting, onSort, outputList, filter, setFilter } =
     useWordlistSortingAndFiltering(cards);
+  const [sliderValues, setSliderValues] = useState([1, 15]);
+
+  const handleSliderChange = (values) => {
+    setSliderValues(values);
+  };
 
   useEffect(() => {
     const getWordList = async () => {
@@ -110,22 +114,68 @@ const Wordlist = () => {
             setFilter={setFilter}
           />
 
-          <FormControl id="word-length" display="flex" alignItems="center">
-            <FormLabel mb="0">Word Length:</FormLabel>
-            <RangeSlider
-              defaultValue={[0, 15]}
-              min={0}
-              max={15}
-              width="30%"
-              step={1}
-            >
-              <RangeSliderTrack bg="blue.100">
-                <RangeSliderFilledTrack bg="blue.500" />
-              </RangeSliderTrack>
-              <RangeSliderThumb boxSize={6} index={0} />
-              <RangeSliderThumb boxSize={6} index={1} />
-            </RangeSlider>
-          </FormControl>
+          <HStack spacing={5} align="center">
+            <FormLabel mb="0" mr={2} htmlFor="word-length">
+              Word Length:{" "}
+            </FormLabel>
+            <Box width="300px">
+              <RangeSlider
+                id="word-length"
+                defaultValue={[1, 15]}
+                min={1}
+                max={15}
+                step={1}
+                onChange={handleSliderChange}
+                value={sliderValues}
+              >
+                <RangeSliderTrack bg="blue.100">
+                  <RangeSliderFilledTrack bg="blue.500" />
+                </RangeSliderTrack>
+                <Tooltip label={String(sliderValues[0])} placement="top">
+                  <RangeSliderThumb boxSize={4} index={0} />
+                </Tooltip>
+                <Tooltip label={String(sliderValues[1])} placement="top">
+                  <RangeSliderThumb boxSize={4} index={1} />
+                </Tooltip>
+                <Box
+                  position="absolute"
+                  left="0%"
+                  bottom="-20px"
+                  textAlign="center"
+                  ml="-10px"
+                >
+                  1
+                </Box>
+                <Box
+                  position="absolute"
+                  left="31%"
+                  bottom="-20px"
+                  textAlign="center"
+                  ml="-10px"
+                >
+                  5
+                </Box>
+                <Box
+                  position="absolute"
+                  left="65%"
+                  bottom="-20px"
+                  textAlign="center"
+                  ml="-10px"
+                >
+                  10
+                </Box>
+                <Box
+                  position="absolute"
+                  left="100%"
+                  bottom="-20px"
+                  textAlign="center"
+                  ml="-10px"
+                >
+                  15
+                </Box>
+              </RangeSlider>
+            </Box>
+          </HStack>
 
           <Box flex="1" overflow="auto">
             <AutoSizer>
