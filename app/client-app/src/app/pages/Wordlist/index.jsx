@@ -7,10 +7,10 @@ import {
   RangeSliderTrack,
   RangeSliderFilledTrack,
   RangeSliderThumb,
-  Tooltip,
   HStack,
   RangeSliderMark,
   useRadioGroup,
+  Text,
 } from "@chakra-ui/react";
 import { excludeBuiltinWords, includeBuiltinWords } from "api/wordlist";
 import LightHeading from "components/core/LightHeading";
@@ -39,7 +39,8 @@ const Wordlist = () => {
     setSliderValues(values);
   };
 
-  const options = ["Word", "Type", "Active"];
+  const typeOptions = ["Adjective", "Noun", "All"];
+  const exclusionState = ["Excluded", "Included", "All"];
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "framework",
@@ -48,6 +49,7 @@ const Wordlist = () => {
   });
 
   const group = getRootProps();
+
   useEffect(() => {
     const getWordList = async () => {
       const data = await fetchWordList();
@@ -127,7 +129,19 @@ const Wordlist = () => {
           />
 
           <HStack {...group}>
-            {options.map((value) => {
+            <Text display={{ xs: "none", md: "inline" }}>Type:</Text>
+            {typeOptions.map((value) => {
+              const radio = getRadioProps({ value });
+              return (
+                <RadioCard key={value} {...radio}>
+                  {value}
+                </RadioCard>
+              );
+            })}
+          </HStack>
+          <HStack {...group}>
+            <Text display={{ xs: "none", md: "inline" }}>State:</Text>
+            {exclusionState.map((value) => {
               const radio = getRadioProps({ value });
               return (
                 <RadioCard key={value} {...radio}>
@@ -138,9 +152,7 @@ const Wordlist = () => {
           </HStack>
 
           <HStack spacing={5} align="center">
-            <FormLabel mb="0" mr={2} htmlFor="word-length">
-              Word Length:
-            </FormLabel>
+            <Text display={{ xs: "none", md: "inline" }}>Word Length:</Text>
             <Flex width="300px">
               <RangeSlider
                 id="word-length"
