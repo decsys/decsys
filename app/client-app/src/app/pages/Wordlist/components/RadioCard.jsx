@@ -1,4 +1,4 @@
-import { Box, useRadio } from "@chakra-ui/react";
+import { Box, Flex, useRadio } from "@chakra-ui/react";
 
 export const RadioCard = (props) => {
   const { getInputProps, getCheckboxProps } = useRadio(props);
@@ -7,9 +7,9 @@ export const RadioCard = (props) => {
   const checkbox = getCheckboxProps();
 
   return (
-    <Box as="label">
+    <Flex as="label">
       <input {...input} />
-      <Box
+      <Flex
         {...checkbox}
         cursor="pointer"
         borderWidth="1px"
@@ -29,7 +29,7 @@ export const RadioCard = (props) => {
         py={2}
       >
         {props.children}
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   );
 };

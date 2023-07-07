@@ -11,30 +11,27 @@ const WordlistSortingAndFilteringPanel = ({
   return (
     <Flex alignItems="center" flexDirection="column">
       {Object.keys(data).length && (
-        <VStack width="100%">
-          <Box>
-            <HStack justifyContent="space-between">
-              <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
-                Sort by:
-              </Text>
-              <SortPanel
-                state={sorting}
-                onSortButtonClick={onSort}
-                keys={[
-                  ["Word", "word"],
-                  ["Type", "type"],
-                  ["Active", "isExcludedBuiltin"],
-                ]}
-              />
-            </HStack>
-            <Input
-              variant="flushed"
-              placeholder="Search by Name"
-              size="sm"
-              value={filter}
-              onChange={({ target: { value } }) => setFilter(value)}
+        <VStack>
+          <HStack spacing="0" pb={2.5}>
+            <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
+              Sort by:
+            </Text>
+            <SortPanel
+              state={sorting}
+              onSortButtonClick={onSort}
+              keys={[
+                ["Word", "word"],
+                ["Type", "type"],
+                ["Active", "isExcludedBuiltin"],
+              ]}
             />
-          </Box>
+          </HStack>
+          <Input
+            placeholder="Search by Name"
+            size="sm"
+            value={filter}
+            onChange={({ target: { value } }) => setFilter(value)}
+          />
         </VStack>
       )}
     </Flex>
