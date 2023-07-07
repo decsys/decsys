@@ -1,4 +1,4 @@
-import { Flex, HStack, Input, Text } from "@chakra-ui/react";
+import { Flex, VStack, Input, Text, HStack, Box } from "@chakra-ui/react";
 import SortPanel from "components/shared/SortPanel";
 
 const WordlistSortingAndFilteringPanel = ({
@@ -9,30 +9,33 @@ const WordlistSortingAndFilteringPanel = ({
   setFilter,
 }) => {
   return (
-    <Flex alignItems="center">
-      <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
-        Sort by:
-      </Text>
+    <Flex alignItems="center" flexDirection="column">
       {Object.keys(data).length && (
-        <HStack>
-          <SortPanel
-            state={sorting}
-            onSortButtonClick={onSort}
-            keys={[
-              ["Word", "word"],
-              ["Type", "type"],
-              ["Active", "isExcludedBuiltin"],
-            ]}
-          />
-          <Input
-            flex={1}
-            variant="flushed"
-            placeholder="Filter by Name"
-            size="sm"
-            value={filter}
-            onChange={({ target: { value } }) => setFilter(value)}
-          />
-        </HStack>
+        <VStack width="100%">
+          <Box>
+            <HStack justifyContent="space-between">
+              <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
+                Sort by:
+              </Text>
+              <SortPanel
+                state={sorting}
+                onSortButtonClick={onSort}
+                keys={[
+                  ["Word", "word"],
+                  ["Type", "type"],
+                  ["Active", "isExcludedBuiltin"],
+                ]}
+              />
+            </HStack>
+            <Input
+              variant="flushed"
+              placeholder="Search by Name"
+              size="sm"
+              value={filter}
+              onChange={({ target: { value } }) => setFilter(value)}
+            />
+          </Box>
+        </VStack>
       )}
     </Flex>
   );
