@@ -10,8 +10,8 @@ import {
   TypeFilter,
   WordLengthFilter,
 } from "./components/WordCardFilters";
-import { useWordData } from "./components/helpers/useWordData";
-import { useWordlistSortingAndFiltering } from "./components/helpers/useWordlistSortingAndFiltering";
+import { useWordlistSortingAndFiltering } from "./components/hooks/useWordlistSortingAndFiltering";
+import { useWordData } from "./components/hooks/useWordData";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
