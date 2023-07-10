@@ -7,7 +7,7 @@ import {
 import adjectives from "services/adjectives";
 import animals from "services/animals";
 import { toDictionary } from "services/data-structures";
-import { getFilteredWordList } from "./helpers";
+import { getFilteredWordList } from "./getFilteredWordList";
 
 export const useWordData = () => {
   const [wordlist, setWordlist] = useState(null);

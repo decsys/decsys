@@ -2,9 +2,8 @@ import { useState } from "react";
 import { Stack, Flex, useRadioGroup, VStack, Spacer } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import { Page } from "components/core";
-import { useWordlistSortingAndFiltering } from "./components/useWordlistSortingAndFiltering";
 import { WordCard } from "./components/WordCard";
-import WordlistSortingAndFilteringPanel from "./WordlistSortingAndFiltering";
+import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
 import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import {
@@ -12,7 +11,8 @@ import {
   TypeFilter,
   WordLengthFilter,
 } from "./components/WordCardFilters";
-import { useWordData } from "./components/useWordData";
+import { useWordData } from "./components/helpers/useWordData";
+import { useWordlistSortingAndFiltering } from "./components/helpers/useWordlistSortingAndFiltering";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
