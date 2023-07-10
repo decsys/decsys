@@ -64,11 +64,8 @@ const Wordlist = () => {
   return (
     <Page layout="wordlist">
       <Flex direction="column" height={`calc(100vh - 54px)`} width="100%">
-        <LightHeading p="2" as="h2" size="lg">
-          My Wordlist
-        </LightHeading>
         <Stack mt={2} spacing={4} h="100vh" p={2}>
-          <Flex p={2} boxShadow="base">
+          <Flex p={2} boxShadow="base" backgroundColor="gray.50">
             <VStack alignItems="start">
               <TypeFilter group={group} getRadioProps={getRadioProps} />
               <ExclusionFilter group={group} getRadioProps={getRadioProps} />
