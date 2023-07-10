@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Stack, Flex, useRadioGroup, VStack, Spacer } from "@chakra-ui/react";
-import LightHeading from "components/core/LightHeading";
 import { Page } from "components/core";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
@@ -53,13 +52,23 @@ const Wordlist = () => {
     setSliderValues(values);
   };
 
-  const { getRootProps, getRadioProps } = useRadioGroup({
-    name: "framework",
-    defaultValue: "react",
+  const { getRootProps: getTypeRootProps, getRadioProps: getTypeRadioProps } =
+    useRadioGroup({
+      name: "type",
+      defaultValue: "All",
+      onChange: console.log,
+    });
+
+  const {
+    getRootProps: getExclusionRootProps,
+    getRadioProps: getExclusionRadioProps,
+  } = useRadioGroup({
+    name: "exclusion",
+    defaultValue: "All",
     onChange: console.log,
   });
-
-  const group = getRootProps();
+  const typeGroup = getTypeRootProps();
+  const exclusionGroup = getExclusionRootProps();
 
   return (
     <Page layout="wordlist">
@@ -67,8 +76,11 @@ const Wordlist = () => {
         <Stack mt={2} spacing={4} h="100vh" p={2}>
           <Flex p={2} boxShadow="base" backgroundColor="gray.50">
             <VStack alignItems="start">
-              <TypeFilter group={group} getRadioProps={getRadioProps} />
-              <ExclusionFilter group={group} getRadioProps={getRadioProps} />
+              <TypeFilter group={typeGroup} getRadioProps={getTypeRadioProps} />
+              <ExclusionFilter
+                group={exclusionGroup}
+                getRadioProps={getExclusionRadioProps}
+              />
               <WordLengthFilter
                 sliderValues={sliderValues}
                 handleSliderChange={handleSliderChange}

@@ -40,7 +40,7 @@ export const WordLengthFilter = ({ sliderValues, handleSliderChange }) => {
   return (
     <HStack pt={4}>
       <Text>Word Length:</Text>
-      <Flex width="300px">
+      <Flex pl="2" width="300px">
         <RangeSlider
           id="word-length"
           defaultValue={[1, 15]}
