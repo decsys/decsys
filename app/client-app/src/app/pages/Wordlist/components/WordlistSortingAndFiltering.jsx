@@ -10,7 +10,7 @@ const WordlistSortingAndFilteringPanel = ({
 }) => {
   return (
     <Flex alignItems="center" flexDirection="column">
-      {Object.keys(data).length && (
+      {Object.keys(data).length > 0 && (
         <VStack>
           <HStack spacing="0" pb={2.5}>
             <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
