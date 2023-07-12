@@ -5,7 +5,7 @@ const WordlistSortingAndFilteringPanel = ({
   data,
   sorting,
   onSort,
-  filter,
+  filterConfig,
   setFilter,
 }) => {
   return (
@@ -27,10 +27,12 @@ const WordlistSortingAndFilteringPanel = ({
             />
           </HStack>
           <Input
-            placeholder="Search by Name"
+            placeholder="Search by Word"
             size="sm"
-            value={filter}
-            onChange={({ target: { value } }) => setFilter(value)}
+            value={filterConfig.wordContains}
+            onChange={({ target: { value } }) =>
+              setFilter("wordContains", value)
+            }
           />
         </VStack>
       )}

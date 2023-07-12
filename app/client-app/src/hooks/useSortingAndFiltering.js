@@ -57,21 +57,26 @@ const getSortedLookup = (input, key, asc, sorters) =>
  *
  * If a function, is executed to perform custom filtering, with the signature (input, filter) => {}
  */
-const getFilteredLookup = (input, filter, filterer = "name") =>
-  !filter
+const getFilteredLookup = (input, filterConfig, filterers) =>
+  !filterConfig
     ? input
-    : input.filter(
-        typeof filterer === "string"
-          ? ({ [filterer]: keyProperty }) =>
-              new RegExp(filter, "i").test(keyProperty)
-          : (value) => filterer(value, filter)
+    : input.filter((value) =>
+        Object.entries(filterers).every(([key, filterer]) => {
+          const filter = filterConfig[key];
+          if (typeof filterer === "string") {
+            return new RegExp(filter, "i").test(value[filterer]);
+          } else if (typeof filterer === "function") {
+            return filterer(value, filter);
+          }
+          return false;
+        })
       );
 
 const storageKeyPrefix = "sargassure.sorting";
 
 export const useSortingAndFiltering = (
   sourceList,
-  filterer,
+  filterers = { nameContains: "name" },
   { initialSort, sorters, storageKey }
 ) => {
   const storageKeyFull = `${storageKeyPrefix}.${storageKey}`;
@@ -84,9 +89,16 @@ export const useSortingAndFiltering = (
   );
 
   const [sortedList, setSortedList] = useState([]);
-  const [filter, setFilter] = useState("");
+  const [filterConfig, setFilterConfig] = useState(
+    Object.keys(filterers).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: key.includes("Match") ? { test: "" } : "",
+      }),
+      {}
+    )
+  );
   const [outputList, setOutputList] = useState([]);
-
   // update the sorted list appropriately
   useEffect(() => {
     setSortedList(
@@ -98,8 +110,8 @@ export const useSortingAndFiltering = (
 
   // update the filtered list appropriately
   useEffect(() => {
-    setOutputList(getFilteredLookup(sortedList, filter, filterer));
-  }, [filter, sortedList]);
+    setOutputList(getFilteredLookup(sortedList, filterConfig, filterers));
+  }, [filterConfig, sortedList]);
 
   // default sort handler
   const handleSort = (key) => {
@@ -110,11 +122,15 @@ export const useSortingAndFiltering = (
     });
   };
 
+  const setFilter = (key, value) => {
+    setFilterConfig((prevConfig) => ({ ...prevConfig, [key]: value }));
+  };
+
   return {
     sorting,
     setSorting,
     onSort: handleSort,
-    filter,
+    filterConfig,
     setFilter,
     outputList,
   };

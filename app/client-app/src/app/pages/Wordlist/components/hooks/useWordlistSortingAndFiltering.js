@@ -1,7 +1,17 @@
 import { useSortingAndFiltering } from "hooks/useSortingAndFiltering";
 
-export const useWordlistSortingAndFiltering = (data) =>
-  useSortingAndFiltering(data, "word", {
+export const useWordlistSortingAndFiltering = (data) => {
+  const filterers = {
+    wordContains: "word",
+    typeMatches: (value, filter) =>
+      !filter || filter.toLowerCase() === "all"
+        ? true
+        : value.type.toLowerCase() === filter.toLowerCase(),
+
+    // other filterers go here...
+  };
+
+  return useSortingAndFiltering(data, filterers, {
     initialSort: {
       key: "word",
     },
@@ -20,3 +30,4 @@ export const useWordlistSortingAndFiltering = (data) =>
     },
     storageKey: "wordlist",
   });
+};
