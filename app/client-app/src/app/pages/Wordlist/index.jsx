@@ -69,7 +69,7 @@ const Wordlist = () => {
   } = useRadioGroup({
     name: "exclusion",
     defaultValue: "All",
-    onChange: console.log,
+    onChange: (value) => setFilter("exclusionStateMatches", value),
   });
   const typeGroup = getTypeRootProps();
   const exclusionGroup = getExclusionRootProps();

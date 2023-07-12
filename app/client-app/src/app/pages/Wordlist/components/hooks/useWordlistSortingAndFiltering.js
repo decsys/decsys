@@ -7,6 +7,17 @@ export const useWordlistSortingAndFiltering = (data) => {
       !filter || filter.toLowerCase() === "all"
         ? true
         : value.type.toLowerCase() === filter.toLowerCase(),
+    exclusionStateMatches: (value, filter) => {
+      switch (filter) {
+        case "Excluded":
+          return value.isExcludedBuiltin;
+        case "Included":
+          return !value.isExcludedBuiltin;
+        case "All":
+        default:
+          return true;
+      }
+    },
 
     // other filterers go here...
   };
