@@ -93,11 +93,12 @@ export const useSortingAndFiltering = (
     Object.keys(filterers).reduce(
       (acc, key) => ({
         ...acc,
-        [key]: key.includes("Match") ? { test: "" } : "",
+        [key]: key === "wordLengthIsInRange" ? [1, 15] : "",
       }),
       {}
     )
   );
+
   const [outputList, setOutputList] = useState([]);
   // update the sorted list appropriately
   useEffect(() => {
