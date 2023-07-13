@@ -45,35 +45,55 @@ const getSortedLookup = (input, key, asc, sorters) =>
     .sort(getPropertySorter(key, asc, sorters));
 
 /**
- * Filters a list of objects with a `name` (or custom specified property name) property
- * where said property contains a match on the `filter` string.
- *
- * If no filter is specified, the full input list is returned.
+ * Filters a list of objects with a specified property where said property contains a match
+ * on the `filter` string. If no filter is specified, the full input list is returned.
  *
  * @param {object[]} input The source list of objects.
- * @param {string} filter The filter string to match against.
- * @param {string|function} filterer
- * If a string, is a property name used to match against filter
+ * @param {object} filterConfig The configuration object for filters. The keys should match with filterers and values should be filter value.
+ * For example: { nameContains: "John" }
+ *
+ * @param {object} filterers
+ * If a string, is a property name used to match against filter.
+ * For example: { nameContains: "name" }
  *
  * If a function, is executed to perform custom filtering, with the signature (input, filter) => {}
+ * For example: { nameContains: (input, filter) => input.name.includes(filter) }
+ *
+ * @returns {object[]} A filtered list based on the filterConfig and filterers.
  */
-const getFilteredLookup = (input, filterConfig, filterers) =>
-  !filterConfig
-    ? input
-    : input.filter((value) =>
-        Object.entries(filterers).every(([key, filterer]) => {
-          const filter = filterConfig[key];
-          if (typeof filterer === "string") {
-            return new RegExp(filter, "i").test(value[filterer]);
-          } else if (typeof filterer === "function") {
-            return filterer(value, filter);
-          }
-          return false;
-        })
-      );
+
+export const getFilteredLookup = (input, filterConfig = {}, filterers = {}) =>
+  input.filter((value) =>
+    Object.entries(filterers).every(([key, filterer]) => {
+      const filter = filterConfig[key];
+      if (!filter) return true;
+      if (typeof filterer === "string") {
+        return new RegExp(filter, "i").test(value[filterer]);
+      } else if (typeof filterer === "function") {
+        return filterer(value, filter);
+      }
+      return false;
+    })
+  );
 
 const storageKeyPrefix = "sargassure.sorting";
 
+/**
+ * A custom hook that manages sorting and filtering operations for a list of objects.
+ * The hook keeps track of the sorting and filtering configuration, the sorted list, and the final output list after filtering.
+ *
+ * @param {object[]} sourceList The source list of objects.
+ * @param {object} filterers Configuration for filters. The keys should match with filterConfig in setFilter and values should be filter property or function.
+ * @param {object} options Contains configuration for initial sort key, sorters for different properties and local storage key for saving sort state.
+ *
+ * @returns {object} An object containing following:
+ * - sorting: The current sorting state, with a key for the sorting column and a boolean indicating whether it's ascending.
+ * - setSorting: A function to directly set the sorting state.
+ * - onSort: A function that updates the sort key and toggles ascending/descending.
+ * - filterConfig: The current filtering configuration, with each filter's current state.
+ * - setFilter: A function to update a specific filter.
+ * - outputList: The list of objects after sorting and filtering.
+ */
 export const useSortingAndFiltering = (
   sourceList,
   filterers = { nameContains: "name" },
