@@ -1,4 +1,4 @@
-import { getFilteredWordList } from "./helpers.js";
+import { getFilteredWordList } from "./getFilteredWordList.js";
 import { describe, expect, it } from "vitest";
 
 describe("getFilteredWordList", () => {
