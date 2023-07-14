@@ -5,10 +5,17 @@ export const useWordlistSortingAndFiltering = (data) => {
     wordContains: "word",
     minLengthIsMet: (value, filter) => value.word.length >= filter,
     maxLengthIsNotExceeded: (value, filter) => value.word.length <= filter,
-    typeMatches: (value, filter) =>
-      !filter || filter.toLowerCase() === "all"
-        ? true
-        : value.type.toLowerCase() === filter.toLowerCase(),
+    typeMatches: (value, filter) => {
+      switch (filter) {
+        case "Adjective":
+          return value.type === "adjective";
+        case "Noun":
+          return value.type === "noun";
+        case "All":
+        default:
+          return true;
+      }
+    },
     exclusionStateMatches: (value, filter) => {
       switch (filter) {
         case "Excluded":
