@@ -49,7 +49,9 @@ const Wordlist = () => {
   const [sliderValues, setSliderValues] = useState([1, 15]);
 
   const handleSliderChange = (values) => {
-    setFilter("wordLengthIsInRange", values);
+    setSliderValues(values);
+    setFilter("minLengthIsMet", values[0]);
+    setFilter("maxLengthIsNotExceeded", values[1]);
   };
 
   const handleTypeChange = (value) => {
@@ -86,7 +88,7 @@ const Wordlist = () => {
                 getRadioProps={getExclusionRadioProps}
               />
               <WordLengthFilter
-                sliderValues={filterConfig.wordLengthIsInRange}
+                sliderValues={sliderValues}
                 handleSliderChange={handleSliderChange}
               />
             </VStack>

@@ -113,7 +113,7 @@ export const useSortingAndFiltering = (
     Object.keys(filterers).reduce(
       (acc, key) => ({
         ...acc,
-        [key]: key === "wordLengthIsInRange" ? [1, 15] : "",
+        [key]: "",
       }),
       {}
     )

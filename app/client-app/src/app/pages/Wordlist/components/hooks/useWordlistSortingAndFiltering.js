@@ -18,8 +18,8 @@ export const useWordlistSortingAndFiltering = (data) => {
           return true;
       }
     },
-    wordLengthIsInRange: (value, filter) =>
-      value.word.length >= filter[0] && value.word.length <= filter[1],
+    minLengthIsMet: (value, filter) => value.word.length >= filter,
+    maxLengthIsNotExceeded: (value, filter) => value.word.length <= filter,
   };
 
   return useSortingAndFiltering(data, filterers, {
