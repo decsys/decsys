@@ -3,6 +3,8 @@ import { useSortingAndFiltering } from "hooks/useSortingAndFiltering";
 export const useWordlistSortingAndFiltering = (data) => {
   const filterers = {
     wordContains: "word",
+    minLengthIsMet: (value, filter) => value.word.length >= filter,
+    maxLengthIsNotExceeded: (value, filter) => value.word.length <= filter,
     typeMatches: (value, filter) =>
       !filter || filter.toLowerCase() === "all"
         ? true
@@ -18,8 +20,6 @@ export const useWordlistSortingAndFiltering = (data) => {
           return true;
       }
     },
-    minLengthIsMet: (value, filter) => value.word.length >= filter,
-    maxLengthIsNotExceeded: (value, filter) => value.word.length <= filter,
   };
 
   return useSortingAndFiltering(data, filterers, {

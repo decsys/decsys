@@ -54,15 +54,11 @@ const Wordlist = () => {
     setFilter("maxLengthIsNotExceeded", values[1]);
   };
 
-  const handleTypeChange = (value) => {
-    setFilter("typeMatches", value);
-  };
-
   const { getRootProps: getTypeRootProps, getRadioProps: getTypeRadioProps } =
     useRadioGroup({
       name: "type",
       defaultValue: "All",
-      onChange: handleTypeChange,
+      onChange: setFilter("typeMatches", value),
     });
 
   const {

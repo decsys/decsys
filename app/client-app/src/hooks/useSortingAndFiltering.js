@@ -49,7 +49,8 @@ const getSortedLookup = (input, key, asc, sorters) =>
  * on the `filter` string. If no filter is specified, the full input list is returned.
  *
  * @param {object[]} input The source list of objects.
- * @param {object} filterConfig The configuration object for filters. The keys should match with filterers and values should be filter value.
+ * @param {object} filterConfig An object holding the current state or values of the filters.
+ * The keys in this object should match the keys in the 'filterers' object.
  * For example: { nameContains: "John" }
  *
  * @param {object} filterers
