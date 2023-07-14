@@ -58,7 +58,7 @@ const Wordlist = () => {
     useRadioGroup({
       name: "type",
       defaultValue: "All",
-      onChange: setFilter("typeMatches", value),
+      onChange: (value) => setFilter("typeMatches", value),
     });
 
   const {
