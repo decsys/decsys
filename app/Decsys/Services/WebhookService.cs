@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
@@ -90,7 +91,13 @@ public class WebhookService
         var json = JsonConvert.SerializeObject(payload);
 
         var content = new StringContent(json, Encoding.UTF8, "application/json");
-        if (webhook.SecretHash is not null) content.Headers.Add("X-Decsys-Signature", webhook.SecretHash);
+        
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(webhook.Secret));
+        
+        if (webhook.Secret is not null)   content.Headers.Add("X-Decsys-Signature",
+            Encoding.UTF8.GetString(
+                hmac.ComputeHash(
+                    Encoding.UTF8.GetBytes(json))));
 
         await _client.PostAsync(webhook.CallbackUrl, content);
     }
