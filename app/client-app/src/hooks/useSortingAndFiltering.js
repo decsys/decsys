@@ -77,7 +77,7 @@ export const getFilteredLookup = (input, filterConfig = {}, filterers = {}) =>
     })
   );
 
-const storageKeyPrefix = "sargassure.sorting";
+const storageKeyPrefix = "decsys.sorting";
 
 /**
  * A custom hook that manages sorting and filtering operations for a list of objects.

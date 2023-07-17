@@ -3,8 +3,10 @@ import { useSortingAndFiltering } from "hooks/useSortingAndFiltering";
 export const useWordlistSortingAndFiltering = (data) => {
   const filterers = {
     wordContains: "word",
-    minLengthIsMet: (value, filter) => value.word.length >= filter,
-    maxLengthIsNotExceeded: (value, filter) => value.word.length <= filter,
+    wordLengthMatches: (value, filter) => {
+      const [minLength, maxLength] = filter;
+      return value.word.length >= minLength && value.word.length <= maxLength;
+    },
     typeMatches: (value, filter) => {
       switch (filter) {
         case "Adjective":

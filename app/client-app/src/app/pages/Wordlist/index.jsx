@@ -50,8 +50,7 @@ const Wordlist = () => {
 
   const handleSliderChange = (values) => {
     setSliderValues(values);
-    setFilter("minLengthIsMet", values[0]);
-    setFilter("maxLengthIsNotExceeded", values[1]);
+    setFilter("wordLengthMatches", values);
   };
 
   const { getRootProps: getTypeRootProps, getRadioProps: getTypeRadioProps } =
