@@ -44,19 +44,20 @@ const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
 
 const Wordlist = () => {
   const { cards, toggleExclude } = useWordData();
-  const { sorting, onSort, outputList, filter, setFilter } =
+  const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
   const [sliderValues, setSliderValues] = useState([1, 15]);
 
   const handleSliderChange = (values) => {
     setSliderValues(values);
+    setFilter("wordLengthMatches", values);
   };
 
   const { getRootProps: getTypeRootProps, getRadioProps: getTypeRadioProps } =
     useRadioGroup({
       name: "type",
       defaultValue: "All",
-      onChange: console.log,
+      onChange: (value) => setFilter("typeMatches", value),
     });
 
   const {
@@ -65,7 +66,7 @@ const Wordlist = () => {
   } = useRadioGroup({
     name: "exclusion",
     defaultValue: "All",
-    onChange: console.log,
+    onChange: (value) => setFilter("exclusionStateMatches", value),
   });
   const typeGroup = getTypeRootProps();
   const exclusionGroup = getExclusionRootProps();
@@ -91,7 +92,7 @@ const Wordlist = () => {
               data={cards}
               sorting={sorting}
               onSort={onSort}
-              filter={filter}
+              filterConfig={filterConfig}
               setFilter={setFilter}
             />
           </Flex>
