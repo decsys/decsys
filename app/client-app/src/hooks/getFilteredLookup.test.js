@@ -74,4 +74,15 @@ describe("getFilteredLookup", () => {
       { name: "Anna", age: 30, isEmployed: true },
     ]);
   });
+
+  it("Should apply multiple filters correctly", () => {
+    const filterConfig = { age: 30, isEmployed: true };
+    const filterers = {
+      age: (value, filter) => value.age === filter,
+      isEmployed: "isEmployed",
+    };
+
+    const output = getFilteredLookup(mockData, filterConfig, filterers);
+    expect(output).toEqual([{ name: "Anna", age: 30, isEmployed: true }]);
+  });
 });
