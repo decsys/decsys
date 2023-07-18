@@ -27,7 +27,7 @@ public class WebhookRepository : IWebhookRepository
         {
             SurveyId = webhook.SurveyId,
             CallbackUrl = webhook.CallbackUrl,
-            SecretHash = webhook.SecretHash,
+            Secret = webhook.Secret,
             VerifySsl = webhook.VerifySsl,
             TriggerCriteria = webhook.TriggerCriteria
         };
@@ -44,7 +44,7 @@ public class WebhookRepository : IWebhookRepository
                 {
                     SurveyId = x.SurveyId,
                     CallbackUrl = x.CallbackUrl,
-                    SecretHash = x.SecretHash,
+                    Secret = x.Secret,
                     VerifySsl = x.VerifySsl,
                     TriggerCriteria = x.TriggerCriteria
                 })).ToList();
