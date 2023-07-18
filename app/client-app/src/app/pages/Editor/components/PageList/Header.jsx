@@ -3,9 +3,11 @@ import LightHeading from "components/core/LightHeading";
 import { FaPlus } from "react-icons/fa";
 import { usePageListContext } from "../../contexts/PageList";
 import WebhookMenu from "../WebhookMenu/WebhookMenu";
+import { useServerConfig } from "api/config";
 
 const Header = () => {
   const { addPage } = usePageListContext();
+  const { webhookEnabled } = useServerConfig();
 
   return (
     <Flex p={4} justify="space-between" align="center">
@@ -14,7 +16,7 @@ const Header = () => {
         <Button colorScheme="green" onClick={addPage} leftIcon={<FaPlus />}>
           Add Page
         </Button>
-        <WebhookMenu />
+        {webhookEnabled && <WebhookMenu />}
       </HStack>
     </Flex>
   );
