@@ -85,7 +85,7 @@ public class WebhookService
     /// Posts webhook data to a given URL.
     /// </summary>
     /// <param name="payload">Payload to Post</param>
-    /// <param name="webhook">Webhook to Post to</param>
+    /// <param name="webhook">An instance of WebhookModel containing the CallbackUrl and a Secret for HMACSHA256 hashing</param>
     private async Task SendWebhook(WebhookModel webhook, PayloadModel payload)
     {
         var json = JsonConvert.SerializeObject(payload);
