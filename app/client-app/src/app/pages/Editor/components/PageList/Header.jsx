@@ -7,7 +7,7 @@ const Header = () => {
   const { addPage } = usePageListContext();
   return (
     <Flex p={4} justify="space-between" align="center">
-      <LightHeading size="lg">Survey Pages</LightHeading>
+      <LightHeading size="lg">Pages</LightHeading>
       <Button colorScheme="green" onClick={addPage} leftIcon={<FaPlus />}>
         Add Page
       </Button>
