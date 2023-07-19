@@ -1,13 +1,16 @@
 using Decsys.Auth;
+using Decsys.Constants;
 using Decsys.Models.Webhooks;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers;
 
 [ApiController]
+[FeatureGate(FeatureFlags.Webhook)]
 [Route("api/[controller]")]
 [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
 public class WebhooksController : ControllerBase
