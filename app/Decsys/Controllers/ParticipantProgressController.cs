@@ -394,7 +394,7 @@ namespace Decsys.Controllers
             
             // Trigger webhook
             var pageSummary = _events.PageResponseSummary(instanceId, participantId, currentPageId);
-            var eventType = new PageNavigation
+            var eventType = new EventType
             {
                 ResolvedPage = iNextPage + 1,
                 SourcePage = iCurrentPage + 1,

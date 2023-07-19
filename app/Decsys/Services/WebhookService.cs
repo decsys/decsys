@@ -64,7 +64,7 @@ public class WebhookService
                 // check 2: type specific validation criteria
                 // add further criteria for further types
                 result = eventType switch {
-                    PageNavigation nav => CheckIsValid(nav, payload.EventType as PageNavigation),
+                    EventType nav => CheckIsValid(nav, payload.EventType as EventType),
                     _ => false
                 };
 
@@ -74,7 +74,7 @@ public class WebhookService
         return false;
     }
     
-    private static bool CheckIsValid(PageNavigation webhookNavigation, PageNavigation? payloadNavigation)
+    private static bool CheckIsValid(EventType webhookNavigation, EventType? payloadNavigation)
     {
         if (payloadNavigation == null) return false;
 

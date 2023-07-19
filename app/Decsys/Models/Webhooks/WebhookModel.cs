@@ -20,19 +20,15 @@ public class TriggerCriteria
     /// <summary>
     /// Event types that can be triggered on.
     /// </summary>
-    public List<BaseEventType> EventTypes { get; set; } = new List<BaseEventType>();
+    public List<EventType> EventTypes { get; set; } = new List<EventType>();
 }
 
 /// <summary>
 /// Base model for Event Types, can be extended to add events to trigger on.
 /// </summary>
-public abstract class BaseEventType
+public class EventType
 {
     public string Name { get; set; } = string.Empty;
-}
-
-public class PageNavigation : BaseEventType
-{
     /// <summary>
     /// The page the user is leaving.
     /// </summary>
@@ -53,4 +49,3 @@ public class PageNavigation : BaseEventType
     /// </summary>
     public bool ResolvedSuccess { get; set; }
 }
-
