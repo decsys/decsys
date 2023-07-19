@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { useRef } from "react";
+import { createWebhook } from "api/webhook";
 
 const WebhookMenu = () => {
   const {
@@ -38,6 +39,10 @@ const WebhookMenu = () => {
   const handleAddWebhook = () => {
     onFormOpen();
   };
+
+  // const handleSave = async () => { //surveyId,callbackUrl,secret,name,eventType
+  //   await createWebhook();
+  // }
 
   return (
     <>
@@ -90,7 +95,7 @@ const WebhookMenu = () => {
           <ModalBody>
             <FormControl>
               <FormLabel>Webhook form</FormLabel>
-              <Input />
+              <Input placeholder="Webhook Name" />
             </FormControl>
           </ModalBody>
           <ModalFooter>
