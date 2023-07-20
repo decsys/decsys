@@ -40,10 +40,6 @@ const WebhookMenu = () => {
     onFormOpen();
   };
 
-  // const handleSave = async () => { //surveyId,callbackUrl,secret,name,eventType
-  //   await createWebhook();
-  // }
-
   return (
     <>
       <Menu>
@@ -95,7 +91,7 @@ const WebhookMenu = () => {
           <ModalBody>
             <FormControl>
               <FormLabel>Webhook form</FormLabel>
-              <Input placeholder="Webhook Name" />
+              <Input />
             </FormControl>
           </ModalBody>
           <ModalFooter>

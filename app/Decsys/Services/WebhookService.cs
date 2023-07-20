@@ -74,8 +74,9 @@ public class WebhookService
         return false;
     }
 
-    private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigationFilters payloadFilter)
+    private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigationFilters? payloadFilter)
     {
+        if (payloadFilter == null) return false;
         return webhookFilter.SourcePage == payloadFilter.SourcePage;
     }
 
