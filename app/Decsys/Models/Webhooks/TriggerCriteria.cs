@@ -1,6 +1,6 @@
 namespace Decsys.Models.Webhooks;
 
-public class TriggerCriteriaModel
+public class TriggerCriteria
 {
     /// <summary>
     /// Indicates whether this TriggerCriteria instance uses custom-defined triggers. 
@@ -10,5 +10,5 @@ public class TriggerCriteriaModel
     /// <summary>
     /// Event types that can be triggered on.
     /// </summary>
-    public EventTriggerFiltersModel EventTypes = new();
+    public EventTriggerFilters EventTypes = new();
 }

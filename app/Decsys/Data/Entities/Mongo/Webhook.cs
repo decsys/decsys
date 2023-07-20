@@ -11,5 +11,5 @@ public class Webhook
     public string? Secret { get; set; }
     public bool VerifySsl { get; set; }
 
-    public List<TriggerCriteriaModel> TriggerCriteria { get; set; } = new List<TriggerCriteriaModel>();
+    public List<TriggerCriteria> TriggerCriteria { get; set; } = new List<TriggerCriteria>();
 }

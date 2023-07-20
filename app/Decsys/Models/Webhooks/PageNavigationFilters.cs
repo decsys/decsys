@@ -1,6 +1,6 @@
 namespace Decsys.Models.Webhooks;
 
-public class PageNavigationFiltersModel
+public class PageNavigationFilters
 {
     /// <summary>
     /// The page the user is leaving.

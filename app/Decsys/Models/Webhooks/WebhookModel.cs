@@ -10,5 +10,5 @@ public class WebhookModel
     /// <summary>
     /// The trigger criteria to test against.
     /// </summary>
-    public List<TriggerCriteriaModel> TriggerCriteria { get; set; } = new List<TriggerCriteriaModel>();
+    public List<TriggerCriteria> TriggerCriteria { get; set; } = new List<TriggerCriteria>();
 }
