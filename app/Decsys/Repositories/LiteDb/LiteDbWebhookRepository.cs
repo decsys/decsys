@@ -1,6 +1,7 @@
 using Decsys.Data.Entities.Mongo;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
+using MongoDB.Bson;
 
 namespace Decsys.Repositories.LiteDb;
 
@@ -9,7 +10,7 @@ namespace Decsys.Repositories.LiteDb;
 /// </summary>
 public class LiteDbWebhookRepository : IWebhookRepository
 {
-    public int Create(WebhookModel webhook)
+    public ObjectId Create(WebhookModel webhook)
     {
         throw new NotImplementedException();
     }

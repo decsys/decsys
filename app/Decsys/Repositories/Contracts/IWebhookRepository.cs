@@ -1,4 +1,5 @@
 using Decsys.Models.Webhooks;
+using MongoDB.Bson;
 
 namespace Decsys.Repositories.Contracts;
 
@@ -9,7 +10,7 @@ public interface IWebhookRepository
     /// </summary>
     /// <param name="webhook">The webhook model to create.</param>
     /// <returns>The created Webhook Id</returns>
-    int Create(WebhookModel webhook);
+    ObjectId Create(WebhookModel webhook);
 
     /// <summary>
     /// List all webhooks for a given survey Id.

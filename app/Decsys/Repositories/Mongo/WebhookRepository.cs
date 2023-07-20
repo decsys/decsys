@@ -4,6 +4,7 @@ using Decsys.Data.Entities.Mongo;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Decsys.Repositories.Mongo;
@@ -21,7 +22,7 @@ public class WebhookRepository : IWebhookRepository
         _webhooks = db.GetCollection<Webhook>(Collections.Webhooks);
     }
     
-    public int Create(WebhookModel webhook)
+    public ObjectId Create(WebhookModel webhook)
     {
         var entity = new Webhook
         {

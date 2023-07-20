@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 
 namespace Decsys.Services;
@@ -25,7 +26,7 @@ public class WebhookService
     /// </summary>
     /// <param name="model">Webhook model to create</param>
     /// <returns>The created Webhook</returns>
-    public int Create(WebhookModel model)
+    public ObjectId Create(WebhookModel model)
         => _webhooks.Create(model);
 
     
