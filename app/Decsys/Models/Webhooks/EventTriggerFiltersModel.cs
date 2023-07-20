@@ -3,9 +3,8 @@ using Newtonsoft.Json;
 
 namespace Decsys.Models.Webhooks;
 
-public class EventTriggerFilters
+public class EventTriggerFiltersModel
 {
     [JsonProperty(WebhookEventTypes.PAGE_NAVIGATION)]
-    public List<PageNavigationFilters> PageNavigation = new();
-    
+    public List<PageNavigationFiltersModel> PageNavigation = new();
 }

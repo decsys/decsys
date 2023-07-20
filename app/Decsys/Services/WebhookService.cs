@@ -74,10 +74,10 @@ public class WebhookService
         return false;
     }
 
-    private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigationFilters? payloadFilter)
+    private static bool CheckIsValid(PageNavigationFiltersModel webhookFilterModel, PageNavigationFiltersModel? payloadFilter)
     {
         if (payloadFilter == null) return false;
-        return webhookFilter.SourcePage == payloadFilter.SourcePage;
+        return webhookFilterModel.SourcePage == payloadFilter.SourcePage;
     }
 
     /// <summary>
