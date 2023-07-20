@@ -55,30 +55,33 @@ public class WebhookService
     /// <returns>True if filter matches</returns>
     private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
-        foreach (var eventType in webhook.TriggerCriteria.SelectMany(filter => filter.EventTypes))
+        if (payload.PageResponseSummary == null)
+            return false;
+
+        var payloadFilter = new PageNavigationFilters
         {
-            // check 1: if they are the same event types
-            var result = eventType.GetType() == payload.EventType.GetType();
+            SourcePage = payload.PageResponseSummary.Page
+        };
 
-            if(result)
-                // check 2: type specific validation criteria
-                // add further criteria for further types
-                result = eventType switch {
-                    PageNavigation nav => CheckIsValid(nav, payload.EventType as PageNavigation),
-                    _ => false
-                };
-
-            return result;
+        foreach (var criteria in webhook.TriggerCriteria)
+        {
+            if (criteria.HasCustomTriggers)
+            {
+                foreach (var webhookFilter in criteria.EventTypes.PageNavigation)
+                {
+                    if (CheckIsValid(webhookFilter, payloadFilter))
+                        return true;
+                }
+            }
         }
-        
+
         return false;
     }
+
     
     private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigationFilters payloadFilter)
     {
-        //Check both source page and resolution status
-        return webhookFilter.SourcePage == payloadFilter.SourcePage 
-               && webhookFilter.ResolvedSuccess == payloadFilter.ResolvedSuccess;
+        return webhookFilter.SourcePage == payloadFilter.SourcePage;
     }
 
     /// <summary>
