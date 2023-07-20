@@ -55,22 +55,17 @@ public class WebhookService
     /// <returns>True if filter matches</returns>
     private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
-        if (payload.PageResponseSummary == null)
-            return false;
-
-        var payloadFilter = new PageNavigationFilters
+        foreach (var triggerCondition in webhook.TriggerCriteria)
         {
-            SourcePage = payload.PageResponseSummary.Page
-        };
-
-        foreach (var criteria in webhook.TriggerCriteria)
-        {
-            if (criteria.HasCustomTriggers)
+            if (triggerCondition.EventTypes.PageNavigation.Any() && payload.EventData.PageNavigation != null)
             {
-                foreach (var webhookFilter in criteria.EventTypes.PageNavigation)
+                foreach (var webhookFilter in triggerCondition.EventTypes.PageNavigation)
                 {
-                    if (CheckIsValid(webhookFilter, payloadFilter))
-                        return true;
+                    foreach (var payloadFilter in payload.EventData.PageNavigation)
+                    {
+                        if (CheckIsValid(webhookFilter, payloadFilter))
+                            return true;
+                    }
                 }
             }
         }
@@ -78,7 +73,6 @@ public class WebhookService
         return false;
     }
 
-    
     private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigationFilters payloadFilter)
     {
         return webhookFilter.SourcePage == payloadFilter.SourcePage;
