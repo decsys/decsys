@@ -21,7 +21,6 @@ import {
 } from "@chakra-ui/react";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { useRef } from "react";
-import { createWebhook } from "api/webhook";
 
 const WebhookMenu = () => {
   const {
