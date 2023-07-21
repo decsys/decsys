@@ -56,28 +56,28 @@ public class WebhookService
     /// <returns>True if filter matches</returns>
     private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
-        foreach (var triggerCondition in webhook.TriggerCriteria)
+        // check 1: if they are the same event types
+        var result = payload.EventType is PageNavigation && 
+                     webhook.TriggerCriteria.EventTypes.PageNavigation.Any();
+
+        if (result)
         {
-            if (triggerCondition.EventTypes.PageNavigation.Any() && payload.EventData.PageNavigation != null)
+            // check 2: type specific validation criteria
+            // add further criteria for further types
+            foreach (var navFilter in webhook.TriggerCriteria.EventTypes.PageNavigation)
             {
-                foreach (var webhookFilter in triggerCondition.EventTypes.PageNavigation)
-                {
-                    foreach (var payloadFilter in payload.EventData.PageNavigation)
-                    {
-                        if (CheckIsValid(webhookFilter, payloadFilter))
-                            return true;
-                    }
-                }
+                result = CheckIsValid(navFilter, payload.EventType as PageNavigation);
+                if (result) return true;
             }
         }
-
         return false;
     }
 
-    private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigationFilters? payloadFilter)
+    private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
     {
-        if (payloadFilter == null) return false;
-        return webhookFilter.SourcePage == payloadFilter.SourcePage;
+        if (payloadNavigation == null) return false;
+
+        return webhookFilter.SourcePage == payloadNavigation.SourcePage;
     }
 
     /// <summary>
@@ -98,9 +98,7 @@ public class WebhookService
                 Encoding.UTF8.GetString(
                     hmac.ComputeHash(
                         Encoding.UTF8.GetBytes(json))));
-          }
-
-        await _client.PostAsync(webhook.CallbackUrl, content);
+         }
+         await _client.PostAsync(webhook.CallbackUrl, content);
     }
-
 }
