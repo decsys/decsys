@@ -6,9 +6,11 @@ public class WebhookModel
     public string CallbackUrl { get; set; } = string.Empty;
     public string? Secret { get; set; }
     public bool VerifySsl { get; set; }
-    
+
     /// <summary>
     /// The trigger criteria to test against.
     /// </summary>
-    public List<TriggerCriteria> TriggerCriteria { get; set; } = new List<TriggerCriteria>();
+    public TriggerCriteria TriggerCriteria { get; set; } = new();
+
 }
+
