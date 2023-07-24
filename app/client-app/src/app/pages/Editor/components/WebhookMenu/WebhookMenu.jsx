@@ -14,10 +14,12 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Text,
+  HStack,
 } from "@chakra-ui/react";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { useRef } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import { TextField } from "../Form/TextField";
 import { FormikInput } from "../Form/FormikInput";
 
@@ -39,7 +41,12 @@ const WebhookMenu = () => {
   };
 
   const handleSubmit = (values) => {
-    console.log("Form submitted with: ", values.name);
+    console.log(
+      "Form submitted with: ",
+      values.verifySsl,
+      values.url,
+      values.page
+    );
   };
 
   return (
@@ -91,40 +98,41 @@ const WebhookMenu = () => {
           <ModalHeader>New Webhook</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Formik initialValues={{ name: "" }} onSubmit={handleSubmit}>
-              {({ handleSubmit }) => (
-                <Form onSubmit={handleSubmit}>
+            <Formik
+              initialValues={{ url: "", page: "", verifySsl: false }}
+              onSubmit={(values) => handleSubmit(values)}
+            >
+              {(props) => (
+                <Form id="myForm">
                   <TextField
                     name="url"
                     placeholder="Callback Url"
                     header="Header"
                     size="sm"
                   />
-                  <TextField
-                    name="Secret"
-                    placeholder="Secret"
-                    header="Header"
-                    size="sm"
-                  />
                   <FormikInput
-                    name="Page"
+                    name="page"
                     placeholder="Source Page (number)"
                     type="number"
                     size="sm"
                     collapseError
                   />
+                  <HStack>
+                    <Text>verifySsl</Text>
+                    <Field type="checkbox" name="verifySsl" />
+                  </HStack>
+                  <ModalFooter>
+                    <Button colorScheme="red" mr={3} onClick={onFormClose}>
+                      Cancel
+                    </Button>
+                    <Button colorScheme="blue" mr={3} type="submit">
+                      Save
+                    </Button>
+                  </ModalFooter>
                 </Form>
               )}
             </Formik>
           </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="red" mr={3} onClick={onFormClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" mr={3} type="submit" form="myForm">
-              Save
-            </Button>
-          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
