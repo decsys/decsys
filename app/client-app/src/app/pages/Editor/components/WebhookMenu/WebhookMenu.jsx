@@ -14,13 +14,12 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  Input,
 } from "@chakra-ui/react";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { useRef } from "react";
+import { Formik, Form } from "formik";
+import { TextField } from "../Form/TextField";
+import { FormikInput } from "../Form/FormikInput";
 
 const WebhookMenu = () => {
   const {
@@ -37,6 +36,10 @@ const WebhookMenu = () => {
 
   const handleAddWebhook = () => {
     onFormOpen();
+  };
+
+  const handleSubmit = (values) => {
+    console.log("Form submitted with: ", values.name);
   };
 
   return (
@@ -88,16 +91,37 @@ const WebhookMenu = () => {
           <ModalHeader>New Webhook</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <FormControl>
-              <FormLabel>Webhook form</FormLabel>
-              <Input />
-            </FormControl>
+            <Formik initialValues={{ name: "" }} onSubmit={handleSubmit}>
+              {({ handleSubmit }) => (
+                <Form onSubmit={handleSubmit}>
+                  <TextField
+                    name="url"
+                    placeholder="Callback Url"
+                    header="Header"
+                    size="sm"
+                  />
+                  <TextField
+                    name="Secret"
+                    placeholder="Secret"
+                    header="Header"
+                    size="sm"
+                  />
+                  <FormikInput
+                    name="Page"
+                    placeholder="Source Page (number)"
+                    type="number"
+                    size="sm"
+                    collapseError
+                  />
+                </Form>
+              )}
+            </Formik>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="red" mr={3} onClick={onFormClose}>
               Cancel
             </Button>
-            <Button colorScheme="blue" mr={3} onClick={onFormClose}>
+            <Button colorScheme="blue" mr={3} type="submit" form="myForm">
               Save
             </Button>
           </ModalFooter>
