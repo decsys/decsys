@@ -16,12 +16,14 @@ import {
   useDisclosure,
   Text,
   HStack,
+  VStack,
 } from "@chakra-ui/react";
-import { FaEllipsisV, FaPlus } from "react-icons/fa";
+import { FaEllipsisV, FaPlus, FaPlusCircle, FaTimes } from "react-icons/fa";
 import { useRef } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FieldArray } from "formik";
 import { TextField } from "../Form/TextField";
 import { FormikInput } from "../Form/FormikInput";
+import LightHeading from "components/core/LightHeading";
 
 const WebhookMenu = () => {
   const {
@@ -45,7 +47,7 @@ const WebhookMenu = () => {
       "Form submitted with: ",
       values.verifySsl,
       values.url,
-      values.page
+      values.sourcePages
     );
   };
 
@@ -92,40 +94,117 @@ const WebhookMenu = () => {
         </ModalContent>
       </Modal>
 
-      <Modal finalFocusRef={finalRef} isOpen={isFormOpen} onClose={onFormClose}>
+      <Modal
+        finalFocusRef={finalRef}
+        isOpen={isFormOpen}
+        size="xl"
+        onClose={onFormClose}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>New Webhook</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Formik
-              initialValues={{ url: "", page: "", verifySsl: false }}
+              initialValues={{
+                url: "",
+                page: "",
+                verifySsl: false,
+                eventTrigger: "allEvents",
+                sourcePages: [],
+              }}
               onSubmit={(values) => handleSubmit(values)}
             >
-              {(props) => (
-                <Form id="myForm">
+              {({ values, handleChange, handleBlur, handleSubmit }) => (
+                <Form id="myForm" onSubmit={handleSubmit}>
                   <TextField
                     name="url"
                     placeholder="Callback Url"
                     header="Header"
                     size="sm"
                   />
-                  <FormikInput
-                    name="page"
-                    placeholder="Source Page (number)"
-                    type="number"
-                    size="sm"
-                    collapseError
-                  />
                   <HStack>
-                    <Text>verifySsl</Text>
                     <Field type="checkbox" name="verifySsl" />
+                    <Text>verifySsl</Text>
                   </HStack>
+                  <VStack align="flex-start">
+                    <HStack>
+                      <Field
+                        type="radio"
+                        name="eventTrigger"
+                        value="allEvents"
+                      />
+                      <Text>All Events</Text>
+                    </HStack>
+                    <HStack>
+                      <Field
+                        type="radio"
+                        name="eventTrigger"
+                        value="customEvents"
+                      />
+                      <Text>Customize Events</Text>
+                    </HStack>
+                  </VStack>
+                  {values.eventTrigger === "customEvents" && (
+                    <Flex
+                      borderColor="gray.300"
+                      borderWidth={1}
+                      boxShadow="section-v"
+                      p="2"
+                    >
+                      <FieldArray name="sourcePages">
+                        {({ push, remove }) => (
+                          <Flex spacing={4} w="100%">
+                            <VStack w="100%" align="flex-start">
+                              <HStack w="100%" justify="space-between">
+                                <LightHeading
+                                  textAlign="center"
+                                  as="h4"
+                                  size="md"
+                                >
+                                  Triger Filters
+                                </LightHeading>
+
+                                <IconButton
+                                  p={2}
+                                  colorScheme="green"
+                                  icon={<FaPlusCircle />}
+                                  onClick={() => push("")}
+                                />
+                              </HStack>
+                              {values.sourcePages.map((sourcePage, index) => (
+                                <Flex key={index} w="100%">
+                                  <HStack w="100%" justify="space-between">
+                                    <Flex w="34%">
+                                      <FormikInput
+                                        name={`sourcePages.${index}`}
+                                        placeholder="Source page (number)"
+                                        type="number"
+                                        size="sm"
+                                        collapseError
+                                      />
+                                    </Flex>
+                                    <IconButton
+                                      p={2}
+                                      colorScheme="red"
+                                      icon={<FaTimes />}
+                                      onClick={() => remove(index)}
+                                      ml={2}
+                                    />
+                                  </HStack>
+                                </Flex>
+                              ))}
+                            </VStack>
+                          </Flex>
+                        )}
+                      </FieldArray>
+                    </Flex>
+                  )}
                   <ModalFooter>
                     <Button colorScheme="red" mr={3} onClick={onFormClose}>
                       Cancel
                     </Button>
-                    <Button colorScheme="blue" mr={3} type="submit">
+                    <Button colorScheme="blue" type="submit">
                       Save
                     </Button>
                   </ModalFooter>
