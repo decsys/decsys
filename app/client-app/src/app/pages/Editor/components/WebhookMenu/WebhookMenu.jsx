@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Button,
   Flex,
   Menu,
@@ -76,14 +78,14 @@ const WebhookMenu = () => {
           <ModalHeader>Webhooks</ModalHeader>
           <ModalCloseButton />
           <ModalBody>sample text - existing Webhooks</ModalBody>
-          <Flex align="start" direction="column" pl={6}>
+          <Flex align="start" direction="column">
             <Button
               colorScheme="green"
               size="sm"
               leftIcon={<FaPlus />}
               onClick={handleAddWebhook}
             >
-              New Webhook
+              Create a Webhook
             </Button>
           </Flex>
           <ModalFooter>
@@ -102,14 +104,14 @@ const WebhookMenu = () => {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>New Webhook</ModalHeader>
+          <ModalHeader>Create a Webhook</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Formik
               initialValues={{
                 url: "",
                 page: "",
-                verifySsl: false,
+                verifySsl: true,
                 eventTrigger: "allEvents",
                 sourcePages: [],
               }}
@@ -123,11 +125,21 @@ const WebhookMenu = () => {
                     header="Header"
                     size="sm"
                   />
-                  <HStack>
+                  <HStack pb="2" pt="2">
                     <Field type="checkbox" name="verifySsl" />
                     <Text>verifySsl</Text>
                   </HStack>
+                  {!values.verifySsl && (
+                    <Alert status="warning">
+                      <AlertIcon />
+                      WARNING: Disabling SSL certificate verification has
+                      security implications
+                    </Alert>
+                  )}
                   <VStack align="flex-start">
+                    <LightHeading textAlign="center" size="md" pt="4">
+                      Triger Criteria
+                    </LightHeading>
                     <HStack>
                       <Field
                         type="radio"
@@ -135,8 +147,6 @@ const WebhookMenu = () => {
                         value="allEvents"
                       />
                       <Text>All Events</Text>
-                    </HStack>
-                    <HStack>
                       <Field
                         type="radio"
                         name="eventTrigger"
@@ -149,7 +159,7 @@ const WebhookMenu = () => {
                     <Flex
                       borderColor="gray.300"
                       borderWidth={1}
-                      boxShadow="section-v"
+                      boxShadow="section-h"
                       p="2"
                     >
                       <FieldArray name="sourcePages">
@@ -204,7 +214,11 @@ const WebhookMenu = () => {
                     <Button colorScheme="red" mr={3} onClick={onFormClose}>
                       Cancel
                     </Button>
-                    <Button colorScheme="blue" type="submit">
+                    <Button
+                      colorScheme="blue"
+                      type="submit"
+                      onClick={onFormClose}
+                    >
                       Save
                     </Button>
                   </ModalFooter>
