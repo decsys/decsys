@@ -1,6 +1,8 @@
 import {
   Alert,
   AlertIcon,
+  AlertTitle,
+  AlertDescription,
   Button,
   Flex,
   Menu,
@@ -32,7 +34,6 @@ import { Formik, Form, Field, FieldArray } from "formik";
 import { TextField } from "../Form/TextField";
 import { FormikInput } from "../Form/FormikInput";
 import LightHeading from "components/core/LightHeading";
-import { useState } from "react";
 
 const WebhookMenu = () => {
   const {
@@ -40,6 +41,7 @@ const WebhookMenu = () => {
     onOpen: openWebhooksModal,
     onClose: closeWebhooksModal,
   } = useDisclosure();
+
   const {
     isOpen: isFormOpen,
     onOpen: onFormOpen,
@@ -147,9 +149,21 @@ const WebhookMenu = () => {
                   </HStack>
                   {!values.verifySsl && (
                     <Alert status="warning">
-                      <AlertIcon />
-                      WARNING: Disabling SSL certificate verification has
-                      security implications
+                      <VStack>
+                        <HStack>
+                          <AlertIcon />
+                          <AlertTitle>
+                            WARNING: Disabling SSL verification has serious
+                            implications.
+                          </AlertTitle>
+                        </HStack>
+                        <AlertDescription fontSize="sm">
+                          SSL verification helps ensure that hook payloads are
+                          delivered to your URL endpoint securely, keeping your
+                          data away from prying eyes. Disabling this option is
+                          not recommended.
+                        </AlertDescription>
+                      </VStack>
                     </Alert>
                   )}
                   <VStack align="flex-start">
