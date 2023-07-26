@@ -34,8 +34,11 @@ import { Formik, Form, Field, FieldArray } from "formik";
 import { TextField } from "../Form/TextField";
 import { FormikInput } from "../Form/FormikInput";
 import LightHeading from "components/core/LightHeading";
+import { useFetchSurvey } from "app/contexts/FetchSurvey";
 
 const WebhookMenu = () => {
+  const { id: surveyId } = useFetchSurvey();
+
   const {
     isOpen: isWebhooksModalOpen,
     onOpen: openWebhooksModal,
@@ -60,7 +63,8 @@ const WebhookMenu = () => {
       values.url,
       values.sourcePages,
       values.hasCustomTriggers,
-      values.secret
+      values.secret,
+      surveyId
     );
   };
 
@@ -178,7 +182,7 @@ const WebhookMenu = () => {
                   )}
                   <VStack align="flex-start">
                     <LightHeading textAlign="center" size="md" pt="2">
-                      Triger Criteria
+                      Trigger Criteria
                     </LightHeading>
                     <HStack>
                       <Field
