@@ -59,7 +59,8 @@ const WebhookMenu = () => {
       values.verifySsl,
       values.url,
       values.sourcePages,
-      values.hasCustomTriggers
+      values.hasCustomTriggers,
+      values.secret
     );
   };
 
@@ -120,6 +121,7 @@ const WebhookMenu = () => {
             <Formik
               initialValues={{
                 url: "",
+                secret: "",
                 page: "",
                 verifySsl: true,
                 eventTrigger: "allEvents",
@@ -135,17 +137,25 @@ const WebhookMenu = () => {
                 handleSubmit(values);
               }}
             >
-              {({ values, handleSubmit, setFieldValue }) => (
+              {({ values, handleSubmit }) => (
                 <Form id="myForm" onSubmit={handleSubmit}>
-                  <TextField
-                    name="url"
-                    placeholder="Callback Url"
-                    header="Header"
-                    size="sm"
-                  />
-                  <HStack pb="2" pt="2">
+                  <VStack>
+                    <TextField
+                      name="url"
+                      placeholder="Callback Url"
+                      header="Header"
+                      size="sm"
+                    />
+                    <TextField
+                      name="secret"
+                      placeholder="Secret"
+                      header="Header"
+                      size="sm"
+                    />
+                  </VStack>
+                  <HStack pt="2">
                     <Field type="checkbox" name="verifySsl" />
-                    <Text>verifySsl</Text>
+                    <Text>Verify SSL</Text>
                   </HStack>
                   {!values.verifySsl && (
                     <Alert status="warning">
