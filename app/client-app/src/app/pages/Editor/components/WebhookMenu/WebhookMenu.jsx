@@ -32,6 +32,7 @@ import { Formik, Form, Field, FieldArray } from "formik";
 import { TextField } from "../Form/TextField";
 import { FormikInput } from "../Form/FormikInput";
 import LightHeading from "components/core/LightHeading";
+import { useState } from "react";
 
 const WebhookMenu = () => {
   const {
@@ -55,7 +56,8 @@ const WebhookMenu = () => {
       "Form submitted with: ",
       values.verifySsl,
       values.url,
-      values.sourcePages
+      values.sourcePages,
+      values.hasCustomTriggers
     );
   };
 
@@ -120,10 +122,18 @@ const WebhookMenu = () => {
                 verifySsl: true,
                 eventTrigger: "allEvents",
                 sourcePages: [],
+                hasCustomTriggers: false,
               }}
-              onSubmit={(values) => handleSubmit(values)}
+              onSubmit={(values) => {
+                if (values.eventTrigger === "customEvents") {
+                  values.hasCustomTriggers = true;
+                } else {
+                  values.hasCustomTriggers = false;
+                }
+                handleSubmit(values);
+              }}
             >
-              {({ values, handleSubmit }) => (
+              {({ values, handleSubmit, setFieldValue }) => (
                 <Form id="myForm" onSubmit={handleSubmit}>
                   <TextField
                     name="url"
