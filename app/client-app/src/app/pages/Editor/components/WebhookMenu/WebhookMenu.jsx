@@ -35,6 +35,7 @@ import { TextField } from "../Form/TextField";
 import { FormikInput } from "../Form/FormikInput";
 import LightHeading from "components/core/LightHeading";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
+import { createWebhook } from "api/webhooks";
 
 const WebhookMenu = () => {
   const { id: surveyId } = useFetchSurvey();
@@ -56,15 +57,15 @@ const WebhookMenu = () => {
     onFormOpen();
   };
 
-  const handleSubmit = (values) => {
-    console.log(
-      "Form submitted with: ",
-      values.verifySsl,
-      values.url,
-      values.sourcePages,
-      values.hasCustomTriggers,
-      values.secret,
-      surveyId
+  const handleSubmit = async (values) => {
+    const { verifySsl, url, sourcePages, hasCustomTriggers, secret } = values;
+    await createWebhook(
+      surveyId,
+      url,
+      secret,
+      verifySsl,
+      sourcePages,
+      hasCustomTriggers
     );
   };
 
@@ -126,7 +127,6 @@ const WebhookMenu = () => {
               initialValues={{
                 url: "",
                 secret: "",
-                page: "",
                 verifySsl: true,
                 eventTrigger: "allEvents",
                 sourcePages: [],

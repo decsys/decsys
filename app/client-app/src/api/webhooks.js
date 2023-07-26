@@ -6,12 +6,25 @@ export const createWebhook = async (
   callbackUrl,
   secret,
   verifySsl,
-  sourcePage,
+  sourcePages,
   hasCustomTriggers
 ) => {
+  const eventTypes = {
+    PAGE_NAVIGATION: sourcePages.map((page) => ({ sourcePage: page })),
+  };
+
   const response = await axios.post(
     "/api/webhooks",
-    { surveyId, callbackUrl, secret, verifySsl, sourcePage, hasCustomTriggers },
+    {
+      surveyId,
+      callbackUrl,
+      secret,
+      verifySsl,
+      triggerCriteria: {
+        eventTypes,
+        hasCustomTriggers,
+      },
+    },
     withHeaders(await authorization_BearerToken())
   );
   return response.data;
