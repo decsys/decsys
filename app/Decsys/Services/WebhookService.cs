@@ -2,7 +2,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
-using MongoDB.Bson;
 using Newtonsoft.Json;
 
 namespace Decsys.Services;
@@ -26,7 +25,7 @@ public class WebhookService
     /// </summary>
     /// <param name="model">Webhook model to create</param>
     /// <returns>The created Webhook</returns>
-    public ObjectId Create(WebhookModel model)
+    public string Create(WebhookModel model)
         => _webhooks.Create(model);
 
     
@@ -56,24 +55,31 @@ public class WebhookService
     /// <returns>True if filter matches</returns>
     private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
-        // check 1: if they are the same event types
-        var result = payload.EventType is PageNavigation && 
-                     webhook.TriggerCriteria.EventTypes.PageNavigation.Any();
+        // check if HasCustomTriggers is false. If it's false then all trigger events are valid for this webhook.
+        if (!webhook.TriggerCriteria.HasCustomTriggers)
+            return true;
 
-        if (result)
+        // check the type of the event
+        switch (payload.EventType)
         {
-            // check 2: type specific validation criteria
-            // add further criteria for further types
-            foreach (var navFilter in webhook.TriggerCriteria.EventTypes.PageNavigation)
-            {
-                result = CheckIsValid(navFilter, payload.EventType as PageNavigation);
-                if (result) return true;
-            }
+            case PageNavigation pageNavigation:
+                // if the type is PageNavigation, then call IsValidPageNavigationTrigger()
+                if (webhook.TriggerCriteria.EventTypes.PageNavigation != null)
+                {
+                    foreach (var navFilter in webhook.TriggerCriteria.EventTypes.PageNavigation)
+                    {
+                        if (IsValidPageNavigationTrigger(navFilter, pageNavigation))
+                            return true;
+                    }
+                }
+                break;
         }
+
         return false;
     }
+    
 
-    private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
+    private static bool IsValidPageNavigationTrigger(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
     {
         if (payloadNavigation == null) return false;
 

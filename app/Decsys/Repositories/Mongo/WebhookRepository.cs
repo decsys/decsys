@@ -4,7 +4,6 @@ using Decsys.Data.Entities.Mongo;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Decsys.Repositories.Mongo;
@@ -22,7 +21,7 @@ public class WebhookRepository : IWebhookRepository
         _webhooks = db.GetCollection<Webhook>(Collections.Webhooks);
     }
     
-    public ObjectId Create(WebhookModel webhook)
+    public string Create(WebhookModel webhook)
     {
         var entity = new Webhook
         {
@@ -35,7 +34,7 @@ public class WebhookRepository : IWebhookRepository
         
         _webhooks.InsertOne(entity);
 
-        return entity.Id;
+        return entity.Id.ToString();
     }
 
     public List<WebhookModel> List(int surveyId)
