@@ -21,7 +21,7 @@ public class WebhookRepository : IWebhookRepository
         _webhooks = db.GetCollection<Webhook>(Collections.Webhooks);
     }
     
-    public int Create(WebhookModel webhook)
+    public string Create(WebhookModel webhook)
     {
         var entity = new Webhook
         {
@@ -34,7 +34,7 @@ public class WebhookRepository : IWebhookRepository
         
         _webhooks.InsertOne(entity);
 
-        return entity.Id;
+        return entity.Id.ToString();
     }
 
     public List<WebhookModel> List(int surveyId)

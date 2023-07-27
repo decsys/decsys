@@ -25,7 +25,7 @@ public class WebhookService
     /// </summary>
     /// <param name="model">Webhook model to create</param>
     /// <returns>The created Webhook</returns>
-    public int Create(WebhookModel model)
+    public string Create(WebhookModel model)
         => _webhooks.Create(model);
 
     
@@ -55,30 +55,35 @@ public class WebhookService
     /// <returns>True if filter matches</returns>
     private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
-        foreach (var eventType in webhook.TriggerCriteria.SelectMany(filter => filter.EventTypes))
+        // check if HasCustomTriggers is false. If it's false then all trigger events are valid for this webhook.
+        if (!webhook.TriggerCriteria.HasCustomTriggers)
+            return true;
+
+        // check the type of the event
+        switch (payload.EventType)
         {
-            // check 1: if they are the same event types
-            var result = eventType.GetType() == payload.EventType.GetType();
-
-            if(result)
-                // check 2: type specific validation criteria
-                // add further criteria for further types
-                result = eventType switch {
-                    PageNavigation nav => CheckIsValid(nav, payload.EventType as PageNavigation),
-                    _ => false
-                };
-
-            return result;
+            case PageNavigation pageNavigation:
+                // if the type is PageNavigation, then call IsValidPageNavigationTrigger()
+                if (webhook.TriggerCriteria.EventTypes.PageNavigation != null)
+                {
+                    foreach (var navFilter in webhook.TriggerCriteria.EventTypes.PageNavigation)
+                    {
+                        if (IsValidPageNavigationTrigger(navFilter, pageNavigation))
+                            return true;
+                    }
+                }
+                break;
         }
-        
+
         return false;
     }
     
-    private static bool CheckIsValid(PageNavigation webhookNavigation, PageNavigation? payloadNavigation)
+
+    private static bool IsValidPageNavigationTrigger(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
     {
         if (payloadNavigation == null) return false;
 
-        return webhookNavigation.SourcePage == payloadNavigation.SourcePage;
+        return webhookFilter.SourcePage == payloadNavigation.SourcePage;
     }
 
     /// <summary>
@@ -99,9 +104,7 @@ public class WebhookService
                 Encoding.UTF8.GetString(
                     hmac.ComputeHash(
                         Encoding.UTF8.GetBytes(json))));
-          }
-
-        await _client.PostAsync(webhook.CallbackUrl, content);
+         }
+         await _client.PostAsync(webhook.CallbackUrl, content);
     }
-
 }
