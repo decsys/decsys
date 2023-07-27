@@ -391,6 +391,8 @@ namespace Decsys.Controllers
                 progress.Page = instance.Survey.Pages.Single(p => p.Id.ToString() == pageOrder[iNextPage]);
                 progress.IsLastPage = iNextPage >= pageOrder.Count - 1;
             }
+
+            var payload = _events.PageResponseSummary(instanceId, participantId, currentPageId);
             
             // Trigger webhook
             var eventType = new PageNavigation
@@ -398,7 +400,7 @@ namespace Decsys.Controllers
                 ResolvedPage = iNextPage + 1,
                 SourcePage = iCurrentPage + 1
             };
-            await _webhooks.Trigger(new PayloadModel(surveyId, instanceId, participantId, eventType));
+            await _webhooks.Trigger(new PayloadModel(surveyId, instanceId, participantId,payload, eventType));
 
             // Log the request and its outcome
             _events.Log(instance.Id, participantId, new()

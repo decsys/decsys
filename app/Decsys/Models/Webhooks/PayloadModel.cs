@@ -2,12 +2,13 @@ namespace Decsys.Models.Webhooks;
 
 public class PayloadModel
 { 
-    public PayloadModel(int surveyId, int instanceId, string participantId, BaseEventType eventType)
+    public PayloadModel(int surveyId, int instanceId, string participantId,object? payload, BaseEventType eventType)
     {
         SurveyId = surveyId;
         InstanceId = instanceId;
         EventType = eventType;
         ParticipantId = participantId;
+        Payload = payload;
     }
 
     public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
