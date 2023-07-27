@@ -2,12 +2,11 @@ namespace Decsys.Models.Webhooks;
 
 public class PayloadModel
 { 
-    public PayloadModel(int surveyId, int instanceId, string participantId, BaseEventType eventType, PageResponseSummary? pageResponseSummary)
+    public PayloadModel(int surveyId, int instanceId, string participantId, BaseEventType eventType)
     {
         SurveyId = surveyId;
         InstanceId = instanceId;
         EventType = eventType;
-        PageResponseSummary = pageResponseSummary;
         ParticipantId = participantId;
     }
 

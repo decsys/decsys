@@ -55,22 +55,29 @@ public class WebhookService
     /// <returns>True if filter matches</returns>
     private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
-        // check 1: if they are the same event types
-        var result = payload.EventType is PageNavigation && 
-                     webhook.TriggerCriteria.EventTypes.PageNavigation.Any();
+        // check if HasCustomTriggers is false. If it's false then all trigger events are valid for this webhook.
+        if (!webhook.TriggerCriteria.HasCustomTriggers)
+            return true;
 
-        if (result)
+        // check the type of the event
+        switch (payload.EventType)
         {
-            // check 2: type specific validation criteria
-            // add further criteria for further types
-            foreach (var navFilter in webhook.TriggerCriteria.EventTypes.PageNavigation)
-            {
-                result = CheckIsValid(navFilter, payload.EventType as PageNavigation);
-                if (result) return true;
-            }
+            case PageNavigation pageNavigation:
+                // if the type is PageNavigation, then call IsValidPageNavigationTrigger()
+                if (webhook.TriggerCriteria.EventTypes.PageNavigation != null)
+                {
+                    foreach (var navFilter in webhook.TriggerCriteria.EventTypes.PageNavigation)
+                    {
+                        if (IsValidPageNavigationTrigger(navFilter, pageNavigation))
+                            return true;
+                    }
+                }
+                break;
         }
+
         return false;
     }
+    
 
     private static bool IsValidPageNavigationTrigger(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
     {
