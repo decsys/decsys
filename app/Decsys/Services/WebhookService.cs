@@ -73,7 +73,7 @@ public class WebhookService
         return false;
     }
 
-    private static bool CheckIsValid(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
+    private static bool IsValidPageNavigationTrigger(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
     {
         if (payloadNavigation == null) return false;
 
