@@ -130,28 +130,28 @@ const WebhookMenu = () => {
         <ModalContent>
           <ModalHeader>Create a Webhook</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Formik
-              initialValues={{
-                url: "",
-                secret: "",
-                verifySsl: true,
-                eventTrigger: "allEvents",
-                sourcePages: [],
-                hasCustomTriggers: false,
-                pageNavigation: true,
-              }}
-              onSubmit={(values) => {
-                if (values.eventTrigger === "customEvents") {
-                  values.hasCustomTriggers = true;
-                } else {
-                  values.hasCustomTriggers = false;
-                }
-                handleSubmit(values);
-              }}
-            >
-              {({ values, handleSubmit }) => (
-                <Form id="myForm" onSubmit={handleSubmit}>
+          <Formik
+            initialValues={{
+              url: "",
+              secret: "",
+              verifySsl: true,
+              eventTrigger: "allEvents",
+              sourcePages: [],
+              hasCustomTriggers: false,
+              pageNavigation: true,
+            }}
+            onSubmit={(values) => {
+              if (values.eventTrigger === "customEvents") {
+                values.hasCustomTriggers = true;
+              } else {
+                values.hasCustomTriggers = false;
+              }
+              handleSubmit(values);
+            }}
+          >
+            {({ values, handleSubmit }) => (
+              <Form id="myForm" onSubmit={handleSubmit}>
+                <Box p={2}>
                   <VStack>
                     <TextField
                       name="url"
@@ -172,7 +172,7 @@ const WebhookMenu = () => {
                   </HStack>
                   {!values.verifySsl && (
                     <Alert status="warning">
-                      <VStack>
+                      <VStack pl="2">
                         <HStack>
                           <AlertIcon />
                           <AlertTitle>
@@ -216,6 +216,7 @@ const WebhookMenu = () => {
                           borderRadius={5}
                           defaultIndex={[0]}
                           allowToggle
+                          pl="2"
                         >
                           <AccordionItem>
                             <AccordionButton width="100%">
@@ -298,10 +299,10 @@ const WebhookMenu = () => {
                       Save
                     </Button>
                   </ModalFooter>
-                </Form>
-              )}
-            </Formik>
-          </ModalBody>
+                </Box>
+              </Form>
+            )}
+          </Formik>
         </ModalContent>
       </Modal>
     </>
