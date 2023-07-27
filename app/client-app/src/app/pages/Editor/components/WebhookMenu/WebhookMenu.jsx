@@ -218,9 +218,8 @@ const WebhookMenu = () => {
                             <AccordionPanel pb={4}>
                               <VStack w="100%" align="flex-start">
                                 <Text fontSize="sm">
-                                  Duis ac blandit dui, ac molestie mauris.
-                                  Quisque nisi sapien, tempus convallis lectus
-                                  non, venenatis malesuada urna.
+                                  Please specify the page numbers on which an
+                                  event should trigger the webhook{" "}
                                 </Text>
                                 <Box w="100%" borderWidth={1} borderRadius={5}>
                                   <HStack
