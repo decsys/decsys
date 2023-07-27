@@ -1,11 +1,10 @@
 using Decsys.Models.Webhooks;
-using MongoDB.Bson;
 
 namespace Decsys.Data.Entities.Mongo;
 
 public class Webhook
 {
-    public ObjectId Id { get; set; }
+    public string Id { get; set; } = string.Empty;
     public int SurveyId { get; set; }
     public string CallbackUrl { get; set; } = string.Empty;
     public string? Secret { get; set; }
