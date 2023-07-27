@@ -34,7 +34,7 @@ public class WebhookRepository : IWebhookRepository
         
         _webhooks.InsertOne(entity);
 
-        return entity.Id;
+        return entity.Id.ToString();
     }
 
     public List<WebhookModel> List(int surveyId)
