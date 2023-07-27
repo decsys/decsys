@@ -7,11 +7,18 @@ export const createWebhook = async (
   secret,
   verifySsl,
   sourcePages,
-  hasCustomTriggers
+  hasCustomTriggers,
+  pageNavigation
 ) => {
-  const eventTypes = {
-    PAGE_NAVIGATION: sourcePages.map((page) => ({ sourcePage: page })),
-  };
+  let eventTypes = {};
+
+  if (pageNavigation) {
+    eventTypes.PAGE_NAVIGATION = sourcePages.map((page) => ({
+      sourcePage: page,
+    }));
+  } else {
+    eventTypes.PAGE_NAVIGATION = null;
+  }
 
   const response = await axios.post(
     "/api/webhooks",

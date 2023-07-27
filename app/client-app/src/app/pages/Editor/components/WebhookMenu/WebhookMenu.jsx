@@ -58,14 +58,22 @@ const WebhookMenu = () => {
   };
 
   const handleSubmit = async (values) => {
-    const { verifySsl, url, sourcePages, hasCustomTriggers, secret } = values;
+    const {
+      verifySsl,
+      url,
+      sourcePages,
+      hasCustomTriggers,
+      secret,
+      pageNavigation,
+    } = values;
     await createWebhook(
       surveyId,
       url,
       secret,
       verifySsl,
       sourcePages,
-      hasCustomTriggers
+      hasCustomTriggers,
+      pageNavigation
     );
   };
 
@@ -131,6 +139,7 @@ const WebhookMenu = () => {
                 eventTrigger: "allEvents",
                 sourcePages: [],
                 hasCustomTriggers: false,
+                pageNavigation: true,
               }}
               onSubmit={(values) => {
                 if (values.eventTrigger === "customEvents") {
@@ -210,16 +219,22 @@ const WebhookMenu = () => {
                         >
                           <AccordionItem>
                             <AccordionButton width="100%">
-                              <Box flex="1" textAlign="left">
-                                Page Navigation
+                              <Box textAlign="left">
+                                <HStack>
+                                  <Field
+                                    type="checkbox"
+                                    name="pageNavigation"
+                                  />
+                                  <Text>Page Navigation</Text>
+                                </HStack>
                               </Box>
                               <AccordionIcon />
                             </AccordionButton>
                             <AccordionPanel pb={4}>
                               <VStack w="100%" align="flex-start">
                                 <Text fontSize="sm">
-                                  Please specify the page numbers on which an
-                                  event should trigger the webhook{" "}
+                                  Please specify the page numbers of the survey,
+                                  on which an event should trigger the webhook
                                 </Text>
                                 <Box w="100%" borderWidth={1} borderRadius={5}>
                                   <HStack
