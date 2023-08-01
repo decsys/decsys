@@ -91,7 +91,7 @@ export const FormikInput = ({
               />
             </InputLeftElement>
           ) : (
-            value && ( // display copy icon to allow user to copy value to clipboard
+            value && (
               <InputRightElement>
                 <IconButton
                   variant="solid"
