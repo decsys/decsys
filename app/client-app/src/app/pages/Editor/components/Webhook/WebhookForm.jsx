@@ -23,6 +23,7 @@ import {
   AccordionIcon,
   IconButton,
   Flex,
+  useToast,
 } from "@chakra-ui/react";
 import { FaTimes, FaPlusCircle } from "react-icons/fa";
 import { TextField } from "../Form/TextField";
@@ -31,6 +32,7 @@ import LightHeading from "components/core/LightHeading";
 
 const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
   const finalRef = useRef(null);
+  const toast = useToast();
 
   return (
     <Modal finalFocusRef={finalRef} isOpen={isOpen} size="xl" onClose={onClose}>
@@ -50,6 +52,13 @@ const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
           }}
           onSubmit={(values) => {
             onSubmit(values);
+            toast({
+              title: "Webhook Saved.",
+              description: "Your webhook has been saved successfully.",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+            });
             onClose();
           }}
         >
