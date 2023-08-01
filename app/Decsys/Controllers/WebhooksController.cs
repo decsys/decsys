@@ -45,5 +45,29 @@ public class WebhooksController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    
+    [HttpGet]
+    [SwaggerOperation("Get the list of webhooks for the given Id")]
+    [SwaggerResponse(200, "Webhooks listed.")]
+    [SwaggerResponse(400, "Webhook model was invalid.")]
+    [SwaggerResponse(500, "Server failed to list the Webhooks.")]
+    public IActionResult List(int surveyId)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var webhookId  = _webhooks.List(surveyId);
+            return Ok(webhookId);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 
 }

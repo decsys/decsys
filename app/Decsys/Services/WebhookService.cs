@@ -27,7 +27,10 @@ public class WebhookService
     /// <returns>The created Webhook</returns>
     public string Create(WebhookModel model)
         => _webhooks.Create(model);
-
+    
+    
+    public List<WebhookModel> List(int surveyId)
+        => _webhooks.List(surveyId);
     
     /// <summary>
     /// Triggers webhooks from a given payload.
