@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <Version>2.2.3</Version>
+    <Version>2.3.0</Version>
     <!-- Append GitHash to Version if provided -->
     <Version Condition="'$(GitHash)' != ''">$(Version)+$(GitHash)</Version>
   </PropertyGroup>

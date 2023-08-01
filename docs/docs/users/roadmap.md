@@ -10,9 +10,8 @@ title: Roadmap
 ☹ Some of them may fall into later releases...
 :::
 
-- - Mandatory / Optional questions
-  - Pages can be marked as optional / mandatory
-  - Dashboard distinguishes between Pages not yet responded to vs optional Pages skipped
+- Customisation of generated Participant Identifiers
+  - e.g. to exclude undesirable combinations of nouns and adjectives, or to add your own!
 - FreeText Regex validation
 - Participant User Accounts
   - Requiring accounts to take surveys
@@ -28,3 +27,14 @@ title: Roadmap
 
 - Move WorkshopMode to an embedded mongo instance, so we only target one database api
 - Consider an electron app or similar webview wrapper for workshop mode?
+
+## Changelog
+
+### 2.3.x
+
+- Performance improvements for results page/dashboard/data exports
+- Choose Many Response item (highly requested!)
+- Number input Response item
+- Mandatory / Optional questions
+  - Pages can be marked as optional / mandatory
+  - Dashboard distinguishes between Pages not yet responded to vs optional Pages skipped
