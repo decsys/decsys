@@ -2,7 +2,7 @@ import { Button, Flex, HStack } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import { FaPlus } from "react-icons/fa";
 import { usePageListContext } from "../../contexts/PageList";
-import WebhookMenu from "../WebhookMenu/WebhookMenu";
+import WebhookMenu from "../Webhook/WebhookMenu";
 import { useServerConfig } from "api/config";
 
 const Header = () => {

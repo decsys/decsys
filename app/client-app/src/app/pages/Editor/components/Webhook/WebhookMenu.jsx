@@ -14,20 +14,22 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  Input,
 } from "@chakra-ui/react";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { useRef } from "react";
+import { useFetchSurvey } from "app/contexts/FetchSurvey";
+import { createWebhook } from "api/webhooks";
+import WebhookForm from "./WebhookForm";
 
 const WebhookMenu = () => {
+  const { id: surveyId } = useFetchSurvey();
+
   const {
     isOpen: isWebhooksModalOpen,
     onOpen: openWebhooksModal,
     onClose: closeWebhooksModal,
   } = useDisclosure();
+
   const {
     isOpen: isFormOpen,
     onOpen: onFormOpen,
@@ -37,6 +39,26 @@ const WebhookMenu = () => {
 
   const handleAddWebhook = () => {
     onFormOpen();
+  };
+
+  const handleSubmit = async (values) => {
+    const {
+      verifySsl,
+      url,
+      sourcePages,
+      hasCustomTriggers,
+      secret,
+      pageNavigation,
+    } = values;
+    await createWebhook(
+      surveyId,
+      url,
+      secret,
+      verifySsl,
+      sourcePages,
+      hasCustomTriggers,
+      pageNavigation
+    );
   };
 
   return (
@@ -71,7 +93,7 @@ const WebhookMenu = () => {
               leftIcon={<FaPlus />}
               onClick={handleAddWebhook}
             >
-              New Webhook
+              Create a Webhook
             </Button>
           </Flex>
           <ModalFooter>
@@ -81,28 +103,11 @@ const WebhookMenu = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      <Modal finalFocusRef={finalRef} isOpen={isFormOpen} onClose={onFormClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>New Webhook</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl>
-              <FormLabel>Webhook form</FormLabel>
-              <Input />
-            </FormControl>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="red" mr={3} onClick={onFormClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" mr={3} onClick={onFormClose}>
-              Save
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <WebhookForm
+        isOpen={isFormOpen}
+        onClose={onFormClose}
+        onSubmit={handleSubmit}
+      />
     </>
   );
 };
