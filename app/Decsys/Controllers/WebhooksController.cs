@@ -46,28 +46,18 @@ public class WebhooksController : ControllerBase
         }
     }
     
-    
-    [HttpGet]
-    [SwaggerOperation("Get the list of webhooks for the given Id")]
-    [SwaggerResponse(200, "Webhooks listed.")]
-    [SwaggerResponse(400, "Webhook model was invalid.")]
-    [SwaggerResponse(500, "Server failed to list the Webhooks.")]
+    [HttpGet("{surveyId}")]
+    [SwaggerOperation("Get all webhooks for the given survey ID")]
+    [SwaggerResponse(200, "List of webhooks found.")]
+    [SwaggerResponse(404, "No webhooks found for given survey ID.")]
     public IActionResult List(int surveyId)
     {
-        if (!ModelState.IsValid)
+        var webhooks = _webhooks.List(surveyId);
+        if (!webhooks.Any())
         {
-            return BadRequest(ModelState);
+            return NotFound("Webhook not found.");
         }
-
-        try
-        {
-            var webhookId  = _webhooks.List(surveyId);
-            return Ok(webhookId);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+        return Ok(webhooks);
     }
-
+    
 }
