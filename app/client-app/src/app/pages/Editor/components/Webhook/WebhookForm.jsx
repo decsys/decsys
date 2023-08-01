@@ -51,6 +51,11 @@ const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
             pageNavigation: true,
           }}
           onSubmit={(values) => {
+            if (values.eventTrigger === "customEvents") {
+              values.hasCustomTriggers = true;
+            } else {
+              values.hasCustomTriggers = false;
+            }
             onSubmit(values);
             toast({
               title: "Webhook Saved.",
