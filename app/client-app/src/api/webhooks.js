@@ -36,3 +36,11 @@ export const createWebhook = async (
   );
   return response.data;
 };
+
+export const listWebhook = async (surveyId) => {
+  const response = await axios.get(
+    `/api/webhooks/${surveyId}`,
+    withHeaders(await authorization_BearerToken())
+  );
+  return response.data;
+};

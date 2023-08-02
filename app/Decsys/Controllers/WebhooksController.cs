@@ -49,15 +49,9 @@ public class WebhooksController : ControllerBase
     [HttpGet("{surveyId}")]
     [SwaggerOperation("Get all webhooks for the given survey ID")]
     [SwaggerResponse(200, "List of webhooks found.")]
-    [SwaggerResponse(404, "No webhooks found for given survey ID.")]
     public IActionResult List(int surveyId)
     {
         var webhooks = _webhooks.List(surveyId);
-        if (!webhooks.Any())
-        {
-            return NotFound("Webhook not found.");
-        }
         return Ok(webhooks);
     }
-    
 }

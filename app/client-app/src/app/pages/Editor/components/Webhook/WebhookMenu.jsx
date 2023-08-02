@@ -16,9 +16,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import { createWebhook } from "api/webhooks";
+import { createWebhook, listWebhook } from "api/webhooks";
 import WebhookForm from "./WebhookForm";
 
 const WebhookMenu = () => {
@@ -39,6 +39,11 @@ const WebhookMenu = () => {
 
   const handleAddWebhook = () => {
     onFormOpen();
+  };
+
+  const getWebhookList = async () => {
+    const data = await listWebhook(surveyId);
+    console.log(data);
   };
 
   const handleSubmit = async (values) => {
