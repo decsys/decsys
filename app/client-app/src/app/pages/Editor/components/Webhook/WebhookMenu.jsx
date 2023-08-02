@@ -14,12 +14,16 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Badge,
+  Heading,
+  Text,
 } from "@chakra-ui/react";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { useRef, useEffect } from "react";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { createWebhook, listWebhook } from "api/webhooks";
 import WebhookForm from "./WebhookForm";
+import { ActionCard } from "components/shared/ActionCard";
 
 const WebhookMenu = () => {
   const { id: surveyId } = useFetchSurvey();
@@ -90,7 +94,28 @@ const WebhookMenu = () => {
         <ModalContent>
           <ModalHeader>Webhooks</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>sample text - existing Webhooks</ModalBody>
+          <ModalBody>
+            <ActionCard
+              title={
+                <Flex justify="space-between" align="center">
+                  <Heading as="h4" size="md">
+                    Heading
+                  </Heading>
+                  <Badge colorScheme="blue" p={1}>
+                    badge
+                  </Badge>
+                </Flex>
+              }
+              href={`/webhooks/${surveyId}`}
+            >
+              <Text>Stage: </Text>
+              <Flex justify="space-between" align="center">
+                <Text noOfLines={1} color="gray.500">
+                  Text
+                </Text>
+              </Flex>
+            </ActionCard>
+          </ModalBody>
           <Flex align="start" direction="column" pl={6}>
             <Button
               colorScheme="green"
