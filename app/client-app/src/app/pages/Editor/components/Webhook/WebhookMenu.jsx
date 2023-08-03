@@ -33,26 +33,7 @@ const WebhookMenu = () => {
   const { id: surveyId } = useFetchSurvey();
   const { data, mutate } = useWebhook(surveyId);
 
-  useEffect(() => {
-    const getBadgePropertiesFromData = (data) => {
-      return data.map((item) => {
-        if (!item.triggerCriteria.hasCustomTriggers) {
-          return { colorScheme: "green", text: "Trigger on all" };
-        } else if (item.triggerCriteria.eventTypes.PAGE_NAVIGATION == null) {
-          return { colorScheme: "blue", text: "Page Navigation" };
-        } else {
-          return { colorScheme: "orange", text: "Page Navigation" };
-        }
-      });
-    };
-
-    const fetchData = async () => {
-      const badgeProps = await getBadgePropertiesFromData(data);
-      setBadgeProperties(badgeProps);
-    };
-
-    fetchData();
-  }, [data]);
+  console.log(data);
 
   const {
     isOpen: isWebhooksModalOpen,
@@ -118,34 +99,30 @@ const WebhookMenu = () => {
           <ModalHeader>Webhooks</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {badgeProperties.map((badgeProp, index) => (
-              <Box key={index} p={2}>
-                <ActionCard
-                  key={index}
-                  title={
-                    <Flex justify="space-between" align="center">
-                      <Heading as="h4" size="md">
-                        Callback url
-                      </Heading>
-                      <IconButton
-                        colorScheme="red"
-                        size="sm"
-                        icon={<FaTrash />}
-                      />
-                    </Flex>
-                  }
-                >
-                  <Text>
-                    <Badge colorScheme={badgeProp.colorScheme} p={1}>
-                      <HStack spacing={2}>
-                        <Text>{badgeProp.text}</Text>
-                        {badgeProp.colorScheme === "orange" && <FaFilter />}
-                      </HStack>
-                    </Badge>
-                  </Text>
-                </ActionCard>
-              </Box>
-            ))}
+            <Box p={2}>
+              <ActionCard
+                title={
+                  <Flex justify="space-between" align="center">
+                    <Heading as="h4" size="md">
+                      Callback url
+                    </Heading>
+                    <IconButton
+                      colorScheme="red"
+                      size="sm"
+                      icon={<FaTrash />}
+                    />
+                  </Flex>
+                }
+              >
+                <Text>
+                  <Badge colorScheme="blue" p={1}>
+                    <HStack spacing={2}>
+                      <Text>Text</Text>
+                    </HStack>
+                  </Badge>
+                </Text>
+              </ActionCard>
+            </Box>
           </ModalBody>
 
           <Flex align="start" direction="column" pl={6}>
