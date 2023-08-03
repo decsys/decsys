@@ -65,7 +65,7 @@ public class WebhookService
         switch (payload.EventType)
         {
             case PageNavigation pageNavigation:
-                // If the webhook doesn't react to 'PageNavigation' events, it cannot be triggered.
+                // If no 'PageNavigation' filters exist, the webhook can't be triggered
                 if (webhook.TriggerCriteria.EventTypes.PageNavigation == null)
                 {
                     return false;
