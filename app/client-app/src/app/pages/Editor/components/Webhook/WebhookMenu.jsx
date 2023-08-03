@@ -23,19 +23,17 @@ import {
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { useRef, useEffect, useState } from "react";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import { createWebhook, listWebhook } from "api/webhooks";
+import { createWebhook, useWebhook } from "api/webhooks";
 import WebhookForm from "./WebhookForm";
 import { ActionCard } from "components/shared/ActionCard";
 import { FaTrash, FaFilter } from "react-icons/fa";
 
 const WebhookMenu = () => {
   const [badgeProperties, setBadgeProperties] = useState([]);
+  const { id: surveyId } = useFetchSurvey();
+  const { data, mutate } = useWebhook(surveyId);
 
   useEffect(() => {
-    const getWebhookList = async () => {
-      return await listWebhook(surveyId);
-    };
-
     const getBadgePropertiesFromData = (data) => {
       return data.map((item) => {
         if (!item.triggerCriteria.hasCustomTriggers) {
@@ -49,15 +47,12 @@ const WebhookMenu = () => {
     };
 
     const fetchData = async () => {
-      const data = await getWebhookList();
-      const badgeProps = getBadgePropertiesFromData(data);
+      const badgeProps = await getBadgePropertiesFromData(data);
       setBadgeProperties(badgeProps);
     };
 
     fetchData();
-  }, []);
-
-  const { id: surveyId } = useFetchSurvey();
+  }, [data]);
 
   const {
     isOpen: isWebhooksModalOpen,
@@ -94,6 +89,8 @@ const WebhookMenu = () => {
       hasCustomTriggers,
       pageNavigation
     );
+    mutate();
+    onFormClose();
   };
 
   return (

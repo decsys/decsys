@@ -1,5 +1,10 @@
 import axios from "axios";
-import { withHeaders, authorization_BearerToken } from "./helpers";
+import {
+  withHeaders,
+  authorization_BearerToken,
+  defaultFetcher,
+} from "./helpers";
+import useSWR from "swr";
 
 export const createWebhook = async (
   surveyId,
@@ -37,10 +42,5 @@ export const createWebhook = async (
   return response.data;
 };
 
-export const listWebhook = async (surveyId) => {
-  const response = await axios.get(
-    `/api/webhooks/${surveyId}`,
-    withHeaders(await authorization_BearerToken())
-  );
-  return response.data;
-};
+export const useWebhook = (surveyId) =>
+  useSWR(`/api/webhooks/${surveyId}`, defaultFetcher(true), { suspense: true });
