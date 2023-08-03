@@ -30,6 +30,7 @@ import { FaTrash, FaFilter } from "react-icons/fa";
 
 const WebhookMenu = () => {
   const [badgeProperties, setBadgeProperties] = useState([]);
+
   const { id: surveyId } = useFetchSurvey();
   const { data, mutate } = useWebhook(surveyId);
 
@@ -98,31 +99,58 @@ const WebhookMenu = () => {
         <ModalContent>
           <ModalHeader>Webhooks</ModalHeader>
           <ModalCloseButton />
+
           <ModalBody>
-            <Box p={2}>
-              <ActionCard
-                title={
-                  <Flex justify="space-between" align="center">
-                    <Heading as="h4" size="md">
-                      Callback url
-                    </Heading>
-                    <IconButton
-                      colorScheme="red"
-                      size="sm"
-                      icon={<FaTrash />}
-                    />
-                  </Flex>
-                }
-              >
-                <Text>
-                  <Badge colorScheme="blue" p={1}>
-                    <HStack spacing={2}>
-                      <Text>Text</Text>
-                    </HStack>
-                  </Badge>
-                </Text>
-              </ActionCard>
-            </Box>
+            {data &&
+              data.map((webhook) => (
+                <Box p={2} key={webhook.callbackUrl}>
+                  <ActionCard
+                    title={
+                      <Flex justify="space-between" align="center">
+                        <Heading as="h4" size="md">
+                          {webhook.callbackUrl}
+                        </Heading>
+                        <IconButton
+                          colorScheme="red"
+                          size="sm"
+                          icon={<FaTrash />}
+                        />
+                      </Flex>
+                    }
+                  >
+                    <Text>
+                      {!webhook.triggerCriteria.hasCustomTriggers && (
+                        <Badge colorScheme="green" p={1}>
+                          <Text>Trigger on every event</Text>
+                        </Badge>
+                      )}
+                      {webhook.triggerCriteria.eventTypes.PAGE_NAVIGATION !==
+                        null &&
+                        webhook.triggerCriteria.eventTypes.PAGE_NAVIGATION
+                          .length === 0 &&
+                        webhook.triggerCriteria.hasCustomTriggers && (
+                          <Badge colorScheme="blue" p={1}>
+                            <HStack spacing={2}>
+                              <Text>Page Navigation</Text>
+                            </HStack>
+                          </Badge>
+                        )}
+                      {webhook.triggerCriteria.eventTypes.PAGE_NAVIGATION !==
+                        null &&
+                        webhook.triggerCriteria.eventTypes.PAGE_NAVIGATION
+                          .length > 0 &&
+                        webhook.triggerCriteria.hasCustomTriggers && (
+                          <Badge colorScheme="blue" p={1}>
+                            <HStack spacing={2}>
+                              <Text>Page Navigation with filters</Text>
+                              <FaFilter />
+                            </HStack>
+                          </Badge>
+                        )}
+                    </Text>
+                  </ActionCard>
+                </Box>
+              ))}
           </ModalBody>
 
           <Flex align="start" direction="column" pl={6}>
