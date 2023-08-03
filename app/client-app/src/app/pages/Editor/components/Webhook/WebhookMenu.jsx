@@ -17,15 +17,46 @@ import {
   Badge,
   Heading,
   Text,
+  Box,
+  HStack,
 } from "@chakra-ui/react";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { createWebhook, listWebhook } from "api/webhooks";
 import WebhookForm from "./WebhookForm";
 import { ActionCard } from "components/shared/ActionCard";
+import { FaTrash, FaFilter } from "react-icons/fa";
 
 const WebhookMenu = () => {
+  const [badgeProperties, setBadgeProperties] = useState([]);
+
+  useEffect(() => {
+    const getWebhookList = async () => {
+      return await listWebhook(surveyId);
+    };
+
+    const getBadgePropertiesFromData = (data) => {
+      return data.map((item) => {
+        if (!item.triggerCriteria.hasCustomTriggers) {
+          return { colorScheme: "green", text: "Trigger on all" };
+        } else if (item.triggerCriteria.eventTypes.PAGE_NAVIGATION == null) {
+          return { colorScheme: "blue", text: "Page Navigation" };
+        } else {
+          return { colorScheme: "orange", text: "Page Navigation" };
+        }
+      });
+    };
+
+    const fetchData = async () => {
+      const data = await getWebhookList();
+      const badgeProps = getBadgePropertiesFromData(data);
+      setBadgeProperties(badgeProps);
+    };
+
+    fetchData();
+  }, []);
+
   const { id: surveyId } = useFetchSurvey();
 
   const {
@@ -43,11 +74,6 @@ const WebhookMenu = () => {
 
   const handleAddWebhook = () => {
     onFormOpen();
-  };
-
-  const getWebhookList = async () => {
-    const data = await listWebhook(surveyId);
-    console.log(data);
   };
 
   const handleSubmit = async (values) => {
@@ -95,27 +121,36 @@ const WebhookMenu = () => {
           <ModalHeader>Webhooks</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <ActionCard
-              title={
-                <Flex justify="space-between" align="center">
-                  <Heading as="h4" size="md">
-                    Heading
-                  </Heading>
-                  <Badge colorScheme="blue" p={1}>
-                    badge
-                  </Badge>
-                </Flex>
-              }
-              href={`/webhooks/${surveyId}`}
-            >
-              <Text>Stage: </Text>
-              <Flex justify="space-between" align="center">
-                <Text noOfLines={1} color="gray.500">
-                  Text
-                </Text>
-              </Flex>
-            </ActionCard>
+            {badgeProperties.map((badgeProp, index) => (
+              <Box key={index} p={2}>
+                <ActionCard
+                  key={index}
+                  title={
+                    <Flex justify="space-between" align="center">
+                      <Heading as="h4" size="md">
+                        Callback url
+                      </Heading>
+                      <IconButton
+                        colorScheme="red"
+                        size="sm"
+                        icon={<FaTrash />}
+                      />
+                    </Flex>
+                  }
+                >
+                  <Text>
+                    <Badge colorScheme={badgeProp.colorScheme} p={1}>
+                      <HStack spacing={2}>
+                        <Text>{badgeProp.text}</Text>
+                        {badgeProp.colorScheme === "orange" && <FaFilter />}
+                      </HStack>
+                    </Badge>
+                  </Text>
+                </ActionCard>
+              </Box>
+            ))}
           </ModalBody>
+
           <Flex align="start" direction="column" pl={6}>
             <Button
               colorScheme="green"
