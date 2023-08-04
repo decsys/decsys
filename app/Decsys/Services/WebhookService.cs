@@ -27,7 +27,10 @@ public class WebhookService
     /// <returns>The created Webhook</returns>
     public string Create(WebhookModel model)
         => _webhooks.Create(model);
-
+    
+    
+    public List<WebhookModel> List(int surveyId)
+        => _webhooks.List(surveyId);
     
     /// <summary>
     /// Triggers webhooks from a given payload.
@@ -47,24 +50,33 @@ public class WebhookService
     }
 
     /// <summary>
-    /// Filters the webhooks based on matching criteria.
-    /// Currently focussed on matching page numbers on page navigation.
+    /// Filters webhooks based on matching criteria. Determines whether a webhook should be triggered by a given event.
     /// </summary>
-    /// <param name="payload">Payload to check</param>
-    /// <param name="webhook">Webhook to match against.</param>
-    /// <returns>True if filter matches</returns>
+    /// <param name="payload">The payload or event to evaluate.</param>
+    /// <param name="webhook">The webhook to potentially be triggered.</param>
+    /// <returns>True if the webhook should be triggered by the event, false otherwise.</returns>
     private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
-        // check if HasCustomTriggers is false. If it's false then all trigger events are valid for this webhook.
+        // If the webhook does not have custom triggers, it can be triggered by any event.
         if (!webhook.TriggerCriteria.HasCustomTriggers)
             return true;
 
-        // check the type of the event
+        // If the webhook does have custom triggers, the type of the event matters.
         switch (payload.EventType)
         {
             case PageNavigation pageNavigation:
-                // if the type is PageNavigation, then call IsValidPageNavigationTrigger()
-                if (webhook.TriggerCriteria.EventTypes.PageNavigation != null)
+                // If no 'PageNavigation' filters exist, the webhook can't be triggered
+                if (webhook.TriggerCriteria.EventTypes.PageNavigation == null)
+                {
+                    return false;
+                }
+                // If the webhook has 'PageNavigation' checked but no specific filters, any 'PageNavigation' event triggers it.
+                else if (webhook.TriggerCriteria.EventTypes.PageNavigation.Count == 0)
+                {
+                    return true;
+                }
+                // If the webhook has specific filters for 'PageNavigation' events, only those that match trigger it.
+                else
                 {
                     foreach (var navFilter in webhook.TriggerCriteria.EventTypes.PageNavigation)
                     {
@@ -75,16 +87,25 @@ public class WebhookService
                 break;
         }
 
+        // If the event type doesn't match any filters, the webhook is not triggered.
         return false;
     }
-    
 
+    /// <summary>
+    /// Checks whether a given 'PageNavigation' event matches a given filter.
+    /// </summary>
+    /// <param name="webhookFilter">The filter to check against.</param>
+    /// <param name="payloadNavigation">The 'PageNavigation' event to check.</param>
+    /// <returns>True if the event matches the filter, false otherwise.</returns>
     private static bool IsValidPageNavigationTrigger(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
     {
+        // If there is no 'PageNavigation' event, it cannot match any filters.
         if (payloadNavigation == null) return false;
-
+        
+        // The event matches the filter if their source pages are the same.
         return webhookFilter.SourcePage == payloadNavigation.SourcePage;
     }
+
 
     /// <summary>
     /// Posts webhook data to a given URL.

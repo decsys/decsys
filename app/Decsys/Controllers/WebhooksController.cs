@@ -45,5 +45,13 @@ public class WebhooksController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-
+    
+    [HttpGet("{surveyId}")]
+    [SwaggerOperation("Get all webhooks for the given survey ID")]
+    [SwaggerResponse(200, "List of webhooks found.")]
+    public IActionResult List(int surveyId)
+    {
+        var webhooks = _webhooks.List(surveyId);
+        return Ok(webhooks);
+    }
 }

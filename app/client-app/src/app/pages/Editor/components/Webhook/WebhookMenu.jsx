@@ -1,41 +1,21 @@
-import {
-  Button,
-  Flex,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { useRef } from "react";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import { createWebhook } from "api/webhooks";
 import WebhookForm from "./WebhookForm";
+import WebhooksModal from "./WebhookModal";
+import { useWebhook } from "api/webhooks";
+import { useDisclosure } from "@chakra-ui/react";
+import { createWebhook } from "api/webhooks";
 
 const WebhookMenu = () => {
   const { id: surveyId } = useFetchSurvey();
-
-  const {
-    isOpen: isWebhooksModalOpen,
-    onOpen: openWebhooksModal,
-    onClose: closeWebhooksModal,
-  } = useDisclosure();
+  const { data, mutate } = useWebhook(surveyId);
+  const finalRef = useRef(null);
 
   const {
     isOpen: isFormOpen,
     onOpen: onFormOpen,
     onClose: onFormClose,
   } = useDisclosure();
-  const finalRef = useRef(null);
 
   const handleAddWebhook = () => {
     onFormOpen();
@@ -59,50 +39,17 @@ const WebhookMenu = () => {
       hasCustomTriggers,
       pageNavigation
     );
+    mutate();
+    onFormClose();
   };
 
   return (
     <>
-      <Menu>
-        <MenuButton
-          border="thin solid"
-          borderColor="gray.500"
-          as={IconButton}
-          icon={<FaEllipsisV />}
-          boxSize={"40px"}
-        />
-        <MenuList>
-          <MenuItem onClick={openWebhooksModal}>Manage Webhooks ...</MenuItem>
-        </MenuList>
-      </Menu>
-
-      <Modal
-        finalFocusRef={finalRef}
-        isOpen={isWebhooksModalOpen}
-        onClose={closeWebhooksModal}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Webhooks</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>sample text - existing Webhooks</ModalBody>
-          <Flex align="start" direction="column" pl={6}>
-            <Button
-              colorScheme="green"
-              size="sm"
-              leftIcon={<FaPlus />}
-              onClick={handleAddWebhook}
-            >
-              Create a Webhook
-            </Button>
-          </Flex>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={closeWebhooksModal}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <WebhooksModal
+        finalRef={finalRef}
+        webhooks={data}
+        onAddWebhook={handleAddWebhook}
+      />
       <WebhookForm
         isOpen={isFormOpen}
         onClose={onFormClose}
