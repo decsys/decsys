@@ -2,6 +2,8 @@ using Decsys.Auth;
 using Decsys.Constants;
 using Decsys.Models.Webhooks;
 using Decsys.Services;
+using Decsys.Utilities;
+using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -21,6 +23,23 @@ public class WebhooksController : ControllerBase
         WebhookService webhooks)
     {
         _webhooks = webhooks;
+    }
+    
+    [HttpGet("generate-secret")]
+    [SwaggerOperation("Generate a webhook secret")]
+    [SwaggerResponse(200, "Webhook secret generated.")]
+    [SwaggerResponse(500, "Server failed to generate the secret.")]
+    public IActionResult GenerateSecret()
+    {
+        try
+        {
+            string secret =  Crypto.GenerateId(32,  CryptoRandom.OutputFormat.Hex);
+            return Ok(secret);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 
     [HttpPost]
