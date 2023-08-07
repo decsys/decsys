@@ -24,16 +24,39 @@ import {
   IconButton,
   Flex,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { FaTimes, FaPlusCircle } from "react-icons/fa";
 import { TextField } from "../Form/TextField";
 import { FormikInput } from "../Form/FormikInput";
 import LightHeading from "components/core/LightHeading";
+import { generateWebhookSecret } from "api/webhooks";
+import ConfirmationModal from "./ConfirmationModal";
 
 const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
   const finalRef = useRef(null);
   const toast = useToast();
+  const {
+    isOpen: isConfirmationOpen,
+    onOpen: onConfirmationOpen,
+    onClose: onConfirmationClose,
+  } = useDisclosure();
 
+  const handleGenerateSecret = async (values, setFieldValue) => {
+    if (values.secret) {
+      // If it is filled, open a confirmation modal
+      onConfirmationOpen();
+    } else {
+      // If it is not filled, generate a new secret directly
+      const newSecret = await generateWebhookSecret();
+      setFieldValue("secret", newSecret);
+    }
+  };
+  const handleConfirmNewSecret = async (setFieldValue) => {
+    const newSecret = await generateWebhookSecret();
+    setFieldValue("secret", newSecret);
+    onConfirmationClose();
+  };
   return (
     <Modal finalFocusRef={finalRef} isOpen={isOpen} size="xl" onClose={onClose}>
       <ModalOverlay />
@@ -67,22 +90,34 @@ const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
             onClose();
           }}
         >
-          {({ values, handleSubmit }) => (
+          {({ values, handleSubmit, setFieldValue }) => (
             <Form id="myForm" onSubmit={handleSubmit}>
               <Box p={2}>
-                <VStack>
+                <VStack align="flex-start">
                   <TextField
                     name="url"
                     placeholder="Callback Url"
                     header="Header"
                     size="sm"
                   />
-                  <TextField
-                    name="secret"
-                    placeholder="Secret"
-                    header="Header"
-                    size="sm"
-                  />
+                  <HStack w="100%">
+                    <TextField
+                      name="secret"
+                      placeholder="Secret"
+                      header="Header"
+                      size="sm"
+                    />
+                    <Button
+                      size="sm"
+                      colorScheme="teal"
+                      w="40%"
+                      onClick={() =>
+                        handleGenerateSecret(values, setFieldValue)
+                      }
+                    >
+                      Generate Secret
+                    </Button>
+                  </HStack>
                 </VStack>
                 <HStack pt="2">
                   <Field type="checkbox" name="verifySsl" />
@@ -201,6 +236,11 @@ const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
                   </Button>
                 </ModalFooter>
               </Box>
+              <ConfirmationModal
+                isOpen={isConfirmationOpen}
+                onClose={onConfirmationClose}
+                onConfirm={() => handleConfirmNewSecret(setFieldValue)}
+              />
             </Form>
           )}
         </Formik>
