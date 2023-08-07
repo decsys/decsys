@@ -10,14 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { FaTrash, FaFilter } from "react-icons/fa";
 import { ActionCard } from "components/shared/ActionCard";
-import LightHeading from "components/core/LightHeading";
 
 const WebhookActionCard = ({ webhook }) => {
   return (
     <ActionCard
       title={
         <Flex justify="space-between" align="center">
-          <Heading as="h4" size="md">
+          <Heading as="h4" size="md" wordBreak="break-word">
             {webhook.callbackUrl}
           </Heading>
           <IconButton colorScheme="red" size="sm" icon={<FaTrash />} />
