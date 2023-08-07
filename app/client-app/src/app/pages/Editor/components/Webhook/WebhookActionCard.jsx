@@ -16,7 +16,7 @@ const WebhookActionCard = ({ webhook }) => {
     <ActionCard
       title={
         <Flex justify="space-between" align="center">
-          <Heading as="h4" size="md" wordBreak="break-word">
+          <Heading as="h4" size="md" wordBreak="break-all">
             {webhook.callbackUrl}
           </Heading>
           <IconButton colorScheme="red" size="sm" icon={<FaTrash />} />
