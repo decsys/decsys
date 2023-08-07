@@ -42,5 +42,13 @@ export const createWebhook = async (
   return response.data;
 };
 
+export const generateWebhookSecret = async () => {
+  const response = await axios.get(
+    "/api/Webhooks/generate-secret",
+    withHeaders(await authorization_BearerToken())
+  );
+  return response.data;
+};
+
 export const useWebhook = (surveyId) =>
   useSWR(`/api/webhooks/${surveyId}`, defaultFetcher(true), { suspense: true });
