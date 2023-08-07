@@ -52,7 +52,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
       setFieldValue("secret", newSecret);
     }
   };
-  const handleConfirmNewSecret = async () => {
+  const handleConfirmNewSecret = async (setFieldValue) => {
     const newSecret = await generateWebhookSecret();
     setFieldValue("secret", newSecret);
     onConfirmationClose();
