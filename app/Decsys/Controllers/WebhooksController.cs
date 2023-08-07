@@ -30,15 +30,10 @@ public class WebhooksController : ControllerBase
     [SwaggerResponse(200, "Webhook secret generated.")]
     [SwaggerResponse(500, "Server failed to generate the secret.")]
     public IActionResult GenerateSecret()
-    {
-        try
+    { 
         {
             string secret =  Crypto.GenerateId(32,  CryptoRandom.OutputFormat.Hex);
             return Ok(secret);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
         }
     }
 
@@ -54,15 +49,11 @@ public class WebhooksController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        try
         {
             var webhookId  = _webhooks.Create(model);
             return Ok(webhookId);
         }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+
     }
     
     [HttpGet("{surveyId}")]
