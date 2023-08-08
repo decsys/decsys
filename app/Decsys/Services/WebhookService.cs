@@ -29,8 +29,21 @@ public class WebhookService
         => _webhooks.Create(model);
     
     
-    public List<WebhookModel> List(int surveyId)
-        => _webhooks.List(surveyId);
+    public List<ViewWebhook> List(int surveyId)
+    {
+        var webhookModels = _webhooks.List(surveyId);
+
+        var webhookViewModels = webhookModels.Select(w => new ViewWebhook
+        {
+            SurveyId = w.SurveyId,
+            CallbackUrl = w.CallbackUrl,
+            HasSecret = !string.IsNullOrEmpty(w.Secret),
+            VerifySsl = w.VerifySsl,
+            TriggerCriteria = w.TriggerCriteria
+        }).ToList();
+
+        return webhookViewModels;
+    }
     
     /// <summary>
     /// Triggers webhooks from a given payload.
