@@ -4,6 +4,7 @@ using Decsys.Data.Entities.Mongo;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Decsys.Repositories.Mongo;
@@ -48,5 +49,11 @@ public class WebhookRepository : IWebhookRepository
                     VerifySsl = x.VerifySsl,
                     TriggerCriteria = x.TriggerCriteria
                 })).ToList();
-    
+
+    public void Delete(string webhookId)
+    {
+        var objectId = new ObjectId(webhookId);
+        _webhooks.DeleteOne(x => x.Id == objectId);
+    }
+
 }

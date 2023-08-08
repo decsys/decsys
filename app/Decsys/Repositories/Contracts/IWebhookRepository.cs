@@ -17,4 +17,10 @@ public interface IWebhookRepository
     /// <param name="surveyId">The survey id to filter by</param>
     /// <returns>A list of Webhook models.</returns>
     List<WebhookModel> List(int surveyId);
+    
+    /// <summary>
+    /// Delete a webhook by its Id.
+    /// </summary>
+    /// <param name="webhookId">The id of the webhook to delete.</param>
+    void Delete(string webhookId);
 }

@@ -64,4 +64,13 @@ public class WebhooksController : ControllerBase
         var webhooks = _webhooks.List(surveyId);
         return Ok(webhooks);
     }
+    
+    [HttpDelete("{id}")]
+    [SwaggerOperation("Delete a webhook by its ID")]
+    [SwaggerResponse(204, "Webhook successfully deleted")]
+    public IActionResult Delete(string id)
+    {
+        _webhooks.Delete(id);
+        return NoContent();
+    }
 }

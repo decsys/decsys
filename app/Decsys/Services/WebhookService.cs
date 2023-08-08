@@ -141,4 +141,14 @@ public class WebhookService
          }
          await _client.PostAsync(webhook.CallbackUrl, content);
     }
+
+    
+    /// <summary>
+    /// Deletes a webhook by its ID.
+    /// </summary>
+    /// <param name="webhookId">The ID of the webhook to delete.</param>
+    public void Delete(string webhookId)
+    {
+        _webhooks.Delete(webhookId);
+    }
 }
