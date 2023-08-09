@@ -47,7 +47,8 @@ public class WebhookRepository : IWebhookRepository
                     CallbackUrl = x.CallbackUrl,
                     Secret = x.Secret,
                     VerifySsl = x.VerifySsl,
-                    TriggerCriteria = x.TriggerCriteria
+                    TriggerCriteria = x.TriggerCriteria,
+                    Id = x.Id.ToString()
                 })).ToList();
 
     public void Delete(string webhookId)

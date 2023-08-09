@@ -2,6 +2,7 @@ namespace Decsys.Models.Webhooks;
 
 public class WebhookModel
 {
+    public string Id { get; set; } = string.Empty;
     public int SurveyId { get; set; }
     public string CallbackUrl { get; set; } = string.Empty;
     public string? Secret { get; set; }

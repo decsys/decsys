@@ -10,8 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { FaTrash, FaFilter } from "react-icons/fa";
 import { ActionCard } from "components/shared/ActionCard";
+import { deleteWebhook } from "api/webhooks";
 
 const WebhookActionCard = ({ webhook }) => {
+  console.log(webhook);
+  const handleDelete = async () => {
+    await deleteWebhook(webhook.id);
+  };
   return (
     <ActionCard
       title={
@@ -19,7 +24,12 @@ const WebhookActionCard = ({ webhook }) => {
           <Heading as="h4" size="md" wordBreak="break-all">
             {webhook.callbackUrl}
           </Heading>
-          <IconButton colorScheme="red" size="sm" icon={<FaTrash />} />
+          <IconButton
+            colorScheme="red"
+            size="sm"
+            icon={<FaTrash />}
+            onClick={handleDelete}
+          />
         </Flex>
       }
     >
