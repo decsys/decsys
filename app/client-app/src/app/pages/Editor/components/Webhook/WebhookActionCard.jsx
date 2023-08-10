@@ -7,11 +7,38 @@ import {
   Badge,
   HStack,
   Icon,
+  useToast,
 } from "@chakra-ui/react";
 import { FaTrash, FaFilter } from "react-icons/fa";
 import { ActionCard } from "components/shared/ActionCard";
+import { deleteWebhook, useWebhook } from "api/webhooks";
 
 const WebhookActionCard = ({ webhook }) => {
+  const { mutate } = useWebhook(webhook.surveyId);
+  const toast = useToast();
+  const handleDelete = async () => {
+    try {
+      await deleteWebhook(webhook.id);
+      toast({
+        title: "Webhook Deleted",
+        description: "The webhook was successfully deleted.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      mutate();
+    } catch (error) {
+      toast({
+        title: "Error Deleting Webhook",
+        description:
+          error.message || "There was an error deleting the webhook.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <ActionCard
       title={
@@ -19,7 +46,12 @@ const WebhookActionCard = ({ webhook }) => {
           <Heading as="h4" size="md" wordBreak="break-all">
             {webhook.callbackUrl}
           </Heading>
-          <IconButton colorScheme="red" size="sm" icon={<FaTrash />} />
+          <IconButton
+            colorScheme="red"
+            size="sm"
+            icon={<FaTrash />}
+            onClick={handleDelete}
+          />
         </Flex>
       }
     >

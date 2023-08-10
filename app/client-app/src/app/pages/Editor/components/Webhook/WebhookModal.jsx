@@ -54,7 +54,7 @@ const WebhooksModal = ({ finalRef, webhooks, onAddWebhook }) => {
           <ModalBody>
             {webhooks &&
               webhooks.map((webhook) => (
-                <Box p={2} key={webhook.callbackUrl}>
+                <Box p={2} key={webhook.id}>
                   <WebhookActionCard webhook={webhook} />
                 </Box>
               ))}

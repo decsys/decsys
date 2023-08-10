@@ -35,6 +35,7 @@ public class WebhookService
 
         var webhookViewModels = webhookModels.Select(w => new ViewWebhook
         {
+            Id = w.Id, 
             SurveyId = w.SurveyId,
             CallbackUrl = w.CallbackUrl,
             HasSecret = !string.IsNullOrEmpty(w.Secret),
