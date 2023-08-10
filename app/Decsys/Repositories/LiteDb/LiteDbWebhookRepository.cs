@@ -27,6 +27,4 @@ public class LiteDbWebhookRepository : IWebhookRepository
     {
         throw new NotImplementedException();
     }
-
-
 }

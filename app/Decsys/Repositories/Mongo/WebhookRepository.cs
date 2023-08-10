@@ -73,6 +73,4 @@ public class WebhookRepository : IWebhookRepository
         _webhooks.DeleteOne(x => x.Id == objectId);
     }
     
-
-
 }
