@@ -51,7 +51,9 @@ export const generateWebhookSecret = async () => {
 };
 
 export const useWebhook = (surveyId) =>
-  useSWR(`/api/webhooks/${surveyId}`, defaultFetcher(true), { suspense: true });
+  useSWR(`/api/webhooks/survey/${surveyId}`, defaultFetcher(true), {
+    suspense: true,
+  });
 
 export const deleteWebhook = async (webhookId) => {
   const response = await axios.delete(

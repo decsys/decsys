@@ -56,7 +56,16 @@ public class WebhooksController : ControllerBase
 
     }
     
-    [HttpGet("{surveyId}")]
+    [HttpGet("{id}")]
+    public IActionResult Get(string id)
+    {
+        var webhook = _webhooks.Get(id);
+
+        return Ok(webhook);
+    }
+
+    
+    [HttpGet("survey/{surveyId}")]
     [SwaggerOperation("Get all webhooks for the given survey ID")]
     [SwaggerResponse(200, "List of webhooks found.")]
     public IActionResult List(int surveyId)
@@ -73,4 +82,5 @@ public class WebhooksController : ControllerBase
         _webhooks.Delete(id);
         return NoContent();
     }
+    
 }
