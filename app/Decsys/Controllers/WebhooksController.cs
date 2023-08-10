@@ -57,6 +57,8 @@ public class WebhooksController : ControllerBase
     }
     
     [HttpGet("{id}")]
+    [SwaggerOperation("Get a webhook for the given webhook ID")]
+    [SwaggerResponse(200, "Webhook found.")]
     public IActionResult Get(string id)
     {
         var webhook = _webhooks.Get(id);
