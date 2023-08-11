@@ -12,6 +12,13 @@ public interface IWebhookRepository
     string Create(WebhookModel webhook);
 
     /// <summary>
+    /// Gets a webhook.
+    /// </summary>
+    /// <param name="webhookId">The webhook Id to get.</param>
+    /// <returns>A single Webhook</returns>
+    ViewWebhook Get(string webhookId);
+
+    /// <summary>
     /// List all webhooks for a given survey Id.
     /// </summary>
     /// <param name="surveyId">The survey id to filter by</param>
@@ -23,4 +30,5 @@ public interface IWebhookRepository
     /// </summary>
     /// <param name="webhookId">The id of the webhook to delete.</param>
     void Delete(string webhookId);
+
 }

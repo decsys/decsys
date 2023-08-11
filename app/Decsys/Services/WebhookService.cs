@@ -28,7 +28,9 @@ public class WebhookService
     public string Create(WebhookModel model)
         => _webhooks.Create(model);
     
-    
+    public ViewWebhook Get(string webhookId)
+        => _webhooks.Get(webhookId);
+
     public List<ViewWebhook> List(int surveyId)
     {
         var webhookModels = _webhooks.List(surveyId);

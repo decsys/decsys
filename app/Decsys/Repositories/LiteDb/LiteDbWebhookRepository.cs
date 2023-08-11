@@ -13,6 +13,11 @@ public class LiteDbWebhookRepository : IWebhookRepository
         throw new NotImplementedException();
     }
 
+    public ViewWebhook Get(string webhookId)
+    {
+        throw new NotImplementedException();
+    }
+    
     public List<WebhookModel> List(int surveyId)
     {
         throw new NotImplementedException();

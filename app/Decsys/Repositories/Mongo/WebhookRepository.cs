@@ -37,7 +37,23 @@ public class WebhookRepository : IWebhookRepository
 
         return entity.Id.ToString();
     }
+    
+    public ViewWebhook Get(string webhookId)
+    {
+        var objectId = new ObjectId(webhookId);
+        var webhook = _webhooks.Find(x => x.Id == objectId).FirstOrDefault();
 
+        return new ViewWebhook
+        {
+            Id = webhook.Id.ToString(),
+            SurveyId = webhook.SurveyId,
+            CallbackUrl = webhook.CallbackUrl,
+            HasSecret = !string.IsNullOrEmpty(webhook.Secret),
+            VerifySsl = webhook.VerifySsl,
+            TriggerCriteria = webhook.TriggerCriteria
+        };
+    }
+    
     public List<WebhookModel> List(int surveyId)
         => _webhooks.Find(x => x.SurveyId == surveyId)
             .Project(Builders<Webhook>.Projection.Expression(
@@ -56,5 +72,5 @@ public class WebhookRepository : IWebhookRepository
         var objectId = new ObjectId(webhookId);
         _webhooks.DeleteOne(x => x.Id == objectId);
     }
-
+    
 }
