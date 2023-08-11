@@ -48,6 +48,7 @@ public class WebhookService
         return webhookViewModels;
     }
     
+    
     /// <summary>
     /// Triggers webhooks from a given payload.
     /// </summary>
@@ -144,7 +145,9 @@ public class WebhookService
          }
          await _client.PostAsync(webhook.CallbackUrl, content);
     }
-
+    
+    public ViewWebhook Edit(string webhookId, WebhookModel model)
+        => _webhooks.Edit(webhookId, model);
     
     /// <summary>
     /// Deletes a webhook by its ID.

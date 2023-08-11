@@ -76,6 +76,16 @@ public class WebhooksController : ControllerBase
         return Ok(webhooks);
     }
     
+    [HttpPut("{id}")]
+    [SwaggerOperation("Edit a webhook by its ID")]
+    [SwaggerResponse(200, "Webhook successfully updated")]
+    public IActionResult Edit(string id, WebhookModel model)
+    {
+        var newWebhook = _webhooks.Edit(id, model);
+        return Ok(newWebhook);  
+    }
+
+
     [HttpDelete("{id}")]
     [SwaggerOperation("Delete a webhook by its ID")]
     [SwaggerResponse(204, "Webhook successfully deleted")]

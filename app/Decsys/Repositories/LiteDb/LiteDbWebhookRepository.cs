@@ -23,6 +23,11 @@ public class LiteDbWebhookRepository : IWebhookRepository
         throw new NotImplementedException();
     }
     
+    public ViewWebhook Edit(string webhookId, WebhookModel model)
+    {
+        throw new NotImplementedException();
+    }
+    
     public void Delete(string webhookId)
     {
         throw new NotImplementedException();
