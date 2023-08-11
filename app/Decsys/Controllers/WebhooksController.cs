@@ -75,16 +75,29 @@ public class WebhooksController : ControllerBase
         var webhooks = _webhooks.List(surveyId);
         return Ok(webhooks);
     }
-    
+
     [HttpPut("{id}")]
     [SwaggerOperation("Edit a webhook by its ID")]
     [SwaggerResponse(200, "Webhook successfully updated")]
+    [SwaggerResponse(400, "Invalid model provided")]
+    [SwaggerResponse(404, "No webhook found with the specified ID and survey ID")]
     public IActionResult Edit(string id, WebhookModel model)
     {
-        var newWebhook = _webhooks.Edit(id, model);
-        return Ok(newWebhook);  
-    }
+        if (!ModelState.IsValid) 
+        {
+            return BadRequest("Invalid model provided.");
+        }
 
+        try 
+        {
+            var newWebhook = _webhooks.Edit(id, model);
+            return Ok(newWebhook);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 
     [HttpDelete("{id}")]
     [SwaggerOperation("Delete a webhook by its ID")]

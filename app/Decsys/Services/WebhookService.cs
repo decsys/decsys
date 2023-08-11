@@ -147,8 +147,18 @@ public class WebhookService
     }
     
     public ViewWebhook Edit(string webhookId, WebhookModel model)
-        => _webhooks.Edit(webhookId, model);
-    
+    {
+        var existingWebhook = _webhooks.Get(webhookId);
+        if (existingWebhook == null)
+            throw new KeyNotFoundException($"Webhook with ID {webhookId} not found.");
+
+        if (existingWebhook.SurveyId != model.SurveyId)
+            throw new KeyNotFoundException($"No webhook found with ID {webhookId} matching the provided survey ID.");
+
+        return _webhooks.Edit(webhookId, model);
+    }
+
+
     /// <summary>
     /// Deletes a webhook by its ID.
     /// </summary>
