@@ -31,4 +31,6 @@ public interface IWebhookRepository
     /// <param name="webhookId">The id of the webhook to delete.</param>
     void Delete(string webhookId);
 
+
+    ViewWebhook Edit(string webhookId, WebhookModel model);
 }

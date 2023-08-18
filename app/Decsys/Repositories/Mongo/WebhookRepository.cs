@@ -67,6 +67,32 @@ public class WebhookRepository : IWebhookRepository
                     Id = x.Id.ToString()
                 })).ToList();
 
+    public ViewWebhook Edit(string webhookId, WebhookModel model)
+    {
+        var objectId = new ObjectId(webhookId);
+        var webhook = _webhooks.Find(x => x.Id == objectId).FirstOrDefault();
+        
+        webhook.CallbackUrl = model.CallbackUrl;
+        webhook.VerifySsl = model.VerifySsl;
+        webhook.TriggerCriteria = model.TriggerCriteria;
+        if (model.Secret != null)
+        {
+            webhook.Secret = model.Secret;
+        }
+        
+        _webhooks.ReplaceOne(x => x.Id == objectId, webhook);
+        
+        return new ViewWebhook
+        {
+            Id = webhook.Id.ToString(),
+            SurveyId = webhook.SurveyId,
+            CallbackUrl = webhook.CallbackUrl,
+            HasSecret = !string.IsNullOrEmpty(webhook.Secret),
+            VerifySsl = webhook.VerifySsl,
+            TriggerCriteria = webhook.TriggerCriteria
+        };
+    }
+
     public void Delete(string webhookId)
     {
         var objectId = new ObjectId(webhookId);
