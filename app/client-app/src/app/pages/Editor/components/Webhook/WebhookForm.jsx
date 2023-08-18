@@ -33,8 +33,9 @@ import LightHeading from "components/core/LightHeading";
 import { generateWebhookSecret } from "api/webhooks";
 import ConfirmationModal from "./ConfirmationModal";
 
-const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
-  const finalRef = useRef(null);
+const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
+  const isEditMode = webhook?.id != null;
+  console.log(isEditMode);
   const toast = useToast();
   const {
     isOpen: isConfirmationOpen,
@@ -57,21 +58,31 @@ const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
     setFieldValue("secret", newSecret);
     onConfirmationClose();
   };
+
   return (
-    <Modal finalFocusRef={finalRef} isOpen={isOpen} size="xl" onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create a Webhook</ModalHeader>
+        <ModalHeader>
+          {isEditMode ? "Edit Webhook" : "Create a Webhook"}
+        </ModalHeader>
         <ModalCloseButton />
+
         <Formik
           initialValues={{
-            url: "",
-            secret: "",
-            verifySsl: true,
-            eventTrigger: "allEvents",
-            sourcePages: [],
-            hasCustomTriggers: false,
-            pageNavigation: true,
+            url: webhook?.callbackUrl || "",
+            secret: "", //TODO: Secrets
+            verifySsl: webhook?.verifySsl || true,
+            eventTrigger: webhook?.triggerCriteria?.hasCustomTriggers
+              ? "customEvents"
+              : "allEvents",
+            sourcePages:
+              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION || [],
+            hasCustomTriggers:
+              webhook?.triggerCriteria?.hasCustomTriggers || false,
+            pageNavigation:
+              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION?.length >
+                0 || false,
           }}
           onSubmit={(values) => {
             if (values.eventTrigger === "customEvents") {
@@ -226,7 +237,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit }) => {
                       </Accordion>
                     )}
                   </FieldArray>
-                )}
+                )}{" "}
                 <ModalFooter>
                   <Button colorScheme="red" mr={3} onClick={onClose}>
                     Cancel

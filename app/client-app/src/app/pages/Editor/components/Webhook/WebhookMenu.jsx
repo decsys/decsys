@@ -7,10 +7,11 @@ import { useDisclosure } from "@chakra-ui/react";
 import { createWebhook } from "api/webhooks";
 
 const WebhookMenu = () => {
-  const [editingWebhook, setEditingWebhook] = useState(null);
   const { id: surveyId } = useFetchSurvey();
   const { data, mutate } = useWebhook(surveyId);
   const finalRef = useRef(null);
+
+  const [currentWebhook, setCurrentWebhook] = useState(null);
 
   const {
     isOpen: isFormOpen,
@@ -18,13 +19,8 @@ const WebhookMenu = () => {
     onClose: onFormClose,
   } = useDisclosure();
 
-  const handleAddWebhook = () => {
-    setEditingWebhook(null);
-    onFormOpen();
-  };
-
-  const handleEditWebhook = (webhook) => {
-    setEditingWebhook(webhook);
+  const handleAddOrEditWebhook = (webhook) => {
+    setCurrentWebhook(webhook);
     onFormOpen();
   };
 
@@ -55,18 +51,19 @@ const WebhookMenu = () => {
       <WebhooksModal
         finalRef={finalRef}
         webhooks={data}
-        onAddWebhook={handleAddWebhook}
+        onAddWebhook={handleAddOrEditWebhook}
         onFormOpen={onFormOpen}
+        handleAddOrEditWebhook={handleAddOrEditWebhook}
       />
 
       <WebhookForm
         isOpen={isFormOpen}
         onClose={() => {
           onFormClose();
-          setEditingWebhook(null);
+          setCurrentWebhook(null);
         }}
         onSubmit={handleSubmit}
-        webhook={editingWebhook}
+        webhook={currentWebhook}
       />
     </>
   );

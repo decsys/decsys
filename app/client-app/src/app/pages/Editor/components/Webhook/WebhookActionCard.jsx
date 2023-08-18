@@ -40,22 +40,6 @@ const WebhookActionCard = ({ webhook, onEditWebhook }) => {
     }
   };
 
-  // const handleEdit = async () => {
-  //   try {
-  //     const webhookData = await getWebhook(webhook.id);
-  //     console.log(webhookData);
-  //   } catch (error) {
-  //     toast({
-  //       title: "Error Fetching Webhook",
-  //       description:
-  //         error.message || "There was an error fetching the webhook details.",
-  //       status: "error",
-  //       duration: 5000,
-  //       isClosable: true,
-  //     });
-  //   }
-  //};
-
   const handleEdit = () => {
     onEditWebhook(webhook);
   };

@@ -19,7 +19,13 @@ import {
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import WebhookActionCard from "./WebhookActionCard";
 
-const WebhooksModal = ({ finalRef, webhooks, onAddWebhook, onFormOpen }) => {
+const WebhooksModal = ({
+  finalRef,
+  webhooks,
+  onAddWebhook,
+  onFormOpen,
+  handleAddOrEditWebhook,
+}) => {
   const {
     isOpen: isWebhooksModalOpen,
     onOpen: openWebhooksModal,
@@ -57,7 +63,10 @@ const WebhooksModal = ({ finalRef, webhooks, onAddWebhook, onFormOpen }) => {
                 <Box p={2} key={webhook.id}>
                   <WebhookActionCard
                     webhook={webhook}
-                    onEditWebhook={onFormOpen}
+                    onEditWebhook={(specificWebhook) => {
+                      onFormOpen();
+                      handleAddOrEditWebhook(specificWebhook);
+                    }}
                   />
                 </Box>
               ))}
