@@ -35,7 +35,7 @@ import ConfirmationModal from "./ConfirmationModal";
 
 const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
   const isEditMode = webhook?.id != null;
-  console.log(isEditMode);
+  console.log(webhook);
   const toast = useToast();
   const {
     isOpen: isConfirmationOpen,
@@ -71,18 +71,19 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
         <Formik
           initialValues={{
             url: webhook?.callbackUrl || "",
-            secret: "", //TODO: Secrets
+            secret: "", // TODO
             verifySsl: webhook?.verifySsl || true,
             eventTrigger: webhook?.triggerCriteria?.hasCustomTriggers
               ? "customEvents"
               : "allEvents",
-            sourcePages:
-              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION || [],
+            sourcePages: (
+              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION || []
+            ).map((item) => item.sourcePage),
             hasCustomTriggers:
               webhook?.triggerCriteria?.hasCustomTriggers || false,
             pageNavigation:
-              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION?.length >
-                0 || false,
+              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION &&
+              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION.length > 0,
           }}
           onSubmit={(values) => {
             if (values.eventTrigger === "customEvents") {
