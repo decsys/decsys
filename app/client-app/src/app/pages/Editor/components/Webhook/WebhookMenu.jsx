@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import WebhookForm from "./WebhookForm";
 import WebhooksModal from "./WebhookModal";
@@ -7,6 +7,7 @@ import { useDisclosure } from "@chakra-ui/react";
 import { createWebhook } from "api/webhooks";
 
 const WebhookMenu = () => {
+  const [editingWebhook, setEditingWebhook] = useState(null);
   const { id: surveyId } = useFetchSurvey();
   const { data, mutate } = useWebhook(surveyId);
   const finalRef = useRef(null);
@@ -18,6 +19,12 @@ const WebhookMenu = () => {
   } = useDisclosure();
 
   const handleAddWebhook = () => {
+    setEditingWebhook(null);
+    onFormOpen();
+  };
+
+  const handleEditWebhook = (webhook) => {
+    setEditingWebhook(webhook);
     onFormOpen();
   };
 
@@ -49,11 +56,17 @@ const WebhookMenu = () => {
         finalRef={finalRef}
         webhooks={data}
         onAddWebhook={handleAddWebhook}
+        onFormOpen={onFormOpen}
       />
+
       <WebhookForm
         isOpen={isFormOpen}
-        onClose={onFormClose}
+        onClose={() => {
+          onFormClose();
+          setEditingWebhook(null);
+        }}
         onSubmit={handleSubmit}
+        webhook={editingWebhook}
       />
     </>
   );

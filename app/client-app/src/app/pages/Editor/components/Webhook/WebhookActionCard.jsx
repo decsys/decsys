@@ -14,7 +14,7 @@ import { ActionCard } from "components/shared/ActionCard";
 import { deleteWebhook, useWebhook } from "api/webhooks";
 import { getWebhook } from "api/webhooks";
 
-const WebhookActionCard = ({ webhook }) => {
+const WebhookActionCard = ({ webhook, onEditWebhook }) => {
   const { mutate } = useWebhook(webhook.surveyId);
   const toast = useToast();
   const handleDelete = async () => {
@@ -40,20 +40,24 @@ const WebhookActionCard = ({ webhook }) => {
     }
   };
 
-  const handleEdit = async () => {
-    try {
-      const webhookData = await getWebhook(webhook.id);
-      console.log(webhookData);
-    } catch (error) {
-      toast({
-        title: "Error Fetching Webhook",
-        description:
-          error.message || "There was an error fetching the webhook details.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
+  // const handleEdit = async () => {
+  //   try {
+  //     const webhookData = await getWebhook(webhook.id);
+  //     console.log(webhookData);
+  //   } catch (error) {
+  //     toast({
+  //       title: "Error Fetching Webhook",
+  //       description:
+  //         error.message || "There was an error fetching the webhook details.",
+  //       status: "error",
+  //       duration: 5000,
+  //       isClosable: true,
+  //     });
+  //   }
+  //};
+
+  const handleEdit = () => {
+    onEditWebhook(webhook);
   };
 
   return (
