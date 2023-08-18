@@ -62,3 +62,11 @@ export const deleteWebhook = async (webhookId) => {
   );
   return response.data;
 };
+
+export const getWebhook = async (webhookId) => {
+  const response = await axios.get(
+    `/api/webhooks/${webhookId}`,
+    withHeaders(await authorization_BearerToken())
+  );
+  return response.data;
+};

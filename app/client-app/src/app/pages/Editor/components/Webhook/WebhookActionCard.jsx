@@ -9,9 +9,10 @@ import {
   Icon,
   useToast,
 } from "@chakra-ui/react";
-import { FaTrash, FaFilter } from "react-icons/fa";
+import { FaTrash, FaFilter, FaEdit } from "react-icons/fa";
 import { ActionCard } from "components/shared/ActionCard";
 import { deleteWebhook, useWebhook } from "api/webhooks";
+import { getWebhook } from "api/webhooks";
 
 const WebhookActionCard = ({ webhook }) => {
   const { mutate } = useWebhook(webhook.surveyId);
@@ -39,6 +40,22 @@ const WebhookActionCard = ({ webhook }) => {
     }
   };
 
+  const handleEdit = async () => {
+    try {
+      const webhookData = await getWebhook(webhook.id);
+      console.log(webhookData);
+    } catch (error) {
+      toast({
+        title: "Error Fetching Webhook",
+        description:
+          error.message || "There was an error fetching the webhook details.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <ActionCard
       title={
@@ -51,6 +68,13 @@ const WebhookActionCard = ({ webhook }) => {
             size="sm"
             icon={<FaTrash />}
             onClick={handleDelete}
+          />
+          <IconButton
+            colorScheme="blue"
+            size="sm"
+            icon={<FaEdit />}
+            onClick={handleEdit}
+            mr={2}
           />
         </Flex>
       }
