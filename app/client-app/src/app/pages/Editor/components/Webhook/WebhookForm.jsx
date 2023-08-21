@@ -120,8 +120,66 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                     header="Header"
                     size="sm"
                   />
+                  {/* Edit Secret behavior in edit mode */}
+                  {isEditMode && (
+                    <>
+                      {/* Show this advisory message only if editSecret is true */}
+                      {editSecret && (
+                        <Alert status="info" mt={4}>
+                          <AlertDescription>
+                            To retain a secret, please input a new value. An
+                            empty field signifies the removal of the current
+                            secret. For continuity, you may cancel the editing
+                            process and retain the existing secret.
+                          </AlertDescription>
+                        </Alert>
+                      )}
 
-                  {(!isEditMode || editSecret) && (
+                      {/* Show secret input and generate secret button when editSecret is true */}
+                      {editSecret && (
+                        <HStack w="100%">
+                          <TextField
+                            name="secret"
+                            placeholder="Secret"
+                            header="Header"
+                            size="sm"
+                          />
+                          <Button
+                            size="sm"
+                            colorScheme="teal"
+                            w="40%"
+                            onClick={() =>
+                              handleGenerateSecret(values, setFieldValue)
+                            }
+                          >
+                            Generate Secret
+                          </Button>
+                        </HStack>
+                      )}
+
+                      {/* When editSecret is false, show the Edit Secret button */}
+                      {!editSecret && (
+                        <>
+                          <Alert status="warning" mt={4}>
+                            <AlertDescription>
+                              If you've lost or forgotten this secret, you can
+                              change it, but be aware that any integrations
+                              using this secret will need to be updated.
+                            </AlertDescription>
+                          </Alert>
+                          <Button
+                            onClick={() => setEditSecret(true)}
+                            colorScheme="teal"
+                          >
+                            Edit Secret
+                          </Button>
+                        </>
+                      )}
+                    </>
+                  )}
+
+                  {/* Generate secret button in create mode */}
+                  {!isEditMode && (
                     <HStack w="100%">
                       <TextField
                         name="secret"
@@ -140,26 +198,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         Generate Secret
                       </Button>
                     </HStack>
-                  )}
-
-                  {isEditMode && webhook?.hasSecret && !editSecret && (
-                    <>
-                      <Alert status="warning" mt={4}>
-                        <AlertDescription>
-                          If you've lost or forgotten this secret, you can
-                          change it, but be aware that any integrations using
-                          this secret will need to be updated.
-                        </AlertDescription>
-                      </Alert>
-                      <Button
-                        onClick={() => {
-                          setFieldValue("secret", ""); // Optionally clear the secret value, or keep it if desired
-                          setEditSecret(true);
-                        }}
-                      >
-                        Edit Secret
-                      </Button>
-                    </>
                   )}
                 </VStack>
                 <HStack pt="2">
