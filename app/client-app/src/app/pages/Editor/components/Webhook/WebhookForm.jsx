@@ -114,11 +114,10 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                   />
                   {webhook?.hasSecret && (
                     <Alert status="warning" mt={4}>
-                      <AlertIcon />
-                      <AlertTitle mr={2}>Warning!</AlertTitle>
                       <AlertDescription>
-                        This webhook has a secret. Changing it may disrupt
-                        services dependent on it.
+                        If you've lost or forgotten this secret, you can change
+                        it, but be aware that any integrations using this secret
+                        will need to be updated.
                       </AlertDescription>
                     </Alert>
                   )}
@@ -141,7 +140,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         handleGenerateSecret(values, setFieldValue)
                       }
                     >
-                      Generate Secret
+                      {webhook?.hasSecret ? "Change Sceret" : "Generate Secret"}
                     </Button>
                   </HStack>
                 </VStack>
