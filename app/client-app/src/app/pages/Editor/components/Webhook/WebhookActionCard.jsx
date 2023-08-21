@@ -51,19 +51,21 @@ const WebhookActionCard = ({ webhook, onEditWebhook }) => {
           <Heading as="h4" size="md" wordBreak="break-all">
             {webhook.callbackUrl}
           </Heading>
-          <IconButton
-            colorScheme="red"
-            size="sm"
-            icon={<FaTrash />}
-            onClick={handleDelete}
-          />
-          <IconButton
-            colorScheme="blue"
-            size="sm"
-            icon={<FaEdit />}
-            onClick={handleEdit}
-            mr={2}
-          />
+          <Flex width="65px">
+            <IconButton
+              colorScheme="blue"
+              size="sm"
+              icon={<FaEdit />}
+              onClick={handleEdit}
+              mr={2}
+            />
+            <IconButton
+              colorScheme="red"
+              size="sm"
+              icon={<FaTrash />}
+              onClick={handleDelete}
+            />
+          </Flex>
         </Flex>
       }
     >
