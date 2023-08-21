@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { Formik, Form, Field, FieldArray } from "formik";
 import {
   Modal,
@@ -37,6 +37,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
   const isEditMode = webhook?.id != null;
   console.log(webhook);
   const toast = useToast();
+  const [editSecret, setEditSecret] = useState(false);
   const {
     isOpen: isConfirmationOpen,
     onOpen: onConfirmationOpen,
@@ -112,37 +113,55 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                     header="Header"
                     size="sm"
                   />
-                  {webhook?.hasSecret && (
-                    <Alert status="warning" mt={4}>
-                      <AlertDescription>
-                        If you've lost or forgotten this secret, you can change
-                        it, but be aware that any integrations using this secret
-                        will need to be updated.
-                      </AlertDescription>
-                    </Alert>
+                  {webhook?.hasSecret && !editSecret && (
+                    <>
+                      <Alert status="warning" mt={4}>
+                        <AlertDescription>
+                          If you've lost or forgotten this secret, you can
+                          change it, but be aware that any integrations using
+                          this secret will need to be updated.
+                        </AlertDescription>
+                      </Alert>
+                      <Button
+                        onClick={() => {
+                          setFieldValue("secret", ""); // Set the secret value to an empty string
+                          setEditSecret(true);
+                        }}
+                      >
+                        Edit Secret
+                      </Button>
+                    </>
                   )}
-                  <HStack w="100%">
-                    <TextField
-                      name="secret"
-                      placeholder={
-                        webhook?.hasSecret
-                          ? "Hidden due to security reasons"
-                          : "Secret"
-                      }
-                      header="Header"
-                      size="sm"
-                    />
-                    <Button
-                      size="sm"
-                      colorScheme="teal"
-                      w="40%"
-                      onClick={() =>
-                        handleGenerateSecret(values, setFieldValue)
-                      }
-                    >
-                      {webhook?.hasSecret ? "Change Sceret" : "Generate Secret"}
-                    </Button>
-                  </HStack>
+
+                  {editSecret && (
+                    <>
+                      <Alert status="info" mt={4}>
+                        <AlertDescription>
+                          Leaving the secret field empty will remove the secret.
+                          If you still want a secret, enter a new value.
+                          Otherwise, cancel editing to keep the old secret.
+                        </AlertDescription>
+                      </Alert>
+                      <HStack w="100%">
+                        <TextField
+                          name="secret"
+                          placeholder="Secret"
+                          header="Header"
+                          size="sm"
+                        />
+                        <Button
+                          size="sm"
+                          colorScheme="teal"
+                          w="40%"
+                          onClick={() =>
+                            handleGenerateSecret(values, setFieldValue)
+                          }
+                        >
+                          Generate Secret
+                        </Button>
+                      </HStack>
+                    </>
+                  )}
                 </VStack>
                 <HStack pt="2">
                   <Field type="checkbox" name="verifySsl" />
