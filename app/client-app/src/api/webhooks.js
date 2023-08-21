@@ -6,7 +6,7 @@ import {
 } from "./helpers";
 import useSWR from "swr";
 
-export const createWebhook = async (
+export const constructWebhookPayload = (
   surveyId,
   callbackUrl,
   secret,
@@ -25,18 +25,68 @@ export const createWebhook = async (
     eventTypes.PAGE_NAVIGATION = null;
   }
 
+  return {
+    surveyId,
+    callbackUrl,
+    secret,
+    verifySsl,
+    triggerCriteria: {
+      eventTypes,
+      hasCustomTriggers,
+    },
+  };
+};
+
+export const createWebhook = async (
+  surveyId,
+  callbackUrl,
+  secret,
+  verifySsl,
+  sourcePages,
+  hasCustomTriggers,
+  pageNavigation
+) => {
+  const payload = constructWebhookPayload(
+    surveyId,
+    callbackUrl,
+    secret,
+    verifySsl,
+    sourcePages,
+    hasCustomTriggers,
+    pageNavigation
+  );
+
   const response = await axios.post(
     "/api/webhooks",
-    {
-      surveyId,
-      callbackUrl,
-      secret,
-      verifySsl,
-      triggerCriteria: {
-        eventTypes,
-        hasCustomTriggers,
-      },
-    },
+    payload,
+    withHeaders(await authorization_BearerToken())
+  );
+  return response.data;
+};
+
+export const updateWebhook = async (
+  webhookId,
+  surveyId,
+  callbackUrl,
+  secret,
+  verifySsl,
+  sourcePages,
+  hasCustomTriggers,
+  pageNavigation
+) => {
+  const payload = constructWebhookPayload(
+    surveyId,
+    callbackUrl,
+    secret,
+    verifySsl,
+    sourcePages,
+    hasCustomTriggers,
+    pageNavigation
+  );
+
+  const response = await axios.put(
+    `/api/webhooks/${webhookId}`,
+    payload,
     withHeaders(await authorization_BearerToken())
   );
   return response.data;

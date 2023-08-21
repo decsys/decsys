@@ -34,10 +34,12 @@ import { generateWebhookSecret } from "api/webhooks";
 import ConfirmationModal from "./ConfirmationModal";
 
 const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
-  const isEditMode = webhook?.id != null;
   console.log(webhook);
   const toast = useToast();
-  const [editSecret, setEditSecret] = useState(false);
+  const isEditMode = webhook?.id != null;
+  const [editSecret, setEditSecret] = useState(
+    !isEditMode || !webhook?.hasSecret
+  );
   const {
     isOpen: isConfirmationOpen,
     onOpen: onConfirmationOpen,
@@ -105,6 +107,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
               isClosable: true,
             });
             onClose();
+            setEditSecret(false);
           }}
         >
           {({ values, handleSubmit, setFieldValue }) => (
@@ -117,7 +120,29 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                     header="Header"
                     size="sm"
                   />
-                  {webhook?.hasSecret && !editSecret && (
+
+                  {(!isEditMode || editSecret) && (
+                    <HStack w="100%">
+                      <TextField
+                        name="secret"
+                        placeholder="Secret"
+                        header="Header"
+                        size="sm"
+                      />
+                      <Button
+                        size="sm"
+                        colorScheme="teal"
+                        w="40%"
+                        onClick={() =>
+                          handleGenerateSecret(values, setFieldValue)
+                        }
+                      >
+                        Generate Secret
+                      </Button>
+                    </HStack>
+                  )}
+
+                  {isEditMode && webhook?.hasSecret && !editSecret && (
                     <>
                       <Alert status="warning" mt={4}>
                         <AlertDescription>
@@ -128,42 +153,12 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                       </Alert>
                       <Button
                         onClick={() => {
-                          setFieldValue("secret", ""); // Set the secret value to an empty string
+                          setFieldValue("secret", ""); // Optionally clear the secret value, or keep it if desired
                           setEditSecret(true);
                         }}
                       >
                         Edit Secret
                       </Button>
-                    </>
-                  )}
-
-                  {editSecret && (
-                    <>
-                      <Alert status="info" mt={4}>
-                        <AlertDescription>
-                          Leaving the secret field empty will remove the secret.
-                          If you still want a secret, enter a new value.
-                          Otherwise, cancel editing to keep the old secret.
-                        </AlertDescription>
-                      </Alert>
-                      <HStack w="100%">
-                        <TextField
-                          name="secret"
-                          placeholder="Secret"
-                          header="Header"
-                          size="sm"
-                        />
-                        <Button
-                          size="sm"
-                          colorScheme="teal"
-                          w="40%"
-                          onClick={() =>
-                            handleGenerateSecret(values, setFieldValue)
-                          }
-                        >
-                          Generate Secret
-                        </Button>
-                      </HStack>
                     </>
                   )}
                 </VStack>

@@ -5,6 +5,7 @@ import WebhooksModal from "./WebhookModal";
 import { useWebhook } from "api/webhooks";
 import { useDisclosure } from "@chakra-ui/react";
 import { createWebhook } from "api/webhooks";
+import { updateWebhook } from "api/webhooks";
 
 const WebhookMenu = () => {
   const { id: surveyId } = useFetchSurvey();
@@ -33,15 +34,30 @@ const WebhookMenu = () => {
       secret,
       pageNavigation,
     } = values;
-    await createWebhook(
-      surveyId,
-      url,
-      secret,
-      verifySsl,
-      sourcePages,
-      hasCustomTriggers,
-      pageNavigation
-    );
+
+    if (currentWebhook && currentWebhook.id) {
+      await updateWebhook(
+        currentWebhook.id,
+        surveyId,
+        url,
+        secret,
+        verifySsl,
+        sourcePages,
+        hasCustomTriggers,
+        pageNavigation
+      );
+    } else {
+      await createWebhook(
+        surveyId,
+        url,
+        secret,
+        verifySsl,
+        sourcePages,
+        hasCustomTriggers,
+        pageNavigation
+      );
+    }
+
     mutate();
     onFormClose();
   };
