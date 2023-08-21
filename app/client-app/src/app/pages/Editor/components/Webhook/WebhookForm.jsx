@@ -71,7 +71,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
         <Formik
           initialValues={{
             url: webhook?.callbackUrl || "",
-            secret: "", // TODO
+            secret: webhook?.hasSecret ? "" : "",
             verifySsl: webhook?.verifySsl || true,
             eventTrigger: webhook?.triggerCriteria?.hasCustomTriggers
               ? "customEvents"
@@ -112,10 +112,24 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                     header="Header"
                     size="sm"
                   />
+                  {webhook?.hasSecret && (
+                    <Alert status="warning" mt={4}>
+                      <AlertIcon />
+                      <AlertTitle mr={2}>Warning!</AlertTitle>
+                      <AlertDescription>
+                        This webhook has a secret. Changing it may disrupt
+                        services dependent on it.
+                      </AlertDescription>
+                    </Alert>
+                  )}
                   <HStack w="100%">
                     <TextField
                       name="secret"
-                      placeholder="Secret"
+                      placeholder={
+                        webhook?.hasSecret
+                          ? "Hidden due to security reasons"
+                          : "Secret"
+                      }
                       header="Header"
                       size="sm"
                     />
