@@ -60,8 +60,12 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
     onConfirmationClose();
   };
 
+  const handleCloseModal = () => {
+    setEditSecret(false);
+    onClose();
+  };
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleCloseModal}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
@@ -270,9 +274,9 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                       </Accordion>
                     )}
                   </FieldArray>
-                )}{" "}
+                )}
                 <ModalFooter>
-                  <Button colorScheme="red" mr={3} onClick={onClose}>
+                  <Button colorScheme="red" mr={3} onClick={handleCloseModal}>
                     Cancel
                   </Button>
                   <Button colorScheme="blue" type="submit">
