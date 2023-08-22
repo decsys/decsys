@@ -69,12 +69,12 @@ const SecretField = ({
             <>
               {editSecret ? (
                 <>
-                  <Alert status="warning" mt={4}>
+                  <Alert status="info" mt={4}>
                     <VStack pl="2">
                       <HStack>
                         <AlertIcon />
                         <AlertTitle>
-                          Caution: Changing Secret May Affect Integrations
+                          Info: Changing Secret May Affect Integrations
                         </AlertTitle>
                       </HStack>
                       <AlertDescription>
@@ -111,7 +111,7 @@ const SecretField = ({
                       <HStack>
                         <AlertIcon />
                         <AlertTitle>
-                          Caution: Update Secret with Care
+                          Warning: Update Secret with Care
                         </AlertTitle>
                       </HStack>
                       <AlertDescription>
