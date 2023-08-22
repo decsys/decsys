@@ -62,8 +62,6 @@ const HelpMenu = () => (
 );
 
 const AdminMenu = () => {
-  const { userWordlistsEnabled } = useServerConfig();
-
   return (
     <Menu>
       <DarkMode>
@@ -75,11 +73,9 @@ const AdminMenu = () => {
         <MenuItem as="a" href="/admin/" icon={<FaFileAlt />}>
           Surveys
         </MenuItem>
-        {userWordlistsEnabled && (
-          <MenuItem as="a" href="/admin/wordlist/" icon={<FaList />}>
-            Wordlist
-          </MenuItem>
-        )}
+        <MenuItem as="a" href="/admin/wordlist/" icon={<FaList />}>
+          Wordlist
+        </MenuItem>
       </MenuList>
     </Menu>
   );
