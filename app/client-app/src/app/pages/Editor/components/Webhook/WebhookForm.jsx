@@ -33,12 +33,101 @@ import LightHeading from "components/core/LightHeading";
 import { generateWebhookSecret } from "api/webhooks";
 import ConfirmationModal from "./ConfirmationModal";
 
+const CreateModeSecretField = ({
+  values,
+  handleGenerateSecret,
+  setFieldValue,
+}) => {
+  return (
+    <HStack w="100%">
+      <TextField name="secret" placeholder="Secret" header="Header" size="sm" />
+      <Button
+        size="sm"
+        colorScheme="teal"
+        w="40%"
+        onClick={() => handleGenerateSecret(values, setFieldValue)}
+      >
+        Generate Secret
+      </Button>
+    </HStack>
+  );
+};
+
+const SecretField = ({
+  isEditMode,
+  editSecret,
+  handleGenerateSecret,
+  values,
+  setFieldValue,
+  setEditSecret,
+}) => {
+  return (
+    <>
+      {isEditMode ? (
+        <>
+          {isEditMode && (
+            <>
+              {editSecret ? (
+                <>
+                  <Alert status="info" mt={4}>
+                    <AlertDescription>
+                      To retain a secret, please input a new value. An empty
+                      field signifies the removal of the current secret. For
+                      continuity, you may cancel the editing process and retain
+                      the existing secret.
+                    </AlertDescription>
+                  </Alert>
+                  <HStack w="100%">
+                    <TextField
+                      name="secret"
+                      placeholder="Secret"
+                      header="Header"
+                      size="sm"
+                    />
+                    <Button
+                      size="sm"
+                      colorScheme="teal"
+                      w="40%"
+                      onClick={() =>
+                        handleGenerateSecret(values, setFieldValue)
+                      }
+                    >
+                      Generate Secret
+                    </Button>
+                  </HStack>
+                </>
+              ) : (
+                <>
+                  <Alert status="warning" mt={4}>
+                    <AlertDescription>
+                      If you've lost or forgotten this secret, you can change
+                      it, but be aware that any integrations using this secret
+                      will need to be updated.
+                    </AlertDescription>
+                  </Alert>
+                  <Button
+                    onClick={() => setEditSecret(true)}
+                    colorScheme="teal"
+                  >
+                    Edit Secret
+                  </Button>
+                </>
+              )}
+            </>
+          )}
+        </>
+      ) : null}
+    </>
+  );
+};
+
 const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
   const toast = useToast();
   const isEditMode = webhook?.id != null;
   const [editSecret, setEditSecret] = useState(!isEditMode);
 
   useEffect(() => {
+    // Reset edit secret mode when modal is opened in edit mode
     if (isOpen && isEditMode) {
       setEditSecret(false);
     }
@@ -70,6 +159,41 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
     setEditSecret(false);
     onClose();
   };
+
+  const getInitialValues = (webhook) => ({
+    url: webhook?.callbackUrl || "",
+    secret: webhook?.hasSecret ? "" : "",
+    verifySsl: webhook?.verifySsl || true,
+    eventTrigger: webhook?.triggerCriteria?.hasCustomTriggers
+      ? "customEvents"
+      : "allEvents",
+    sourcePages: (
+      webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION || []
+    ).map((item) => item.sourcePage),
+    hasCustomTriggers: webhook?.triggerCriteria?.hasCustomTriggers || false,
+    pageNavigation: Boolean(
+      webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION?.length
+    ),
+  });
+
+  const handleFormikSubmit = (values) => {
+    if (values.eventTrigger === "customEvents") {
+      values.hasCustomTriggers = true;
+    } else {
+      values.hasCustomTriggers = false;
+    }
+    onSubmit(values);
+    toast({
+      title: "Webhook Saved.",
+      description: "Your webhook has been saved successfully.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    onClose();
+    setEditSecret(false);
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={handleCloseModal}>
       <ModalOverlay />
@@ -80,39 +204,8 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
         <ModalCloseButton />
 
         <Formik
-          initialValues={{
-            url: webhook?.callbackUrl || "",
-            secret: webhook?.hasSecret ? "" : "",
-            verifySsl: webhook?.verifySsl || true,
-            eventTrigger: webhook?.triggerCriteria?.hasCustomTriggers
-              ? "customEvents"
-              : "allEvents",
-            sourcePages: (
-              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION || []
-            ).map((item) => item.sourcePage),
-            hasCustomTriggers:
-              webhook?.triggerCriteria?.hasCustomTriggers || false,
-            pageNavigation:
-              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION &&
-              webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION.length > 0,
-          }}
-          onSubmit={(values) => {
-            if (values.eventTrigger === "customEvents") {
-              values.hasCustomTriggers = true;
-            } else {
-              values.hasCustomTriggers = false;
-            }
-            onSubmit(values);
-            toast({
-              title: "Webhook Saved.",
-              description: "Your webhook has been saved successfully.",
-              status: "success",
-              duration: 3000,
-              isClosable: true,
-            });
-            onClose();
-            setEditSecret(false);
-          }}
+          initialValues={getInitialValues(webhook)}
+          onSubmit={handleFormikSubmit}
         >
           {({ values, handleSubmit, setFieldValue }) => (
             <Form id="myForm" onSubmit={handleSubmit}>
@@ -124,78 +217,20 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                     header="Header"
                     size="sm"
                   />
-                  {/* Edit mode */}
-                  {isEditMode && (
-                    <>
-                      {editSecret ? (
-                        <>
-                          <Alert status="info" mt={4}>
-                            <AlertDescription>
-                              To retain a secret, please input a new value. An
-                              empty field signifies the removal of the current
-                              secret. For continuity, you may cancel the editing
-                              process and retain the existing secret.
-                            </AlertDescription>
-                          </Alert>
-                          <HStack w="100%">
-                            <TextField
-                              name="secret"
-                              placeholder="Secret"
-                              header="Header"
-                              size="sm"
-                            />
-                            <Button
-                              size="sm"
-                              colorScheme="teal"
-                              w="40%"
-                              onClick={() =>
-                                handleGenerateSecret(values, setFieldValue)
-                              }
-                            >
-                              Generate Secret
-                            </Button>
-                          </HStack>
-                        </>
-                      ) : (
-                        <>
-                          <Alert status="warning" mt={4}>
-                            <AlertDescription>
-                              If you've lost or forgotten this secret, you can
-                              change it, but be aware that any integrations
-                              using this secret will need to be updated.
-                            </AlertDescription>
-                          </Alert>
-                          <Button
-                            onClick={() => setEditSecret(true)}
-                            colorScheme="teal"
-                          >
-                            Edit Secret
-                          </Button>
-                        </>
-                      )}
-                    </>
-                  )}
-
-                  {/* Create Mode */}
+                  <SecretField
+                    isEditMode={isEditMode}
+                    editSecret={editSecret}
+                    handleGenerateSecret={handleGenerateSecret}
+                    values={values}
+                    setFieldValue={setFieldValue}
+                    setEditSecret={setEditSecret}
+                  />
                   {!isEditMode && (
-                    <HStack w="100%">
-                      <TextField
-                        name="secret"
-                        placeholder="Secret"
-                        header="Header"
-                        size="sm"
-                      />
-                      <Button
-                        size="sm"
-                        colorScheme="teal"
-                        w="40%"
-                        onClick={() =>
-                          handleGenerateSecret(values, setFieldValue)
-                        }
-                      >
-                        Generate Secret
-                      </Button>
-                    </HStack>
+                    <CreateModeSecretField
+                      values={values}
+                      handleGenerateSecret={handleGenerateSecret}
+                      setFieldValue={setFieldValue}
+                    />
                   )}
                 </VStack>
                 <HStack pt="2">
