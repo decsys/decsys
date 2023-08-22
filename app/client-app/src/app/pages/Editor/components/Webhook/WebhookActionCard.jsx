@@ -1,5 +1,4 @@
 import {
-  Box,
   Flex,
   Heading,
   Text,
@@ -9,11 +8,11 @@ import {
   Icon,
   useToast,
 } from "@chakra-ui/react";
-import { FaTrash, FaFilter } from "react-icons/fa";
+import { FaTrash, FaFilter, FaEdit } from "react-icons/fa";
 import { ActionCard } from "components/shared/ActionCard";
 import { deleteWebhook, useWebhook } from "api/webhooks";
 
-const WebhookActionCard = ({ webhook }) => {
+const WebhookActionCard = ({ webhook, onEditWebhook }) => {
   const { mutate } = useWebhook(webhook.surveyId);
   const toast = useToast();
   const handleDelete = async () => {
@@ -39,6 +38,10 @@ const WebhookActionCard = ({ webhook }) => {
     }
   };
 
+  const handleEdit = () => {
+    onEditWebhook(webhook);
+  };
+
   return (
     <ActionCard
       title={
@@ -46,12 +49,21 @@ const WebhookActionCard = ({ webhook }) => {
           <Heading as="h4" size="md" wordBreak="break-all">
             {webhook.callbackUrl}
           </Heading>
-          <IconButton
-            colorScheme="red"
-            size="sm"
-            icon={<FaTrash />}
-            onClick={handleDelete}
-          />
+          <Flex width="65px">
+            <IconButton
+              colorScheme="blue"
+              size="sm"
+              icon={<FaEdit />}
+              onClick={handleEdit}
+              mr={2}
+            />
+            <IconButton
+              colorScheme="red"
+              size="sm"
+              icon={<FaTrash />}
+              onClick={handleDelete}
+            />
+          </Flex>
         </Flex>
       }
     >

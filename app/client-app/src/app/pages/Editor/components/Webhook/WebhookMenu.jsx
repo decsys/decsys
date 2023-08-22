@@ -1,15 +1,18 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import WebhookForm from "./WebhookForm";
 import WebhooksModal from "./WebhookModal";
 import { useWebhook } from "api/webhooks";
 import { useDisclosure } from "@chakra-ui/react";
 import { createWebhook } from "api/webhooks";
+import { updateWebhook } from "api/webhooks";
 
 const WebhookMenu = () => {
   const { id: surveyId } = useFetchSurvey();
   const { data, mutate } = useWebhook(surveyId);
   const finalRef = useRef(null);
+
+  const [currentWebhook, setCurrentWebhook] = useState(null);
 
   const {
     isOpen: isFormOpen,
@@ -17,7 +20,8 @@ const WebhookMenu = () => {
     onClose: onFormClose,
   } = useDisclosure();
 
-  const handleAddWebhook = () => {
+  const handleAddOrEditWebhook = (webhook) => {
+    setCurrentWebhook(webhook);
     onFormOpen();
   };
 
@@ -30,15 +34,30 @@ const WebhookMenu = () => {
       secret,
       pageNavigation,
     } = values;
-    await createWebhook(
-      surveyId,
-      url,
-      secret,
-      verifySsl,
-      sourcePages,
-      hasCustomTriggers,
-      pageNavigation
-    );
+
+    if (currentWebhook && currentWebhook.id) {
+      await updateWebhook(
+        currentWebhook.id,
+        surveyId,
+        url,
+        secret,
+        verifySsl,
+        sourcePages,
+        hasCustomTriggers,
+        pageNavigation
+      );
+    } else {
+      await createWebhook(
+        surveyId,
+        url,
+        secret,
+        verifySsl,
+        sourcePages,
+        hasCustomTriggers,
+        pageNavigation
+      );
+    }
+
     mutate();
     onFormClose();
   };
@@ -48,12 +67,18 @@ const WebhookMenu = () => {
       <WebhooksModal
         finalRef={finalRef}
         webhooks={data}
-        onAddWebhook={handleAddWebhook}
+        onFormOpen={onFormOpen}
+        handleWebhookAction={handleAddOrEditWebhook}
       />
+
       <WebhookForm
         isOpen={isFormOpen}
-        onClose={onFormClose}
+        onClose={() => {
+          onFormClose();
+          setCurrentWebhook(null);
+        }}
         onSubmit={handleSubmit}
+        webhook={currentWebhook}
       />
     </>
   );
