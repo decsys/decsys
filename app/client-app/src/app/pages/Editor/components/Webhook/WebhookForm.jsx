@@ -69,13 +69,21 @@ const SecretField = ({
             <>
               {editSecret ? (
                 <>
-                  <Alert status="info" mt={4}>
-                    <AlertDescription>
-                      To retain a secret, please input a new value. An empty
-                      field signifies the removal of the current secret. For
-                      continuity, you may cancel the editing process and retain
-                      the existing secret.
-                    </AlertDescription>
+                  <Alert status="warning" mt={4}>
+                    <VStack pl="2">
+                      <HStack>
+                        <AlertIcon />
+                        <AlertTitle>
+                          Caution: Changing Secret May Affect Integrations
+                        </AlertTitle>
+                      </HStack>
+                      <AlertDescription>
+                        To retain a secret, please input a new value. An empty
+                        field signifies the removal of the current secret. For
+                        continuity, you may cancel the editing process and
+                        retain the existing secret.
+                      </AlertDescription>
+                    </VStack>
                   </Alert>
                   <HStack w="100%">
                     <TextField
@@ -99,17 +107,25 @@ const SecretField = ({
               ) : (
                 <>
                   <Alert status="warning" mt={4}>
-                    <AlertDescription>
-                      If you've lost or forgotten this secret, you can change
-                      it, but be aware that any integrations using this secret
-                      will need to be updated.
-                    </AlertDescription>
+                    <VStack pl="2">
+                      <HStack>
+                        <AlertIcon />
+                        <AlertTitle>
+                          Caution: Update Secret with Care
+                        </AlertTitle>
+                      </HStack>
+                      <AlertDescription>
+                        If you've lost or forgotten this secret, you can change
+                        it, but be aware that any integrations using this secret
+                        will need to be updated.
+                      </AlertDescription>
+                    </VStack>
                   </Alert>
                   <Button
                     onClick={() => setEditSecret(true)}
                     colorScheme="teal"
                   >
-                    Edit Secret
+                    Change Secret
                   </Button>
                 </>
               )}
