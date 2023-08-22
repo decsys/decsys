@@ -22,9 +22,8 @@ import WebhookActionCard from "./WebhookActionCard";
 const WebhooksModal = ({
   finalRef,
   webhooks,
-  onAddWebhook,
+  handleWebhookAction,
   onFormOpen,
-  handleAddOrEditWebhook,
 }) => {
   const {
     isOpen: isWebhooksModalOpen,
@@ -65,7 +64,7 @@ const WebhooksModal = ({
                     webhook={webhook}
                     onEditWebhook={(specificWebhook) => {
                       onFormOpen();
-                      handleAddOrEditWebhook(specificWebhook);
+                      handleWebhookAction(specificWebhook);
                     }}
                   />
                 </Box>
@@ -77,7 +76,7 @@ const WebhooksModal = ({
               colorScheme="green"
               size="sm"
               leftIcon={<FaPlus />}
-              onClick={onAddWebhook}
+              onClick={handleWebhookAction}
             >
               Create a Webhook
             </Button>

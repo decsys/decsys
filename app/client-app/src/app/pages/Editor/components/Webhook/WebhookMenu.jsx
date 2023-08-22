@@ -67,9 +67,8 @@ const WebhookMenu = () => {
       <WebhooksModal
         finalRef={finalRef}
         webhooks={data}
-        onAddWebhook={handleAddOrEditWebhook}
         onFormOpen={onFormOpen}
-        handleAddOrEditWebhook={handleAddOrEditWebhook}
+        handleWebhookAction={handleAddOrEditWebhook}
       />
 
       <WebhookForm
