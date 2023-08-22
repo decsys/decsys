@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Formik, Form, Field, FieldArray } from "formik";
 import {
   Modal,
@@ -34,12 +34,16 @@ import { generateWebhookSecret } from "api/webhooks";
 import ConfirmationModal from "./ConfirmationModal";
 
 const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
-  console.log(webhook);
   const toast = useToast();
   const isEditMode = webhook?.id != null;
-  const [editSecret, setEditSecret] = useState(
-    !isEditMode || !webhook?.hasSecret
-  );
+  const [editSecret, setEditSecret] = useState(!isEditMode);
+
+  useEffect(() => {
+    if (isOpen && isEditMode) {
+      setEditSecret(false);
+    }
+  }, [isOpen, isEditMode]);
+
   const {
     isOpen: isConfirmationOpen,
     onOpen: onConfirmationOpen,
@@ -120,45 +124,39 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                     header="Header"
                     size="sm"
                   />
-                  {/* Edit Secret behavior in edit mode */}
+                  {/* Edit mode */}
                   {isEditMode && (
                     <>
-                      {/* Show this advisory message only if editSecret is true */}
-                      {editSecret && (
-                        <Alert status="info" mt={4}>
-                          <AlertDescription>
-                            To retain a secret, please input a new value. An
-                            empty field signifies the removal of the current
-                            secret. For continuity, you may cancel the editing
-                            process and retain the existing secret.
-                          </AlertDescription>
-                        </Alert>
-                      )}
-
-                      {/* Show secret input and generate secret button when editSecret is true */}
-                      {editSecret && (
-                        <HStack w="100%">
-                          <TextField
-                            name="secret"
-                            placeholder="Secret"
-                            header="Header"
-                            size="sm"
-                          />
-                          <Button
-                            size="sm"
-                            colorScheme="teal"
-                            w="40%"
-                            onClick={() =>
-                              handleGenerateSecret(values, setFieldValue)
-                            }
-                          >
-                            Generate Secret
-                          </Button>
-                        </HStack>
-                      )}
-
-                      {/* When editSecret is false, show the Edit Secret button */}
-                      {!editSecret && (
+                      {editSecret ? (
+                        <>
+                          <Alert status="info" mt={4}>
+                            <AlertDescription>
+                              To retain a secret, please input a new value. An
+                              empty field signifies the removal of the current
+                              secret. For continuity, you may cancel the editing
+                              process and retain the existing secret.
+                            </AlertDescription>
+                          </Alert>
+                          <HStack w="100%">
+                            <TextField
+                              name="secret"
+                              placeholder="Secret"
+                              header="Header"
+                              size="sm"
+                            />
+                            <Button
+                              size="sm"
+                              colorScheme="teal"
+                              w="40%"
+                              onClick={() =>
+                                handleGenerateSecret(values, setFieldValue)
+                              }
+                            >
+                              Generate Secret
+                            </Button>
+                          </HStack>
+                        </>
+                      ) : (
                         <>
                           <Alert status="warning" mt={4}>
                             <AlertDescription>
@@ -178,7 +176,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                     </>
                   )}
 
-                  {/* Generate secret button in create mode */}
+                  {/* Create Mode */}
                   {!isEditMode && (
                     <HStack w="100%">
                       <TextField
