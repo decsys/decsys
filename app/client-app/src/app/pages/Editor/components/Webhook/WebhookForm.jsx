@@ -78,7 +78,7 @@ const SecretField = ({
                         </AlertTitle>
                       </HStack>
                       <AlertDescription>
-                        To retain a secret, please input a new value. An empty
+                        To change the secret, please input a new value. An empty
                         field signifies the removal of the current secret. For
                         continuity, you may cancel the editing process and
                         retain the existing secret.
