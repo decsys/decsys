@@ -9,7 +9,6 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
 {
-    [FeatureGate(FeatureFlags.UserWordlists)]
     [Route("api/[controller]")]
     [ApiController]
     public class WordlistsController : ControllerBase
