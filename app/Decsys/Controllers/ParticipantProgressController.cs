@@ -26,19 +26,23 @@ namespace Decsys.Controllers
         private readonly StudyAllocationService _random;
         private readonly WebhookService _webhooks;
         private readonly MathService _math;
+        private readonly IdService _idService;
+
 
         public ParticipantProgressController(
             SurveyInstanceService instances,
             ParticipantEventService events,
             StudyAllocationService random,
             WebhookService webhooks,
-            MathService math)
+            MathService math,
+            IdService idService)
         {
             _instances = instances;
             _events = events;
             _random = random;
             _webhooks = webhooks;
             _math = math;
+            _idService = idService;
         }
 
         /// <summary>
@@ -394,13 +398,15 @@ namespace Decsys.Controllers
             
             // Trigger webhook
             var payload = _events.PageResponseSummary(instanceId, participantId, currentPageId);
+            string surveyFriendlyId = _idService.Encode(surveyId, instanceId);
 
             var eventType = new PageNavigation
             {
                 ResolvedPage = iNextPage + 1,
                 SourcePage = iCurrentPage + 1
             };
-            await _webhooks.Trigger(new PayloadModel(surveyId, instanceId, participantId,eventType, payload));
+            
+            await _webhooks.Trigger(new PayloadModel(surveyFriendlyId, participantId,eventType, payload));
 
             // Log the request and its outcome
             _events.Log(instance.Id, participantId, new()

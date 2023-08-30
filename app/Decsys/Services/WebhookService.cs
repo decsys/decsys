@@ -9,14 +9,18 @@ namespace Decsys.Services;
 public class WebhookService
 {
     private readonly IWebhookRepository _webhooks;
+    private readonly IdService _idService;
     private readonly HttpClient _client;
+    
 
     public WebhookService(
         IWebhookRepository webhooks,
-        IHttpClientFactory httpClientFactory
-    )
+        IHttpClientFactory httpClientFactory,
+        IdService idService
+        )
     {
         _webhooks = webhooks;
+        _idService = idService;
         _client = httpClientFactory.CreateClient();
     }
 
@@ -55,7 +59,10 @@ public class WebhookService
     /// <param name="payload">The payload to trigger and Post.</param>
     public async Task Trigger(PayloadModel payload)
     {
-        var webhooks = _webhooks.List(payload.SurveyId);
+        var ids = _idService.Decode(payload.SurveyId);
+        var surveyId = ids[0];
+
+        var webhooks = _webhooks.List(surveyId);
         
         foreach (var webhook in webhooks)
         {
