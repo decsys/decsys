@@ -142,15 +142,14 @@ public class WebhookService
 
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         
-         if (webhook.Secret is not null)
-         {
-             using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(webhook.Secret));
-             content.Headers.Add("X-Decsys-Signature",
-                 Encoding.ASCII.GetString(
-                     hmac.ComputeHash(
-                         Encoding.UTF8.GetBytes(json))));
-         }
-         await _client.PostAsync(webhook.CallbackUrl, content);
+        if (webhook.Secret is not null)
+        {
+            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(webhook.Secret));
+            var signature = hmac.ComputeHash(Encoding.UTF8.GetBytes(json));
+            content.Headers.Add("X-Decsys-Signature", Convert.ToBase64String(signature));
+        }
+
+        await _client.PostAsync(webhook.CallbackUrl, content);
     }
     
     public ViewWebhook Edit(string webhookId, WebhookModel model)
