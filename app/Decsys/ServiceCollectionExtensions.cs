@@ -92,7 +92,7 @@ namespace Decsys
                 .AddTransient<StudyAllocationService>()
                 .AddTransient<WebhookService>()
                 .AddTransient<WordlistService>()
-                .AddTransient<IdService>()
+                .AddTransient<FriendlyIdService>()
                 .AddSingleton<MathService>();
             
 
