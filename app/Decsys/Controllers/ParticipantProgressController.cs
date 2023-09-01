@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Decsys.Models.Webhooks;
+using Decsys.Utilities;
 
 namespace Decsys.Controllers
 {
@@ -26,7 +27,6 @@ namespace Decsys.Controllers
         private readonly StudyAllocationService _random;
         private readonly WebhookService _webhooks;
         private readonly MathService _math;
-        private readonly FriendlyIdService _friendlyIdService;
 
 
         public ParticipantProgressController(
@@ -34,15 +34,13 @@ namespace Decsys.Controllers
             ParticipantEventService events,
             StudyAllocationService random,
             WebhookService webhooks,
-            MathService math,
-            FriendlyIdService friendlyIdService)
+            MathService math)
         {
             _instances = instances;
             _events = events;
             _random = random;
             _webhooks = webhooks;
             _math = math;
-            _friendlyIdService = friendlyIdService;
         }
 
         /// <summary>
@@ -398,7 +396,7 @@ namespace Decsys.Controllers
             
             // Trigger webhook
             var payload = _events.PageResponseSummary(instanceId, participantId, currentPageId);
-            string surveyFriendlyId = _friendlyIdService.Encode(surveyId, instanceId);
+            string surveyFriendlyId = FriendlyIds.Encode(surveyId, instanceId);
             
             var eventType = new PageNavigation
             {

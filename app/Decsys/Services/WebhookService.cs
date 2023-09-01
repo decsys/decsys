@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
+using Decsys.Utilities;
 using Newtonsoft.Json;
 
 namespace Decsys.Services;
@@ -9,18 +10,15 @@ namespace Decsys.Services;
 public class WebhookService
 {
     private readonly IWebhookRepository _webhooks;
-    private readonly FriendlyIdService _friendlyIdService;
     private readonly HttpClient _client;
     
 
     public WebhookService(
         IWebhookRepository webhooks,
-        IHttpClientFactory httpClientFactory,
-        FriendlyIdService friendlyIdService
+        IHttpClientFactory httpClientFactory
         )
     {
         _webhooks = webhooks;
-        _friendlyIdService = friendlyIdService;
         _client = httpClientFactory.CreateClient();
     }
 
@@ -51,19 +49,18 @@ public class WebhookService
 
         return webhookViewModels;
     }
-    
-    
+
+
     /// <summary>
     /// Triggers webhooks from a given payload.
     /// </summary>
     /// <param name="payload">The payload to trigger and Post.</param>
     public async Task Trigger(PayloadModel payload)
     {
-        var ids = _friendlyIdService.Decode(payload.SurveyId);
-        var surveyId = ids[0];
+        var (surveyId, instanceId) = FriendlyIds.Decode(payload.SurveyId);
 
         var webhooks = _webhooks.List(surveyId);
-        
+
         foreach (var webhook in webhooks)
         {
             if (FilterCriteria(webhook, payload))
@@ -72,6 +69,7 @@ public class WebhookService
             }
         }
     }
+
 
     /// <summary>
     /// Filters webhooks based on matching criteria. Determines whether a webhook should be triggered by a given event.
