@@ -23,18 +23,21 @@ namespace Decsys.Services
         private readonly IImageService _images;
         private readonly ISurveyInstanceRepository _instances;
         private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;
+        private readonly WebhookService _webhooks;
 
         /// <summary>DI Constructor</summary>
         public SurveyService(
             ISurveyRepository surveys,
             IImageService images,
             ISurveyInstanceRepository instances,
-            IOptionsSnapshot<ComponentTypeMap> componentTypeMaps)
+            IOptionsSnapshot<ComponentTypeMap> componentTypeMaps,
+            WebhookService webhooks)
         {
             _surveys = surveys;
             _images = images;
             _instances = instances;
             _componentTypeMaps = componentTypeMaps;
+            _webhooks = webhooks;
         }
 
         public ExternalLookupDetails LookupExternal(JObject model, int? surveyId)
@@ -257,6 +260,13 @@ namespace Decsys.Services
 
             foreach (var surveyId in toDelete)
             {
+                // Deleting all associated webhook
+                var webhooks = _webhooks.List(surveyId);
+                foreach (var webhook in webhooks)
+                {
+                    _webhooks.Delete(webhook.Id);
+                }
+
                 await _images.RemoveAllSurveyImages(surveyId); // delete stored images for built-in image Page Items
                 _surveys.Delete(surveyId);
             }
