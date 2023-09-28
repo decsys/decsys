@@ -162,6 +162,41 @@ public class WebhookService
         return _webhooks.Edit(webhookId, model);
     }
 
+    /// <summary>
+    /// Duplicates a webhook by its ID.
+    /// </summary>
+    /// <param name="webhookId">The ID of the webhook to duplicate.</param>
+    /// <returns>The duplicated Webhook</returns>
+    public ViewWebhook Duplicate(string webhookId)
+    {
+        var existingWebhook = _webhooks.Get(webhookId);
+        if (existingWebhook == null)
+            throw new KeyNotFoundException($"Webhook with ID {webhookId} not found.");
+
+        var duplicateWebhookModel = new WebhookModel
+        {
+            SurveyId = existingWebhook.SurveyId,
+            CallbackUrl = existingWebhook.CallbackUrl,
+            Secret = string.Empty,
+            VerifySsl = existingWebhook.VerifySsl,
+            TriggerCriteria = existingWebhook.TriggerCriteria
+        };
+
+        var duplicateWebhookId = _webhooks.Create(duplicateWebhookModel);
+        var duplicateWebhook = _webhooks.Get(duplicateWebhookId);
+        if (duplicateWebhook == null)
+            throw new InvalidOperationException("Failed to duplicate the webhook.");
+
+        return new ViewWebhook
+        {
+            Id = duplicateWebhook.Id,
+            SurveyId = duplicateWebhook.SurveyId,
+            CallbackUrl = duplicateWebhook.CallbackUrl,
+            HasSecret = false,
+            VerifySsl = duplicateWebhook.VerifySsl,
+            TriggerCriteria = duplicateWebhook.TriggerCriteria
+        };
+    }
 
     /// <summary>
     /// Deletes a webhook by its ID.
