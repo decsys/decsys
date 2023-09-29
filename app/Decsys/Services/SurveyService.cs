@@ -186,6 +186,22 @@ namespace Decsys.Services
                             Settings = childSurvey.Settings
                         },
                         ownerId);
+                    
+                    // Duplicating Webhooks for Child Surveys
+                    var childWebhooks = _webhooks.List(child.Id);
+                    foreach (var webhook in childWebhooks)
+                    {
+                        var newWebhook = new WebhookModel 
+                        {
+                            SurveyId = newChildId, 
+                            CallbackUrl = webhook.CallbackUrl,
+                            VerifySsl = webhook.VerifySsl,
+                            TriggerCriteria = webhook.TriggerCriteria,
+                            Secret = string.Empty, 
+                        };
+                        _webhooks.Create(newWebhook); 
+                    }
+                    
                     await _images.CopyAllSurveyImages(child.Id, newChildId);
                 }
             }
