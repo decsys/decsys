@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 using Decsys.Config;
 using Decsys.Models;
+using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
 
@@ -151,6 +152,12 @@ namespace Decsys.Services
 
             var newId = _surveys.Create(survey, model, ownerId);
 
+            //Duplicated Webhook
+            var originalWebhooks = _webhooks.List(oldId); 
+            foreach (var webhook in originalWebhooks)
+            {
+                _webhooks.Duplicate(webhook, newId);
+            }
             if (survey.IsStudy)
             {
                 var study = _surveys.Find(newId);
@@ -171,6 +178,14 @@ namespace Decsys.Services
                             Settings = childSurvey.Settings
                         },
                         ownerId);
+                    
+                    // Duplicating Webhooks for Child Surveys
+                    var childWebhooks = _webhooks.List(child.Id);
+                    foreach (var webhook in childWebhooks)
+                    {
+                        _webhooks.Duplicate(webhook, newChildId);
+                    }
+                    
                     await _images.CopyAllSurveyImages(child.Id, newChildId);
                 }
             }

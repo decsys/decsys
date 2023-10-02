@@ -162,6 +162,27 @@ public class WebhookService
         return _webhooks.Edit(webhookId, model);
     }
 
+    /// <summary>
+    /// Duplicates a webhook
+    /// </summary>
+    /// <param name="originalWebhook">The ID of the webhook to duplicate.</param>
+    /// <param name="surveyId">The ID of the survey which is getting duplicated.</param>
+    /// <returns>The duplicated Webhook</returns>
+    public WebhookModel Duplicate(ViewWebhook originalWebhook, int surveyId)
+    {
+        var newWebhook = new WebhookModel
+        {
+            SurveyId = surveyId,
+            CallbackUrl = originalWebhook.CallbackUrl,
+            VerifySsl = originalWebhook.VerifySsl,
+            TriggerCriteria = originalWebhook.TriggerCriteria,
+            Secret = string.Empty,
+        };
+        
+        _webhooks.Create(newWebhook);
+        
+        return newWebhook;
+    }
 
     /// <summary>
     /// Deletes a webhook by its ID.
