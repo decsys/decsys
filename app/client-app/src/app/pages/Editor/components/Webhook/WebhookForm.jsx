@@ -226,21 +226,10 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
         >
           {({ values, handleSubmit, setFieldValue }) => {
             useEffect(() => {
-              if (
-                webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION === null
-              ) {
-                setPageNavigationChecked(false);
-              } else if (
-                Object.keys(
-                  webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION || {}
-                ).length === 0
-              ) {
-                setPageNavigationChecked(true);
-              } else {
-                setPageNavigationChecked(true);
-              }
+              const isChecked =
+                webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION !== null;
+              setPageNavigationChecked(isChecked);
             }, [webhook]);
-
             return (
               <Form id="myForm" onSubmit={handleSubmit}>
                 <Box p={2}>
