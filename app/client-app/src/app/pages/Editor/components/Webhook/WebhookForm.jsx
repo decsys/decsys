@@ -77,7 +77,7 @@ const SecretField = ({
                           Info: Changing Secret May Affect Integrations
                         </AlertTitle>
                       </HStack>
-                      <AlertDescription>
+                      <AlertDescription fontSize="sm">
                         To change the secret, please input a new value. An empty
                         field signifies the removal of the current secret. For
                         continuity, you may cancel the editing process and
@@ -114,7 +114,7 @@ const SecretField = ({
                           Warning: Update Secret with Care
                         </AlertTitle>
                       </HStack>
-                      <AlertDescription>
+                      <AlertDescription fontSize="sm">
                         If you've lost or forgotten this secret, you can change
                         it, but be aware that any integrations using this secret
                         will need to be updated.
@@ -345,13 +345,20 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                             <AccordionPanel pb={4}>
                               <VStack w="100%" align="flex-start">
                                 <Alert status="info">
-                                  <AlertIcon />
-                                  <AlertDescription fontSize="sm">
-                                    Ensure "Page Navigation" is ticked to use
-                                    triggers on navigation filters. If Trigger
-                                    Filters are empty with this option enabled,
-                                    the webhook will be triggered by all pages.
-                                  </AlertDescription>
+                                  <VStack>
+                                    <HStack>
+                                      <AlertIcon />
+                                      <AlertTitle>
+                                        Ensure Page Navigation is checked to use
+                                        triggers on navigation filters.
+                                      </AlertTitle>
+                                    </HStack>
+                                    <AlertDescription fontSize="sm">
+                                      If Trigger Filters are left empty with
+                                      this option enabled, the webhook will be
+                                      triggered by all pages.
+                                    </AlertDescription>
+                                  </VStack>
                                 </Alert>
                                 <Box w="100%" borderWidth={1} borderRadius={5}>
                                   <HStack
