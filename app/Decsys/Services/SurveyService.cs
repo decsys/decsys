@@ -156,15 +156,7 @@ namespace Decsys.Services
             var originalWebhooks = _webhooks.List(oldId); 
             foreach (var webhook in originalWebhooks)
             {
-                var newWebhook = new WebhookModel 
-                {
-                    SurveyId = newId,
-                    CallbackUrl = webhook.CallbackUrl,
-                    VerifySsl = webhook.VerifySsl,
-                    TriggerCriteria = webhook.TriggerCriteria,
-                    Secret = string.Empty, 
-                };
-                _webhooks.Create(newWebhook);
+                _webhooks.Duplicate(webhook, newId);
             }
             if (survey.IsStudy)
             {
@@ -191,15 +183,7 @@ namespace Decsys.Services
                     var childWebhooks = _webhooks.List(child.Id);
                     foreach (var webhook in childWebhooks)
                     {
-                        var newWebhook = new WebhookModel 
-                        {
-                            SurveyId = newChildId, 
-                            CallbackUrl = webhook.CallbackUrl,
-                            VerifySsl = webhook.VerifySsl,
-                            TriggerCriteria = webhook.TriggerCriteria,
-                            Secret = string.Empty, 
-                        };
-                        _webhooks.Create(newWebhook); 
+                        _webhooks.Duplicate(webhook, newChildId);
                     }
                     
                     await _images.CopyAllSurveyImages(child.Id, newChildId);

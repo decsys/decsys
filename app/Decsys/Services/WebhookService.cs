@@ -167,35 +167,20 @@ public class WebhookService
     /// </summary>
     /// <param name="webhookId">The ID of the webhook to duplicate.</param>
     /// <returns>The duplicated Webhook</returns>
-    public ViewWebhook Duplicate(string webhookId)
+    public WebhookModel Duplicate(ViewWebhook originalWebhook, int surveyId)
     {
-        var existingWebhook = _webhooks.Get(webhookId);
-        if (existingWebhook == null)
-            throw new KeyNotFoundException($"Webhook with ID {webhookId} not found.");
-
-        var duplicateWebhookModel = new WebhookModel
+        var newWebhook = new WebhookModel
         {
-            SurveyId = existingWebhook.SurveyId,
-            CallbackUrl = existingWebhook.CallbackUrl,
+            SurveyId = surveyId,
+            CallbackUrl = originalWebhook.CallbackUrl,
+            VerifySsl = originalWebhook.VerifySsl,
+            TriggerCriteria = originalWebhook.TriggerCriteria,
             Secret = string.Empty,
-            VerifySsl = existingWebhook.VerifySsl,
-            TriggerCriteria = existingWebhook.TriggerCriteria
         };
-
-        var duplicateWebhookId = _webhooks.Create(duplicateWebhookModel);
-        var duplicateWebhook = _webhooks.Get(duplicateWebhookId);
-        if (duplicateWebhook == null)
-            throw new InvalidOperationException("Failed to duplicate the webhook.");
-
-        return new ViewWebhook
-        {
-            Id = duplicateWebhook.Id,
-            SurveyId = duplicateWebhook.SurveyId,
-            CallbackUrl = duplicateWebhook.CallbackUrl,
-            HasSecret = false,
-            VerifySsl = duplicateWebhook.VerifySsl,
-            TriggerCriteria = duplicateWebhook.TriggerCriteria
-        };
+        
+        _webhooks.Create(newWebhook);
+        
+        return newWebhook;
     }
 
     /// <summary>
