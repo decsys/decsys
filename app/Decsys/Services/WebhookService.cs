@@ -163,7 +163,7 @@ public class WebhookService
     }
 
     /// <summary>
-    /// Duplicates a webhook by its ID.
+    /// Duplicates a webhook
     /// </summary>
     /// <param name="originalWebhook">The ID of the webhook to duplicate.</param>
     /// <param name="surveyId">The ID of the survey which is getting duplicated.</param>
