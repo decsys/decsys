@@ -3,7 +3,7 @@ import { useQueryStringViewModel } from "hooks/useQueryString";
 import PasswordFieldGroup from "../components/PasswordFieldGroup";
 import { postObjectAsFormData } from "js-forms";
 import { Flex, Stack, Button } from "@chakra-ui/react";
-import { LoadingIndicator, Page } from "components/core";
+import { BusyPage, Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
 import { Formik, Form } from "formik";
 import validationSchema from "./validation";
@@ -13,7 +13,7 @@ const ResetPassword = () => {
 
   if (!userId || !code) {
     navigate("/user/feedback/linkerror");
-    return <LoadingIndicator />;
+    return <BusyPage />;
   }
 
   const handleCancel = () => navigate(-1);

@@ -33,7 +33,7 @@ import {
   useTheme,
   Icon,
 } from "@chakra-ui/react";
-import { Page, EmptyState, LoadingIndicator } from "components/core";
+import { Page, EmptyState, BusyPage } from "components/core";
 import { navigate } from "@reach/router";
 import { encode } from "services/instance-id";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -502,7 +502,7 @@ const ResultsTables = ({ results }) => {
         />
       </Stack>
 
-      <Suspense fallback={<LoadingIndicator />}>
+      <Suspense fallback={<BusyPage />}>
         <ResultsTable
           data={tableData}
           columns={columns}
@@ -536,7 +536,7 @@ const Results = ({ id }) => {
     }
   }, [currentInstance]);
 
-  let resultsArea = <LoadingIndicator verb="Fetching" noun="results" />;
+  let resultsArea = <BusyPage verb="Fetching" noun="results" />;
   if (results) {
     if (results.participants.length)
       resultsArea = <ResultsTables results={results} />;

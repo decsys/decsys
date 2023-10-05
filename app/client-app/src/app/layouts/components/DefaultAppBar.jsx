@@ -30,7 +30,7 @@ import { Link, useLocation } from "@reach/router";
 import { useAuth } from "auth/AuthContext";
 import { useServerConfig } from "api/config";
 import { WORKSHOP } from "constants/app-modes";
-import { LoadingIndicator } from "components/core";
+import { BusyPage } from "components/core";
 
 const HelpMenu = () => (
   <Menu>
@@ -134,11 +134,7 @@ const UserMenu = () => {
   }
 
   return user === undefined ? (
-    <LoadingIndicator
-      textProps={{ color: "white" }}
-      verb="Checking"
-      noun="user"
-    />
+    <BusyPage textProps={{ color: "white" }} verb="Checking" noun="user" />
   ) : (
     <Menu>
       <DarkMode>

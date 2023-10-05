@@ -2,7 +2,7 @@ import { Flex, useColorMode } from "@chakra-ui/react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import PageHeader from "./PageHeader";
 import DraggablePageItem, { PageItem } from "./DraggablePageItem";
-import { LoadingIndicator } from "components/core";
+import { BusyPage } from "components/core";
 import { usePageListContext } from "../../contexts/PageList";
 import { getPageResponseItem } from "services/page-items";
 import { defaultColorMode } from "themes";
@@ -59,7 +59,7 @@ const PageContent = ({ page }) => {
   if (page.isLoading)
     return (
       <Flex justify="center">
-        <LoadingIndicator verb="Adding" noun="page" />
+        <BusyPage verb="Adding" noun="page" />
       </Flex>
     );
 

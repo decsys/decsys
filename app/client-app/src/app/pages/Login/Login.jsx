@@ -1,4 +1,4 @@
-import { LoadingIndicator, Page } from "components/core";
+import { BusyPage, Page } from "components/core";
 import { postObjectAsFormData } from "js-forms";
 import { Formik, Form, Field } from "formik";
 import { Stack, Button, Flex, Link, Text } from "@chakra-ui/react";
@@ -44,7 +44,7 @@ const Login = () => {
   // fix it by invoking oidc-client now
   if (!ReturnUrl) {
     login({ returnUrl: "" });
-    return <LoadingIndicator />;
+    return <BusyPage />;
   }
 
   const post = (values) => {
