@@ -395,7 +395,7 @@ namespace Decsys.Controllers
             }
             
             // Trigger webhook
-            var payload = _events.PageResponseSummary(instanceId, participantId, currentPageId);
+            var payload = _events.ResultsSummary(instanceId, participantId);
             string surveyFriendlyId = FriendlyIds.Encode(surveyId, instanceId);
             
             var eventType = new PageNavigation
