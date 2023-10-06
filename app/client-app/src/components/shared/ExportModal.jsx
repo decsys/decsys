@@ -1,10 +1,24 @@
 import { surveyExport } from "services/export";
-import { StandardModal } from "components/core";
+import { StandardModal, BusyPage } from "components/core";
 import { Flex, Button } from "@chakra-ui/react";
+import { useState } from "react";
 
 const ExportModal = ({ modalState, id, name }) => {
-  const handleExportStructure = () => surveyExport(id, name, "structure");
-  const handleExportFull = () => surveyExport(id, name, "full");
+  const [isExporting, setIsExporting] = useState(false);
+  const [isExportingFullStructure, setIsExportingFullStructure] =
+    useState(false);
+
+  const handleExportStructure = async () => {
+    setIsExporting(true);
+    await surveyExport(id, name, "structure");
+    setIsExporting(false);
+  };
+
+  const handleExportFull = async () => {
+    setIsExportingFullStructure(true);
+    await surveyExport(id, name, "full");
+    setIsExportingFullStructure(false);
+  };
 
   return (
     <StandardModal
@@ -14,10 +28,18 @@ const ExportModal = ({ modalState, id, name }) => {
     >
       <Flex direction="column" p={1} width="100%">
         <Button onClick={handleExportStructure} mb={1}>
-          Export Survey Structure Only
+          {isExporting ? (
+            <BusyPage verb="Exporting" />
+          ) : (
+            "Export Survey Structure Only"
+          )}
         </Button>
         <Button onClick={handleExportFull}>
-          Export Survey Structure and Full Response Data
+          {isExportingFullStructure ? (
+            <BusyPage verb="Exporting" />
+          ) : (
+            "Export Survey Structure and Full Response Data"
+          )}
         </Button>
       </Flex>
     </StandardModal>

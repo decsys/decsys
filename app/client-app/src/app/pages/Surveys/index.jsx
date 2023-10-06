@@ -11,6 +11,7 @@ import { addSurveyActions } from "./actions/addSurveyActions";
 import { surveyCardActions } from "./actions/surveyCardActions";
 import { FaList } from "react-icons/fa";
 import { SurveysListProvider } from "./contexts/SurveysList";
+import { BusyPage } from "components/core";
 
 const ShowSurveys = ({ surveys, actions }) => (
   <>
@@ -59,8 +60,9 @@ const Surveys = ({ navigate }) => {
     addSurveyModal.onOpen();
   };
 
+  let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
   const pageBody = Object.keys(surveys).length ? (
-    <ShowSurveys surveys={surveys} actions={SurveyCardActions} />
+    (surveyArea = <ShowSurveys surveys={surveys} actions={SurveyCardActions} />)
   ) : (
     <NoSurveys action={handleAddSurvey} />
   );
