@@ -32,25 +32,22 @@ const WebhooksModal = ({
   } = useDisclosure();
 
   const WebhookMenu = () => (
-    <Box>
-      <Menu>
-        <MenuButton
-          border="thin solid"
-          borderColor="gray.500"
-          as={IconButton}
-          icon={<FaEllipsisV />}
-          boxSize={"40px"}
-        />
-        <MenuList>
-          <MenuItem onClick={openWebhooksModal}>Manage Webhooks ...</MenuItem>
-        </MenuList>
-      </Menu>
-    </Box>
+    <Menu>
+      <MenuButton
+        border="thin solid"
+        borderColor="gray.500"
+        as={IconButton}
+        icon={<FaEllipsisV />}
+        boxSize={"40px"}
+      />
+      <MenuList>
+        <MenuItem onClick={openWebhooksModal}>Manage Webhooks ...</MenuItem>
+      </MenuList>
+    </Menu>
   );
   return (
-    <>
+    <Box>
       <WebhookMenu />
-
       <Modal
         finalFocusRef={finalRef}
         isOpen={isWebhooksModalOpen}
@@ -93,7 +90,7 @@ const WebhooksModal = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </Box>
   );
 };
 
