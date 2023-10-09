@@ -31,8 +31,8 @@ const WebhooksModal = ({
     onClose: closeWebhooksModal,
   } = useDisclosure();
 
-  return (
-    <>
+  const WebhookMenu = () => (
+    <Box>
       <Menu>
         <MenuButton
           border="thin solid"
@@ -45,6 +45,11 @@ const WebhooksModal = ({
           <MenuItem onClick={openWebhooksModal}>Manage Webhooks ...</MenuItem>
         </MenuList>
       </Menu>
+    </Box>
+  );
+  return (
+    <>
+      <WebhookMenu />
 
       <Modal
         finalFocusRef={finalRef}

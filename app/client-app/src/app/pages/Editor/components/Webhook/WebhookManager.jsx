@@ -7,7 +7,7 @@ import { useDisclosure } from "@chakra-ui/react";
 import { createWebhook } from "api/webhooks";
 import { updateWebhook } from "api/webhooks";
 
-const WebhookMenu = () => {
+const WebhookManager = () => {
   const { id: surveyId } = useFetchSurvey();
   const { data, mutate } = useWebhook(surveyId);
   const finalRef = useRef(null);
@@ -84,4 +84,4 @@ const WebhookMenu = () => {
   );
 };
 
-export default WebhookMenu;
+export default WebhookManager;
