@@ -4,7 +4,7 @@ import {
   StandardModal,
   ProgressCard,
   EmptyState,
-  LoadingIndicator,
+  BusyPage,
 } from "components/core";
 import { decode } from "services/instance-id";
 import { useSurvey } from "api/surveys";
@@ -107,7 +107,7 @@ const Dashboard = ({ combinedId }) => {
             Click a Question's card for more details.
           </Alert>
         </Flex>
-        {isLoading && <LoadingIndicator />}
+        {isLoading && <BusyPage />}
         {surveyHasPages && !isLoading && (
           <Stack boxShadow="callout" spacing={0}>
             {survey.pages.map((p, i) => {

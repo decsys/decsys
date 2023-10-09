@@ -1,5 +1,5 @@
 import { Suspense, useState, useEffect } from "react";
-import { StandardModal, LoadingIndicator } from "components/core";
+import { StandardModal, BusyPage } from "components/core";
 import { Stack } from "@chakra-ui/react";
 import { useSurvey } from "../../../../contexts/Survey";
 import { useSurveyConfig, saveSurveyConfig } from "api/survey-config";
@@ -53,7 +53,7 @@ const SurveyConfigModal = ({ modalState, name, id }) => {
       }}
       {...modalState}
     >
-      <Suspense fallback={<LoadingIndicator />}>
+      <Suspense fallback={<BusyPage />}>
         <BodyContent setConfig={setConfig} />
       </Suspense>
     </StandardModal>

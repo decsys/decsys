@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { LoadingIndicator, Page } from "components/core";
+import { BusyPage, Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
 import { navigate } from "@reach/router";
 import { decode, encode } from "services/instance-id";
@@ -141,7 +141,7 @@ const SurveyBootstrapper = ({ id: urlFriendlyId }) => {
 
   // Any reason we're still here?
   // e.g. handling a new participant id replacement
-  return <LoadingIndicator />;
+  return <BusyPage />;
 };
 
 const Survey = ({
@@ -209,7 +209,7 @@ const Survey = ({
     setIsBusy(false);
   };
 
-  if (!progress?.page) return <LoadingIndicator />;
+  if (!progress?.page) return <BusyPage />;
 
   return (
     <Page layout="survey">

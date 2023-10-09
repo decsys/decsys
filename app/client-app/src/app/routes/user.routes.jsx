@@ -9,13 +9,13 @@ import Profile from "app/pages/user/Profile";
 import { useAuth } from "auth/AuthContext";
 import ChangePassword from "app/pages/user/ChangePassword";
 import ChangeEmail from "app/pages/user/ChangeEmail";
-import { LoadingIndicator } from "components/core";
+import { BusyPage } from "components/core";
 
 const Protected = ({ as: SuccessRoute, ...p }) => {
   const { user, login, isSuperUser } = useAuth();
   if (!user) {
     if (user === null) login();
-    return <LoadingIndicator verb="Checking" noun="user" />;
+    return <BusyPage verb="Checking" noun="user" />;
   }
 
   // NO `user` routes at this time are available to the SuperUser!

@@ -7,7 +7,7 @@ import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import VisibilitySensor from "react-visibility-sensor";
 import { usePrevious } from "hooks/usePrevious";
-import { LoadingIndicator } from "components/core";
+import { BusyPage } from "components/core";
 
 export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
@@ -121,7 +121,7 @@ const SurveyPage = ({
         <DefaultContainer>
           <Stack>
             {isBusy ? (
-              <LoadingIndicator />
+              <BusyPage />
             ) : (
               <Body
                 page={page}

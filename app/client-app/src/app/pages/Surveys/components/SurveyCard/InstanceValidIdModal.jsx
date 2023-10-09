@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { StandardModal, LoadingIndicator } from "components/core";
+import { StandardModal, BusyPage } from "components/core";
 import { Text, Flex, Textarea, Alert, AlertIcon } from "@chakra-ui/react";
 import { useSurveyInstance } from "api/survey-instances";
 import { useSurvey } from "../../../../contexts/Survey";
@@ -52,7 +52,7 @@ const InstanceValidIdModal = ({ modalState }) => {
       header="Valid Participant Identifiers"
       cancelButton={false}
     >
-      <Suspense fallback={<LoadingIndicator />}>
+      <Suspense fallback={<BusyPage />}>
         <BodyContent />
       </Suspense>
     </StandardModal>

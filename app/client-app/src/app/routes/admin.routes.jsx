@@ -7,14 +7,14 @@ import Results from "app/pages/Results";
 import Dashboard from "app/pages/Dashboard";
 import Wordlist from "app/pages/Wordlist";
 import { useAuth } from "auth/AuthContext";
-import { LoadingIndicator } from "components/core";
+import { BusyPage } from "components/core";
 
 const Admin = () => {
   const { isAdmin, user, login } = useAuth();
 
   if (!user) {
     if (user === null) login();
-    return <LoadingIndicator verb="Checking" noun="user" />;
+    return <BusyPage verb="Checking" noun="user" />;
   }
 
   if (!isAdmin) return <Error message="403: Forbidden" default />;

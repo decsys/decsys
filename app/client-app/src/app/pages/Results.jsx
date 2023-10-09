@@ -33,7 +33,7 @@ import {
   useTheme,
   Icon,
 } from "@chakra-ui/react";
-import { Page, EmptyState, LoadingIndicator } from "components/core";
+import { Page, EmptyState, BusyPage } from "components/core";
 import { navigate } from "@reach/router";
 import { encode } from "services/instance-id";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -101,6 +101,8 @@ const DashboardButton = ({ surveyId, instanceId }) => (
 );
 
 const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
+  const [isExporting, setIsExporting] = useState(false);
+
   const filename = useMemo(
     () =>
       results &&
@@ -113,19 +115,25 @@ const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
   );
 
   const handleExportCsvClick = async () => {
+    setIsExporting(true);
     await getResultsCsvData(results, filename);
+    setIsExporting(false);
   };
 
-  const handleExportSummaryClick = () =>
-    downloadFile(
+  const handleExportSummaryClick = async () => {
+    setIsExporting(true);
+    await downloadFile(
       [JSON.stringify(results)],
       `${filename}_Summary.json`,
       exportMime
     );
-
+    setIsExporting(false);
+  };
   const handleExportFullClick = async () => {
+    setIsExporting(true);
     const { data } = await getInstanceResultsFull(surveyId, instanceId);
     downloadFile([JSON.stringify(data)], `${filename}_Full.json`, exportMime);
+    setIsExporting(false);
   };
 
   return (
@@ -136,7 +144,7 @@ const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
         borderWidth={1}
         rightIcon={<FaChevronDown />}
       >
-        Export to file...
+        {isExporting ? <BusyPage verb="Exporting" /> : "Export to file"}
       </MenuButton>
       <MenuList>
         <MenuItem onClick={handleExportCsvClick}>
@@ -502,7 +510,7 @@ const ResultsTables = ({ results }) => {
         />
       </Stack>
 
-      <Suspense fallback={<LoadingIndicator />}>
+      <Suspense fallback={<BusyPage />}>
         <ResultsTable
           data={tableData}
           columns={columns}
@@ -536,7 +544,7 @@ const Results = ({ id }) => {
     }
   }, [currentInstance]);
 
-  let resultsArea = <LoadingIndicator verb="Fetching" noun="results" />;
+  let resultsArea = <BusyPage verb="Fetching" noun="results" />;
   if (results) {
     if (results.participants.length)
       resultsArea = <ResultsTables results={results} />;
