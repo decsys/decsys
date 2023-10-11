@@ -2,7 +2,7 @@ import { Button, Flex, HStack } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import { FaPlus } from "react-icons/fa";
 import { usePageListContext } from "../../contexts/PageList";
-import WebhookMenu from "../Webhook/WebhookMenu";
+import WebhookManager from "../Webhook/WebhookManager";
 import { useServerConfig } from "api/config";
 
 const Header = () => {
@@ -16,7 +16,7 @@ const Header = () => {
         <Button colorScheme="green" onClick={addPage} leftIcon={<FaPlus />}>
           Add Page
         </Button>
-        {webhookEnabled && <WebhookMenu />}
+        {webhookEnabled && <WebhookManager />}
       </HStack>
     </Flex>
   );
