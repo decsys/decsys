@@ -5,7 +5,7 @@ import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
 import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
-import VisibilitySensor from "react-visibility-sensor";
+import { InView } from "react-intersection-observer";
 import { usePrevious } from "hooks/usePrevious";
 import { BusyPage } from "components/core";
 
@@ -131,9 +131,9 @@ const SurveyPage = ({
                 setIsValidResponse={setIsValidResponse}
               />
             )}
-            <VisibilitySensor onChange={handleBodyBottomVisibilityChange}>
+            <InView onChange={handleBodyBottomVisibilityChange}>
               <div style={{ height: "1px" }} />
-            </VisibilitySensor>
+            </InView>
           </Stack>
         </DefaultContainer>
       </Flex>
