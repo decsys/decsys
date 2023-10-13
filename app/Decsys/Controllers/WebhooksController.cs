@@ -108,4 +108,17 @@ public class WebhooksController : ControllerBase
         return NoContent();
     }
     
+    [HttpPost("preview")]
+    [SwaggerOperation("Preview if a webhook would trigger")]
+    [SwaggerResponse(200, "Webhook would be triggered")]
+    [SwaggerResponse(204, "Webhook would not be triggered")]
+    [SwaggerResponse(400, "Invalid request payload")]
+    public IActionResult PreviewTrigger([FromBody] PayloadModel payload)
+    {
+        var result =  _webhooks.PreviewTrigger(payload);
+        if(result != null)
+            return Ok(result);
+        
+        return NoContent();
+    }
 }

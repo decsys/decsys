@@ -32,6 +32,7 @@ import {
   Grid,
   useTheme,
   Icon,
+  Box,
 } from "@chakra-ui/react";
 import { Page, EmptyState, BusyPage } from "components/core";
 import { navigate } from "@reach/router";
@@ -137,27 +138,29 @@ const ExportResultsMenu = ({ surveyId, instanceId, results }) => {
   };
 
   return (
-    <Menu>
-      <MenuButton
-        as={Button}
-        borderColor="gray.400"
-        borderWidth={1}
-        rightIcon={<FaChevronDown />}
-      >
-        {isExporting ? <BusyPage verb="Exporting" /> : "Export to file"}
-      </MenuButton>
-      <MenuList>
-        <MenuItem onClick={handleExportCsvClick}>
-          Response Summary (CSV)
-        </MenuItem>
-        <MenuItem onClick={handleExportSummaryClick}>
-          Response Summary (JSON)
-        </MenuItem>
-        <MenuItem onClick={handleExportFullClick}>
-          Full Event Log (JSON)
-        </MenuItem>
-      </MenuList>
-    </Menu>
+    <Box>
+      <Menu>
+        <MenuButton
+          as={Button}
+          borderColor="gray.400"
+          borderWidth={1}
+          rightIcon={<FaChevronDown />}
+        >
+          {isExporting ? <BusyPage verb="Exporting" /> : "Export to file"}
+        </MenuButton>
+        <MenuList>
+          <MenuItem onClick={handleExportCsvClick}>
+            Response Summary (CSV)
+          </MenuItem>
+          <MenuItem onClick={handleExportSummaryClick}>
+            Response Summary (JSON)
+          </MenuItem>
+          <MenuItem onClick={handleExportFullClick}>
+            Full Event Log (JSON)
+          </MenuItem>
+        </MenuList>
+      </Menu>
+    </Box>
   );
 };
 
