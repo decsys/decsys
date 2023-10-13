@@ -193,12 +193,7 @@ public class WebhookService
         _webhooks.Delete(webhookId);
     }
     
-    /// <summary>
-    /// Checks if a webhook would be triggered based on the provided payload.
-    /// </summary>
-    /// <param name="payload">The payload to check.</param>
-    /// <returns>The payload if a webhook would be triggered; null otherwise.</returns>
-    public Task<PayloadModel?> PreviewTrigger(PayloadModel payload)
+    public PayloadModel? PreviewTrigger(PayloadModel payload)
     {
         var (surveyId, instanceId) = FriendlyIds.Decode(payload.SurveyId);
         var webhooks = _webhooks.List(surveyId);
