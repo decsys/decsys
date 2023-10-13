@@ -192,4 +192,20 @@ public class WebhookService
     {
         _webhooks.Delete(webhookId);
     }
+    
+    public PayloadModel? PreviewTrigger(PayloadModel payload)
+    {
+        var (surveyId, instanceId) = FriendlyIds.Decode(payload.SurveyId);
+        var webhooks = _webhooks.List(surveyId);
+
+        foreach (var webhook in webhooks)
+        {
+            if (FilterCriteria(webhook, payload))
+            {
+                return payload;
+            }
+        }
+        return null;
+    }
+
 }
