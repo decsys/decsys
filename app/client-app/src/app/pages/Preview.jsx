@@ -58,6 +58,11 @@ const Preview = ({ id, location }) => {
   const [lastPage, setLastPage] = useState(false);
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
   const confirmRedirectModal = useDisclosure();
+  const [participantSummary, setParticipantSummary] = useState({
+    id: "PreviewParticipant",
+    surveyStarted: new Date(),
+    responses: [],
+  });
 
   const handleClick = async () => {
     // you'd think busy state in preview wouldn't be worth it
