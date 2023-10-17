@@ -64,6 +64,8 @@ const Preview = ({ id, location }) => {
     responses: [],
   });
 
+  const logEvent = (source, type, paylod) => {};
+
   const handleClick = async () => {
     // you'd think busy state in preview wouldn't be worth it
 
@@ -91,6 +93,7 @@ const Preview = ({ id, location }) => {
         lastPage={lastPage}
         handleNextClick={handleClick}
         isBusy={isBusy}
+        logEvent={logEvent}
       />
       <ConfirmRedirectModal
         modalState={confirmRedirectModal}
