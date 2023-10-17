@@ -12,6 +12,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { pickRandomItem } from "services/randomizer";
+import { getPageResponseItem } from "services/page-items";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -58,13 +59,59 @@ const Preview = ({ id, location }) => {
   const [lastPage, setLastPage] = useState(false);
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
   const confirmRedirectModal = useDisclosure();
+
   const [participantSummary, setParticipantSummary] = useState({
     id: "PreviewParticipant",
     surveyStarted: new Date(),
     responses: [],
   });
 
-  const logEvent = (source, type, paylod) => {};
+  const logEvent = (source, type, payload) => {
+    //Debuging, TODO: Remove
+    console.log("Event Source:", source);
+    console.log("Event Type:", type);
+    console.log("Event Payload:", payload);
+
+    if (type === "PAGE_LOAD") {
+      const pageResponseItem = getPageResponseItem(pages[page].components);
+
+      // Check if a response item exists for the current page
+      if (pageResponseItem) {
+        // Find the item marked as IsQuestionItem
+        let questionItem = pages[page].components.find((x) => x.isQuestionItem);
+
+        // If not found, find the first built-in content item
+        if (!questionItem) {
+          questionItem = pages[page].components.find((x) => isBuiltIn(x.type));
+        }
+
+        // If there's an item, try to get content from it, else return null
+        let questionContent = null;
+        if (questionItem) {
+          questionContent = "TODO";
+        }
+
+        setParticipantSummary((prevState) => ({
+          ...prevState,
+          responses: [
+            ...prevState.responses,
+            {
+              page: "TODO",
+              question: "TODO",
+              responseType: "TODO",
+              pageLoad: new Date(),
+              order: "TODO",
+              isOptional: "TODO",
+            },
+          ],
+        }));
+      }
+    } else if (type == "COMPONENT_RESULTS") {
+      {
+        //TODO
+      }
+    }
+  };
 
   const handleClick = async () => {
     // you'd think busy state in preview wouldn't be worth it
