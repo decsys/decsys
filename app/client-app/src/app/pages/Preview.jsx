@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { pickRandomItem } from "services/randomizer";
 import { getPageResponseItem } from "services/page-items";
+import { isBuiltIn } from "services/page-items";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -67,16 +68,13 @@ const Preview = ({ id, location }) => {
   });
 
   const logEvent = (source, type, payload) => {
-    //Debuging, TODO: Remove
-    console.log("Event Source:", source);
-    console.log("Event Type:", type);
-    console.log("Event Payload:", payload);
+    console.log(type);
 
-    if (type === "PAGE_LOAD") {
-      const pageResponseItem = getPageResponseItem(pages[page].components);
-
+    const pageResponseItem = getPageResponseItem(pages[page].components);
+    if (type === "decsys.platform.PAGE_LOAD") {
       // Check if a response item exists for the current page
       if (pageResponseItem) {
+        console.log(type);
         // Find the item marked as IsQuestionItem
         let questionItem = pages[page].components.find((x) => x.isQuestionItem);
 
@@ -96,22 +94,41 @@ const Preview = ({ id, location }) => {
           responses: [
             ...prevState.responses,
             {
-              page: "TODO",
-              question: "TODO",
-              responseType: "TODO",
+              page: pages[page].name,
+              question: questionContent,
+              responseType: type,
               pageLoad: new Date(),
-              order: "TODO",
-              isOptional: "TODO",
+              order: pageResponseItem.order,
+              isOptional: pageResponseItem.isOptional,
             },
           ],
         }));
       }
-    } else if (type == "COMPONENT_RESULTS") {
+    } else if (type == "decsys.platform.COMPONENT_RESULTS") {
       {
-        //TODO
+        console.log(type);
+        const relavantPage = pages.find((p) =>
+          p.components.some((c) => c.id === source)
+        );
+        const pageIndex = relavantPage.order - 1;
+        if (pageIndex > -1) {
+          setParticipantSummary((prevState) => {
+            let updatedResponses = [...prevState.responses];
+            updatedResponses[pageIndex] = {
+              ...updatedResponses[pageIndex],
+              response: payload,
+              responseRecorded: new Date(),
+            };
+            return {
+              ...prevState,
+              responses: updatedResponses,
+            };
+          });
+        }
       }
     }
   };
+  console.log(participantSummary);
 
   const handleClick = async () => {
     // you'd think busy state in preview wouldn't be worth it
