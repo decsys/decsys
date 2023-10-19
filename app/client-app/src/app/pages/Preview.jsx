@@ -68,25 +68,28 @@ const Preview = ({ id, location }) => {
   });
 
   const logEvent = (source, type, payload) => {
-    console.log(type);
-
     const pageResponseItem = getPageResponseItem(pages[page].components);
+    const relavantPage = pages.find((p) =>
+      p.components.some((c) => c.id === source)
+    );
+    const pageIndex = relavantPage?.order - 1;
+
     if (type === "decsys.platform.PAGE_LOAD") {
       // Check if a response item exists for the current page
       if (pageResponseItem) {
-        console.log(type);
         // Find the item marked as IsQuestionItem
         let questionItem = pages[page].components.find((x) => x.isQuestionItem);
-
-        // If not found, find the first built-in content item
-        if (!questionItem) {
-          questionItem = pages[page].components.find((x) => isBuiltIn(x.type));
-        }
 
         // If there's an item, try to get content from it, else return null
         let questionContent = null;
         if (questionItem) {
-          questionContent = "TODO";
+          questionContent = questionItem.params.text;
+        }
+
+        // If not found, find the first built-in content item
+        if (!questionItem) {
+          questionItem = pages[page].components.find((x) => isBuiltIn(x.type));
+          questionContent = questionItem.params.text;
         }
 
         setParticipantSummary((prevState) => ({
@@ -94,41 +97,34 @@ const Preview = ({ id, location }) => {
           responses: [
             ...prevState.responses,
             {
-              page: pages[page].name,
+              page: relavantPage?.order,
+              pageName: pages[page].name,
               question: questionContent,
               responseType: type,
+              order: relavantPage?.order,
               pageLoad: new Date(),
-              order: pageResponseItem.order,
               isOptional: pageResponseItem.isOptional,
             },
           ],
         }));
       }
     } else if (type == "decsys.platform.COMPONENT_RESULTS") {
-      {
-        console.log(type);
-        const relavantPage = pages.find((p) =>
-          p.components.some((c) => c.id === source)
-        );
-        const pageIndex = relavantPage.order - 1;
-        if (pageIndex > -1) {
-          setParticipantSummary((prevState) => {
-            let updatedResponses = [...prevState.responses];
-            updatedResponses[pageIndex] = {
-              ...updatedResponses[pageIndex],
-              response: payload,
-              responseRecorded: new Date(),
-            };
-            return {
-              ...prevState,
-              responses: updatedResponses,
-            };
-          });
-        }
+      if (pageIndex > -1) {
+        setParticipantSummary((prevState) => {
+          let updatedResponses = [...prevState.responses];
+          updatedResponses[pageIndex] = {
+            ...updatedResponses[pageIndex],
+            response: payload,
+            responseRecorded: new Date(),
+          };
+          return {
+            ...prevState,
+            responses: updatedResponses,
+          };
+        });
       }
     }
   };
-  console.log(participantSummary);
 
   const handleClick = async () => {
     // you'd think busy state in preview wouldn't be worth it
