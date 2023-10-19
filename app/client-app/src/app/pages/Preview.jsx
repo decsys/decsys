@@ -69,27 +69,23 @@ const Preview = ({ id, location }) => {
 
   const logEvent = (source, type, payload) => {
     const pageResponseItem = getPageResponseItem(pages[page].components);
-    const relavantPage = pages.find((p) =>
-      p.components.some((c) => c.id === source)
-    );
-    const pageIndex = relavantPage?.order - 1;
-
     if (type === "decsys.platform.PAGE_LOAD") {
       // Check if a response item exists for the current page
       if (pageResponseItem) {
         // Find the item marked as IsQuestionItem
         let questionItem = pages[page].components.find((x) => x.isQuestionItem);
-
-        // If there's an item, try to get content from it, else return null
         let questionContent = null;
+
+        // If there's a question item, try to get content from it
         if (questionItem) {
           questionContent = questionItem.params.text;
         }
-
-        // If not found, find the first built-in content item
-        if (!questionItem) {
+        // If no question item was found, then check for a built-in content item
+        else {
           questionItem = pages[page].components.find((x) => isBuiltIn(x.type));
-          questionContent = questionItem.params.text;
+          if (questionItem) {
+            questionContent = questionItem.params.text;
+          }
         }
 
         setParticipantSummary((prevState) => ({
@@ -97,11 +93,11 @@ const Preview = ({ id, location }) => {
           responses: [
             ...prevState.responses,
             {
-              page: relavantPage?.order,
+              page: pages[page].order,
               pageName: pages[page].name,
               question: questionContent,
               responseType: type,
-              order: relavantPage?.order,
+              order: pages[page].order,
               pageLoad: new Date(),
               isOptional: pageResponseItem.isOptional,
             },
@@ -109,6 +105,10 @@ const Preview = ({ id, location }) => {
         }));
       }
     } else if (type == "decsys.platform.COMPONENT_RESULTS") {
+      const relavantPage = pages.find((p) =>
+        p.components.some((c) => c.id === source)
+      );
+      const pageIndex = relavantPage?.order - 1;
       if (pageIndex > -1) {
         setParticipantSummary((prevState) => {
           let updatedResponses = [...prevState.responses];
