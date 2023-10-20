@@ -127,8 +127,6 @@ const Preview = ({ id, location }) => {
     }
   };
 
-  console.log(participantSummary);
-
   const handleClick = async () => {
     // you'd think busy state in preview wouldn't be worth it
 
