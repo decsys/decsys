@@ -69,6 +69,7 @@ const Preview = ({ id, location }) => {
 
   const logEvent = (source, type, payload) => {
     const pageResponseItem = getPageResponseItem(pages[page].components);
+
     if (type === "decsys.platform.PAGE_LOAD") {
       // Check if a response item exists for the current page
       if (pageResponseItem) {
@@ -96,7 +97,7 @@ const Preview = ({ id, location }) => {
               page: pages[page].order,
               pageName: pages[page].name,
               question: questionContent,
-              responseType: type,
+              responseType: pageResponseItem.type,
               order: pages[page].order,
               pageLoad: new Date(),
               isOptional: pageResponseItem.isOptional,
@@ -125,6 +126,8 @@ const Preview = ({ id, location }) => {
       }
     }
   };
+
+  console.log(participantSummary);
 
   const handleClick = async () => {
     // you'd think busy state in preview wouldn't be worth it
