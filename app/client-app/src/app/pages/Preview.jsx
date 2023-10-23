@@ -12,6 +12,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { pickRandomItem } from "services/randomizer";
+import { getPageResponseItem } from "services/page-items";
+import { isBuiltIn } from "services/page-items";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -59,6 +61,72 @@ const Preview = ({ id, location }) => {
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
   const confirmRedirectModal = useDisclosure();
 
+  const [participantSummary, setParticipantSummary] = useState({
+    id: "PreviewParticipant",
+    surveyStarted: new Date(),
+    responses: [],
+  });
+
+  const logEvent = (source, type, payload) => {
+    const pageResponseItem = getPageResponseItem(pages[page].components);
+
+    if (type === "decsys.platform.PAGE_LOAD") {
+      // Check if a response item exists for the current page
+      if (pageResponseItem) {
+        // Find the item marked as IsQuestionItem
+        let questionItem = pages[page].components.find((x) => x.isQuestionItem);
+        let questionContent = null;
+
+        // If there's a question item, try to get content from it
+        if (questionItem) {
+          questionContent = questionItem.params.text;
+        }
+        // If no question item was found, then check for a built-in content item
+        else {
+          questionItem = pages[page].components.find((x) => isBuiltIn(x.type));
+          if (questionItem) {
+            questionContent = questionItem.params.text;
+          }
+        }
+
+        setParticipantSummary((prevState) => ({
+          ...prevState,
+          responses: [
+            ...prevState.responses,
+            {
+              page: pages[page].order,
+              pageName: pages[page].name,
+              question: questionContent,
+              responseType: pageResponseItem.type,
+              order: pages[page].order,
+              pageLoad: new Date(),
+              isOptional: pageResponseItem.isOptional,
+            },
+          ],
+        }));
+      }
+    } else if (type == "decsys.platform.COMPONENT_RESULTS") {
+      const relavantPage = pages.find((p) =>
+        p.components.some((c) => c.id === source)
+      );
+      const pageIndex = relavantPage?.order - 1;
+      if (pageIndex > -1) {
+        setParticipantSummary((prevState) => {
+          let updatedResponses = [...prevState.responses];
+          updatedResponses[pageIndex] = {
+            ...updatedResponses[pageIndex],
+            response: payload,
+            responseRecorded: new Date(),
+          };
+          return {
+            ...prevState,
+            responses: updatedResponses,
+          };
+        });
+      }
+    }
+  };
+
   const handleClick = async () => {
     // you'd think busy state in preview wouldn't be worth it
 
@@ -86,6 +154,7 @@ const Preview = ({ id, location }) => {
         lastPage={lastPage}
         handleNextClick={handleClick}
         isBusy={isBusy}
+        logEvent={logEvent}
       />
       <ConfirmRedirectModal
         modalState={confirmRedirectModal}
