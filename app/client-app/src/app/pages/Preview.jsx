@@ -155,8 +155,8 @@ const Preview = ({ id, location }) => {
         ResolvedPage: page + 2,
         ResolvedSuccess: resolvedSuccess,
         Name: PAGE_NAVIGATION,
-        Payload: participantSummary,
       },
+      Payload: participantSummary,
     };
 
     try {
