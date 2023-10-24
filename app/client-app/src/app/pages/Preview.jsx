@@ -14,6 +14,7 @@ import {
 import { pickRandomItem } from "services/randomizer";
 import { getPageResponseItem } from "services/page-items";
 import { isBuiltIn } from "services/page-items";
+import { encode } from "services/instance-id";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -135,6 +136,29 @@ const Preview = ({ id, location }) => {
     // but in practice it resets scrolling between different page content ;)
     // as long as it takes a non "zero" amount of time
     await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Encode the surveyId
+    const encodedSurveyId = encode(targetId) + "za";
+
+    // Extract the part after "platform."
+    const eventType = type.split("platform.")[1];
+
+    // Compute ResolvedSuccess
+    const resolvedSuccess = page >= 0 && page < pages.length;
+
+    const webhookData = {
+      participantId: "PreviewParticipant",
+      surveyId: encodedSurveyId,
+      timestamp: new Date().toISOString(),
+      EventType: {
+        SourcePage: page + 1,
+        TargetPage: page,
+        ResolvedPage: page + 2,
+        ResolvedSuccess: resolvedSuccess,
+        Name: eventType,
+        Payload: participantSummary,
+      },
+    };
 
     if (lastPage) {
       if (settings?.CompletionUrl) confirmRedirectModal.onOpen();
