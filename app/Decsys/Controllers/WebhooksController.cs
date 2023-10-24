@@ -116,7 +116,7 @@ public class WebhooksController : ControllerBase
     public IActionResult PreviewTrigger([FromBody] PayloadModel payload)
     {
         var result =  _webhooks.PreviewTrigger(payload);
-        if(result != null)
+        if(result?.Payload != null)
             return Ok(result);
         
         return NoContent();
