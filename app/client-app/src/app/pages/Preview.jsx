@@ -15,6 +15,8 @@ import { pickRandomItem } from "services/randomizer";
 import { getPageResponseItem } from "services/page-items";
 import { isBuiltIn } from "services/page-items";
 import { encode } from "services/instance-id";
+import { previewWebhook } from "api/webhooks";
+import { PAGE_NAVIGATION } from "constants/event-types";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -140,9 +142,6 @@ const Preview = ({ id, location }) => {
     // Encode the surveyId
     const encodedSurveyId = encode(targetId) + "za";
 
-    // Extract the part after "platform."
-    const eventType = type.split("platform.")[1];
-
     // Compute ResolvedSuccess
     const resolvedSuccess = page >= 0 && page < pages.length;
 
@@ -155,10 +154,22 @@ const Preview = ({ id, location }) => {
         TargetPage: page,
         ResolvedPage: page + 2,
         ResolvedSuccess: resolvedSuccess,
-        Name: eventType,
+        Name: PAGE_NAVIGATION,
         Payload: participantSummary,
       },
     };
+
+    // Call the API with the webhook model
+    const shouldSend = await previewWebhook(webhookData);
+
+    if (shouldSend === null) {
+      console.error(
+        "Failed to determine whether to send webhook due to an API error."
+      );
+    } else if (shouldSend) {
+      // Log the webhook model if the API indicates it should be sent
+      console.log("Webhook Model:", webhookData);
+    }
 
     if (lastPage) {
       if (settings?.CompletionUrl) confirmRedirectModal.onOpen();
