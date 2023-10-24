@@ -65,9 +65,9 @@ const Preview = ({ id, location }) => {
   const confirmRedirectModal = useDisclosure();
 
   const [participantSummary, setParticipantSummary] = useState({
-    id: "PreviewParticipant",
-    surveyStarted: new Date(),
-    responses: [],
+    Id: "PreviewParticipant",
+    SurveyStarted: new Date(),
+    Responses: [],
   });
 
   const logEvent = (source, type, payload) => {
@@ -94,16 +94,16 @@ const Preview = ({ id, location }) => {
 
         setParticipantSummary((prevState) => ({
           ...prevState,
-          responses: [
-            ...prevState.responses,
+          Responses: [
+            ...prevState.Responses,
             {
-              page: pages[page].order,
-              pageName: pages[page].name,
-              question: questionContent,
-              responseType: pageResponseItem.type,
-              order: pages[page].order,
-              pageLoad: new Date(),
-              isOptional: pageResponseItem.isOptional,
+              Page: pages[page].order,
+              PageName: pages[page].name,
+              Question: questionContent,
+              ResponseType: pageResponseItem.type,
+              Order: pages[page].order,
+              PageLoad: new Date(),
+              IsOptional: pageResponseItem.isOptional,
             },
           ],
         }));
@@ -115,15 +115,15 @@ const Preview = ({ id, location }) => {
       const pageIndex = relavantPage?.order - 1;
       if (pageIndex > -1) {
         setParticipantSummary((prevState) => {
-          let updatedResponses = [...prevState.responses];
+          let updatedResponses = [...prevState.Responses];
           updatedResponses[pageIndex] = {
             ...updatedResponses[pageIndex],
-            response: payload,
-            responseRecorded: new Date(),
+            Response: payload,
+            ResponseRecorded: new Date(),
           };
           return {
             ...prevState,
-            responses: updatedResponses,
+            Responses: updatedResponses,
           };
         });
       }
@@ -146,9 +146,9 @@ const Preview = ({ id, location }) => {
     const resolvedSuccess = page >= 0 && page < pages.length;
 
     const webhookData = {
-      participantId: "PreviewParticipant",
-      surveyId: encodedSurveyId,
-      timestamp: new Date().toISOString(),
+      ParticipantId: "PreviewParticipant",
+      SurveyId: encodedSurveyId,
+      Timestamp: new Date().toISOString(),
       EventType: {
         SourcePage: page + 1,
         TargetPage: page,
@@ -159,16 +159,14 @@ const Preview = ({ id, location }) => {
       },
     };
 
-    // Call the API with the webhook model
-    const shouldSend = await previewWebhook(webhookData);
-
-    if (shouldSend === null) {
-      console.error(
-        "Failed to determine whether to send webhook due to an API error."
-      );
-    } else if (shouldSend) {
-      // Log the webhook model if the API indicates it should be sent
-      console.log("Webhook Model:", webhookData);
+    try {
+      // Call the API with the webhook model
+      const shouldSend = await previewWebhook(webhookData);
+      if (shouldSend != null) {
+        console.log(webhookData); // logs webhook model
+      }
+    } catch (e) {
+      console.error(e);
     }
 
     if (lastPage) {
