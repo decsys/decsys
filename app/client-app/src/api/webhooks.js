@@ -127,5 +127,8 @@ export const previewWebhook = async (payload) => {
     payload,
     withHeaders(await authorization_BearerToken())
   );
-  return response.data;
+  return {
+    status: response.status,
+    data: response.data,
+  };
 };

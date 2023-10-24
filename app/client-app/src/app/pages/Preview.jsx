@@ -161,9 +161,20 @@ const Preview = ({ id, location }) => {
 
     try {
       // Call the API with the webhook model
-      const shouldSend = await previewWebhook(webhookData);
-      if (shouldSend != null) {
-        console.log(webhookData); // logs webhook model
+      const { status, data } = await previewWebhook(webhookData);
+
+      switch (status) {
+        case 200:
+          console.log(data);
+          break;
+        case 204:
+          console.error("Webhook would not be triggered.");
+          break;
+        case 400:
+          console.error("Invalid request payload.");
+          break;
+        default:
+          console.error(`Unexpected status code: ${status}`);
       }
     } catch (e) {
       console.error(e);
