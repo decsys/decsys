@@ -11,7 +11,14 @@ public static class ConfigureWebPipeline
 {
     public static WebApplication UseWebPipeline(this WebApplication app, AppMode mode)
     {
-        app.UseResponseCompression();
+        app.UseResponseCompression()
+            
+            // Enable reading request streams manually when needed
+            // https://markb.uk/asp-net-core-read-raw-request-body-as-string.html
+            .Use(next => context => {
+                context.Request.EnableBuffering();
+                return next(context);
+            });
         
         app.GnuTerryPratchett();
         
