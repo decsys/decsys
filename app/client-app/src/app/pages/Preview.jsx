@@ -65,9 +65,9 @@ const Preview = ({ id, location }) => {
   const confirmRedirectModal = useDisclosure();
 
   const [participantSummary, setParticipantSummary] = useState({
-    Id: "PreviewParticipant",
-    SurveyStarted: new Date(),
-    Responses: [],
+    id: "74972a18-f43f-4fe9-99a6-07b99746aebd",
+    surveyStarted: new Date(),
+    responses: [],
   });
 
   const logEvent = (source, type, payload) => {
@@ -94,16 +94,16 @@ const Preview = ({ id, location }) => {
 
         setParticipantSummary((prevState) => ({
           ...prevState,
-          Responses: [
-            ...prevState.Responses,
+          responses: [
+            ...prevState.responses,
             {
-              Page: pages[page].order,
-              PageName: pages[page].name,
-              Question: questionContent,
-              ResponseType: pageResponseItem.type,
-              Order: pages[page].order,
-              PageLoad: new Date(),
-              IsOptional: pageResponseItem.isOptional,
+              page: pages[page].order,
+              pageName: pages[page].name,
+              question: questionContent,
+              responseType: pageResponseItem.type,
+              order: pages[page].order,
+              pageLoad: new Date(),
+              isOptional: pageResponseItem.isOptional,
             },
           ],
         }));
@@ -115,15 +115,15 @@ const Preview = ({ id, location }) => {
       const pageIndex = relavantPage?.order - 1;
       if (pageIndex > -1) {
         setParticipantSummary((prevState) => {
-          let updatedResponses = [...prevState.Responses];
+          let updatedResponses = [...prevState.responses];
           updatedResponses[pageIndex] = {
             ...updatedResponses[pageIndex],
-            Response: payload,
-            ResponseRecorded: new Date(),
+            response: payload,
+            responseRecorded: new Date(),
           };
           return {
             ...prevState,
-            Responses: updatedResponses,
+            responses: updatedResponses,
           };
         });
       }
@@ -140,29 +140,29 @@ const Preview = ({ id, location }) => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Encode the surveyId
-    const encodedSurveyId = encode(targetId) + "za";
+    const encodedSurveyId = encode(targetId) + "zb";
 
     // Compute ResolvedSuccess
     const resolvedSuccess = page >= 0 && page < pages.length;
 
     const webhookData = {
-      ParticipantId: "PreviewParticipant",
-      SurveyId: encodedSurveyId,
-      Timestamp: new Date().toISOString(),
-      EventType: {
+      participantId: "74972a18-f43f-4fe9-99a6-07b99746aebd",
+      surveyId: encodedSurveyId,
+      timestamp: new Date().toISOString(),
+      eventType: {
         SourcePage: page + 1,
         TargetPage: page,
         ResolvedPage: page + 2,
-        ResolvedSuccess: resolvedSuccess,
+        ResolvedSuccess: !resolvedSuccess,
         Name: PAGE_NAVIGATION,
       },
-      Payload: participantSummary,
+      payload: participantSummary,
     };
 
     try {
       // Call the API with the webhook model
       const { status, data } = await previewWebhook(webhookData);
-
+      console.log(webhookData);
       switch (status) {
         case 200:
           console.log(data);
