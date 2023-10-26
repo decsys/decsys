@@ -65,7 +65,7 @@ const Preview = ({ id, location }) => {
   const confirmRedirectModal = useDisclosure();
 
   const [participantSummary, setParticipantSummary] = useState({
-    id: "74972a18-f43f-4fe9-99a6-07b99746aebd",
+    id: "PreviewParticipant",
     surveyStarted: new Date(),
     responses: [],
   });
@@ -146,7 +146,7 @@ const Preview = ({ id, location }) => {
     const resolvedSuccess = page >= 0 && page < pages.length;
 
     const webhookData = {
-      participantId: "74972a18-f43f-4fe9-99a6-07b99746aebd",
+      participantId: "PreviewParticipant",
       surveyId: encodedSurveyId,
       timestamp: new Date().toISOString(),
       eventType: {
@@ -162,7 +162,6 @@ const Preview = ({ id, location }) => {
     try {
       // Call the API with the webhook model
       const { status, data } = await previewWebhook(webhookData);
-      console.log(webhookData);
       switch (status) {
         case 200:
           console.log(data);
