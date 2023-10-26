@@ -120,3 +120,15 @@ export const getWebhook = async (webhookId) => {
   );
   return response.data;
 };
+
+export const previewWebhook = async (payload) => {
+  const response = await axios.post(
+    "/api/webhooks/preview",
+    payload,
+    withHeaders(await authorization_BearerToken())
+  );
+  return {
+    status: response.status,
+    data: response.data,
+  };
+};

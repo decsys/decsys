@@ -14,6 +14,9 @@ import {
 import { pickRandomItem } from "services/randomizer";
 import { getPageResponseItem } from "services/page-items";
 import { isBuiltIn } from "services/page-items";
+import { encode } from "services/instance-id";
+import { previewWebhook } from "api/webhooks";
+import { PAGE_NAVIGATION } from "constants/event-types";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -135,6 +138,46 @@ const Preview = ({ id, location }) => {
     // but in practice it resets scrolling between different page content ;)
     // as long as it takes a non "zero" amount of time
     await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Encode the surveyId
+    const encodedSurveyId = encode(targetId) + "zb";
+
+    // Compute ResolvedSuccess
+    const resolvedSuccess = page >= 0 && page < pages.length;
+
+    const webhookData = {
+      participantId: "PreviewParticipant",
+      surveyId: encodedSurveyId,
+      timestamp: new Date().toISOString(),
+      eventType: {
+        SourcePage: page + 1,
+        TargetPage: page,
+        ResolvedPage: page + 2,
+        ResolvedSuccess: !resolvedSuccess,
+        Name: PAGE_NAVIGATION,
+      },
+      payload: participantSummary,
+    };
+
+    try {
+      // Call the API with the webhook model
+      const { status, data } = await previewWebhook(webhookData);
+      switch (status) {
+        case 200:
+          console.log(data);
+          break;
+        case 204:
+          console.error("Webhook would not be triggered.");
+          break;
+        case 400:
+          console.error("Invalid request payload.");
+          break;
+        default:
+          console.error(`Unexpected status code: ${status}`);
+      }
+    } catch (e) {
+      console.error(e);
+    }
 
     if (lastPage) {
       if (settings?.CompletionUrl) confirmRedirectModal.onOpen();

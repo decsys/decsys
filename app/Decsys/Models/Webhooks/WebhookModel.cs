@@ -1,3 +1,5 @@
+using Decsys.Constants;
+
 namespace Decsys.Models.Webhooks;
 
 public class WebhookModel
@@ -20,10 +22,16 @@ public class WebhookModel
 /// </summary>
 public class BaseEventType
 {
+    public BaseEventType(string name)
+    {
+        Name = name;
+    }
     public string Name { get; set; } = string.Empty;
 }
 public class PageNavigation : BaseEventType
 {
+    public PageNavigation() : base(WebhookEventTypes.PAGE_NAVIGATION) {}
+
     /// <summary>
     /// The page the user is leaving.
     /// </summary>

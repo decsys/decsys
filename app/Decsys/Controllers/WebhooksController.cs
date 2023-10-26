@@ -1,5 +1,8 @@
+using System.Text.Json;
 using Decsys.Auth;
 using Decsys.Constants;
+using Decsys.Extensions;
+using Decsys.Models;
 using Decsys.Models.Webhooks;
 using Decsys.Services;
 using Decsys.Utilities;
@@ -7,6 +10,8 @@ using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers;
@@ -18,21 +23,21 @@ namespace Decsys.Controllers;
 public class WebhooksController : ControllerBase
 {
     private readonly WebhookService _webhooks;
- 
+
     public WebhooksController(
         WebhookService webhooks)
     {
         _webhooks = webhooks;
     }
-    
+
     [HttpGet("generate-secret")]
     [SwaggerOperation("Generate a webhook secret")]
     [SwaggerResponse(200, "Webhook secret generated.")]
     [SwaggerResponse(500, "Server failed to generate the secret.")]
     public IActionResult GenerateSecret()
-    { 
+    {
         {
-            string secret =  Crypto.GenerateId(32,  CryptoRandom.OutputFormat.Hex);
+            string secret = Crypto.GenerateId(32, CryptoRandom.OutputFormat.Hex);
             return Ok(secret);
         }
     }
@@ -50,12 +55,11 @@ public class WebhooksController : ControllerBase
         }
 
         {
-            var webhookId  = _webhooks.Create(model);
+            var webhookId = _webhooks.Create(model);
             return Ok(webhookId);
         }
-
     }
-    
+
     [HttpGet("{id}")]
     [SwaggerOperation("Get a webhook for the given webhook ID")]
     [SwaggerResponse(200, "Webhook found.")]
@@ -66,7 +70,7 @@ public class WebhooksController : ControllerBase
         return Ok(webhook);
     }
 
-    
+
     [HttpGet("survey/{surveyId}")]
     [SwaggerOperation("Get all webhooks for the given survey ID")]
     [SwaggerResponse(200, "List of webhooks found.")]
@@ -83,12 +87,12 @@ public class WebhooksController : ControllerBase
     [SwaggerResponse(404, "No webhook found with the specified ID and survey ID")]
     public IActionResult Edit(string id, WebhookModel model)
     {
-        if (!ModelState.IsValid) 
+        if (!ModelState.IsValid)
         {
             return BadRequest("Invalid model provided.");
         }
 
-        try 
+        try
         {
             var newWebhook = _webhooks.Edit(id, model);
             return Ok(newWebhook);
@@ -107,18 +111,47 @@ public class WebhooksController : ControllerBase
         _webhooks.Delete(id);
         return NoContent();
     }
-    
+
     [HttpPost("preview")]
     [SwaggerOperation("Preview if a webhook would trigger")]
     [SwaggerResponse(200, "Webhook would be triggered")]
     [SwaggerResponse(204, "Webhook would not be triggered")]
     [SwaggerResponse(400, "Invalid request payload")]
-    public IActionResult PreviewTrigger([FromBody] PayloadModel payload)
+    public async Task<IActionResult> PreviewTrigger([FromBody] PayloadModel payload)
     {
-        var result =  _webhooks.PreviewTrigger(payload);
-        if(result != null)
+        // The ASP.NET Core model binder doesn't know what to do
+        // with our derived types (from BaseEventType)
+        // so we'll have to do some manual parsing of that
+        // and the payload into the correct types
+
+        // Get the request body as a JObject so we can parse bits of it ourselves
+        var rawBody = await Request.GetRawBodyAsync();
+        var jbody = JsonConvert.DeserializeObject<JObject>(rawBody);
+        var rawEventType = jbody?["eventType"];
+
+        switch (payload.EventType.Name)
+        {
+            case WebhookEventTypes.PAGE_NAVIGATION:
+                // Deserialize event type to our intended target type
+                var eventType = rawEventType?.ToObject<PageNavigation>();
+                if (eventType is null)
+                    return BadRequest("Failed to parse EventType as a valid Page Navigation event type");
+                payload.EventType = eventType;
+
+                // Deserialize payload to our intended target type
+                payload.Payload = ((JObject?)payload.Payload)? // We know this model binds to a JObject <3
+                    .ToObject<ParticipantResultsSummary>();
+
+                break;
+            default:
+                return BadRequest(
+                    $"Unrecognized Webhook Event Type: {payload.EventType.Name}");
+        }
+
+        var result = _webhooks.PreviewTrigger(payload);
+        if (result?.Payload != null)
             return Ok(result);
-        
+
         return NoContent();
     }
 }
