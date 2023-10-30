@@ -34,6 +34,25 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
   });
 };
 
+const WebhookCounter = ({ webhookCount }) => (
+  <Stack direction="row" align="center" spacing={1}>
+    <Button
+      size="md"
+      colorScheme="teal"
+      variant="outline"
+      borderWidth="2px"
+      mr={2}
+    >
+      <Flex align="center">
+        <Icon as={webhookCount !== null ? FaBell : FaRegBell} />
+        {webhookCount > 0 && (
+          <span style={{ marginLeft: "8px" }}>{webhookCount}</span>
+        )}
+      </Flex>
+    </Button>
+  </Stack>
+);
+
 const SurveyPage = ({
   surveyId,
   page,
@@ -117,26 +136,6 @@ const SurveyPage = ({
   const [isMore, setIsMore] = useState();
   const handleBodyBottomVisibilityChange = (isVisible) => setIsMore(!isVisible);
 
-  const WebhookCounter = () => (
-    <Stack direction="row" align="center" spacing={1}>
-      <Button
-        size="md"
-        colorScheme="teal"
-        variant="outline"
-        borderWidth="2px"
-        onClick={clearResult}
-        mr={2}
-      >
-        <Flex align="center">
-          <Icon as={webhookCount > 0 ? FaBell : FaRegBell} />
-          {webhookCount > 0 && (
-            <span style={{ marginLeft: "8px" }}>{webhookCount}</span>
-          )}
-        </Flex>
-      </Button>
-    </Stack>
-  );
-
   return (
     <>
       <Flex overflowY="auto" py={2}>
@@ -194,7 +193,9 @@ const SurveyPage = ({
             >
               Clear Response
             </Button>
-            <WebhookCounter />
+            {webhookCount != null && (
+              <WebhookCounter webhookCount={webhookCount} />
+            )}
             <Button
               size="md"
               disabled={!nextEnabled || isBusy}
