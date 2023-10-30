@@ -205,6 +205,7 @@ const Preview = ({ id, location }) => {
         webhookCount={webhookCount}
         unread={unread}
         setUnread={setUnread}
+        setWebhookCount={setWebhookCount}
       />
       <ConfirmRedirectModal
         modalState={confirmRedirectModal}
