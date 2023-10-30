@@ -2,7 +2,23 @@ import { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
-import { Stack, Button, Flex, Badge, Icon, Box, Text } from "@chakra-ui/react";
+import {
+  Stack,
+  Button,
+  Flex,
+  Badge,
+  Icon,
+  Box,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalCloseButton,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  ModalContent,
+} from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { InView } from "react-intersection-observer";
@@ -34,39 +50,74 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
   });
 };
 
-const WebhookCounter = ({ webhookCount, unread }) => (
-  <Stack direction="row" align="center" spacing={1}>
-    <Button
-      size="lg"
-      colorScheme="teal"
-      variant="outline"
-      borderWidth="2px"
-      mr={2}
-    >
-      <Flex align="center" position="relative">
-        <Icon as={webhookCount > 0 ? FaBell : FaRegBell} boxSize="24px" />
-        {unread && (
-          <Box
-            position="absolute"
-            top="-6px"
-            right="-3px"
-            backgroundColor="red"
-            borderRadius="50%"
-            width="18px"
-            height="17px"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Text fontSize="sm" color="white">
-              {webhookCount}
-            </Text>
-          </Box>
-        )}
-      </Flex>
-    </Button>
-  </Stack>
-);
+const WebhookNotification = ({ webhookCount, unread, setUnread }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleClick = () => {
+    setUnread(false);
+    onOpen();
+  };
+  return (
+    <>
+      <Stack direction="row" align="center" spacing={1}>
+        <Button
+          size="lg"
+          colorScheme="teal"
+          variant="outline"
+          borderWidth="2px"
+          mr={2}
+          onClick={handleClick}
+        >
+          <Flex align="center" position="relative">
+            <Icon
+              as={webhookCount > 0 && unread ? FaBell : FaRegBell}
+              boxSize="24px"
+            />
+            {unread && (
+              <Box
+                position="absolute"
+                top="-6px"
+                right="-3px"
+                backgroundColor="red"
+                borderRadius="50%"
+                width="18px"
+                height="17px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Text fontSize="sm" color="white">
+                  {webhookCount}
+                </Text>
+              </Box>
+            )}
+          </Flex>
+        </Button>
+      </Stack>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores
+            eum maxime illum rem consequuntur nesciunt. Totam eligendi libero
+            nostrum ullam esse nesciunt fuga cumque vel, molestias ducimus
+            placeat, modi nobis.
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  );
+};
 
 const SurveyPage = ({
   surveyId,
@@ -77,6 +128,7 @@ const SurveyPage = ({
   isBusy,
   webhookCount,
   unread,
+  setUnread,
 }) => {
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
@@ -210,7 +262,11 @@ const SurveyPage = ({
               Clear Response
             </Button>
             {webhookCount != null && (
-              <WebhookCounter webhookCount={webhookCount} unread={unread} />
+              <WebhookNotification
+                webhookCount={webhookCount}
+                unread={unread}
+                setUnread={setUnread}
+              />
             )}
             <Button
               size="lg"
