@@ -62,6 +62,7 @@ const Preview = ({ id, location }) => {
   const [isBusy, setIsBusy] = useState();
   const [lastPage, setLastPage] = useState(false);
   const [webhookCount, setWebhookCount] = useState(0);
+  const [unread, setUnread] = useState(false);
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
   const confirmRedirectModal = useDisclosure();
 
@@ -167,6 +168,7 @@ const Preview = ({ id, location }) => {
         case 200:
           console.log(data);
           setWebhookCount((prevCount) => prevCount + 1);
+          setUnread(true);
           break;
         case 204:
           console.error("Webhook would not be triggered.");
@@ -201,6 +203,7 @@ const Preview = ({ id, location }) => {
         isBusy={isBusy}
         logEvent={logEvent}
         webhookCount={webhookCount}
+        unread={unread}
       />
       <ConfirmRedirectModal
         modalState={confirmRedirectModal}

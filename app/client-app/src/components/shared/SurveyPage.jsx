@@ -2,7 +2,7 @@ import { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
-import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/react";
+import { Stack, Button, Flex, Badge, Icon, Box, Text } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { InView } from "react-intersection-observer";
@@ -34,7 +34,7 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
   });
 };
 
-const WebhookCounter = ({ webhookCount }) => (
+const WebhookCounter = ({ webhookCount, unread }) => (
   <Stack direction="row" align="center" spacing={1}>
     <Button
       size="md"
@@ -43,10 +43,25 @@ const WebhookCounter = ({ webhookCount }) => (
       borderWidth="2px"
       mr={2}
     >
-      <Flex align="center">
-        <Icon as={webhookCount !== null ? FaBell : FaRegBell} />
-        {webhookCount > 0 && (
-          <span style={{ marginLeft: "8px" }}>{webhookCount}</span>
+      <Flex align="center" position="relative">
+        <Icon as={webhookCount > 0 ? FaBell : FaRegBell} />
+        {unread && (
+          <Box
+            position="absolute"
+            top="-6px"
+            right="-6px"
+            backgroundColor="red"
+            borderRadius="50%"
+            width="15px"
+            height="15px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Text fontSize="xs" color="white">
+              {webhookCount}
+            </Text>
+          </Box>
         )}
       </Flex>
     </Button>
@@ -61,6 +76,7 @@ const SurveyPage = ({
   logEvent,
   isBusy,
   webhookCount,
+  unread,
 }) => {
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
@@ -194,7 +210,7 @@ const SurveyPage = ({
               Clear Response
             </Button>
             {webhookCount != null && (
-              <WebhookCounter webhookCount={webhookCount} />
+              <WebhookCounter webhookCount={webhookCount} unread={unread} />
             )}
             <Button
               size="md"
