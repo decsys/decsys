@@ -37,28 +37,28 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
 const WebhookCounter = ({ webhookCount, unread }) => (
   <Stack direction="row" align="center" spacing={1}>
     <Button
-      size="md"
+      size="lg"
       colorScheme="teal"
       variant="outline"
       borderWidth="2px"
       mr={2}
     >
       <Flex align="center" position="relative">
-        <Icon as={webhookCount > 0 ? FaBell : FaRegBell} />
+        <Icon as={webhookCount > 0 ? FaBell : FaRegBell} boxSize="24px" />
         {unread && (
           <Box
             position="absolute"
             top="-6px"
-            right="-6px"
+            right="-3px"
             backgroundColor="red"
             borderRadius="50%"
-            width="15px"
-            height="15px"
+            width="18px"
+            height="17px"
             display="flex"
             alignItems="center"
             justifyContent="center"
           >
-            <Text fontSize="xs" color="white">
+            <Text fontSize="sm" color="white">
               {webhookCount}
             </Text>
           </Box>
@@ -200,7 +200,7 @@ const SurveyPage = ({
 
           <Stack spacing={3} direction="row" align="center">
             <Button
-              size="md"
+              size="lg"
               colorScheme="red"
               variant="outline"
               borderWidth="2px"
@@ -213,7 +213,7 @@ const SurveyPage = ({
               <WebhookCounter webhookCount={webhookCount} unread={unread} />
             )}
             <Button
-              size="md"
+              size="lg"
               disabled={!nextEnabled || isBusy}
               isLoading={isBusy}
               colorScheme={nextEnabled ? "blue" : "gray"}
