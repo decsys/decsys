@@ -8,6 +8,7 @@ import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { InView } from "react-intersection-observer";
 import { usePrevious } from "hooks/usePrevious";
 import { BusyPage } from "components/core";
+import { FaRegBell, FaBell } from "react-icons/fa";
 
 export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
@@ -33,6 +34,25 @@ export const Body = ({ page, renderContext, setResultLogged }) => {
   });
 };
 
+const WebhookCounter = ({ webhookCount }) => (
+  <Stack direction="row" align="center" spacing={1}>
+    <Button
+      size="md"
+      colorScheme="teal"
+      variant="outline"
+      borderWidth="2px"
+      mr={2}
+    >
+      <Flex align="center">
+        <Icon as={webhookCount !== null ? FaBell : FaRegBell} />
+        {webhookCount > 0 && (
+          <span style={{ marginLeft: "8px" }}>{webhookCount}</span>
+        )}
+      </Flex>
+    </Button>
+  </Stack>
+);
+
 const SurveyPage = ({
   surveyId,
   page,
@@ -40,6 +60,7 @@ const SurveyPage = ({
   handleNextClick,
   logEvent,
   isBusy,
+  webhookCount,
 }) => {
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
@@ -160,6 +181,7 @@ const SurveyPage = ({
               </Badge>
             )}
           </div>
+
           <Stack spacing={3} direction="row" align="center">
             <Button
               size="md"
@@ -171,8 +193,11 @@ const SurveyPage = ({
             >
               Clear Response
             </Button>
+            {webhookCount != null && (
+              <WebhookCounter webhookCount={webhookCount} />
+            )}
             <Button
-              size="lg"
+              size="md"
               disabled={!nextEnabled || isBusy}
               isLoading={isBusy}
               colorScheme={nextEnabled ? "blue" : "gray"}
