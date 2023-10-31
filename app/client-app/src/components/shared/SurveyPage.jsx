@@ -55,6 +55,7 @@ const WebhookNotification = ({
   unread,
   setUnread,
   setWebhookCount,
+  triggeredHooks,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -62,6 +63,7 @@ const WebhookNotification = ({
     setUnread(false);
     onOpen();
     setWebhookCount(0);
+    console.log(triggeredHooks);
   };
   return (
     <>
@@ -136,6 +138,7 @@ const SurveyPage = ({
   unread,
   setUnread,
   setWebhookCount,
+  triggeredHooks,
 }) => {
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
@@ -274,6 +277,7 @@ const SurveyPage = ({
                 unread={unread}
                 setUnread={setUnread}
                 setWebhookCount={setWebhookCount}
+                triggeredHooks={triggeredHooks}
               />
             )}
             <Button
