@@ -18,13 +18,16 @@ import {
   ModalFooter,
   useDisclosure,
   ModalContent,
+  HStack,
+  VStack,
 } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
-import { FaChevronRight, FaChevronDown } from "react-icons/fa";
+import { FaChevronRight, FaChevronDown, FaClock } from "react-icons/fa";
 import { InView } from "react-intersection-observer";
 import { usePrevious } from "hooks/usePrevious";
 import { BusyPage } from "components/core";
 import { FaRegBell, FaBell } from "react-icons/fa";
+import { exportDateFormat } from "services/date-formats";
 
 export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
@@ -103,23 +106,57 @@ const WebhookNotification = ({
         </Button>
       </Stack>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader bg="blue.500" color="white">
+            Triggered Webhooks
+          </ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolores
-            eum maxime illum rem consequuntur nesciunt. Totam eligendi libero
-            nostrum ullam esse nesciunt fuga cumque vel, molestias ducimus
-            placeat, modi nobis.
+          <ModalBody py={4}>
+            {triggeredHooks.length > 0 ? (
+              triggeredHooks.map((hook, idx) => (
+                <Box
+                  bg="white"
+                  boxShadow="0 4px 8px 0 rgba(0,0,0,0.2)"
+                  borderRadius="md"
+                  p={4}
+                  mb={3}
+                  key={idx}
+                >
+                  <HStack spacing={3}>
+                    <Icon as={FaClock} boxSize={6} />
+                    <Box>
+                      <HStack spacing={1}>
+                        <Text fontSize="md">Timestamp: </Text>
+                        <Text fontSize="md">
+                          {`${
+                            exportDateFormat(new Date(hook.timestamp)).date
+                          } ${
+                            exportDateFormat(new Date(hook.timestamp)).time
+                          } ${exportDateFormat(new Date(hook.timestamp)).tz}`}
+                        </Text>
+                      </HStack>
+                    </Box>
+                  </HStack>
+                  <HStack align="stretch" spacing={2} mt={3}>
+                    <Badge colorScheme="blue" py={1} px={2}>
+                      Source Page: {hook.eventType.sourcePage}
+                    </Badge>
+                    <Badge colorScheme="green" py={1} px={2}>
+                      Survey ID: {hook.surveyId}
+                    </Badge>
+                  </HStack>
+                </Box>
+              ))
+            ) : (
+              <Text color="gray.500">No webhooks have been triggered.</Text>
+            )}
           </ModalBody>
-
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button colorScheme="blue" onClick={onClose}>
               Close
             </Button>
-            <Button variant="ghost">Secondary Action</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
