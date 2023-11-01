@@ -94,7 +94,6 @@ const WebhookNotification = ({
     setUnread(false);
     onOpen();
     setWebhookCount(0);
-    console.log(triggeredHooks);
   };
 
   return (
@@ -144,51 +143,59 @@ const WebhookNotification = ({
           <ModalCloseButton />
           <ModalBody py={4}>
             {triggeredHooks.length > 0 ? (
-              triggeredHooks.map((hook, idx) => (
-                <Flex
-                  bg="white"
-                  boxShadow="0 4px 8px 0 rgba(0,0,0,0.2)"
-                  borderRadius="md"
-                  p={4}
-                  mb={3}
-                  key={idx}
-                  flexDirection="column"
-                >
-                  <HStack>
-                    <Icon as={FaClock} boxSize={6} />
-                    <Badge
-                      colorScheme="white"
-                      fontSize="md"
-                      fontWeight="semibold"
-                    >
-                      Timestamp:{" "}
-                      {`${exportDateFormat(new Date(hook.timestamp)).date} ${
-                        exportDateFormat(new Date(hook.timestamp)).time
-                      } ${exportDateFormat(new Date(hook.timestamp)).tz}`}
-                    </Badge>
-                  </HStack>
-                  <HStack width="100%">
-                    <VStack spacing={2} pt={2}>
-                      <Badge colorScheme="blue" py={1} px={2} width="100%">
-                        Source Page: {hook.eventType.sourcePage}
+              triggeredHooks.map((hook, idx) => {
+                const getPageName = (page) => {
+                  const responseItem = hook.payload.responses.find(
+                    (response) => response.page === page
+                  );
+                  return responseItem ? responseItem.pageName : "Unknown";
+                };
+                return (
+                  <Flex
+                    bg="white"
+                    boxShadow="0 4px 8px 0 rgba(0,0,0,0.2)"
+                    borderRadius="md"
+                    p={4}
+                    mb={3}
+                    key={idx}
+                    flexDirection="column"
+                  >
+                    <HStack>
+                      <Icon as={FaClock} boxSize={6} color="gray.500" />
+                      <Badge
+                        colorScheme="white"
+                        fontSize="md"
+                        fontWeight="semibold"
+                      >
+                        Timestamp:{" "}
+                        {`${exportDateFormat(new Date(hook.timestamp)).date} ${
+                          exportDateFormat(new Date(hook.timestamp)).time
+                        } ${exportDateFormat(new Date(hook.timestamp)).tz}`}
                       </Badge>
-                      <Badge colorScheme="green" py={1} px={2} width="100%">
-                        Survey ID: {hook.surveyId}
-                      </Badge>
-                    </VStack>
-                    <Spacer />
-                    <Button
-                      size="sm"
-                      leftIcon={<Icon as={FaFileAlt} />}
-                      colorScheme="twitter"
-                      variant="solid"
-                      onClick={() => setSelectedWebhook(hook)}
-                    >
-                      <Text fontSize="sm">Webhook Payload</Text>
-                    </Button>
-                  </HStack>
-                </Flex>
-              ))
+                    </HStack>
+                    <HStack width="100%">
+                      <VStack spacing={2} pt={2}>
+                        <Badge colorScheme="blue" py={1} px={2} width="100%">
+                          Source Page: {hook.eventType.sourcePage}
+                        </Badge>
+                        <Badge colorScheme="blue" py={1} px={2} mt={2}>
+                          Page Name: {getPageName(hook.eventType.sourcePage)}
+                        </Badge>
+                      </VStack>
+                      <Spacer />
+                      <Button
+                        size="sm"
+                        leftIcon={<Icon as={FaFileAlt} />}
+                        colorScheme="linkedin"
+                        variant="solid"
+                        onClick={() => setSelectedWebhook(hook)}
+                      >
+                        <Text fontSize="sm">Webhook Payload</Text>
+                      </Button>
+                    </HStack>
+                  </Flex>
+                );
+              })
             ) : (
               <Text color="gray.500">No webhooks have been triggered.</Text>
             )}
