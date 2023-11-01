@@ -20,9 +20,15 @@ import {
   ModalContent,
   HStack,
   VStack,
+  Code,
 } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
-import { FaChevronRight, FaChevronDown, FaClock } from "react-icons/fa";
+import {
+  FaChevronRight,
+  FaChevronDown,
+  FaClock,
+  FaFileAlt,
+} from "react-icons/fa";
 import { InView } from "react-intersection-observer";
 import { usePrevious } from "hooks/usePrevious";
 import { BusyPage } from "components/core";
@@ -61,6 +67,27 @@ const WebhookNotification = ({
   triggeredHooks,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedWebhook, setSelectedWebhook] = useState(null);
+
+  const JSONModal = ({ isOpen, onClose, jsonData }) => (
+    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>JSON Payload</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Code style={{ whiteSpace: "pre-wrap", backgroundColor: "white" }}>
+            {JSON.stringify(jsonData, null, 2)}
+          </Code>
+        </ModalBody>
+        <ModalFooter>
+          <Button colorScheme="blue" onClick={onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
 
   const handleClick = () => {
     setUnread(false);
@@ -68,6 +95,7 @@ const WebhookNotification = ({
     setWebhookCount(0);
     console.log(triggeredHooks);
   };
+
   return (
     <>
       <Stack direction="row" align="center" spacing={1}>
@@ -116,7 +144,7 @@ const WebhookNotification = ({
           <ModalBody py={4}>
             {triggeredHooks.length > 0 ? (
               triggeredHooks.map((hook, idx) => (
-                <Box
+                <Flex
                   bg="white"
                   boxShadow="0 4px 8px 0 rgba(0,0,0,0.2)"
                   borderRadius="md"
@@ -124,30 +152,49 @@ const WebhookNotification = ({
                   mb={3}
                   key={idx}
                 >
-                  <HStack spacing={3}>
-                    <Icon as={FaClock} boxSize={6} />
-                    <Box>
-                      <HStack spacing={1}>
-                        <Text fontSize="md">Timestamp: </Text>
-                        <Text fontSize="md">
-                          {`${
-                            exportDateFormat(new Date(hook.timestamp)).date
-                          } ${
-                            exportDateFormat(new Date(hook.timestamp)).time
-                          } ${exportDateFormat(new Date(hook.timestamp)).tz}`}
-                        </Text>
-                      </HStack>
-                    </Box>
-                  </HStack>
-                  <HStack align="stretch" spacing={2} mt={3}>
-                    <Badge colorScheme="blue" py={1} px={2}>
-                      Source Page: {hook.eventType.sourcePage}
-                    </Badge>
-                    <Badge colorScheme="green" py={1} px={2}>
-                      Survey ID: {hook.surveyId}
-                    </Badge>
-                  </HStack>
-                </Box>
+                  <Flex flexDirection="column">
+                    <HStack>
+                      <Icon as={FaClock} boxSize={6} />
+                      <Box>
+                        <HStack spacing={1}>
+                          <Text fontSize="md">Timestamp: </Text>
+                          <Text fontSize="md">
+                            {`${
+                              exportDateFormat(new Date(hook.timestamp)).date
+                            } ${
+                              exportDateFormat(new Date(hook.timestamp)).time
+                            } ${exportDateFormat(new Date(hook.timestamp)).tz}`}
+                          </Text>
+                        </HStack>
+                      </Box>
+                    </HStack>
+                    <VStack spacing={2} pt={2}>
+                      <Flex
+                        width="full"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <VStack alignItems="flex-start" spacing={1}>
+                          <Badge colorScheme="blue" py={1} px={2}>
+                            Source Page: {hook.eventType.sourcePage}
+                          </Badge>
+                          <Badge colorScheme="green" py={1} px={2}>
+                            Survey ID: {hook.surveyId}
+                          </Badge>
+                        </VStack>
+                        <Button
+                          size="sm"
+                          leftIcon={<Icon as={FaFileAlt} />}
+                          colorScheme="twitter"
+                          variant="solid"
+                          onClick={() => setSelectedWebhook(hook)}
+                        >
+                          <Text fontSize="sm">View Payload</Text>
+                        </Button>
+                      </Flex>
+                    </VStack>
+                  </Flex>
+                </Flex>
               ))
             ) : (
               <Text color="gray.500">No webhooks have been triggered.</Text>
@@ -160,6 +207,11 @@ const WebhookNotification = ({
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <JSONModal
+        isOpen={selectedWebhook !== null}
+        onClose={() => setSelectedWebhook(null)}
+        jsonData={selectedWebhook}
+      />
     </>
   );
 };
