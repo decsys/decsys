@@ -62,7 +62,6 @@ const Preview = ({ id, location }) => {
   const [isBusy, setIsBusy] = useState();
   const [lastPage, setLastPage] = useState(false);
   const [webhookCount, setWebhookCount] = useState(0);
-  const [unread, setUnread] = useState(false);
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
   const confirmRedirectModal = useDisclosure();
 
@@ -72,6 +71,7 @@ const Preview = ({ id, location }) => {
     responses: [],
   });
   const [triggeredHooks, setTriggeredHooks] = useState([]);
+  const [unread, setUnread] = useState(false);
 
   const logEvent = (source, type, payload) => {
     const pageResponseItem = getPageResponseItem(pages[page].components);
@@ -167,7 +167,6 @@ const Preview = ({ id, location }) => {
       const { status, data } = await previewWebhook(webhookData);
       switch (status) {
         case 200:
-          //console.log(data);
           setWebhookCount((prevCount) => prevCount + 1);
           setUnread(true);
           setTriggeredHooks((prev) => [...prev, data]);

@@ -2,38 +2,13 @@ import { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
-import {
-  Stack,
-  Button,
-  Flex,
-  Badge,
-  Icon,
-  Box,
-  Text,
-  Modal,
-  ModalOverlay,
-  ModalCloseButton,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  ModalContent,
-  HStack,
-  VStack,
-  Code,
-  Spacer,
-} from "@chakra-ui/react";
+import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
-import {
-  FaChevronRight,
-  FaChevronDown,
-  FaClock,
-  FaFileAlt,
-} from "react-icons/fa";
+import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { InView } from "react-intersection-observer";
 import { usePrevious } from "hooks/usePrevious";
 import { BusyPage } from "components/core";
-import { WebhookNotification } from "app/pages/Editor/components/Webhook/WebhookNotification";
+import WebhookNotification from "app/pages/Editor/components/Webhook/WebhookNotification";
 
 export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
