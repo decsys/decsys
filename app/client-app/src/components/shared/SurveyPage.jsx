@@ -21,6 +21,7 @@ import {
   HStack,
   VStack,
   Code,
+  Spacer,
 } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
 import {
@@ -151,49 +152,41 @@ const WebhookNotification = ({
                   p={4}
                   mb={3}
                   key={idx}
+                  flexDirection="column"
                 >
-                  <Flex flexDirection="column">
-                    <HStack>
-                      <Icon as={FaClock} boxSize={6} />
-                      <Box>
-                        <HStack spacing={1}>
-                          <Text fontSize="md">Timestamp: </Text>
-                          <Text fontSize="md">
-                            {`${
-                              exportDateFormat(new Date(hook.timestamp)).date
-                            } ${
-                              exportDateFormat(new Date(hook.timestamp)).time
-                            } ${exportDateFormat(new Date(hook.timestamp)).tz}`}
-                          </Text>
-                        </HStack>
-                      </Box>
-                    </HStack>
+                  <HStack>
+                    <Icon as={FaClock} boxSize={6} />
+                    <Badge
+                      colorScheme="white"
+                      fontSize="md"
+                      fontWeight="semibold"
+                    >
+                      Timestamp:{" "}
+                      {`${exportDateFormat(new Date(hook.timestamp)).date} ${
+                        exportDateFormat(new Date(hook.timestamp)).time
+                      } ${exportDateFormat(new Date(hook.timestamp)).tz}`}
+                    </Badge>
+                  </HStack>
+                  <HStack width="100%">
                     <VStack spacing={2} pt={2}>
-                      <Flex
-                        width="full"
-                        justifyContent="space-between"
-                        alignItems="center"
-                      >
-                        <VStack alignItems="flex-start" spacing={1}>
-                          <Badge colorScheme="blue" py={1} px={2}>
-                            Source Page: {hook.eventType.sourcePage}
-                          </Badge>
-                          <Badge colorScheme="green" py={1} px={2}>
-                            Survey ID: {hook.surveyId}
-                          </Badge>
-                        </VStack>
-                        <Button
-                          size="sm"
-                          leftIcon={<Icon as={FaFileAlt} />}
-                          colorScheme="twitter"
-                          variant="solid"
-                          onClick={() => setSelectedWebhook(hook)}
-                        >
-                          <Text fontSize="sm">View Payload</Text>
-                        </Button>
-                      </Flex>
+                      <Badge colorScheme="blue" py={1} px={2} width="100%">
+                        Source Page: {hook.eventType.sourcePage}
+                      </Badge>
+                      <Badge colorScheme="green" py={1} px={2} width="100%">
+                        Survey ID: {hook.surveyId}
+                      </Badge>
                     </VStack>
-                  </Flex>
+                    <Spacer />
+                    <Button
+                      size="sm"
+                      leftIcon={<Icon as={FaFileAlt} />}
+                      colorScheme="twitter"
+                      variant="solid"
+                      onClick={() => setSelectedWebhook(hook)}
+                    >
+                      <Text fontSize="sm">Webhook Payload</Text>
+                    </Button>
+                  </HStack>
                 </Flex>
               ))
             ) : (
