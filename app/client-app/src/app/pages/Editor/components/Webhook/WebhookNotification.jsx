@@ -20,7 +20,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FaBell, FaClock, FaFileAlt, FaRegBell } from "react-icons/fa";
+import {
+  FaBell,
+  FaClock,
+  FaDownload,
+  FaFileAlt,
+  FaRegBell,
+} from "react-icons/fa";
 import { exportDateFormat } from "services/date-formats";
 
 const JSONModal = ({ isOpen, onClose, jsonData }) => (
@@ -121,7 +127,7 @@ const WebhooksModal = ({
   triggeredHooks,
   onWebhookSelect,
 }) => (
-  <Modal isOpen={isOpen} onClose={onClose} isCentered>
+  <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
     <ModalOverlay />
     <ModalContent>
       <ModalHeader bg="blue.500" color="white">
@@ -165,25 +171,37 @@ const WebhookItem = ({ hook, onSelect }) => (
       </Badge>
     </HStack>
     <HStack width="100%">
-      <VStack spacing={2} pt={2}>
-        <Badge colorScheme="blue" py={1} px={2} width="100%">
+      <VStack spacing={2} pt={2} align="stretch">
+        <Badge colorScheme="blue" py={2} px={2}>
           Source Page: {hook.eventType.sourcePage}
         </Badge>
-        <Badge colorScheme="blue" py={1} px={2} mt={2}>
+        <Badge colorScheme="blue" py={2} px={2}>
           Page Name:{" "}
           {getPageName(hook.eventType.sourcePage, hook.payload.responses)}
         </Badge>
       </VStack>
       <Spacer />
-      <Button
-        size="sm"
-        leftIcon={<Icon as={FaFileAlt} />}
-        colorScheme="linkedin"
-        variant="solid"
-        onClick={() => onSelect(hook)}
-      >
-        <Text fontSize="sm">Webhook Payload</Text>
-      </Button>
+      <VStack align="stretch" pt="0.5">
+        <Button
+          size="sm"
+          rightIcon={<Icon as={FaFileAlt} />}
+          colorScheme="linkedin"
+          variant="solid"
+          fontSize="sm"
+          onClick={() => onSelect(hook)}
+        >
+          Webhook Payload
+        </Button>
+        <Button
+          size="sm"
+          rightIcon={<Icon as={FaDownload} />}
+          colorScheme="gray"
+          variant="solid"
+          fontSize="sm"
+        >
+          Download Payload
+        </Button>
+      </VStack>
     </HStack>
   </Flex>
 );
