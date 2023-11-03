@@ -28,9 +28,10 @@ import {
   FaRegBell,
 } from "react-icons/fa";
 import { exportDateFormat } from "services/date-formats";
+import { downloadFile } from "services/export";
 
 const JSONModal = ({ isOpen, onClose, jsonData }) => (
-  <Modal isOpen={isOpen} onClose={onClose} size="xl">
+  <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>JSON Payload</ModalHeader>
@@ -126,31 +127,49 @@ const WebhooksModal = ({
   onClose,
   triggeredHooks,
   onWebhookSelect,
-}) => (
-  <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
-    <ModalOverlay />
-    <ModalContent>
-      <ModalHeader bg="blue.500" color="white">
-        Triggered Webhooks
-      </ModalHeader>
-      <ModalCloseButton />
-      <ModalBody py={4}>
-        {triggeredHooks.length > 0 ? (
-          triggeredHooks.map((hook, idx) => (
-            <WebhookItem key={idx} hook={hook} onSelect={onWebhookSelect} />
-          ))
-        ) : (
-          <Text color="gray.500">No webhooks have been triggered.</Text>
-        )}
-      </ModalBody>
-      <ModalFooter>
-        <Button colorScheme="blue" onClick={onClose}>
-          Close
-        </Button>
-      </ModalFooter>
-    </ModalContent>
-  </Modal>
-);
+}) => {
+  const downloadTriggeredHooks = async () => {
+    const filename = `TriggeredHooks_${exportDateFormat(new Date()).flat}.json`;
+    const mime = "application/json";
+    downloadFile([JSON.stringify(triggeredHooks)], `${filename}`, mime);
+  };
+
+  const buttonLabel =
+    triggeredHooks.length === 1 ? "Download Payload" : "Download Payloads";
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader bg="blue.500" color="white">
+          Triggered Webhooks
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody py={4}>
+          {triggeredHooks.length > 0 ? (
+            triggeredHooks.map((hook, idx) => (
+              <WebhookItem key={idx} hook={hook} onSelect={onWebhookSelect} />
+            ))
+          ) : (
+            <Text color="gray.500">No webhooks have been triggered.</Text>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            size="md"
+            rightIcon={<Icon as={FaDownload} />}
+            colorScheme="gray"
+            variant="solid"
+            fontSize="md"
+            onClick={downloadTriggeredHooks}
+          >
+            {buttonLabel}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
 
 const WebhookItem = ({ hook, onSelect }) => (
   <Flex
@@ -192,18 +211,8 @@ const WebhookItem = ({ hook, onSelect }) => (
         >
           Webhook Payload
         </Button>
-        <Button
-          size="sm"
-          rightIcon={<Icon as={FaDownload} />}
-          colorScheme="gray"
-          variant="solid"
-          fontSize="sm"
-        >
-          Download Payload
-        </Button>
       </VStack>
     </HStack>
   </Flex>
 );
-
 export default WebhookNotification;
