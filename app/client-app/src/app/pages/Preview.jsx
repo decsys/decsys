@@ -70,6 +70,8 @@ const Preview = ({ id, location }) => {
     surveyStarted: new Date(),
     responses: [],
   });
+  const [triggeredHooks, setTriggeredHooks] = useState([]);
+  const [unread, setUnread] = useState(false);
 
   const logEvent = (source, type, payload) => {
     const pageResponseItem = getPageResponseItem(pages[page].components);
@@ -165,8 +167,9 @@ const Preview = ({ id, location }) => {
       const { status, data } = await previewWebhook(webhookData);
       switch (status) {
         case 200:
-          console.log(data);
           setWebhookCount((prevCount) => prevCount + 1);
+          setUnread(true);
+          setTriggeredHooks((prev) => [...prev, data]);
           break;
         case 204:
           console.error("Webhook would not be triggered.");
@@ -201,6 +204,10 @@ const Preview = ({ id, location }) => {
         isBusy={isBusy}
         logEvent={logEvent}
         webhookCount={webhookCount}
+        unread={unread}
+        setUnread={setUnread}
+        setWebhookCount={setWebhookCount}
+        triggeredHooks={triggeredHooks}
       />
       <ConfirmRedirectModal
         modalState={confirmRedirectModal}
