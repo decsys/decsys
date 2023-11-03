@@ -28,7 +28,8 @@ import {
   FaRegBell,
 } from "react-icons/fa";
 import { exportDateFormat } from "services/date-formats";
-import { downloadFile } from "services/export";
+import download from "downloadjs";
+import JSZip from "jszip";
 
 const JSONModal = ({ isOpen, onClose, jsonData }) => (
   <Modal isOpen={isOpen} onClose={onClose}>
@@ -128,15 +129,24 @@ const WebhooksModal = ({
   triggeredHooks,
   onWebhookSelect,
 }) => {
+  const [isExporting, setIsExporting] = useState(false);
+
   const downloadTriggeredHooks = async () => {
-    const filename = `TriggeredHooks_${exportDateFormat(new Date()).flat}.json`;
-    const mime = "application/json";
-    downloadFile([JSON.stringify(triggeredHooks)], `${filename}`, mime);
+    setIsExporting(true);
+    const zip = new JSZip();
+
+    triggeredHooks.forEach((hook, index) => {
+      const filename = `payload_${index + 1}.json`;
+      const jsonContent = JSON.stringify(hook, null, 2);
+      zip.file(filename, jsonContent);
+    });
+
+    const content = await zip.generateAsync({ type: "blob" });
+    download(content, "TriggeredWebhookHooks.zip", "application/zip");
+    setIsExporting(false);
   };
 
-  const buttonLabel =
-    triggeredHooks.length === 1 ? "Download Payload" : "Download Payloads";
-
+  // Only change here is the conditional rendering of the Button based on triggeredHooks.length
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
       <ModalOverlay />
@@ -155,16 +165,22 @@ const WebhooksModal = ({
           )}
         </ModalBody>
         <ModalFooter>
-          <Button
-            size="md"
-            rightIcon={<Icon as={FaDownload} />}
-            colorScheme="gray"
-            variant="solid"
-            fontSize="md"
-            onClick={downloadTriggeredHooks}
-          >
-            {buttonLabel}
-          </Button>
+          {triggeredHooks.length > 0 && (
+            <Button
+              size="md"
+              rightIcon={<Icon as={FaDownload} />}
+              colorScheme="gray"
+              variant="solid"
+              fontSize="md"
+              onClick={downloadTriggeredHooks}
+              isLoading={isExporting}
+              loadingText="Exporting"
+            >
+              {triggeredHooks.length === 1
+                ? "Download Payload"
+                : "Download Payloads"}
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

@@ -81,7 +81,7 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       jszip:
-        specifier: ^3.6.0
+        specifier: ^3.10.1
         version: 3.10.1
       lodash-es:
         specifier: ^4.17.15
@@ -23820,6 +23820,7 @@ packages:
 
   /path-dirname@1.0.2:
     resolution: {integrity: sha512-ALzNPpyNq9AqXMBjeymIjFDAkAFH06mHJH/cSBHAgU0s4vfpBn6b2nf8tiRLvagKD8RbTpq2FKTBg7cl9l3c7Q==}
+    requiresBuild: true
     dev: true
 
   /path-exists@2.1.0:
