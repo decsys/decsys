@@ -215,18 +215,16 @@ const WebhookItem = ({ hook, onSelect }) => (
         </Badge>
       </VStack>
       <Spacer />
-      <VStack align="stretch" pt="0.5">
-        <Button
-          size="sm"
-          rightIcon={<Icon as={FaFileAlt} />}
-          colorScheme="linkedin"
-          variant="solid"
-          fontSize="sm"
-          onClick={() => onSelect(hook)}
-        >
-          Webhook Payload
-        </Button>
-      </VStack>
+      <Button
+        size="sm"
+        rightIcon={<Icon as={FaFileAlt} />}
+        colorScheme="linkedin"
+        variant="solid"
+        fontSize="sm"
+        onClick={() => onSelect(hook)}
+      >
+        Webhook Payload
+      </Button>
     </HStack>
   </Flex>
 );
