@@ -136,13 +136,13 @@ const WebhooksModal = ({
     const zip = new JSZip();
 
     triggeredHooks.forEach((hook, index) => {
-      const filename = `payload_${index + 1}.json`;
+      const filename = `Webhook_Payload_${index + 1}.json`;
       const jsonContent = JSON.stringify(hook, null, 2);
       zip.file(filename, jsonContent);
     });
 
     const content = await zip.generateAsync({ type: "blob" });
-    download(content, "TriggeredWebhookHooks.zip", "application/zip");
+    download(content, "Triggered_Webhooks.zip", "application/zip");
     setIsExporting(false);
   };
 
