@@ -32,7 +32,7 @@ import download from "downloadjs";
 import JSZip from "jszip";
 
 const JSONModal = ({ isOpen, onClose, jsonData }) => (
-  <Modal isOpen={isOpen} onClose={onClose}>
+  <Modal isOpen={isOpen} onClose={onClose} size="xl">
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>JSON Payload</ModalHeader>
@@ -146,7 +146,6 @@ const WebhooksModal = ({
     setIsExporting(false);
   };
 
-  // Only change here is the conditional rendering of the Button based on triggeredHooks.length
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
       <ModalOverlay />
@@ -206,11 +205,11 @@ const WebhookItem = ({ hook, onSelect }) => (
       </Badge>
     </HStack>
     <HStack width="100%">
-      <VStack spacing={2} pt={2} align="stretch">
-        <Badge colorScheme="blue" py={2} px={2}>
+      <VStack spacing={2} pt={2}>
+        <Badge colorScheme="blue" py={1} px={2} width="100%">
           Source Page: {hook.eventType.sourcePage}
         </Badge>
-        <Badge colorScheme="blue" py={2} px={2}>
+        <Badge colorScheme="blue" py={1} px={2} mt={2}>
           Page Name:{" "}
           {getPageName(hook.eventType.sourcePage, hook.payload.responses)}
         </Badge>
