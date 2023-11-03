@@ -53,7 +53,7 @@ const JSONModal = ({ isOpen, onClose, jsonData }) => (
 
 const getPageName = (page, responses) => {
   const responseItem = responses.find((response) => response.page === page);
-  return responseItem ? responseItem.pageName : "Untitled Page";
+  return responseItem.pageName ? responseItem.pageName : "Untitled Page";
 };
 
 const WebhookNotification = ({
