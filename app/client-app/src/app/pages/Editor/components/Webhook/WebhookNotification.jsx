@@ -65,7 +65,6 @@ const WebhookNotification = ({
   triggeredHooks,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedWebhook, setSelectedWebhook] = useState(null);
 
   const handleButtonClick = () => {
     setUnread(false);
@@ -97,12 +96,6 @@ const WebhookNotification = ({
         isOpen={isOpen}
         onClose={onClose}
         triggeredHooks={triggeredHooks}
-        onWebhookSelect={setSelectedWebhook}
-      />
-      <JSONModal
-        isOpen={selectedWebhook !== null}
-        onClose={() => setSelectedWebhook(null)}
-        jsonData={selectedWebhook}
       />
     </>
   );
@@ -124,13 +117,14 @@ const NotificationBadge = ({ count }) => (
   </Box>
 );
 
-const WebhooksModal = ({
-  isOpen,
-  onClose,
-  triggeredHooks,
-  onWebhookSelect,
-}) => {
+const WebhooksModal = ({ isOpen, onClose, triggeredHooks }) => {
+  const [selectedWebhook, setSelectedWebhook] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+
+  const closeAndClear = () => {
+    setSelectedWebhook(null);
+    onClose();
+  };
 
   const downloadTriggeredHooks = async () => {
     setIsExporting(true);
@@ -148,50 +142,61 @@ const WebhooksModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader bg="blue.500" color="white">
-          Triggered Webhooks
-        </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody py={4}>
-          {triggeredHooks.length > 0 ? (
-            triggeredHooks.map((hook, idx) => (
-              <WebhookItem key={idx} hook={hook} onSelect={onWebhookSelect} />
-            ))
-          ) : (
-            <Text color="gray.500">No webhooks have been triggered.</Text>
-          )}
-        </ModalBody>
-        <ModalFooter>
-          {triggeredHooks.length > 0 && (
-            <Button
-              size="md"
-              rightIcon={isExporting ? null : <Icon as={FaDownload} />}
-              colorScheme="gray"
-              variant="solid"
-              fontSize="md"
-              onClick={downloadTriggeredHooks}
-            >
-              {isExporting ? (
-                <BusyPage verb="Exporting" />
-              ) : (
-                `${
-                  triggeredHooks.length === 1
-                    ? "Export Payload"
-                    : "Export Payloads"
-                }`
-              )}
-            </Button>
-          )}
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <>
+      <Modal isOpen={isOpen} onClose={closeAndClear} isCentered size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader bg="blue.500" color="white">
+            Triggered Webhooks
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody py={4}>
+            {triggeredHooks.length > 0 ? (
+              triggeredHooks.map((hook, idx) => (
+                <WebhookItem
+                  key={idx}
+                  hook={hook}
+                  setSelectedWebhook={setSelectedWebhook}
+                />
+              ))
+            ) : (
+              <Text color="gray.500">No webhooks have been triggered.</Text>
+            )}
+          </ModalBody>
+          <ModalFooter>
+            {triggeredHooks.length > 0 && (
+              <Button
+                size="md"
+                rightIcon={isExporting ? null : <Icon as={FaDownload} />}
+                colorScheme="gray"
+                variant="solid"
+                fontSize="md"
+                onClick={downloadTriggeredHooks}
+              >
+                {isExporting ? (
+                  <BusyPage verb="Exporting" />
+                ) : (
+                  `${
+                    triggeredHooks.length === 1
+                      ? "Export Payload"
+                      : "Export Payloads"
+                  }`
+                )}
+              </Button>
+            )}
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      <JSONModal
+        isOpen={selectedWebhook !== null}
+        onClose={() => setSelectedWebhook(null)}
+        jsonData={selectedWebhook}
+      />
+    </>
   );
 };
 
-const WebhookItem = ({ hook, onSelect }) => (
+const WebhookItem = ({ hook, setSelectedWebhook }) => (
   <Flex
     bg="white"
     boxShadow="0 4px 8px 0 rgba(0,0,0,0.2)"
@@ -226,7 +231,7 @@ const WebhookItem = ({ hook, onSelect }) => (
         colorScheme="linkedin"
         variant="solid"
         fontSize="sm"
-        onClick={() => onSelect(hook)}
+        onClick={() => setSelectedWebhook(hook)}
       >
         Webhook Payload
       </Button>
