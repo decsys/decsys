@@ -63,7 +63,7 @@ const Preview = ({ id, location }) => {
   const [lastPage, setLastPage] = useState(false);
   const [webhookCount, setWebhookCount] = useState(0);
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
-  const confirmRedirectModal = useDisclosure();
+  const surveyCompleteModal = useDisclosure();
 
   const [participantSummary, setParticipantSummary] = useState({
     id: "PreviewParticipant",
@@ -185,7 +185,7 @@ const Preview = ({ id, location }) => {
     }
 
     if (lastPage) {
-      if (settings?.CompletionUrl) confirmRedirectModal.onOpen();
+      if (settings?.CompletionUrl) surveyCompleteModal.onOpen();
       else return navigateBack(location);
     } else {
       setPage(page + 1);
@@ -209,8 +209,8 @@ const Preview = ({ id, location }) => {
         setWebhookCount={setWebhookCount}
         triggeredHooks={triggeredHooks}
       />
-      <ConfirmRedirectModal
-        modalState={confirmRedirectModal}
+      <SurveyCompleteModal
+        modalState={surveyCompleteModal}
         completionUrl={settings?.CompletionUrl}
         location={location}
       />
@@ -218,11 +218,11 @@ const Preview = ({ id, location }) => {
   );
 };
 
-const ConfirmRedirectModal = ({ modalState, completionUrl, location }) => {
+const SurveyCompleteModal = ({ modalState, completionUrl, location }) => {
   return (
     <StandardModal
       {...modalState}
-      header="Completion Redirect"
+      header="Survey Completion"
       cancelButton={false}
       showCloseButton={false}
     >
