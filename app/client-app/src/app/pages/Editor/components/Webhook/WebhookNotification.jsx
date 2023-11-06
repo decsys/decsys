@@ -30,6 +30,7 @@ import {
 import { exportDateFormat } from "services/date-formats";
 import download from "downloadjs";
 import JSZip from "jszip";
+import { BusyPage } from "components/core";
 
 const JSONModal = ({ isOpen, onClose, jsonData }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -167,17 +168,21 @@ const WebhooksModal = ({
           {triggeredHooks.length > 0 && (
             <Button
               size="md"
-              rightIcon={<Icon as={FaDownload} />}
+              rightIcon={isExporting ? null : <Icon as={FaDownload} />}
               colorScheme="gray"
               variant="solid"
               fontSize="md"
               onClick={downloadTriggeredHooks}
-              isLoading={isExporting}
-              loadingText="Exporting"
             >
-              {triggeredHooks.length === 1
-                ? "Download Payload"
-                : "Download Payloads"}
+              {isExporting ? (
+                <BusyPage verb="Exporting" />
+              ) : (
+                `${
+                  triggeredHooks.length === 1
+                    ? "Export Payload"
+                    : "Export Payloads"
+                }`
+              )}
             </Button>
           )}
         </ModalFooter>
