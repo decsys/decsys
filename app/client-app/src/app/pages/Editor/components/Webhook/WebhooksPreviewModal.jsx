@@ -91,7 +91,13 @@ const JSONModal = ({ isOpen, onClose, jsonData }) => (
   </Modal>
 );
 
-const WebhooksPreviewModal = ({ isOpen, onClose, triggeredHooks }) => {
+const WebhooksPreviewModal = ({
+  isOpen,
+  onClose,
+  triggeredHooks,
+  isSurveyComplete,
+  navigateBack,
+}) => {
   const [selectedWebhook, setSelectedWebhook] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
 
@@ -117,11 +123,17 @@ const WebhooksPreviewModal = ({ isOpen, onClose, triggeredHooks }) => {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={closeAndClear} isCentered size="xl">
+      <Modal
+        isOpen={isOpen}
+        onClose={closeAndClear}
+        isCentered
+        size="xl"
+        scrollBehavior="inside"
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader bg="blue.500" color="white">
-            Triggered Webhooks
+            {isSurveyComplete ? "Survey Completion" : "Triggered Webhooks"}
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody py={4}>
@@ -138,6 +150,18 @@ const WebhooksPreviewModal = ({ isOpen, onClose, triggeredHooks }) => {
             )}
           </ModalBody>
           <ModalFooter>
+            {isSurveyComplete && (
+              <Button
+                size="md"
+                colorScheme="blue"
+                variant="outline"
+                fontSize="md"
+                mr={3}
+                onClick={navigateBack}
+              >
+                Return to Survey Admin
+              </Button>
+            )}
             {triggeredHooks.length > 0 && (
               <Button
                 size="md"

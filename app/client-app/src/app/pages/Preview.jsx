@@ -17,6 +17,7 @@ import { isBuiltIn } from "services/page-items";
 import { encode } from "services/instance-id";
 import { previewWebhook } from "api/webhooks";
 import { PAGE_NAVIGATION } from "constants/event-types";
+import WebhooksPreviewModal from "./Editor/components/Webhook/WebhooksPreviewModal";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -185,7 +186,8 @@ const Preview = ({ id, location }) => {
     }
 
     if (lastPage) {
-      if (settings?.CompletionUrl) surveyCompleteModal.onOpen();
+      if (settings?.CompletionUrl || webhookCount !== null)
+        surveyCompleteModal.onOpen();
       else return navigateBack(location);
     } else {
       setPage(page + 1);
@@ -213,6 +215,7 @@ const Preview = ({ id, location }) => {
         modalState={surveyCompleteModal}
         completionUrl={settings?.CompletionUrl}
         location={location}
+        triggeredHooks={triggeredHooks}
       />
     </Page>
   );
@@ -247,7 +250,26 @@ const ConfirmRedirectModalBody = ({
   );
 };
 
-const SurveyCompleteModal = ({ modalState, completionUrl, location }) => {
+const SurveyCompleteModal = ({
+  modalState,
+  completionUrl,
+  location,
+  triggeredHooks,
+}) => {
+  // If there are triggered webhooks, render the WebhooksPreviewModal only
+  if (triggeredHooks.length > 0) {
+    return (
+      <WebhooksPreviewModal
+        isOpen={modalState.isOpen}
+        onClose={modalState.onClose}
+        triggeredHooks={triggeredHooks}
+        isSurveyComplete={true}
+        navigateBack={navigateBack}
+      />
+    );
+  }
+
+  // If there are no triggered webhooks, render the confirm redirect modal within a StandardModal
   return (
     <StandardModal
       {...modalState}
