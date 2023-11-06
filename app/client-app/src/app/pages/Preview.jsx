@@ -218,6 +218,35 @@ const Preview = ({ id, location }) => {
   );
 };
 
+const ConfirmRedirectModalBody = ({
+  completionUrl,
+  navigateBack,
+  location,
+}) => {
+  return (
+    <Stack spacing={2}>
+      <Alert status="info">
+        <AlertIcon />
+        <Stack>
+          <Text>This Survey has a Completion Redirect URL configured.</Text>
+          <Text>You may want to follow it to test it works as expected.</Text>
+        </Stack>
+      </Alert>
+      <Text fontWeight="bold">What would you like to do?</Text>
+      <Button
+        colorScheme="green"
+        mb={1}
+        onClick={() => navigate(completionUrl)}
+      >
+        Follow the configured URL
+      </Button>
+      <Button colorScheme="blue" mb={1} onClick={() => navigateBack(location)}>
+        Return to Survey Admin
+      </Button>
+    </Stack>
+  );
+};
+
 const SurveyCompleteModal = ({ modalState, completionUrl, location }) => {
   return (
     <StandardModal
@@ -226,31 +255,11 @@ const SurveyCompleteModal = ({ modalState, completionUrl, location }) => {
       cancelButton={false}
       showCloseButton={false}
     >
-      <Stack spacing={2}>
-        <Alert status="info">
-          <AlertIcon />
-
-          <Stack>
-            <Text>This Survey has a Completion Redirect URL configured.</Text>
-            <Text>You may want to follow it to test it works as expected.</Text>
-          </Stack>
-        </Alert>
-        <Text fontWeight="bold">What would you like to do?</Text>
-        <Button
-          colorScheme="green"
-          mb={1}
-          onClick={() => navigate(completionUrl)}
-        >
-          Follow the configured URL
-        </Button>
-        <Button
-          colorScheme="blue"
-          mb={1}
-          onClick={() => navigateBack(location)}
-        >
-          Return to Survey Admin
-        </Button>
-      </Stack>
+      <ConfirmRedirectModalBody
+        completionUrl={completionUrl}
+        navigateBack={navigateBack}
+        location={location}
+      />
     </StandardModal>
   );
 };
