@@ -20,8 +20,17 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FaBell, FaClock, FaFileAlt, FaRegBell } from "react-icons/fa";
+import {
+  FaBell,
+  FaClock,
+  FaDownload,
+  FaFileAlt,
+  FaRegBell,
+} from "react-icons/fa";
 import { exportDateFormat } from "services/date-formats";
+import download from "downloadjs";
+import JSZip from "jszip";
+import { BusyPage } from "components/core";
 
 const JSONModal = ({ isOpen, onClose, jsonData }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="xl">
@@ -45,7 +54,7 @@ const JSONModal = ({ isOpen, onClose, jsonData }) => (
 
 const getPageName = (page, responses) => {
   const responseItem = responses.find((response) => response.page === page);
-  return responseItem ? responseItem.pageName : "Untitled Page";
+  return responseItem.pageName ? responseItem.pageName : "Untitled Page";
 };
 
 const WebhookNotification = ({
@@ -120,31 +129,67 @@ const WebhooksModal = ({
   onClose,
   triggeredHooks,
   onWebhookSelect,
-}) => (
-  <Modal isOpen={isOpen} onClose={onClose} isCentered>
-    <ModalOverlay />
-    <ModalContent>
-      <ModalHeader bg="blue.500" color="white">
-        Triggered Webhooks
-      </ModalHeader>
-      <ModalCloseButton />
-      <ModalBody py={4}>
-        {triggeredHooks.length > 0 ? (
-          triggeredHooks.map((hook, idx) => (
-            <WebhookItem key={idx} hook={hook} onSelect={onWebhookSelect} />
-          ))
-        ) : (
-          <Text color="gray.500">No webhooks have been triggered.</Text>
-        )}
-      </ModalBody>
-      <ModalFooter>
-        <Button colorScheme="blue" onClick={onClose}>
-          Close
-        </Button>
-      </ModalFooter>
-    </ModalContent>
-  </Modal>
-);
+}) => {
+  const [isExporting, setIsExporting] = useState(false);
+
+  const downloadTriggeredHooks = async () => {
+    setIsExporting(true);
+    const zip = new JSZip();
+
+    triggeredHooks.forEach((hook, index) => {
+      const filename = `Webhook_Payload_${index + 1}.json`;
+      const jsonContent = JSON.stringify(hook, null, 2);
+      zip.file(filename, jsonContent);
+    });
+
+    const content = await zip.generateAsync({ type: "blob" });
+    download(content, "Triggered_Webhooks.zip", "application/zip");
+    setIsExporting(false);
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader bg="blue.500" color="white">
+          Triggered Webhooks
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody py={4}>
+          {triggeredHooks.length > 0 ? (
+            triggeredHooks.map((hook, idx) => (
+              <WebhookItem key={idx} hook={hook} onSelect={onWebhookSelect} />
+            ))
+          ) : (
+            <Text color="gray.500">No webhooks have been triggered.</Text>
+          )}
+        </ModalBody>
+        <ModalFooter>
+          {triggeredHooks.length > 0 && (
+            <Button
+              size="md"
+              rightIcon={isExporting ? null : <Icon as={FaDownload} />}
+              colorScheme="gray"
+              variant="solid"
+              fontSize="md"
+              onClick={downloadTriggeredHooks}
+            >
+              {isExporting ? (
+                <BusyPage verb="Exporting" />
+              ) : (
+                `${
+                  triggeredHooks.length === 1
+                    ? "Export Payload"
+                    : "Export Payloads"
+                }`
+              )}
+            </Button>
+          )}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
 
 const WebhookItem = ({ hook, onSelect }) => (
   <Flex
@@ -177,15 +222,15 @@ const WebhookItem = ({ hook, onSelect }) => (
       <Spacer />
       <Button
         size="sm"
-        leftIcon={<Icon as={FaFileAlt} />}
+        rightIcon={<Icon as={FaFileAlt} />}
         colorScheme="linkedin"
         variant="solid"
+        fontSize="sm"
         onClick={() => onSelect(hook)}
       >
-        <Text fontSize="sm">Webhook Payload</Text>
+        Webhook Payload
       </Button>
     </HStack>
   </Flex>
 );
-
 export default WebhookNotification;
