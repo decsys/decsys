@@ -117,18 +117,8 @@ export const WebhooksPreviewBody = ({ triggeredHooks }) => {
   );
 };
 
-const WebhooksPreviewModal = ({
-  isOpen,
-  onClose,
-  triggeredHooks,
-  isSurveyComplete,
-  navigateBack,
-}) => {
+export const ExportHooksButton = ({ triggeredHooks }) => {
   const [isExporting, setIsExporting] = useState(false);
-
-  const closeAndClear = () => {
-    onClose();
-  };
 
   const downloadTriggeredHooks = async () => {
     setIsExporting(true);
@@ -143,6 +133,36 @@ const WebhooksPreviewModal = ({
     const content = await zip.generateAsync({ type: "blob" });
     download(content, "Triggered_Webhooks.zip", "application/zip");
     setIsExporting(false);
+  };
+
+  return (
+    <Button
+      size="md"
+      rightIcon={!isExporting ? <Icon as={FaDownload} /> : null}
+      colorScheme="purple"
+      variant="solid"
+      fontSize="md"
+      onClick={downloadTriggeredHooks}
+      disabled={triggeredHooks.length === 0}
+    >
+      {isExporting ? (
+        <BusyPage verb="Exporting" />
+      ) : (
+        `${triggeredHooks.length === 1 ? "Export Payload" : "Export Payloads"}`
+      )}{" "}
+    </Button>
+  );
+};
+
+const WebhooksPreviewModal = ({
+  isOpen,
+  onClose,
+  triggeredHooks,
+  isSurveyComplete,
+  navigateBack,
+}) => {
+  const closeAndClear = () => {
+    onClose();
   };
 
   return (
@@ -175,24 +195,7 @@ const WebhooksPreviewModal = ({
               </Button>
             )}
             {triggeredHooks.length > 0 && (
-              <Button
-                size="md"
-                rightIcon={isExporting ? null : <Icon as={FaDownload} />}
-                colorScheme="gray"
-                variant="solid"
-                fontSize="md"
-                onClick={downloadTriggeredHooks}
-              >
-                {isExporting ? (
-                  <BusyPage verb="Exporting" />
-                ) : (
-                  `${
-                    triggeredHooks.length === 1
-                      ? "Export Payload"
-                      : "Export Payloads"
-                  }`
-                )}
-              </Button>
+              <ExportHooksButton triggeredHooks={triggeredHooks} />
             )}
           </ModalFooter>
         </ModalContent>

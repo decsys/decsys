@@ -7,8 +7,10 @@ import {
   Alert,
   AlertIcon,
   Button,
+  HStack,
   Stack,
   Text,
+  VStack,
   useDisclosure,
 } from "@chakra-ui/react";
 import { pickRandomItem } from "services/randomizer";
@@ -17,7 +19,10 @@ import { isBuiltIn } from "services/page-items";
 import { encode } from "services/instance-id";
 import { previewWebhook } from "api/webhooks";
 import { PAGE_NAVIGATION } from "constants/event-types";
-import WebhooksPreviewModal from "./Editor/components/Webhook/WebhooksPreviewModal";
+import {
+  ExportHooksButton,
+  WebhooksPreviewBody,
+} from "./Editor/components/Webhook/WebhooksPreviewModal";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -225,6 +230,7 @@ const ConfirmRedirectModalBody = ({
   completionUrl,
   navigateBack,
   location,
+  triggeredHooks,
 }) => {
   return (
     <Stack spacing={2}>
@@ -236,6 +242,7 @@ const ConfirmRedirectModalBody = ({
         </Stack>
       </Alert>
       <Text fontWeight="bold">What would you like to do?</Text>
+      <ExportHooksButton triggeredHooks={triggeredHooks} />
       <Button
         colorScheme="green"
         mb={1}
@@ -256,19 +263,6 @@ const SurveyCompleteModal = ({
   location,
   triggeredHooks,
 }) => {
-  // If there are triggered webhooks, render the WebhooksPreviewModal only
-  if (triggeredHooks.length > 0) {
-    return (
-      <WebhooksPreviewModal
-        isOpen={modalState.isOpen}
-        onClose={modalState.onClose}
-        triggeredHooks={triggeredHooks}
-        isSurveyComplete={true}
-        navigateBack={navigateBack}
-      />
-    );
-  }
-
   // If there are no triggered webhooks, render the confirm redirect modal within a StandardModal
   return (
     <StandardModal
@@ -276,12 +270,17 @@ const SurveyCompleteModal = ({
       header="Survey Completion"
       cancelButton={false}
       showCloseButton={false}
+      size="xl"
     >
-      <ConfirmRedirectModalBody
-        completionUrl={completionUrl}
-        navigateBack={navigateBack}
-        location={location}
-      />
+      <VStack pl="4">
+        <WebhooksPreviewBody triggeredHooks={triggeredHooks} />
+        <ConfirmRedirectModalBody
+          completionUrl={completionUrl}
+          navigateBack={navigateBack}
+          location={location}
+          triggeredHooks={triggeredHooks}
+        />
+      </VStack>
     </StandardModal>
   );
 };
