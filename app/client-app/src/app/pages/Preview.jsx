@@ -7,7 +7,6 @@ import {
   Alert,
   AlertIcon,
   Button,
-  HStack,
   Stack,
   Text,
   VStack,
@@ -22,7 +21,7 @@ import { PAGE_NAVIGATION } from "constants/event-types";
 import {
   ExportHooksButton,
   WebhooksPreviewBody,
-} from "./Editor/components/Webhook/WebhooksPreviewModal";
+} from "./Editor/components/Webhook/WebhookPreviewModal";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);

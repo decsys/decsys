@@ -8,7 +8,7 @@ import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { InView } from "react-intersection-observer";
 import { usePrevious } from "hooks/usePrevious";
 import { BusyPage } from "components/core";
-import WebhookNotification from "app/pages/Editor/components/Webhook/WebhookNotification";
+import { WebhookNotification } from "app/pages/Editor/components/Webhook/WebhookNotification";
 
 export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {

@@ -105,18 +105,6 @@ const WebhookItem = ({ hook }) => {
   );
 };
 
-export const WebhooksPreviewBody = ({ triggeredHooks }) => {
-  return (
-    <ModalBody width="100%">
-      {triggeredHooks.length > 0 ? (
-        triggeredHooks.map((hook, idx) => <WebhookItem key={idx} hook={hook} />)
-      ) : (
-        <Text color="gray.500">No webhooks have been triggered.</Text>
-      )}
-    </ModalBody>
-  );
-};
-
 export const ExportHooksButton = ({ triggeredHooks }) => {
   const [isExporting, setIsExporting] = useState(false);
 
@@ -154,7 +142,19 @@ export const ExportHooksButton = ({ triggeredHooks }) => {
   );
 };
 
-const WebhooksPreviewModal = ({
+export const WebhooksPreviewBody = ({ triggeredHooks }) => {
+  return (
+    <ModalBody width="100%">
+      {triggeredHooks.length > 0 ? (
+        triggeredHooks.map((hook, idx) => <WebhookItem key={idx} hook={hook} />)
+      ) : (
+        <Text color="gray.500">No webhooks have been triggered.</Text>
+      )}
+    </ModalBody>
+  );
+};
+
+export const WebhookPreviewModal = ({
   isOpen,
   onClose,
   triggeredHooks,
@@ -203,5 +203,3 @@ const WebhooksPreviewModal = ({
     </>
   );
 };
-
-export default WebhooksPreviewModal;

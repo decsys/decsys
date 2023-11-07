@@ -8,9 +8,25 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { FaBell, FaRegBell } from "react-icons/fa";
-import WebhooksPreviewModal from "./WebhooksPreviewModal";
+import { WebhookPreviewModal } from "./WebhookPreviewModal";
 
-const WebhookNotification = ({
+const NotificationBadge = ({ count }) => (
+  <Box
+    position="absolute"
+    top="-6px"
+    right="-3px"
+    backgroundColor="red"
+    borderRadius="50%"
+    width="18px"
+    height="17px"
+  >
+    <Text fontSize="sm" color="white">
+      {count}
+    </Text>
+  </Box>
+);
+
+export const WebhookNotification = ({
   webhookCount,
   unread,
   setUnread,
@@ -45,7 +61,7 @@ const WebhookNotification = ({
           </Flex>
         </Button>
       </Stack>
-      <WebhooksPreviewModal
+      <WebhookPreviewModal
         isOpen={isOpen}
         onClose={onClose}
         triggeredHooks={triggeredHooks}
@@ -53,21 +69,3 @@ const WebhookNotification = ({
     </>
   );
 };
-
-const NotificationBadge = ({ count }) => (
-  <Box
-    position="absolute"
-    top="-6px"
-    right="-3px"
-    backgroundColor="red"
-    borderRadius="50%"
-    width="18px"
-    height="17px"
-  >
-    <Text fontSize="sm" color="white">
-      {count}
-    </Text>
-  </Box>
-);
-
-export default WebhookNotification;
