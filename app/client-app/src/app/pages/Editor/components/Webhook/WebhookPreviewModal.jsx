@@ -15,6 +15,12 @@ import {
   Spacer,
   Text,
   VStack,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Box,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaClock, FaDownload, FaFileAlt } from "react-icons/fa";
@@ -57,7 +63,7 @@ const WebhookItem = ({ hook }) => {
   return (
     <>
       <Flex
-        bg="white"
+        bg="blue.50"
         boxShadow="0 4px 8px 0 rgba(0,0,0,0.2)"
         borderRadius="md"
         p={4}
@@ -127,9 +133,8 @@ export const ExportHooksButton = ({ triggeredHooks }) => {
     <Button
       size="md"
       rightIcon={!isExporting ? <Icon as={FaDownload} /> : null}
-      colorScheme="purple"
-      variant="solid"
       fontSize="md"
+      colorScheme="pink"
       onClick={downloadTriggeredHooks}
       disabled={triggeredHooks.length === 0}
     >
@@ -144,13 +149,27 @@ export const ExportHooksButton = ({ triggeredHooks }) => {
 
 export const WebhooksPreviewBody = ({ triggeredHooks }) => {
   return (
-    <ModalBody width="100%">
-      {triggeredHooks.length > 0 ? (
-        triggeredHooks.map((hook, idx) => <WebhookItem key={idx} hook={hook} />)
-      ) : (
-        <Text color="gray.500">No webhooks have been triggered.</Text>
-      )}
-    </ModalBody>
+    <Accordion allowToggle width="100%" px="2.5">
+      <AccordionItem bg="gray.100">
+        <AccordionButton>
+          <Box flex="1" textAlign="left">
+            Triggered Webhooks ({triggeredHooks.length})
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel>
+          <ModalBody width="100%">
+            {triggeredHooks.length > 0 ? (
+              triggeredHooks.map((hook, idx) => (
+                <WebhookItem key={idx} hook={hook} />
+              ))
+            ) : (
+              <Text color="gray.500">No webhooks have been triggered.</Text>
+            )}
+          </ModalBody>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   );
 };
 
@@ -167,17 +186,11 @@ export const WebhookPreviewModal = ({
 
   return (
     <>
-      <Modal
-        isOpen={isOpen}
-        onClose={closeAndClear}
-        isCentered
-        size="xl"
-        scrollBehavior="inside"
-      >
+      <Modal isOpen={isOpen} onClose={closeAndClear} isCentered size="xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader bg="blue.500" color="white">
-            {isSurveyComplete ? "Survey Completion" : "Triggered Webhooks"}
+          <ModalHeader color="black">
+            {isSurveyComplete ? "Survey Completion" : "Webhooks"}
           </ModalHeader>
           <ModalCloseButton />
           <WebhooksPreviewBody triggeredHooks={triggeredHooks} />
