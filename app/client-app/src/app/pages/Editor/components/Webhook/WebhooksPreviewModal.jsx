@@ -107,7 +107,7 @@ const WebhookItem = ({ hook }) => {
 
 export const WebhooksPreviewBody = ({ triggeredHooks }) => {
   return (
-    <ModalBody py={4}>
+    <ModalBody width="100%">
       {triggeredHooks.length > 0 ? (
         triggeredHooks.map((hook, idx) => <WebhookItem key={idx} hook={hook} />)
       ) : (
