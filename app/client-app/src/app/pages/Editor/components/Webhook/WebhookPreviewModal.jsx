@@ -114,7 +114,7 @@ const WebhookItem = ({ webhookData }) => {
   );
 };
 
-export const ExportHooksButton = ({ triggeredHooks }) => {
+export const ExportPayloadButton = ({ triggeredHooks }) => {
   const [isExportingWebhooks, setIsExporting] = useState(false);
 
   const downloadTriggeredHooks = async () => {
@@ -153,7 +153,7 @@ export const ExportHooksButton = ({ triggeredHooks }) => {
 export const WebhookPreviewBody = ({ triggeredHooks }) => {
   return (
     <Accordion allowToggle width="100%" px="2.5">
-      <AccordionItem>
+      <AccordionItem backgroundColor="gray.100">
         <AccordionButton>
           <Box flex="1" textAlign="left">
             Triggered Webhooks ({triggeredHooks.length})
@@ -206,7 +206,7 @@ export const WebhookPreviewModal = ({
             </Button>
           )}
           {triggeredHooks.length > 0 && (
-            <ExportHooksButton triggeredHooks={triggeredHooks} />
+            <ExportPayloadButton triggeredHooks={triggeredHooks} />
           )}
         </ModalFooter>
       </ModalContent>

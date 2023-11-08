@@ -19,7 +19,7 @@ import { encode } from "services/instance-id";
 import { previewWebhook } from "api/webhooks";
 import { PAGE_NAVIGATION } from "constants/event-types";
 import {
-  ExportHooksButton,
+  ExportPayloadButton,
   WebhookPreviewBody,
 } from "./Editor/components/Webhook/WebhookPreviewModal";
 
@@ -256,7 +256,7 @@ const ConfirmRedirectModalBody = ({
     {completionUrl && <CompletionRedirectAlert />}
     <Text fontWeight="bold">What would you like to do?</Text>
     {triggeredHooks.length > 0 && (
-      <ExportHooksButton triggeredHooks={triggeredHooks} />
+      <ExportPayloadButton triggeredHooks={triggeredHooks} />
     )}
     {completionUrl && <FollowUrlButton completionUrl={completionUrl} />}
     <ReturnToAdminButton navigateBack={navigateBack} />
