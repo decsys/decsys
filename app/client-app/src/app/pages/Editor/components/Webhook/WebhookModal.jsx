@@ -52,6 +52,7 @@ const WebhooksModal = ({
         finalFocusRef={finalRef}
         isOpen={isWebhooksModalOpen}
         onClose={closeWebhooksModal}
+        size="xl"
       >
         <ModalOverlay />
         <ModalContent>
@@ -72,8 +73,7 @@ const WebhooksModal = ({
                 </Box>
               ))}
           </ModalBody>
-
-          <Flex align="start" direction="column" pl={6}>
+          <Flex align="start" direction="column" pl={8}>
             <Button
               colorScheme="green"
               size="sm"
