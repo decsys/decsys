@@ -34,26 +34,6 @@ import LightHeading from "components/core/LightHeading";
 import { generateWebhookSecret } from "api/webhooks";
 import ConfirmationModal from "./ConfirmationModal";
 
-const CreateModeSecretField = ({
-  values,
-  handleGenerateSecret,
-  setFieldValue,
-}) => {
-  return (
-    <HStack w="100%">
-      <TextField name="secret" placeholder="Secret" header="Header" size="sm" />
-      <Button
-        size="sm"
-        colorScheme="teal"
-        w="40%"
-        onClick={() => handleGenerateSecret(values, setFieldValue)}
-      >
-        Generate Secret
-      </Button>
-    </HStack>
-  );
-};
-
 const InfoAlert = () => (
   <Alert status="info" mt={4}>
     <VStack>
@@ -88,7 +68,7 @@ const WarningAlert = () => (
 const EditSecretField = ({ handleGenerateSecret, values, setFieldValue }) => (
   <>
     <InfoAlert />
-    <HStack w="100%" pt="2">
+    <HStack w="100%" pb="4">
       <TextField name="secret" placeholder="Secret" header="Header" w="100%" />
       <Button
         size="sm"
@@ -111,9 +91,8 @@ const SecretField = ({
   setEditSecret,
 }) => {
   if (!isEditMode) return null;
-
   return (
-    <>
+    <VStack align="flex-start" style={{ borderBottom: "1px solid #E2E8F0" }}>
       {editSecret ? (
         <EditSecretField
           handleGenerateSecret={handleGenerateSecret}
@@ -123,14 +102,14 @@ const SecretField = ({
       ) : (
         <>
           <WarningAlert />
-          <Flex pt="2">
+          <Flex pb="4">
             <Button onClick={() => setEditSecret(true)} colorScheme="teal">
               Change Secret
             </Button>
           </Flex>
         </>
       )}
-    </>
+    </VStack>
   );
 };
 
@@ -163,7 +142,7 @@ const PageNavigationAccordion = ({
   remove,
 }) => {
   return (
-    <Accordion defaultIndex={[0]} allowToggle>
+    <Accordion defaultIndex={[0]} allowToggle width="100%">
       <AccordionItem bg="gray.50">
         <AccordionButton
           width="100%"
@@ -197,7 +176,7 @@ const PageNavigationAccordion = ({
             </HStack>
             {sourcePages.map((sourcePage, index) => (
               <Flex key={index} w="100%">
-                <HStack w="100%" p="2">
+                <HStack w="100%">
                   <Flex w="40%">
                     <FormikInput
                       name={`sourcePages.${index}`}
@@ -327,7 +306,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                       header="Header"
                       size="sm"
                     />
-
                     <SecretField
                       isEditMode={isEditMode}
                       editSecret={editSecret}
@@ -336,28 +314,35 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                       setFieldValue={setFieldValue}
                       setEditSecret={setEditSecret}
                     />
-                    {!isEditMode && (
-                      <CreateModeSecretField
-                        values={values}
-                        handleGenerateSecret={handleGenerateSecret}
-                        setFieldValue={setFieldValue}
+                    <VStack
+                      py="4"
+                      style={{ borderBottom: "1px solid #E2E8F0" }}
+                      align="flex-start"
+                    >
+                      <HStack>
+                        <Field type="checkbox" name="verifySsl" />
+                        <Text>Verify SSL</Text>
+                      </HStack>
+                      {!values.verifySsl && <SSLAlert />}
+                      <ConfirmationModal
+                        isOpen={isConfirmationOpen}
+                        onClose={onConfirmationClose}
+                        onConfirm={() => handleConfirmNewSecret(setFieldValue)}
                       />
-                    )}
-                    <HStack pt="2">
-                      <Field type="checkbox" name="verifySsl" />
-                      <Text>Verify SSL</Text>
-                    </HStack>
-                    {!values.verifySsl && <SSLAlert />}
-                    <ConfirmationModal
-                      isOpen={isConfirmationOpen}
-                      onClose={onConfirmationClose}
-                      onConfirm={() => handleConfirmNewSecret(setFieldValue)}
-                    />
-                    <VStack align="flex-start">
-                      <LightHeading textAlign="center" size="md" pt="2">
-                        Trigger Criteria
-                      </LightHeading>
-                      <HStack pb="2">
+                    </VStack>
+                    <VStack
+                      align="flex-start"
+                      pb="4"
+                      style={
+                        values.eventTrigger === "customEvents"
+                          ? {}
+                          : { borderBottom: "1px solid #E2E8F0" }
+                      }
+                    >
+                      <Text pt="4" fontSize="lg" fontWeight="semibold">
+                        Which events would you like to trigger this webhook?
+                      </Text>
+                      <HStack>
                         <Field
                           type="radio"
                           name="eventTrigger"
@@ -371,35 +356,41 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         />
                         <Text>Customize Events</Text>
                       </HStack>
+                      {values.eventTrigger === "customEvents" && (
+                        <FieldArray name="sourcePages">
+                          {({ push, remove }) => (
+                            <PageNavigationAccordion
+                              sourcePages={values.sourcePages}
+                              pageNavigationChecked={pageNavigationChecked}
+                              setPageNavigationChecked={
+                                setPageNavigationChecked
+                              }
+                              setFieldValue={setFieldValue}
+                              push={push}
+                              remove={remove}
+                            />
+                          )}
+                        </FieldArray>
+                      )}
                     </VStack>
-                    {values.eventTrigger === "customEvents" && (
-                      <FieldArray name="sourcePages">
-                        {({ push, remove }) => (
-                          <PageNavigationAccordion
-                            sourcePages={values.sourcePages}
-                            pageNavigationChecked={pageNavigationChecked}
-                            setPageNavigationChecked={setPageNavigationChecked}
-                            setFieldValue={setFieldValue}
-                            push={push}
-                            remove={remove}
-                          />
-                        )}
-                      </FieldArray>
-                    )}
+                    <ModalFooter>
+                      <Button
+                        colorScheme="red"
+                        mr={3}
+                        onClick={handleCloseModal}
+                      >
+                        Cancel
+                      </Button>
+                      <Button colorScheme="blue" type="submit">
+                        Save
+                      </Button>
+                    </ModalFooter>
                   </Form>
                 );
               }}
             </Formik>
           </>
         </ModalBody>
-        <ModalFooter>
-          <Button colorScheme="red" mr={3} onClick={handleCloseModal}>
-            Cancel
-          </Button>
-          <Button colorScheme="blue" type="submit">
-            Save
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );
