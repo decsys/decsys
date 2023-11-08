@@ -88,12 +88,12 @@ const WarningAlert = () => (
 const EditSecretField = ({ handleGenerateSecret, values, setFieldValue }) => (
   <>
     <InfoAlert />
-    <HStack w="100%">
-      <TextField name="secret" placeholder="Secret" header="Header" size="sm" />
+    <HStack w="100%" pt="2">
+      <TextField name="secret" placeholder="Secret" header="Header" w="100%" />
       <Button
         size="sm"
         colorScheme="teal"
-        w="40%"
+        px="5"
         onClick={() => handleGenerateSecret(values, setFieldValue)}
       >
         Generate Secret
@@ -123,9 +123,11 @@ const SecretField = ({
       ) : (
         <>
           <WarningAlert />
-          <Button onClick={() => setEditSecret(true)} colorScheme="teal">
-            Change Secret
-          </Button>
+          <Flex pt="2">
+            <Button onClick={() => setEditSecret(true)} colorScheme="teal">
+              Change Secret
+            </Button>
+          </Flex>
         </>
       )}
     </>
@@ -161,23 +163,24 @@ const PageNavigationAccordion = ({
   remove,
 }) => {
   return (
-    <Accordion borderWidth={1} borderRadius={5} defaultIndex={[0]} allowToggle>
-      <AccordionItem>
-        <AccordionButton width="100%">
-          <Box textAlign="left">
-            <HStack>
-              <Field
-                type="checkbox"
-                name="pageNavigation"
-                checked={pageNavigationChecked}
-                onChange={(e) => {
-                  setFieldValue("pageNavigation", e.target.checked);
-                  setPageNavigationChecked(e.target.checked);
-                }}
-              />
-              <Text>Page Navigation</Text>
-            </HStack>
-          </Box>
+    <Accordion defaultIndex={[0]} allowToggle>
+      <AccordionItem bg="gray.50">
+        <AccordionButton
+          width="100%"
+          _expanded={{ bg: "gray.500", color: "white" }}
+        >
+          <HStack>
+            <Field
+              type="checkbox"
+              name="pageNavigation"
+              checked={pageNavigationChecked}
+              onChange={(e) => {
+                setFieldValue("pageNavigation", e.target.checked);
+                setPageNavigationChecked(e.target.checked);
+              }}
+            />
+            <Text>Page Navigation</Text>
+          </HStack>
           <AccordionIcon />
         </AccordionButton>
         <AccordionPanel>
@@ -318,34 +321,38 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                 }, [webhook]);
                 return (
                   <Form id="myForm" onSubmit={handleSubmit}>
-                    <VStack align="flex-start">
-                      <TextField
-                        name="url"
-                        placeholder="Callback Url"
-                        header="Header"
-                        size="sm"
-                      />
-                      <SecretField
-                        isEditMode={isEditMode}
-                        editSecret={editSecret}
-                        handleGenerateSecret={handleGenerateSecret}
+                    <TextField
+                      name="url"
+                      placeholder="Callback Url"
+                      header="Header"
+                      size="sm"
+                    />
+
+                    <SecretField
+                      isEditMode={isEditMode}
+                      editSecret={editSecret}
+                      handleGenerateSecret={handleGenerateSecret}
+                      values={values}
+                      setFieldValue={setFieldValue}
+                      setEditSecret={setEditSecret}
+                    />
+                    {!isEditMode && (
+                      <CreateModeSecretField
                         values={values}
+                        handleGenerateSecret={handleGenerateSecret}
                         setFieldValue={setFieldValue}
-                        setEditSecret={setEditSecret}
                       />
-                      {!isEditMode && (
-                        <CreateModeSecretField
-                          values={values}
-                          handleGenerateSecret={handleGenerateSecret}
-                          setFieldValue={setFieldValue}
-                        />
-                      )}
-                    </VStack>
+                    )}
                     <HStack pt="2">
                       <Field type="checkbox" name="verifySsl" />
                       <Text>Verify SSL</Text>
                     </HStack>
                     {!values.verifySsl && <SSLAlert />}
+                    <ConfirmationModal
+                      isOpen={isConfirmationOpen}
+                      onClose={onConfirmationClose}
+                      onConfirm={() => handleConfirmNewSecret(setFieldValue)}
+                    />
                     <VStack align="flex-start">
                       <LightHeading textAlign="center" size="md" pt="2">
                         Trigger Criteria
@@ -379,11 +386,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         )}
                       </FieldArray>
                     )}
-                    <ConfirmationModal
-                      isOpen={isConfirmationOpen}
-                      onClose={onConfirmationClose}
-                      onConfirm={() => handleConfirmNewSecret(setFieldValue)}
-                    />
                   </Form>
                 );
               }}
