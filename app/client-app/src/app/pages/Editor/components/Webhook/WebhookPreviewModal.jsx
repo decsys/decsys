@@ -34,7 +34,7 @@ const getPageName = (page, responses) => {
   return responseItem.pageName ? responseItem.pageName : "Untitled Page";
 };
 
-const JSONModal = ({ isOpen, onClose, jsonData }) => (
+const JSONModal = ({ isOpen, onClose, webhookPayloadData }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="xl">
     <ModalOverlay />
     <ModalContent>
@@ -42,7 +42,7 @@ const JSONModal = ({ isOpen, onClose, jsonData }) => (
       <ModalCloseButton />
       <ModalBody>
         <Code style={{ whiteSpace: "pre-wrap", backgroundColor: "white" }}>
-          {JSON.stringify(jsonData, null, 2)}
+          {JSON.stringify(webhookPayloadData, null, 2)}
         </Code>
       </ModalBody>
       <ModalFooter>
@@ -54,7 +54,7 @@ const JSONModal = ({ isOpen, onClose, jsonData }) => (
   </Modal>
 );
 
-const WebhookItem = ({ hook }) => {
+const WebhookItem = ({ webhookData }) => {
   const [isJsonModalOpen, setIsJsonModalOpen] = useState(false);
 
   const openJsonModal = () => setIsJsonModalOpen(true);
@@ -74,19 +74,22 @@ const WebhookItem = ({ hook }) => {
           <Icon as={FaClock} boxSize={6} color="gray.500" />
           <Badge colorScheme="white" fontSize="md" fontWeight="semibold">
             Timestamp:{" "}
-            {`${exportDateFormat(new Date(hook.timestamp)).date} ${
-              exportDateFormat(new Date(hook.timestamp)).time
-            } ${exportDateFormat(new Date(hook.timestamp)).tz}`}
+            {`${exportDateFormat(new Date(webhookData.timestamp)).date} ${
+              exportDateFormat(new Date(webhookData.timestamp)).time
+            } ${exportDateFormat(new Date(webhookData.timestamp)).tz}`}
           </Badge>
         </HStack>
         <HStack width="100%">
           <VStack spacing={2} pt={2}>
             <Badge colorScheme="blue" py={1} px={2} width="100%">
-              Source Page: {hook.eventType.sourcePage}
+              Source Page: {webhookData.eventType.sourcePage}
             </Badge>
             <Badge colorScheme="blue" py={1} px={2} mt={2}>
               Page Name:{" "}
-              {getPageName(hook.eventType.sourcePage, hook.payload.responses)}
+              {getPageName(
+                webhookData.eventType.sourcePage,
+                webhookData.payload.responses
+              )}
             </Badge>
           </VStack>
           <Spacer />
@@ -105,22 +108,22 @@ const WebhookItem = ({ hook }) => {
       <JSONModal
         isOpen={isJsonModalOpen}
         onClose={closeJsonModal}
-        jsonData={hook}
+        webhookPayloadData={webhookData}
       />
     </>
   );
 };
 
 export const ExportHooksButton = ({ triggeredHooks }) => {
-  const [isExporting, setIsExporting] = useState(false);
+  const [isExportingWebhooks, setIsExporting] = useState(false);
 
   const downloadTriggeredHooks = async () => {
     setIsExporting(true);
     const zip = new JSZip();
 
-    triggeredHooks.forEach((hook, index) => {
+    triggeredHooks.forEach((webhookData, index) => {
       const filename = `Webhook_Payload_${index + 1}.json`;
-      const jsonContent = JSON.stringify(hook, null, 2);
+      const jsonContent = JSON.stringify(webhookData, null, 2);
       zip.file(filename, jsonContent);
     });
 
@@ -132,13 +135,13 @@ export const ExportHooksButton = ({ triggeredHooks }) => {
   return (
     <Button
       size="md"
-      rightIcon={!isExporting ? <Icon as={FaDownload} /> : null}
+      rightIcon={!isExportingWebhooks ? <Icon as={FaDownload} /> : null}
       fontSize="md"
       colorScheme="pink"
       onClick={downloadTriggeredHooks}
       disabled={triggeredHooks.length === 0}
     >
-      {isExporting ? (
+      {isExportingWebhooks ? (
         <BusyPage verb="Exporting" />
       ) : (
         `${triggeredHooks.length === 1 ? "Export Payload" : "Export Payloads"}`
@@ -147,10 +150,10 @@ export const ExportHooksButton = ({ triggeredHooks }) => {
   );
 };
 
-export const WebhooksPreviewBody = ({ triggeredHooks }) => {
+export const WebhookPreviewBody = ({ triggeredHooks }) => {
   return (
     <Accordion allowToggle width="100%" px="2.5">
-      <AccordionItem bg="gray.100">
+      <AccordionItem>
         <AccordionButton>
           <Box flex="1" textAlign="left">
             Triggered Webhooks ({triggeredHooks.length})
@@ -158,10 +161,10 @@ export const WebhooksPreviewBody = ({ triggeredHooks }) => {
           <AccordionIcon />
         </AccordionButton>
         <AccordionPanel>
-          <ModalBody width="100%">
+          <ModalBody width="100%" pt="5px">
             {triggeredHooks.length > 0 ? (
-              triggeredHooks.map((hook, idx) => (
-                <WebhookItem key={idx} hook={hook} />
+              triggeredHooks.map((webhookData, idx) => (
+                <WebhookItem key={idx} webhookData={webhookData} />
               ))
             ) : (
               <Text color="gray.500">No webhooks have been triggered.</Text>
@@ -179,40 +182,34 @@ export const WebhookPreviewModal = ({
   triggeredHooks,
   isSurveyComplete,
   navigateBack,
-}) => {
-  const closeAndClear = () => {
-    onClose();
-  };
-
-  return (
-    <>
-      <Modal isOpen={isOpen} onClose={closeAndClear} isCentered size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader color="black">
-            {isSurveyComplete ? "Survey Completion" : "Webhooks"}
-          </ModalHeader>
-          <ModalCloseButton />
-          <WebhooksPreviewBody triggeredHooks={triggeredHooks} />
-          <ModalFooter>
-            {isSurveyComplete && (
-              <Button
-                size="md"
-                colorScheme="blue"
-                variant="outline"
-                fontSize="md"
-                mr={3}
-                onClick={navigateBack}
-              >
-                Return to Survey Admin
-              </Button>
-            )}
-            {triggeredHooks.length > 0 && (
-              <ExportHooksButton triggeredHooks={triggeredHooks} />
-            )}
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-};
+}) => (
+  <>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader color="black">
+          {isSurveyComplete ? "Survey Completion" : "Webhooks"}
+        </ModalHeader>
+        <ModalCloseButton />
+        <WebhookPreviewBody triggeredHooks={triggeredHooks} />
+        <ModalFooter>
+          {isSurveyComplete && (
+            <Button
+              size="md"
+              colorScheme="blue"
+              variant="outline"
+              fontSize="md"
+              mr={3}
+              onClick={navigateBack}
+            >
+              Return to Survey Admin
+            </Button>
+          )}
+          {triggeredHooks.length > 0 && (
+            <ExportHooksButton triggeredHooks={triggeredHooks} />
+          )}
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  </>
+);

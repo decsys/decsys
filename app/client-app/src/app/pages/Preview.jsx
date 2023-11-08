@@ -20,7 +20,7 @@ import { previewWebhook } from "api/webhooks";
 import { PAGE_NAVIGATION } from "constants/event-types";
 import {
   ExportHooksButton,
-  WebhooksPreviewBody,
+  WebhookPreviewBody,
 } from "./Editor/components/Webhook/WebhookPreviewModal";
 
 const navigateBack = (location) =>
@@ -279,7 +279,7 @@ const SurveyCompleteModal = ({
     >
       <VStack width="100%">
         {triggeredHooks && triggeredHooks.length > 0 && (
-          <WebhooksPreviewBody triggeredHooks={triggeredHooks} />
+          <WebhookPreviewBody triggeredHooks={triggeredHooks} />
         )}
         <ConfirmRedirectModalBody
           completionUrl={completionUrl}
