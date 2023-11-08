@@ -21,7 +21,7 @@ import { PAGE_NAVIGATION } from "constants/event-types";
 import {
   ExportPayloadButton,
   WebhookPreviewBody,
-} from "./Editor/components/Webhook/WebhookPreviewModal";
+} from "./Preview/components/Webhook/WebhookPreviewModal";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);

@@ -1,14 +1,14 @@
 import { createElement } from "react";
 import { getComponent } from "services/page-items";
-import { usePageListContext } from "../contexts/PageList";
+import { usePageListContext } from "../Editor/contexts/PageList";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { Stack } from "@chakra-ui/react";
 import PageItemRender from "components/shared/PageItemRender";
 import {
   usePageItemActions,
   PageItemActionsProvider,
-} from "../contexts/PageItemActions";
-import { pageItemActions } from "../actions/pageItemActions";
+} from "../Editor/contexts/PageItemActions";
+import { pageItemActions } from "../Editor/actions/pageItemActions";
 import { renderContextDefaults as renderActions } from "@decsys/param-types/ResponseItemContexts";
 
 // TODO: Document this capability for components
