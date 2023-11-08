@@ -68,21 +68,21 @@ const WebhookActionCard = ({ webhook, onEditWebhook }) => {
       }
     >
       {!webhook.triggerCriteria.hasCustomTriggers && (
-        <Badge colorScheme="green" p={1} width="50%">
+        <Badge colorScheme="green" p={1} width="fit-content">
           Trigger on every event
         </Badge>
       )}
       {webhook.triggerCriteria.eventTypes.PAGE_NAVIGATION !== null &&
         webhook.triggerCriteria.eventTypes.PAGE_NAVIGATION.length === 0 &&
         webhook.triggerCriteria.hasCustomTriggers && (
-          <Badge colorScheme="blue" p={1} width="35%">
+          <Badge colorScheme="blue" p={1} width="fit-content">
             Page Navigation
           </Badge>
         )}
       {webhook.triggerCriteria.eventTypes.PAGE_NAVIGATION !== null &&
         webhook.triggerCriteria.eventTypes.PAGE_NAVIGATION.length > 0 &&
         webhook.triggerCriteria.hasCustomTriggers && (
-          <Badge colorScheme="blue" p={1} width="67%">
+          <Badge colorScheme="blue" p={1} width="fit-content">
             <HStack>
               <Text>Page Navigation with filters</Text>
               <Icon as={FaFilter} />
