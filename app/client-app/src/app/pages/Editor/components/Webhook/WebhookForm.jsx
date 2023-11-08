@@ -285,112 +285,103 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
           {isEditMode ? "Edit Webhook" : "Create a Webhook"}
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <>
-            <Formik
-              initialValues={getInitialValues(webhook)}
-              onSubmit={handleFormikSubmit}
-            >
-              {({ values, handleSubmit, setFieldValue }) => {
-                useEffect(() => {
-                  const isChecked =
-                    webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION !==
-                    null;
-                  setPageNavigationChecked(isChecked);
-                }, [webhook]);
-                return (
-                  <Form id="myForm" onSubmit={handleSubmit}>
-                    <TextField
-                      name="url"
-                      placeholder="Callback Url"
-                      header="Header"
-                      size="sm"
+        <Formik
+          initialValues={getInitialValues(webhook)}
+          onSubmit={handleFormikSubmit}
+        >
+          {({ values, handleSubmit, setFieldValue }) => {
+            useEffect(() => {
+              const isChecked =
+                webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION !== null;
+              setPageNavigationChecked(isChecked);
+            }, [webhook]);
+            return (
+              <Form id="myForm" onSubmit={handleSubmit}>
+                <ModalBody>
+                  <TextField
+                    name="url"
+                    placeholder="Callback Url"
+                    header="Header"
+                    size="sm"
+                  />
+                  <SecretField
+                    isEditMode={isEditMode}
+                    editSecret={editSecret}
+                    handleGenerateSecret={handleGenerateSecret}
+                    values={values}
+                    setFieldValue={setFieldValue}
+                    setEditSecret={setEditSecret}
+                  />
+                  <VStack
+                    py="4"
+                    style={{ borderBottom: "1px solid #E2E8F0" }}
+                    align="flex-start"
+                  >
+                    <HStack>
+                      <Field type="checkbox" name="verifySsl" />
+                      <Text>Verify SSL</Text>
+                    </HStack>
+                    {!values.verifySsl && <SSLAlert />}
+                    <ConfirmationModal
+                      isOpen={isConfirmationOpen}
+                      onClose={onConfirmationClose}
+                      onConfirm={() => handleConfirmNewSecret(setFieldValue)}
                     />
-                    <SecretField
-                      isEditMode={isEditMode}
-                      editSecret={editSecret}
-                      handleGenerateSecret={handleGenerateSecret}
-                      values={values}
-                      setFieldValue={setFieldValue}
-                      setEditSecret={setEditSecret}
-                    />
-                    <VStack
-                      py="4"
-                      style={{ borderBottom: "1px solid #E2E8F0" }}
-                      align="flex-start"
-                    >
-                      <HStack>
-                        <Field type="checkbox" name="verifySsl" />
-                        <Text>Verify SSL</Text>
-                      </HStack>
-                      {!values.verifySsl && <SSLAlert />}
-                      <ConfirmationModal
-                        isOpen={isConfirmationOpen}
-                        onClose={onConfirmationClose}
-                        onConfirm={() => handleConfirmNewSecret(setFieldValue)}
+                  </VStack>
+                  <VStack
+                    align="flex-start"
+                    pb="4"
+                    style={
+                      values.eventTrigger === "customEvents"
+                        ? {}
+                        : { borderBottom: "1px solid #E2E8F0" }
+                    }
+                  >
+                    <Text pt="4" fontSize="lg" fontWeight="semibold">
+                      Which events would you like to trigger this webhook?
+                    </Text>
+                    <HStack>
+                      <Field
+                        type="radio"
+                        name="eventTrigger"
+                        value="allEvents"
                       />
-                    </VStack>
-                    <VStack
-                      align="flex-start"
-                      pb="4"
-                      style={
-                        values.eventTrigger === "customEvents"
-                          ? {}
-                          : { borderBottom: "1px solid #E2E8F0" }
-                      }
-                    >
-                      <Text pt="4" fontSize="lg" fontWeight="semibold">
-                        Which events would you like to trigger this webhook?
-                      </Text>
-                      <HStack>
-                        <Field
-                          type="radio"
-                          name="eventTrigger"
-                          value="allEvents"
-                        />
-                        <Text>All Events</Text>
-                        <Field
-                          type="radio"
-                          name="eventTrigger"
-                          value="customEvents"
-                        />
-                        <Text>Customize Events</Text>
-                      </HStack>
-                      {values.eventTrigger === "customEvents" && (
-                        <FieldArray name="sourcePages">
-                          {({ push, remove }) => (
-                            <PageNavigationAccordion
-                              sourcePages={values.sourcePages}
-                              pageNavigationChecked={pageNavigationChecked}
-                              setPageNavigationChecked={
-                                setPageNavigationChecked
-                              }
-                              setFieldValue={setFieldValue}
-                              push={push}
-                              remove={remove}
-                            />
-                          )}
-                        </FieldArray>
-                      )}
-                    </VStack>
-                    <ModalFooter>
-                      <Button
-                        colorScheme="red"
-                        mr={3}
-                        onClick={handleCloseModal}
-                      >
-                        Cancel
-                      </Button>
-                      <Button colorScheme="blue" type="submit">
-                        Save
-                      </Button>
-                    </ModalFooter>
-                  </Form>
-                );
-              }}
-            </Formik>
-          </>
-        </ModalBody>
+                      <Text>All Events</Text>
+                      <Field
+                        type="radio"
+                        name="eventTrigger"
+                        value="customEvents"
+                      />
+                      <Text>Customize Events</Text>
+                    </HStack>
+                    {values.eventTrigger === "customEvents" && (
+                      <FieldArray name="sourcePages">
+                        {({ push, remove }) => (
+                          <PageNavigationAccordion
+                            sourcePages={values.sourcePages}
+                            pageNavigationChecked={pageNavigationChecked}
+                            setPageNavigationChecked={setPageNavigationChecked}
+                            setFieldValue={setFieldValue}
+                            push={push}
+                            remove={remove}
+                          />
+                        )}
+                      </FieldArray>
+                    )}
+                  </VStack>
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme="red" mr={3} onClick={handleCloseModal}>
+                    Cancel
+                  </Button>
+                  <Button colorScheme="blue" type="submit">
+                    Save
+                  </Button>
+                </ModalFooter>
+              </Form>
+            );
+          }}
+        </Formik>
       </ModalContent>
     </Modal>
   );
