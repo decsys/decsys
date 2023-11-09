@@ -26,12 +26,10 @@ import {
   Flex,
   useToast,
   useDisclosure,
-  toast,
 } from "@chakra-ui/react";
 import { FaTimes, FaPlusCircle } from "react-icons/fa";
 import { TextField } from "../Form/TextField";
 import { FormikInput } from "../Form/FormikInput";
-import LightHeading from "components/core/LightHeading";
 import { generateWebhookSecret } from "api/webhooks";
 import ConfirmationModal from "./ConfirmationModal";
 
@@ -160,73 +158,65 @@ const PageNavigationAccordion = ({
   remove,
   values,
   setFieldValue,
-}) => {
-  const handleCheckboxChange = (e) => {
-    setFieldValue("pageNavigation", e.target.checked);
-    // If the checkbox is checked and the sourcePages array is empty, initialize it.
-    if (isChecked && sourcePages.length === 0) {
-      setFieldValue("sourcePages", []);
-    }
-  };
-
-  return (
-    <Accordion defaultIndex={[0]} allowToggle width="100%">
-      <AccordionItem bg="gray.50">
-        <AccordionButton
-          width="100%"
-          _expanded={{ bg: "gray.500", color: "white" }}
-        >
-          <HStack>
-            <Field
-              type="checkbox"
-              name="pageNavigation"
-              onChange={handleCheckboxChange}
-              checked={values.pageNavigation}
+}) => (
+  <Accordion defaultIndex={[0]} allowToggle width="100%">
+    <AccordionItem bg="gray.50">
+      <AccordionButton
+        width="100%"
+        _expanded={{ bg: "gray.500", color: "white" }}
+      >
+        <HStack>
+          <Field
+            type="checkbox"
+            name="pageNavigation"
+            onChange={() => {
+              setFieldValue("pageNavigation", e.target.checked);
+            }}
+            checked={values.pageNavigation}
+          />
+          <Text>Page Navigation</Text>
+        </HStack>
+        <AccordionIcon />
+      </AccordionButton>
+      <AccordionPanel>
+        <VStack w="100%" align="flex-start">
+          <HStack w="100%" justify="space-between">
+            <Text as="h4" size="md">
+              Trigger Filters
+            </Text>
+            <IconButton
+              colorScheme="green"
+              icon={<FaPlusCircle />}
+              onClick={() => push("")}
             />
-            <Text>Page Navigation</Text>
           </HStack>
-          <AccordionIcon />
-        </AccordionButton>
-        <AccordionPanel>
-          <VStack w="100%" align="flex-start">
-            <HStack w="100%" justify="space-between">
-              <Text as="h4" size="md">
-                Trigger Filters
-              </Text>
-              <IconButton
-                colorScheme="green"
-                icon={<FaPlusCircle />}
-                onClick={() => push("")}
-              />
-            </HStack>
-            {sourcePages.map((sourcePage, index) => (
-              <Flex key={index} w="100%">
-                <HStack w="100%">
-                  <Flex w="40%">
-                    <FormikInput
-                      name={`sourcePages.${index}`}
-                      placeholder="Source page"
-                      type="number"
-                      size="sm"
-                      collapseError
-                    />
-                  </Flex>
-                  <IconButton
-                    colorScheme="gray"
-                    fontSize="18px"
-                    icon={<FaTimes />}
+          {sourcePages.map((sourcePage, index) => (
+            <Flex key={index} w="100%">
+              <HStack w="100%">
+                <Flex w="40%">
+                  <FormikInput
+                    name={`sourcePages.${index}`}
+                    placeholder="Source page"
+                    type="number"
                     size="sm"
-                    onClick={() => remove(index)}
+                    collapseError
                   />
-                </HStack>
-              </Flex>
-            ))}
-          </VStack>
-        </AccordionPanel>
-      </AccordionItem>
-    </Accordion>
-  );
-};
+                </Flex>
+                <IconButton
+                  colorScheme="gray"
+                  fontSize="18px"
+                  icon={<FaTimes />}
+                  size="sm"
+                  onClick={() => remove(index)}
+                />
+              </HStack>
+            </Flex>
+          ))}
+        </VStack>
+      </AccordionPanel>
+    </AccordionItem>
+  </Accordion>
+);
 
 const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
   const toast = useToast();
@@ -371,7 +361,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         value="allEvents"
                         onChange={() => {
                           setFieldValue("eventTrigger", "allEvents");
-                          setFieldValue("pageNavigation", null); // Set pageNavigation to null when allEvents is selected
                         }}
                       />
                       <Text>All Events</Text>
@@ -381,10 +370,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         value="customEvents"
                         onChange={() => {
                           setFieldValue("eventTrigger", "customEvents");
-                          // Check if the sourcePages array is empty
-                          if (values.sourcePages.length === 0) {
-                            setFieldValue("pageNavigation", true); // Set pageNavigation to true when customEvents is selected
-                          }
+                          setFieldValue("pageNavigation", true); // Set pageNavigation to true when customEvents is selected
                         }}
                       />
                       <Text>Customize Events</Text>
