@@ -158,64 +158,66 @@ const PageNavigationAccordion = ({
   remove,
   values,
   setFieldValue,
-}) => (
-  <Accordion defaultIndex={[0]} allowToggle width="100%">
-    <AccordionItem bg="gray.50">
-      <AccordionButton
-        width="100%"
-        _expanded={{ bg: "gray.500", color: "white" }}
-      >
-        <HStack>
-          <Field
-            type="checkbox"
-            name="pageNavigation"
-            onChange={() => {
-              setFieldValue("pageNavigation", e.target.checked);
-            }}
-            checked={values.pageNavigation}
-          />
-          <Text>Page Navigation</Text>
-        </HStack>
-        <AccordionIcon />
-      </AccordionButton>
-      <AccordionPanel>
-        <VStack w="100%" align="flex-start">
-          <HStack w="100%" justify="space-between">
-            <Text as="h4" size="md">
-              Trigger Filters
-            </Text>
-            <IconButton
-              colorScheme="green"
-              icon={<FaPlusCircle />}
-              onClick={() => push("")}
+}) => {
+  return (
+    <Accordion defaultIndex={[0]} allowToggle width="100%">
+      <AccordionItem bg="gray.50">
+        <AccordionButton
+          width="100%"
+          _expanded={{ bg: "gray.500", color: "white" }}
+        >
+          <HStack>
+            <Field
+              type="checkbox"
+              name="pageNavigation"
+              onChange={() => {
+                setFieldValue("pageNavigation", e.target.checked);
+              }}
+              checked={values.pageNavigation}
             />
+            <Text>Page Navigation</Text>
           </HStack>
-          {sourcePages.map((sourcePage, index) => (
-            <Flex key={index} w="100%">
-              <HStack w="100%">
-                <Flex w="40%">
-                  <FormikInput
-                    name={`sourcePages.${index}`}
-                    placeholder="Source page"
-                    type="number"
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel>
+          <VStack w="100%" align="flex-start">
+            <HStack w="100%" justify="space-between">
+              <Text as="h4" size="md">
+                Trigger Filters
+              </Text>
+              <IconButton
+                colorScheme="green"
+                icon={<FaPlusCircle />}
+                onClick={() => push("")}
+              />
+            </HStack>
+            {sourcePages.map((sourcePage, index) => (
+              <Flex key={index} w="100%">
+                <HStack w="100%">
+                  <Flex w="40%">
+                    <FormikInput
+                      name={`sourcePages.${index}`}
+                      placeholder="Source page"
+                      type="number"
+                      size="sm"
+                    />
+                  </Flex>
+                  <IconButton
+                    colorScheme="gray"
+                    fontSize="18px"
+                    icon={<FaTimes />}
                     size="sm"
+                    onClick={() => remove(index)}
                   />
-                </Flex>
-                <IconButton
-                  colorScheme="gray"
-                  fontSize="18px"
-                  icon={<FaTimes />}
-                  size="sm"
-                  onClick={() => remove(index)}
-                />
-              </HStack>
-            </Flex>
-          ))}
-        </VStack>
-      </AccordionPanel>
-    </AccordionItem>
-  </Accordion>
-);
+                </HStack>
+              </Flex>
+            ))}
+          </VStack>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  );
+};
 
 const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
   const toast = useToast();
