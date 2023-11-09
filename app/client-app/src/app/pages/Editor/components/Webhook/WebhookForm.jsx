@@ -161,7 +161,14 @@ const PageNavigationAccordion = ({
   values,
   setFieldValue,
 }) => {
-  console.log(values.pageNavigation);
+  const handleCheckboxChange = (e) => {
+    setFieldValue("pageNavigation", e.target.checked);
+    // If the checkbox is checked and the sourcePages array is empty, initialize it.
+    if (isChecked && sourcePages.length === 0) {
+      setFieldValue("sourcePages", []);
+    }
+  };
+
   return (
     <Accordion defaultIndex={[0]} allowToggle width="100%">
       <AccordionItem bg="gray.50">
@@ -173,18 +180,7 @@ const PageNavigationAccordion = ({
             <Field
               type="checkbox"
               name="pageNavigation"
-              onChange={(e) => {
-                if (e.target.checked) {
-                  // If the checkbox is checked, update pageNavigation accordingly
-                  setFieldValue("pageNavigation", true);
-                  if (sourcePages.length === 0) {
-                    setFieldValue("sourcePages", []);
-                  }
-                } else {
-                  // If the checkbox is unchecked, set pageNavigation to null
-                  setFieldValue("pageNavigation", null);
-                }
-              }}
+              onChange={handleCheckboxChange}
               checked={values.pageNavigation}
             />
             <Text>Page Navigation</Text>
@@ -376,7 +372,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         onChange={() => {
                           setFieldValue("eventTrigger", "allEvents");
                           setFieldValue("pageNavigation", null); // Set pageNavigation to null when allEvents is selected
-                          // Optionally clear other fields related to custom events if needed
                         }}
                       />
                       <Text>All Events</Text>
@@ -390,7 +385,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                           if (values.sourcePages.length === 0) {
                             setFieldValue("pageNavigation", true); // Set pageNavigation to true when customEvents is selected
                           }
-                          // Else retain the existing state of pageNavigation, do not overwrite it
                         }}
                       />
                       <Text>Customize Events</Text>
