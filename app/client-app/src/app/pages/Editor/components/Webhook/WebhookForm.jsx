@@ -257,7 +257,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
     ).map((item) => item.sourcePage),
     hasCustomTriggers: webhook?.triggerCriteria?.hasCustomTriggers || false,
     pageNavigation: Boolean(
-      webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION?.length >= 0
+      webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION
     ),
   });
 
