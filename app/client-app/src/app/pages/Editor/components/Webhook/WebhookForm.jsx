@@ -170,10 +170,10 @@ const PageNavigationAccordion = ({
             <Field
               type="checkbox"
               name="pageNavigation"
+              checked={values.pageNavigation}
               onChange={() => {
                 setFieldValue("pageNavigation", e.target.checked);
               }}
-              checked={values.pageNavigation}
             />
             <Text>Page Navigation</Text>
           </HStack>
