@@ -26,6 +26,7 @@ import {
   Flex,
   useToast,
   useDisclosure,
+  toast,
 } from "@chakra-ui/react";
 import { FaTimes, FaPlusCircle } from "react-icons/fa";
 import { TextField } from "../Form/TextField";
@@ -155,12 +156,12 @@ const SSLAlert = () => (
 
 const PageNavigationAccordion = ({
   sourcePages,
-  pageNavigationChecked,
-  setPageNavigationChecked,
-  setFieldValue,
   push,
   remove,
+  values,
+  setFieldValue,
 }) => {
+  console.log(values.pageNavigation);
   return (
     <Accordion defaultIndex={[0]} allowToggle width="100%">
       <AccordionItem bg="gray.50">
@@ -172,11 +173,19 @@ const PageNavigationAccordion = ({
             <Field
               type="checkbox"
               name="pageNavigation"
-              checked={pageNavigationChecked}
               onChange={(e) => {
-                setFieldValue("pageNavigation", e.target.checked);
-                setPageNavigationChecked(e.target.checked);
+                if (e.target.checked) {
+                  // If the checkbox is checked, update pageNavigation accordingly
+                  setFieldValue("pageNavigation", true);
+                  if (sourcePages.length === 0) {
+                    setFieldValue("sourcePages", []);
+                  }
+                } else {
+                  // If the checkbox is unchecked, set pageNavigation to null
+                  setFieldValue("pageNavigation", null);
+                }
               }}
+              checked={values.pageNavigation}
             />
             <Text>Page Navigation</Text>
           </HStack>
@@ -227,8 +236,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
   const toast = useToast();
   const isEditMode = webhook?.id != null;
   const [editSecret, setEditSecret] = useState(!isEditMode);
-  const [pageNavigationChecked, setPageNavigationChecked] = useState(true);
-
   useEffect(() => {
     // Reset edit secret mode when modal is opened in edit mode
     if (isOpen && isEditMode) {
@@ -275,7 +282,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
     ).map((item) => item.sourcePage),
     hasCustomTriggers: webhook?.triggerCriteria?.hasCustomTriggers || false,
     pageNavigation: Boolean(
-      webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION?.length
+      webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION?.length >= 0
     ),
   });
 
@@ -296,7 +303,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
     onClose();
     setEditSecret(false);
   };
-
   return (
     <Modal isOpen={isOpen} onClose={handleCloseModal} size="xl">
       <ModalOverlay />
@@ -310,11 +316,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
           onSubmit={handleFormikSubmit}
         >
           {({ values, handleSubmit, setFieldValue }) => {
-            useEffect(() => {
-              const isChecked =
-                webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION !== null;
-              setPageNavigationChecked(isChecked);
-            }, [webhook]);
             return (
               <Form id="myForm" onSubmit={handleSubmit}>
                 <ModalBody>
@@ -372,12 +373,18 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         type="radio"
                         name="eventTrigger"
                         value="allEvents"
+                        onChange={() => {
+                          setFieldValue("eventTrigger", "allEvents");
+                        }}
                       />
                       <Text>All Events</Text>
                       <Field
                         type="radio"
                         name="eventTrigger"
                         value="customEvents"
+                        onChange={() => {
+                          setFieldValue("eventTrigger", "customEvents");
+                        }}
                       />
                       <Text>Customize Events</Text>
                     </HStack>
@@ -386,11 +393,10 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         {({ push, remove }) => (
                           <PageNavigationAccordion
                             sourcePages={values.sourcePages}
-                            pageNavigationChecked={pageNavigationChecked}
-                            setPageNavigationChecked={setPageNavigationChecked}
                             setFieldValue={setFieldValue}
                             push={push}
                             remove={remove}
+                            values={values}
                           />
                         )}
                       </FieldArray>
