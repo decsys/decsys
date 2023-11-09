@@ -375,6 +375,8 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         value="allEvents"
                         onChange={() => {
                           setFieldValue("eventTrigger", "allEvents");
+                          setFieldValue("pageNavigation", null); // Set pageNavigation to null when allEvents is selected
+                          // Optionally clear other fields related to custom events if needed
                         }}
                       />
                       <Text>All Events</Text>
@@ -384,6 +386,11 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         value="customEvents"
                         onChange={() => {
                           setFieldValue("eventTrigger", "customEvents");
+                          // Check if the sourcePages array is empty
+                          if (values.sourcePages.length === 0) {
+                            setFieldValue("pageNavigation", true); // Set pageNavigation to true when customEvents is selected
+                          }
+                          // Else retain the existing state of pageNavigation, do not overwrite it
                         }}
                       />
                       <Text>Customize Events</Text>
