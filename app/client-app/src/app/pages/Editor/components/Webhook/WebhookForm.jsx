@@ -199,7 +199,6 @@ const PageNavigationAccordion = ({
                     placeholder="Source page"
                     type="number"
                     size="sm"
-                    collapseError
                   />
                 </Flex>
                 <IconButton
