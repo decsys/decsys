@@ -9,6 +9,7 @@ import {
   Button,
   Stack,
   Text,
+  VStack,
   useDisclosure,
 } from "@chakra-ui/react";
 import { pickRandomItem } from "services/randomizer";
@@ -17,6 +18,10 @@ import { isBuiltIn } from "services/page-items";
 import { encode } from "services/instance-id";
 import { previewWebhook } from "api/webhooks";
 import { PAGE_NAVIGATION } from "constants/event-types";
+import {
+  ExportPayloadButton,
+  WebhookPreviewBody,
+} from "./Preview/components/Webhook/WebhookPreviewModal";
 
 const navigateBack = (location) =>
   navigate(location?.state?.backRedirect ?? `/admin/`);
@@ -63,7 +68,7 @@ const Preview = ({ id, location }) => {
   const [lastPage, setLastPage] = useState(false);
   const [webhookCount, setWebhookCount] = useState(0);
   useEffect(() => setLastPage(page === pages.length - 1), [page, pages.length]);
-  const confirmRedirectModal = useDisclosure();
+  const surveyCompleteModal = useDisclosure();
 
   const [participantSummary, setParticipantSummary] = useState({
     id: "PreviewParticipant",
@@ -185,7 +190,8 @@ const Preview = ({ id, location }) => {
     }
 
     if (lastPage) {
-      if (settings?.CompletionUrl) confirmRedirectModal.onOpen();
+      if (settings?.CompletionUrl || webhookCount !== null)
+        surveyCompleteModal.onOpen();
       else return navigateBack(location);
     } else {
       setPage(page + 1);
@@ -209,48 +215,79 @@ const Preview = ({ id, location }) => {
         setWebhookCount={setWebhookCount}
         triggeredHooks={triggeredHooks}
       />
-      <ConfirmRedirectModal
-        modalState={confirmRedirectModal}
+      <SurveyCompleteModal
+        modalState={surveyCompleteModal}
         completionUrl={settings?.CompletionUrl}
         location={location}
+        triggeredHooks={triggeredHooks}
       />
     </Page>
   );
 };
 
-const ConfirmRedirectModal = ({ modalState, completionUrl, location }) => {
+const CompletionRedirectAlert = () => (
+  <Alert status="info">
+    <AlertIcon />
+    <Stack>
+      <Text>This Survey has a Completion Redirect URL configured.</Text>
+      <Text>You may want to follow it to test it works as expected.</Text>
+    </Stack>
+  </Alert>
+);
+
+const FollowUrlButton = ({ completionUrl }) => (
+  <Button colorScheme="green" mb={1} onClick={() => navigate(completionUrl)}>
+    Follow the configured URL
+  </Button>
+);
+
+const ReturnToAdminButton = ({ navigateBack }) => (
+  <Button colorScheme="blue" mb={1} onClick={navigateBack}>
+    Return to Survey Admin
+  </Button>
+);
+
+const ConfirmRedirectModalBody = ({
+  completionUrl,
+  navigateBack,
+  triggeredHooks,
+}) => (
+  <Stack spacing={2} display="flex" width="92%">
+    {completionUrl && <CompletionRedirectAlert />}
+    <Text fontWeight="bold">What would you like to do?</Text>
+    {triggeredHooks.length > 0 && (
+      <ExportPayloadButton triggeredHooks={triggeredHooks} />
+    )}
+    {completionUrl && <FollowUrlButton completionUrl={completionUrl} />}
+    <ReturnToAdminButton navigateBack={navigateBack} />
+  </Stack>
+);
+
+const SurveyCompleteModal = ({
+  modalState,
+  completionUrl,
+  location,
+  triggeredHooks,
+}) => {
   return (
     <StandardModal
       {...modalState}
-      header="Completion Redirect"
+      header="Survey Completion"
       cancelButton={false}
       showCloseButton={false}
+      size="xl"
     >
-      <Stack spacing={2}>
-        <Alert status="info">
-          <AlertIcon />
-
-          <Stack>
-            <Text>This Survey has a Completion Redirect URL configured.</Text>
-            <Text>You may want to follow it to test it works as expected.</Text>
-          </Stack>
-        </Alert>
-        <Text fontWeight="bold">What would you like to do?</Text>
-        <Button
-          colorScheme="green"
-          mb={1}
-          onClick={() => navigate(completionUrl)}
-        >
-          Follow the configured URL
-        </Button>
-        <Button
-          colorScheme="blue"
-          mb={1}
-          onClick={() => navigateBack(location)}
-        >
-          Return to Survey Admin
-        </Button>
-      </Stack>
+      <VStack width="100%">
+        {triggeredHooks && triggeredHooks.length > 0 && (
+          <WebhookPreviewBody triggeredHooks={triggeredHooks} />
+        )}
+        <ConfirmRedirectModalBody
+          completionUrl={completionUrl}
+          navigateBack={navigateBack}
+          location={location}
+          triggeredHooks={triggeredHooks}
+        />
+      </VStack>
     </StandardModal>
   );
 };
