@@ -34,6 +34,26 @@ import LightHeading from "components/core/LightHeading";
 import { generateWebhookSecret } from "api/webhooks";
 import ConfirmationModal from "./ConfirmationModal";
 
+const CreateModeSecretField = ({
+  values,
+  handleGenerateSecret,
+  setFieldValue,
+}) => {
+  return (
+    <HStack w="100%" pt="4">
+      <TextField name="secret" placeholder="Secret" header="Header" size="sm" />
+      <Button
+        size="sm"
+        colorScheme="teal"
+        w="40%"
+        onClick={() => handleGenerateSecret(values, setFieldValue)}
+      >
+        Generate Secret
+      </Button>
+    </HStack>
+  );
+};
+
 const InfoAlert = () => (
   <Alert status="info" mt={4}>
     <VStack>
@@ -312,6 +332,13 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                     setFieldValue={setFieldValue}
                     setEditSecret={setEditSecret}
                   />
+                  {!isEditMode && (
+                    <CreateModeSecretField
+                      values={values}
+                      handleGenerateSecret={handleGenerateSecret}
+                      setFieldValue={setFieldValue}
+                    />
+                  )}
                   <VStack
                     py="4"
                     style={{ borderBottom: "1px solid #E2E8F0" }}
