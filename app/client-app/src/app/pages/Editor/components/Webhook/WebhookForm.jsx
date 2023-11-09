@@ -152,13 +152,7 @@ const SSLAlert = () => (
   </>
 );
 
-const PageNavigationAccordion = ({
-  sourcePages,
-  push,
-  remove,
-  values,
-  setFieldValue,
-}) => {
+const PageNavigationAccordion = ({ sourcePages, push, remove }) => {
   return (
     <Accordion defaultIndex={[0]} allowToggle width="100%">
       <AccordionItem bg="gray.50">
@@ -167,14 +161,7 @@ const PageNavigationAccordion = ({
           _expanded={{ bg: "gray.500", color: "white" }}
         >
           <HStack>
-            <Field
-              type="checkbox"
-              name="pageNavigation"
-              checked={values.pageNavigation}
-              onChange={() => {
-                setFieldValue("pageNavigation", e.target.checked);
-              }}
-            />
+            <Field type="checkbox" name="pageNavigation" />
             <Text>Page Navigation</Text>
           </HStack>
           <AccordionIcon />
@@ -363,6 +350,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                         value="allEvents"
                         onChange={() => {
                           setFieldValue("eventTrigger", "allEvents");
+                          setFieldValue("pageNavigation", null); // Set pageNavigation to null when allEvents is selected
                         }}
                       />
                       <Text>All Events</Text>
