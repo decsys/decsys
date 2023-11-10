@@ -361,7 +361,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                           setFieldValue("pageNavigation", true); // Set pageNavigation to true when customEvents is selected
                         }}
                       />
-                      <Text>Customize Events</Text>
+                      <Text>Customise Events</Text>
                     </HStack>
                     {values.eventTrigger === "customEvents" && (
                       <FieldArray name="sourcePages">
