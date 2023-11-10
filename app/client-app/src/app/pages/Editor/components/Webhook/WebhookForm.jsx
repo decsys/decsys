@@ -371,7 +371,6 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
                             setFieldValue={setFieldValue}
                             push={push}
                             remove={remove}
-                            values={values}
                           />
                         )}
                       </FieldArray>
