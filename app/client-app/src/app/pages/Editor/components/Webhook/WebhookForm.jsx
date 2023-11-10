@@ -256,9 +256,7 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
       webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION || []
     ).map((item) => item.sourcePage),
     hasCustomTriggers: webhook?.triggerCriteria?.hasCustomTriggers || false,
-    pageNavigation: Boolean(
-      webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION
-    ),
+    pageNavigation: !!webhook?.triggerCriteria?.eventTypes?.PAGE_NAVIGATION,
   });
 
   const handleFormikSubmit = (values) => {
