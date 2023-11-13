@@ -20,4 +20,23 @@ In Decsys, webhooks are a powerful feature that can be triggered by various even
 Remember, you can always go back to edit or delete webhooks. This flexibility allows you to modify your webhook configurations as your survey needs change or evolve.
 
 
+### How to Test a Webhook in Preview Mode
 
+Testing a webhook in preview mode is crucial to ensure it functions as expected. Here's how to do it:
+
+1. **Initiate Preview Mode:** After setting up your webhook, click preview.
+
+2. **Trigger the Webhook:** Navigate through the survey and a notification will pop up for the pages that are set up to trigger the webhook. 
+
+3. **View the Notification:** Once the webhook is triggered, a notification will appear. This is an indication that the webhook has been successfully activated.
+
+4. **Access the JSON Payload:**
+   - The notification will display the JSON payload that the webhook sends. 
+   - This payload contains the data that is transmitted to the specified URL when the webhook is triggered.
+   - For more information about JSON and its structure, [click here](#). //TODO 
+
+5. **Export the Webhook Data (Optional):**
+   - Use the "Export Webhook" button if you wish to save or analyze the webhook's data externally.
+   - This feature is useful for record-keeping or further technical inspection of the webhook's performance.
+
+By following these steps, you can effectively test and verify the functionality of your webhook in a controlled environment before deploying it in a live survey.
