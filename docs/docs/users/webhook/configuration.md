@@ -31,9 +31,9 @@ Testing a webhook in preview mode is crucial to ensure it functions as expected.
 3. **View the Notification:** Once the webhook is triggered, a notification will appear. This is an indication that the webhook has been successfully activated.
 
 4. **Access the JSON Payload:**
-   - The notification will display the JSON payload that the webhook sends. 
+   - The notification will display the webhooks that got triggered, click the webhook payload button to view the JSON payload.
    - This payload contains the data that is transmitted to the specified URL when the webhook is triggered.
-   - For more information about JSON and its structure, [click here](./payload).
+   - For more information about Webhook JSON Payload and its structure, [click here](./payload).
 
 5. **Export the Webhook Data (Optional):**
    - Use the "Export Webhook" button if you wish to save or analyze the webhook's data externally.
