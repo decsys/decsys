@@ -37,7 +37,7 @@ This array is a collection of individual response objects, each corresponding to
   - Visual Analog Scale
 
 - **Order**: The ordinal position of the question in the survey's sequence.
-- **Response**: The actual response given by the participant, detailed in elements like `index` and `value`.
+- **Response**: The actual response given by the participant, detailed in elements like `index/label` and `value`.
 - **Page Load**: A timestamp indicating the moment when the survey page was loaded by the participant.
 - **Response Recorded**: A timestamp marking when the participant's response was recorded by the system.
 - **Is Optional**: A boolean value indicating whether the question was optional or mandatory for the participant.

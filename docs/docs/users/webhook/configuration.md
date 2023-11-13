@@ -33,7 +33,7 @@ Testing a webhook in preview mode is crucial to ensure it functions as expected.
 4. **Access the JSON Payload:**
    - The notification will display the JSON payload that the webhook sends. 
    - This payload contains the data that is transmitted to the specified URL when the webhook is triggered.
-   - For more information about JSON and its structure, [click here](#). //TODO 
+   - For more information about JSON and its structure, [click here](./payload).
 
 5. **Export the Webhook Data (Optional):**
    - Use the "Export Webhook" button if you wish to save or analyze the webhook's data externally.

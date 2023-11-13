@@ -1,7 +1,5 @@
 ---
 title: Overview
-sidebar_label: Overview
-slug: webhook/
 ---
 
 
@@ -14,7 +12,7 @@ Webhooks are incredibly useful for creating real-time applications and for autom
 ### What event types can Decsys trigger webhooks for?
 In Decsys, webhooks are activated by page navigation events. This includes scenarios when a user navigates to a new page or completes the survey, enabling real-time tracking of user interactions within the application.
 
-To read more about what can trigger a webhook click here //TODO
+To read more about what can trigger a webhook [click here](./events).
 
 
 ### What does a Decsys webhook payload look like?
@@ -29,4 +27,4 @@ A webhook payload in Decsys is a structured JSON data format that conveys inform
     - The time when the survey was started.
     - Responses array.
 
-To read more about payload click here //TODO
+To read more about payload [click here](./payload).
