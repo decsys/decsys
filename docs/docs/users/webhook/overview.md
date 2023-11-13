@@ -16,7 +16,7 @@ In Decsys, webhooks are activated by page navigation events. This includes scena
 
 - **All Events:** This option activates webhooks for every page navigation event, providing comprehensive monitoring across the entire application workflow.
 
-- **Customize Events/Page Navigation:** This feature allows targeting specific pages for webhook triggers. By setting criteria for chosen source pages, it offers tailored monitoring for selected segments of the application.
+- **Customize Events - Page Navigation:** This feature allows targeting specific pages for webhook triggers. By setting criteria for chosen source pages, it offers tailored monitoring for selected segments of the application.
 
 ### What does a Decsys webhook payload look like?
 A webhook payload in Decsys is a structured JSON data format that conveys information about an event within the Decsys application. This payload is sent to the configured URL when the specified event occurs. The general structure of a Decsys webhook payload includes several key components:
@@ -28,6 +28,7 @@ A webhook payload in Decsys is a structured JSON data format that conveys inform
 - **Payload:** This section contains additional data relevant to the event. It includes:
     - The participant's ID.
     - The time when the survey was started.
+    - Responses array.
 
 - **Responses array:** This array includes individual response objects for each interaction the participant has with the survey. Each object in the array contains the following details:
     - **Page:** The specific page number in the survey where the response was recorded.
