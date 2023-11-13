@@ -19,15 +19,5 @@ In Decsys, webhooks are a powerful feature that can be triggered by various even
 
 Remember, you can always go back to edit or delete webhooks. This flexibility allows you to modify your webhook configurations as your survey needs change or evolve.
 
-## Event Types in Decsys Webhooks
-### **All Events** 
-- **Trigger on All Events:** Activates webhooks for every page navigation event. This option provides a comprehensive monitoring tool across the entire application workflow. Since Page Navigation is currently the only event type, selecting this option effectively monitors all possible events within the system.
-
-### **Customize Events** 
-- **Page Navigation:** This category offers two distinct configurations for more targeted monitoring:
-
-  - **Target Specific Pages:** Allows for focused monitoring on selected pages or specific types of navigation events. By specifying source pages as trigger filters, webhooks can be tailored to activate for particular segments of the survey, such as crucial decision points or form submission pages.
-
-  - **All Page Navigation:** When 'Page Navigation' is selected without specifying any source pages, the webhook will trigger for all page navigation events across the application. This configuration essentially mirrors the 'All Events' option given the current scope of event types.
 
 

@@ -12,6 +12,7 @@ module.exports = {
       "users/webhook/configuration",
       "users/webhook/events",
       "users/webhook/security",
+      "users/webhook/payload",
     ],
   },
   contributing: {
