@@ -6,7 +6,14 @@ module.exports = {
       "users/configuration",
       "users/platforms",
     ],
-    "Integrations": ["users/integrations/prolific"],
+    Integrations: ["users/integrations/prolific"],
+    Webhooks: [
+      "users/webhook/overview",
+      "users/webhook/configuration",
+      "users/webhook/events",
+      "users/webhook/security",
+      "users/webhook/payload",
+    ],
   },
   contributing: {
     "Developer Guide": ["devs/contributing/source-code"],
