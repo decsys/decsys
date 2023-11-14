@@ -27,6 +27,23 @@ Secrets in webhooks are unique tokens used for authentication and verification. 
 2. **Internal Use and Development:** Suitable for secure, internal networks, or during development and testing phases.
 3. **Consider Security Implications:** Be aware that not using a secret can expose your application to potential security risks, especially in production environments.
 
+### Editing Secrets
+#### Consider the Implications of Secret Changes
+- **Integration Impact:** Changing the webhook secret will necessitate updates to all systems that use it. This is crucial to ensure continued integration functionality.
+- **Replacing a Lost Secret:** If the secret is lost or forgotten, it can be replaced. However, this should be done understanding the widespread effect it will have on the operation of your webhook.
+
+#### Procedure for Secret Modification
+- **Updating the Secret:**
+  - While editing a webhook, Click change secret.
+  - Generate a new secret by clicking the generate secret button which will populate the secret field.
+  - Leaving the field empty will remove the current secret.
+- **Maintaining Current Setup:**
+  - If you choose not to change the secret, simply cancel the editing process to keep the existing one.
+- **Consistency Check:**
+  - After any modification, verify that the updated secret is reflected correctly in all systems connected to the webhook to prevent any data transmission issues.
+
+Handling the webhook secret requires a balance between maintaining security and ensuring seamless integration functionality. Be mindful of these aspects when making any changes.
+
 **Note:** For most production use cases, especially those dealing with sensitive data or exposed to the public internet, using a secret is highly recommended for security.
 
 ## SSL Verification in Webhooks

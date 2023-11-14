@@ -11,20 +11,17 @@ Decsys webhooks are integral for monitoring user interactions within the applica
 - **Trigger Details**: Activates upon any page navigation event within the survey.
 - **Scope**: Currently limited to Page Navigation events, with potential for future expansion.
 
-#### 2. Customizable Events - Focused on Page Navigation
-- **General Function**: Allows precise targeting of specific pages for webhook activation, enhancing event-specific monitoring.
-  
-  - **All Page Navigation**: 
-    - **Trigger**: Engages webhook on all navigation events.
-    - **Comparison**: Similar in function to the 'All Events' setting, within the present context.
+#### 2. Customizable Events 
+- **Page Navigation**: Allows precise targeting of specific pages for webhook activation, enhancing event-specific monitoring.
 
-  - **Target Source Pages**:
-    - **Objective**: To observe activities on predetermined pages.
-    - **Trigger Mechanism**: Webhooks fire when navigation occurs on or from specified pages.
+#### All Page Navigation
+- **Function**: This setting triggers the webhook for every page navigation event in the survey.
+- **Use Case**: Ideal for surveys requiring thorough monitoring across all pages, ensuring no navigation event is missed.
 
-### Detailed Trigger Filter Parameters
+#### Trigger Filter
+- **Purpose**: The trigger filter allows you to define specific pages that will activate the webhook.
+- **Configuration**: Users can enter page number in the trigger filter settings. When a respondent completes the question by clicking next or finish the webhook is triggered.
+- **Flexibility**: If no pages are specified in the trigger filter, the webhook defaults to the "All Page Navigation" setting, activating on every page navigation event.
+- **Customization**: This feature is especially useful for surveys that require focused monitoring on certain pages, such as key questions or critical survey sections.
 
-#### Page Navigation - Source Page
-- **Purpose**: To identify and select specific source pages for webhook activation.
-- **Functionality**: Tailors the monitoring process to critical segments of the survey, such as key questions or form submissions.
-- **Customization**: Users can configure the system to focus on specific user interactions, enhancing data relevance and accuracy.
+To learn more about the payload that gets triggered [click here](./payload), optionaly you can test webhooks in preview mode.

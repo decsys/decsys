@@ -29,11 +29,27 @@ Testing your webhook in preview mode is essential to ensure its functionality. H
    - Navigate through the survey to activate the webhook.
 
 3. **Notification and Payload Review:**
-   - Upon triggering, a notification appears with an option to view the JSON payload.
+   - Upon triggering, a notification appears with an option to view the [JSON payload](./payload).
    - The payload provides the data sent to your URL.
 
 4. **Export Option:**
-   - Use "Export Webhook" for external analysis or record-keeping.
+   - Use "Export Webhook" to download a zip file with the payloads for external analysis or record-keeping.
+
+
+### Editing and Deleting Webhooks
+
+Once you have set up and saved your webhook configurations in Decsys, you maintain the flexibility to make changes or remove them entirely. This section briefly explains how you can edit or delete your webhooks.
+
+#### Editing a Webhook
+- **Access Webhook Settings:** Navigate to the webhook management section.
+- **Select the Webhook:** Choose the webhook you wish to edit.
+- **Make Changes:** Update the callback URL, trigger filters, or any other settings as needed.
+- **Save Changes:** Ensure to save your edits for them to take effect.
+
+#### Deleting a Webhook
+- **Locate the Webhook:** Go to the webhook management area and find the webhook you want to remove.
+- **Delete Option:** Select the delete button for the respective webhook.
+- **Confirm Deletion:** You will be prompted to confirm the deletion to prevent accidental removal.
 
 ### Event Types and Trigger Filters
 
@@ -44,10 +60,22 @@ Testing your webhook in preview mode is essential to ensure its functionality. H
 - Customize the webhook to trigger for specific events, enhancing targeted monitoring.
 
 ### Trigger Filters for Page Navigation
-Currently, Page Navigation is the primary event type for webhooks in Decsys, with the flexibility to include more event types in the future.
 
-#### Page Navigation
-- **Purpose:** Allows the webhook to respond to specific page navigations within the survey.
-- **Flexibility:** Customizable to focus on critical survey segments or specific user interactions.
+In Decsys, the trigger filters for Page Navigation enable you to specify which pages in a survey will activate the webhook. This feature is particularly useful for surveys where monitoring specific pages is crucial. Here is a step-by-step guide to setting up trigger filters for Page Navigation. 
 
-Remember, you can always modify or delete webhooks as your survey evolves. This guide will be updated as new event types and trigger filters become available.
+#### Step-by-Step Guide to Configuring Trigger Filters
+1. **Access the Trigger Filter Settings:**
+   - From the webhook configuration interface, click on "Customize Events" to access the trigger filter settings.
+
+2. **Specify Source Pages:**
+   - Enter the page number of the survey you wish to monitor. This tells the webhook to activate only when these specific pages are navigated.
+
+3. **Opting for Broad Monitoring:**
+   - If no specific pages are added to the trigger filters, the webhook  will trigger on every page navigation within the survey.
+
+4. **Review and Confirm:**
+   - Once you've specified the pages and defined the criteria, review your settings to ensure they align with your monitoring goals.
+   - Confirm and save the settings to activate the trigger filters for your webhook.
+   - You can test these webhook settings in preview mode.
+
+By following these steps, you can effectively configure the trigger filters to focus your webhook monitoring on specific pages within your Decsys survey. This allows for a more targeted approach in tracking user interactions and responses.
