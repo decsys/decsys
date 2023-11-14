@@ -24,4 +24,4 @@ Decsys webhooks are integral for monitoring user interactions within the applica
 - **Flexibility**: If no pages are specified in the trigger filter, the webhook defaults to the "All Page Navigation" setting, activating on every page navigation event.
 - **Customization**: This feature is especially useful for surveys that require focused monitoring on certain pages, such as key questions or critical survey sections.
 
-To learn more about the payload that gets triggered [click here](./payload), optionaly you can test webhooks in preview mode.
+To learn more about the payload that gets triggered [click here](./payload), optionally you can test webhooks in preview mode.
