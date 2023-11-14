@@ -2,26 +2,29 @@
 title: Events
 ---
 
-In Decsys, webhooks are designed to trigger on specific events, particularly focusing on page navigation within the application. This document provides a detailed overview of how these webhook events operate.
+Decsys webhooks are integral for monitoring user interactions within the application, especially during page navigations. This guide provides insights into the types of events that can trigger webhooks and their operational specifics.
 
+### Overview of Webhook Events
 
-### 1. All Events
-Select this option to activate webhooks for every page navigation event, providing comprehensive monitoring across the entire survey workflow.
-- **Trigger**: Activates on every page navigation event.
-- **Current Scope**: Limited to Page Navigation events but may expand in the future.
+#### 1. All Events
+- **Description**: Triggers webhooks for every page navigation within Decsys, offering a broad overview of user interactions.
+- **Trigger Details**: Activates upon any page navigation event within the survey.
+- **Scope**: Currently limited to Page Navigation events, with potential for future expansion.
 
+#### 2. Customizable Events - Focused on Page Navigation
+- **General Function**: Allows precise targeting of specific pages for webhook activation, enhancing event-specific monitoring.
+  
+  - **All Page Navigation**: 
+    - **Trigger**: Engages webhook on all navigation events.
+    - **Comparison**: Similar in function to the 'All Events' setting, within the present context.
 
-### 2. Customize Events - Page Navigation
-This feature allows targeting specific pages for webhook triggers. By setting criteria for chosen source pages, it offers tailored monitoring for selected segments of the application.
+  - **Target Source Pages**:
+    - **Objective**: To observe activities on predetermined pages.
+    - **Trigger Mechanism**: Webhooks fire when navigation occurs on or from specified pages.
 
-- **All Page Navigation**:
-  - Activates the webhook for every page navigation event.
-  - Functions similarly to the 'All Events' option, given the current scope.
-- **Target Source Pages**:
-  - Allows for monitoring specific pages or types of navigation events.
-  - Webhooks can be set to trigger based on the defined source pages.
+### Detailed Trigger Filter Parameters
 
-## Target Source Page by using Trigger Filters:
-- **Purpose**: To define source pages that will activate the webhook.
-- **Functionality**: Enables focused monitoring on selected segments of the survey.
-- **Flexibility**: Can be adjusted to track user interactions at crucial points, like form submissions or important survey questions
+#### Page Navigation - Source Page
+- **Purpose**: To identify and select specific source pages for webhook activation.
+- **Functionality**: Tailors the monitoring process to critical segments of the survey, such as key questions or form submissions.
+- **Customization**: Users can configure the system to focus on specific user interactions, enhancing data relevance and accuracy.

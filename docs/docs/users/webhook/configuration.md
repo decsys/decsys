@@ -1,42 +1,53 @@
 ---
-title: Configuration
+title:  Configuration 
 ---
 
+## Setting Up Webhooks for Individual Surveys
 
-## How to Configure Webhooks per Survey
-1. **Access Webhook Management:** In the Decsys application, while creating or editing a survey, click on the menu button next to the "+ Add Page" button. From the dropdown, select "Manage webhooks."
+### Step-by-Step Guide to Creating Webhooks
+1. **Navigate to Webhook Management:**
+   - In Decsys, access the webhook management feature by selecting "Manage webhooks" from the menu adjacent to the "+ Add Page" button in the survey editor.
 
-2. **Add a New Webhook:** In the webhook management section, you have the option to create a new webhook. Click on the "Create a webhook" button to start the setup.
+2. **Creating a New Webhook:**
+   - Click on "Create a webhook" in the management section to initiate the setup process.
 
-3. **Configure Webhook Details:**
-   - **Callback URL:** Enter the URL where you want the webhook notifications to be sent. This URL will receive the webhook payloads.
-   - **Secret Generation (Optional):** You can choose to generate a secret for added security. This secret helps in verifying that the requests to your callback URL are from Decsys.
-   - **SSL Verification:** Decide whether to enable or disable SSL verification. If enabled, it adds a layer of security by ensuring the SSL certificate of the receiving server is valid.
-   - **Event Selection:** Choose the events that will trigger your webhook. You can select either "All Events" or customize specific events for triggering the webhook.
+3. **Configuring Webhook Details:**
+   - **Callback URL:** Specify the URL where webhook notifications will be sent.
+   - [**SSL Verification:**](./security#ssl-verification-in-webhooks) Choose to enable or disable SSL verification for added security.
+   - [**Event Selection:**](./configuration#event-types-and-trigger-filters) Decide between triggering the webhook on "All Events" or select specific events for activation.
 
-4. **Save the Webhook:** Once all details are filled in, save the webhook configuration. 
-In Decsys, webhooks are a powerful feature that can be triggered by various events, particularly page navigation events. This functionality enables real-time monitoring and reaction to user actions within an application. Currently, the primary event type available is Page Navigation, but the system is designed to accommodate additional types in the future.
+4. **Finalizing the Webhook:**
+   - Save your webhook settings once all details are configured.
 
-Remember, you can always go back to edit or delete webhooks. This flexibility allows you to modify your webhook configurations as your survey needs change or evolve.
+### Testing Webhooks in Preview Mode
+Testing your webhook in preview mode is essential to ensure its functionality. Here's the process:
 
+1. **Initiate Preview Mode:**
+   - Start the preview after setting up your webhook.
 
-### How to Test a Webhook in Preview Mode
+2. **Triggering the Webhook:**
+   - Navigate through the survey to activate the webhook.
 
-Testing a webhook in preview mode is crucial to ensure it functions as expected. Here's how to do it:
+3. **Notification and Payload Review:**
+   - Upon triggering, a notification appears with an option to view the JSON payload.
+   - The payload provides the data sent to your URL.
 
-1. **Initiate Preview Mode:** After setting up your webhook, click preview.
+4. **Export Option:**
+   - Use "Export Webhook" for external analysis or record-keeping.
 
-2. **Trigger the Webhook:** Navigate through the survey and a notification will pop up for the pages that are set up to trigger the webhook. 
+### Event Types and Trigger Filters
 
-3. **View the Notification:** Once the webhook is triggered, a notification will appear. This is an indication that the webhook has been successfully activated.
+#### All Events
+- This option triggers the webhook for every event within the survey, offering comprehensive monitoring.
 
-4. **Access the JSON Payload:**
-   - The notification will display the webhooks that got triggered, click the webhook payload button to view the JSON payload.
-   - This payload contains the data that is transmitted to the specified URL when the webhook is triggered.
-   - For more information about Webhook JSON Payload and its structure, [click here](./payload).
+#### Custom Events
+- Customize the webhook to trigger for specific events, enhancing targeted monitoring.
 
-5. **Export the Webhook Data (Optional):**
-   - Use the "Export Webhook" button if you wish to save or analyze the webhook's data externally.
-   - This feature is useful for record-keeping or further technical inspection of the webhook's performance.
+### Trigger Filters for Page Navigation
+Currently, Page Navigation is the primary event type for webhooks in Decsys, with the flexibility to include more event types in the future.
 
-By following these steps, you can effectively test and verify the functionality of your webhook in a controlled environment before deploying it in a live survey.
+#### Page Navigation
+- **Purpose:** Allows the webhook to respond to specific page navigations within the survey.
+- **Flexibility:** Customizable to focus on critical survey segments or specific user interactions.
+
+Remember, you can always modify or delete webhooks as your survey evolves. This guide will be updated as new event types and trigger filters become available.

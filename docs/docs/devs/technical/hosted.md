@@ -16,7 +16,7 @@ The **.NET Backend API** is a web application:
 - It hosts a built in Identity Provider to manage user access.
 - In Hosted mode in Production, it **should be run over HTTPS**.
 
-Yuo can host it however you prefer:
+You can host it however you prefer:
 - It is capable of self-hosting, binding to HTTP/HTTPS on any suitable ports.
 - You can put it behind a reverse proxy such as nginx, Apache, IIS etc.
 - You can run it in Docker. [Start here](https://hub.docker.com/_/microsoft-dotnet-nightly-aspnet/)
