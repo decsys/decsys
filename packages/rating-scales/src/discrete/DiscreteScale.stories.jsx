@@ -2,7 +2,7 @@ import React from "react";
 import { DiscreteScale } from "./DiscreteScale";
 
 export default {
-  title: "DISCRETE/Scale",
+  title: "Discrete/Scale",
   component: DiscreteScale,
   tags: ["autodocs"],
   argTypes: {
@@ -15,11 +15,6 @@ export default {
       description:
         "The actual radio input values, and optional secondary labels.",
     },
-    frameHeight: {
-      control: "text",
-      description:
-        "A valid CSS Dimension value for the height of the component's frame.",
-    },
     questionOptions: {
       control: "object",
       description: "Options for the scale's question text.",
@@ -31,6 +26,11 @@ export default {
     barOptions: {
       control: "object",
       description: "Options for the scale's horizontal bar.",
+    },
+    frameHeight: {
+      control: "text",
+      description:
+        "A valid CSS Dimension value for the height of the component's frame.",
     },
   },
 };

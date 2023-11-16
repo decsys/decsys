@@ -24,15 +24,19 @@ export default {
   },
 };
 
-export const Basic = {
-  args: {
-    index: "0",
-    value: "1",
-    id: "radio-button",
-    labelColor: "black",
-    fontFamily: "Ariel",
-    defaultChecked: Boolean(false),
-    labelAbove: Boolean(false),
-    secondaryLabel: "First",
-  },
-};
+export const Basic = (args) => <Radio {...args} />;
+
+export const LabeledRadio = () => (
+  <Radio label="opt1" value="Option 1" id="option-1" />
+);
+
+export const StyledRadio = () => (
+  <Radio
+    label="custom"
+    value="1"
+    id="custom-style"
+    labelColor="Blue"
+    fontFamily="Helvetica"
+    secondaryLabel="Custom Label"
+  />
+);
