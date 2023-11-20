@@ -82,34 +82,3 @@ export const OldSample = () => (
     }}
   />
 );
-
-export const RatingScale = () => (
-  <DiscreteScale
-    radios={[
-      ["1", "Very Low"],
-      ["2", "Low"],
-      ["3", "Medium"],
-      ["4", "High"],
-      ["5", "Very High"],
-    ]}
-    radioOptions={{
-      labelAlignment: "below",
-      initialIndex: 2,
-      labelColor: "blue",
-      fontFamily: "Arial, sans-serif",
-      fontSize: "16px",
-    }}
-    question="How do you rate your experience?"
-    questionOptions={{
-      xAlign: "left",
-      textColor: "black",
-      fontStyle: "italic",
-    }}
-    frameHeight="300px"
-    barOptions={{
-      barColor: "lightgray",
-      barHeight: "20px",
-      barWidth: "100%",
-    }}
-  />
-);

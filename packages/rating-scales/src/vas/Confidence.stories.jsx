@@ -3,7 +3,6 @@ import { Confidence, confidenceInputStyles } from "./Confidence";
 
 export default {
   title: "VAS + MVAS/Confidence",
-  tags: ["autodocs"],
   component: Confidence,
   argTypes: {
     onChange: { action: "confidenceChanged" },
