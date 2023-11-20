@@ -2,10 +2,6 @@ import StandardModal from "./StandardModal";
 import { Text, Flex } from "@chakra-ui/react";
 import { FaExclamationTriangle, FaArrowLeft } from "react-icons/fa";
 
-const modalState = {
-  isOpen: true,
-};
-
 /* eslint-disable-next-line */
 export default {
   title: "Core UI/StandardModal",
@@ -19,24 +15,19 @@ export default {
 };
 
 export const Basic = (args) => (
-  <StandardModal {...args} {...modalState}>
+  <StandardModal {...args} isOpen={true}>
     Hello there!
   </StandardModal>
 );
 
 export const NoCancel = (args) => (
-  <StandardModal {...args} {...modalState} cancelButton={false} header="Oops!">
+  <StandardModal {...args} isOpen={true} cancelButton={false} header="Oops!">
     <Text>Some information here...</Text>
   </StandardModal>
 );
 
 export const NoCloseButton = (args) => (
-  <StandardModal
-    {...args}
-    {...modalState}
-    showCloseButton={false}
-    header="Oops!"
-  >
+  <StandardModal {...args} isOpen={true} showCloseButton={false} header="Oops!">
     Some information here...
   </StandardModal>
 );
@@ -44,7 +35,7 @@ export const NoCloseButton = (args) => (
 export const CustomButtons = (args) => (
   <StandardModal
     {...args}
-    {...modalState}
+    isOpen={true}
     header={
       <Flex alignItems="center" color="danger">
         <FaExclamationTriangle size="1em" />
