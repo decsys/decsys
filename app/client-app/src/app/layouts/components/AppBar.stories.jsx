@@ -1,6 +1,4 @@
 import { Button } from "@chakra-ui/react";
-//TODO: Replace action with controls
-//import { action } from "@storybook/addon-actions";
 import AppBar, { AppBarLink } from "./AppBar";
 
 export default {
