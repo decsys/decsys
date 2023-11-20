@@ -26,8 +26,6 @@ export default {
   },
 };
 
-// Story Definitions
-
 export const Basic = (args) => <ScaleBar {...args} />;
 
 export const WithChildren = (args) => (

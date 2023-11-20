@@ -6,37 +6,64 @@ export default {
   component: DiscreteScale,
   tags: ["autodocs"],
   argTypes: {
-    radioOptions: {
-      control: "object",
-      description: "Options for the scale's radio inputs.",
-    },
     radios: {
-      control: "object",
-      description:
-        "The actual radio input values, and optional secondary labels.",
+      control: "array",
+      description: "Arrays for the range",
     },
-    questionOptions: {
-      control: "object",
-      description: "Options for the scale's question text.",
+    barColor: {
+      control: "color",
     },
-    question: {
-      control: "text",
-      description: "Question text to display.",
+    labelColor: {
+      control: "color",
     },
-    barOptions: {
-      control: "object",
-      description: "Options for the scale's horizontal bar.",
-    },
-    frameHeight: {
-      control: "text",
-      description:
-        "A valid CSS Dimension value for the height of the component's frame.",
-    },
+  },
+  //default controls
+  args: {
+    radios: [
+      ["1", "Very Low"],
+      ["2", "Low"],
+      ["3", "Medium"],
+      ["4", "High"],
+      ["5", "Very High"],
+    ],
+    labelAlignment: "below",
+    initialIndex: 2,
+    labelColor: "blue",
+    fontFamily: "Arial, sans-serif",
+    fontSize: "16px",
+    question: "How do you rate your experience?",
+    frameHeight: "300px",
+    barColor: "lightgray",
+    barHeight: "20px",
+    barWidth: "100%",
   },
 };
 
 // Basic story
-export const Basic = (args) => <DiscreteScale {...args} />;
+export const Basic = (args) => (
+  <DiscreteScale
+    radios={args.radios}
+    radioOptions={{
+      labelAlignment: args.labelAlignment,
+      initialIndex: args.initialIndex,
+      labelColor: args.labelColor,
+      fontFamily: args.fontFamily,
+      fontSize: args.fontSize,
+    }}
+    question={args.question}
+    questionOptions={{
+      xAlign: args.xAlign,
+      textColor: args.textColor,
+      fontStyle: args.fontStyle,
+    }}
+    frameHeight={args.frameHeight}
+    barOptions={{
+      barColor: args.barColor,
+      barHeight: args.barHeight,
+      barWidth: args.barWidth,
+    }}
+  />
+);
 
 // Sample story with predefined options
 export const OldSample = () => (
