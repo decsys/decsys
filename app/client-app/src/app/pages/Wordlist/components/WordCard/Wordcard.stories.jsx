@@ -3,6 +3,9 @@ import { WordCard } from "app/pages/Wordlist/components/WordCard";
 export default {
   title: "Word Card",
   component: WordCard,
+  argTypes: {
+    onToggleExclude: { action: "onToggleExclude" },
+  },
 };
 
 export const IncludedNoun = {
