@@ -2,7 +2,7 @@ import { VisualAnalogScale } from "./VisualAnalogScale";
 import { useArgs } from "@storybook/client-api";
 
 export default {
-  title: "VAS + MVAS/VAS",
+  title: "Rating Scales/VAS",
   component: VisualAnalogScale,
   argTypes: {
     useConfidenceInput: {

@@ -4,19 +4,6 @@ import { useState } from "react";
 export default {
   title: "VAS+MVAS/DragMarker",
   component: DragMarker,
-  argTypes: {
-    baseY: { control: "number" },
-    x: { control: "number" },
-    xMin: { control: "number" },
-    xMax: { control: "number" },
-    label: { control: "text" },
-    onDrop: { action: "markerPositionChanged" },
-  },
-  args: {
-    baseY: 100,
-    x: 100,
-    label: "",
-  },
 };
 
 const BoundMarker = ({ xPos }) => (
@@ -34,14 +21,17 @@ const BoundMarker = ({ xPos }) => (
 export const Basic = (args) => {
   const [markerPos, setMarkerPos] = useState(args.x);
 
-  const handleChange = (x) => {
-    setMarkerPos(x);
-    args.onDrop(x);
+  args = {
+    ...args,
+    x: markerPos,
+    onDrop: (x) => {
+      setMarkerPos(x);
+    },
   };
 
   return (
     <>
-      <DragMarker {...args} onDrop={handleChange} />
+      <DragMarker {...args} />
       <input
         style={{ border: "thin solid grey" }}
         value={markerPos}
@@ -50,16 +40,20 @@ export const Basic = (args) => {
     </>
   );
 };
+Basic.args = {
+  baseY: 100,
+  x: 100,
+};
 
 export const WithBounds = (args) => (
   <>
-    <BoundMarker xPos={`${args.xMin}px`} />
-    <BoundMarker xPos={`${args.xMax}px`} />
+    <BoundMarker xPos="200px" />
+    <BoundMarker xPos="400px" />
     <Basic {...args} />
   </>
 );
 WithBounds.args = {
-  ...Basic.args,
+  baseY: 100,
   xMin: 200,
   xMax: 400,
   x: 300,

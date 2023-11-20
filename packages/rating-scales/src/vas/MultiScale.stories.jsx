@@ -1,8 +1,8 @@
 import { Scale } from "./MultiScale";
-import { useState } from "react";
 import { Frame } from "../core/Frame";
 import { behaviour } from "./behaviours";
-import { Flex, Stack, Input } from "@chakra-ui/react";
+import { Flex, Stack } from "@chakra-ui/react";
+import { useArgs } from "@storybook/client-api";
 
 const behaviours = Object.keys(behaviour);
 
@@ -14,43 +14,38 @@ export default {
       options: behaviours,
       control: { type: "radio" },
     },
-    onChange: { action: "valuesChanged" },
-    frameHeight: {
-      control: { type: "text" },
-      defaultValue: "300px",
-    },
+    onChange: { action: "MVAS Change" },
   },
 };
 
 export const Basic = (args) => {
-  const [values, setValues] = useState(args.values);
+  const [{ values }, updateArgs] = useArgs();
 
-  const handleChange = (position, value) => {
-    const newValues = { ...values, [position]: value };
-    setValues(newValues);
-    args.onChange(position, value);
+  const handleChange = (id, v) => {
+    const newValues = { ...values, [id]: v };
+    updateArgs({ values: newValues });
+    args.onChange(id, v);
   };
 
   return (
-    <Stack spacing={4}>
-      {["left", "center", "right"].map((position) => (
-        <Flex key={position} align="center">
-          <span>{position.charAt(0).toUpperCase() + position.slice(1)}:</span>
-          <Input
-            ml={2}
-            borderColor="gray.300"
-            value={values?.[position] ?? ""}
+    <Stack>
+      {["left", "center", "right"].map((id) => (
+        <Flex key={id}>
+          {id.charAt(0).toUpperCase() + id.slice(1)}:
+          <input
+            style={{ border: "thin solid grey" }}
+            value={values[id] ?? ""}
             onChange={(e) =>
               handleChange(
-                position,
+                id,
                 e.target.value ? parseFloat(e.target.value) : null
               )
             }
           />
         </Flex>
       ))}
-      <Frame frameHeight={args.frameHeight || "300px"}>
-        <Scale {...args} />
+      <Frame frameHeight="300px">
+        <Scale {...args} onChange={handleChange} />
       </Frame>
     </Stack>
   );
@@ -61,5 +56,4 @@ Basic.args = {
   rightMarkerOptions: { label: "R" },
   centerMarkerOptions: { label: "C" },
   values: {},
-  frameHeight: "300px",
 };

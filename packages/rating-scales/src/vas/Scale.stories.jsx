@@ -6,7 +6,7 @@ export default {
   title: "VAS + MVAS/VAS Scale",
   component: Scale,
   argTypes: {
-    onChange: { action: "valueChanged" },
+    onChange: { action: "Vas Completed" },
   },
 };
 
