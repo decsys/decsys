@@ -1,18 +1,29 @@
-import { useState, useRef, useCallback } from "react";
 import { EllipseCanvas } from "./Canvas";
 import { Frame } from "../core/Frame";
 import { Button } from "@chakra-ui/react";
-import { text, number } from "@storybook/addon-knobs";
+import { useCallback, useRef, useState } from "react";
 
 export default {
   title: "Ellipse/Canvas",
   component: EllipseCanvas,
-  decorators: [(s) => <Frame>{s()}</Frame>],
+  tags: ["autodocs"],
+  decorators: [(Story) => <Frame>{<Story />}</Frame>],
+  argTypes: {
+    color: { control: "text" },
+    thickness: { control: "number" },
+  },
 };
 
-export const Basic = () => <EllipseCanvas />;
+export const Basic = (args) => <EllipseCanvas {...args} />;
 
-export const WithCallbacks = () => {
+export const WithControl = {
+  args: {
+    color: "red",
+    thickness: 5,
+  },
+};
+
+export const WithCallbacks = (args) => {
   const [data, setData] = useState();
   const handleDraw = (data) => {
     setData(data);
@@ -28,12 +39,12 @@ export const WithCallbacks = () => {
   return (
     <>
       {status}
-      <EllipseCanvas onDraw={handleDraw} />
+      <EllipseCanvas onDraw={handleDraw} {...args} />
     </>
   );
 };
 
-export const ImperativelyClear = () => {
+export const ImperativelyClear = (args) => {
   const canvasRef = useRef();
   return (
     <>
@@ -41,13 +52,13 @@ export const ImperativelyClear = () => {
         Draw something, then click here to clear
       </Button>
       <Frame>
-        <EllipseCanvas ref={canvasRef} />
+        <EllipseCanvas ref={canvasRef} {...args} />
       </Frame>
     </>
   );
 };
 
-export const WithRef = () => {
+export const WithRef = (args) => {
   const [width, setWidth] = useState();
   const canvasRef = useCallback((canvasRef) => {
     if (!canvasRef) return;
@@ -65,17 +76,8 @@ export const WithRef = () => {
     <>
       <div>Canvas width: {width} (Try resizing the window)</div>
       <Frame>
-        <EllipseCanvas ref={canvasRef} />
+        <EllipseCanvas ref={canvasRef} {...args} />
       </Frame>
     </>
   );
 };
-
-export const WithKnobs = () => (
-  <Frame>
-    <EllipseCanvas
-      color={text("Pen Color", "red")}
-      thickness={number("Pen Thickness", 5)}
-    />
-  </Frame>
-);

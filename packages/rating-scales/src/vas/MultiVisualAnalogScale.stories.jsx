@@ -1,5 +1,4 @@
 import { MultiVisualAnalogScale } from "./MultiVisualAnalogScale";
-import { action } from "@storybook/addon-actions";
 import { behaviour } from "./behaviours";
 import { Flex, Stack } from "@chakra-ui/react";
 import { useArgs } from "@storybook/client-api";
@@ -21,6 +20,9 @@ export default {
         labels: { [false]: "None", input: "Input", scale: "Scale" },
       },
     },
+    onChange: { action: "MVas Changed" },
+    onResetAll: { action: "MVas Reset All" },
+    onResetValue: { action: "Mvas Reset Value" },
   },
 };
 
@@ -30,15 +32,15 @@ export const Basic = (args) => {
   // add actions for storybook benefit
   const handleChange = (id, v, all) => {
     updateArgs({ values: { ...all, [id]: v } });
-    action("onChange")(id, v, all);
+    args.onChange(id, v, all);
   };
   const handleResetAll = () => {
     updateArgs({ values: {} });
-    action("onResetAll")();
+    args.onResetAll();
   };
   const handleResetValue = (id) => {
     updateArgs({ values: { ...values, [id]: undefined } });
-    action("onResetValue")(id);
+    args.onResetValue(id);
   };
 
   return (

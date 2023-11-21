@@ -1,35 +1,31 @@
 import { Scale } from "./Scale";
 import { Frame } from "../core/Frame";
-import { action } from "@storybook/addon-actions";
 import { useArgs } from "@storybook/client-api";
 
 export default {
   title: "VAS + MVAS/VAS Scale",
   component: Scale,
+  argTypes: {
+    onChange: { action: "Vas Completed" },
+  },
 };
 
 export const Basic = (args) => {
   const [{ value }, updateArgs] = useArgs();
 
-  args = {
-    ...args,
-    value,
-    onChange: (v) => {
-      updateArgs({ value: v });
-      action("VAS Completed")(v);
-    },
+  const handleChange = (v) => {
+    updateArgs({ value: v });
+    args.onChange(v);
   };
 
   return (
     <Frame frameHeight="300px">
-      <Scale {...args} />
+      <Scale {...args} onChange={handleChange} />
       <input
         style={{ border: "thin solid grey" }}
         value={value}
         onChange={(e) =>
-          updateArgs({
-            value: e.target.value ? parseFloat(e.target.value) : null,
-          })
+          handleChange(e.target.value ? parseFloat(e.target.value) : null)
         }
       />
     </Frame>

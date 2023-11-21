@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ScaleBar, FlexContainer, ScaleBarProps } from "./ScaleBar";
+import { ScaleBar, FlexContainer } from "./ScaleBar";
 
 export default {
   title: "core/ScaleBar",
@@ -16,11 +16,19 @@ export default {
       </div>
     ),
   ],
+  tags: ["autodocs"],
+  argTypes: {
+    leftMargin: { control: "text" },
+    rightMargin: { control: "text" },
+    topMargin: { control: "text" },
+    thickness: { control: "text" },
+    barColor: { control: "color" },
+  },
 };
 
-export const Basic = (args: ScaleBarProps) => <ScaleBar {...args} />;
+export const Basic = (args) => <ScaleBar {...args} />;
 
-export const WithChildren = (args: ScaleBarProps) => (
+export const WithChildren = (args) => (
   <ScaleBar {...args}>
     <FlexContainer>
       {[1, 2, 3].map((n) => (
@@ -33,7 +41,7 @@ export const WithChildren = (args: ScaleBarProps) => (
 );
 
 export const WithRef = (args) => {
-  const [width, setWidth] = useState<undefined | number>();
+  const [width, setWidth] = useState();
   const barRef = useCallback((bar) => {
     const resize = new ResizeObserver((entries) => {
       for (let entry of entries) {

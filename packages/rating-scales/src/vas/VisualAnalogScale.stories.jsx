@@ -1,5 +1,4 @@
 import { VisualAnalogScale } from "./VisualAnalogScale";
-import { action } from "@storybook/addon-actions";
 import { useArgs } from "@storybook/client-api";
 
 export default {
@@ -13,6 +12,7 @@ export default {
         labels: { [false]: "None", input: "Input", scale: "Scale" },
       },
     },
+    onChange: { action: "valuesChanged" },
   },
 };
 
@@ -21,7 +21,7 @@ export const Basic = (args) => {
 
   const handleChange = (id, v, values) => {
     updateArgs({ values: { ...values, [id]: v } });
-    action("onChange")(id, v, values);
+    args.onChange(id, v, values);
   };
 
   return <VisualAnalogScale {...args} onChange={handleChange} />;
