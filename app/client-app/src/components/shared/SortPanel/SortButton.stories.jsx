@@ -1,25 +1,20 @@
-//TODO: Replace action with controls
-//import { action } from "@storybook/addon-actions";
-//import { boolean, text } from "@storybook/addon-knobs";
 import SortButton from "components/shared/SortPanel/SortButton";
 
-export default { title: "Shared/SortButton", component: SortButton };
+export default {
+  title: "Shared/SortButton",
+  component: SortButton,
+  argTypes: {
+    active: { control: "boolean", defaultValue: false },
+    asc: { control: "boolean", defaultValue: false },
+    children: { control: "text", defaultValue: "Name" },
+    onClick: { action: "SortButton clicked" },
+  },
+  //Default Control
+  args: {
+    active: false,
+    asc: false,
+    children: "Name",
+  },
+};
 
-export const Basic = () => (
-  <SortButton
-    active={
-      //boolean
-      ("Active Sort Field", false)
-    }
-    asc={
-      //boolean
-      ("Ascending", false)
-    }
-    //onClick={action("SortButton clicked")}
-  >
-    {
-      //text
-      ("Sort Field label", "Name")
-    }
-  </SortButton>
-);
+export const Basic = (args) => <SortButton {...args} />;
