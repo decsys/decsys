@@ -7,7 +7,7 @@ import DropDownList from "./components/DropDownList";
 
 // Main Component
 const ResponseItem = ({
-  _context: { logResults, setNextEnabled },
+  _context = {},
   dropDown,
   width,
   alignment,
@@ -34,9 +34,11 @@ const ResponseItem = ({
     // keep our state consistent
     setSelectedOption(option);
 
-    // also update the platform
-    setNextEnabled(true);
-    logResults(JSON.parse(option));
+    // also update the platform,
+    _context.setNextEnabled?.(true);
+    if (option) {
+      _context.logResults?.(JSON.parse(option));
+    }
   };
 
   const listComponent = dropDown ? DropDownList : RadioList;
