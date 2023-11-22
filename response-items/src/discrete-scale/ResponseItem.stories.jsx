@@ -4,15 +4,48 @@ export default {
   title: "Discrete Scale",
   component: ResponseItem,
   argTypes: {
+    barLeftMargin: { control: "number" },
+    barRightMargin: { control: "number" },
+    barTopMargin: { control: "number" },
+    barColor: { control: "color" },
+    barThickness: { control: "number" },
+    labelColor: { control: "color" },
+    fontFamily: { control: "text" },
+    fontSize: { control: "number" },
+    labelAlignment: {
+      control: "select",
+      options: ["above", "below"],
+    },
+    initialIndex: { control: "number" },
+    initialValue: { control: "number" },
     setIsValidResponse: { action: "setIsValidResponse" },
     logResults: { action: "logResults" },
-    clearResult: { action: "clearResult" },
+    setNextEnabled: { action: "setNextEnabled" },
   },
+
   args: {
-    option0: "Option 1",
+    radio1: "1",
+    radio2: "2",
+    radio3: "3",
+    radio4: "4",
+    radio5: "5",
+    barLeftMargin: 10,
+    barRightMargin: 10,
+    barTopMargin: 40,
+    barColor: "#ff0000", // Example red color
+    barThickness: 5,
+    labelColor: "#0000ff", // Example blue color
+    fontFamily: "Arial",
+    fontSize: 16,
+    labelAlignment: "center",
   },
 };
 
-export const Default = (args, context) => {
-  return <ResponseItem {...args} _context={context.args} />;
+export const Basic = (args) => {
+  const _context = {
+    logResults: args.logResults,
+    setNextEnabled: args.setNextEnabled,
+  };
+
+  return <ResponseItem radios={args.radios} _context={_context} {...args} />;
 };

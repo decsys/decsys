@@ -4,9 +4,7 @@ export default {
   title: "Choose One",
   component: ResponseItem,
   argTypes: {
-    setIsValidResponse: { action: "setIsValidResponse" },
     logResults: { action: "logResults" },
-    clearResult: { action: "clearResult" },
   },
   args: {
     option0: "Option 1",
@@ -16,11 +14,9 @@ export default {
   },
 };
 
-export const Default = (args) => {
+export const Basic = (args) => {
   const _context = {
-    setIsValidResponse: args.setIsValidResponse,
     logResults: args.logResults,
-    clearResult: args.clearResult,
   };
   return <ResponseItem {...args} _context={_context} />;
 };
