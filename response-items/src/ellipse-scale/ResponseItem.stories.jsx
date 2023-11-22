@@ -15,7 +15,7 @@ export default {
   args: {
     barLeftMargin: 10,
     barRightMargin: 10,
-    barTopMargin: 20,
+    barTopMargin: 40,
     barColor: "#ff0000", // Red
     barThickness: 5,
     labelColor: "#0000ff", // Blue
