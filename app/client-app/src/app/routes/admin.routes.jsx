@@ -2,12 +2,12 @@ import { Router } from "@reach/router";
 import { Error } from "app/pages/Error";
 import Surveys from "app/pages/Surveys";
 import Editor from "app/pages/Editor";
-import Preview from "app/pages/Preview";
 import Results from "app/pages/Results";
 import Dashboard from "app/pages/Dashboard";
 import Wordlist from "app/pages/Wordlist";
 import { useAuth } from "auth/AuthContext";
 import { BusyPage } from "components/core";
+import Preview from "app/pages/Preview";
 
 const Admin = () => {
   const { isAdmin, user, login } = useAuth();

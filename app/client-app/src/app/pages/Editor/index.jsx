@@ -5,12 +5,12 @@ import EditorBar from "./components/EditorBar";
 import { Page, EmptyState } from "components/core";
 import { SurveyEditorContextProvider } from "./contexts/SurveyEditor";
 import { usePageListContext } from "./contexts/PageList";
-import PagePreview from "../Preview";
 import { FaFileAlt } from "react-icons/fa";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import PageItemEditor from "./components/PageItemEditor";
 import { defaultColorMode } from "themes";
 import { css, Global } from "@emotion/react";
+import PagePreview from "./components/Preview/PageReview";
 
 const NoPages = ({ addPage }) => (
   <EmptyState
