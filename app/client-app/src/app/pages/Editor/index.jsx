@@ -5,7 +5,7 @@ import EditorBar from "./components/EditorBar";
 import { Page, EmptyState } from "components/core";
 import { SurveyEditorContextProvider } from "./contexts/SurveyEditor";
 import { usePageListContext } from "./contexts/PageList";
-import PagePreview from "../Preview";
+import PagePreview from "./components/Preview/PageReview";
 import { FaFileAlt } from "react-icons/fa";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import PageItemEditor from "./components/PageItemEditor";
