@@ -62,6 +62,10 @@ const SurveyPage = ({
 
   const previousPageId = usePrevious(page.id);
 
+  const hasOptionalComponent = page.components?.some(
+    (component) => component.isOptional
+  );
+
   useLayoutEffect(() => {
     if (page.id !== previousPageId) {
       logEvent(page.id, PAGE_LOAD, {});
@@ -83,9 +87,6 @@ const SurveyPage = ({
   }, [previousPageId, page, logEvent]);
 
   useEffect(() => {
-    const hasOptionalComponent = page.components?.some(
-      (component) => component.isOptional
-    );
     const hasMandatoryComponent = !hasOptionalComponent;
 
     const canProceedWithOptional =
@@ -179,6 +180,7 @@ const SurveyPage = ({
               borderWidth="2px"
               onClick={clearResult}
               mr={2}
+              disabled={!hasOptionalComponent}
             >
               Clear Response
             </Button>
