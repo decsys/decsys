@@ -2,7 +2,7 @@ import { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
-import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/react";
+import { Stack, Button, Flex, Badge, Icon, Tooltip } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { InView } from "react-intersection-observer";
@@ -173,17 +173,23 @@ const SurveyPage = ({
           </div>
 
           <Stack spacing={3} direction="row" align="center">
-            <Button
-              size="lg"
-              colorScheme="red"
-              variant="outline"
-              borderWidth="2px"
-              onClick={clearResult}
-              mr={2}
-              disabled={!hasOptionalComponent}
+            <Tooltip
+              label="This page requires a response before proceeding, so it cannot be cleared. You can continue to change your response before submitting."
+              isDisabled={hasOptionalComponent}
+              shouldWrapChildren
             >
-              Clear Response
-            </Button>
+              <Button
+                size="lg"
+                colorScheme="red"
+                variant="outline"
+                borderWidth="2px"
+                onClick={clearResult}
+                mr={2}
+                disabled={!hasOptionalComponent}
+              >
+                Clear Response
+              </Button>
+            </Tooltip>
             {(webhookCount != null) & webhookEnabled && (
               <WebhookNotification
                 webhookCount={webhookCount}
