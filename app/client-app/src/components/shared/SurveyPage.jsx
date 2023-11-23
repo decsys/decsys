@@ -185,12 +185,12 @@ const SurveyPage = ({
                 borderWidth="2px"
                 onClick={clearResult}
                 mr={2}
-                disabled={!hasOptionalComponent}
+                isDisabled={!hasOptionalComponent}
               >
                 Clear Response
               </Button>
             </Tooltip>
-            {(webhookCount != null) & webhookEnabled && (
+            {webhookCount != null && webhookEnabled && (
               <WebhookNotification
                 webhookCount={webhookCount}
                 unread={unread}
