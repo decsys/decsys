@@ -9,6 +9,7 @@ import { InView } from "react-intersection-observer";
 import { usePrevious } from "hooks/usePrevious";
 import { BusyPage } from "components/core";
 import { WebhookNotification } from "app/pages/Preview/components/Webhook/WebhookNotification";
+import { useServerConfig } from "api/config";
 
 export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
@@ -47,6 +48,9 @@ const SurveyPage = ({
   setWebhookCount,
   triggeredHooks,
 }) => {
+  // Feature Flag
+  const { webhookEnabled } = useServerConfig();
+
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
   logEvent = logEvent || nop;
@@ -178,7 +182,7 @@ const SurveyPage = ({
             >
               Clear Response
             </Button>
-            {webhookCount != null && (
+            {(webhookCount != null) & webhookEnabled && (
               <WebhookNotification
                 webhookCount={webhookCount}
                 unread={unread}
