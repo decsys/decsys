@@ -2,13 +2,14 @@ import { useState, useCallback, useLayoutEffect, useEffect } from "react";
 import { getComponent, getPageResponseItem } from "services/page-items";
 import PageItemRender from "./PageItemRender";
 import { PAGE_LOAD, COMPONENT_RESULTS } from "constants/event-types";
-import { Stack, Button, Flex, Badge, Icon } from "@chakra-ui/react";
+import { Stack, Button, Flex, Badge, Icon, Tooltip } from "@chakra-ui/react";
 import DefaultContainer from "./DefaultContainer";
 import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 import { InView } from "react-intersection-observer";
 import { usePrevious } from "hooks/usePrevious";
 import { BusyPage } from "components/core";
 import { WebhookNotification } from "app/pages/Preview/components/Webhook/WebhookNotification";
+import { useServerConfig } from "api/config";
 
 export const Body = ({ page, renderContext, setResultLogged }) => {
   return page.components.map((item) => {
@@ -47,6 +48,9 @@ const SurveyPage = ({
   setWebhookCount,
   triggeredHooks,
 }) => {
+  // Feature Flag
+  const { webhookEnabled } = useServerConfig();
+
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
   logEvent = logEvent || nop;
@@ -57,6 +61,10 @@ const SurveyPage = ({
   const [itemKey, setItemKey] = useState(Date.now());
 
   const previousPageId = usePrevious(page.id);
+
+  const hasOptionalComponent = page.components?.some(
+    (component) => component.isOptional
+  );
 
   useLayoutEffect(() => {
     if (page.id !== previousPageId) {
@@ -79,9 +87,6 @@ const SurveyPage = ({
   }, [previousPageId, page, logEvent]);
 
   useEffect(() => {
-    const hasOptionalComponent = page.components?.some(
-      (component) => component.isOptional
-    );
     const hasMandatoryComponent = !hasOptionalComponent;
 
     const canProceedWithOptional =
@@ -168,17 +173,24 @@ const SurveyPage = ({
           </div>
 
           <Stack spacing={3} direction="row" align="center">
-            <Button
-              size="lg"
-              colorScheme="red"
-              variant="outline"
-              borderWidth="2px"
-              onClick={clearResult}
-              mr={2}
+            <Tooltip
+              label="This page requires a response before proceeding, so it cannot be cleared. You can continue to change your response before submitting."
+              isDisabled={hasOptionalComponent}
+              shouldWrapChildren
             >
-              Clear Response
-            </Button>
-            {webhookCount != null && (
+              <Button
+                size="lg"
+                colorScheme="red"
+                variant="outline"
+                borderWidth="2px"
+                onClick={clearResult}
+                mr={2}
+                isDisabled={!hasOptionalComponent}
+              >
+                Clear Response
+              </Button>
+            </Tooltip>
+            {webhookCount != null && webhookEnabled && (
               <WebhookNotification
                 webhookCount={webhookCount}
                 unread={unread}
