@@ -1,20 +1,19 @@
-import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
+import ResponseItem from "./ResponseItem";
 
 export default {
-  title: "Confirmation",
+  title: "Choose One",
   component: ResponseItem,
   argTypes: {
-    label: { control: "text" },
-    defaultValue: { control: "text" },
-    confirmed: { control: "booleon" },
     logResults: { action: "logResults" },
     setNextEnabled: { action: "setNextEnabled" },
   },
   args: {
-    label: "Confirm to continue",
-    defaultValue: "Default Value",
-    confirmed: false,
+    option0: "Option 1",
+    option1: "Option 2",
+    option2: "Option 3",
+    option3: "Option 4",
+    dropDown: false,
   },
 };
 
@@ -23,9 +22,9 @@ export const Basic = (args) => {
   return <ResponseItem {...args} _context={_context} />;
 };
 
-export const InitiallyChecked = (args) => {
+export const DropDown = (args) => {
   const _context = { ...args };
-  return <ResponseItem {...args} confirmed={true} _context={_context} />;
+  return <ResponseItem {...args} dropDown={true} _context={_context} />;
 };
 
 export const MetadataIcon = () => <Icon width="24px" />;
