@@ -22,18 +22,22 @@ export default {
         labels: { [false]: "None", input: "Input", scale: "Scale" },
       },
     },
+    logResults: { action: "logResults" },
+    setNextEnabled: { action: "setNextEnabled" },
+    setIsValidResponse: { action: "setIsValidResponse" },
+  },
+  args: {
+    barLeftMargin: 10,
+    barTopMargin: 50,
+    barRightMargin: 10,
+    barThickness: 8,
+    barMaxValue: 100,
+    barMinValue: 0,
+    behaviour: behaviours[0],
+    buttons: "None",
+    useConfidenceInput: true,
   },
 };
-
-const props = {
-  barLeftMargin: 10,
-  barTopMargin: 50,
-  barRightMargin: 10,
-  barThickness: 8,
-  barMaxValue: 100,
-  barMinValue: 0,
-};
-
 const dummyResults = [
   {
     left: 60,
@@ -67,18 +71,6 @@ const dummyResults = [
   },
 ];
 
-const _context = {
-  setIsValidResponse: (isValid) => {
-    console.log("set valid response", isValid);
-  },
-  logResults: (results) => {
-    console.log("log result", results);
-  },
-  clearResult: (results) => {
-    console.log("results cleared", results);
-  },
-};
-
 const stats = (stats) => () =>
   (
     <div>
@@ -91,16 +83,18 @@ const stats = (stats) => () =>
     </div>
   );
 
-export const Basic = {
-  render: (args) => {
-    return <ResponseItem {...args} _context={_context} />;
-  },
-  args: {
-    ...props,
-    behaviour: behaviours[0],
-    buttons: "None",
-    useConfidenceInput: true,
-  },
+export const Basic = (args) => {
+  const _context = { ...args };
+  return <ResponseItem {...args} _context={_context} />;
+};
+
+const props = {
+  barLeftMargin: 10,
+  barTopMargin: 50,
+  barRightMargin: 10,
+  barThickness: 8,
+  barMaxValue: 100,
+  barMinValue: 0,
 };
 
 export const NumericStats = stats(

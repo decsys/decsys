@@ -17,17 +17,11 @@ export default {
 };
 
 export const Basic = (args) => {
-  const _context = {
-    logResults: args.logResults,
-    setNextEnabled: args.setNextEnabled,
-  };
+  const _context = { ...args };
   return <ResponseItem {...args} _context={_context} />;
 };
 
 export const DropDown = (args) => {
-  const _context = {
-    logResults: args.logResults,
-    setNextEnabled: args.setNextEnabled,
-  };
+  const _context = { ...args };
   return <ResponseItem {...args} dropDown={true} _context={_context} />;
 };

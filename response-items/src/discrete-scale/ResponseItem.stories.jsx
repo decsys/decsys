@@ -42,10 +42,6 @@ export default {
 };
 
 export const Basic = (args) => {
-  const _context = {
-    logResults: args.logResults,
-    setNextEnabled: args.setNextEnabled,
-  };
-
+  const _context = { ...args };
   return <ResponseItem radios={args.radios} _context={_context} {...args} />;
 };

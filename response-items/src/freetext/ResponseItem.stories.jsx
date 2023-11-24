@@ -2,21 +2,6 @@ import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
 import ReactWordcloud from "react-wordcloud";
 
-const _context = {
-  surveyId: 0,
-  pageId: "",
-  itemId: "",
-  setIsValidResponse: (isValid) => {
-    console.log("set valid response", isValid);
-  },
-  logResults: (results) => {
-    console.log("log result", results);
-  },
-  clearResult: (results) => {
-    console.log("results cleared", results);
-  },
-};
-
 const dummyResults = [
   {
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
@@ -38,16 +23,19 @@ const dummyResults = [
 export default {
   title: "Free Text",
   component: ResponseItem,
-};
-
-export const Basic = {
-  render: (args) => {
-    return <ResponseItem {...args} _context={_context} />;
+  argTypes: {
+    logResults: { action: "logResults" },
+    setNextEnabled: { action: "setNextEnabled" },
   },
   args: {
     maxLength: 1000,
     text: "Hello",
   },
+};
+
+export const Basic = (args) => {
+  const _context = { ...args };
+  return <ResponseItem {...args} _context={_context} />;
 };
 
 const visualization = (stats) => () =>

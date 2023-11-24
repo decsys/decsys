@@ -33,9 +33,6 @@ export default {
 };
 
 export const Basic = (args) => {
-  const _context = {
-    setNextEnabled: args.setNextEnabled,
-    logResults: args.logResults,
-  };
+  const _context = { ...args };
   return <ResponseItem {...args} _context={_context} />;
 };
