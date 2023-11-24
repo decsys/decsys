@@ -34,11 +34,9 @@ const ResponseItem = ({
     // keep our state consistent
     setSelectedOption(option);
 
-    // also update the platform,
+    // also update the platform
     setNextEnabled(true);
-    if (option) {
-      logResults(JSON.parse(option));
-    }
+    logResults(JSON.parse(option));
   };
 
   const listComponent = dropDown ? DropDownList : RadioList;
