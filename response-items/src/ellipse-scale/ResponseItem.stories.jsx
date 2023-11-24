@@ -13,6 +13,8 @@ export default {
     penColor: { control: "color" },
   },
   args: {
+    barMinValue: 0,
+    barMaxValue: 100,
     barLeftMargin: 10,
     barRightMargin: 10,
     barTopMargin: 40,
