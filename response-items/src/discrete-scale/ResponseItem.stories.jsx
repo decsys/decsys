@@ -1,4 +1,5 @@
 import ResponseItem from "./ResponseItem";
+import Icon from "./Icon";
 
 export default {
   title: "Discrete Scale",
@@ -45,3 +46,5 @@ export const Basic = (args) => {
   const _context = { ...args };
   return <ResponseItem radios={args.radios} _context={_context} {...args} />;
 };
+
+export const MetadataIcon = () => <Icon width="24px" />;

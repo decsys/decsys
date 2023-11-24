@@ -1,5 +1,6 @@
 import React from "react";
 import ResponseItem from "./ResponseItem";
+import Icon from "./Icon";
 
 export default {
   title: "Ellipse Scale",
@@ -36,3 +37,5 @@ export const Basic = (args) => {
   const _context = { ...args };
   return <ResponseItem {...args} _context={_context} />;
 };
+
+export const MetadataIcon = () => <Icon width="24px" />;

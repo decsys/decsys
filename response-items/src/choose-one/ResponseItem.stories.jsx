@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 import ResponseItem from "./ResponseItem";
 
 export default {
@@ -25,3 +26,5 @@ export const DropDown = (args) => {
   const _context = { ...args };
   return <ResponseItem {...args} dropDown={true} _context={_context} />;
 };
+
+export const MetadataIcon = () => <Icon width="24px" />;

@@ -24,3 +24,5 @@ export const Basic = (args) => {
   const _context = { ...args };
   return <ResponseItem {...args} _context={_context} />;
 };
+
+export const MetadataIcon = () => <Icon width="24px" />;
