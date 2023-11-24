@@ -5,6 +5,7 @@ export default {
   component: ResponseItem,
   argTypes: {
     logResults: { action: "logResults" },
+    setNextEnabled: { action: "setNextEnabled" },
   },
   args: {
     option0: "Option 1",
@@ -17,6 +18,7 @@ export default {
 export const Basic = (args) => {
   const _context = {
     logResults: args.logResults,
+    setNextEnabled: args.setNextEnabled,
   };
   return <ResponseItem {...args} _context={_context} />;
 };

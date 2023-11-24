@@ -33,11 +33,11 @@ const ResponseItem = ({
   scaleSubdivisionHeight,
   scaleMarkers,
   scaleSubdivisions,
-  _context,
+  _context: { setNextEnabled, logResults },
 }) => {
   const handleEllipseCompleted = (e) => {
-    _context.logResults?.(e.detail);
-    _context.setNextEnabled?.(true);
+    logResults(e.detail);
+    setNextEnabled(true);
   };
 
   useEffect(() => {

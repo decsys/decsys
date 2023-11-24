@@ -7,7 +7,7 @@ import DropDownList from "./components/DropDownList";
 
 // Main Component
 const ResponseItem = ({
-  _context = {},
+  _context: { logResults, setNextEnabled },
   dropDown,
   width,
   alignment,
@@ -35,9 +35,9 @@ const ResponseItem = ({
     setSelectedOption(option);
 
     // also update the platform,
-    _context.setNextEnabled?.(true);
+    setNextEnabled(true);
     if (option) {
-      _context.logResults?.(JSON.parse(option));
+      logResults(JSON.parse(option));
     }
   };
 

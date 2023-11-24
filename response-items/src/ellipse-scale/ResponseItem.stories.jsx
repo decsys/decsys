@@ -5,7 +5,7 @@ export default {
   title: "Ellipse Scale",
   component: ResponseItem,
   argTypes: {
-    setIsValidResponse: { action: "setIsValidResponse" },
+    setNextEnabled: { action: "setNextEnabled" },
     logResults: { action: "logResults" },
     barColor: { control: "color" },
     labelColor: { control: "color" },
@@ -34,7 +34,7 @@ export default {
 
 export const Basic = (args) => {
   const _context = {
-    setIsValidResponse: args.setIsValidResponse,
+    setNextEnabled: args.setNextEnabled,
     logResults: args.logResults,
   };
   return <ResponseItem {...args} _context={_context} />;
