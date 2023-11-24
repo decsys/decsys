@@ -12,6 +12,7 @@ export default {
     option1: "Option 2",
     option2: "Option 3",
     option3: "Option 4",
+    dropDown: false,
   },
 };
 
@@ -21,4 +22,12 @@ export const Basic = (args) => {
     setNextEnabled: args.setNextEnabled,
   };
   return <ResponseItem {...args} _context={_context} />;
+};
+
+export const DropDown = (args) => {
+  const _context = {
+    logResults: args.logResults,
+    setNextEnabled: args.setNextEnabled,
+  };
+  return <ResponseItem {...args} dropDown={true} _context={_context} />;
 };
