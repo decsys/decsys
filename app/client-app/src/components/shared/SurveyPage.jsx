@@ -164,51 +164,57 @@ const SurveyPage = ({
           alignItems="center"
           justifyContent="space-between"
         >
-          <div>
-            {isMore && (
-              <Badge>
-                Scroll down for more <Icon as={FaChevronDown} />
-              </Badge>
-            )}
-          </div>
-
-          <Stack spacing={3} direction="row" align="center">
-            <Tooltip
-              label="This page requires a response before proceeding, so it cannot be cleared. You can continue to change your response before submitting."
-              isDisabled={hasOptionalComponent}
-              shouldWrapChildren
-            >
+          <Stack
+            direction={{ base: "column", xl: "row" }}
+            justifyContent="space-between"
+            alignItems="center"
+            w="100%"
+          >
+            <div>
+              {isMore && (
+                <Badge>
+                  Scroll down for more <Icon as={FaChevronDown} />
+                </Badge>
+              )}
+            </div>
+            <Stack spacing={3} direction="row" align="center">
+              <Tooltip
+                label="This page requires a response before proceeding, so it cannot be cleared. You can continue to change your response before submitting."
+                isDisabled={hasOptionalComponent}
+                shouldWrapChildren
+              >
+                <Button
+                  size="lg"
+                  colorScheme="red"
+                  variant="outline"
+                  borderWidth="2px"
+                  onClick={clearResult}
+                  mr={2}
+                  isDisabled={!hasOptionalComponent}
+                >
+                  Clear Response
+                </Button>
+              </Tooltip>
+              {webhookCount != null && webhookEnabled && (
+                <WebhookNotification
+                  webhookCount={webhookCount}
+                  unread={unread}
+                  setUnread={setUnread}
+                  setWebhookCount={setWebhookCount}
+                  triggeredHooks={triggeredHooks}
+                />
+              )}
               <Button
                 size="lg"
-                colorScheme="red"
-                variant="outline"
-                borderWidth="2px"
-                onClick={clearResult}
-                mr={2}
-                isDisabled={!hasOptionalComponent}
+                disabled={!nextEnabled || isBusy}
+                isLoading={isBusy}
+                colorScheme={nextEnabled ? "blue" : "gray"}
+                onClick={handleNextClick}
+                rightIcon={!lastPage && <FaChevronRight />}
               >
-                Clear Response
+                {lastPage ? "Finish" : "Next"}
               </Button>
-            </Tooltip>
-            {webhookCount != null && webhookEnabled && (
-              <WebhookNotification
-                webhookCount={webhookCount}
-                unread={unread}
-                setUnread={setUnread}
-                setWebhookCount={setWebhookCount}
-                triggeredHooks={triggeredHooks}
-              />
-            )}
-            <Button
-              size="lg"
-              disabled={!nextEnabled || isBusy}
-              isLoading={isBusy}
-              colorScheme={nextEnabled ? "blue" : "gray"}
-              onClick={handleNextClick}
-              rightIcon={!lastPage && <FaChevronRight />}
-            >
-              {lastPage ? "Finish" : "Next"}
-            </Button>
+            </Stack>
           </Stack>
         </DefaultContainer>
       </Flex>
