@@ -31,14 +31,12 @@ import { BusyPage } from "components/core";
 
 const getPageName = (page, responses) => {
   if (!responses) {
-    return "Untitled Page";
+    return null;
   }
   const responseItem = responses.find(
     (response) => response && response.page === page
   );
-  return responseItem && responseItem.pageName
-    ? responseItem.pageName
-    : "Untitled Page";
+  return responseItem && responseItem.pageName ? responseItem.pageName : null;
 };
 
 const JSONModal = ({ isOpen, onClose, webhookPayloadData }) => (
@@ -100,7 +98,7 @@ const WebhookItem = ({ webhookData }) => {
             <Badge colorScheme="blue" py={1} px={2} width="100%">
               Source Page: {webhookData.eventType.sourcePage}
             </Badge>
-            {pageName !== "Untitled Page" && (
+            {pageName && (
               <Badge colorScheme="blue" py={1} px={2} mt={2}>
                 Page Name: {pageName}
               </Badge>
