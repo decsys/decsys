@@ -3,7 +3,7 @@ import Div100vh from "react-div-100vh";
 
 const SurveyLayout = ({ children }) => (
   <Div100vh>
-    <Grid templateRows="54px minmax(20px, 1fr) 60px" height="100%">
+    <Grid templateRows="54px minmax(20px, 1fr) 90px" height="100vh">
       {children}
     </Grid>
   </Div100vh>
