@@ -219,7 +219,7 @@ namespace Decsys
                     };
                 })
                 .AddIdentityCookies(opts =>
-                    opts.ApplicationCookie.Configure(
+                    opts.ApplicationCookie?.Configure(
                         config => config.LoginPath = "/auth/login"));
             return s;
         }

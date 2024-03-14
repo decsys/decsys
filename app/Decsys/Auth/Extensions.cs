@@ -61,7 +61,7 @@ namespace Decsys.Auth
             => user.GetUserIdOrDefault()
                 ?? throw new InvalidOperationException("The current user has no NameIdentifier claim!");
 
-        public static string GetUserIdOrDefault(this ClaimsPrincipal user)
+        public static string? GetUserIdOrDefault(this ClaimsPrincipal user)
             => user.FindFirstValue(ClaimTypes.NameIdentifier);
 
         #endregion

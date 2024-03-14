@@ -124,9 +124,9 @@ namespace Decsys.Controllers
                 if (result.Succeeded)
                 {
                     await _events.RaiseAsync(new UserLoginSuccessEvent(
-                        user.UserName,
-                        user.Id.ToString(),
-                        user.Fullname,
+                        user?.UserName,
+                        user?.Id.ToString(),
+                        user?.Fullname,
                         clientId: context?.Client.ClientId));
 
                     return model.ReturnUrl switch
@@ -419,7 +419,7 @@ namespace Decsys.Controllers
                 ModelState.AddModelError(string.Empty, generalError);
 
             (string category, string state) route = ("approval", "error");
-            string Email = "";
+            string? Email = "";
 
             if (ModelState.IsValid)
             {
@@ -634,12 +634,15 @@ namespace Decsys.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _users.FindByIdAsync(User.GetUserId());
-                user.Fullname = model.FullName;
-                var result = await _users.UpdateAsync(user);
-                if (result.Errors.Any())
+                if (user != null)
                 {
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError(string.Empty, error.Description);
+                    user.Fullname = model.FullName;
+                    var result = await _users.UpdateAsync(user);
+                    if (result.Errors.Any())
+                    {
+                        foreach (var error in result.Errors)
+                            ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
 
