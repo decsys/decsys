@@ -30,8 +30,13 @@ import JSZip from "jszip";
 import { BusyPage } from "components/core";
 
 const getPageName = (page, responses) => {
-  const responseItem = responses.find((response) => response.page === page);
-  return responseItem.pageName ? responseItem.pageName : "Untitled Page";
+  if (!responses) {
+    return null;
+  }
+  const responseItem = responses.find(
+    (response) => response && response.page === page
+  );
+  return responseItem && responseItem.pageName ? responseItem.pageName : null;
 };
 
 const JSONModal = ({ isOpen, onClose, webhookPayloadData }) => (
@@ -60,6 +65,11 @@ const WebhookItem = ({ webhookData }) => {
   const openJsonModal = () => setIsJsonModalOpen(true);
   const closeJsonModal = () => setIsJsonModalOpen(false);
 
+  const pageName = getPageName(
+    webhookData.eventType?.sourcePage,
+    webhookData.payload?.responses ?? {}
+  );
+
   return (
     <>
       <Flex
@@ -72,7 +82,11 @@ const WebhookItem = ({ webhookData }) => {
       >
         <HStack>
           <Icon as={FaClock} boxSize={6} color="gray.500" />
-          <Badge colorScheme="white" fontSize="md" fontWeight="semibold">
+          <Badge
+            colorScheme="white"
+            fontSize={{ base: "xs", xl: "md" }}
+            fontWeight="semibold"
+          >
             Timestamp:{" "}
             {`${exportDateFormat(new Date(webhookData.timestamp)).date} ${
               exportDateFormat(new Date(webhookData.timestamp)).time
@@ -84,13 +98,11 @@ const WebhookItem = ({ webhookData }) => {
             <Badge colorScheme="blue" py={1} px={2} width="100%">
               Source Page: {webhookData.eventType.sourcePage}
             </Badge>
-            <Badge colorScheme="blue" py={1} px={2} mt={2}>
-              Page Name:{" "}
-              {getPageName(
-                webhookData.eventType.sourcePage,
-                webhookData.payload.responses
-              )}
-            </Badge>
+            {pageName && (
+              <Badge colorScheme="blue" py={1} px={2} mt={2}>
+                Page Name: {pageName}
+              </Badge>
+            )}
           </VStack>
           <Spacer />
           <Button
@@ -98,7 +110,7 @@ const WebhookItem = ({ webhookData }) => {
             rightIcon={<Icon as={FaFileAlt} />}
             colorScheme="linkedin"
             variant="solid"
-            fontSize="sm"
+            fontSize={{ base: "10px", xl: "sm" }}
             onClick={openJsonModal}
           >
             Webhook Payload

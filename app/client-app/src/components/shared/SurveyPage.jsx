@@ -165,7 +165,7 @@ const SurveyPage = ({
           justifyContent="space-between"
         >
           <Stack
-            direction={{ base: "column", xl: "row" }}
+            direction={{ base: "column", lg: "row" }}
             justifyContent="space-between"
             alignItems="center"
             w="100%"
