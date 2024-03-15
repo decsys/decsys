@@ -1,3 +1,4 @@
+using System.CommandLine.Parsing;
 using AspNetCore.Identity.Mongo.Model;
 using AspNetCore.Identity.Mongo.Stores;
 
@@ -20,8 +21,10 @@ using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.FeatureManagement;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
@@ -157,8 +160,8 @@ namespace Decsys
                 .AddIdentityCore<DecsysUser>(opts =>
                     opts.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<MongoRole>()
-                .AddRoleStore<RoleStore<MongoRole>>()
-                .AddUserStore<UserStore<DecsysUser, MongoRole>>()
+                .AddRoleStore<RoleStore<MongoRole, ObjectId>>()
+                .AddUserStore<UserStore<DecsysUser, MongoRole, ObjectId>>() 
                 .AddRoleManager<RoleManager<MongoRole>>()
                 .AddUserManager<UserManager<DecsysUser>>()
                 .AddSignInManager<SignInManager<DecsysUser>>()
@@ -175,13 +178,16 @@ namespace Decsys
 
             s.AddSingleton(_ => roleCollection)
                 .AddSingleton(_ => userCollection)
+                .AddSingleton<IRoleStore<MongoRole>>(_ => new RoleStore<MongoRole, ObjectId>(
+                    roleCollection,
+                    new IdentityErrorDescriber()))
 
-                .AddTransient<IRoleStore<MongoRole>>(_ => new RoleStore<MongoRole>(roleCollection))
-                .AddTransient<IUserStore<DecsysUser>>(x =>
-                    new UserStore<DecsysUser, MongoRole>(
-                        userCollection,
-                        new RoleStore<MongoRole>(roleCollection),
-                        x.GetService<ILookupNormalizer>()));
+            .AddTransient<IUserStore<DecsysUser>>(x =>
+                new UserStore<DecsysUser, MongoRole, ObjectId>(
+                    userCollection,
+                    roleCollection,
+                    x.GetService<IdentityErrorDescriber>() ?? new IdentityErrorDescriber()));
+
 
             return s;
         }
