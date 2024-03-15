@@ -23,8 +23,7 @@ namespace Decsys.Mapping
                     opt => opt.MapFrom(src => src.Count()))
                 .ForMember(dest => dest.ActiveInstanceId,
                     opt => opt.MapFrom(src => MapActiveInstanceToId(
-                        src.SingleOrDefault(x => x.Closed == null))))
-                .ForAllOtherMembers(opt => opt.Ignore());
+                        src.SingleOrDefault(x => x.Closed == null))));
 
             CreateMap<Data.Entities.Mongo.Survey, SurveySummary>()
                 .ConstructUsing(src => new SurveySummary(src.Name))
@@ -37,8 +36,7 @@ namespace Decsys.Mapping
                     opt => opt.MapFrom(src => src.Count()))
                 .ForMember(dest => dest.ActiveInstanceId,
                     opt => opt.MapFrom(src => MapActiveInstanceToId(
-                        src.SingleOrDefault(x => x.Closed == null))))
-                .ForAllOtherMembers(opt => opt.Ignore());
+                        src.SingleOrDefault(x => x.Closed == null))));
 
 
             // Survey
@@ -58,11 +56,9 @@ namespace Decsys.Mapping
             // Survey Type Settings only
             // these will only be used to apply to existing Survey objects
             CreateMap<CreateSurveyModel, Data.Entities.LiteDb.Survey>()
-                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()))
-                .ForAllOtherMembers(opt => opt.Ignore());
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()));
             CreateMap<CreateSurveyModel, Data.Entities.Mongo.Survey>()
-                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()))
-                .ForAllOtherMembers(opt => opt.Ignore());
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
 
 
             // Page
