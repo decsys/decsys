@@ -49,8 +49,8 @@ resource app 'Microsoft.Web/sites@2020-10-01' = {
           connectionString: dbConnectionString
         }
       ]
-      netFrameworkVersion: 'v6.0'
-      linuxFxVersion: 'DOTNETCORE|6.0'
+      netFrameworkVersion: 'v8.0'
+      linuxFxVersion: 'DOTNETCORE|8.0'
       requestTracingEnabled: true
       httpLoggingEnabled: true
       use32BitWorkerProcess: true

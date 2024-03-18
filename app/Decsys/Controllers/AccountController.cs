@@ -123,11 +123,12 @@ namespace Decsys.Controllers
 
                 if (result.Succeeded)
                 {
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(
-                        user.UserName,
-                        user.Id.ToString(),
-                        user.Fullname,
-                        clientId: context?.Client.ClientId));
+                    if (user != null)
+                        await _events.RaiseAsync(new UserLoginSuccessEvent(
+                            user.UserName,
+                            user.Id.ToString(),
+                            user.Fullname,
+                            clientId: context?.Client.ClientId));
 
                     return model.ReturnUrl switch
                     {
@@ -236,7 +237,7 @@ namespace Decsys.Controllers
             // we're fortunate in knowing we only have one client
             // so we can use its config directly
             return Redirect(IdentityServerConfig
-                .Clients(_config["Hosted:Origin"]).Single()
+                .Clients(_config["Hosted:Origin"]??"").Single()
                 .PostLogoutRedirectUris.FirstOrDefault()
                 ?? "~/");
         }
@@ -432,43 +433,47 @@ namespace Decsys.Controllers
                 }
                 else
                 {
-                    Email = user.Email;
-
-                    var result = await _users.VerifyUserTokenAsync(
-                        user, "Default", TokenPurpose.AccountApproval, code);
-
-                    if (!result)
+                    if (user.Email != null)
                     {
-                        ModelState.AddModelError(string.Empty, generalError);
-                    }
-                    else
-                    {
-                        // Update them with the outcome
-                        switch (outcome)
-                        {
-                            case AccountApprovalOutcomes.Approved:
-                                user.ApprovalDate = DateTimeOffset.UtcNow;
-                                route = ("approval", "approved");
-                                break;
-                            case AccountApprovalOutcomes.Rejected:
-                                user.RejectionDate = DateTimeOffset.UtcNow;
-                                route = ("approval", "rejected");
-                                break;
-                        }
-                        await _users.UpdateAsync(user);
+                        Email = user.Email;
 
-                        if (outcome == AccountApprovalOutcomes.Approved)
-                        {
-                            // Make them an admin
-                            await _users.AddClaimAsync(user,
-                                new Claim(ClaimTypes.Role, "survey.admin"));
-                        }
+                        var result = await _users.VerifyUserTokenAsync(
+                            user, "Default", TokenPurpose.AccountApproval, code);
 
-                        // Email the user to notify them
-                        await _emails.SendAccountApprovalResult(
-                            new Models.Emails.EmailAddress(user.Email) { Name = user.Fullname },
-                            outcome == AccountApprovalOutcomes.Approved,
-                            ClientRoutes.LoginForm.ToLocalUrlString(Request));
+                        if (!result)
+                        {
+                            ModelState.AddModelError(string.Empty, generalError);
+                        }
+                        else
+                        {
+                            // Update them with the outcome
+                            switch (outcome)
+                            {
+                                case AccountApprovalOutcomes.Approved:
+                                    user.ApprovalDate = DateTimeOffset.UtcNow;
+                                    route = ("approval", "approved");
+                                    break;
+                                case AccountApprovalOutcomes.Rejected:
+                                    user.RejectionDate = DateTimeOffset.UtcNow;
+                                    route = ("approval", "rejected");
+                                    break;
+                            }
+
+                            await _users.UpdateAsync(user);
+
+                            if (outcome == AccountApprovalOutcomes.Approved)
+                            {
+                                // Make them an admin
+                                await _users.AddClaimAsync(user,
+                                    new Claim(ClaimTypes.Role, "survey.admin"));
+                            }
+
+                            // Email the user to notify them
+                            await _emails.SendAccountApprovalResult(
+                                new Models.Emails.EmailAddress(user.Email) { Name = user.Fullname },
+                                outcome == AccountApprovalOutcomes.Approved,
+                                ClientRoutes.LoginForm.ToLocalUrlString(Request));
+                        }
                     }
                 }
             }
@@ -634,12 +639,15 @@ namespace Decsys.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _users.FindByIdAsync(User.GetUserId());
-                user.Fullname = model.FullName;
-                var result = await _users.UpdateAsync(user);
-                if (result.Errors.Any())
+                if (user != null)
                 {
-                    foreach (var error in result.Errors)
-                        ModelState.AddModelError(string.Empty, error.Description);
+                    user.Fullname = model.FullName;
+                    var result = await _users.UpdateAsync(user);
+                    if (result.Errors.Any())
+                    {
+                        foreach (var error in result.Errors)
+                            ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
 
@@ -675,12 +683,20 @@ namespace Decsys.Controllers
                 var user = await _users.FindByIdAsync(User.GetUserId());
                 var existingUser = await _users.FindByEmailAsync(model.Email);
 
-                if (existingUser is null)
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "User not found.");
+                }
+                else if (existingUser == null)
+                {
                     await _tokens.SendEmailChange(user, model.Email);
-                else ModelState.AddModelError(string.Empty,
-                    "A User Account already exists with that email address");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "A User Account already exists with that email address");
+                }
             }
-
+            
             return new JsonResult(new
             {
                 errors = CollapseModelStateErrors(ModelState)
