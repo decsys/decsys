@@ -237,7 +237,7 @@ namespace Decsys.Controllers
             // we're fortunate in knowing we only have one client
             // so we can use its config directly
             return Redirect(IdentityServerConfig
-                .Clients(_config["Hosted:Origin"]).Single()
+                .Clients(_config["Hosted:Origin"]??"").Single()
                 .PostLogoutRedirectUris.FirstOrDefault()
                 ?? "~/");
         }
@@ -683,12 +683,20 @@ namespace Decsys.Controllers
                 var user = await _users.FindByIdAsync(User.GetUserId());
                 var existingUser = await _users.FindByEmailAsync(model.Email);
 
-                if (existingUser is null)
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "User not found.");
+                }
+                else if (existingUser == null)
+                {
                     await _tokens.SendEmailChange(user, model.Email);
-                else ModelState.AddModelError(string.Empty,
-                    "A User Account already exists with that email address");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "A User Account already exists with that email address");
+                }
             }
-
+            
             return new JsonResult(new
             {
                 errors = CollapseModelStateErrors(ModelState)
