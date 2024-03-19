@@ -30,8 +30,6 @@ namespace Decsys.Controllers
             mode = _mode.IsWorkshop ? "workshop" : "hosted",
             allowRegistration = _config.GetValue<bool>("Hosted:AllowRegistration"),
             accountApprovalRequired = _config.GetValue<bool>("Hosted:AccountApprovalRequired"),
-            webhookEnabled = await _featureManager.IsEnabledAsync(FeatureFlags.Webhook)
-
         });
     }
 }
