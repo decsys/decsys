@@ -17,7 +17,6 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Decsys.Controllers;
 
 [ApiController]
-[FeatureGate(FeatureFlags.Webhook)]
 [Route("api/[controller]")]
 [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
 public class WebhooksController : ControllerBase

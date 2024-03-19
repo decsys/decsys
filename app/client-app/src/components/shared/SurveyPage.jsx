@@ -49,7 +49,6 @@ const SurveyPage = ({
   triggeredHooks,
 }) => {
   // Feature Flag
-  const { webhookEnabled } = useServerConfig();
 
   // need to ensure this doesn't change often as an effect depends on it
   const nop = useCallback(() => () => {}, []);
@@ -195,7 +194,7 @@ const SurveyPage = ({
                   Clear Response
                 </Button>
               </Tooltip>
-              {webhookCount != null && webhookEnabled && (
+              {webhookCount != null && (
                 <WebhookNotification
                   webhookCount={webhookCount}
                   unread={unread}

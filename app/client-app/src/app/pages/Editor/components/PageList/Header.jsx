@@ -7,7 +7,6 @@ import { useServerConfig } from "api/config";
 
 const Header = () => {
   const { addPage } = usePageListContext();
-  const { webhookEnabled } = useServerConfig();
 
   return (
     <Flex p={4} justify="space-between" align="center">
@@ -16,7 +15,7 @@ const Header = () => {
         <Button colorScheme="green" onClick={addPage} leftIcon={<FaPlus />}>
           Add Page
         </Button>
-        {webhookEnabled && <WebhookManager />}
+        <WebhookManager />
       </HStack>
     </Flex>
   );
