@@ -28,9 +28,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { FaTimes, FaPlusCircle } from "react-icons/fa";
-import { TextField } from "../Form/TextField";
-import { FormikInput } from "../Form/FormikInput";
 import { generateWebhookSecret } from "api/webhooks";
+import { TextField } from "app/pages/Editor/components/Form/TextField";
+import { FormikInput } from "app/pages/Editor/components/Form/FormikInput";
 import ConfirmationModal from "./ConfirmationModal";
 
 const CreateModeSecretField = ({

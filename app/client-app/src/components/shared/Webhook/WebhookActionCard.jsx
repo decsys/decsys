@@ -9,8 +9,8 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { FaTrash, FaFilter, FaEdit } from "react-icons/fa";
-import { ActionCard } from "components/shared/ActionCard";
 import { deleteWebhook, useWebhook } from "api/webhooks";
+import { ActionCard } from "../ActionCard";
 
 const WebhookActionCard = ({ webhook, onEditWebhook }) => {
   const { mutate } = useWebhook(webhook.surveyId);

@@ -2,8 +2,8 @@ import { Button, Flex, HStack } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import { FaPlus } from "react-icons/fa";
 import { usePageListContext } from "../../contexts/PageList";
-import WebhookManager from "../Webhook/WebhookManager";
 import { useServerConfig } from "api/config";
+import WebhookManager from "components/shared/Webhook/WebhookManager";
 
 const Header = () => {
   const { addPage } = usePageListContext();
