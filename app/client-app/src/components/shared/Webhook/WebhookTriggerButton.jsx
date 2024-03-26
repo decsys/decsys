@@ -1,14 +1,6 @@
-import {
-  Button,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { FaEllipsisV } from "react-icons/fa";
+import { useDisclosure } from "@chakra-ui/react";
 import WebhookModal from "./WebhookModal";
+import { MenuItem } from "@chakra-ui/react";
 
 const WebhookTriggerButton = ({
   webhooks,
@@ -18,17 +10,8 @@ const WebhookTriggerButton = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Menu>
-      <MenuButton
-        border="thin solid"
-        borderColor="gray.500"
-        as={IconButton}
-        icon={<FaEllipsisV />}
-        boxSize={"40px"}
-      />
-      <MenuList>
-        <MenuItem onClick={onOpen}>Manage Webhooks ...</MenuItem>
-      </MenuList>
+    <>
+      <MenuItem onClick={onOpen}>Manage Webhooks</MenuItem>
       <WebhookModal
         isOpen={isOpen}
         onClose={onClose}
@@ -36,7 +19,7 @@ const WebhookTriggerButton = ({
         handleWebhookAction={handleWebhookAction}
         onFormOpen={onFormOpen}
       />
-    </Menu>
+    </>
   );
 };
 

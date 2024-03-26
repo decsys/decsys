@@ -19,7 +19,6 @@ const WebhookModal = ({ isOpen, onClose, webhooks, handleWebhookAction }) => (
     <ModalContent>
       <ModalHeader>Webhooks</ModalHeader>
       <ModalCloseButton />
-
       <ModalBody>
         {webhooks &&
           webhooks.map((webhook) => (

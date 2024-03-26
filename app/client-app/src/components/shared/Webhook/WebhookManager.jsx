@@ -1,11 +1,10 @@
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { useWebhook } from "api/webhooks";
-import { useWebhookManager } from "./useWebhookManager"; // Custom hook
+import { useWebhookManager } from "./useWebhookManager";
 import WebhookForm from "./WebhookForm";
 import WebhookTriggerButton from "./WebhookTriggerButton";
 
-const WebhookManager = () => {
-  const { id: surveyId } = useFetchSurvey();
+const WebhookManager = ({ surveyId }) => {
   const { data, mutate } = useWebhook(surveyId);
   const {
     isFormOpen,
