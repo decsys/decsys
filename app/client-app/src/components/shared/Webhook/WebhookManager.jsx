@@ -4,8 +4,9 @@ import { useDisclosure } from "@chakra-ui/react";
 import { createWebhook } from "api/webhooks";
 import { updateWebhook } from "api/webhooks";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
-import WebhooksModal from "./WebhookModal";
+import WebhookModal from "./WebhookModal";
 import WebhookForm from "./WebhookForm";
+import WebhookTriggerButton from "./WebhookTriggerButton";
 
 const WebhookManager = () => {
   const { id: surveyId } = useFetchSurvey();
@@ -64,13 +65,11 @@ const WebhookManager = () => {
 
   return (
     <>
-      <WebhooksModal
-        finalRef={finalRef}
+      <WebhookTriggerButton
         webhooks={data}
-        onFormOpen={onFormOpen}
         handleWebhookAction={handleAddOrEditWebhook}
+        onFormOpen={onFormOpen}
       />
-
       <WebhookForm
         isOpen={isFormOpen}
         onClose={() => {
