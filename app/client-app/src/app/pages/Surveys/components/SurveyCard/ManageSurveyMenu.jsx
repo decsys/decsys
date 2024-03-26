@@ -15,6 +15,9 @@ import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 import { capitalise } from "services/strings";
 import { SelectStudyModal } from "./SelectStudyModal";
+import WebhookModal from "components/shared/Webhook/WebhookModal";
+import { useWebhook } from "api/webhooks";
+import { useState } from "react";
 
 const ManageSurveyMenu = ({
   id,
@@ -33,6 +36,7 @@ const ManageSurveyMenu = ({
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
   const selectStudyModal = useDisclosure();
+  const webhookManagementModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
   const handleDuplicate = (name, type, settings, creationOptions) => {
@@ -40,6 +44,14 @@ const ManageSurveyMenu = ({
     createSurveyModal.onClose();
   };
   const handleDelete = async () => await deleteSurvey(id);
+  const { data: webhooksData } = useWebhook(id);
+
+  const [currentWebhook, setCurrentWebhook] = useState(null);
+
+  const handleWebhookAction = (webhook) => {
+    setCurrentWebhook(webhook);
+    onFormOpen();
+  };
 
   return (
     <>
@@ -69,6 +81,11 @@ const ManageSurveyMenu = ({
           <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
             Preview
           </MenuItem>
+
+          <MenuItem onClick={webhookManagementModal.onOpen}>
+            Manage Webhooks
+          </MenuItem>
+
           <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
 
           {!isStudy && editable && (
@@ -115,6 +132,13 @@ const ManageSurveyMenu = ({
         id={id}
         parentId={parentSurveyId}
         modalState={selectStudyModal}
+      />
+      <WebhookModal
+        isOpen={webhookManagementModal.isOpen}
+        onClose={webhookManagementModal.onClose}
+        webhooks={webhooksData}
+        handleWebhookAction={handleWebhookAction}
+        onFormOpen={webhookManagementModal.onOpen}
       />
     </>
   );

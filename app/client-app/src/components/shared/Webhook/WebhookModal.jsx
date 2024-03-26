@@ -13,13 +13,7 @@ import {
 import { FaPlus } from "react-icons/fa";
 import WebhookActionCard from "./WebhookActionCard";
 
-const WebhookModal = ({
-  isOpen,
-  onClose,
-  webhooks,
-  handleWebhookAction,
-  onFormOpen,
-}) => (
+const WebhookModal = ({ isOpen, onClose, webhooks, handleWebhookAction }) => (
   <Modal isOpen={isOpen} onClose={onClose} size="xl">
     <ModalOverlay />
     <ModalContent>
@@ -33,7 +27,6 @@ const WebhookModal = ({
               <WebhookActionCard
                 webhook={webhook}
                 onEditWebhook={(specificWebhook) => {
-                  onFormOpen();
                   handleWebhookAction(specificWebhook);
                 }}
               />
@@ -45,7 +38,7 @@ const WebhookModal = ({
           colorScheme="green"
           size="sm"
           leftIcon={<FaPlus />}
-          onClick={handleWebhookAction}
+          onClick={() => handleWebhookAction(null)}
         >
           Create a Webhook
         </Button>
