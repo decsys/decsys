@@ -1,10 +1,10 @@
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { useWebhook } from "api/webhooks";
 import { useWebhookManager } from "./useWebhookManager";
-import WebhookForm from "./WebhookForm";
-import WebhookTriggerButton from "./WebhookTriggerButton";
+import WebhookEditCreateForm from "./WebhookEditCreateForm";
+import WebhookManagementTrigger from "./WebhookManagementTrigger";
 
-const WebhookManager = ({ surveyId }) => {
+const WebhookManagementController = ({ surveyId }) => {
   const { data, mutate } = useWebhook(surveyId);
   const {
     isFormOpen,
@@ -16,11 +16,11 @@ const WebhookManager = ({ surveyId }) => {
 
   return (
     <>
-      <WebhookTriggerButton
+      <WebhookManagementTrigger
         webhooks={data}
         handleWebhookAction={handleAddOrEditWebhook}
       />
-      <WebhookForm
+      <WebhookEditCreateForm
         isOpen={isFormOpen}
         onClose={onFormClose}
         onSubmit={handleSubmit}
@@ -30,4 +30,4 @@ const WebhookManager = ({ surveyId }) => {
   );
 };
 
-export default WebhookManager;
+export default WebhookManagementController;

@@ -45,7 +45,7 @@ export const useWebhookManager = (surveyId, mutate) => {
     }
 
     mutate();
-    onFormClose();
+    onClose();
   };
 
   return {

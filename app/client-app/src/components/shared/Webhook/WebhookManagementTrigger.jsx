@@ -1,8 +1,8 @@
 import { useDisclosure } from "@chakra-ui/react";
-import WebhookModal from "./WebhookModal";
+import WebhookListModal from "./WebhookListModal";
 import { MenuItem } from "@chakra-ui/react";
 
-const WebhookTriggerButton = ({
+const WebhookManagementTrigger = ({
   webhooks,
   handleWebhookAction,
   onFormOpen,
@@ -12,7 +12,7 @@ const WebhookTriggerButton = ({
   return (
     <>
       <MenuItem onClick={onOpen}>Manage Webhooks</MenuItem>
-      <WebhookModal
+      <WebhookListModal
         isOpen={isOpen}
         onClose={onClose}
         webhooks={webhooks}
@@ -23,4 +23,4 @@ const WebhookTriggerButton = ({
   );
 };
 
-export default WebhookTriggerButton;
+export default WebhookManagementTrigger;

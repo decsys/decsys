@@ -10,7 +10,7 @@ import {
 import LightHeading from "components/core/LightHeading";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { usePageListContext } from "../../contexts/PageList";
-import WebhookManager from "components/shared/Webhook/WebhookManager";
+import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
 import { useFetchSurvey } from "app/contexts/FetchSurvey";
 
 const Header = () => {
@@ -33,7 +33,7 @@ const Header = () => {
             boxSize={"40px"}
           />
           <MenuList>
-            <WebhookManager surveyId={id} />
+            <WebhookManagementController surveyId={id} />
           </MenuList>
         </Menu>
       </HStack>

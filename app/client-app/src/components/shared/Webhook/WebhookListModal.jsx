@@ -13,7 +13,12 @@ import {
 import { FaPlus } from "react-icons/fa";
 import WebhookActionCard from "./WebhookActionCard";
 
-const WebhookModal = ({ isOpen, onClose, webhooks, handleWebhookAction }) => (
+const WebhookListModal = ({
+  isOpen,
+  onClose,
+  webhooks,
+  handleWebhookAction,
+}) => (
   <Modal isOpen={isOpen} onClose={onClose} size="xl">
     <ModalOverlay />
     <ModalContent>
@@ -51,4 +56,4 @@ const WebhookModal = ({ isOpen, onClose, webhooks, handleWebhookAction }) => (
   </Modal>
 );
 
-export default WebhookModal;
+export default WebhookListModal;

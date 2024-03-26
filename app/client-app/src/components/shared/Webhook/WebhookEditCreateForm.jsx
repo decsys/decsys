@@ -207,7 +207,7 @@ const PageNavigationAccordion = ({ sourcePages, push, remove }) => {
   );
 };
 
-const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
+const WebhookEditCreateForm = ({ isOpen, onClose, onSubmit, webhook }) => {
   const toast = useToast();
   const isEditMode = webhook?.id != null;
   const [editSecret, setEditSecret] = useState(!isEditMode);
@@ -394,4 +394,4 @@ const WebhookForm = ({ isOpen, onClose, onSubmit, webhook }) => {
   );
 };
 
-export default WebhookForm;
+export default WebhookEditCreateForm;
