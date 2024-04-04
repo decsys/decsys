@@ -1,12 +1,21 @@
-import { Button, Flex, HStack } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  HStack,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuList,
+} from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
-import { FaPlus } from "react-icons/fa";
+import { FaEllipsisV, FaPlus } from "react-icons/fa";
 import { usePageListContext } from "../../contexts/PageList";
-import WebhookManager from "../Webhook/WebhookManager";
-import { useServerConfig } from "api/config";
+import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
+import { useFetchSurvey } from "app/contexts/FetchSurvey";
 
 const Header = () => {
   const { addPage } = usePageListContext();
+  const { id } = useFetchSurvey();
 
   return (
     <Flex p={4} justify="space-between" align="center">
@@ -15,7 +24,18 @@ const Header = () => {
         <Button colorScheme="green" onClick={addPage} leftIcon={<FaPlus />}>
           Add Page
         </Button>
-        <WebhookManager />
+        <Menu>
+          <MenuButton
+            border="thin solid"
+            borderColor="gray.500"
+            as={IconButton}
+            icon={<FaEllipsisV />}
+            boxSize={"40px"}
+          />
+          <MenuList>
+            <WebhookManagementController surveyId={id} />
+          </MenuList>
+        </Menu>
       </HStack>
     </Flex>
   );

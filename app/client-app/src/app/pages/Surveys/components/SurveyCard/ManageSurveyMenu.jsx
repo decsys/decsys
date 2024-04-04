@@ -15,6 +15,10 @@ import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 import { capitalise } from "services/strings";
 import { SelectStudyModal } from "./SelectStudyModal";
+import WebhookListModal from "components/shared/Webhook/WebhookListModal";
+import { useWebhook } from "api/webhooks";
+import { useState } from "react";
+import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
 
 const ManageSurveyMenu = ({
   id,
@@ -33,6 +37,7 @@ const ManageSurveyMenu = ({
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
   const selectStudyModal = useDisclosure();
+  const WebhookListModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
   const handleDuplicate = (name, type, settings, creationOptions) => {
@@ -40,6 +45,8 @@ const ManageSurveyMenu = ({
     createSurveyModal.onClose();
   };
   const handleDelete = async () => await deleteSurvey(id);
+
+  const { data: webhookData, mutate } = useWebhook(id);
 
   return (
     <>
@@ -69,6 +76,8 @@ const ManageSurveyMenu = ({
           <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
             Preview
           </MenuItem>
+
+          <WebhookManagementController surveyId={id} />
           <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
 
           {!isStudy && editable && (
