@@ -16,6 +16,11 @@ public class CliEntrypoint : RootCommand
             new GenerateId("generate-id"),
             new Hash("hash")
         });
+        
+        AddCommand(new Command("webhooks", "Actions for working with Survey webhooks")
+        {
+            new ListWebhooks("list")
+        });
     }
     
 }

@@ -13,10 +13,10 @@ public class Hash : Command
         this.SetHandler((logger, console, input) =>
             {
                 this
-                    .ConfigureServices((s) =>
-                        ServiceCollectionServiceExtensions.AddSingleton<ILoggerFactory>(s, _ => logger)
-                            .AddSingleton<IConsole>(_ => console)
-                            .AddTransient<Runners.Hash>()
+                    .ConfigureServices((s) => s
+                        .AddSingleton<ILoggerFactory>(_ => logger)
+                        .AddSingleton<IConsole>(_ => console)
+                        .AddTransient<Runners.Hash>()
                     )
                     .GetRequiredService<Runners.Hash>()
                     .Run(input);
@@ -25,5 +25,4 @@ public class Hash : Command
             Bind.FromServiceProvider<IConsole>(),
             argInput);
     }
-    
 }
