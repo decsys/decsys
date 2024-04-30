@@ -19,7 +19,8 @@ public class CliEntrypoint : RootCommand
         
         AddCommand(new Command("webhooks", "Actions for working with Survey webhooks")
         {
-            new ListWebhooks("list")
+            new ListWebhooks("list"),
+            new TriggerWebhooks("trigger")
         });
     }
     
