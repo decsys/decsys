@@ -11,15 +11,16 @@ public class WebhookService
 {
     private readonly IWebhookRepository _webhooks;
     private readonly HttpClient _client;
-    
+    private readonly ILogger<WebhookService> _logger;
 
     public WebhookService(
         IWebhookRepository webhooks,
-        IHttpClientFactory httpClientFactory
-        )
+        IHttpClientFactory httpClientFactory,
+        ILoggerFactory logger)
     {
         _webhooks = webhooks;
         _client = httpClientFactory.CreateClient();
+        _logger = logger.CreateLogger<WebhookService>();
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ public class WebhookService
     /// <returns>The created Webhook</returns>
     public string Create(WebhookModel model)
         => _webhooks.Create(model);
-    
+
     public ViewWebhook Get(string webhookId)
         => _webhooks.Get(webhookId);
 
@@ -39,7 +40,7 @@ public class WebhookService
 
         var webhookViewModels = webhookModels.Select(w => new ViewWebhook
         {
-            Id = w.Id, 
+            Id = w.Id,
             SurveyId = w.SurveyId,
             CallbackUrl = w.CallbackUrl,
             HasSecret = !string.IsNullOrEmpty(w.Secret),
@@ -63,10 +64,15 @@ public class WebhookService
 
         foreach (var webhook in webhooks)
         {
+            _logger.LogDebug("Assessing Trigger Criteria for webhook {Webhook}...", webhook.Id);
+
             if (FilterCriteria(webhook, payload))
             {
+                _logger.LogDebug("Criteria met; triggering webhook {Webhook}...", webhook.Id);
+
                 await SendWebhook(webhook, payload);
             }
+            else _logger.LogDebug("Criteria not met for webhook {Webhook}.", webhook.Id);
         }
     }
 
@@ -77,7 +83,7 @@ public class WebhookService
     /// <param name="payload">The payload or event to evaluate.</param>
     /// <param name="webhook">The webhook to potentially be triggered.</param>
     /// <returns>True if the webhook should be triggered by the event, false otherwise.</returns>
-    private static bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
+    private bool FilterCriteria(WebhookModel webhook, PayloadModel payload)
     {
         // If the webhook does not have custom triggers, it can be triggered by any event.
         if (!webhook.TriggerCriteria.HasCustomTriggers)
@@ -102,10 +108,15 @@ public class WebhookService
                 {
                     foreach (var navFilter in webhook.TriggerCriteria.EventTypes.PageNavigation)
                     {
+                        _logger.LogDebug(
+                            "Validating Page Navigation Trigger - Trigger Filter Source Page: {WebhookSourcePage} vs Event Source Page: {EventSourcePage}",
+                            navFilter.SourcePage, pageNavigation.SourcePage);
+                        
                         if (IsValidPageNavigationTrigger(navFilter, pageNavigation))
                             return true;
                     }
                 }
+
                 break;
         }
 
@@ -119,11 +130,12 @@ public class WebhookService
     /// <param name="webhookFilter">The filter to check against.</param>
     /// <param name="payloadNavigation">The 'PageNavigation' event to check.</param>
     /// <returns>True if the event matches the filter, false otherwise.</returns>
-    private static bool IsValidPageNavigationTrigger(PageNavigationFilters webhookFilter, PageNavigation? payloadNavigation)
+    private static bool IsValidPageNavigationTrigger(PageNavigationFilters webhookFilter,
+        PageNavigation? payloadNavigation)
     {
         // If there is no 'PageNavigation' event, it cannot match any filters.
         if (payloadNavigation == null) return false;
-        
+
         // The event matches the filter if their source pages are the same.
         return webhookFilter.SourcePage == payloadNavigation.SourcePage;
     }
@@ -137,9 +149,9 @@ public class WebhookService
     private async Task SendWebhook(WebhookModel webhook, PayloadModel payload)
     {
         var json = JsonConvert.SerializeObject(payload);
-
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
         
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
         if (webhook.Secret is not null)
         {
             using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(webhook.Secret));
@@ -147,9 +159,11 @@ public class WebhookService
             content.Headers.Add("X-Decsys-Signature", Convert.ToBase64String(signature));
         }
 
-        await _client.PostAsync(webhook.CallbackUrl, content);
+        var response = await _client.PostAsync(webhook.CallbackUrl, content);
+        
+        _logger.LogDebug("Webhook Response Status: {ResponseStatus}", response.StatusCode);
     }
-    
+
     public ViewWebhook Edit(string webhookId, WebhookModel model)
     {
         var existingWebhook = _webhooks.Get(webhookId);
@@ -178,9 +192,9 @@ public class WebhookService
             TriggerCriteria = originalWebhook.TriggerCriteria,
             Secret = string.Empty,
         };
-        
+
         _webhooks.Create(newWebhook);
-        
+
         return newWebhook;
     }
 
@@ -192,7 +206,7 @@ public class WebhookService
     {
         _webhooks.Delete(webhookId);
     }
-    
+
     public PayloadModel? PreviewTrigger(PayloadModel payload)
     {
         var (surveyId, instanceId) = FriendlyIds.Decode(payload.SurveyId);
@@ -205,7 +219,7 @@ public class WebhookService
                 return payload;
             }
         }
+
         return null;
     }
-
 }
