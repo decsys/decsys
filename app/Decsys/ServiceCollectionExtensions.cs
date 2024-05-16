@@ -1,6 +1,5 @@
 using AspNetCore.Identity.Mongo.Model;
 using AspNetCore.Identity.Mongo.Stores;
-
 using Decsys.Auth;
 using Decsys.Config;
 using Decsys.Constants;
@@ -14,9 +13,7 @@ using Decsys.Services.Contracts;
 using Decsys.Services.EmailSender;
 using Decsys.Services.EmailServices;
 using Decsys.Services.LockProvider;
-
 using IdentityServer4.Models;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -24,11 +21,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.FeatureManagement;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-
 using UoN.AspNetCore.RazorViewRenderer;
-using UoN.VersionInformation.DependencyInjection;
-using UoN.VersionInformation.Providers;
-
 using static IdentityServer4.IdentityServerConstants;
 
 namespace Decsys
@@ -57,11 +50,11 @@ namespace Decsys
             else s.Configure<LocalDiskEmailOptions>(c.GetSection("Hosted:OutboundEmail"));
 
             s
-                    .AddTransient<TokenIssuingService>()
-                    .AddTransient<IRazorViewRenderer, RazorViewRenderer>()
-                    .AddTransient<RazorViewService>()
-                    .AddTransient<AccountEmailService>()
-                    .TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+                .AddTransient<TokenIssuingService>()
+                .AddTransient<IRazorViewRenderer, RazorViewRenderer>()
+                .AddTransient<RazorViewService>()
+                .AddTransient<AccountEmailService>()
+                .TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             if (useSendGrid) s.AddTransient<IEmailSender, SendGridEmailSender>();
             else s.AddTransient<IEmailSender, LocalDiskEmailSender>();
@@ -93,7 +86,7 @@ namespace Decsys
                 .AddTransient<WebhookService>()
                 .AddTransient<WordlistService>()
                 .AddSingleton<MathService>();
-            
+
 
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
         {
@@ -102,11 +95,11 @@ namespace Decsys
             // wrap these cos they don't return an ISC, interrupting chaining
             s.AddControllersWithViews()
 
-            // we used JSON.NET back in .NET Core 2.x
-            // for ViewModel Property shenanigans so component params can be dynamic
-            // it doesn't really make sense to change this
-            // (if System.Text.Json even does what we need)
-            .AddNewtonsoftJson();
+                // we used JSON.NET back in .NET Core 2.x
+                // for ViewModel Property shenanigans so component params can be dynamic
+                // it doesn't really make sense to change this
+                // (if System.Text.Json even does what we need)
+                .AddNewtonsoftJson();
 
             s.AddFeatureManagement();
 
@@ -147,13 +140,13 @@ namespace Decsys
             }
 
             return s.AddSingleton<IMongoClient, MongoClient>(_ => mongoClient)
-                  .AddTransient<ILockProvider, MongoLockProvider>();
+                .AddTransient<ILockProvider, MongoLockProvider>();
         }
 
-        public static IServiceCollection AddAppIdentity(this IServiceCollection s, MongoClient mongoClient, HostedDbSettings dbSettings)
+        public static IServiceCollection AddAppIdentity(this IServiceCollection s, MongoClient mongoClient,
+            HostedDbSettings dbSettings)
         {
             s.AddSingleton<IUserConfirmation<DecsysUser>, DecsysUserConfirmation>()
-
                 .AddIdentityCore<DecsysUser>(opts =>
                     opts.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<MongoRole>()
@@ -175,7 +168,6 @@ namespace Decsys
 
             s.AddSingleton(_ => roleCollection)
                 .AddSingleton(_ => userCollection)
-
                 .AddTransient<IRoleStore<MongoRole>>(_ => new RoleStore<MongoRole>(roleCollection))
                 .AddTransient<IUserStore<DecsysUser>>(x =>
                     new UserStore<DecsysUser, MongoRole>(
@@ -199,10 +191,7 @@ namespace Decsys
                 .AddPersistedGrantStore<MongoPersistedGrantStore>()
                 .AddAspNetIdentity<DecsysUser>();
 
-            // Sort out Signing Keys
-            if (env.IsDevelopment())
-                idsBuilder.AddDeveloperSigningCredential();
-            else idsBuilder.AddSigningCredential(RsaKeyService.GetRsaKey(c), RsaSigningAlgorithm.RS256);
+            idsBuilder.AddSigningCredential(RsaKeyService.GetRsaKey(c), RsaSigningAlgorithm.RS256);
 
             return s;
         }
@@ -215,7 +204,9 @@ namespace Decsys
                     opts.Authority = c["Hosted:Origin"];
                     opts.TokenValidationParameters = new()
                     {
-                        ValidateAudience = false
+                        ValidateAudience = false,
+                        ValidIssuer = c["Hosted:Origin"],
+                        IssuerSigningKey = RsaKeyService.GetRsaKey(c)
                     };
                 })
                 .AddIdentityCookies(opts =>
@@ -236,6 +227,5 @@ namespace Decsys
                 .AddTransient<IStudyInstanceRepository, StudyInstanceRepository>()
                 .AddTransient<IWebhookRepository, WebhookRepository>()
                 .AddTransient<IWordlistRepository, WordlistRepository>();
-
     }
 }

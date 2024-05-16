@@ -16,9 +16,9 @@ public static class ConfigureWebServices
         if (mode.IsHosted)
         {
             var hostedDbSettings = builder.Configuration.GetSection("Hosted").Get<HostedDbSettings>();
-        
+
             var mongoClient = new MongoClient(builder.Configuration.GetConnectionString("mongo"));
-        
+
             builder.Services
                 .AddApplicationInsightsTelemetry()
                 .AddMongoDb(mongoClient)
@@ -29,50 +29,42 @@ public static class ConfigureWebServices
                 .AddTransient<IImageService, MongoImageService>()
                 .AddEmailSender(builder.Configuration);
         }
-        
+
         builder.Services
             .Configure<AppMode>(c => c.IsWorkshop = mode.IsWorkshop)
             .Configure<HostedDbSettings>(builder.Configuration.GetSection("Hosted"))
             .ConfigureVersions(builder.Configuration)
-        
             .AddResponseCompression()
-        
             .AddAppAuthorization(mode)
-        
             .AddAutoMapper(typeof(Program))
-        
             .AddAppServices()
-        
             .AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new() { Title = "DECSYS API", Version = "v1" });
+                c.EnableAnnotations();
+
+                var jwtSchemeId = "jwtbearer";
+                var jwtScheme = new OpenApiSecurityScheme
                 {
-                    c.SwaggerDoc("v1", new() { Title = "DECSYS API", Version = "v1" });
-                    c.EnableAnnotations();
-        
-                    var jwtSchemeId = "jwtbearer";
-                    var jwtScheme = new OpenApiSecurityScheme
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new()
                     {
-                        Type = SecuritySchemeType.Http,
-                        Scheme = "bearer",
-                        BearerFormat = "JWT"
-                        ,
-                        Reference = new()
-                        {
-                            Id = jwtSchemeId,
-                            Type = ReferenceType.SecurityScheme,
-                        }
-                    };
-                    c.AddSecurityDefinition(jwtSchemeId, jwtScheme);
-                    c.AddSecurityRequirement(new()
-                    {
-                        [jwtScheme] = new List<string>()
-                    });
-                })
+                        Id = jwtSchemeId,
+                        Type = ReferenceType.SecurityScheme,
+                    }
+                };
+                c.AddSecurityDefinition(jwtSchemeId, jwtScheme);
+                c.AddSecurityRequirement(new()
+                {
+                    [jwtScheme] = new List<string>()
+                });
+            })
             .AddSwaggerGenNewtonsoftSupport()
-        
             .AddAppMvcServices()
-        
             .AddVersionInformation();
-        
+
         if (mode.IsWorkshop)
         {
             builder.Services

@@ -13,14 +13,14 @@ public class ListWebhooks
 {
     private readonly IConsole _console;
     private readonly IWebhookRepository _webhooks;
-    private readonly ILogger<Hash> _logger;
+    private readonly ILogger<ListWebhooks> _logger;
 
     public ListWebhooks(
         ILoggerFactory logger, IConsole console, IWebhookRepository webhooks)
     {
         _console = console;
         _webhooks = webhooks;
-        _logger = logger.CreateLogger<Hash>();
+        _logger = logger.CreateLogger<ListWebhooks>();
     }
 
     public void Run(string inputId)

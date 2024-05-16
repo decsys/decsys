@@ -15,6 +15,7 @@ namespace Decsys.Services
     // alternative RSA key parsing/generation
     // https://gist.github.com/ygotthilf/baa58da5c3dd1f69fae9
     // https://vcsjones.dev/2019/10/07/key-formats-dotnet-3/
+    // https://www.scottbrady91.com/c-sharp/rsa-key-loading-dotnet
 
     public static class RsaKeyService
     {
