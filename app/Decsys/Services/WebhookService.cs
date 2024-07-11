@@ -66,7 +66,7 @@ public class WebhookService
         {
             if (forceTrigger || FilterCriteria(webhook, payload)) 
             {
-                _logger.LogDebug("Criteria met or force trigger; triggering webhook {Webhook}...", webhook.Id);
+                _logger.LogDebug("Criteria met or trigger forced; triggering webhook {Webhook}...", webhook.Id);
                 await SendWebhook(webhook, payload);
             }
             else
