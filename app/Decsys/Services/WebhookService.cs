@@ -56,7 +56,7 @@ public class WebhookService
     /// Triggers webhooks from a given payload.
     /// </summary>
     /// <param name="payload">The payload to trigger and Post.</param>
-    public async Task Trigger(PayloadModel payload)
+    public async Task Trigger(PayloadModel payload, bool forceTrigger = false) 
     {
         var (surveyId, instanceId) = FriendlyIds.Decode(payload.SurveyId);
 
@@ -64,17 +64,18 @@ public class WebhookService
 
         foreach (var webhook in webhooks)
         {
-            _logger.LogDebug("Assessing Trigger Criteria for webhook {Webhook}...", webhook.Id);
-
-            if (FilterCriteria(webhook, payload))
+            if (forceTrigger || FilterCriteria(webhook, payload)) 
             {
-                _logger.LogDebug("Criteria met; triggering webhook {Webhook}...", webhook.Id);
-
+                _logger.LogDebug("Criteria met or trigger forced; triggering webhook {Webhook}...", webhook.Id);
                 await SendWebhook(webhook, payload);
             }
-            else _logger.LogDebug("Criteria not met for webhook {Webhook}.", webhook.Id);
+            else
+            {
+                _logger.LogDebug("Criteria not met for webhook {Webhook}.", webhook.Id);
+            }
         }
     }
+
 
 
     /// <summary>

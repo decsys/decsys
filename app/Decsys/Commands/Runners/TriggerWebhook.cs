@@ -31,7 +31,8 @@ public class TriggerWebhooks
 
     public async Task Run(string friendlyId,
         string participantId,
-        string eventSource)
+        string eventSource,
+        bool forceTrigger = false) 
     {
         var (surveyId, instanceId) = FriendlyIds.Decode(friendlyId);
 
@@ -63,6 +64,6 @@ public class TriggerWebhooks
             SourcePage = sourcePage
         };
 
-        await _webhooks.Trigger(new PayloadModel(friendlyId, participantId, eventType, payload));
+        await _webhooks.Trigger(new PayloadModel(friendlyId, participantId, eventType, payload),forceTrigger);
     }
 }

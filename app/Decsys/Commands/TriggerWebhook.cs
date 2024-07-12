@@ -28,12 +28,17 @@ public class TriggerWebhooks : Command
             "The Event Source value for which to trigger webhooks. For PAGE_NAVIGATION this is the id of the page the Participant is leaving. The last logged event with this source will be used.");
         Add(argEventSource);
 
+        var optForceTrigger = new Option<bool>(new[] { "--force", "-f" },
+            "Ignores Filter Criteria and triggers webhooks.");
+        Add(optForceTrigger);
+
         this.SetHandler(async (
                 logger, console, config,
                 friendlyId,
                 participantId,
                 eventSource,
-                overrideConnectionString) =>
+                overrideConnectionString, 
+                forceTrigger) =>
             {
                 var mongoClient = new MongoClient(overrideConnectionString ?? config.GetConnectionString("mongo"));
 
@@ -51,7 +56,7 @@ public class TriggerWebhooks : Command
                         .AddTransient<ParticipantEventService>()
                         .AddTransient<WebhookService>()
                         .AddTransient<Runners.TriggerWebhooks>())
-                    .GetRequiredService<Runners.TriggerWebhooks>().Run(friendlyId, participantId, eventSource);
+                    .GetRequiredService<Runners.TriggerWebhooks>().Run(friendlyId, participantId, eventSource, forceTrigger);
             },
             Bind.FromServiceProvider<ILoggerFactory>(),
             Bind.FromServiceProvider<IConsole>(),
@@ -59,6 +64,7 @@ public class TriggerWebhooks : Command
             argFriendlyId,
             argParticipantId,
             argEventSource,
-            optConnectionString);
+            optConnectionString,
+            optForceTrigger);
     }
 }
