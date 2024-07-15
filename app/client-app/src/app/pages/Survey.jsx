@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { BusyPage, Page } from "components/core";
 import SurveyPage from "components/shared/SurveyPage";
 import { navigate } from "@reach/router";
@@ -154,6 +154,14 @@ const Survey = ({
   const { clearInstanceParticipantId } = useLocalInstances();
   const [isBusy, setIsBusy] = useState();
 
+  const [isMounted, setIsMounted] = useState(true);
+
+  useEffect(() => {
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
+
   const [surveyId, instanceId] = decode(friendlyId);
 
   const logEvent = useCallback(
@@ -170,6 +178,8 @@ const Survey = ({
   );
 
   const handleClick = async () => {
+    if (!isMounted) return;
+
     // TODO confirm modal? if (progress.isLastPage)
     setIsBusy(true);
     try {
@@ -206,6 +216,7 @@ const Survey = ({
     } catch (e) {
       console.error(e);
     }
+    if (!isMounted) return;
     setIsBusy(false);
   };
 
