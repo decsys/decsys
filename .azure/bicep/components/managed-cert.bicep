@@ -6,12 +6,13 @@ var location = resourceGroup().location
 
 
 // https://docs.microsoft.com/en-us/azure/templates/microsoft.web/2020-09-01/certificates
-resource cert 'Microsoft.Web/certificates@2020-10-01' = {
-  name: '${appName}_${hostname}'
-  location: location
-  properties: { // managed certs don't need password
-    canonicalName: hostname
-    serverFarmId: aspId
+module cert 'br/DrsComponents:managed-cert.bicep:v1' = {
+  name: '${appName}_${hostname}-cert'
+  params: {
+    appName: appName
+    hostname: hostname
+    aspId: aspId
+    location: location
   }
 }
 

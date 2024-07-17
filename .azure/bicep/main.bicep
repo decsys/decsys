@@ -1,3 +1,9 @@
+// This deploys an entire environment stack*
+// It reuses some shared resources within a resource group (e.g. prod / non-prod)
+// and then deploys and configures environment specific resources
+// based on parameters passed through
+// for a given service and environment combination (e.g. decsys dev)
+
 import { referenceSecret } from 'br/DrsUtils:functions:v1'
 import { ConnectionStringDictionary } from 'br/DrsUtils:types:v1'
 
