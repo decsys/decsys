@@ -151,7 +151,7 @@ var sharedSettings = {
   DOTNET_Environment: friendlyEnvironmentNames[env]
 
   // App specific Azure/AI config
-  APPLICATIONINSIGHTS_CONNECTION_STRING: decsys.outputs.appInsights.connectionString
+  APPLICATIONINSIGHTS_CONNECTION_STRING: backend.outputs.appInsights.connectionString
   WEBSITE_RUN_FROM_PACKAGE: 1
 
   // Default app settings
@@ -166,7 +166,7 @@ var sharedSettings = {
   Hosted__OutboundEmail__SendGridApiKey: referenceSecret(keyVaultName, 'sendgrid-api-key')
 
 
-  Hosted__Origin: decsys.outputs.defaultUrl
+  Hosted__Origin: backend.outputs.defaultUrl
   Hosted__AccountApprovers: referenceSecret(keyVaultName, 'account-approvers')
 
   Hosted__JwtSigningKey__kid: 'decsys-test'
@@ -183,10 +183,19 @@ var sharedSettings = {
   Hosted__JwtSigningKey__qi: referenceSecret(keyVaultName, 'decsys-jwtkey-qi')
 }
 
-module decsysSiteConfig 'br/DrsConfig:webapp:v1' = {
-  name: 'siteConfig-${uniqueString(decsys.name)}'
+module backendSiteConfig 'br/DrsConfig:webapp:v1' = {
+  name: 'siteConfig-${uniqueString(backend.name)}'
   params: {
-    appName: decsys.outputs.name
+    appName: backend.outputs.name
+    appSettings: union(appInsightsSettings, sharedSettings, appSettings)
+    connectionStrings: dbConnectionStrings
+  }
+}
+
+module frontendSiteConfig 'br/DrsConfig:webapp:v1' = {
+  name: 'siteConfig-${uniqueString(frontend.name)}'
+  params: {
+    appName: frontend.outputs.name
     appSettings: union(appInsightsSettings, sharedSettings, appSettings)
     connectionStrings: dbConnectionStrings
   }
