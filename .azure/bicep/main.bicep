@@ -13,10 +13,8 @@ param serviceName ServiceNames
 type Environments = 'dev' | 'qa' | 'uat' | 'prod'
 param env Environments
 
-param frontendAppName string = '${env}-${serviceName}'
-param frontendHostnames array = []
-
-param backendAppName string = '${env}-${serviceName}-api'
+param appName string = '${env}-${serviceName}'
+param appHostnames array = []
 param appSettings object = {}
 
 param keyVaultName string = '${serviceName}-${env}-kv'
@@ -60,18 +58,18 @@ resource kv 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
   name: keyVaultName
 }
 
-// Create the Frontend App and related bits
+// Create the Decsys App and related bits
 // App Insights
 // App Service
 // Hostnames
-module frontend 'br/DrsComponents:app-service:v1' = {
-  name: 'frontend-${uniqueString(frontendAppName)}'
+module decsys 'br/DrsComponents:app-service:v1' = {
+  name: 'decsys-${uniqueString(appName)}'
   params: {
     location: location
-    appName: frontendAppName
+    appName: appName
     aspName: asp.outputs.name
     logAnalyticsWorkspaceName: la.outputs.name
-    appHostnames: frontendHostnames
+    appHostnames: appHostnames
     tags: {
       ServiceScope: serviceName
       Environment: env
@@ -79,45 +77,21 @@ module frontend 'br/DrsComponents:app-service:v1' = {
   }
 }
 
-// Create the Backend App and related bits
-// App Insights
-// App Service
-// Hostnames
-module backend 'br/DrsComponents:app-service:v1' = {
-  name: 'backend-${uniqueString(backendAppName)}'
-  params: {
-    location: location
-    appName: backendAppName
-    aspName: asp.outputs.name
-    logAnalyticsWorkspaceName: la.outputs.name
-    tags: {
-      ServiceScope: serviceName
-      Environment: env
-    }
-  }
-}
 
-// Grant frontend Key Vault access
-module frontendKvAccess 'br/DrsConfig:keyvault-access:v2' = {
-  name: 'kvAccess-${uniqueString(frontend.name)}'
+// Grant decsys Key Vault access
+module decsysKvAccess 'br/DrsConfig:keyvault-access:v1' = {
+  name: 'kvAccess-${uniqueString(decsys.name)}'
   params: {
     keyVaultName: kv.name
-    principalId: frontend.outputs.identity.principalId
-  }
-}
-// Grant backend Key Vault access
-module backendKvAccess 'br/DrsConfig:keyvault-access:v2' = {
-  name: 'kvAccess-${uniqueString(backend.name)}'
-  params: {
-    keyVaultName: kv.name
-    principalId: backend.outputs.identity.principalId
+    objectId: decsys.outputs.identity.principalId
+    tenantId:decsys.outputs.identity.tenantId
   }
 }
 
 // Config (App Settings, Connection strings) here now that Key Vault links will resolve
 // Overrides for environments come through as params
 
-// Shared configs are defined inline here
+// Decsys configs are defined inline here
 var appInsightsSettings = {
   // App Insights
   ApplicationInsightsAgent_EXTENSION_VERSION: '~2'
@@ -139,23 +113,23 @@ var friendlyEnvironmentNames = {
 
 var dbConnectionStrings = {
   Default: {
-    type: 'SQLServer'
+    type: 'Custom'
     value: referenceSecret(keyVaultName, 'db-connection-string')
   }
 }
 
-// Shared App Service
-var sharedSettings = {
+// Default  App Service
+var defaultSettings = {
   WorkshopMode: false
 
   DOTNET_Environment: friendlyEnvironmentNames[env]
 
   // App specific Azure/AI config
-  APPLICATIONINSIGHTS_CONNECTION_STRING: backend.outputs.appInsights.connectionString
+  APPLICATIONINSIGHTS_CONNECTION_STRING: decsys.outputs.appInsights.connectionString
   WEBSITE_RUN_FROM_PACKAGE: 1
 
   // Default app settings
-  Hosted__AdminPassword: referenceSecret(keyVaultName, 'decsys-admin-password')
+  Hosted__AdminPassword: referenceSecret(keyVaultName, 'decsysAdminPassword')
   Hosted__AdminUsername: 'decsys'
 
   Hosted__AllowRegistration: true
@@ -164,9 +138,9 @@ var sharedSettings = {
   Hosted__OutboundEmail__FromName: 'DECSYS'
   Hosted__OutboundEmail__Provider: 'sendgrid'
   Hosted__OutboundEmail__SendGridApiKey: referenceSecret(keyVaultName, 'sendgrid-api-key')
+  Hosted__OutboundEmail__FromAddress: referenceSecret(keyVaultName, 'email-from-address')
 
-
-  Hosted__Origin: backend.outputs.defaultUrl
+  Hosted__Origin: decsys.outputs.defaultUrl
   Hosted__AccountApprovers: referenceSecret(keyVaultName, 'account-approvers')
 
   Hosted__JwtSigningKey__kid: 'decsys-test'
@@ -183,20 +157,11 @@ var sharedSettings = {
   Hosted__JwtSigningKey__qi: referenceSecret(keyVaultName, 'decsys-jwtkey-qi')
 }
 
-module backendSiteConfig 'br/DrsConfig:webapp:v1' = {
-  name: 'siteConfig-${uniqueString(backend.name)}'
+module decsysSiteConfig 'br/DrsConfig:webapp:v1' = {
+  name: 'siteConfig-${uniqueString(decsys.name)}'
   params: {
-    appName: backend.outputs.name
-    appSettings: union(appInsightsSettings, sharedSettings, appSettings)
-    connectionStrings: dbConnectionStrings
-  }
-}
-
-module frontendSiteConfig 'br/DrsConfig:webapp:v1' = {
-  name: 'siteConfig-${uniqueString(frontend.name)}'
-  params: {
-    appName: frontend.outputs.name
-    appSettings: union(appInsightsSettings, sharedSettings, appSettings)
+    appName: decsys.outputs.name
+    appSettings: union(appInsightsSettings, defaultSettings, appSettings)
     connectionStrings: dbConnectionStrings
   }
 }
