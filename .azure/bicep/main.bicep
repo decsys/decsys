@@ -112,7 +112,7 @@ var friendlyEnvironmentNames = {
 }
 
 var dbConnectionStrings = {
-  Default: {
+  mongo: {
     type: 'Custom'
     value: referenceSecret(keyVaultName, 'db-connection-string')
   }
@@ -147,14 +147,14 @@ var defaultSettings = {
   Hosted__JwtSigningKey__use: 'sig'
   Hosted__JwtSigningKey__kty: 'RSA'
   Hosted__JwtSigningKey__alg: 'RS256'
-  Hosted__JwtSigningKey__d: referenceSecret(keyVaultName, 'decsys-jwtkey-d')
-  Hosted__JwtSigningKey__dp: referenceSecret(keyVaultName, 'decsys-jwtkey-dp')
-  Hosted__JwtSigningKey__dq: referenceSecret(keyVaultName, 'decsys-jwtkey-dq')
-  Hosted__JwtSigningKey__e: referenceSecret(keyVaultName, 'decsys-jwtkey-e')
-  Hosted__JwtSigningKey__n: referenceSecret(keyVaultName, 'decsys-jwtkey-n')
-  Hosted__JwtSigningKey__p: referenceSecret(keyVaultName, 'decsys-jwtkey-p')
-  Hosted__JwtSigningKey__q: referenceSecret(keyVaultName, 'decsys-jwtkey-q')
-  Hosted__JwtSigningKey__qi: referenceSecret(keyVaultName, 'decsys-jwtkey-qi')
+  Hosted__JwtSigningKey__d: referenceSecret(keyVaultName, 'jwk-d')
+  Hosted__JwtSigningKey__dp: referenceSecret(keyVaultName, 'jwk-dp')
+  Hosted__JwtSigningKey__dq: referenceSecret(keyVaultName, 'jwk-dq')
+  Hosted__JwtSigningKey__e: referenceSecret(keyVaultName, 'jwk-e')
+  Hosted__JwtSigningKey__n: referenceSecret(keyVaultName, 'jwk-n')
+  Hosted__JwtSigningKey__p: referenceSecret(keyVaultName, 'jwk-p')
+  Hosted__JwtSigningKey__q: referenceSecret(keyVaultName, 'jwk-q')
+  Hosted__JwtSigningKey__qi: referenceSecret(keyVaultName, 'jwk-qi')
 }
 
 module decsysSiteConfig 'br/DrsConfig:webapp:v1' = {
