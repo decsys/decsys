@@ -8,6 +8,7 @@ import Dashboard from "app/pages/Dashboard";
 import Wordlist from "app/pages/Wordlist";
 import { useAuth } from "auth/AuthContext";
 import { BusyPage } from "components/core";
+import Wordlists from "app/pages/Wordlists";
 
 const Admin = () => {
   const { isAdmin, user, login } = useAuth();
@@ -23,6 +24,7 @@ const Admin = () => {
     <Router>
       <Surveys path="/" />
       <Wordlist path="/wordlist" />
+      <Wordlists path="/wordlists" />
       <Editor path="/survey/:id" />
       <Preview path="/survey/:id/preview" />
       <Results path="/survey/:id/results" />
