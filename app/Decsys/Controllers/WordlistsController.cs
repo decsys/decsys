@@ -32,7 +32,7 @@ namespace Decsys.Controllers
         {
             string ownerId = User.GetUserId();
 
-            var wordlist = _service.List(ownerId);
+            var wordlist = _service.ListAll(ownerId);
 
             return Ok(wordlist);
         }

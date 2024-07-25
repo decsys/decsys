@@ -31,6 +31,14 @@ public class WordlistRepository :IWordlistRepository
         return _mapper.Map<Models.Wordlist.UserWordlist>(wordlist);
     }
 
+    public List<Models.Wordlist.UserWordlist> ListAll(string ownerId)
+    {
+
+        var wordlist = _wordlists.Find(wl => wl.Owner == ownerId).ToList();
+
+        return _mapper.Map<List<Models.Wordlist.UserWordlist>>(wordlist);
+    }
+
     public async Task<Models.Wordlist.UserWordlist> Create(string ownerId)
     {
 
