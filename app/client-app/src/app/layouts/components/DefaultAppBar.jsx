@@ -76,9 +76,6 @@ const AdminMenu = () => {
         <MenuItem as="a" href="/admin/wordlist/" icon={<FaList />}>
           Wordlist
         </MenuItem>
-        <MenuItem as="a" href="/admin/wordlists/" icon={<FaList />}>
-          Wordlists
-        </MenuItem>
       </MenuList>
     </Menu>
   );
