@@ -6,6 +6,7 @@ import { listWordlist } from "api/wordlist";
 import { Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
 import { ActionCard } from "components/shared/ActionCard";
+import { createWordList } from "api/wordlist";
 
 const Wordlists = () => {
   const [wordLists, setWordLists] = useState([]);
@@ -19,13 +20,23 @@ const Wordlists = () => {
     getWordLists();
   }, []);
 
+  const handleCreateWordList = async () => {
+    const newWordList = await createWordList();
+    setWordLists((prevWordLists) => [...prevWordLists, newWordList]);
+  };
+
   return (
     <Page>
       <Flex justifyContent="space-between" alignItems="center" px="2" py="4">
         <LightHeading as="h1" size="xl">
           My Wordlists
         </LightHeading>
-        <Button leftIcon={<FaPlus />} size="md" colorScheme="green">
+        <Button
+          leftIcon={<FaPlus />}
+          size="md"
+          colorScheme="green"
+          onClick={handleCreateWordList}
+        >
           Create a Wordlist
         </Button>
       </Flex>

@@ -18,6 +18,15 @@ export const fetchWordList = async () => {
   return response.data;
 };
 
+export const createWordList = async () => {
+  const response = await axios.post(
+    "/api/wordlists/create",
+    {},
+    withHeaders(await authorization_BearerToken())
+  );
+  return response.data;
+};
+
 export const excludeBuiltinWords = async (id, type, word) => {
   const response = await axios.put(
     `/api/wordlists/${id}/exclude/${type}/${word}`,

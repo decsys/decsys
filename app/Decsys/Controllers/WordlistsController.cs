@@ -60,6 +60,21 @@ namespace Decsys.Controllers
             return Ok(wordlist);
         }
 
+        [HttpPost("create")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Create a new wordlist for the current user")]
+        [SwaggerResponse(201, "Wordlist created.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        public async Task<IActionResult> CreateWordlist()
+        {
+            string ownerId = User.GetUserId(); 
+
+            var wordlist = await _service.Create(ownerId);
+
+            return CreatedAtAction(nameof(List), new { id = wordlist.Id }, wordlist);
+        }
+
         [HttpPut("{wordlistId}/rules/{ruleIndex:int}")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Update or create a rule for a specified wordlist")]
