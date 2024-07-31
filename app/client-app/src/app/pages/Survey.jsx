@@ -115,10 +115,14 @@ const SurveyBootstrapper = ({ id: urlFriendlyId }) => {
   if (!progress.participantId && !progress.newParticipantId)
     return <ParticipantIdEntry friendlyId={accessFriendlyId} />;
 
-  storeInstanceParticipantId(
-    accessFriendlyId,
-    progress.newParticipantId ?? progress.participantId
-  );
+  useEffect(() => {
+    if (progress.newParticipantId || progress.participantId) {
+      storeInstanceParticipantId(
+        accessFriendlyId,
+        progress.newParticipantId ?? progress.participantId
+      );
+    }
+  }, [accessFriendlyId, progress.newParticipantId, progress.participantId]);
 
   if (!progress.newParticipantId && progress.participantId) {
     // Valid Survey Progress
