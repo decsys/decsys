@@ -18,10 +18,10 @@ export const fetchWordList = async () => {
   return response.data;
 };
 
-export const createWordList = async () => {
+export const createWordList = async (name) => {
   const response = await axios.post(
     "/api/wordlists/create",
-    {},
+    { name },
     withHeaders(await authorization_BearerToken())
   );
   return response.data;

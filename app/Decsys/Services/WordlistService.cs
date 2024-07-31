@@ -22,6 +22,9 @@ public class WordlistService : IWordlistRepository
     public async Task<UserWordlist> Create(string ownerId)
     => await _wordlist.Create(ownerId);
 
+    public async Task<UserWordlist> CreateWordlist(string ownerId, string name)
+    => await _wordlist.CreateWordlist(ownerId, name);
+
     public async Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
     {
         await _wordlist.PutRule(wordlistId, ruleIndex,rule);

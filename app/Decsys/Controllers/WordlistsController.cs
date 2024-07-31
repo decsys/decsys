@@ -1,6 +1,7 @@
 using AutoMapper;
 using Decsys.Auth;
 using Decsys.Constants;
+using Decsys.Models.Wordlist;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -66,11 +67,11 @@ namespace Decsys.Controllers
         [SwaggerResponse(201, "Wordlist created.")]
         [SwaggerResponse(401, "User is not authenticated")]
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
-        public async Task<IActionResult> CreateWordlist()
+        public async Task<IActionResult> CreateWordlist([FromBody] UserWordlist request)
         {
-            string ownerId = User.GetUserId(); 
+            string ownerId = User.GetUserId();
 
-            var wordlist = await _service.Create(ownerId);
+            var wordlist = await _service.CreateWordlist(ownerId, request.Name);
 
             return CreatedAtAction(nameof(List), new { id = wordlist.Id }, wordlist);
         }
