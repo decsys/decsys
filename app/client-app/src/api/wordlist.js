@@ -1,6 +1,14 @@
 import axios from "axios";
 import { withHeaders, authorization_BearerToken } from "./helpers";
 
+export const listWordlist = async () => {
+  const response = await axios.get(
+    "/api/wordlists",
+    withHeaders(await authorization_BearerToken())
+  );
+  return response.data;
+};
+
 export const fetchWordList = async () => {
   const response = await axios.post(
     "/api/wordlists",

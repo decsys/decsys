@@ -23,6 +23,5 @@ public class WordlistMaps : Profile
 
         CreateMap<UserWordlist, Data.Entities.Mongo.UserWordlist>();
         CreateMap<Data.Entities.Mongo.UserWordlist, UserWordlist>();
-
     }
 }

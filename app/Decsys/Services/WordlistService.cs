@@ -16,6 +16,9 @@ public class WordlistService : IWordlistRepository
     public UserWordlist List(string ownerId)
         => _wordlist.List(ownerId);
 
+    public List<UserWordlist> ListAll(string ownerId)
+    => _wordlist.ListAll(ownerId);
+
     public async Task<UserWordlist> Create(string ownerId)
     => await _wordlist.Create(ownerId);
 

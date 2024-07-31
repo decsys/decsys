@@ -22,6 +22,22 @@ namespace Decsys.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("List wordlists for the current user")]
+        [SwaggerResponse(200, "Wordlist Listed.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        public IActionResult List()
+        {
+            string ownerId = User.GetUserId();
+
+            var wordlist = _service.ListAll(ownerId);
+
+            return Ok(wordlist);
+        }
+
+
 
         [HttpPost]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]

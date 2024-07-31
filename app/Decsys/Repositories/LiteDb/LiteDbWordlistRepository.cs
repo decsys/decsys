@@ -15,7 +15,10 @@ public class LiteDbWordlistRepository : IWordlistRepository
     {
         throw new NotImplementedException(); 
     }
-
+    public List<UserWordlist> ListAll(string ownerId)
+    {
+        throw new NotImplementedException();
+    }
     public Task<UserWordlist> Create(string ownerId)
     {
         throw new NotImplementedException();
