@@ -23,6 +23,10 @@ public class LiteDbWordlistRepository : IWordlistRepository
     {
         throw new NotImplementedException();
     }
+    public Task<UserWordlist> CreateWordlist(string ownerId, string name)
+    {
+        throw new NotImplementedException();
+    }
     public Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
     {
         throw new NotImplementedException();

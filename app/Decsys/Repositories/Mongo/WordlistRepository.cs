@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
@@ -44,7 +45,28 @@ public class WordlistRepository :IWordlistRepository
 
         var userWordlistEntity = new Data.Entities.Mongo.UserWordlist
         {
-            Owner =  ownerId 
+            Owner =  ownerId ,
+        };
+
+        await _wordlists.InsertOneAsync(userWordlistEntity);
+
+        var userWordlistModel = _mapper.Map<Models.Wordlist.UserWordlist>(userWordlistEntity);
+
+        return userWordlistModel;
+    }
+
+    public async Task<Models.Wordlist.UserWordlist> CreateWordlist(string ownerId, string name)
+    {
+
+        if (string.IsNullOrEmpty(name))
+        {
+            name = "Untitled Wordlist";
+        }
+
+        var userWordlistEntity = new Data.Entities.Mongo.UserWordlist
+        {
+            Owner = ownerId,
+            Name = name
         };
 
         await _wordlists.InsertOneAsync(userWordlistEntity);
