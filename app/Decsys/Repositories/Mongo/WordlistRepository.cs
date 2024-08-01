@@ -135,6 +135,25 @@ public class WordlistRepository :IWordlistRepository
         await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
     }
 
+    public async Task Delete(string wordlistId)
+    {
+        ObjectId objectId;
+        if (!ObjectId.TryParse(wordlistId, out objectId))
+        {
+            throw new Exception("Invalid ObjectId format.");
+        }
+
+        var wordlist = await _wordlists.Find(wl => wl.Id == objectId).FirstOrDefaultAsync();
+
+        if (wordlist == null)
+        {
+            throw new Exception("Wordlist not found.");
+        }
+
+        await _wordlists.DeleteOneAsync(wl => wl.Id == objectId);
+    }
+
+
     public async Task<Models.Wordlist.WordlistWord> SetExcludedBuiltins(string wordlistId, string type, string word)
     {
         // Convert string to ObjectId

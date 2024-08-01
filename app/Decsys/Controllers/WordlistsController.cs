@@ -103,6 +103,29 @@ namespace Decsys.Controllers
             return Ok(wordlist.Rules); 
         }
 
+        [HttpDelete("{wordlistId}")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Delete a specific wordlist for the current user")]
+        [SwaggerResponse(204, "Wordlist successfully deleted.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        [SwaggerResponse(404, "Wordlist not found.")]
+        public async Task<IActionResult> DeleteWordlist(string wordlistId)
+        {
+            string ownerId = User.GetUserId();
+
+            var wordlist = _service.List(ownerId);
+            if (wordlist == null || !wordlist.Id.Equals(wordlistId))
+            {
+                return NotFound("Wordlist not found.");
+            }
+
+            await _service.Delete(wordlistId);
+
+            return NoContent();
+        }
+
+
         [HttpDelete("{wordlistId}/rules/{ruleIndex:int}")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Delete wordlist rules for the current user")]
