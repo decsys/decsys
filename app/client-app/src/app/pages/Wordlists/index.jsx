@@ -1,49 +1,31 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Heading,
-  IconButton,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Input,
-} from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { Box, Flex, Button, Heading, IconButton } from "@chakra-ui/react";
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import { listWordlist, createWordList } from "api/wordlist";
+import { listWordlist } from "api/wordlist";
 import { Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
+import DeleteWordlistModal from "./component/DeleteWordlistModal";
+import CreateWordlistModal from "./component/CreateWordlistModel";
 import { ActionCard } from "components/shared/ActionCard";
 
 const Wordlists = () => {
   const [wordLists, setWordLists] = useState([]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [newWordListName, setNewWordListName] = useState("");
+  const [selectedWordlistId, setSelectedWordlistId] = useState(null);
+  const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const getWordLists = async () => {
       const results = await listWordlist();
       setWordLists(results);
     };
-
     getWordLists();
   }, []);
 
-  const handleCreateWordList = async () => {
-    const newWordList = await createWordList(newWordListName);
-    setWordLists((prevWordLists) => [...prevWordLists, newWordList]);
-    setNewWordListName("");
-    onClose();
-  };
-
-  const handleOpenModal = () => {
-    onOpen();
+  const openCreateModal = () => setCreateModalOpen(true);
+  const openDeleteModal = (id) => {
+    setSelectedWordlistId(id);
+    setDeleteModalOpen(true);
   };
 
   return (
@@ -56,61 +38,49 @@ const Wordlists = () => {
           leftIcon={<FaPlus />}
           size="md"
           colorScheme="green"
-          onClick={handleOpenModal}
+          onClick={openCreateModal}
         >
           Create a Wordlist
         </Button>
       </Flex>
       <Box p={2}>
         {wordLists.map((wordlist) => (
-          <Box mb={4} key={wordlist.id}>
-            <ActionCard
-              title={
-                <Flex justify="space-between" align="center">
-                  <Heading as="h4" size="md" wordBreak="break-all">
-                    {wordlist.name}
-                  </Heading>
-                  <Flex width="65px">
-                    <IconButton
-                      colorScheme="blue"
-                      size="sm"
-                      icon={<FaEdit />}
-                      mr={2}
-                    />
-                    <IconButton
-                      colorScheme="red"
-                      size="sm"
-                      icon={<FaTrash />}
-                    />
-                  </Flex>
+          <ActionCard
+            title={
+              <Flex justify="space-between" align="center">
+                <Heading as="h4" size="md" wordBreak="break-all">
+                  {wordlist.name}
+                </Heading>
+                <Flex width="65px">
+                  <IconButton
+                    colorScheme="blue"
+                    size="sm"
+                    icon={<FaEdit />}
+                    mr={2}
+                  />
+                  <IconButton
+                    colorScheme="red"
+                    size="sm"
+                    icon={<FaTrash />}
+                    onClick={() => openDeleteModal(wordlist.id)}
+                  />
                 </Flex>
-              }
-            />
-          </Box>
+              </Flex>
+            }
+          />
         ))}
       </Box>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create a New Wordlist</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input
-              placeholder="Untitled Wordlist"
-              value={newWordListName}
-              onChange={(e) => setNewWordListName(e.target.value)}
-            />
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleCreateWordList}>
-              Create
-            </Button>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CreateWordlistModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onAddWordList={setWordLists}
+      />
+      <DeleteWordlistModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        wordlistId={selectedWordlistId}
+        onRemoveWordList={setWordLists}
+      />
     </Page>
   );
 };

@@ -41,3 +41,10 @@ export const includeBuiltinWords = async (id, type, word) =>
     `/api/wordlists/${id}/exclude/${type}/${word}`,
     withHeaders(await authorization_BearerToken())
   );
+
+export const deleteWordlist = async (wordlistId) => {
+  const headers = withHeaders(await authorization_BearerToken());
+  const response = await axios.delete(`/api/wordlists/${wordlistId}`, headers);
+  console.log("Wordlist deleted successfully:", response.data);
+  return true;
+};
