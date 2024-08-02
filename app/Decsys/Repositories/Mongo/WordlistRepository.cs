@@ -55,6 +55,24 @@ public class WordlistRepository :IWordlistRepository
         return userWordlistModel;
     }
 
+    public async Task<Models.Wordlist.UserWordlist> GetById(string ownerId, string wordlistId)
+    {
+        ObjectId objectId;
+        if (!ObjectId.TryParse(wordlistId, out objectId))
+        {
+            throw new KeyNotFoundException("Invalid ObjectId format.");
+        }
+
+        var wordlistEntity = await _wordlists.Find(wl => wl.Id == objectId && wl.Owner == ownerId).FirstOrDefaultAsync();
+        if (wordlistEntity == null)
+        {
+            throw new KeyNotFoundException("Wordlist not found or access is denied.");
+        }
+
+        return _mapper.Map<Models.Wordlist.UserWordlist>(wordlistEntity);
+    }
+
+
     public async Task<Models.Wordlist.UserWordlist> CreateWordlist(string ownerId, string name)
     {
 

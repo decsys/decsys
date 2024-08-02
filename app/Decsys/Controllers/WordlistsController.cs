@@ -23,6 +23,29 @@ namespace Decsys.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("{wordlistId}")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Retrieve a specific wordlist by ID for the current user")]
+        [SwaggerResponse(200, "Wordlist retrieved successfully.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        [SwaggerResponse(404, "Wordlist not found or access denied.")]
+        public async Task<IActionResult> GetById(string wordlistId)
+        {
+            string ownerId = User.GetUserId();
+
+            try
+            {
+                var wordlist = await _service.GetById(ownerId, wordlistId);
+                return Ok(wordlist);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+
         [HttpGet]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("List wordlists for the current user")]

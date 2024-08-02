@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using Decsys.Models.Wordlist;
 using Decsys.Repositories.Contracts;
 
@@ -24,6 +25,9 @@ public class WordlistService : IWordlistRepository
 
     public async Task<UserWordlist> CreateWordlist(string ownerId, string name)
     => await _wordlist.CreateWordlist(ownerId, name);
+
+    public async Task<UserWordlist> GetById(string ownerId, string wordlistId)
+    => await _wordlist.GetById(ownerId,wordlistId);
 
     public async Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
     {
