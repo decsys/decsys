@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
-import { fetchWordList } from "api/wordlist";
+import { getWordlistById } from "api/wordlist";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const [idGenCount, setIdGenCount] = useState(10);
@@ -28,7 +28,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
     setIdGenCount(parseInt(value));
 
   const getWordList = async () => {
-    const data = await fetchWordList();
+    const data = await getWordlistById("66acbe3e402cffacd3c25f92");
     setWordList(data);
   };
 

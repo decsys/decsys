@@ -73,8 +73,8 @@ const AdminMenu = () => {
         <MenuItem as="a" href="/admin/" icon={<FaFileAlt />}>
           Surveys
         </MenuItem>
-        <MenuItem as="a" href="/admin/wordlist/" icon={<FaList />}>
-          Wordlist
+        <MenuItem as="a" href="/admin/wordlists/" icon={<FaList />}>
+          Wordlists
         </MenuItem>
       </MenuList>
     </Menu>

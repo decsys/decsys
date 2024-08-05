@@ -12,6 +12,7 @@ import {
 } from "./components/WordCardFilters";
 import { useWordlistSortingAndFiltering } from "./components/hooks/useWordlistSortingAndFiltering";
 import { useWordData } from "./components/hooks/useWordData";
+import { useQueryString } from "hooks/useQueryString";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
@@ -42,8 +43,8 @@ const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   );
 };
 
-const Wordlist = () => {
-  const { cards, toggleExclude } = useWordData();
+const Wordlist = ({ id }) => {
+  const { cards, toggleExclude } = useWordData(id);
   const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
   const [sliderValues, setSliderValues] = useState([1, 15]);

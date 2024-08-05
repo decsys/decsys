@@ -48,3 +48,11 @@ export const deleteWordlist = async (wordlistId) => {
   console.log("Wordlist deleted successfully:", response.data);
   return true;
 };
+
+export const getWordlistById = async (wordlistId) => {
+  const response = await axios.get(
+    `/api/wordlists/${wordlistId}`,
+    withHeaders(await authorization_BearerToken())
+  );
+  return response.data;
+};
