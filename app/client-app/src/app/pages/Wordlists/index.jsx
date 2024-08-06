@@ -4,9 +4,10 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { listWordlist } from "api/wordlist";
 import { Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
-import DeleteWordlistModal from "./component/DeleteWordlistModal";
 import CreateWordlistModal from "./component/CreateWordlistModel";
 import { ActionCard } from "components/shared/ActionCard";
+import { Link as RouterLink } from "@reach/router";
+import { DeleteWordlistModal } from "./component/DeleteWordlistModal";
 
 const Wordlists = () => {
   const [wordLists, setWordLists] = useState([]);
@@ -47,7 +48,7 @@ const Wordlists = () => {
         <Box p={2} key={wordlist.id}>
           <ActionCard
             title={
-              <Link href={`${wordlist.id}`}>
+              <Link as={RouterLink} to={`${wordlist.id}`}>
                 <Flex justify="space-between" align="center">
                   <Heading as="h4" size="md" wordBreak="break-all">
                     {wordlist.name}

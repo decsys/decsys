@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { Stack, Flex, useRadioGroup, VStack, Spacer } from "@chakra-ui/react";
+import {
+  Stack,
+  Flex,
+  useRadioGroup,
+  VStack,
+  Spacer,
+  Grid,
+  useColorMode,
+  Text,
+  LightMode,
+  useDisclosure,
+  Button,
+} from "@chakra-ui/react";
 import { Page } from "components/core";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
@@ -13,6 +25,12 @@ import {
 import { useWordlistSortingAndFiltering } from "./components/hooks/useWordlistSortingAndFiltering";
 import { useWordData } from "./components/hooks/useWordData";
 import { useQueryString } from "hooks/useQueryString";
+import { defaultColorMode } from "themes";
+import NameInput from "components/shared/NameInput";
+import { FaChevronLeft, FaTrash } from "react-icons/fa";
+import { Link, useLocation } from "@reach/router";
+import { DeleteButton } from "../Wordlists/component/DeleteWordlistModal";
+import { navigate } from "@reach/router";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
@@ -41,6 +59,34 @@ const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
       {RenderWordCard}
     </FixedSizeList>
   );
+};
+
+export const BarButton = (p) => {
+  const { colorMode } = useColorMode();
+  const scheme =
+    p.colorScheme || (colorMode || defaultColorMode) === "light"
+      ? "dark-gray"
+      : "gray";
+  return (
+    <Button
+      colorScheme={scheme}
+      lineHeight="inherit"
+      height="100%"
+      py={2}
+      borderRadius={0}
+      {...p}
+    />
+  );
+};
+
+export const BackButton = () => (
+  <BarButton as={Link} to="/admin/wordlists" leftIcon={<FaChevronLeft />}>
+    Wrordlists
+  </BarButton>
+);
+
+const handleRemoveWordList = () => {
+  navigate("/admin/wordlists");
 };
 
 const Wordlist = ({ id }) => {
@@ -72,8 +118,22 @@ const Wordlist = ({ id }) => {
   const typeGroup = getTypeRootProps();
   const exclusionGroup = getExclusionRootProps();
 
+  const { colorMode } = useColorMode();
+  const bg = { light: "gray.800" };
+
   return (
-    <Page layout="wordlist">
+    <>
+      <Grid
+        width="100%"
+        gap={0}
+        templateColumns="auto 1fr auto auto auto auto auto"
+        bg={bg[colorMode || defaultColorMode]}
+      >
+        <BackButton />
+        {/* TODO: FIX NAME EDIT */}
+        <Flex bg="gray.100">Name</Flex>
+        <DeleteButton wordlistId={id} onRemoveWordList={handleRemoveWordList} />
+      </Grid>
       <Flex direction="column" height={`calc(100vh - 54px)`} width="100%">
         <Stack mt={2} spacing={4} h="100vh" p={2}>
           <Flex p={2} boxShadow="base" backgroundColor="gray.50">
@@ -111,7 +171,7 @@ const Wordlist = ({ id }) => {
           </Flex>
         </Stack>
       </Flex>
-    </Page>
+    </>
   );
 };
 

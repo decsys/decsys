@@ -8,10 +8,14 @@ import {
   ModalCloseButton,
   Button,
   useToast,
+  useDisclosure,
+  LightMode,
 } from "@chakra-ui/react";
+import { FaTrash } from "react-icons/fa";
 import { deleteWordlist } from "api/wordlist";
+import { BarButton } from "app/pages/Wordlist";
 
-const DeleteWordlistModal = ({
+export const DeleteWordlistModal = ({
   isOpen,
   onClose,
   wordlistId,
@@ -21,24 +25,35 @@ const DeleteWordlistModal = ({
 
   const handleDeleteWordlist = async () => {
     if (wordlistId) {
-      const success = await deleteWordlist(wordlistId);
-      if (success) {
-        onRemoveWordList((prevWordLists) =>
-          prevWordLists.filter((wl) => wl.id !== wordlistId)
-        );
-        onClose();
+      try {
+        const success = await deleteWordlist(wordlistId);
+        if (success) {
+          onRemoveWordList((prevWordLists) =>
+            prevWordLists.filter((wl) => wl.id !== wordlistId)
+          );
+          onClose();
+          toast({
+            title: "Deletion Successful",
+            description: "The wordlist has been successfully deleted.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-right",
+          });
+        } else {
+          toast({
+            title: "Deletion Failed",
+            description: "Failed to delete wordlist. Please try again.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+            position: "bottom-right",
+          });
+        }
+      } catch (error) {
         toast({
-          title: "Deletion Successful",
-          description: "The wordlist has been successfully deleted.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom-right",
-        });
-      } else {
-        toast({
-          title: "Deletion Failed",
-          description: "Failed to delete wordlist. Please try again.",
+          title: "Deletion Error",
+          description: `An error occurred: ${error.message}`,
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -71,4 +86,22 @@ const DeleteWordlistModal = ({
   );
 };
 
-export default DeleteWordlistModal;
+export const DeleteButton = ({ wordlistId, onRemoveWordList }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <LightMode>
+        <BarButton onClick={onOpen} leftIcon={<FaTrash />} colorScheme="red">
+          Delete
+        </BarButton>
+      </LightMode>
+      <DeleteWordlistModal
+        isOpen={isOpen}
+        onClose={onClose}
+        wordlistId={wordlistId}
+        onRemoveWordList={onRemoveWordList}
+      />
+    </>
+  );
+};
