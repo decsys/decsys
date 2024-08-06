@@ -5,6 +5,8 @@ namespace Decsys.Repositories.Contracts;
 public interface IWordlistRepository
 {
     UserWordlist List(string ownerId);
+    void UpdateName(string id, string name);
+
     List<UserWordlist> ListAll(string ownerId);
     Task<UserWordlist> Create(string ownerId);
     Task<UserWordlist> CreateWordlist(string ownerId, string name);

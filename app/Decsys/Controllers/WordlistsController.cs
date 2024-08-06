@@ -45,6 +45,24 @@ namespace Decsys.Controllers
             }
         }
 
+        [HttpPut("{id}/name")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Edit the Name of a single Wordlist by ID.")]
+        [SwaggerResponse(200, "The Wordlist Name was updated successfully.")]
+        [SwaggerResponse(400, "No valid name was provided.")]
+        [SwaggerResponse(404, "No Wordlist was found with the provided ID.")]
+        public ActionResult<string> EditName(string id, [FromBody] string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return BadRequest($"{nameof(name)} must not be empty.");
+
+            try
+            {
+                _service.UpdateName(id, name);
+                return name;
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+        }
 
         [HttpGet]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]

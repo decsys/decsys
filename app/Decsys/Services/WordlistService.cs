@@ -17,6 +17,10 @@ public class WordlistService : IWordlistRepository
     public UserWordlist List(string ownerId)
         => _wordlist.List(ownerId);
 
+
+    public void UpdateName(string id, string name)
+        => _wordlist.UpdateName(id, name);
+
     public List<UserWordlist> ListAll(string ownerId)
     => _wordlist.ListAll(ownerId);
 

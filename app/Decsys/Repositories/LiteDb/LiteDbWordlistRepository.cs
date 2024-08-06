@@ -23,6 +23,11 @@ public class LiteDbWordlistRepository : IWordlistRepository
     {
         throw new NotImplementedException();
     }
+    public void UpdateName(string id, string name)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<UserWordlist> GetById(string ownerId, string wordlistId)
     {
         throw new NotImplementedException();

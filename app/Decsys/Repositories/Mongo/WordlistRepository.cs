@@ -2,6 +2,7 @@ using System.Xml.Linq;
 using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
+using Decsys.Data.Entities.Mongo;
 using Decsys.Repositories.Contracts;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -54,6 +55,19 @@ public class WordlistRepository :IWordlistRepository
 
         return userWordlistModel;
     }
+
+    public void UpdateName(string id, string name)
+    {
+        if (!ObjectId.TryParse(id, out var objectId))
+        {
+            throw new ArgumentException("Invalid ObjectId format.", nameof(id));
+        }
+
+        _wordlists.UpdateOne(
+            x => x.Id == objectId,
+            Builders<UserWordlist>.Update.Set(x => x.Name, name));
+    }
+
 
     public async Task<Models.Wordlist.UserWordlist> GetById(string ownerId, string wordlistId)
     {
