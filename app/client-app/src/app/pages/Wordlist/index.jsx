@@ -5,7 +5,6 @@ import {
   useRadioGroup,
   VStack,
   Spacer,
-  Grid,
   useColorMode,
   Button,
 } from "@chakra-ui/react";
@@ -23,21 +22,11 @@ import { useWordData } from "./components/hooks/useWordData";
 import { defaultColorMode } from "themes";
 import { FaChevronLeft } from "react-icons/fa";
 import { Link } from "@reach/router";
-import { DeleteButton } from "../Wordlists/component/DeleteWordlistModal";
-import {
-  FetchWordlistProvider,
-  useFetchWordlist,
-} from "./components/context/FetchWordlist";
-import {
-  EditorBarContextProvider,
-  useEditorBarContext,
-} from "./components/context/EditorBar";
+import { FetchWordlistProvider } from "./components/context/FetchWordlist";
+import { EditorBarContextProvider } from "./components/context/EditorBar";
 import { Page } from "components/core";
-import NameInput from "components/shared/NameInput";
-import { WordlistProvider } from "./components/context/Wordlist";
 import { listWordlist } from "api/wordlist";
 import { css, Global } from "@emotion/react";
-import { setWordlistName } from "api/wordlist";
 import EditorBar from "./components/EditorBar";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
@@ -94,20 +83,10 @@ export const BackButton = () => (
 );
 
 const Wordlist = ({ id, navigate }) => {
-  const [wordlists, setWordlists] = useState([]);
-
   const { cards, toggleExclude } = useWordData(id);
   const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
   const [sliderValues, setSliderValues] = useState([1, 15]);
-
-  useEffect(() => {
-    const getWordlists = async () => {
-      const results = await listWordlist();
-      setWordlists(results);
-    };
-    getWordlists();
-  }, []);
 
   const handleSliderChange = (values) => {
     setSliderValues(values);

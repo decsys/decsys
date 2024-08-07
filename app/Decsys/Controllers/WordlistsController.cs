@@ -155,8 +155,11 @@ namespace Decsys.Controllers
         {
             string ownerId = User.GetUserId();
 
-            var wordlist = _service.List(ownerId);
-            if (wordlist == null || !wordlist.Id.Equals(wordlistId))
+            var wordlists = _service.ListAll (ownerId);
+
+            var wordlist = wordlists?.FirstOrDefault(w => w.Id.Equals(wordlistId));
+
+            if (wordlist == null)
             {
                 return NotFound("Wordlist not found.");
             }
@@ -165,6 +168,7 @@ namespace Decsys.Controllers
 
             return NoContent();
         }
+
 
 
         [HttpDelete("{wordlistId}/rules/{ruleIndex:int}")]

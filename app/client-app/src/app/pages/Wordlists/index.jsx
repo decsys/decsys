@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Flex, Button, Heading, IconButton, Link } from "@chakra-ui/react";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa";
 import { listWordlist } from "api/wordlist";
 import { Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
@@ -48,25 +48,27 @@ const Wordlists = () => {
         <Box p={2} key={wordlist.id}>
           <ActionCard
             title={
-              <Link as={RouterLink} to={`${wordlist.id}`}>
-                <Flex justify="space-between" align="center">
-                  <Heading as="h4" size="md" wordBreak="break-all">
-                    {wordlist.name}
-                  </Heading>
-                  <Flex width="65px">
-                    <IconButton //TODO: BROKEN FIX
-                      colorScheme="red"
-                      size="sm"
-                      icon={<FaTrash />}
-                      onClick={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        openDeleteModal(wordlist.id);
-                      }}
-                    />
-                  </Flex>
+              <Flex justify="space-between" align="center">
+                <Heading as="h4" size="md" wordBreak="break-all">
+                  {wordlist.name}
+                </Heading>
+                <Flex>
+                  <Link as={RouterLink} to={`${wordlist.id}`}>
+                    <Button colorScheme="blue" leftIcon={<FaEdit />} mr="4">
+                      Edit
+                    </Button>
+                  </Link>
+                  <Button
+                    colorScheme="red"
+                    leftIcon={<FaTrash />}
+                    onClick={() => {
+                      openDeleteModal(wordlist.id);
+                    }}
+                  >
+                    Delete
+                  </Button>
                 </Flex>
-              </Link>
+              </Flex>
             }
           />
         </Box>
