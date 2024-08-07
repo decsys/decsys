@@ -23,7 +23,7 @@ const NameInput = ({ name, handleNameSave, nameState, ...p }) => {
   };
 
   useEffect(() => {
-    if (nameState.hasSaved === true)
+    if (nameState?.hasSaved === true)
       toast({
         position: "top",
         title: "Name saved.",
@@ -31,19 +31,19 @@ const NameInput = ({ name, handleNameSave, nameState, ...p }) => {
         duration: 2500,
         isClosable: true,
       });
-  }, [nameState.hasSaved, toast]);
+  }, [nameState?.hasSaved, toast]);
 
   return (
     <Flex align="center" width="100%">
       <InputGroup width="100%" {...p}>
         <InputLeftElement>
-          {nameState.isSaving ? <Spinner /> : <Icon as={FaEdit} />}
+          {nameState?.isSaving ? <Spinner /> : <Icon as={FaEdit} />}
         </InputLeftElement>
         <Input
           variant="flushed"
           borderRadius={0}
           fontSize="1.3rem"
-          placeholder="Untitled Survey"
+          placeholder="Untitled"
           value={value}
           onChange={handleChange}
         />

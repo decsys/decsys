@@ -10,13 +10,9 @@ import { toDictionary } from "services/data-structures";
 import { getFilteredWordList } from "../helpers/getFilteredWordList";
 
 export const useWordData = (id) => {
-  const [wordlist, setWordlist] = useState(null);
   const [cards, setCards] = useState([]);
 
-  const fetchWordData = async () => {
-    const data = await getWordlistById(id);
-    setWordlist(data);
-  };
+  const { data: wordlist } = getWordlistById(id);
 
   const processCards = () => {
     if (wordlist) {
@@ -37,10 +33,6 @@ export const useWordData = (id) => {
       setCards([...adjectiveCards, ...nounCards]);
     }
   };
-
-  useEffect(() => {
-    fetchWordData();
-  }, []);
 
   useEffect(() => {
     processCards();

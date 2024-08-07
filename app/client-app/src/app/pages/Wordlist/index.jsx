@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Stack,
   Flex,
@@ -7,12 +7,8 @@ import {
   Spacer,
   Grid,
   useColorMode,
-  Text,
-  LightMode,
-  useDisclosure,
   Button,
 } from "@chakra-ui/react";
-import { Page } from "components/core";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
 import { FixedSizeList } from "react-window";
@@ -24,13 +20,25 @@ import {
 } from "./components/WordCardFilters";
 import { useWordlistSortingAndFiltering } from "./components/hooks/useWordlistSortingAndFiltering";
 import { useWordData } from "./components/hooks/useWordData";
-import { useQueryString } from "hooks/useQueryString";
 import { defaultColorMode } from "themes";
-import NameInput from "components/shared/NameInput";
-import { FaChevronLeft, FaTrash } from "react-icons/fa";
-import { Link, useLocation } from "@reach/router";
+import { FaChevronLeft } from "react-icons/fa";
+import { Link } from "@reach/router";
 import { DeleteButton } from "../Wordlists/component/DeleteWordlistModal";
-import { navigate } from "@reach/router";
+import {
+  FetchWordlistProvider,
+  useFetchWordlist,
+} from "./components/context/FetchWordlist";
+import {
+  EditorBarContextProvider,
+  useEditorBarContext,
+} from "./components/context/EditorBar";
+import { Page } from "components/core";
+import NameInput from "components/shared/NameInput";
+import { WordlistProvider } from "./components/context/Wordlist";
+import { listWordlist } from "api/wordlist";
+import { css, Global } from "@emotion/react";
+import { setWordlistName } from "api/wordlist";
+import EditorBar from "./components/EditorBar";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
@@ -85,15 +93,21 @@ export const BackButton = () => (
   </BarButton>
 );
 
-const handleRemoveWordList = () => {
-  navigate("/admin/wordlists");
-};
+const Wordlist = ({ id, navigate }) => {
+  const [wordlists, setWordlists] = useState([]);
 
-const Wordlist = ({ id }) => {
   const { cards, toggleExclude } = useWordData(id);
   const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
   const [sliderValues, setSliderValues] = useState([1, 15]);
+
+  useEffect(() => {
+    const getWordlists = async () => {
+      const results = await listWordlist();
+      setWordlists(results);
+    };
+    getWordlists();
+  }, []);
 
   const handleSliderChange = (values) => {
     setSliderValues(values);
@@ -118,60 +132,65 @@ const Wordlist = ({ id }) => {
   const typeGroup = getTypeRootProps();
   const exclusionGroup = getExclusionRootProps();
 
-  const { colorMode } = useColorMode();
-  const bg = { light: "gray.800" };
-
   return (
-    <>
-      <Grid
-        width="100%"
-        gap={0}
-        templateColumns="auto 1fr auto auto auto auto auto"
-        bg={bg[colorMode || defaultColorMode]}
-      >
-        <BackButton />
-        {/* TODO: FIX NAME EDIT */}
-        <Flex bg="gray.100">Name</Flex>
-        <DeleteButton wordlistId={id} onRemoveWordList={handleRemoveWordList} />
-      </Grid>
-      <Flex direction="column" height={`calc(100vh - 54px)`} width="100%">
-        <Stack mt={2} spacing={4} h="100vh" p={2}>
-          <Flex p={2} boxShadow="base" backgroundColor="gray.50">
-            <VStack alignItems="start">
-              <TypeFilter group={typeGroup} getRadioProps={getTypeRadioProps} />
-              <ExclusionFilter
-                group={exclusionGroup}
-                getRadioProps={getExclusionRadioProps}
-              />
-              <WordLengthFilter
-                sliderValues={sliderValues}
-                handleSliderChange={handleSliderChange}
-              />
-            </VStack>
-            <Spacer />
-            <WordlistSortingAndFilteringPanel
-              data={cards}
-              sorting={sorting}
-              onSort={onSort}
-              filterConfig={filterConfig}
-              setFilter={setFilter}
-            />
+    <Page layout={null}>
+      <Global
+        // Something (?) on the Editor page overflows the 100vh grid incorrectly
+        // so this just hides it; anywhere we expect to overflow is correctly set anyway.
+        styles={css`
+          body {
+            overflow: hidden;
+          }
+        `}
+      />
+      <FetchWordlistProvider id={id}>
+        <EditorBarContextProvider navigate={navigate}>
+          <Flex boxShadow="section-h" gridColumn="span 2" zIndex={3}>
+            <EditorBar />
           </Flex>
-          <Flex flex="1">
-            <AutoSizer>
-              {({ height, width }) => (
-                <WordlistDisplay
-                  outputList={outputList}
-                  height={height}
-                  width={width}
-                  toggleExclude={toggleExclude}
+          <Flex direction="column" height={`calc(100vh - 54px)`} width="100%">
+            <Stack mt={2} spacing={4} h="100vh" p={2}>
+              <Flex p={2} boxShadow="base" backgroundColor="gray.50">
+                <VStack alignItems="start">
+                  <TypeFilter
+                    group={typeGroup}
+                    getRadioProps={getTypeRadioProps}
+                  />
+                  <ExclusionFilter
+                    group={exclusionGroup}
+                    getRadioProps={getExclusionRadioProps}
+                  />
+                  <WordLengthFilter
+                    sliderValues={sliderValues}
+                    handleSliderChange={handleSliderChange}
+                  />
+                </VStack>
+                <Spacer />
+                <WordlistSortingAndFilteringPanel
+                  data={cards}
+                  sorting={sorting}
+                  onSort={onSort}
+                  filterConfig={filterConfig}
+                  setFilter={setFilter}
                 />
-              )}
-            </AutoSizer>
+              </Flex>
+              <Flex flex="1">
+                <AutoSizer>
+                  {({ height, width }) => (
+                    <WordlistDisplay
+                      outputList={outputList}
+                      height={height}
+                      width={width}
+                      toggleExclude={toggleExclude}
+                    />
+                  )}
+                </AutoSizer>
+              </Flex>
+            </Stack>
           </Flex>
-        </Stack>
-      </Flex>
-    </>
+        </EditorBarContextProvider>
+      </FetchWordlistProvider>
+    </Page>
   );
 };
 

@@ -1,5 +1,11 @@
 import axios from "axios";
-import { withHeaders, authorization_BearerToken } from "./helpers";
+import {
+  withHeaders,
+  authorization_BearerToken,
+  contentType_AppJson,
+  defaultFetcher,
+} from "./helpers";
+import useSWR from "swr";
 
 export const listWordlist = async () => {
   const response = await axios.get(
@@ -27,6 +33,13 @@ export const createWordList = async (name) => {
   return response.data;
 };
 
+export const setWordlistName = async (id, name) =>
+  await axios.put(
+    `/api/wordlists/${id}/name`,
+    JSON.stringify(name),
+    withHeaders(contentType_AppJson, await authorization_BearerToken())
+  );
+
 export const excludeBuiltinWords = async (id, type, word) => {
   const response = await axios.put(
     `/api/wordlists/${id}/exclude/${type}/${word}`,
@@ -49,10 +62,5 @@ export const deleteWordlist = async (wordlistId) => {
   return true;
 };
 
-export const getWordlistById = async (wordlistId) => {
-  const response = await axios.get(
-    `/api/wordlists/${wordlistId}`,
-    withHeaders(await authorization_BearerToken())
-  );
-  return response.data;
-};
+export const getWordlistById = (id) =>
+  useSWR(`/api/wordlists/${id}`, defaultFetcher(true), { suspense: true });
