@@ -24,7 +24,7 @@ const Wordlists = () => {
   }, []);
 
   const openCreateModal = () => setCreateModalOpen(true);
-  const openDeleteModal = (id, e) => {
+  const openDeleteModal = (id) => {
     setSelectedWordlistId(id);
     setDeleteModalOpen(true);
   };
@@ -62,7 +62,7 @@ const Wordlists = () => {
               <Button
                 colorScheme="red"
                 leftIcon={<FaTrash />}
-                onClick={(e) => openDeleteModal(wordlist.id, e)}
+                onClick={(e) => openDeleteModal(wordlist.id)}
               >
                 Delete
               </Button>
