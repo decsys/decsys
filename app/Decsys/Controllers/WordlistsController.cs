@@ -80,29 +80,7 @@ namespace Decsys.Controllers
         }
 
 
-
         [HttpPost]
-        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
-        [SwaggerOperation("Get or create a wordlist for the current user")]
-        [SwaggerResponse(200, "Wordlist created or recieved.")]
-        [SwaggerResponse(401, "User is not authenticated")]
-        [SwaggerResponse(403, "User is not authorized to perform this operation")]
-        public async Task<IActionResult> GetOrCreate()
-        {
-            string ownerId = User.GetUserId();
-
-            var wordlist = _service.List(ownerId);
-
-            if (wordlist == null)
-            {
-                await _service.Create(ownerId);
-                wordlist = _service.List(ownerId);
-            }
-
-            return Ok(wordlist);
-        }
-
-        [HttpPost("create")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Create a new wordlist for the current user")]
         [SwaggerResponse(201, "Wordlist created.")]

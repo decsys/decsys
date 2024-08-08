@@ -15,18 +15,9 @@ export const listWordlist = async () => {
   return response.data;
 };
 
-export const fetchWordList = async () => {
-  const response = await axios.post(
-    "/api/wordlists",
-    {},
-    withHeaders(await authorization_BearerToken())
-  );
-  return response.data;
-};
-
 export const createWordList = async (name) => {
   const response = await axios.post(
-    "/api/wordlists/create",
+    "/api/wordlists",
     { name },
     withHeaders(await authorization_BearerToken())
   );

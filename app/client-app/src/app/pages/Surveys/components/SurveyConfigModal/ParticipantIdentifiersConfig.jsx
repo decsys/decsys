@@ -26,7 +26,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const handleGenCountChange = ({ target: { value } }) =>
     setIdGenCount(parseInt(value));
 
-  const { data: wordList } = getWordlistById("66acbe3e402cffacd3c25f92");
+  const { data: wordList } = getWordlistById();
 
   const handleIdGenClick = () =>
     mutate(
