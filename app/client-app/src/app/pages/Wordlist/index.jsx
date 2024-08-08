@@ -78,7 +78,7 @@ export const BarButton = (p) => {
 
 export const BackButton = () => (
   <BarButton as={Link} to="/admin/wordlists" leftIcon={<FaChevronLeft />}>
-    Wrordlists
+    Wordlists
   </BarButton>
 );
 
