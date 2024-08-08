@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
-import { Box, Flex, Button, Heading, Link } from "@chakra-ui/react";
-import { FaPlus } from "react-icons/fa";
+import { Box, Flex, Button, Heading, Link, HStack } from "@chakra-ui/react";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import { listWordlist } from "api/wordlist";
 import { Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
 import CreateWordlistModal from "./component/CreateWordlistModel";
 import { ActionCard } from "components/shared/ActionCard";
 import { Link as RouterLink } from "@reach/router";
+import { DeleteWordlistModal } from "./component/DeleteWordlistModal";
 
 const Wordlists = () => {
   const [wordLists, setWordLists] = useState([]);
+  const [selectedWordlistId, setSelectedWordlistId] = useState(null);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const getWordLists = async () => {
@@ -21,6 +24,10 @@ const Wordlists = () => {
   }, []);
 
   const openCreateModal = () => setCreateModalOpen(true);
+  const openDeleteModal = (id, e) => {
+    setSelectedWordlistId(id);
+    setDeleteModalOpen(true);
+  };
 
   return (
     <Page>
@@ -39,15 +46,28 @@ const Wordlists = () => {
       </Flex>
       {wordLists.map((wordlist) => (
         <Box p={2} key={wordlist.id}>
-          <ActionCard
-            title={
+          <ActionCard>
+            <HStack justifyContent="space-between">
               <Link as={RouterLink} to={`${wordlist.id}`}>
-                <Heading as="h4" size="md" wordBreak="break-all">
+                <LightHeading
+                  textAlign="center"
+                  as="h4"
+                  size="lg"
+                  wordBreak="break-all"
+                  color="blue.500"
+                >
                   {wordlist.name}
-                </Heading>
+                </LightHeading>
               </Link>
-            }
-          />
+              <Button
+                colorScheme="red"
+                leftIcon={<FaTrash />}
+                onClick={(e) => openDeleteModal(wordlist.id, e)}
+              >
+                Delete
+              </Button>
+            </HStack>
+          </ActionCard>
         </Box>
       ))}
 
@@ -55,6 +75,12 @@ const Wordlists = () => {
         isOpen={isCreateModalOpen}
         onClose={() => setCreateModalOpen(false)}
         onAddWordList={setWordLists}
+      />
+      <DeleteWordlistModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        wordlistId={selectedWordlistId}
+        onRemoveWordList={setWordLists}
       />
     </Page>
   );
