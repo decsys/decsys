@@ -1,13 +1,5 @@
-import { useEffect, useState } from "react";
-import {
-  Stack,
-  Flex,
-  useRadioGroup,
-  VStack,
-  Spacer,
-  useColorMode,
-  Button,
-} from "@chakra-ui/react";
+import { useState } from "react";
+import { Stack, Flex, useRadioGroup, VStack, Spacer } from "@chakra-ui/react";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
 import { FixedSizeList } from "react-window";
@@ -19,14 +11,9 @@ import {
 } from "./components/WordCardFilters";
 import { useWordlistSortingAndFiltering } from "./components/hooks/useWordlistSortingAndFiltering";
 import { useWordData } from "./components/hooks/useWordData";
-import { defaultColorMode } from "themes";
-import { FaChevronLeft } from "react-icons/fa";
-import { Link } from "@reach/router";
 import { FetchWordlistProvider } from "./components/context/FetchWordlist";
 import { EditorBarContextProvider } from "./components/context/EditorBar";
 import { Page } from "components/core";
-import { listWordlist } from "api/wordlist";
-import { css, Global } from "@emotion/react";
 import EditorBar from "./components/EditorBar";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
@@ -57,30 +44,6 @@ const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
     </FixedSizeList>
   );
 };
-
-export const BarButton = (p) => {
-  const { colorMode } = useColorMode();
-  const scheme =
-    p.colorScheme || (colorMode || defaultColorMode) === "light"
-      ? "dark-gray"
-      : "gray";
-  return (
-    <Button
-      colorScheme={scheme}
-      lineHeight="inherit"
-      height="100%"
-      py={2}
-      borderRadius={0}
-      {...p}
-    />
-  );
-};
-
-export const BackButton = () => (
-  <BarButton as={Link} to="/admin/wordlists" leftIcon={<FaChevronLeft />}>
-    Wordlists
-  </BarButton>
-);
 
 const Wordlist = ({ id, navigate }) => {
   const { cards, toggleExclude } = useWordData(id);
@@ -113,15 +76,6 @@ const Wordlist = ({ id, navigate }) => {
 
   return (
     <Page layout={null}>
-      <Global
-        // Something (?) on the Editor page overflows the 100vh grid incorrectly
-        // so this just hides it; anywhere we expect to overflow is correctly set anyway.
-        styles={css`
-          body {
-            overflow: hidden;
-          }
-        `}
-      />
       <FetchWordlistProvider id={id}>
         <EditorBarContextProvider navigate={navigate}>
           <Flex boxShadow="section-h" gridColumn="span 2" zIndex={3}>

@@ -18,7 +18,7 @@ import { useEditorBarContext } from "../../contexts/EditorBar";
 import { defaultColorMode } from "themes";
 import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 
-const BarButton = (p) => {
+export const BarButton = (p) => {
   const { colorMode } = useColorMode();
   const scheme =
     p.colorScheme || (colorMode || defaultColorMode) === "light"

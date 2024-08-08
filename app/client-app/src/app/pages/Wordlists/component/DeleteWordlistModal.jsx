@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { FaTrash } from "react-icons/fa";
 import { deleteWordlist } from "api/wordlist";
-import { BarButton } from "app/pages/Wordlist";
+import { BarButton } from "app/pages/Editor/components/EditorBar/Buttons";
 
 export const DeleteWordlistModal = ({
   isOpen,
