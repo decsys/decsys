@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { Box, Flex, Button, Heading, IconButton } from "@chakra-ui/react";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
+import { Box, Flex, Button, Heading, Link, HStack } from "@chakra-ui/react";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import { listWordlist } from "api/wordlist";
 import { Page } from "components/core";
 import LightHeading from "components/core/LightHeading";
-import DeleteWordlistModal from "./component/DeleteWordlistModal";
 import CreateWordlistModal from "./component/CreateWordlistModel";
 import { ActionCard } from "components/shared/ActionCard";
+import { Link as RouterLink } from "@reach/router";
+import { DeleteWordlistModal } from "./component/DeleteWordlistModal";
 
 const Wordlists = () => {
   const [wordLists, setWordLists] = useState([]);
@@ -43,33 +44,33 @@ const Wordlists = () => {
           Create a Wordlist
         </Button>
       </Flex>
-      <Box p={2}>
-        {wordLists.map((wordlist) => (
-          <ActionCard
-            title={
-              <Flex justify="space-between" align="center">
-                <Heading as="h4" size="md" wordBreak="break-all">
+      {wordLists.map((wordlist) => (
+        <Box p={2} key={wordlist.id}>
+          <ActionCard>
+            <HStack justifyContent="space-between">
+              <Link as={RouterLink} to={`${wordlist.id}`}>
+                <LightHeading
+                  textAlign="center"
+                  as="h4"
+                  size="lg"
+                  wordBreak="break-all"
+                  color="blue.500"
+                >
                   {wordlist.name}
-                </Heading>
-                <Flex width="65px">
-                  <IconButton
-                    colorScheme="blue"
-                    size="sm"
-                    icon={<FaEdit />}
-                    mr={2}
-                  />
-                  <IconButton
-                    colorScheme="red"
-                    size="sm"
-                    icon={<FaTrash />}
-                    onClick={() => openDeleteModal(wordlist.id)}
-                  />
-                </Flex>
-              </Flex>
-            }
-          />
-        ))}
-      </Box>
+                </LightHeading>
+              </Link>
+              <Button
+                colorScheme="red"
+                leftIcon={<FaTrash />}
+                onClick={(e) => openDeleteModal(wordlist.id)}
+              >
+                Delete
+              </Button>
+            </HStack>
+          </ActionCard>
+        </Box>
+      ))}
+
       <CreateWordlistModal
         isOpen={isCreateModalOpen}
         onClose={() => setCreateModalOpen(false)}

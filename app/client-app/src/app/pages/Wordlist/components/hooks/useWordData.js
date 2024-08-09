@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  fetchWordList,
+  getWordlistById,
   excludeBuiltinWords,
   includeBuiltinWords,
 } from "api/wordlist";
@@ -9,14 +9,10 @@ import animals from "services/animals";
 import { toDictionary } from "services/data-structures";
 import { getFilteredWordList } from "../helpers/getFilteredWordList";
 
-export const useWordData = () => {
-  const [wordlist, setWordlist] = useState(null);
+export const useWordData = (id) => {
   const [cards, setCards] = useState([]);
 
-  const fetchWordData = async () => {
-    const data = await fetchWordList();
-    setWordlist(data);
-  };
+  const { data: wordlist } = getWordlistById(id);
 
   const processCards = () => {
     if (wordlist) {
@@ -37,10 +33,6 @@ export const useWordData = () => {
       setCards([...adjectiveCards, ...nounCards]);
     }
   };
-
-  useEffect(() => {
-    fetchWordData();
-  }, []);
 
   useEffect(() => {
     processCards();

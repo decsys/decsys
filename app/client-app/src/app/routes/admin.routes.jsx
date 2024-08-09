@@ -23,7 +23,7 @@ const Admin = () => {
   return (
     <Router>
       <Surveys path="/" />
-      <Wordlist path="/wordlist" />
+      <Wordlist path="/wordlists/:id" />
       <Wordlists path="/wordlists" />
       <Editor path="/survey/:id" />
       <Preview path="/survey/:id/preview" />

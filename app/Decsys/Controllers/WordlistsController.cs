@@ -23,6 +23,47 @@ namespace Decsys.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("{wordlistId}")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Retrieve a specific wordlist by ID for the current user")]
+        [SwaggerResponse(200, "Wordlist retrieved successfully.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        [SwaggerResponse(404, "Wordlist not found or access denied.")]
+        public async Task<IActionResult> GetById(string wordlistId)
+        {
+            string ownerId = User.GetUserId();
+
+            try
+            {
+                var wordlist = await _service.GetById(ownerId, wordlistId);
+                return Ok(wordlist);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}/name")]
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Edit the Name of a single Wordlist by ID.")]
+        [SwaggerResponse(200, "The Wordlist Name was updated successfully.")]
+        [SwaggerResponse(400, "No valid name was provided.")]
+        [SwaggerResponse(404, "No Wordlist was found with the provided ID.")]
+        public ActionResult<string> EditName(string id, [FromBody] string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return BadRequest($"{nameof(name)} must not be empty.");
+
+            try
+            {
+                _service.UpdateName(id, name);
+                return name;
+            }
+            catch (KeyNotFoundException) { return NotFound(); }
+        }
+
         [HttpGet]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("List wordlists for the current user")]
@@ -39,29 +80,7 @@ namespace Decsys.Controllers
         }
 
 
-
         [HttpPost]
-        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
-        [SwaggerOperation("Get or create a wordlist for the current user")]
-        [SwaggerResponse(200, "Wordlist created or recieved.")]
-        [SwaggerResponse(401, "User is not authenticated")]
-        [SwaggerResponse(403, "User is not authorized to perform this operation")]
-        public async Task<IActionResult> GetOrCreate()
-        {
-            string ownerId = User.GetUserId();
-
-            var wordlist = _service.List(ownerId);
-
-            if (wordlist == null)
-            {
-                await _service.Create(ownerId);
-                wordlist = _service.List(ownerId);
-            }
-
-            return Ok(wordlist);
-        }
-
-        [HttpPost("create")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Create a new wordlist for the current user")]
         [SwaggerResponse(201, "Wordlist created.")]
@@ -114,8 +133,11 @@ namespace Decsys.Controllers
         {
             string ownerId = User.GetUserId();
 
-            var wordlist = _service.List(ownerId);
-            if (wordlist == null || !wordlist.Id.Equals(wordlistId))
+            var wordlists = _service.ListAll (ownerId);
+
+            var wordlist = wordlists?.FirstOrDefault(w => w.Id.Equals(wordlistId));
+
+            if (wordlist == null)
             {
                 return NotFound("Wordlist not found.");
             }
@@ -124,6 +146,7 @@ namespace Decsys.Controllers
 
             return NoContent();
         }
+
 
 
         [HttpDelete("{wordlistId}/rules/{ruleIndex:int}")]

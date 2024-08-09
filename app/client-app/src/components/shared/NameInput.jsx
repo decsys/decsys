@@ -43,7 +43,7 @@ const NameInput = ({ name, handleNameSave, nameState, ...p }) => {
           variant="flushed"
           borderRadius={0}
           fontSize="1.3rem"
-          placeholder="Untitled Survey"
+          placeholder="Untitled"
           value={value}
           onChange={handleChange}
         />
