@@ -4,7 +4,15 @@ import { useEditorBarContext } from "../context/EditorBar";
 import NameInput from "components/shared/NameInput";
 import { DeleteButton } from "app/pages/Wordlists/component/DeleteWordlistModal";
 import { navigate } from "@reach/router";
-import { BackButton } from "app/pages/Editor/components/EditorBar/Buttons";
+import { BarButton } from "app/pages/Editor/components/EditorBar/Buttons";
+import { Link } from "@reach/router";
+import { FaChevronLeft } from "react-icons/fa";
+
+const BackButton = () => (
+  <BarButton as={Link} to="/admin/wordlists" leftIcon={<FaChevronLeft />}>
+    Wordlists
+  </BarButton>
+);
 
 const EditorBar = () => {
   const { id, name } = useFetchWordlist();
