@@ -15,18 +15,31 @@ import {
   Box,
   AccordionButton,
   VStack,
+  Select,
 } from "@chakra-ui/react";
 import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
 import { getWordlistById } from "api/wordlist";
+import { listWordlist } from "api/wordlist";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const [idGenCount, setIdGenCount] = useState(10);
+  const [wordLists, setWordLists] = useState(null);
+  const [selectedWordlistId, setSelectedWordlistId] = useState("");
 
   const handleGenCountChange = ({ target: { value } }) =>
     setIdGenCount(parseInt(value));
 
-  const { data: wordList } = getWordlistById();
+  const { data: wordList } = getWordlistById(selectedWordlistId);
+
+  const getWordlists = async () => {
+    const data = await listWordlist();
+    setWordLists(data);
+  };
+
+  useEffect(() => {
+    getWordlists(wordLists);
+  }, []);
 
   const handleIdGenClick = () =>
     mutate(
@@ -61,50 +74,47 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
         </Flex>
       </Flex>
 
-      <Accordion allowToggle>
-        <AccordionItem>
-          <AccordionButton>
-            <Box as="span" flex="1" textAlign="left">
-              Generate Random Identifiers
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-          <AccordionPanel pb={4}>
-            <VStack align="stretch">
-              <Button
-                size="md"
-                colorScheme="blue"
-                as="a"
-                href="/admin/wordlist/"
-                leftIcon={<FaClipboardList />}
-              >
-                Manage Wordlist
-              </Button>
-              <Stack direction="row">
-                <Flex>
-                  <Input
-                    size="sm"
-                    type="number"
-                    value={idGenCount}
-                    onChange={handleGenCountChange}
-                  />
-                </Flex>
-                <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
-                  Generate Random IDs
-                </Button>
-              </Stack>
-            </VStack>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
-      <Textarea
-        height="inherit"
-        rows="6"
-        value={data.validIdentifiers.join("\n")}
-        onChange={({ target: { value } }) =>
-          mutate({ ...data, validIdentifiers: value.split("\n") }, false)
-        }
-      />
+      <Text fontWeight="semibold" mt={1}>
+        Generate Random Identifiers
+      </Text>
+      {wordLists && (
+        <Select
+          placeholder="Select Wordlists"
+          onChange={({ target: { value } }) => setSelectedWordlistId(value)}
+        >
+          {wordLists.map((wordlist) => (
+            <option key={wordlist.id} value={wordlist.id}>
+              {wordlist.name}
+            </option>
+          ))}
+        </Select>
+      )}
+
+      {selectedWordlistId && (
+        <VStack align="stretch">
+          <Stack direction="row">
+            <Flex>
+              <Input
+                size="sm"
+                type="number"
+                value={idGenCount}
+                onChange={handleGenCountChange}
+              />
+            </Flex>
+            <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
+              Generate Random IDs
+            </Button>
+          </Stack>
+          <Textarea
+            height="inherit"
+            rows="6"
+            value={data.validIdentifiers.join("\n")}
+            onChange={({ target: { value } }) =>
+              mutate({ ...data, validIdentifiers: value.split("\n") }, false)
+            }
+          />
+        </VStack>
+      )}
     </>
   );
 };
