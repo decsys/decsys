@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaInfoCircle, FaClipboardList } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 import {
   Flex,
   Text,
@@ -8,12 +8,6 @@ import {
   Textarea,
   Stack,
   Icon,
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-  AccordionButton,
   VStack,
   Select,
 } from "@chakra-ui/react";
@@ -97,12 +91,16 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
               <Input
                 size="sm"
                 type="number"
+                width="100px"
                 value={idGenCount}
                 onChange={handleGenCountChange}
               />
             </Flex>
             <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
-              Generate Random IDs
+              <Text maxW="300px" isTruncated>
+                Generate Random IDs from{" "}
+                <span style={{ fontWeight: "bold" }}>{wordList.name}</span>
+              </Text>
             </Button>
           </Stack>
           <Textarea
