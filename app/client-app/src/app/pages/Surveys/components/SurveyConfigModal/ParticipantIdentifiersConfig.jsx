@@ -73,7 +73,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       </Text>
       {wordLists && (
         <Select
-          placeholder="Select Wordlists"
+          placeholder="Select wordlist to generate identifiers"
           onChange={({ target: { value } }) => setSelectedWordlistId(value)}
         >
           {wordLists.map((wordlist) => (
@@ -84,25 +84,27 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
         </Select>
       )}
 
-      {selectedWordlistId && (
+      {(selectedWordlistId || data.validIdentifiers.length > 0) && (
         <VStack align="stretch">
-          <Stack direction="row">
-            <Flex>
-              <Input
-                size="sm"
-                type="number"
-                width="100px"
-                value={idGenCount}
-                onChange={handleGenCountChange}
-              />
-            </Flex>
-            <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
-              <Text maxW="300px" isTruncated>
-                Generate Random IDs from{" "}
-                <span style={{ fontWeight: "bold" }}>{wordList.name}</span>
-              </Text>
-            </Button>
-          </Stack>
+          {selectedWordlistId && (
+            <Stack direction="row">
+              <Flex>
+                <Input
+                  size="sm"
+                  type="number"
+                  width="100px"
+                  value={idGenCount}
+                  onChange={handleGenCountChange}
+                />
+              </Flex>
+              <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
+                <Text maxW="300px" isTruncated>
+                  Generate Random IDs from{" "}
+                  <span style={{ fontWeight: "bold" }}>{wordList.name}</span>
+                </Text>
+              </Button>
+            </Stack>
+          )}
           <Textarea
             height="inherit"
             rows="6"
