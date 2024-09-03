@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaInfoCircle, FaClipboardList } from "react-icons/fa";
+import { FaInfoCircle } from "react-icons/fa";
 import {
   Flex,
   Text,
@@ -8,25 +8,32 @@ import {
   Textarea,
   Stack,
   Icon,
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-  AccordionButton,
   VStack,
+  Select,
 } from "@chakra-ui/react";
 import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
 import { getWordlistById } from "api/wordlist";
+import { listWordlist } from "api/wordlist";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const [idGenCount, setIdGenCount] = useState(10);
+  const [wordLists, setWordLists] = useState(null);
+  const [selectedWordlistId, setSelectedWordlistId] = useState("");
 
   const handleGenCountChange = ({ target: { value } }) =>
     setIdGenCount(parseInt(value));
 
-  const { data: wordList } = getWordlistById();
+  const { data: wordList } = getWordlistById(selectedWordlistId);
+
+  const getWordlists = async () => {
+    const data = await listWordlist();
+    setWordLists(data);
+  };
+
+  useEffect(() => {
+    getWordlists(wordLists);
+  }, []);
 
   const handleIdGenClick = () =>
     mutate(
@@ -61,50 +68,53 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
         </Flex>
       </Flex>
 
-      <Accordion allowToggle>
-        <AccordionItem>
-          <AccordionButton>
-            <Box as="span" flex="1" textAlign="left">
-              Generate Random Identifiers
-            </Box>
-            <AccordionIcon />
-          </AccordionButton>
-          <AccordionPanel pb={4}>
-            <VStack align="stretch">
-              <Button
-                size="md"
-                colorScheme="blue"
-                as="a"
-                href="/admin/wordlist/"
-                leftIcon={<FaClipboardList />}
-              >
-                Manage Wordlist
+      <Text fontWeight="semibold" mt={1}>
+        Generate Random Identifiers
+      </Text>
+      {wordLists && (
+        <Select
+          placeholder="Select wordlist to generate identifiers"
+          onChange={({ target: { value } }) => setSelectedWordlistId(value)}
+        >
+          {wordLists.map((wordlist) => (
+            <option key={wordlist.id} value={wordlist.id}>
+              {wordlist.name}
+            </option>
+          ))}
+        </Select>
+      )}
+
+      {(selectedWordlistId || data.validIdentifiers.length > 0) && (
+        <VStack align="stretch">
+          {selectedWordlistId && (
+            <Stack direction="row">
+              <Flex>
+                <Input
+                  size="sm"
+                  type="number"
+                  width="100px"
+                  value={idGenCount}
+                  onChange={handleGenCountChange}
+                />
+              </Flex>
+              <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
+                <Text maxW="300px" isTruncated>
+                  Generate Random IDs from{" "}
+                  <span style={{ fontWeight: "bold" }}>{wordList.name}</span>
+                </Text>
               </Button>
-              <Stack direction="row">
-                <Flex>
-                  <Input
-                    size="sm"
-                    type="number"
-                    value={idGenCount}
-                    onChange={handleGenCountChange}
-                  />
-                </Flex>
-                <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
-                  Generate Random IDs
-                </Button>
-              </Stack>
-            </VStack>
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
-      <Textarea
-        height="inherit"
-        rows="6"
-        value={data.validIdentifiers.join("\n")}
-        onChange={({ target: { value } }) =>
-          mutate({ ...data, validIdentifiers: value.split("\n") }, false)
-        }
-      />
+            </Stack>
+          )}
+          <Textarea
+            height="inherit"
+            rows="6"
+            value={data.validIdentifiers.join("\n")}
+            onChange={({ target: { value } }) =>
+              mutate({ ...data, validIdentifiers: value.split("\n") }, false)
+            }
+          />
+        </VStack>
+      )}
     </>
   );
 };
