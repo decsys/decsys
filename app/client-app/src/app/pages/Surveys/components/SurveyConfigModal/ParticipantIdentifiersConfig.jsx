@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { FaInfoCircle } from "react-icons/fa";
+import {
+  FaClipboardList,
+  FaExternalLinkAlt,
+  FaInfoCircle,
+} from "react-icons/fa";
 import {
   Flex,
   Text,
@@ -71,6 +75,19 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       <Text fontWeight="semibold" mt={1}>
         Generate Random Identifiers
       </Text>
+      <Flex justifyContent="center" my={4}>
+        <Button
+          size="md"
+          colorScheme="green"
+          as="a"
+          href="/admin/wordlist/"
+          w="80%"
+          rightIcon={<FaExternalLinkAlt />}
+        >
+          Manage Wordlist
+        </Button>
+      </Flex>
+
       {wordLists && (
         <Select
           placeholder="Select wordlist to generate identifiers"
