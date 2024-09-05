@@ -22,42 +22,48 @@ import {
 } from "@chakra-ui/react";
 import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
-import { getWordlistById } from "api/wordlist";
-import { listWordlist } from "api/wordlist";
+import { getWordlistById, listWordlist } from "api/wordlist";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const [idGenCount, setIdGenCount] = useState(10);
   const [wordLists, setWordLists] = useState(null);
   const [selectedWordlistId, setSelectedWordlistId] = useState("");
 
+  useEffect(() => {
+    const getWordlists = async () => {
+      const data = await listWordlist();
+      setWordLists([{ id: "default", name: "Default Wordlist" }, ...data]);
+    };
+    getWordlists();
+  }, []);
+
   const handleGenCountChange = ({ target: { value } }) =>
     setIdGenCount(parseInt(value));
 
-  const { data: wordList } = getWordlistById(selectedWordlistId);
+  const wordList =
+    selectedWordlistId && selectedWordlistId !== "default"
+      ? getWordlistById(selectedWordlistId)
+      : null;
 
-  const getWordlists = async () => {
-    const data = await listWordlist();
-    setWordLists(data);
-  };
-
-  useEffect(() => {
-    getWordlists(wordLists);
-  }, []);
-
-  const handleIdGenClick = () =>
+  const handleIdGenClick = () => {
+    const isDefault = selectedWordlistId === "default";
     mutate(
       produce((config) => {
         config.validIdentifiers.push(
           ...Array(idGenCount)
             .fill(() =>
-              generateGfyCatStyleUrl(wordList.excludedBuiltins, 1, "", true)
+              generateGfyCatStyleUrl(
+                isDefault
+                  ? [1, "", true]
+                  : [wordList.excludedBuiltins, 1, "", true]
+              )
             )
             .map((x) => x())
         );
       }),
       false
     );
-
+  };
   return (
     <>
       <Text fontWeight="bold" mt={1}>
@@ -94,7 +100,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
         </VStack>
       </Alert>
       <Flex justifyContent="center">
-        <VStack w="95%">
+        <VStack w="95%" spacing={2}>
           <Button
             size="md"
             colorScheme="green"
@@ -110,6 +116,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
             <Select
               placeholder="Select wordlist to generate identifiers"
               onChange={({ target: { value } }) => setSelectedWordlistId(value)}
+              w="100%"
             >
               {wordLists.map((wordlist) => (
                 <option key={wordlist.id} value={wordlist.id}>
@@ -118,29 +125,27 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
               ))}
             </Select>
           )}
-
           {(selectedWordlistId || data.validIdentifiers.length > 0) && (
-            <VStack align="stretch">
+            <VStack align="stretch" w="100%">
               {selectedWordlistId && (
-                <Stack direction="row">
-                  <Flex>
-                    <Input
-                      size="sm"
-                      type="number"
-                      width="100px"
-                      value={idGenCount}
-                      onChange={handleGenCountChange}
-                    />
-                  </Flex>
+                <Stack direction="row" spacing={2}>
+                  <Input
+                    size="sm"
+                    type="number"
+                    width="100px"
+                    value={idGenCount}
+                    onChange={handleGenCountChange}
+                  />
                   <Button
                     size="sm"
                     colorScheme="gray"
                     onClick={handleIdGenClick}
+                    flexGrow={1}
                   >
                     <Text maxW="300px" isTruncated>
                       Generate Random IDs from{" "}
                       <span style={{ fontWeight: "bold" }}>
-                        {wordList.name}
+                        {wordList ? wordList.name : "Default Wordlist"}
                       </span>
                     </Text>
                   </Button>
@@ -156,6 +161,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
                     false
                   )
                 }
+                w="100%"
               />
             </VStack>
           )}
