@@ -52,7 +52,6 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       ? [[], 1, "", true] // Parameters for default case
       : [wordList.excludedBuiltins, 1, "", true]; // Parameters for non-default case
 
-    console.log(params);
     mutate(
       produce((config) => {
         config.validIdentifiers.push(

@@ -11,12 +11,18 @@ import adjectives from "services/adjectives";
 import animals from "services/animals";
 import EditorBar from "./editorBar";
 
+const isDefaultWordlist = true;
+
 const WordlistDisplay = ({ outputList, height, width }) => {
   const RenderWordCard = ({ index, style }) => {
     const card = outputList[index];
     return card ? (
       <div style={style}>
-        <WordCard word={card.word} type={card.type} />
+        <WordCard
+          word={card.word}
+          type={card.type}
+          isDefaultWordlist={isDefaultWordlist}
+        />
       </div>
     ) : null;
   };
@@ -96,6 +102,7 @@ const DefaultWordlist = () => {
               onSort={onSort}
               filterConfig={filterConfig}
               setFilter={setFilter}
+              isDefaultWordlist={isDefaultWordlist}
             />
           </Flex>
           <Flex flex="1">
