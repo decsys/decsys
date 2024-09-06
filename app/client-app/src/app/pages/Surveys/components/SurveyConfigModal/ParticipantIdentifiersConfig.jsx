@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  FaClipboardList,
-  FaExternalLinkAlt,
-  FaInfoCircle,
-} from "react-icons/fa";
+import { FaClipboardList, FaInfoCircle, FaListUl } from "react-icons/fa";
 import {
   Flex,
   Text,
@@ -107,7 +103,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
             as="a"
             href="/admin/wordlists/"
             w="100%"
-            rightIcon={<FaExternalLinkAlt />}
+            leftIcon={<FaListUl />}
           >
             Manage Wordlists
           </Button>
