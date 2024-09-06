@@ -47,17 +47,17 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
 
   const handleIdGenClick = () => {
     const isDefault = selectedWordlistId === "default";
+
+    const params = isDefault
+      ? [[], 1, "", true] // Parameters for default case
+      : [wordList.excludedBuiltins, 1, "", true]; // Parameters for non-default case
+
+    console.log(params);
     mutate(
       produce((config) => {
         config.validIdentifiers.push(
           ...Array(idGenCount)
-            .fill(() =>
-              generateGfyCatStyleUrl(
-                isDefault
-                  ? [1, "", true]
-                  : [wordList.excludedBuiltins, 1, "", true]
-              )
-            )
+            .fill(() => generateGfyCatStyleUrl(...params))
             .map((x) => x())
         );
       }),
