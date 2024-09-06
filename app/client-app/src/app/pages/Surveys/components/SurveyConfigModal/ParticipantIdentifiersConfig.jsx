@@ -30,11 +30,11 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const [selectedWordlistId, setSelectedWordlistId] = useState("");
 
   useEffect(() => {
-    const getWordlists = async () => {
+    async function fetchWordlists() {
       const data = await listWordlist();
       setWordLists([{ id: "default", name: "Default Wordlist" }, ...data]);
-    };
-    getWordlists();
+    }
+    fetchWordlists();
   }, []);
 
   const handleGenCountChange = ({ target: { value } }) =>
@@ -42,7 +42,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
 
   const wordList =
     selectedWordlistId && selectedWordlistId !== "default"
-      ? getWordlistById(selectedWordlistId)
+      ? wordLists.find((wl) => wl.id === selectedWordlistId)
       : null;
 
   const handleIdGenClick = () => {
@@ -64,6 +64,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       false
     );
   };
+
   return (
     <>
       <Text fontWeight="bold" mt={1}>
@@ -125,6 +126,7 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
               ))}
             </Select>
           )}
+
           {(selectedWordlistId || data.validIdentifiers.length > 0) && (
             <VStack align="stretch" w="100%">
               {selectedWordlistId && (
