@@ -7,6 +7,7 @@ export const WordCard = ({
   word,
   isExcludedBuiltin,
   onToggleExclude,
+  isDefaultWordlist,
 }) => {
   return (
     <Stack spacing={0} direction="row" bg="gray.200">
@@ -35,19 +36,21 @@ export const WordCard = ({
             </Badge>
           </Box>
           <Box flex="1" display="flex" justifyContent="flex-end">
-            <Button
-              onClick={() => onToggleExclude(word, type, isExcludedBuiltin)}
-              leftIcon={
-                isExcludedBuiltin ? <FaPlusCircle /> : <FaMinusCircle />
-              }
-              bg={isExcludedBuiltin ? "blue.500" : "red.500"}
-              color="white"
-              _hover={{
-                bg: isExcludedBuiltin ? "blue.600" : "red.600",
-              }}
-            >
-              {isExcludedBuiltin ? "Unblock" : "Block"}
-            </Button>
+            {!isDefaultWordlist && (
+              <Button
+                onClick={() => onToggleExclude(word, type, isExcludedBuiltin)}
+                leftIcon={
+                  isExcludedBuiltin ? <FaPlusCircle /> : <FaMinusCircle />
+                }
+                bg={isExcludedBuiltin ? "blue.500" : "red.500"}
+                color="white"
+                _hover={{
+                  bg: isExcludedBuiltin ? "blue.600" : "red.600",
+                }}
+              >
+                {isExcludedBuiltin ? "Unblock" : "Block"}
+              </Button>
+            )}
           </Box>
         </Box>
       </Stack>

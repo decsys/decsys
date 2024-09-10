@@ -44,6 +44,23 @@ const Wordlists = () => {
           Create a Wordlist
         </Button>
       </Flex>
+      <Box p={2}>
+        <ActionCard>
+          <HStack justifyContent="space-between">
+            <Link as={RouterLink} to={"defaultWordlist"}>
+              <LightHeading
+                textAlign="center"
+                as="h4"
+                size="lg"
+                wordBreak="break-all"
+                color="blue.500"
+              >
+                Default Wordlist
+              </LightHeading>
+            </Link>
+          </HStack>
+        </ActionCard>
+      </Box>
       {wordLists.map((wordlist) => (
         <Box p={2} key={wordlist.id}>
           <ActionCard>

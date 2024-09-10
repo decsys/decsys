@@ -9,6 +9,7 @@ import Wordlist from "app/pages/Wordlist";
 import { useAuth } from "auth/AuthContext";
 import { BusyPage } from "components/core";
 import Wordlists from "app/pages/Wordlists";
+import DefaultWordlist from "app/pages/Wordlist/DefaultWordlist";
 
 const Admin = () => {
   const { isAdmin, user, login } = useAuth();
@@ -25,7 +26,8 @@ const Admin = () => {
       <Surveys path="/" />
       <Wordlist path="/wordlists/:id" />
       <Wordlists path="/wordlists" />
-      <Editor path="/survey/:id" />
+      <DefaultWordlist path="/wordlists/defaultWordlist" />
+      <Editor path="survey/:id" />
       <Preview path="/survey/:id/preview" />
       <Results path="/survey/:id/results" />
       <Dashboard path="/survey/dashboard/:combinedId" />

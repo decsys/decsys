@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaInfoCircle } from "react-icons/fa";
+import { FaClipboardList, FaInfoCircle, FaListUl } from "react-icons/fa";
 import {
   Flex,
   Text,
@@ -10,44 +10,55 @@ import {
   Icon,
   VStack,
   Select,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  HStack,
 } from "@chakra-ui/react";
 import generateGfyCatStyleUrl from "services/gfycat-style-urls.js";
 import produce from "immer";
-import { getWordlistById } from "api/wordlist";
-import { listWordlist } from "api/wordlist";
+import { getWordlistById, listWordlist } from "api/wordlist";
 
 const ParticipantIdentifiersConfig = ({ data, mutate }) => {
   const [idGenCount, setIdGenCount] = useState(10);
   const [wordLists, setWordLists] = useState(null);
   const [selectedWordlistId, setSelectedWordlistId] = useState("");
 
+  useEffect(() => {
+    async function fetchWordlists() {
+      const data = await listWordlist();
+      setWordLists([{ id: "default", name: "Default Wordlist" }, ...data]);
+    }
+    fetchWordlists();
+  }, []);
+
   const handleGenCountChange = ({ target: { value } }) =>
     setIdGenCount(parseInt(value));
 
-  const { data: wordList } = getWordlistById(selectedWordlistId);
+  const wordList =
+    selectedWordlistId && selectedWordlistId !== "default"
+      ? wordLists.find((wl) => wl.id === selectedWordlistId)
+      : null;
 
-  const getWordlists = async () => {
-    const data = await listWordlist();
-    setWordLists(data);
-  };
+  const handleIdGenClick = () => {
+    const isDefault = selectedWordlistId === "default";
 
-  useEffect(() => {
-    getWordlists(wordLists);
-  }, []);
+    const params = isDefault
+      ? [[], 1, "", true] // Parameters for default case
+      : [wordList.excludedBuiltins, 1, "", true]; // Parameters for non-default case
 
-  const handleIdGenClick = () =>
     mutate(
       produce((config) => {
         config.validIdentifiers.push(
           ...Array(idGenCount)
-            .fill(() =>
-              generateGfyCatStyleUrl(wordList.excludedBuiltins, 1, "", true)
-            )
+            .fill(() => generateGfyCatStyleUrl(...params))
             .map((x) => x())
         );
       }),
       false
     );
+  };
 
   return (
     <>
@@ -71,50 +82,88 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       <Text fontWeight="semibold" mt={1}>
         Generate Random Identifiers
       </Text>
-      {wordLists && (
-        <Select
-          placeholder="Select wordlist to generate identifiers"
-          onChange={({ target: { value } }) => setSelectedWordlistId(value)}
-        >
-          {wordLists.map((wordlist) => (
-            <option key={wordlist.id} value={wordlist.id}>
-              {wordlist.name}
-            </option>
-          ))}
-        </Select>
-      )}
-
-      {(selectedWordlistId || data.validIdentifiers.length > 0) && (
-        <VStack align="stretch">
-          {selectedWordlistId && (
-            <Stack direction="row">
-              <Flex>
-                <Input
-                  size="sm"
-                  type="number"
-                  width="100px"
-                  value={idGenCount}
-                  onChange={handleGenCountChange}
-                />
-              </Flex>
-              <Button size="sm" colorScheme="gray" onClick={handleIdGenClick}>
-                <Text maxW="300px" isTruncated>
-                  Generate Random IDs from{" "}
-                  <span style={{ fontWeight: "bold" }}>{wordList.name}</span>
-                </Text>
-              </Button>
-            </Stack>
-          )}
-          <Textarea
-            height="inherit"
-            rows="6"
-            value={data.validIdentifiers.join("\n")}
-            onChange={({ target: { value } }) =>
-              mutate({ ...data, validIdentifiers: value.split("\n") }, false)
-            }
-          />
+      <Alert status="info">
+        <VStack>
+          <HStack>
+            <AlertIcon />
+            <AlertTitle fontSize="md">Selecting a Wordlist</AlertTitle>
+          </HStack>
+          <AlertDescription fontSize="sm">
+            You can create new wordlists from the "Manage Wordlists" section.
+            The default wordlist is not editable, but any new ones you create
+            can be modified as needed.
+          </AlertDescription>
         </VStack>
-      )}
+      </Alert>
+      <Flex justifyContent="center">
+        <VStack w="95%" spacing={2}>
+          <Button
+            size="md"
+            colorScheme="green"
+            as="a"
+            href="/admin/wordlists/"
+            w="100%"
+            leftIcon={<FaListUl />}
+          >
+            Manage Wordlists
+          </Button>
+
+          {wordLists && (
+            <Select
+              placeholder="Select wordlist to generate identifiers"
+              onChange={({ target: { value } }) => setSelectedWordlistId(value)}
+              w="100%"
+            >
+              {wordLists.map((wordlist) => (
+                <option key={wordlist.id} value={wordlist.id}>
+                  {wordlist.name}
+                </option>
+              ))}
+            </Select>
+          )}
+
+          {(selectedWordlistId || data.validIdentifiers.length > 0) && (
+            <VStack align="stretch" w="100%">
+              {selectedWordlistId && (
+                <Stack direction="row" spacing={2}>
+                  <Input
+                    size="sm"
+                    type="number"
+                    width="100px"
+                    value={idGenCount}
+                    onChange={handleGenCountChange}
+                  />
+                  <Button
+                    size="sm"
+                    colorScheme="gray"
+                    onClick={handleIdGenClick}
+                    flexGrow={1}
+                  >
+                    <Text maxW="300px" isTruncated>
+                      Generate Random IDs from{" "}
+                      <span style={{ fontWeight: "bold" }}>
+                        {wordList ? wordList.name : "Default Wordlist"}
+                      </span>
+                    </Text>
+                  </Button>
+                </Stack>
+              )}
+              <Textarea
+                height="inherit"
+                rows="6"
+                value={data.validIdentifiers.join("\n")}
+                onChange={({ target: { value } }) =>
+                  mutate(
+                    { ...data, validIdentifiers: value.split("\n") },
+                    false
+                  )
+                }
+                w="100%"
+              />
+            </VStack>
+          )}
+        </VStack>
+      </Flex>
     </>
   );
 };

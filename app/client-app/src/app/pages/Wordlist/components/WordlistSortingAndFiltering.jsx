@@ -7,7 +7,16 @@ const WordlistSortingAndFilteringPanel = ({
   onSort,
   filterConfig,
   setFilter,
+  isDefaultWordlist,
 }) => {
+  const sortingKeys = [
+    ["Word", "word"],
+    ["Type", "type"],
+  ];
+
+  if (!isDefaultWordlist) {
+    sortingKeys.push(["Active", "isExcludedBuiltin"]);
+  }
   return (
     <Flex alignItems="center" flexDirection="column">
       {Object.keys(data).length > 0 && (
@@ -19,11 +28,7 @@ const WordlistSortingAndFilteringPanel = ({
             <SortPanel
               state={sorting}
               onSortButtonClick={onSort}
-              keys={[
-                ["Word", "word"],
-                ["Type", "type"],
-                ["Active", "isExcludedBuiltin"],
-              ]}
+              keys={sortingKeys}
             />
           </HStack>
           <Input
