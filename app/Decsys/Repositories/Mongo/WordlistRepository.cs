@@ -220,6 +220,40 @@ public class WordlistRepository :IWordlistRepository
         return _mapper.Map<Models.Wordlist.WordlistWord>(newExcludedBuiltins);
     }
 
+    public async Task<Models.Wordlist.WordlistWord> AddCustomWord(string wordlistId, string type, string customWord)
+    {
+        // Convert string to ObjectId
+        ObjectId objectId;
+        if (!ObjectId.TryParse(wordlistId, out objectId))
+        {
+            throw new KeyNotFoundException("Invalid ObjectId format.");
+        }
+
+        var wordlist = await _wordlists.Find(wl => wl.Id == objectId).FirstOrDefaultAsync();
+
+        if (wordlist == null)
+        {
+            throw new KeyNotFoundException("Wordlist not found.");
+        }
+
+        // Check if the custom word already exists in the wordlist's custom words
+        if (wordlist.CustomWords.Any(w => w.Word.Equals(customWord, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException("This word already exists in the custom words list.");
+        }
+
+        var newCustomWord = new Data.Entities.WordlistWord { Type = type, Word = customWord };
+
+        // Add the new word to the CustomWords list
+        wordlist.CustomWords.Add(newCustomWord);
+
+        // Save the updated wordlist back to the database
+        var updateResult = await _wordlists.ReplaceOneAsync(wl => wl.Id == objectId, wordlist);
+
+        // Return the newly added word
+        return _mapper.Map <Models.Wordlist.WordlistWord>(newCustomWord);
+    }
+
     public async Task DeleteExcludedBuiltins(string wordlistId, string type,string word)
     {
         // Convert string to ObjectId

@@ -50,6 +50,9 @@ public class WordlistService : IWordlistRepository
 
     public async Task<WordlistWord> SetExcludedBuiltins (string wordlistId, string type, string word)
     => await _wordlist.SetExcludedBuiltins(wordlistId, type, word);
+    
+    public async Task<WordlistWord> AddCustomWord(string wordlistId, string type, string word)
+    => await _wordlist.AddCustomWord(wordlistId, type, word);
 
     public async Task DeleteExcludedBuiltins(string wordlistId, string type, string word)
     => await _wordlist.DeleteExcludedBuiltins(wordlistId, type, word);

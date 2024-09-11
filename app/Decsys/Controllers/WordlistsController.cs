@@ -6,6 +6,7 @@ using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
@@ -133,9 +134,7 @@ namespace Decsys.Controllers
         {
             string ownerId = User.GetUserId();
 
-            var wordlists = _service.ListAll(ownerId);
-
-            var wordlist = wordlists?.FirstOrDefault(w => w.Id.Equals(wordlistId)); //TODO: Replace with getbyId
+            var wordlist = await _service.GetById(ownerId, wordlistId);
 
             if (wordlist == null)
             {
@@ -178,30 +177,37 @@ namespace Decsys.Controllers
 
             return Ok(wordlist.Rules);
         }
-        
-        public async Task<IActionResult> AddCustomWord(string wordlistId, string type, string word)
+
+        [HttpPost("{wordlistId}")] 
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Added a custom word for the current user")]
+        [SwaggerResponse(200, "Custom Word Added.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        [SwaggerResponse(404, "Wordlist not found.")]
+        public async Task<IActionResult> AddCustomWord(string wordlistId, [FromBody] WordlistWord wordlistWord)
         {
-            if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
+            if (string.IsNullOrWhiteSpace(wordlistWord.Type) || string.IsNullOrWhiteSpace(wordlistWord.Word))
             {
                 return BadRequest("Invalid type or word.");
             }
 
-            type = type.ToLowerInvariant();
+            wordlistWord.Type = wordlistWord.Type.ToLowerInvariant();
 
-            if (type != "noun" && type != "adjective")
+            if (wordlistWord.Type != "noun" && wordlistWord.Type != "adjective")
             {
                 return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
             }
 
             string ownerId = User.GetUserId();
 
-            var wordlist = await _service.GetById(ownerId, wordlistId); //TODO: would it be better to have a check for making sure wordlistId belongs to ownerId 
+            var wordlist = await _service.GetById(ownerId, wordlistId);
             if (wordlist == null)
             {
                 return NotFound("Wordlist not found");
             }
 
-            var customWord = await _service.AddCustomWord(wordlistId, type, word);
+            var customWord = await _service.AddCustomWord(wordlistId, wordlistWord.Type, wordlistWord.Word);
             return Ok(customWord);
 
         }
@@ -216,6 +222,13 @@ namespace Decsys.Controllers
         [SwaggerResponse(404, "Wordlist not found")]
         public async Task<IActionResult> SetExcludedBuiltins(string wordlistId, string type, string word)
         {
+            string ownerId = User.GetUserId();
+            var wordlist = await _service.GetById(ownerId, wordlistId);
+            if (wordlist == null)
+            {
+                return NotFound("Wordlist not found.");
+            }
+
             if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
             {
                 return BadRequest("Invalid type or word.");
@@ -226,14 +239,6 @@ namespace Decsys.Controllers
             if (type != "noun" && type != "adjective")
             {
                 return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
-            }
-
-            string ownerId = User.GetUserId();
-
-            var wordlist = _service.List(ownerId);  //TODO: Replace by get by id, no need to get the entire list, just remove this check
-            if (wordlist == null)
-            {
-                return NotFound("Wordlist not found");
             }
 
             var result = await _service.SetExcludedBuiltins(wordlistId, type, word);
