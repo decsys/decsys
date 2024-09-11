@@ -1,5 +1,23 @@
 import { useState } from "react";
-import { Stack, Flex, useRadioGroup, VStack, Spacer } from "@chakra-ui/react";
+import {
+  Stack,
+  Flex,
+  useRadioGroup,
+  VStack,
+  Spacer,
+  Button,
+  HStack,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Select,
+  Input,
+} from "@chakra-ui/react";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
 import { FixedSizeList } from "react-window";
@@ -15,6 +33,8 @@ import { FetchWordlistProvider } from "./components/context/FetchWordlist";
 import { EditorBarContextProvider } from "./components/context/EditorBar";
 import { Page } from "components/core";
 import EditorBar from "./components/EditorBar";
+import { FaPlusCircle } from "react-icons/fa";
+import { Formik } from "formik";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
@@ -46,6 +66,7 @@ const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
 };
 
 const Wordlist = ({ id, navigate }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { cards, toggleExclude } = useWordData(id);
   const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
@@ -99,13 +120,86 @@ const Wordlist = ({ id, navigate }) => {
                   />
                 </VStack>
                 <Spacer />
-                <WordlistSortingAndFilteringPanel
-                  data={cards}
-                  sorting={sorting}
-                  onSort={onSort}
-                  filterConfig={filterConfig}
-                  setFilter={setFilter}
-                />
+                <VStack alignItems="end" spacing="4">
+                  <Button
+                    onClick={onOpen}
+                    leftIcon={<FaPlusCircle />}
+                    colorScheme="green"
+                    mt="4"
+                  >
+                    Add a Custom Word
+                  </Button>
+                  <Formik
+                    initialValues={{ type: "", active: "", custonWord: "" }}
+                    onSubmit={(values, { setSubmitting }) => {
+                      setTimeout(() => {
+                        alert(JSON.stringify(values, null, 2));
+                        setSubmitting(false);
+                        onClose();
+                      }, 400);
+                    }}
+                  >
+                    {({ handleSubmit, isSubmitting, handleChange, values }) => (
+                      <Modal isOpen={isOpen} onClose={onClose}>
+                        <ModalOverlay />
+                        <ModalContent>
+                          <ModalHeader>Add a Custom Word</ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody>
+                            <form onSubmit={handleSubmit}>
+                              <VStack w="100%">
+                                <Select
+                                  name="Type"
+                                  placeholder="Type"
+                                  onChange={handleChange}
+                                >
+                                  <option value="noun">Noun</option>
+                                  <option value="adjective">Adjective</option>
+                                </Select>
+                                <Select
+                                  name="active"
+                                  placeholder="Active Status"
+                                  onChange={handleChange}
+                                  value={values.active}
+                                >
+                                  <option value="blocked">Blocked</option>
+                                  <option value="unblocked">Unblocked</option>
+                                </Select>
+                                <Input
+                                  name="customWord"
+                                  placeholder="Custom Word"
+                                  onChange={handleChange}
+                                  value={values.customWord}
+                                />
+                              </VStack>
+                            </form>
+                          </ModalBody>
+
+                          <ModalFooter>
+                            <Button colorScheme="red" mr={3} onClick={onClose}>
+                              Cancel
+                            </Button>
+                            <Button
+                              type="submit"
+                              form="myForm"
+                              isLoading={isSubmitting}
+                              colorScheme="blue"
+                            >
+                              Save
+                            </Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </Modal>
+                    )}
+                  </Formik>
+                  <WordlistSortingAndFilteringPanel
+                    data={cards}
+                    sorting={sorting}
+                    onSort={onSort}
+                    filterConfig={filterConfig}
+                    setFilter={setFilter}
+                  />
+                </VStack>
               </Flex>
               <Flex flex="1">
                 <AutoSizer>

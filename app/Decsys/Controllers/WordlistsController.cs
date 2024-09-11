@@ -119,7 +119,7 @@ namespace Decsys.Controllers
                 return BadRequest("Invalid rule index.");
             }
 
-            return Ok(wordlist.Rules); 
+            return Ok(wordlist.Rules);
         }
 
         [HttpDelete("{wordlistId}")]
@@ -133,9 +133,9 @@ namespace Decsys.Controllers
         {
             string ownerId = User.GetUserId();
 
-            var wordlists = _service.ListAll (ownerId);
+            var wordlists = _service.ListAll(ownerId);
 
-            var wordlist = wordlists?.FirstOrDefault(w => w.Id.Equals(wordlistId));
+            var wordlist = wordlists?.FirstOrDefault(w => w.Id.Equals(wordlistId)); //TODO: Replace with getbyId
 
             if (wordlist == null)
             {
@@ -173,10 +173,37 @@ namespace Decsys.Controllers
             }
 
             await _service.DeleteRule(wordlistId, ruleIndex);
-            
+
             wordlist = _service.List(ownerId);
 
             return Ok(wordlist.Rules);
+        }
+        
+        public async Task<IActionResult> AddCustomWord(string wordlistId, string type, string word)
+        {
+            if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
+            {
+                return BadRequest("Invalid type or word.");
+            }
+
+            type = type.ToLowerInvariant();
+
+            if (type != "noun" && type != "adjective")
+            {
+                return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
+            }
+
+            string ownerId = User.GetUserId();
+
+            var wordlist = await _service.GetById(ownerId, wordlistId); //TODO: would it be better to have a check for making sure wordlistId belongs to ownerId 
+            if (wordlist == null)
+            {
+                return NotFound("Wordlist not found");
+            }
+
+            var customWord = await _service.AddCustomWord(wordlistId, type, word);
+            return Ok(customWord);
+
         }
 
         [HttpPut("{wordlistId}/exclude/{type}/{word}")]
@@ -203,8 +230,7 @@ namespace Decsys.Controllers
 
             string ownerId = User.GetUserId();
 
-            var wordlist = _service.List(ownerId);
-
+            var wordlist = _service.List(ownerId);  //TODO: Replace by get by id, no need to get the entire list, just remove this check
             if (wordlist == null)
             {
                 return NotFound("Wordlist not found");
