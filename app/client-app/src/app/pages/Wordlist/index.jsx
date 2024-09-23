@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Stack,
   Flex,
@@ -18,6 +18,11 @@ import {
   Select,
   Input,
   useToast,
+  Text,
+  RadioGroup,
+  Radio,
+  FormLabel,
+  Divider,
 } from "@chakra-ui/react";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
@@ -35,10 +40,11 @@ import { EditorBarContextProvider } from "./components/context/EditorBar";
 import { Page } from "components/core";
 import EditorBar from "./components/EditorBar";
 import { FaPlusCircle } from "react-icons/fa";
-import { Formik } from "formik";
+import { Field, Formik } from "formik";
 import { addCustomWord } from "api/wordlist";
 import adjectives from "services/adjectives";
 import animals from "services/animals";
+import { object, string } from "yup";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
@@ -75,6 +81,7 @@ const Wordlist = ({ id, navigate }) => {
   const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
   const [sliderValues, setSliderValues] = useState([1, 15]);
+  const [value, setValue] = useState("1");
 
   const handleSliderChange = (values) => {
     setSliderValues(values);
@@ -100,16 +107,16 @@ const Wordlist = ({ id, navigate }) => {
   const exclusionGroup = getExclusionRootProps();
 
   const wordExists = (word) => {
-    console.log(word);
-    console.log(adjectives); // Assuming adjectives is an array of strings
-    console.log(animals); // Assuming animals is also an array of strings
-
     const result = adjectives.includes(word) || animals.includes(word);
-    console.log(result); // Log true or false
     return result;
   };
 
+  const customWordSchema = object({
+    type: string().required("You must select a type"),
+    customWord: string().required("Custom word is required"),
+  });
   const toast = useToast();
+
   return (
     <Page layout={null}>
       <FetchWordlistProvider id={id}>
@@ -146,6 +153,7 @@ const Wordlist = ({ id, navigate }) => {
                   </Button>
                   <Formik
                     initialValues={{ type: "", customWord: "" }}
+                    validationSchema={customWordSchema}
                     onSubmit={async (
                       values,
                       { setSubmitting, setFieldError }
@@ -155,13 +163,6 @@ const Wordlist = ({ id, navigate }) => {
                           "customWord",
                           "This word already exists in the wordlist!"
                         );
-                        toast({
-                          title: "Word Exists",
-                          description: "The word you entered already exists.",
-                          status: "error",
-                          duration: 3000,
-                          isClosable: true,
-                        });
                         setSubmitting(false);
                         return;
                       }
@@ -188,49 +189,94 @@ const Wordlist = ({ id, navigate }) => {
                       onClose();
                     }}
                   >
-                    {({ handleSubmit, isSubmitting, handleChange, values }) => (
-                      <Modal isOpen={isOpen} onClose={onClose}>
-                        <ModalOverlay />
-                        <ModalContent>
-                          <ModalHeader>Add a Custom Word</ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <form onSubmit={handleSubmit} id="myForm">
-                              <VStack w="100%">
-                                <Select
-                                  name="type"
-                                  placeholder="Type"
-                                  onChange={handleChange}
-                                  value={values.type}
-                                >
-                                  <option value="noun">Noun</option>
-                                  <option value="adjective">Adjective</option>
-                                </Select>
-                                <Input
-                                  name="customWord"
-                                  placeholder="Custom Word"
-                                  onChange={handleChange}
-                                  value={values.customWord}
-                                />
-                              </VStack>
-                            </form>
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button colorScheme="red" mr={3} onClick={onClose}>
-                              Cancel
-                            </Button>
-                            <Button
-                              type="submit"
-                              form="myForm"
-                              isLoading={isSubmitting}
-                              colorScheme="blue"
-                            >
-                              Save
-                            </Button>
-                          </ModalFooter>
-                        </ModalContent>
-                      </Modal>
-                    )}
+                    {({
+                      handleSubmit,
+                      isSubmitting,
+                      handleChange,
+                      values,
+                      errors,
+                      touched,
+                      handleBlur,
+                      resetForm,
+                      setFieldValue,
+                    }) => {
+                      useEffect(() => {
+                        if (!isOpen) {
+                          resetForm();
+                        }
+                      }, [isOpen, resetForm]);
+                      return (
+                        <Modal isOpen={isOpen} onClose={onClose}>
+                          <ModalOverlay />
+                          <ModalContent>
+                            <ModalHeader>Add a Custom Word</ModalHeader>
+                            <Divider />
+                            <ModalCloseButton />
+                            <ModalBody>
+                              <form onSubmit={handleSubmit} id="myForm">
+                                <VStack align="start">
+                                  <FormLabel mb="0">Word</FormLabel>
+                                  <Input
+                                    name="customWord"
+                                    placeholder="New Custom Word"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.customWord}
+                                    isInvalid={
+                                      touched.customWord &&
+                                      Boolean(errors.customWord)
+                                    }
+                                  />
+                                  {touched.customWord && errors.customWord && (
+                                    <Text color="red">{errors.customWord}</Text>
+                                  )}
+                                  <FormLabel pt="2">Type</FormLabel>
+                                  <Field name="type">
+                                    {({ field }) => (
+                                      <>
+                                        <RadioGroup
+                                          {...field}
+                                          onChange={(value) =>
+                                            setFieldValue("type", value)
+                                          }
+                                        >
+                                          <Stack direction="row">
+                                            <Radio value="noun">Noun</Radio>
+                                            <Radio value="adjective">
+                                              Adjective
+                                            </Radio>
+                                          </Stack>
+                                        </RadioGroup>
+                                        {touched.type && errors.type && (
+                                          <Text color="red">{errors.type}</Text>
+                                        )}
+                                      </>
+                                    )}
+                                  </Field>
+                                </VStack>
+                              </form>
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button
+                                colorScheme="red"
+                                mr={3}
+                                onClick={onClose}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                type="submit"
+                                form="myForm"
+                                isLoading={isSubmitting}
+                                colorScheme="blue"
+                              >
+                                Save
+                              </Button>
+                            </ModalFooter>
+                          </ModalContent>
+                        </Modal>
+                      );
+                    }}
                   </Formik>
                   <WordlistSortingAndFilteringPanel
                     data={cards}
