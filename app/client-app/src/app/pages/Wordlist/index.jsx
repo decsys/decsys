@@ -17,6 +17,7 @@ import {
   ModalFooter,
   Select,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
@@ -35,6 +36,9 @@ import { Page } from "components/core";
 import EditorBar from "./components/EditorBar";
 import { FaPlusCircle } from "react-icons/fa";
 import { Formik } from "formik";
+import { addCustomWord } from "api/wordlist";
+import adjectives from "services/adjectives";
+import animals from "services/animals";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
@@ -95,6 +99,17 @@ const Wordlist = ({ id, navigate }) => {
   const typeGroup = getTypeRootProps();
   const exclusionGroup = getExclusionRootProps();
 
+  const wordExists = (word) => {
+    console.log(word);
+    console.log(adjectives); // Assuming adjectives is an array of strings
+    console.log(animals); // Assuming animals is also an array of strings
+
+    const result = adjectives.includes(word) || animals.includes(word);
+    console.log(result); // Log true or false
+    return result;
+  };
+
+  const toast = useToast();
   return (
     <Page layout={null}>
       <FetchWordlistProvider id={id}>
@@ -130,13 +145,47 @@ const Wordlist = ({ id, navigate }) => {
                     Add a Custom Word
                   </Button>
                   <Formik
-                    initialValues={{ type: "", active: "", custonWord: "" }}
-                    onSubmit={(values, { setSubmitting }) => {
-                      setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
+                    initialValues={{ type: "", customWord: "" }}
+                    onSubmit={async (
+                      values,
+                      { setSubmitting, setFieldError }
+                    ) => {
+                      if (wordExists(values.customWord)) {
+                        setFieldError(
+                          "customWord",
+                          "This word already exists in the wordlist!"
+                        );
+                        toast({
+                          title: "Word Exists",
+                          description: "The word you entered already exists.",
+                          status: "error",
+                          duration: 3000,
+                          isClosable: true,
+                        });
                         setSubmitting(false);
-                        onClose();
-                      }, 400);
+                        return;
+                      }
+                      try {
+                        await addCustomWord(id, values.type, values.customWord);
+                        toast({
+                          title: "Success",
+                          description: `Word "${values.customWord}" added successfully!`,
+                          status: "success",
+                          duration: 3000,
+                          isClosable: true,
+                        });
+                      } catch (error) {
+                        console.error("Failed to add word:", error);
+                        toast({
+                          title: "Error",
+                          description: "Failed to add the word.",
+                          status: "error",
+                          duration: 3000,
+                          isClosable: true,
+                        });
+                      }
+                      setSubmitting(false);
+                      onClose();
                     }}
                   >
                     {({ handleSubmit, isSubmitting, handleChange, values }) => (
@@ -146,24 +195,16 @@ const Wordlist = ({ id, navigate }) => {
                           <ModalHeader>Add a Custom Word</ModalHeader>
                           <ModalCloseButton />
                           <ModalBody>
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={handleSubmit} id="myForm">
                               <VStack w="100%">
                                 <Select
-                                  name="Type"
+                                  name="type"
                                   placeholder="Type"
                                   onChange={handleChange}
+                                  value={values.type}
                                 >
                                   <option value="noun">Noun</option>
                                   <option value="adjective">Adjective</option>
-                                </Select>
-                                <Select
-                                  name="active"
-                                  placeholder="Active Status"
-                                  onChange={handleChange}
-                                  value={values.active}
-                                >
-                                  <option value="blocked">Blocked</option>
-                                  <option value="unblocked">Unblocked</option>
                                 </Select>
                                 <Input
                                   name="customWord"
@@ -174,7 +215,6 @@ const Wordlist = ({ id, navigate }) => {
                               </VStack>
                             </form>
                           </ModalBody>
-
                           <ModalFooter>
                             <Button colorScheme="red" mr={3} onClick={onClose}>
                               Cancel

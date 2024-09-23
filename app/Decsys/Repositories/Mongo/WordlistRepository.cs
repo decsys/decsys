@@ -248,7 +248,7 @@ public class WordlistRepository :IWordlistRepository
         wordlist.CustomWords.Add(newCustomWord);
 
         // Save the updated wordlist back to the database
-        var updateResult = await _wordlists.ReplaceOneAsync(wl => wl.Id == objectId, wordlist);
+        await _wordlists.ReplaceOneAsync(wl => wl.Id == objectId, wordlist);
 
         // Return the newly added word
         return _mapper.Map <Models.Wordlist.WordlistWord>(newCustomWord);
