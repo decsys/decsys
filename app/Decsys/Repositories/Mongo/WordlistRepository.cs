@@ -236,7 +236,6 @@ public class WordlistRepository :IWordlistRepository
             throw new KeyNotFoundException("Wordlist not found.");
         }
 
-        // Check if the custom word already exists in the wordlist's custom words
         if (wordlist.CustomWords.Any(w => w.Word.Equals(customWord, StringComparison.OrdinalIgnoreCase)))
         {
             throw new InvalidOperationException("This word already exists in the custom words list.");
@@ -244,13 +243,10 @@ public class WordlistRepository :IWordlistRepository
 
         var newCustomWord = new Data.Entities.WordlistWord { Type = type, Word = customWord };
 
-        // Add the new word to the CustomWords list
         wordlist.CustomWords.Add(newCustomWord);
 
-        // Save the updated wordlist back to the database
         await _wordlists.ReplaceOneAsync(wl => wl.Id == objectId, wordlist);
 
-        // Return the newly added word
         return _mapper.Map <Models.Wordlist.WordlistWord>(newCustomWord);
     }
 
