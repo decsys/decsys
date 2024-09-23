@@ -45,6 +45,7 @@ import { addCustomWord } from "api/wordlist";
 import adjectives from "services/adjectives";
 import animals from "services/animals";
 import { object, string } from "yup";
+import { AddCustomWordModel } from "./components/AddCustomWordModel";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
@@ -206,75 +207,18 @@ const Wordlist = ({ id, navigate }) => {
                         }
                       }, [isOpen, resetForm]);
                       return (
-                        <Modal isOpen={isOpen} onClose={onClose}>
-                          <ModalOverlay />
-                          <ModalContent>
-                            <ModalHeader>Add a Custom Word</ModalHeader>
-                            <Divider />
-                            <ModalCloseButton />
-                            <ModalBody>
-                              <form onSubmit={handleSubmit} id="myForm">
-                                <VStack align="start">
-                                  <FormLabel mb="0">Word</FormLabel>
-                                  <Input
-                                    name="customWord"
-                                    placeholder="New Custom Word"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.customWord}
-                                    isInvalid={
-                                      touched.customWord &&
-                                      Boolean(errors.customWord)
-                                    }
-                                  />
-                                  {touched.customWord && errors.customWord && (
-                                    <Text color="red">{errors.customWord}</Text>
-                                  )}
-                                  <FormLabel pt="2">Type</FormLabel>
-                                  <Field name="type">
-                                    {({ field }) => (
-                                      <>
-                                        <RadioGroup
-                                          {...field}
-                                          onChange={(value) =>
-                                            setFieldValue("type", value)
-                                          }
-                                        >
-                                          <Stack direction="row">
-                                            <Radio value="noun">Noun</Radio>
-                                            <Radio value="adjective">
-                                              Adjective
-                                            </Radio>
-                                          </Stack>
-                                        </RadioGroup>
-                                        {touched.type && errors.type && (
-                                          <Text color="red">{errors.type}</Text>
-                                        )}
-                                      </>
-                                    )}
-                                  </Field>
-                                </VStack>
-                              </form>
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button
-                                colorScheme="red"
-                                mr={3}
-                                onClick={onClose}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                type="submit"
-                                form="myForm"
-                                isLoading={isSubmitting}
-                                colorScheme="blue"
-                              >
-                                Save
-                              </Button>
-                            </ModalFooter>
-                          </ModalContent>
-                        </Modal>
+                        <AddCustomWordModel
+                          isOpen={isOpen}
+                          onClose={onClose}
+                          values={value}
+                          handleSubmit={handleSubmit}
+                          handleBlur={handleBlur}
+                          handleChange={handleChange}
+                          errors={errors}
+                          touched={touched}
+                          isSubmitting={isSubmitting}
+                          setFieldValue={setFieldValue}
+                        />
                       );
                     }}
                   </Formik>
