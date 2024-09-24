@@ -220,23 +220,24 @@ public class WordlistRepository :IWordlistRepository
         return _mapper.Map<Models.Wordlist.WordlistWord>(newExcludedBuiltins);
     }
 
-    public async Task<Models.Wordlist.WordlistWord> AddCustomWord(string wordlistId, string type, string customWord)
+    public async Task<Models.Wordlist.WordlistWord> AddCustomWord(string ownerId, string wordlistId, string type, string customWord)
     {
-        // Convert string to ObjectId
-        ObjectId objectId;
-        if (!ObjectId.TryParse(wordlistId, out objectId))
+        if (string.IsNullOrWhiteSpace(wordlistId)) throw new ArgumentException("Wordlist ID cannot be null or empty.", nameof(wordlistId));
+        if (string.IsNullOrWhiteSpace(type)) throw new ArgumentException("Type cannot be null or empty.", nameof(type));
+        if (string.IsNullOrWhiteSpace(customWord)) throw new ArgumentException("Custom word cannot be null or empty.", nameof(customWord));
+
+        if (!ObjectId.TryParse(wordlistId, out var objectId))
         {
             throw new KeyNotFoundException("Invalid ObjectId format.");
         }
 
-        var wordlist = await _wordlists.Find(wl => wl.Id == objectId).FirstOrDefaultAsync();
-
+        var wordlist = await _wordlists.Find(wl => wl.Id == objectId && wl.Owner == ownerId).FirstOrDefaultAsync();
         if (wordlist == null)
         {
             throw new KeyNotFoundException("Wordlist not found.");
         }
 
-        if (wordlist.CustomWords.Any(w => w.Word.Equals(customWord, StringComparison.OrdinalIgnoreCase)))
+        if (wordlist.CustomWords.Any(w => w.Word.Equals(customWord)))
         {
             throw new InvalidOperationException("This word already exists in the custom words list.");
         }
@@ -245,10 +246,13 @@ public class WordlistRepository :IWordlistRepository
 
         wordlist.CustomWords.Add(newCustomWord);
 
-        await _wordlists.ReplaceOneAsync(wl => wl.Id == objectId, wordlist);
+        var filter = Builders<UserWordlist>.Filter.Eq(wl => wl.Id, objectId);
+        var update = Builders<UserWordlist>.Update.Push(wl => wl.CustomWords, newCustomWord);
+        await _wordlists.UpdateOneAsync(filter, update);
 
-        return _mapper.Map <Models.Wordlist.WordlistWord>(newCustomWord);
+        return _mapper.Map<Models.Wordlist.WordlistWord>(newCustomWord); 
     }
+
 
     public async Task DeleteExcludedBuiltins(string wordlistId, string type,string word)
     {

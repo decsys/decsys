@@ -47,7 +47,7 @@ export const AddCustomWordModel = ({
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.customWord}
-                isInvalid={touched.customWord && Boolean(errors.customWord)}
+                isInvalid={touched.customWord && !!errors.customWord}
               />
               {touched.customWord && errors.customWord && (
                 <Text color="red">{errors.customWord}</Text>

@@ -198,14 +198,8 @@ namespace Decsys.Controllers
             }
 
             string ownerId = User.GetUserId();
-
-            var wordlist = await _service.GetById(ownerId, wordlistId);
-            if (wordlist == null)
-            {
-                return NotFound("Wordlist not found");
-            }
-
-            var customWord = await _service.AddCustomWord(wordlistId, wordlistWord.Type, wordlistWord.Word);
+            
+            var customWord = await _service.AddCustomWord(ownerId, wordlistId, wordlistWord.Type, wordlistWord.Word);
             return Ok(customWord);
 
         }

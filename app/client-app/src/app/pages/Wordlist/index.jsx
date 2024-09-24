@@ -6,23 +6,8 @@ import {
   VStack,
   Spacer,
   Button,
-  HStack,
   useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Select,
-  Input,
   useToast,
-  Text,
-  RadioGroup,
-  Radio,
-  FormLabel,
-  Divider,
 } from "@chakra-ui/react";
 import { WordCard } from "./components/WordCard";
 import WordlistSortingAndFilteringPanel from "./components/WordlistSortingAndFiltering";
@@ -40,7 +25,7 @@ import { EditorBarContextProvider } from "./components/context/EditorBar";
 import { Page } from "components/core";
 import EditorBar from "./components/EditorBar";
 import { FaPlusCircle } from "react-icons/fa";
-import { Field, Formik } from "formik";
+import { Formik } from "formik";
 import { addCustomWord } from "api/wordlist";
 import adjectives from "services/adjectives";
 import animals from "services/animals";
