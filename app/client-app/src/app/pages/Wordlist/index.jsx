@@ -27,10 +27,9 @@ import EditorBar from "./components/EditorBar";
 import { FaPlusCircle } from "react-icons/fa";
 import { Formik } from "formik";
 import { addCustomWord } from "api/wordlist";
-import adjectives from "services/adjectives";
-import animals from "services/animals";
-import { object, string } from "yup";
 import { AddCustomWordModel } from "./components/AddCustomWordModel";
+import { wordExists } from "./components/helpers/doesWordExist";
+import { validationSchema } from "./validation";
 
 const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
   const RenderWordCard = ({ index, style }) => {
@@ -67,7 +66,6 @@ const Wordlist = ({ id, navigate }) => {
   const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
   const [sliderValues, setSliderValues] = useState([1, 15]);
-  const [value, setValue] = useState("1");
 
   const handleSliderChange = (values) => {
     setSliderValues(values);
@@ -89,18 +87,10 @@ const Wordlist = ({ id, navigate }) => {
     defaultValue: "All",
     onChange: (value) => setFilter("exclusionStateMatches", value),
   });
+
   const typeGroup = getTypeRootProps();
   const exclusionGroup = getExclusionRootProps();
 
-  const wordExists = (word) => {
-    const result = adjectives.includes(word) || animals.includes(word);
-    return result;
-  };
-
-  const customWordSchema = object({
-    type: string().required("You must select a type"),
-    customWord: string().required("Custom word is required"),
-  });
   const toast = useToast();
 
   return (
@@ -139,7 +129,7 @@ const Wordlist = ({ id, navigate }) => {
                   </Button>
                   <Formik
                     initialValues={{ type: "", customWord: "" }}
-                    validationSchema={customWordSchema}
+                    validationSchema={validationSchema}
                     onSubmit={async (
                       values,
                       { setSubmitting, setFieldError }
@@ -164,7 +154,7 @@ const Wordlist = ({ id, navigate }) => {
                       } catch (error) {
                         toast({
                           title: "Error",
-                          description: `Failed to add the word "${values.customWord}". `,
+                          description: `Failed to add the word "${values.customWord}".`,
                           status: "error",
                           duration: 3000,
                           isClosable: true,
@@ -190,6 +180,7 @@ const Wordlist = ({ id, navigate }) => {
                           resetForm();
                         }
                       }, [isOpen, resetForm]);
+
                       return (
                         <AddCustomWordModel
                           isOpen={isOpen}
@@ -206,6 +197,7 @@ const Wordlist = ({ id, navigate }) => {
                       );
                     }}
                   </Formik>
+
                   <WordlistSortingAndFilteringPanel
                     data={cards}
                     sorting={sorting}

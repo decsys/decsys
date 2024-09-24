@@ -245,7 +245,7 @@ public class WordlistRepository :IWordlistRepository
 
         if (type.ToLower() == "noun")
         {
-            customWord = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(customWord);
+            customWord = char.ToUpper(customWord[0]) + customWord.Substring(1);
         }
 
         var newCustomWord = new Data.Entities.WordlistWord { Type = type, Word = customWord };
