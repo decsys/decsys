@@ -162,10 +162,9 @@ const Wordlist = ({ id, navigate }) => {
                           isClosable: true,
                         });
                       } catch (error) {
-                        console.error("Failed to add word:", error);
                         toast({
                           title: "Error",
-                          description: "Failed to add the word.",
+                          description: `Failed to add the word "${values.customWord}". `,
                           status: "error",
                           duration: 3000,
                           isClosable: true,
@@ -195,7 +194,7 @@ const Wordlist = ({ id, navigate }) => {
                         <AddCustomWordModel
                           isOpen={isOpen}
                           onClose={onClose}
-                          values={value}
+                          values={values}
                           handleSubmit={handleSubmit}
                           handleBlur={handleBlur}
                           handleChange={handleChange}

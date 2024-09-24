@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Xml.Linq;
 using AutoMapper;
 using Decsys.Config;
@@ -237,9 +238,14 @@ public class WordlistRepository :IWordlistRepository
             throw new KeyNotFoundException("Wordlist not found.");
         }
 
-        if (wordlist.CustomWords.Any(w => w.Word.Equals(customWord)))
+        if (wordlist.CustomWords.Any(w => w.Word.Equals(customWord,StringComparison.OrdinalIgnoreCase)))
         {
             throw new InvalidOperationException("This word already exists in the custom words list.");
+        }
+
+        if (type.ToLower() == "noun")
+        {
+            customWord = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(customWord);
         }
 
         var newCustomWord = new Data.Entities.WordlistWord { Type = type, Word = customWord };
