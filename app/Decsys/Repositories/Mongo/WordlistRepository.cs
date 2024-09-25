@@ -3,11 +3,12 @@ using System.Xml.Linq;
 using AutoMapper;
 using Decsys.Config;
 using Decsys.Constants;
-using Decsys.Data.Entities.Mongo;
+using Decsys.Models.Wordlist;
 using Decsys.Repositories.Contracts;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using UserWordlist = Decsys.Data.Entities.Mongo.UserWordlist;
 
 namespace Decsys.Repositories.Mongo;
 
@@ -243,9 +244,14 @@ public class WordlistRepository :IWordlistRepository
             throw new InvalidOperationException("This word already exists in the custom words list.");
         }
 
-        if (type.ToLower() == "noun")
+        if (type.ToLower() == WordType.Noun.ToString().ToLowerInvariant())
         {
             customWord = char.ToUpper(customWord[0]) + customWord.Substring(1);
+        }
+        
+        if (type.ToLower() == WordType.Adjective.ToString().ToLowerInvariant())
+        {
+            customWord = char.ToLower(customWord[0]) + customWord.Substring(1);
         }
 
         var newCustomWord = new Data.Entities.WordlistWord { Type = type, Word = customWord };

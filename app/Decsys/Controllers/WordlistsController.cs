@@ -176,6 +176,7 @@ namespace Decsys.Controllers
             return Ok(wordlist.Rules);
         }
 
+   
         [HttpPost("{wordlistId}")] 
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Added a custom word for the current user")]
@@ -192,7 +193,7 @@ namespace Decsys.Controllers
 
             wordlistWord.Type = wordlistWord.Type.ToLowerInvariant();
 
-            if (wordlistWord.Type != "noun" && wordlistWord.Type != "adjective")
+            if (wordlistWord.Type != WordType.Noun.ToString().ToLowerInvariant() && wordlistWord.Type != WordType.Adjective.ToString().ToLowerInvariant())
             {
                 return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
             }
@@ -212,7 +213,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(401, "User is not authenticated")]
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
         [SwaggerResponse(404, "Wordlist not found")]
-        public async Task<IActionResult> SetExcludedBuiltins(string wordlistId, string type, string word)
+        public async Task<IActionResult> SetExcludedBuiltins(string wordlistId, WordType type, string word)
         {
             string ownerId = User.GetUserId();
             var wordlist = await _service.GetById(ownerId, wordlistId);
@@ -221,22 +222,18 @@ namespace Decsys.Controllers
                 return NotFound("Wordlist not found.");
             }
 
-            if (string.IsNullOrWhiteSpace(type) || string.IsNullOrWhiteSpace(word))
+            if (string.IsNullOrWhiteSpace(word))
             {
-                return BadRequest("Invalid type or word.");
+                return BadRequest("Invalid word.");
             }
 
-            type = type.ToLowerInvariant();
+            string typeString = type.ToString().ToLowerInvariant();
 
-            if (type != "noun" && type != "adjective")
-            {
-                return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
-            }
-
-            var result = await _service.SetExcludedBuiltins(wordlistId, type, word);
+            var result = await _service.SetExcludedBuiltins(wordlistId, typeString, word);
 
             return Ok(result);
         }
+
 
         [HttpDelete("{wordlistId}/exclude/{type}/{word}")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
