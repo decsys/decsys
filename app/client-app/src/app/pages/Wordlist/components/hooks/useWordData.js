@@ -20,17 +20,49 @@ export const useWordData = (id) => {
         wordlist.excludedBuiltins,
         "word"
       );
+
+      // Processing built-in words
       const adjectiveCards = getFilteredWordList(
         adjectives,
         excludedBuiltinsDict,
-        "adjective"
+        "adjective",
+        false
       );
       const nounCards = getFilteredWordList(
         animals,
         excludedBuiltinsDict,
-        "noun"
+        "noun",
+        false
       );
-      setCards([...adjectiveCards, ...nounCards]);
+
+      // Processing custom words
+      const customAdjectives = wordlist.customWords
+        .filter((word) => word.type === "adjective")
+        .map((word) => word.word);
+      const customNouns = wordlist.customWords
+        .filter((word) => word.type === "noun")
+        .map((word) => word.word);
+
+      const customAdjectiveCards = getFilteredWordList(
+        customAdjectives,
+        excludedBuiltinsDict,
+        "adjective",
+        true
+      );
+      const customNounCards = getFilteredWordList(
+        customNouns,
+        excludedBuiltinsDict,
+        "noun",
+        true
+      );
+
+      // Combine all cards
+      setCards([
+        ...adjectiveCards,
+        ...nounCards,
+        ...customAdjectiveCards,
+        ...customNounCards,
+      ]);
     }
   };
 

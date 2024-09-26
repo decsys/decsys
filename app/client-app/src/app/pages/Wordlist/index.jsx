@@ -43,6 +43,7 @@ const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
           onToggleExclude={() =>
             toggleExclude(card.word, card.type, card.isExcludedBuiltin)
           }
+          isCustomWord={card.isCustomWord}
         />
       </div>
     ) : null;
@@ -207,6 +208,7 @@ const Wordlist = ({ id, navigate }) => {
                   />
                 </VStack>
               </Flex>
+
               <Flex flex="1">
                 <AutoSizer>
                   {({ height, width }) => (

@@ -13,6 +13,8 @@ export const useWordlistSortingAndFiltering = (data) => {
           return value.type === "adjective";
         case "Noun":
           return value.type === "noun";
+        case "Custom Word":
+          return value.isCustomWord;
         case "All":
         default:
           return true;
