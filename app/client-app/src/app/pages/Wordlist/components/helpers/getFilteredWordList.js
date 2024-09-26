@@ -8,7 +8,8 @@
 export const getFilteredWordList = (
   words = [],
   excludedBuiltinsDict = {},
-  wordsType
+  wordsType,
+  isCustomWord
 ) => {
   return words.map((word) => {
     const excludedWord = excludedBuiltinsDict[word];
@@ -17,7 +18,7 @@ export const getFilteredWordList = (
     return {
       type: wordsType,
       word,
-      isCustomWord: false,
+      isCustomWord: isCustomWord,
       isExcludedBuiltin: isExcludedBuiltin || false,
     };
   });

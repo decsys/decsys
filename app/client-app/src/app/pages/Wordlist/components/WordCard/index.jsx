@@ -8,6 +8,7 @@ export const WordCard = ({
   isExcludedBuiltin,
   onToggleExclude,
   isDefaultWordlist,
+  isCustomWord,
 }) => {
   return (
     <Stack spacing={0} direction="row" bg="gray.200">
@@ -25,6 +26,18 @@ export const WordCard = ({
             <Heading size="md">{word}</Heading>
           </Box>
           <Box flex="1" display="flex" justifyContent="center">
+            {isCustomWord && (
+              <Badge
+                variant="subtle"
+                colorScheme="red"
+                padding="5px"
+                fontSize="l"
+                fontWeight="bold"
+                mr="2"
+              >
+                Custom
+              </Badge>
+            )}
             <Badge
               variant="subtle"
               colorScheme="blue"

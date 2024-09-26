@@ -13,28 +13,33 @@ const generateGfyCatStyleUrl = (
   excludedBuiltins,
   numAdjectives,
   delimiter,
-  capitalizeFirstLetter
+  capitalizeFirstLetter,
+  customAdjectives = [],
+  customNouns = []
 ) => {
   let combination = "";
 
   const excludedBuitinWords = toDictionary(excludedBuiltins, "word");
 
-  // Filter adjectives array
-  const filteredAdjectives = adjectives.filter(
+  // Combine default and custom adjectives/nouns and then filter them
+  const allAdjectives = [...adjectives, ...customAdjectives].filter(
     (adjective) => !excludedBuitinWords[adjective]
   );
-  const filteredNouns = animals.filter((noun) => !excludedBuitinWords[noun]);
+  const allNouns = [...animals, ...customNouns].filter(
+    (noun) => !excludedBuitinWords[noun]
+  );
 
+  // Generate adjectives for the URL
   for (let i = 0; i < numAdjectives; i++) {
     const adjective =
-      filteredAdjectives[Math.floor(Math.random() * filteredAdjectives.length)];
-
+      allAdjectives[Math.floor(Math.random() * allAdjectives.length)];
     combination += capitalizeFirstLetter
       ? adjective.charAt(0).toUpperCase() + adjective.slice(1) + delimiter
       : adjective + delimiter;
   }
 
-  const noun = filteredNouns[Math.floor(Math.random() * filteredNouns.length)];
+  // Select a noun and finalize the URL
+  const noun = allNouns[Math.floor(Math.random() * allNouns.length)];
   combination += capitalizeFirstLetter
     ? noun.charAt(0).toUpperCase() + noun.slice(1)
     : noun;
