@@ -41,12 +41,19 @@ const ParticipantIdentifiersConfig = ({ data, mutate }) => {
       ? wordLists.find((wl) => wl.id === selectedWordlistId)
       : null;
 
+  const customAdjectives = wordList?.customWords
+    ?.filter((word) => word.type === "adjective")
+    .map((word) => word.word);
+  const customNouns = wordList?.customWords
+    ?.filter((word) => word.type === "noun")
+    .map((word) => word.word);
+
   const handleIdGenClick = () => {
     const isDefault = selectedWordlistId === "default";
 
     const params = isDefault
       ? [[], 1, "", true] // Parameters for default case
-      : [wordList.excludedBuiltins, 1, "", true]; // Parameters for non-default case
+      : [wordList.excludedBuiltins, 1, "", true, customAdjectives, customNouns]; // Parameters for non-default case
 
     mutate(
       produce((config) => {

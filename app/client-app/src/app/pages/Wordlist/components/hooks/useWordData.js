@@ -12,7 +12,7 @@ import { getFilteredWordList } from "../helpers/getFilteredWordList";
 export const useWordData = (id) => {
   const [cards, setCards] = useState([]);
 
-  const { data: wordlist } = getWordlistById(id);
+  const { data: wordlist, mutate } = getWordlistById(id);
 
   const processCards = () => {
     if (wordlist) {
@@ -88,5 +88,5 @@ export const useWordData = (id) => {
     );
   };
 
-  return { wordlist, cards, setCards, toggleExclude };
+  return { wordlist, cards, setCards, toggleExclude, mutate };
 };

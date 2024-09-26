@@ -63,7 +63,7 @@ const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
 
 const Wordlist = ({ id, navigate }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { cards, toggleExclude } = useWordData(id);
+  const { cards, toggleExclude, mutate } = useWordData(id);
   const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
   const [sliderValues, setSliderValues] = useState([1, 15]);
@@ -145,6 +145,7 @@ const Wordlist = ({ id, navigate }) => {
                       }
                       try {
                         await addCustomWord(id, values.type, values.customWord);
+                        mutate();
                         toast({
                           title: "Success",
                           description: `Word "${values.customWord}" added successfully!`,
