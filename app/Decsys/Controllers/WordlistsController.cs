@@ -205,14 +205,14 @@ namespace Decsys.Controllers
 
         }
 
-        [HttpDelete("{wordlistId}/customWord")] 
+        [HttpDelete("{wordlistId}/custom")] 
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Added a custom word for the current user")]
         [SwaggerResponse(200, "Custom Word Added.")]
         [SwaggerResponse(401, "User is not authenticated")]
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
         [SwaggerResponse(404, "Wordlist not found.")]
-        public async  Task<IActionResult> DeleteCustomWord(string wordlistId, [FromBody] WordlistWord wordlistWord)
+        public async Task<IActionResult> DeleteCustomWord(string wordlistId, [FromBody] WordlistWord wordlistWord)
         {
             if (string.IsNullOrWhiteSpace(wordlistWord.Type) || string.IsNullOrWhiteSpace(wordlistWord.Word))
             {
@@ -230,6 +230,7 @@ namespace Decsys.Controllers
             await _service.DeleteCustomWord(ownerId, wordlistId, wordlistWord.Type, wordlistWord.Word);
             return NoContent();
         }
+
         [HttpPut("{wordlistId}/exclude/{type}/{word}")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Update or create an exclusion for a specific word in a specified wordlist")]

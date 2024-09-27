@@ -27,7 +27,10 @@ export const RadioOptions = ({ group, getRadioProps, options, label }) => {
 };
 
 export const TypeFilter = (props) => {
-  const typeOptions = ["Adjective", "Noun", "Custom Word", "All"];
+  const typeOptions = props.isDefaultWordlist
+    ? ["Adjective", "Noun", "All"]
+    : ["Adjective", "Noun", "Custom Word", "All"];
+
   return <RadioOptions {...props} options={typeOptions} label="Type" />;
 };
 
