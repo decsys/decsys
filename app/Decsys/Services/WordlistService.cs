@@ -56,4 +56,7 @@ public class WordlistService : IWordlistRepository
 
     public async Task DeleteExcludedBuiltins(string wordlistId, string type, string word)
     => await _wordlist.DeleteExcludedBuiltins(wordlistId, type, word);
+    public async Task DeleteCustomWord(string ownerId,string wordlistId, string type, string customWord)
+        => await _wordlist.DeleteCustomWord(ownerId,wordlistId, type, customWord);
+
 }

@@ -205,6 +205,31 @@ namespace Decsys.Controllers
 
         }
 
+        [HttpDelete("{wordlistId}/customWord")] 
+        [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+        [SwaggerOperation("Added a custom word for the current user")]
+        [SwaggerResponse(200, "Custom Word Added.")]
+        [SwaggerResponse(401, "User is not authenticated")]
+        [SwaggerResponse(403, "User is not authorized to perform this operation")]
+        [SwaggerResponse(404, "Wordlist not found.")]
+        public async  Task<IActionResult> DeleteCustomWord(string wordlistId, [FromBody] WordlistWord wordlistWord)
+        {
+            if (string.IsNullOrWhiteSpace(wordlistWord.Type) || string.IsNullOrWhiteSpace(wordlistWord.Word))
+            {
+                return BadRequest("Invalid type or word.");
+            }
+
+            wordlistWord.Type = wordlistWord.Type.ToLowerInvariant();
+
+            if (wordlistWord.Type != WordType.Noun.ToString().ToLowerInvariant() && wordlistWord.Type != WordType.Adjective.ToString().ToLowerInvariant())
+            {
+                return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
+            }
+
+            string ownerId = User.GetUserId();
+            await _service.DeleteCustomWord(ownerId, wordlistId, wordlistWord.Type, wordlistWord.Word);
+            return NoContent();
+        }
         [HttpPut("{wordlistId}/exclude/{type}/{word}")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
         [SwaggerOperation("Update or create an exclusion for a specific word in a specified wordlist")]
