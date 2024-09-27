@@ -54,7 +54,7 @@ export const deleteWordlist = async (wordlistId) => {
 };
 
 export const deleteCustomWord = async (id, type, word) => {
-  await axios.delete(`/api/wordlists/${id}/custom`, {
+  await axios.delete(`/api/wordlists/${id}/custom-word`, {
     data: { type, word },
     headers: await authorization_BearerToken(),
   });
