@@ -46,7 +46,7 @@ const HelpMenu = () => (
       </MenuItem>
       <MenuItem
         as="a"
-        href="http://www.lucidresearch.org/decsys.html"
+        href="http://www.lucidresearch.org/decsys"
         target="_blank"
       >
         <Stack direction="row" align="center" spacing={1}>

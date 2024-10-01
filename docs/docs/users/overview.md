@@ -28,6 +28,6 @@ The [Developer Guide](../devs/contributing/source-code.md) and [Technical Refere
 There are also other places you can find specific information about aspects of the wider DECSYS Project:
 
 - [Running or Building the Survey Platform](https://github.com/decsys/decsys/blob/master/README.md)
-- [About the DECSYS Project](http://www.lucidresearch.org/decsys.html)
+- [About the DECSYS Project](http://www.lucidresearch.org/decsys)
 - [Writing Response Components for the Platform](https://github.com/decsys/component-boilerplate/wiki)
 - [Using the Ratings Scales components in other projects](https://decsys.github.io/rating-scales/)

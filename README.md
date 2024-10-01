@@ -4,7 +4,7 @@ DECSYS is a tool that enables the creation and administration of digital surveys
 
 # 📝 Documentation
 
-- [Research Project Homepage](https://www.lucidresearch.org/decsys.html)
+- [Research Project Homepage](https://www.lucidresearch.org/decsys)
 - [Usage and Technical Overview of the Application](https://decsys.github.io/decsys)
 - [Custom Response Item Guide](https://github.com/decsys/component-boilerplate/wiki)
 
