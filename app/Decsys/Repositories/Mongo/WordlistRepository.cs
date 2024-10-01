@@ -284,7 +284,7 @@ public class WordlistRepository :IWordlistRepository
             wordlist.CustomWords.Remove(customWordTodelete);
 
             var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.CustomWords, wordlist.CustomWords);
-            await _wordlists.UpdateOneAsync(wl => wl.Id == objectId, updateDefinition);
+            await _wordlists.UpdateOneAsync(wl => wl.Id == objectId && wl.Owner == ownerId, updateDefinition);
         }
         else
         {
