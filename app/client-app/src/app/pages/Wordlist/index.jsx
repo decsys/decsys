@@ -31,7 +31,13 @@ import { AddCustomWordModel } from "./components/AddCustomWordModel";
 import { wordExists } from "./components/helpers/doesWordExist";
 import { validationSchema } from "./validation";
 
-const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
+const WordlistDisplay = ({
+  outputList,
+  height,
+  width,
+  toggleExclude,
+  wordlistId,
+}) => {
   const RenderWordCard = ({ index, style }) => {
     const card = outputList[index];
     return card ? (
@@ -44,6 +50,7 @@ const WordlistDisplay = ({ outputList, height, width, toggleExclude }) => {
             toggleExclude(card.word, card.type, card.isExcludedBuiltin)
           }
           isCustomWord={card.isCustomWord}
+          wordlistId={wordlistId}
         />
       </div>
     ) : null;
@@ -218,6 +225,7 @@ const Wordlist = ({ id, navigate }) => {
                       height={height}
                       width={width}
                       toggleExclude={toggleExclude}
+                      wordlistId={id}
                     />
                   )}
                 </AutoSizer>

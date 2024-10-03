@@ -17,4 +17,5 @@ public interface IWordlistRepository
     Task Delete(string wordlistId);
     Task DeleteRule(string wordlistId, int ruleIndex);
     Task DeleteExcludedBuiltins(string wordlistId, string type, string word);
+    Task DeleteCustomWord(string ownerId, string wordlistId, string type, string customWord);
 }

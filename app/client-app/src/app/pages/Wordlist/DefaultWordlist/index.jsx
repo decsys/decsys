@@ -88,7 +88,11 @@ const DefaultWordlist = () => {
         <Stack mt={2} spacing={4} h="100vh" p={2}>
           <Flex p={2} boxShadow="base" backgroundColor="gray.50">
             <VStack alignItems="start">
-              <TypeFilter group={typeGroup} getRadioProps={getTypeRadioProps} />
+              <TypeFilter
+                group={typeGroup}
+                getRadioProps={getTypeRadioProps}
+                isDefaultWordlist={isDefaultWordlist}
+              />
 
               <WordLengthFilter
                 sliderValues={sliderValues}

@@ -53,6 +53,15 @@ export const deleteWordlist = async (wordlistId) => {
   return true;
 };
 
+export const deleteCustomWord = async (id, type, word) => {
+  await axios.delete(`/api/wordlists/${id}/custom-word`, {
+    data: { type, word },
+    headers: await authorization_BearerToken(),
+  });
+
+  return true;
+};
+
 export const getWordlistById = (id) =>
   useSWR(`/api/wordlists/${id}`, defaultFetcher(true), { suspense: true });
 

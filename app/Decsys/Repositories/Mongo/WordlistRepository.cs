@@ -265,6 +265,32 @@ public class WordlistRepository :IWordlistRepository
         return _mapper.Map<Models.Wordlist.WordlistWord>(newCustomWord); 
     }
 
+    public async Task DeleteCustomWord(string ownerId, string wordlistId, string type, string customWord)
+    {
+        if (!ObjectId.TryParse(wordlistId, out var objectId))
+        {
+            throw new KeyNotFoundException("Invalid ObjectId format.");
+        }
+        var wordlist = await _wordlists.Find(wl => wl.Id == objectId && wl.Owner == ownerId).FirstOrDefaultAsync();
+        if (wordlist == null)
+        {
+            throw new KeyNotFoundException("Wordlist not found.");
+        }
+        
+        var customWordTodelete = wordlist.CustomWords.FirstOrDefault(w => w.Type == type && w.Word == customWord);
+
+        if (customWordTodelete != null)
+        {
+            wordlist.CustomWords.Remove(customWordTodelete);
+
+            var updateDefinition = Builders<Data.Entities.Mongo.UserWordlist>.Update.Set(wl => wl.CustomWords, wordlist.CustomWords);
+            await _wordlists.UpdateOneAsync(wl => wl.Id == objectId && wl.Owner == ownerId, updateDefinition);
+        }
+        else
+        {
+            throw new Exception("Excluded word not found in the wordlist.");
+        }
+    }
 
     public async Task DeleteExcludedBuiltins(string wordlistId, string type,string word)
     {

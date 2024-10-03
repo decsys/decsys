@@ -1,15 +1,52 @@
-import { Box, Badge, Heading, Button, Icon, Stack } from "@chakra-ui/react";
-import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
+import {
+  Box,
+  Badge,
+  Heading,
+  Button,
+  Icon,
+  Stack,
+  useToast,
+} from "@chakra-ui/react";
+import { FaMinusCircle, FaPlusCircle, FaTrash } from "react-icons/fa";
 import { ActiveIndicator } from "components/core";
+import { deleteCustomWord } from "api/wordlist";
+import { useWordData } from "../hooks/useWordData";
 
 export const WordCard = ({
-  type,
   word,
+  type,
   isExcludedBuiltin,
   onToggleExclude,
   isDefaultWordlist,
   isCustomWord,
+  wordlistId,
 }) => {
+  const toast = useToast();
+  const { mutate } = useWordData(wordlistId);
+  const handleDelete = async () => {
+    const success = await deleteCustomWord(wordlistId, type, word);
+    if (success) {
+      mutate();
+      toast({
+        title: "Deletion Successful",
+        description: "The custom word has been successfully deleted.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+    } else {
+      toast({
+        title: "Deletion Failed",
+        description: "Failed to delete word. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-right",
+      });
+    }
+  };
+
   return (
     <Stack spacing={0} direction="row" bg="gray.200">
       <ActiveIndicator active={!isExcludedBuiltin} />
@@ -49,6 +86,17 @@ export const WordCard = ({
             </Badge>
           </Box>
           <Box flex="1" display="flex" justifyContent="flex-end">
+            {!isDefaultWordlist && isCustomWord && (
+              <Button
+                leftIcon={<FaTrash />}
+                colorScheme="red"
+                mr="2"
+                variant="outline"
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+            )}
             {!isDefaultWordlist && (
               <Button
                 onClick={() => onToggleExclude(word, type, isExcludedBuiltin)}
