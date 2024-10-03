@@ -154,7 +154,7 @@ const buildFooterConfig = (docsRoutePrefix) => ({
       items: [
         {
           label: "LUCID",
-          href: "https://www.lucidresearch.org/decsys.html",
+          href: "https://www.lucidresearch.org/decsys",
         },
         {
           label: "GitHub",
