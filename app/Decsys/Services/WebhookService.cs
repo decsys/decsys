@@ -76,12 +76,12 @@ public class WebhookService
             {
                 if (!string.IsNullOrEmpty(_webhooksConfig.GlobalRedirectUrl))
                 {
-                    _logger.LogDebug("Environment is Development and override is enabled; using GlobalRedirectUrl for webhook {Webhook}...", webhook.Id);
+                    _logger.LogDebug("Environment is Development and override is enabled; using GlobalRedirectUrl for webhook");
                     webhook.CallbackUrl = _webhooksConfig.GlobalRedirectUrl;
                 }
                 else
                 {
-                    _logger.LogWarning("GlobalRedirectUrl is not configured for webhook {Webhook}.", webhook.Id);
+                    _logger.LogWarning("GlobalRedirectUrl is not configured for webhooks");
                     return;
                 }
             }
