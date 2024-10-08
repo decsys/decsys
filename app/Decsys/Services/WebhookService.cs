@@ -74,8 +74,16 @@ public class WebhookService
 
             if (_environment == "Development" && _webhooksConfig.OverrideWebhookForDev)
             {
-                _logger.LogDebug("Environment is Development and override is enabled; using GlobalRedirectUrl for webhook {Webhook}...", webhook.Id);
-                webhook.CallbackUrl = _webhooksConfig.GlobalRedirectUrl; 
+                if (!string.IsNullOrEmpty(_webhooksConfig.GlobalRedirectUrl))
+                {
+                    _logger.LogDebug("Environment is Development and override is enabled; using GlobalRedirectUrl for webhook {Webhook}...", webhook.Id);
+                    webhook.CallbackUrl = _webhooksConfig.GlobalRedirectUrl;
+                }
+                else
+                {
+                    _logger.LogWarning("GlobalRedirectUrl is not configured for webhook {Webhook}.", webhook.Id);
+                    return;
+                }
             }
             
             if (forceTrigger || FilterCriteria(webhook, payload)) 
