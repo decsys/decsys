@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Decsys.Config;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using Decsys.Utilities;
@@ -12,15 +13,21 @@ public class WebhookService
     private readonly IWebhookRepository _webhooks;
     private readonly HttpClient _client;
     private readonly ILogger<WebhookService> _logger;
+    private readonly string _environment;
+    private readonly Webhooks _webhooksConfig; 
 
     public WebhookService(
         IWebhookRepository webhooks,
         IHttpClientFactory httpClientFactory,
-        ILoggerFactory logger)
+        ILoggerFactory logger,
+        IConfiguration configuration,
+        Webhooks webhooksConfig)
     {
         _webhooks = webhooks;
         _client = httpClientFactory.CreateClient();
         _logger = logger.CreateLogger<WebhookService>();
+        _environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Development"; 
+        _webhooksConfig = webhooksConfig;
     }
 
     /// <summary>
@@ -64,6 +71,13 @@ public class WebhookService
 
         foreach (var webhook in webhooks)
         {
+
+            if (_environment == "Development" && _webhooksConfig.OverrideWebhookForDev)
+            {
+                _logger.LogDebug("Environment is Development and override is enabled; using GlobalRedirectUrl for webhook {Webhook}...", webhook.Id);
+                webhook.CallbackUrl = _webhooksConfig.GlobalRedirectUrl; 
+            }
+            
             if (forceTrigger || FilterCriteria(webhook, payload)) 
             {
                 _logger.LogDebug("Criteria met or trigger forced; triggering webhook {Webhook}...", webhook.Id);

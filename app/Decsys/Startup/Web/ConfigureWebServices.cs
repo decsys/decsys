@@ -37,7 +37,7 @@ public static class ConfigureWebServices
             .AddResponseCompression()
             .AddAppAuthorization(mode)
             .AddAutoMapper(typeof(Program))
-            .AddAppServices()
+            .AddAppServices(builder.Configuration) 
             .AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new() { Title = "DECSYS API", Version = "v1" });

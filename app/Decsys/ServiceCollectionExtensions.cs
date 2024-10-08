@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -74,8 +75,13 @@ namespace Decsys
                 .AddTransient<IWebhookRepository, LiteDbWebhookRepository>()
                 .AddTransient<IWordlistRepository, LiteDbWordlistRepository>();
 
-        public static IServiceCollection AddAppServices(this IServiceCollection s)
-            => s.AddTransient<SurveyService>()
+        public static IServiceCollection AddAppServices(this IServiceCollection s, IConfiguration c)
+        {
+            s.Configure<Webhooks>(c.GetSection("Webhooks"));
+
+            s.AddSingleton<Webhooks>(sp => sp.GetRequiredService<IOptions<Webhooks>>().Value);
+
+            return s.AddTransient<SurveyService>()
                 .AddTransient<PageService>()
                 .AddTransient<ComponentService>()
                 .AddTransient<ComponentFileService>()
@@ -87,6 +93,7 @@ namespace Decsys
                 .AddTransient<WordlistService>()
                 .AddSingleton<MathService>();
 
+        }
 
         public static IServiceCollection AddAppMvcServices(this IServiceCollection s)
         {
