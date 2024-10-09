@@ -48,3 +48,32 @@ The Identity service is an Open ID Connect compliant Token provider, currently u
 All other data is stored in a remote MongoDB database (`4.x` or newer), to which the Backend API connects.
 
 Currently Survey configuration data and Survey Instance metadata are stored in a primary database called `decsys`, and Participant Event Logs are stored in a separate database per Survey Instance. Each of these databases is prefixed `decsys_events_`.
+
+### Webhooks
+
+DECSYS supports webhooks to facilitate integration with external services. By default, **triggering webhooks is blocked during development mode** to prevent unintended external calls. Developers can enable webhooks and override the webhook URL during development for testing purposes.
+
+#### Enabling Webhooks in Development Mode
+
+To enable webhooks during development, adjust the `Webhooks` configuration section in your `appsettings.json` or environment-specific configuration files.
+
+#### Example Configuration
+
+```
+{
+  "Webhooks": {
+    "OverrideWebhookForDev": true,
+    "GlobalRedirectUrl": "https://webhook.site/your-unique-url"
+  }
+}
+```
+
+- `OverrideWebhookForDev`: 
+  - `true`: Allows webhooks to be triggered during development mode. You can also specify a `GlobalRedirectUrl` to override all webhook URLs for testing purposes.
+  - `false`: Webhooks will behave as configured in the web application without any overrides. This means that if the webhooks are set up in the app, they will function normally even in development mode.
+- `GlobalRedirectUrl`: *(Optional)* Specify a URL to which all webhook calls will be redirected. This is useful for testing webhooks without invoking actual external services.
+
+#### Notes
+**Default Behavior in Development Mode:** If `OverrideWebhookForDev` is not set or is set to false, webhooks will be blocked during development mode to prevent unintended external calls.
+**Security Considerations**: Enabling webhooks in development should be done cautiously, especially if the webhooks perform sensitive operations.
+**Testing Tools**: Services like webhook.site can be used to receive and inspect webhook payloads for testing purposes.
