@@ -4,6 +4,7 @@ using Decsys.Config;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using Decsys.Utilities;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Decsys.Services;
@@ -21,13 +22,13 @@ public class WebhookService
         IHttpClientFactory httpClientFactory,
         ILoggerFactory logger,
         IConfiguration configuration,
-        Webhooks webhooksConfig)
+        IOptions<Webhooks> webhooksConfig)
     {
         _webhooks = webhooks;
         _client = httpClientFactory.CreateClient();
         _logger = logger.CreateLogger<WebhookService>();
         _environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Development"; 
-        _webhooksConfig = webhooksConfig;
+        _webhooksConfig = webhooksConfig.Value;
     }
 
     /// <summary>
