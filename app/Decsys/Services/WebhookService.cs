@@ -12,22 +12,22 @@ namespace Decsys.Services;
 public class WebhookService
 {
     private readonly IWebhookRepository _webhooks;
+    private readonly IHostEnvironment _hostEnvironment;
     private readonly HttpClient _client;
     private readonly ILogger<WebhookService> _logger;
-    private readonly string _environment;
     private readonly Webhooks _webhooksConfig; 
 
     public WebhookService(
         IWebhookRepository webhooks,
         IHttpClientFactory httpClientFactory,
         ILoggerFactory logger,
-        IConfiguration configuration,
-        IOptions<Webhooks> webhooksConfig)
+        IOptions<Webhooks> webhooksConfig,
+        IHostEnvironment hostEnvironment)
     {
         _webhooks = webhooks;
+        _hostEnvironment = hostEnvironment;
         _client = httpClientFactory.CreateClient();
         _logger = logger.CreateLogger<WebhookService>();
-        _environment = configuration["ASPNETCORE_ENVIRONMENT"] ?? "Development"; 
         _webhooksConfig = webhooksConfig.Value;
     }
 
@@ -73,7 +73,7 @@ public class WebhookService
         foreach (var webhook in webhooks)
         {
 
-            if (_environment == "Development" && _webhooksConfig.OverrideWebhookForDev)
+            if (_hostEnvironment.IsDevelopment() && _webhooksConfig.OverrideWebhookForDev)
             {
                 if (!string.IsNullOrEmpty(_webhooksConfig.GlobalRedirectUrl))
                 {
