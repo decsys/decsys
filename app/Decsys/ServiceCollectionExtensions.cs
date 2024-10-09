@@ -74,7 +74,7 @@ namespace Decsys
                 .AddTransient<IWebhookRepository, LiteDbWebhookRepository>()
                 .AddTransient<IWordlistRepository, LiteDbWordlistRepository>();
 
-        public static IServiceCollection AddAppServices(this IServiceCollection s)
+        public static IServiceCollection AddAppServices(this IServiceCollection s, IConfiguration c)
             => s.AddTransient<SurveyService>()
                 .AddTransient<PageService>()
                 .AddTransient<ComponentService>()
@@ -85,6 +85,7 @@ namespace Decsys
                 .AddTransient<StudyAllocationService>()
                 .AddTransient<WebhookService>()
                 .AddTransient<WordlistService>()
+                .Configure<Webhooks>(c.GetSection("Webhooks"))
                 .AddSingleton<MathService>();
 
 

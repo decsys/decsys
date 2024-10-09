@@ -18,6 +18,11 @@ public static class ConfigureWebServices
             var hostedDbSettings = builder.Configuration.GetSection("Hosted").Get<HostedDbSettings>();
 
             var mongoClient = new MongoClient(builder.Configuration.GetConnectionString("mongo"));
+            
+            if (hostedDbSettings == null)
+            {
+                throw new ArgumentNullException(nameof(hostedDbSettings));
+            }
 
             builder.Services
                 .AddApplicationInsightsTelemetry()
@@ -37,7 +42,7 @@ public static class ConfigureWebServices
             .AddResponseCompression()
             .AddAppAuthorization(mode)
             .AddAutoMapper(typeof(Program))
-            .AddAppServices()
+            .AddAppServices(builder.Configuration) 
             .AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new() { Title = "DECSYS API", Version = "v1" });

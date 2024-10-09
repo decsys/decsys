@@ -1,8 +1,10 @@
 using System.Security.Cryptography;
 using System.Text;
+using Decsys.Config;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
 using Decsys.Utilities;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace Decsys.Services;
@@ -10,17 +12,23 @@ namespace Decsys.Services;
 public class WebhookService
 {
     private readonly IWebhookRepository _webhooks;
+    private readonly IHostEnvironment _hostEnvironment;
     private readonly HttpClient _client;
     private readonly ILogger<WebhookService> _logger;
+    private readonly Webhooks _webhooksConfig; 
 
     public WebhookService(
         IWebhookRepository webhooks,
         IHttpClientFactory httpClientFactory,
-        ILoggerFactory logger)
+        ILoggerFactory logger,
+        IOptions<Webhooks> webhooksConfig,
+        IHostEnvironment hostEnvironment)
     {
         _webhooks = webhooks;
+        _hostEnvironment = hostEnvironment;
         _client = httpClientFactory.CreateClient();
         _logger = logger.CreateLogger<WebhookService>();
+        _webhooksConfig = webhooksConfig.Value;
     }
 
     /// <summary>
@@ -64,6 +72,21 @@ public class WebhookService
 
         foreach (var webhook in webhooks)
         {
+
+            if (_hostEnvironment.IsDevelopment() && _webhooksConfig.OverrideWebhookForDev)
+            {
+                if (!string.IsNullOrEmpty(_webhooksConfig.GlobalRedirectUrl))
+                {
+                    _logger.LogDebug("Environment is Development and override is enabled; using GlobalRedirectUrl for webhook");
+                    webhook.CallbackUrl = _webhooksConfig.GlobalRedirectUrl;
+                }
+                else
+                {
+                    _logger.LogWarning("GlobalRedirectUrl is not configured for webhooks");
+                    return;
+                }
+            }
+            
             if (forceTrigger || FilterCriteria(webhook, payload)) 
             {
                 _logger.LogDebug("Criteria met or trigger forced; triggering webhook {Webhook}...", webhook.Id);
