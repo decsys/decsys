@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { params } from "./ResponseItem.params";
 import { stats } from "./ResponseItem.stats";
-import { Flex, Badge, Textarea, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  Badge,
+  Textarea,
+  Text,
+  FormControl,
+  FormErrorMessage,
+} from "@chakra-ui/react";
 
 const colorSchemes = {
   info: "blue",
@@ -13,19 +20,30 @@ const colorSchemes = {
 const ResponseItem = ({
   maxLength,
   text,
+  regex,
   _context: { logResults, setIsValidResponse, clearResult },
 }) => {
   const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
 
   const [badgeVariant, setBadgeVariant] = useState("info");
   const [value, setValue] = useState(text);
+  const [regexValue, setRegexValue] = useState(regex);
+  const [isRegexValid, setIsRegexValid] = useState(true);
+
   useEffect(() => {
     setValue(text);
-  }, [text]);
+    setRegexValue(regex);
+  }, [text, regex]);
+
+  const handleRegex = (regex, text) => {
+    const re = new RegExp(regex);
+    return re.test(text);
+  };
 
   const handleInput = ({ target }) => {
-    setValue(target.value);
-    const inputLength = target.value.length;
+    const newValue = target.value;
+    setValue(newValue);
+    const inputLength = newValue.length;
 
     if (inputLength === 0) {
       clearResult();
@@ -41,6 +59,9 @@ const ResponseItem = ({
     } else {
       setBadgeVariant("info");
     }
+
+    const regexIsValid = handleRegex(regexValue, newValue);
+    setIsRegexValid(regexIsValid);
   };
 
   const handleBlur = (e) => {
@@ -49,23 +70,32 @@ const ResponseItem = ({
   };
 
   return (
-    <Flex direction="column">
-      <Flex p=".1em">
-        <Badge display="flex" p={1} colorScheme={colorSchemes[badgeVariant]}>
-          <Text mr={1}>Characters remaining:</Text>
-          <Text>
-            {maxLength - (value?.length ?? 0)}/{maxLength}
-          </Text>
-        </Badge>
+    <FormControl isInvalid={!isRegexValid}>
+      <Flex direction="column">
+        <Flex p=".1em">
+          <Badge display="flex" p={1} colorScheme={colorSchemes[badgeVariant]}>
+            <Text mr={1}>Characters remaining:</Text>
+            <Text>
+              {maxLength - (value?.length ?? 0)}/{maxLength}
+            </Text>
+          </Badge>
+        </Flex>
+        <Textarea
+          value={value}
+          maxLength={maxLength}
+          name="FreeText"
+          onChange={handleInput}
+          onBlur={handleBlur}
+        />
+        {!isRegexValid && (
+          <FormErrorMessage>
+            <Text>
+              Regex <strong> {regexValue} </strong> does not match
+            </Text>
+          </FormErrorMessage>
+        )}
       </Flex>
-      <Textarea
-        value={value}
-        maxLength={maxLength}
-        name="FreeText"
-        onChange={handleInput}
-        onBlur={handleBlur}
-      />
-    </Flex>
+    </FormControl>
   );
 };
 
