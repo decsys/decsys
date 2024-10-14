@@ -45,12 +45,6 @@ const ResponseItem = ({
     setValue(newValue);
     const inputLength = newValue.length;
 
-    if (inputLength === 0) {
-      clearResult();
-    } else {
-      setIsValidResponse(true);
-    }
-
     const count = maxLength - inputLength;
     if (count === 0) {
       setBadgeVariant("danger");
@@ -62,6 +56,13 @@ const ResponseItem = ({
 
     const regexIsValid = handleRegex(regexValue, newValue);
     setIsRegexValid(regexIsValid);
+
+    if (inputLength === 0) {
+      clearResult();
+      setIsValidResponse(false);
+    } else {
+      setIsValidResponse(regexIsValid);
+    }
   };
 
   const handleBlur = (e) => {
@@ -89,9 +90,7 @@ const ResponseItem = ({
         />
         {!isRegexValid && (
           <FormErrorMessage>
-            <Text>
-              Regex <strong> {regexValue} </strong> does not match
-            </Text>
+            <Text>Ensure all required criteria are met</Text>
           </FormErrorMessage>
         )}
       </Flex>
