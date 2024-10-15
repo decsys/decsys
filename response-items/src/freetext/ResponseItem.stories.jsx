@@ -25,16 +25,28 @@ export default {
   component: ResponseItem,
   argTypes: {
     logResults: { action: "logResults" },
-    setNextEnabled: { action: "setNextEnabled" },
+    setIsValidResponse: { action: "setIsValidResponse" },
+    clearResult: { action: "clearResult" },
+    regex: {
+      description:
+        "The text of the regular expression. This can also be another RegExp object.",
+      control: "text",
+    },
   },
   args: {
-    maxLength: 1000,
-    text: "Hello",
+    maxLength: 20,
+    text: "hello World",
+    regex: "^hello",
   },
 };
 
-export const Basic = (args) => {
-  const _context = { ...args };
+export const Basic = ({
+  logResults,
+  setIsValidResponse,
+  clearResult,
+  ...args
+}) => {
+  const _context = { logResults, setIsValidResponse, clearResult };
   return <ResponseItem {...args} _context={_context} />;
 };
 
