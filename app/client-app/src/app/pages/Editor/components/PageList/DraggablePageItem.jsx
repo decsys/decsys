@@ -119,6 +119,7 @@ const OptionalButton = ({ isOptional, id, setIsOptional, type }) => {
           isChecked={!isOptional}
           onChange={handleOptionalClick}
           ml={-8}
+          colorScheme="purple"
         />
       </Center>
     </Tooltip>
