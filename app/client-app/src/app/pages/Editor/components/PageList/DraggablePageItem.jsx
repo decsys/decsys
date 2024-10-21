@@ -141,12 +141,14 @@ export const ItemInfo = ({
   id,
 }) => (
   <Flex align="center" width="100%" {...dragHandleProps} onClick={onSelect}>
-    <QuestionButton
-      isQuestionItem={isQuestionItem}
-      setQuestionItem={setQuestionItem}
-      id={id}
-      type={type}
-    />
+    {type !== "image" && type !== "spacer" && (
+      <QuestionButton
+        isQuestionItem={isQuestionItem}
+        setQuestionItem={setQuestionItem}
+        id={id}
+        type={type}
+      />
+    )}
     {id && (
       <OptionalButton
         isOptional={isOptional}
