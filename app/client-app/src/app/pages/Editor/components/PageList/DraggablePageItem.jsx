@@ -8,6 +8,7 @@ import {
   Select,
   Center,
   Tooltip,
+  Switch,
 } from "@chakra-ui/react";
 import {
   FaHeading,
@@ -112,17 +113,14 @@ const OptionalButton = ({ isOptional, id, setIsOptional, type }) => {
   }
 
   return (
-    <Tooltip label={isOptional ? "Make Mandatory" : "Make Optional"}>
-      <Center
-        width={8}
-        height={"100%"}
-        cursor={"pointer"}
-        color={isOptional ? "green" : "red"}
-        _hover={{
-          color: isOptional ? "green.400" : "red.400",
-        }}
-      >
-        <Icon as={FaAsterisk} onClick={handleOptionalClick} />
+    <Tooltip label={isOptional ? "Make Required" : "Make Optional"}>
+      <Center width={8} height={"100%"} cursor={"pointer"}>
+        <Switch
+          isChecked={!isOptional}
+          onChange={handleOptionalClick}
+          ml={-8}
+          colorScheme="purple"
+        />
       </Center>
     </Tooltip>
   );
@@ -141,12 +139,16 @@ export const ItemInfo = ({
   id,
 }) => (
   <Flex align="center" width="100%" {...dragHandleProps} onClick={onSelect}>
-    <QuestionButton
-      isQuestionItem={isQuestionItem}
-      setQuestionItem={setQuestionItem}
-      id={id}
-      type={type}
-    />
+    {type !== "image" && type !== "spacer" ? (
+      <QuestionButton
+        isQuestionItem={isQuestionItem}
+        setQuestionItem={setQuestionItem}
+        id={id}
+        type={type}
+      />
+    ) : (
+      <Flex width={8} />
+    )}
     {id && (
       <OptionalButton
         isOptional={isOptional}
