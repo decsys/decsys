@@ -4,4 +4,5 @@ import ParamTypes from "@decsys/param-types";
 export const params = {
   maxLength: ParamTypes.number("Character Limit", 200),
   regex: ParamTypes.string("Regex Validation"),
+  regexMessage: ParamTypes.string("Regex Validation Message"),
 };

@@ -21,6 +21,7 @@ const ResponseItem = ({
   maxLength,
   text,
   regex,
+  regexMessage,
   _context: { logResults, setIsValidResponse, clearResult },
 }) => {
   const threshold = maxLength / 10; // right now we fix this at 10% MaxLength
@@ -90,7 +91,11 @@ const ResponseItem = ({
         />
         {!isRegexValid && (
           <FormErrorMessage>
-            <Text>Ensure all required criteria are met</Text>
+            <Text>
+              {regexMessage
+                ? regexMessage
+                : "Ensure all required criteria are met"}
+            </Text>
           </FormErrorMessage>
         )}
       </Flex>
