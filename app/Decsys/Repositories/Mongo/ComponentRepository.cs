@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 
 using Decsys.Config;
 using Decsys.Constants;
@@ -40,11 +40,13 @@ namespace Decsys.Repositories.Mongo
             var component = new Component(type)
             {
                 Order = page.Components.Count + 1,
-                // If this isn't a response item
-                // and there are no components on the page already (except response items)
-                // then this is a Question Item
+                // If this isn't a response item, is not "spacer" or "image",
+                // and there are no components on the page already (except response items),
+                // then this is a Question Item.
                 IsQuestionItem = !_componentFiles.IsResponseItem(type) &&
-                    !page.Components.Any(x => !_componentFiles.IsResponseItem(x.Type))
+                         type != BuiltInPageItems.Spacer &&
+                         type != BuiltInPageItems.Image &&
+                         !page.Components.Any(x => !_componentFiles.IsResponseItem(x.Type))
             };
 
             page.Components.Add(component);

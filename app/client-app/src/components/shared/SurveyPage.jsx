@@ -194,25 +194,38 @@ const SurveyPage = ({
                   Clear Response
                 </Button>
               </Tooltip>
-              {webhookCount != null && (
-                <WebhookNotification
-                  webhookCount={webhookCount}
-                  unread={unread}
-                  setUnread={setUnread}
-                  setWebhookCount={setWebhookCount}
-                  triggeredHooks={triggeredHooks}
-                />
-              )}
-              <Button
-                size="lg"
-                disabled={!nextEnabled || isBusy}
-                isLoading={isBusy}
-                colorScheme={nextEnabled ? "blue" : "gray"}
-                onClick={handleNextClick}
-                rightIcon={!lastPage && <FaChevronRight />}
+              <Tooltip label="Triggered Webhook" shouldWrapChildren>
+                {webhookCount != null && (
+                  <WebhookNotification
+                    webhookCount={webhookCount}
+                    unread={unread}
+                    setUnread={setUnread}
+                    setWebhookCount={setWebhookCount}
+                    triggeredHooks={triggeredHooks}
+                  />
+                )}
+              </Tooltip>
+              <Tooltip
+                label={
+                  nextEnabled
+                    ? lastPage
+                      ? "End the Survey"
+                      : "Go to the next page"
+                    : "A response is required to proceed!"
+                }
+                shouldWrapChildren
               >
-                {lastPage ? "Finish" : "Next"}
-              </Button>
+                <Button
+                  size="lg"
+                  disabled={!nextEnabled || isBusy}
+                  isLoading={isBusy}
+                  colorScheme={nextEnabled ? "blue" : "gray"}
+                  onClick={handleNextClick}
+                  rightIcon={!lastPage && <FaChevronRight />}
+                >
+                  {lastPage ? "Finish" : "Next"}
+                </Button>
+              </Tooltip>
             </Stack>
           </Stack>
         </DefaultContainer>
