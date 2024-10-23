@@ -32,11 +32,16 @@ export default {
         "The text of the regular expression. This can also be another RegExp object.",
       control: "text",
     },
+    regexMessage: {
+      description: "The validation Message if Regex fails",
+      control: "text",
+    },
   },
   args: {
     maxLength: 20,
     text: "hello World",
     regex: "^hello",
+    regexMessage: "Must contain the world hello",
   },
 };
 
@@ -48,6 +53,25 @@ export const Basic = ({
 }) => {
   const _context = { logResults, setIsValidResponse, clearResult };
   return <ResponseItem {...args} _context={_context} />;
+};
+
+export const PasswordValidation = ({
+  logResults,
+  setIsValidResponse,
+  clearResult,
+}) => {
+  const _context = { logResults, setIsValidResponse, clearResult };
+  return (
+    <ResponseItem
+      maxLength={30}
+      text="Password123!"
+      regex={"^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"}
+      regexMessage={
+        "Must contain one digit, one lower case letter, one upper case letter and be at least 8 letters long"
+      }
+      _context={_context}
+    />
+  );
 };
 
 const visualization = (stats) => () =>
