@@ -33,4 +33,15 @@ export const params = {
     "below"
   ),
   rows: ParamTypes.number("Number of Rows", 4),
+  row1Label: ParamTypes.string("Row 1"),
+  row2Label: ParamTypes.string("Row 2"),
+  row3Label: ParamTypes.string("Row 3"),
+  row4Label: ParamTypes.string("Row 4"),
+  row5Label: ParamTypes.string("Row 5"),
+  row6Label: ParamTypes.string("Row 6"),
+  row7Label: ParamTypes.string("Row 7"),
+  row8Label: ParamTypes.string("Row 8"),
+  row9Label: ParamTypes.string("Row 9"),
+  row10Label: ParamTypes.string("Row 10"),
+  row11Label: ParamTypes.string("Row 11"),
 };

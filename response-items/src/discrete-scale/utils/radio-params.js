@@ -33,3 +33,15 @@ export const getRadios = (radioParams) => {
       return acc;
     }, []);
 };
+
+/**
+ * From a set of props, build an ordered array of row labels
+ * in the format `[row1Label, row2Label, ...]`
+ * @param {*} props
+ */
+export const getRowLabels = (props) => {
+  return Object.keys(props)
+    .filter((key) => key.includes("row") && key.includes("Label")) // Filter for rowXLabel keys
+    .sort((a, b) => a.match(/\d+/) - b.match(/\d+/)) // guarantee ascending numeric order
+    .map((key) => props[key]); // Map to the values of row labels
+};

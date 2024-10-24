@@ -29,7 +29,11 @@ export default {
     fontFamily: "Arial",
     fontSize: 16,
     labelAlignment: "center",
-    rows: 2,
+    rows: 4,
+    row1Label: "Satisfaction with Service",
+    row2Label: "Satisfaction with Product",
+    row3Label: "Ease of Use",
+    row4Label: "Likelihood to Recommend",
   },
 };
 

@@ -1,24 +1,20 @@
 import { useEffect } from "react";
 import { params } from "./ResponseItem.params";
-import { DiscreteScale } from "@decsys/rating-scales/discrete";
 import {
   getRadioParams,
   getRadios,
+  getRowLabels, // import the helper function
 } from "../discrete-scale/utils/radio-params";
 import { Grid } from "../../../packages/rating-scales/src/discrete/Grid";
 
 const ResponseItem = ({
-  barLeftMargin,
-  barRightMargin,
-  barTopMargin,
-  barColor,
-  barThickness,
   labelColor,
   fontFamily,
   fontSize,
   labelAlignment,
   initialIndex,
   initialValue,
+  rows,
   _context: { logResults, setNextEnabled },
   ...p
 }) => {
@@ -38,15 +34,11 @@ const ResponseItem = ({
   // prepare radio button values
   const radios = getRadios(radioParams);
 
+  // prepare row labels
+  const rowLabels = getRowLabels(p);
+
   return (
     <Grid
-      barOptions={{
-        leftMargin: `${barLeftMargin}%`,
-        rightMargin: `${barRightMargin}%`,
-        topMargin: `${barTopMargin}%`,
-        barColor,
-        thickness: `${barThickness}px`,
-      }}
       radioOptions={{
         labelColor,
         fontFamily,
@@ -56,6 +48,8 @@ const ResponseItem = ({
         initialValue,
       }}
       radios={radios}
+      rows={rows}
+      rowLabels={rowLabels}
       frameHeight="300px"
     />
   );
