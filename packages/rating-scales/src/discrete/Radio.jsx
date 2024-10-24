@@ -60,10 +60,10 @@ const SecondaryRadioLabel = ({ style, ...p }) => (
 /**
  * A styled radio button input
  */
-const RadioInput = ({ style, ...p }) => (
+const RadioInput = ({ name, style, ...p }) => (
   <input
     type="radio"
-    name="discrete"
+    name={name || "descrete"}
     style={{ transform: "scale(2)", ...style }}
     {...p}
   />
@@ -121,6 +121,7 @@ const Radio = ({
   defaultChecked,
   labelAbove = false,
   secondaryLabel,
+  name,
 }) => {
   const handleRadioClick = () => {
     document.dispatchEvent(
@@ -164,6 +165,7 @@ const Radio = ({
       <RadioInput
         id={id}
         value={value}
+        name={name}
         onClick={handleRadioClick}
         defaultChecked={defaultChecked}
       />

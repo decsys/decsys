@@ -5,11 +5,6 @@ export default {
   title: "Mutple Choice Grid",
   component: ResponseItem,
   argTypes: {
-    barLeftMargin: { control: "number" },
-    barRightMargin: { control: "number" },
-    barTopMargin: { control: "number" },
-    barColor: { control: "color" },
-    barThickness: { control: "number" },
     labelColor: { control: "color" },
     fontFamily: { control: "text" },
     fontSize: { control: "number" },
@@ -25,20 +20,16 @@ export default {
   },
 
   args: {
-    radio1: "1",
-    radio2: "2",
-    radio3: "3",
-    radio4: "4",
-    radio5: "5",
-    barLeftMargin: 10,
-    barRightMargin: 10,
-    barTopMargin: 40,
-    barColor: "#ff0000", // Example red color
-    barThickness: 5,
+    radio1: "Strongly Agree",
+    radio2: "Agree",
+    radio3: "Neutral",
+    radio4: "Strongly Disagree",
+    radio5: "Disagree",
     labelColor: "#0000ff", // Example blue color
     fontFamily: "Arial",
     fontSize: 16,
     labelAlignment: "center",
+    rows: 2,
   },
 };
 

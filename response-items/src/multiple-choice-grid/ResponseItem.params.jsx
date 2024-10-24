@@ -24,11 +24,6 @@ export const params = {
   radio10Secondary: ParamTypes.string("Secondary Label 10"),
   radio11: ParamTypes.string("Option 11"),
   radio11Secondary: ParamTypes.string("Secondary Label 11"),
-  barLeftMargin: ParamTypes.number("Bar Left Margin (%)", 10),
-  barRightMargin: ParamTypes.number("Bar Right Margin (%)", 10),
-  barTopMargin: ParamTypes.number("Bar Top Margin (%)", 50),
-  barColor: ParamTypes.string("Bar Color", "black"),
-  barThickness: ParamTypes.number("Bar Width (px)", 4),
   labelColor: ParamTypes.string("Label Color", "black"),
   fontFamily: ParamTypes.stringUndefined("Font Family"),
   fontSize: ParamTypes.string("Font Size", "18pt"),
@@ -37,4 +32,5 @@ export const params = {
     ["above", "below"],
     "below"
   ),
+  rows: ParamTypes.number("Number of Rows", 4),
 };

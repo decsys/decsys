@@ -1,7 +1,11 @@
 import { useEffect } from "react";
 import { params } from "./ResponseItem.params";
 import { DiscreteScale } from "@decsys/rating-scales/discrete";
-import { getRadioParams, getRadios } from "../discrete-scale/utils/radio-params";
+import {
+  getRadioParams,
+  getRadios,
+} from "../discrete-scale/utils/radio-params";
+import { Grid } from "../../../packages/rating-scales/src/discrete/Grid";
 
 const ResponseItem = ({
   barLeftMargin,
@@ -35,7 +39,7 @@ const ResponseItem = ({
   const radios = getRadios(radioParams);
 
   return (
-    <DiscreteScale
+    <Grid
       barOptions={{
         leftMargin: `${barLeftMargin}%`,
         rightMargin: `${barRightMargin}%`,
