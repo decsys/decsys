@@ -7,7 +7,13 @@ import { Radio } from "./Radio";
 
 export const Grid = ({
   radioOptions = {
-    labelAlignment: "below",
+    labelColor,
+    fontFamily,
+    fontWeight,
+    fontSize,
+    labelAlignment,
+    initialIndex,
+    initialValue,
   },
   radios = [["1", "Secondary Label"]],
   frameHeight,
@@ -16,6 +22,7 @@ export const Grid = ({
   rows = 1,
   rowLabels = [["Row 1"]],
 }) => {
+  console.log(radioOptions.fontSize);
   const generateRadioRows = (numRows) => {
     const allRows = [];
     for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
@@ -42,8 +49,10 @@ export const Grid = ({
             <div
               style={{
                 width: `200px`,
-                fontWeight: "bold",
+                fontWeight: radioOptions.fontWeight,
                 textAlign: "Left",
+                fontSize: radioOptions.fontSize,
+                color: radioOptions.labelColor,
               }}
             >
               {rowLabels[rowIndex]}

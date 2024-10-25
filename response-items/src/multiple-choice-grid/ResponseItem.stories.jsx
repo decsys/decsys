@@ -2,15 +2,15 @@ import ResponseItem from "./ResponseItem";
 import Icon from "./Icon";
 
 export default {
-  title: "Mutple Choice Grid",
+  title: "Multiple Choice Grid",
   component: ResponseItem,
   argTypes: {
     labelColor: { control: "color" },
     fontFamily: { control: "text" },
     fontSize: { control: "number" },
-    labelAlignment: {
+    fontWeight: {
       control: "select",
-      options: ["above", "below"],
+      options: ["normal", "bold", "bolder", "lighter"],
     },
     initialIndex: { control: "number" },
     initialValue: { control: "number" },
