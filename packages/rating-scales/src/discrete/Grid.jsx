@@ -45,18 +45,22 @@ export const Grid = ({
           key={`row-${rowIndex}`}
           style={{ display: "flex", flexDirection: "row", gap: 120 }}
         >
-          {rowLabels[rowIndex] && (
+          {rowLabels[rowIndex] ? (
             <div
               style={{
-                width: `200px`,
+                minWidth: "200px",
+                width: "200px",
                 fontWeight: radioOptions.fontWeight,
-                textAlign: "Left",
+                textAlign: "left",
                 fontSize: radioOptions.fontSize,
                 color: radioOptions.labelColor,
               }}
             >
               {rowLabels[rowIndex]}
             </div>
+          ) : (
+            // Placeholder to maintain width when there’s no label
+            <div style={{ minWidth: "200px", width: "200px" }} />
           )}
           {radioRow}
         </div>
