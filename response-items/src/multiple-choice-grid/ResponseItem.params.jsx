@@ -23,7 +23,7 @@ export const params = {
   radio2: ParamTypes.string("Column 2", "2"),
   radio3: ParamTypes.string("Column 3", "3"),
   radio4: ParamTypes.string("Column 4", "4"),
-  radio5: ParamTypes.string("Column 5", "5"),
+  radio5: ParamTypes.string("Column 5"),
   radio6: ParamTypes.string("Column 6"),
   radio7: ParamTypes.string("Column 7"),
   radio8: ParamTypes.string("Column 8"),

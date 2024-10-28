@@ -3,8 +3,6 @@ import { FlexContainer } from "../core/ScaleBar";
 import { Question } from "../core/Question";
 import { Radio } from "./Radio";
 
-/** A Discrete Scale */
-
 export const Grid = ({
   radioOptions = {
     labelColor,
