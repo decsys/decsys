@@ -24,8 +24,8 @@ export default {
     radio1: "Strongly Agree",
     radio2: "Agree",
     radio3: "Neutral",
-    radio4: "Strongly Disagree",
-    radio5: "Disagree",
+    radio4: "Disagree",
+    radio5: "Strongly Disagree",
     labelColor: "#0000ff", // Example blue color
     fontFamily: "Arial",
     fontSize: 16,
