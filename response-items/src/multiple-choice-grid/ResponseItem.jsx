@@ -16,6 +16,7 @@ const ResponseItem = ({
   initialIndex,
   initialValue,
   rows,
+  width,
   _context: { logResults, setNextEnabled },
   ...p
 }) => {
@@ -53,6 +54,7 @@ const ResponseItem = ({
       rows={rows}
       rowLabels={rowLabels}
       frameHeight="300px"
+      width={width}
     />
   );
 };

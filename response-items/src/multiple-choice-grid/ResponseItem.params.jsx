@@ -6,8 +6,8 @@ export const params = {
   row1Label: ParamTypes.string("Row 1", "Row 1"),
   row2Label: ParamTypes.string("Row 2", "Row 2"),
   row3Label: ParamTypes.string("Row 3", "Row 3"),
-  row4Label: ParamTypes.string("Row 4", "Row 5"),
-  row5Label: ParamTypes.string("Row 5"),
+  row4Label: ParamTypes.string("Row 4", "Row 4"),
+  row5Label: ParamTypes.string("Row 5", "Row 5"),
   row6Label: ParamTypes.string("Row 6"),
   row7Label: ParamTypes.string("Row 7"),
   row8Label: ParamTypes.string("Row 8"),
@@ -15,7 +15,7 @@ export const params = {
   row10Label: ParamTypes.string("Row 10"),
   row11Label: ParamTypes.string("Row 11"),
   fontWeight: ParamTypes.oneOf(
-    "Font Weight",
+    "Row Option Font Weight",
     ["normal", "bold", "bolder", "lighter"],
     "normal"
   ),
@@ -33,4 +33,5 @@ export const params = {
   labelColor: ParamTypes.string("Label Color", "black"),
   fontFamily: ParamTypes.stringUndefined("Font Family"),
   fontSize: ParamTypes.string("Font Size", "18pt"),
+  width: ParamTypes.number("Width of Row Label", 100),
 };

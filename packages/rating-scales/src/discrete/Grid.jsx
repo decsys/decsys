@@ -11,7 +11,6 @@ export const Grid = ({
     fontFamily,
     fontWeight,
     fontSize,
-    labelAlignment,
     initialIndex,
     initialValue,
   },
@@ -21,15 +20,15 @@ export const Grid = ({
   question,
   rows = 1,
   rowLabels = [["Row 1"]],
+  width,
 }) => {
-  console.log(radioOptions.fontSize);
   const generateRadioRows = (numRows) => {
     const allRows = [];
     for (let rowIndex = 0; rowIndex < numRows; rowIndex++) {
       const radioRow = radios.map((radio, radioIndex) => (
         <Radio
           {...radioOptions}
-          labelAbove={radioOptions.labelAlignment !== "above"}
+          labelAbove={true}
           id={`radioRow${rowIndex + 1}-${radioIndex}`}
           name={`radioRow${rowIndex + 1}`}
           key={`radioRow${rowIndex + 1}-${radioIndex}`}
@@ -45,23 +44,17 @@ export const Grid = ({
           key={`row-${rowIndex}`}
           style={{ display: "flex", flexDirection: "row", gap: 120 }}
         >
-          {rowLabels[rowIndex] ? (
-            <div
-              style={{
-                minWidth: "200px",
-                width: "200px",
-                fontWeight: radioOptions.fontWeight,
-                textAlign: "left",
-                fontSize: radioOptions.fontSize,
-                color: radioOptions.labelColor,
-              }}
-            >
-              {rowLabels[rowIndex]}
-            </div>
-          ) : (
-            // Placeholder to maintain width when there’s no label
-            <div style={{ minWidth: "200px", width: "200px" }} />
-          )}
+          <div
+            style={{
+              width: width,
+              fontWeight: radioOptions.fontWeight,
+              textAlign: "left",
+              fontSize: radioOptions.fontSize,
+              color: radioOptions.labelColor,
+            }}
+          >
+            {rowLabels[rowIndex]}
+          </div>
           {radioRow}
         </div>
       );

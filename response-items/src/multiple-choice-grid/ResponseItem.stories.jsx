@@ -12,6 +12,7 @@ export default {
       control: "select",
       options: ["normal", "bold", "bolder", "lighter"],
     },
+    width: { control: "number" },
     initialIndex: { control: "number" },
     initialValue: { control: "number" },
     setIsValidResponse: { action: "setIsValidResponse" },
@@ -34,6 +35,7 @@ export default {
     row2Label: "Satisfaction with Product",
     row3Label: "Ease of Use",
     row4Label: "Likelihood to Recommend",
+    width: 100,
   },
 };
 
