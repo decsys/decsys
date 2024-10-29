@@ -2,7 +2,6 @@ import ParamTypes from "@decsys/param-types";
 
 // Specify Configurable Parameters
 export const params = {
-  rows: ParamTypes.number("Number of Rows", 3),
   row1Label: ParamTypes.string("Row 1", "Row 1"),
   row2Label: ParamTypes.string("Row 2", "Row 2"),
   row3Label: ParamTypes.string("Row 3", "Row 3"),
@@ -34,4 +33,9 @@ export const params = {
   fontFamily: ParamTypes.stringUndefined("Font Family"),
   fontSize: ParamTypes.string("Font Size", "18pt"),
   width: ParamTypes.number("Width of Row Label", 100),
+  alignment: ParamTypes.oneOf(
+    "Alignment",
+    ["left", "center", "right"],
+    "center"
+  ),
 };

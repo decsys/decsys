@@ -15,12 +15,14 @@ const ResponseItem = ({
   labelAlignment,
   initialIndex,
   initialValue,
-  rows,
   width,
+  alignment,
   _context: { logResults, setNextEnabled },
   ...p
 }) => {
   const radioParams = getRadioParams(p);
+  const align =
+    { left: "flex-start", right: "flex-end" }[alignment] ?? "center";
 
   const handleDiscreteSelected = (e) => {
     logResults(e.detail);
@@ -38,6 +40,7 @@ const ResponseItem = ({
 
   // prepare row labels
   const rowLabels = getRowLabels(p);
+  const rows = rowLabels.filter((label) => label !== "").length;
 
   return (
     <Grid
@@ -55,6 +58,7 @@ const ResponseItem = ({
       rowLabels={rowLabels}
       frameHeight="300px"
       width={width}
+      align={align}
     />
   );
 };

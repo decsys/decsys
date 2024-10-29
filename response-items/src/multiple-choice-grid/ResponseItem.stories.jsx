@@ -12,6 +12,10 @@ export default {
       control: "select",
       options: ["normal", "bold", "bolder", "lighter"],
     },
+    alignment: {
+      control: "select",
+      options: ["left", "center", "right"],
+    },
     width: { control: "number" },
     initialIndex: { control: "number" },
     initialValue: { control: "number" },
@@ -29,13 +33,15 @@ export default {
     labelColor: "#0000ff", // Example blue color
     fontFamily: "Arial",
     fontSize: 16,
-    labelAlignment: "center",
     rows: 4,
     row1Label: "Satisfaction with Service",
     row2Label: "Satisfaction with Product",
     row3Label: "Ease of Use",
     row4Label: "Likelihood to Recommend",
+    row5Label: "",
+    row6Label: "",
     width: 100,
+    alignment: "left",
   },
 };
 

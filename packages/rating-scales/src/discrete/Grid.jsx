@@ -17,6 +17,7 @@ export const Grid = ({
   rows = 1,
   rowLabels = [["Row 1"]],
   width,
+  align,
 }) => {
   const generateRadioRows = (numRows) => {
     const allRows = [];
@@ -38,7 +39,12 @@ export const Grid = ({
       allRows.push(
         <div
           key={`row-${rowIndex}`}
-          style={{ display: "flex", flexDirection: "row", gap: 120 }}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 120,
+            alignItems: "flex-end",
+          }}
         >
           <div
             style={{
@@ -69,7 +75,13 @@ export const Grid = ({
           position: "relative",
         }}
       >
-        <FlexContainer>
+        <FlexContainer
+          style={{
+            display: "flex",
+            justifyContent: align,
+            backgroundColor: "gray",
+          }}
+        >
           <div
             style={{
               gap: 50,
