@@ -21,6 +21,7 @@ const RadioLabel = ({
   fontSize,
   above,
   style,
+  isGrid,
   ...p
 }) => (
   <label
@@ -33,7 +34,11 @@ const RadioLabel = ({
       left: above ? "0" : "0.05em",
       transform: "translateX(-50%)",
       whiteSpace: "nowrap",
-      marginTop: above ? `calc(${labelDistance} * -1)` : labelDistance,
+      marginTop: isGrid
+        ? "-3.2rem"
+        : above
+        ? `calc(${labelDistance} * -1)`
+        : labelDistance,
       ...style,
     }}
     {...p}
@@ -45,9 +50,10 @@ const RadioLabel = ({
  *
  * It's intended for use as a secondary label, further from the scale bar.
  */
-const SecondaryRadioLabel = ({ style, ...p }) => (
+const SecondaryRadioLabel = ({ isGrid, style, ...p }) => (
   <RadioLabel
     style={{
+      isGrid,
       marginTop: p.above
         ? `calc(${labelDistance} * -2)`
         : `calc(${labelDistance} * 2)`,
@@ -72,12 +78,20 @@ const RadioInput = ({ name, style, ...p }) => (
 /**
  * A styled containing div for a single labelled radio button
  */
-const RadioContainer = ({ style, ...p }) => (
-  <div
-    style={{ position: "relative", zIndex: 1, top: "-0.55em", ...style }}
-    {...p}
-  />
-);
+const RadioContainer = ({ isGrid, style, ...p }) => {
+  return (
+    <div
+      style={{
+        position: "relative",
+        zIndex: 1,
+        top: isGrid ? 0 : "-0.55em",
+        ...style,
+      }}
+      {...p}
+    />
+  );
+  Ì;
+};
 
 // export interface RadioProps {
 //   /** The index of this Radio component in an array of Radio components. */
@@ -122,6 +136,7 @@ const Radio = ({
   labelAbove = false,
   secondaryLabel,
   name,
+  isGrid,
 }) => {
   const handleRadioClick = () => {
     document.dispatchEvent(
@@ -141,6 +156,7 @@ const Radio = ({
       fontSize={fontSize}
       above={labelAbove}
       htmlFor={id}
+      isGrid={isGrid}
     >
       {value}
     </RadioLabel>
@@ -153,13 +169,14 @@ const Radio = ({
       fontSize={fontSize}
       above={labelAbove}
       htmlFor={id}
+      isGrid={isGrid}
     >
       {secondaryLabel}
     </SecondaryRadioLabel>
   ) : null;
 
   return (
-    <RadioContainer>
+    <RadioContainer isGrid={isGrid}>
       {labelAbove && secondaryLabelComponent}
       {labelAbove && label}
       <RadioInput

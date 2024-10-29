@@ -17,6 +17,7 @@ const ResponseItem = ({
   initialValue,
   width,
   alignment,
+  rowTextAlign,
   _context: { logResults, setNextEnabled },
   ...p
 }) => {
@@ -59,6 +60,7 @@ const ResponseItem = ({
       frameHeight="300px"
       width={width}
       align={align}
+      rowTextAlign={rowTextAlign}
     />
   );
 };

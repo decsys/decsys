@@ -32,9 +32,14 @@ export const params = {
   labelColor: ParamTypes.string("Label Color", "black"),
   fontFamily: ParamTypes.stringUndefined("Font Family"),
   fontSize: ParamTypes.string("Font Size", "18pt"),
-  width: ParamTypes.number("Width of Row Label", 100),
+  width: ParamTypes.number("Width of Row Label", 200),
   alignment: ParamTypes.oneOf(
     "Alignment",
+    ["left", "center", "right"],
+    "center"
+  ),
+  rowTextAlign: ParamTypes.oneOf(
+    "Row Text Alignement",
     ["left", "center", "right"],
     "center"
   ),

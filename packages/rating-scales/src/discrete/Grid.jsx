@@ -17,7 +17,8 @@ export const Grid = ({
   rows = 1,
   rowLabels = [["Row 1"]],
   width,
-  align,
+  align = "center",
+  rowTextAlign,
 }) => {
   const generateRadioRows = (numRows) => {
     const allRows = [];
@@ -33,6 +34,7 @@ export const Grid = ({
           defaultChecked={radioOptions.initialIndex === radioIndex}
           value={rowIndex === 0 ? radio[0] : null}
           secondaryLabel={radio[1]}
+          isGrid={true}
         />
       ));
 
@@ -42,15 +44,20 @@ export const Grid = ({
           style={{
             display: "flex",
             flexDirection: "row",
+            width: "100%",
+            justifyContent: align,
+            alignItems: "right",
             gap: 120,
-            alignItems: "flex-end",
+            padding: "10px",
+            backgroundColor: rowIndex % 2 === 0 ? "gray" : "white",
+            paddingRight: "5%",
           }}
         >
           <div
             style={{
               width: width,
               fontWeight: radioOptions.fontWeight,
-              textAlign: "left",
+              textAlign: rowTextAlign,
               fontSize: radioOptions.fontSize,
               color: radioOptions.labelColor,
             }}
@@ -69,30 +76,16 @@ export const Grid = ({
   return (
     <Frame frameHeight={frameHeight}>
       <Question {...questionOptions}>{question}</Question>
-      <div
+      <FlexContainer
         style={{
-          top: "20%",
-          position: "relative",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          height: "100%",
         }}
       >
-        <FlexContainer
-          style={{
-            display: "flex",
-            justifyContent: align,
-            backgroundColor: "gray",
-          }}
-        >
-          <div
-            style={{
-              gap: 50,
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            {radioRows}
-          </div>
-        </FlexContainer>
-      </div>
+        {radioRows}
+      </FlexContainer>
     </Frame>
   );
 };

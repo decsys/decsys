@@ -16,6 +16,10 @@ export default {
       control: "select",
       options: ["left", "center", "right"],
     },
+    rowTextAlign: {
+      control: "select",
+      options: ["left", "center", "right"],
+    },
     width: { control: "number" },
     initialIndex: { control: "number" },
     initialValue: { control: "number" },
@@ -40,7 +44,7 @@ export default {
     row4Label: "Likelihood to Recommend",
     row5Label: "",
     row6Label: "",
-    width: 100,
+    width: 200,
     alignment: "left",
   },
 };
