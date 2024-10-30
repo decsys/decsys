@@ -12,10 +12,6 @@ export default {
       control: "select",
       options: ["normal", "bold", "bolder", "lighter"],
     },
-    alignment: {
-      control: "select",
-      options: ["left", "center", "right"],
-    },
     rowTextAlign: {
       control: "select",
       options: ["left", "center", "right"],
@@ -42,10 +38,7 @@ export default {
     row2Label: "Satisfaction with Product",
     row3Label: "Ease of Use",
     row4Label: "Likelihood to Recommend",
-    row5Label: "",
-    row6Label: "",
     width: 200,
-    alignment: "left",
   },
 };
 

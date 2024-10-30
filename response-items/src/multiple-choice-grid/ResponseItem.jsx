@@ -60,6 +60,7 @@ const ResponseItem = ({
       if (allSelected) {
         logResults(newSelectedDetails);
         setNextEnabled(true);
+        console.log(newSelectedDetails);
       }
 
       return updatedSelectedRows;
@@ -94,8 +95,6 @@ const ResponseItem = ({
       radios={radios}
       rows={rows}
       rowLabels={rowLabels}
-      frameHeight="300px"
-      width={width}
       align={align}
       rowTextAlign={rowTextAlign}
       rowNames={rowNames}
