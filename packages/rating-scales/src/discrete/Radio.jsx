@@ -137,14 +137,15 @@ const Radio = ({
   secondaryLabel,
   name,
   isGrid,
+  rowName,
 }) => {
   const handleRadioClick = () => {
+    const eventName = isGrid ? `${name}Selected` : "discreteSelected";
+    const detail = isGrid ? { [rowName]: { index, value } } : { index, value };
+
     document.dispatchEvent(
-      new CustomEvent("DiscreteSelected", {
-        detail: {
-          index,
-          value,
-        },
+      new CustomEvent(eventName, {
+        detail: detail,
       })
     );
   };
@@ -178,7 +179,7 @@ const Radio = ({
   return (
     <RadioContainer isGrid={isGrid}>
       {labelAbove && secondaryLabelComponent}
-      {labelAbove && label}
+      {!isGrid && labelAbove && label}
       <RadioInput
         id={id}
         value={value}
