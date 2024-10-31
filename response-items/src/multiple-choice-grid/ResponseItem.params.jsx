@@ -13,11 +13,6 @@ export const params = {
   row9Label: ParamTypes.string("Row 9"),
   row10Label: ParamTypes.string("Row 10"),
   row11Label: ParamTypes.string("Row 11"),
-  fontWeight: ParamTypes.oneOf(
-    "Row Option Font Weight",
-    ["normal", "bold", "bolder", "lighter"],
-    "normal"
-  ),
   radio1: ParamTypes.string("Column 1", "1"),
   radio2: ParamTypes.string("Column 2", "2"),
   radio3: ParamTypes.string("Column 3", "3"),
@@ -32,7 +27,16 @@ export const params = {
   labelColor: ParamTypes.string("Label Color", "black"),
   fontFamily: ParamTypes.stringUndefined("Font Family"),
   fontSize: ParamTypes.string("Font Size", "18pt"),
-  width: ParamTypes.number("Width of Row Label", 200),
+  rowFontWeight: ParamTypes.oneOf(
+    "Row Label Font Weight",
+    ["normal", "bold", "bolder", "lighter"],
+    "normal"
+  ),
+  columnFontWeight: ParamTypes.oneOf(
+    "Coulmn Label Font Weight",
+    ["normal", "bold", "bolder", "lighter"],
+    "normal"
+  ),
   rowTextAlign: ParamTypes.oneOf(
     "Row Text Alignement",
     ["left", "center", "right"],

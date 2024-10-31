@@ -11,7 +11,8 @@ const ResponseItem = ({
   labelColor,
   fontFamily,
   fontSize,
-  fontWeight,
+  rowFontWeight,
+  columnFontWeight,
   labelAlignment,
   initialIndex,
   initialValue,
@@ -90,7 +91,8 @@ const ResponseItem = ({
         labelAlignment,
         initialIndex,
         initialValue,
-        fontWeight,
+        columnFontWeight,
+        rowFontWeight,
       }}
       radios={radios}
       rows={rows}

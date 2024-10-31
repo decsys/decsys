@@ -8,7 +8,11 @@ export default {
     labelColor: { control: "color" },
     fontFamily: { control: "text" },
     fontSize: { control: "number" },
-    fontWeight: {
+    columnFontWeight: {
+      control: "select",
+      options: ["normal", "bold", "bolder", "lighter"],
+    },
+    rowFontWeight: {
       control: "select",
       options: ["normal", "bold", "bolder", "lighter"],
     },

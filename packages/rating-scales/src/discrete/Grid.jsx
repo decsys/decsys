@@ -7,7 +7,8 @@ export const Grid = ({
   radioOptions = {
     labelColor,
     fontFamily,
-    fontWeight,
+    rowFontWeight,
+    columnFontWeight,
     fontSize,
   },
   radios = [["1"]],
@@ -53,7 +54,7 @@ export const Grid = ({
         <div
           key={`row-${rowIndex}`}
           style={{
-            width: "100vw",
+            width: "100%",
             display: "flex",
             flexDirection: "row",
             paddingTop: "10px",
@@ -67,7 +68,7 @@ export const Grid = ({
               minWidth,
               display: "flex",
               alignItems: "left",
-              fontWeight: radioOptions.fontWeight,
+              fontWeight: radioOptions.rowFontWeight,
               fontSize: radioOptions.fontSize,
               color: radioOptions.labelColor,
               paddingInline: 10,
@@ -86,7 +87,7 @@ export const Grid = ({
   };
 
   const radioRows = generateRadioRows(rows);
-  const columnHeaders = ["", ...radios.map((radio) => radio[0])]; // Add empty header for row labels column
+  const columnHeaders = ["", ...radios.map((radio) => radio[0])]; // Added empty header for row labels column
 
   return (
     <Frame frameHeight={frameHeight}>
@@ -97,15 +98,15 @@ export const Grid = ({
           flexDirection: "column",
           justifyContent: "center",
           height: "100%",
-          width: "100vw",
+          width: "100%",
         }}
       >
         <div
           style={{
-            width: "100vw",
+            width: "100%",
             display: "flex",
             flexDirection: "row",
-            fontWeight: radioOptions.fontWeight,
+            fontWeight: radioOptions.columnFontWeight,
             textAlign: "center",
             fontSize: radioOptions.fontSize,
             color: radioOptions.labelColor,
