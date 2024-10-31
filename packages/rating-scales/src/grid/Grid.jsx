@@ -1,7 +1,7 @@
 import { Frame } from "../core/Frame";
 import { FlexContainer } from "../core/ScaleBar";
 import { Question } from "../core/Question";
-import { Radio } from "./Radio";
+import { Radio } from "../discrete/Radio";
 
 export const Grid = ({
   radioOptions = {

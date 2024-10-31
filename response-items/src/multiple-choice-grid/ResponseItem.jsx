@@ -3,9 +3,9 @@ import { params } from "./ResponseItem.params";
 import {
   getRadioParams,
   getRadios,
-  getRowLabels,
 } from "../discrete-scale/utils/radio-params";
-import { Grid } from "../../../packages/rating-scales/src/discrete/Grid";
+import { Grid } from "../../../packages/rating-scales/src/grid/Grid";
+import { getRowLabels } from "./utils/row-label";
 
 const ResponseItem = ({
   labelColor,

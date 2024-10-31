@@ -29,12 +29,12 @@ export const params = {
   fontSize: ParamTypes.string("Font Size", "18pt"),
   rowFontWeight: ParamTypes.oneOf(
     "Row Label Font Weight",
-    ["normal", "bold", "bolder", "lighter"],
+    ["normal", "bold", "lighter"],
     "normal"
   ),
   columnFontWeight: ParamTypes.oneOf(
     "Coulmn Label Font Weight",
-    ["normal", "bold", "bolder", "lighter"],
+    ["normal", "bold", "lighter"],
     "normal"
   ),
   rowTextAlign: ParamTypes.oneOf(

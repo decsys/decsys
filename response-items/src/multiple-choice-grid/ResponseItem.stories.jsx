@@ -10,11 +10,11 @@ export default {
     fontSize: { control: "number" },
     columnFontWeight: {
       control: "select",
-      options: ["normal", "bold", "bolder", "lighter"],
+      options: ["normal", "bold", "lighter"],
     },
     rowFontWeight: {
       control: "select",
-      options: ["normal", "bold", "bolder", "lighter"],
+      options: ["normal", "bold", "lighter"],
     },
     rowTextAlign: {
       control: "select",
