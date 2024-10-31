@@ -41,7 +41,7 @@ export const getRadios = (radioParams) => {
  */
 export const getRowLabels = (props) => {
   return Object.keys(props)
-    .filter((key) => key.includes("row") && key.includes("Label")) // Filter for rowXLabel keys
-    .sort((a, b) => a.match(/\d+/) - b.match(/\d+/)) // guarantee ascending numeric order
-    .map((key) => props[key]); // Map to the values of row labels
+    .filter((key) => key.includes("row") && key.includes("Label"))
+    .sort((a, b) => a.match(/\d+/) - b.match(/\d+/))
+    .map((key) => props[key]);
 };

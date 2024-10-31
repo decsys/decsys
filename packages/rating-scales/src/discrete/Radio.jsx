@@ -34,11 +34,7 @@ const RadioLabel = ({
       left: above ? "0" : "0.05em",
       transform: "translateX(-50%)",
       whiteSpace: "nowrap",
-      marginTop: isGrid
-        ? "-3.2rem"
-        : above
-        ? `calc(${labelDistance} * -1)`
-        : labelDistance,
+      marginTop: above ? `calc(${labelDistance} * -1)` : labelDistance,
       ...style,
     }}
     {...p}
@@ -90,7 +86,6 @@ const RadioContainer = ({ isGrid, style, ...p }) => {
       {...p}
     />
   );
-  Ì;
 };
 
 // export interface RadioProps {
