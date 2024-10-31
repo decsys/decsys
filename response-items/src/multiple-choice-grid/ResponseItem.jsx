@@ -3,7 +3,7 @@ import { params } from "./ResponseItem.params";
 import {
   getRadioParams,
   getRadios,
-  getRowLabels, // import the helper function
+  getRowLabels,
 } from "../discrete-scale/utils/radio-params";
 import { Grid } from "../../../packages/rating-scales/src/discrete/Grid";
 
@@ -69,12 +69,10 @@ const ResponseItem = ({
   };
 
   useEffect(() => {
-    // Add event listeners for each row name
     rowNames.forEach((name) => {
       document.addEventListener(`${name}Selected`, handleGridSelected);
     });
 
-    // Cleanup event listeners
     return () => {
       rowNames.forEach((name) => {
         document.removeEventListener(`${name}Selected`, handleGridSelected);
