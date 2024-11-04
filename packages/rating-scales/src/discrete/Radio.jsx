@@ -135,7 +135,7 @@ const Radio = ({
   rowName,
 }) => {
   const handleRadioClick = () => {
-    const eventName = isGrid ? `${name}Selected` : "discreteSelected";
+    const eventName = isGrid ? `${name}Selected` : "DiscreteSelected";
     const detail = isGrid ? { [rowName]: { index, value } } : { index, value };
 
     document.dispatchEvent(
