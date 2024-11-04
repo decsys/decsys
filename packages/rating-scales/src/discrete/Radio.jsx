@@ -65,7 +65,7 @@ const SecondaryRadioLabel = ({ isGrid, style, ...p }) => (
 const RadioInput = ({ name, style, ...p }) => (
   <input
     type="radio"
-    name={name || "descrete"}
+    name={name || "discrete"}
     style={{ transform: "scale(2)", ...style }}
     {...p}
   />
