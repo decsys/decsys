@@ -21,6 +21,7 @@ const RadioLabel = ({
   fontSize,
   above,
   style,
+  isGrid,
   ...p
 }) => (
   <label
@@ -45,9 +46,10 @@ const RadioLabel = ({
  *
  * It's intended for use as a secondary label, further from the scale bar.
  */
-const SecondaryRadioLabel = ({ style, ...p }) => (
+const SecondaryRadioLabel = ({ isGrid, style, ...p }) => (
   <RadioLabel
     style={{
+      isGrid,
       marginTop: p.above
         ? `calc(${labelDistance} * -2)`
         : `calc(${labelDistance} * 2)`,
@@ -60,10 +62,10 @@ const SecondaryRadioLabel = ({ style, ...p }) => (
 /**
  * A styled radio button input
  */
-const RadioInput = ({ style, ...p }) => (
+const RadioInput = ({ name, style, ...p }) => (
   <input
     type="radio"
-    name="discrete"
+    name={name || "discrete"}
     style={{ transform: "scale(2)", ...style }}
     {...p}
   />
@@ -72,12 +74,19 @@ const RadioInput = ({ style, ...p }) => (
 /**
  * A styled containing div for a single labelled radio button
  */
-const RadioContainer = ({ style, ...p }) => (
-  <div
-    style={{ position: "relative", zIndex: 1, top: "-0.55em", ...style }}
-    {...p}
-  />
-);
+const RadioContainer = ({ isGrid, style, ...p }) => {
+  return (
+    <div
+      style={{
+        position: "relative",
+        zIndex: 1,
+        top: isGrid ? 0 : "-0.55em",
+        ...style,
+      }}
+      {...p}
+    />
+  );
+};
 
 // export interface RadioProps {
 //   /** The index of this Radio component in an array of Radio components. */
@@ -121,14 +130,17 @@ const Radio = ({
   defaultChecked,
   labelAbove = false,
   secondaryLabel,
+  name,
+  isGrid,
+  rowName,
 }) => {
   const handleRadioClick = () => {
+    const eventName = isGrid ? `${name}Selected` : "DiscreteSelected";
+    const detail = isGrid ? { [rowName]: { index, value } } : { index, value };
+
     document.dispatchEvent(
-      new CustomEvent("DiscreteSelected", {
-        detail: {
-          index,
-          value,
-        },
+      new CustomEvent(eventName, {
+        detail: detail,
       })
     );
   };
@@ -140,6 +152,7 @@ const Radio = ({
       fontSize={fontSize}
       above={labelAbove}
       htmlFor={id}
+      isGrid={isGrid}
     >
       {value}
     </RadioLabel>
@@ -152,18 +165,20 @@ const Radio = ({
       fontSize={fontSize}
       above={labelAbove}
       htmlFor={id}
+      isGrid={isGrid}
     >
       {secondaryLabel}
     </SecondaryRadioLabel>
   ) : null;
 
   return (
-    <RadioContainer>
+    <RadioContainer isGrid={isGrid}>
       {labelAbove && secondaryLabelComponent}
-      {labelAbove && label}
+      {!isGrid && labelAbove && label}
       <RadioInput
         id={id}
         value={value}
+        name={name}
         onClick={handleRadioClick}
         defaultChecked={defaultChecked}
       />
