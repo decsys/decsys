@@ -19,7 +19,7 @@ const ResponseItem = ({
   width,
   alignment,
   rowTextAlign,
-  _context: { logResults, setNextEnabled },
+  _context: { logResults, setNextEnabled, setIsValidResponse },
   ...p
 }) => {
   const radioParams = getRadioParams(p);
@@ -61,7 +61,10 @@ const ResponseItem = ({
       if (allSelected) {
         logResults(newSelectedDetails);
         setNextEnabled(true);
+        setIsValidResponse(true);
         console.log(newSelectedDetails);
+      } else {
+        setIsValidResponse(false);
       }
 
       return updatedSelectedRows;

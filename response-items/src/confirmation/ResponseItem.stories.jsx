@@ -10,6 +10,7 @@ export default {
     confirmed: { control: "booleon" },
     logResults: { action: "logResults" },
     setNextEnabled: { action: "setNextEnabled" },
+    setIsValidResponse: { action: "setIsValidResponse" },
   },
   args: {
     label: "Confirm to continue",

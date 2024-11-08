@@ -113,14 +113,19 @@ const OptionalButton = ({ isOptional, id, setIsOptional, type }) => {
   }
 
   return (
-    <Tooltip label={isOptional ? "Make Required" : "Make Optional"}>
-      <Center width={8} height={"100%"} cursor={"pointer"}>
-        <Switch
-          isChecked={!isOptional}
-          onChange={handleOptionalClick}
-          ml={-8}
-          colorScheme="purple"
-        />
+    <Tooltip
+      label={isOptional ? "Make Response Mandatory" : "Make Response Optional"}
+    >
+      <Center
+        width={8}
+        height={"100%"}
+        cursor={"pointer"}
+        color={isOptional ? "green" : "red"}
+        _hover={{
+          color: isOptional ? "green.400" : "red.400",
+        }}
+      >
+        <Icon as={FaAsterisk} onClick={handleOptionalClick} />
       </Center>
     </Tooltip>
   );
