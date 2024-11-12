@@ -1,4 +1,4 @@
-import { Router } from "@reach/router";
+import { Router, Redirect } from "@reach/router";
 import { Error } from "app/pages/Error";
 import Surveys from "app/pages/Surveys";
 import Editor from "app/pages/Editor";
@@ -23,7 +23,7 @@ const Admin = () => {
 
   return (
     <Router>
-      <Surveys path="/" />
+      <Surveys path="/surveys" />
       <Wordlist path="/wordlists/:id" />
       <Wordlists path="/wordlists" />
       <DefaultWordlist path="/wordlists/defaultWordlist" />
