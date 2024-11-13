@@ -22,7 +22,9 @@ export const WordCard = ({
   wordlistId,
 }) => {
   const toast = useToast();
-  const { mutate } = useWordData(wordlistId);
+  const { mutate } = !isDefaultWordlist
+    ? useWordData(wordlistId)
+    : { mutate: null };
   const handleDelete = async () => {
     const success = await deleteCustomWord(wordlistId, type, word);
     if (success) {
