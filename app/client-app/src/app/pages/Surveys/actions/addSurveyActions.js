@@ -12,7 +12,7 @@ export const addSurveyActions = (navigate, mutateSurveys) => ({
       settings,
       creationOptions
     );
-    if (!creationOptions.isStudy) navigate(`survey/${id}`);
+    if (!creationOptions.isStudy) navigate(`/admin/surveys/${id}`);
     else mutateSurveys();
   },
   importFile: async (

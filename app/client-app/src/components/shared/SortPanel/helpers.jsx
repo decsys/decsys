@@ -8,13 +8,15 @@ const getPropertySorter = (key, asc) => {
   const defaultSorter = (a, b) => (asc ? a - b : b - a);
 
   const sorters = {
-    name: ({ [key]: a }, { [key]: b }) => {
-      const aStr = typeof a === "string" ? a : "";
-      const bStr = typeof b === "string" ? b : "";
-      return asc ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
-    },
-    active: ({ activeInstanceId: a = 0 }, { activeInstanceId: b = 0 }) =>
-      defaultSorter(a, b),
+    name: (
+      { [key]: a },
+      { [key]: b } // use custom sort logic
+    ) => (asc ? a.localeCompare(b) : b.localeCompare(a)),
+    active: (
+      // use custom property keys
+      { activeInstanceId: a = 0 },
+      { activeInstanceId: b = 0 }
+    ) => defaultSorter(a, b), // but use default sort logic
   };
 
   return (
