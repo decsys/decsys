@@ -37,7 +37,7 @@ export const BarButton = (p) => {
 };
 
 export const BackButton = () => (
-  <BarButton as={Link} to="/admin/" leftIcon={<FaChevronLeft />}>
+  <BarButton as={Link} to="/admin/surveys" leftIcon={<FaChevronLeft />}>
     Survey List
   </BarButton>
 );

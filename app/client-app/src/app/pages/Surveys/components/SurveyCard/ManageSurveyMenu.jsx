@@ -60,7 +60,9 @@ const ManageSurveyMenu = ({
         />
         <MenuList>
           {editable && (
-            <MenuItem onClick={() => navigate(`survey/${id}`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/admin/surveys/${id}`)}>
+              Edit
+            </MenuItem>
           )}
 
           {!type && !parentSurveyId && (
@@ -73,7 +75,7 @@ const ManageSurveyMenu = ({
             </MenuItem>
           )}
 
-          <MenuItem onClick={() => navigate(`survey/${id}/preview`)}>
+          <MenuItem onClick={() => navigate(`/admin/surveys/${id}/preview`)}>
             Preview
           </MenuItem>
 
