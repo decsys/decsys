@@ -37,7 +37,7 @@ const buttons = {
       lineHeight="inherit"
       colorScheme="green"
       as={Link}
-      to={`/admin/survey/dashboard/${friendlyId}`}
+      to={`/admin/surveys/dashboard/${friendlyId}`}
       size={parentSurveyId ? "sm" : "md"}
     >
       Dashboard
@@ -48,7 +48,7 @@ const buttons = {
       lineHeight="inherit"
       colorScheme="cyan"
       as={Link}
-      to={`/admin/survey/${id}/results`}
+      to={`/admin/surveys/${id}/results`}
       size={parentSurveyId ? "sm" : "md"}
     >
       Results

@@ -23,14 +23,14 @@ const Admin = () => {
 
   return (
     <Router>
-      <Surveys path="/" />
+      <Surveys path="/surveys" />
       <Wordlist path="/wordlists/:id" />
       <Wordlists path="/wordlists" />
       <DefaultWordlist path="/wordlists/defaultWordlist" />
-      <Editor path="survey/:id" />
-      <Preview path="/survey/:id/preview" />
-      <Results path="/survey/:id/results" />
-      <Dashboard path="/survey/dashboard/:combinedId" />
+      <Editor path="/surveys/:id" />
+      <Preview path="/surveys/:id/preview" />
+      <Results path="/surveys/:id/results" />
+      <Dashboard path="/surveys/dashboard/:combinedId" />
       <Error message="404: Not Found" default />
     </Router>
   );
