@@ -23,5 +23,8 @@ namespace Decsys.Data.Entities
         public int? ParentSurveyId { get; set; }
 
         public int PageCreationCounter { get; set; }
+
+        public DateTimeOffset? ArchivedDate { get; set; }
+
     }
 }

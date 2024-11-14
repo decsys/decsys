@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -330,5 +330,29 @@ namespace Decsys.Repositories.Mongo
 
         public List<Models.SurveySummary> ListChildren(int parentId)
             => List(parentId);
+
+        public void ArchiveSurvey(int id, string userId)
+        {
+            var survey = _surveys.Find(x => x.Id == id).SingleOrDefault() ?? throw new KeyNotFoundException($"Survey with ID {id} not found.");
+
+            if (survey.Owner != userId)
+                throw new UnauthorizedAccessException("Only the owner can archive this survey.");
+
+            var update = Builders<Survey>.Update.Set(x => x.ArchivedDate, DateTimeOffset.UtcNow);
+            _surveys.UpdateOne(x => x.Id == id, update);
+        }
+
+        public void UnarchiveSurvey(int id, string? userId)
+        {
+            var survey = _surveys.Find(x => x.Id == id).SingleOrDefault() ?? throw new KeyNotFoundException($"Survey with ID {id} not found.");
+
+            if (survey.Owner != userId)
+                throw new UnauthorizedAccessException("Only the owner can unarchive this survey.");
+
+            // Unarchive the survey by setting ArchivedDate to null
+            var update = Builders<Survey>.Update.Set(x => x.ArchivedDate, null);
+            _surveys.UpdateOne(x => x.Id == id, update);
+        }
+
     }
 }

@@ -320,5 +320,25 @@ namespace Decsys.Services
             survey.Settings = settings;
             _surveys.Update(survey);
         }
+
+        /// <summary>
+        /// Archive a Survey by ID.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to archive.</param>
+        /// <exception cref="KeyNotFoundException">Thrown if the Survey cannot be found.</exception>
+        public void ArchiveSurvey(int id, string? userId)
+        {
+            _surveys.ArchiveSurvey(id, userId);
+        }
+
+        /// <summary>
+        /// Unarchive a Survey by ID.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to unarchive.</param>
+        /// <exception cref="KeyNotFoundException">Thrown if the Survey cannot be found.</exception>
+        public void UnarchiveSurvey(int id, string? userId)
+        {
+            _surveys.UnarchiveSurvey(id, userId);
+        }
     }
 }

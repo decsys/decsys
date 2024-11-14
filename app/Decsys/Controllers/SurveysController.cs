@@ -20,12 +20,13 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+    //[Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
     public class SurveysController : ControllerBase
     {
         private readonly AppMode _mode;
@@ -409,6 +410,66 @@ namespace Decsys.Controllers
             }
 
             return importedId;
+
+        }
+
+        [HttpPost("{id}/archive")]
+       // [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [SwaggerOperation("Archive the specified Survey.")]
+        [SwaggerResponse(204, "The Survey was successfully archived.")]
+        [SwaggerResponse(401, "Unauthorized.")]
+        [SwaggerResponse(403, "Access denied.")]
+        [SwaggerResponse(409, "Survey is in an unsuitable state to archive.")]
+        public IActionResult ArchiveSurvey(int id)
+        {
+            try
+            {
+                var userId = OwnerId;
+                if (userId is null && !_mode.IsWorkshop)
+                {
+                    return Forbid("Survey ownership is required to archive.");
+                }
+
+                _surveys.ArchiveSurvey(id, userId);
+
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (KeyNotFoundException)
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpPost("{id}/unarchive")]
+        //[Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [SwaggerOperation("Unarchive the specified Survey.")]
+        [SwaggerResponse(204, "The Survey was successfully unarchived.")]
+        [SwaggerResponse(401, "Unauthorized.")]
+        [SwaggerResponse(403, "Access denied.")]
+        public IActionResult UnarchiveSurvey(int id)
+        {
+            try
+            {
+                var userId = OwnerId;
+                if (userId is null && !_mode.IsWorkshop)
+                {
+                    return Forbid("Survey ownership is required to archive");
+                }
+                _surveys.UnarchiveSurvey(id, userId);
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+            catch (KeyNotFoundException)
+            {
+                return Forbid();
+            }
         }
     }
 

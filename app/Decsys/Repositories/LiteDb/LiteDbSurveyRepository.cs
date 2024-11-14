@@ -281,5 +281,20 @@ namespace Decsys.Repositories.LiteDb
 
         public List<Models.SurveySummary> ListChildren(int parentId)
             => List(parentId);
+
+        public void ArchiveSurvey(int id, string? ownerId)
+        {
+            var survey = _surveys.FindById(id) ?? throw new KeyNotFoundException($"Survey with ID {id} not found.");
+            survey.ArchivedDate = DateTimeOffset.UtcNow;
+            _surveys.Update(survey);
+        }
+
+        public void UnarchiveSurvey(int id, string? ownerId)
+        {
+            var survey = _surveys.FindById(id) ?? throw new KeyNotFoundException($"Survey with ID {id} not found.");
+            survey.ArchivedDate = null;
+            _surveys.Update(survey);
+        }
+
     }
 }

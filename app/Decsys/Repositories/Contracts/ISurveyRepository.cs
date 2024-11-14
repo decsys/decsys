@@ -90,5 +90,17 @@ namespace Decsys.Repositories.Contracts
         // Entity return is safe as it's not data layer dependent :)
         // if it becomes such, a DTO (model) will be needed
         public ExternalLookup LookupExternal(string? externalKey, string externalId);
+
+        /// <summary>
+        /// Archive a Survey
+        /// </summary>
+        /// <param name="id">The ID of the Survey to archive</param>
+        void ArchiveSurvey(int id, string? userId);
+
+        /// <summary>
+        /// Unarchive a Survey
+        /// </summary>
+        /// <param name="id">The ID of the Survey to unarchive</param>
+        void UnarchiveSurvey(int id, string? userId);
     }
 }
