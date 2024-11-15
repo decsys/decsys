@@ -358,7 +358,7 @@ namespace Decsys.Repositories.Mongo
                 throw new UnauthorizedAccessException("Only the owner can unarchive this survey.");
 
             if (survey.ArchivedDate == null)
-                throw new InvalidOperationException("This survey is not archived and cannot be unarchived.");
+                throw new InvalidOperationException("This survey is not archived.");
 
             // Unarchive the survey by setting ArchivedDate to null
             var update = Builders<Survey>.Update.Set(x => x.ArchivedDate, null);
