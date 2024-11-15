@@ -419,7 +419,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(204, "The Survey was successfully archived.")]
         [SwaggerResponse(401, "Unauthorized.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
-        [SwaggerResponse(409, "Survey is already archived.")]
+        [SwaggerResponse(409, "Survey is not in a suitable state to archive.")]
         public IActionResult ArchiveSurvey(int id)
         {
             try
@@ -427,17 +427,17 @@ namespace Decsys.Controllers
                 _surveys.ArchiveSurvey(id, OwnerId);
                 return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException e)
             {
-                return Unauthorized();
+                return Unauthorized(e.Message);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException e)
             {
-                return Conflict();
+                return Conflict(e.Message);
             }
         }
 
@@ -455,17 +455,17 @@ namespace Decsys.Controllers
                 _surveys.UnarchiveSurvey(id, OwnerId);
                 return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException e)
             {
-                return Unauthorized();
+                return Unauthorized(e.Message);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException e)
             {
-                return Conflict();
+                return Conflict(e.Message);
             }
         }
     }

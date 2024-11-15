@@ -341,6 +341,10 @@ namespace Decsys.Repositories.Mongo
             if (survey.ArchivedDate != null)
                 throw new InvalidOperationException("This survey is already archived and cannot be archived again.");
 
+            var activeInstances = _instances.Find(x => x.SurveyId == id && x.Closed == null).ToList();
+            if (activeInstances.Count != 0)
+                throw new InvalidOperationException("Cannot archive the survey because there are active instances.");
+
 
             var update = Builders<Survey>.Update.Set(x => x.ArchivedDate, DateTimeOffset.UtcNow);
             _surveys.UpdateOne(x => x.Id == id, update);
