@@ -95,12 +95,14 @@ namespace Decsys.Repositories.Contracts
         /// Archive a Survey
         /// </summary>
         /// <param name="id">The ID of the Survey to archive</param>
+        /// <param name="userId">The ID of the user attempting to archive the survey.</param>
         void ArchiveSurvey(int id, string? userId);
 
         /// <summary>
         /// Unarchive a Survey
         /// </summary>
         /// <param name="id">The ID of the Survey to unarchive</param>
+        /// <param name="userId">The ID of the user attempting to unarchive the survey.</param>
         void UnarchiveSurvey(int id, string? userId);
     }
 }
