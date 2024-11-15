@@ -26,7 +26,7 @@ namespace Decsys.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+    [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
     public class SurveysController : ControllerBase
     {
         private readonly AppMode _mode;
@@ -414,61 +414,58 @@ namespace Decsys.Controllers
         }
 
         [HttpPost("{id}/archive")]
-       // [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Archive the specified Survey.")]
         [SwaggerResponse(204, "The Survey was successfully archived.")]
         [SwaggerResponse(401, "Unauthorized.")]
-        [SwaggerResponse(403, "Access denied.")]
-        [SwaggerResponse(409, "Survey is in an unsuitable state to archive.")]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        [SwaggerResponse(409, "Survey is already archived.")]
         public IActionResult ArchiveSurvey(int id)
         {
             try
             {
-                var userId = OwnerId;
-                if (userId is null && !_mode.IsWorkshop)
-                {
-                    return Forbid("Survey ownership is required to archive.");
-                }
-
-                _surveys.ArchiveSurvey(id, userId);
-
+                _surveys.ArchiveSurvey(id, OwnerId);
                 return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (UnauthorizedAccessException)
             {
                 return Unauthorized();
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException)
             {
-                return Forbid();
+                return Conflict();
             }
         }
 
         [HttpPost("{id}/unarchive")]
-        //[Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Unarchive the specified Survey.")]
         [SwaggerResponse(204, "The Survey was successfully unarchived.")]
         [SwaggerResponse(401, "Unauthorized.")]
-        [SwaggerResponse(403, "Access denied.")]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        [SwaggerResponse(409, "Survey is already unarchived.")]
         public IActionResult UnarchiveSurvey(int id)
         {
             try
             {
-                var userId = OwnerId;
-                if (userId is null && !_mode.IsWorkshop)
-                {
-                    return Forbid("Survey ownership is required to archive");
-                }
-                _surveys.UnarchiveSurvey(id, userId);
+                _surveys.UnarchiveSurvey(id, OwnerId);
                 return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (UnauthorizedAccessException)
             {
                 return Unauthorized();
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException)
             {
-                return Forbid();
+                return Conflict();
             }
         }
     }
