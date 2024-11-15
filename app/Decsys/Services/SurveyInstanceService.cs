@@ -37,6 +37,10 @@ namespace Decsys.Services
         {
             var survey = _surveys.Find(surveyId) ?? throw new KeyNotFoundException();
 
+            if (survey.ArchivedDate != null)
+                throw new InvalidOperationException(
+                    $"The Survey with ID '{surveyId}' is archived and cannot be activated.");
+
             if (_instances.HasActiveInstance(surveyId))
                 throw new ArgumentException(
                     $"The Survey with the id '{surveyId}' currently has an active Survey Instance.",

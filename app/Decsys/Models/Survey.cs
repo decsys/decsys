@@ -30,5 +30,7 @@ namespace Decsys.Models
         public JObject Settings { get; set; } = new JObject();
 
         public Survey? Parent { get; set; }
+
+        public DateTimeOffset? ArchivedDate { get; set; }
     }
 }

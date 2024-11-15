@@ -134,6 +134,9 @@ namespace Decsys.Services
 
             survey.Name = model.Name ?? $"{survey.Name} (Copy)";
 
+            survey.ArchivedDate = null;
+
+
             if (survey.Parent is not null)
             {
                 // if it's a child, but it/its study are locked,
@@ -166,6 +169,7 @@ namespace Decsys.Services
                     var childSurvey = _surveys.Find(child.Id);
 
                     childSurvey.Parent = study;
+                    childSurvey.ArchivedDate = null; 
 
                     var newChildId = _surveys.Create(
                         childSurvey,

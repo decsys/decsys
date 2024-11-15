@@ -126,6 +126,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(201, "The Survey Instance was created with the returned ID.")]
         [SwaggerResponse(404, "No Survey was found with the provided ID.")]
         [SwaggerResponse(400, "This Survey already has an active Instance.")]
+        [SwaggerResponse(409, "The Survey is archived and cannot be activated.")]
         public IActionResult Activate(int id)
         {
             try
@@ -143,6 +144,10 @@ namespace Decsys.Controllers
             catch (ArgumentException e)
             {
                 return BadRequest(e);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Conflict(e.Message);
             }
         }
 
