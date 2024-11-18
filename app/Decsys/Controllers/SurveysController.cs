@@ -409,6 +409,63 @@ namespace Decsys.Controllers
             }
 
             return importedId;
+
+        }
+
+        [HttpPost("{id}/archive")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [SwaggerOperation("Archive the specified Survey.")]
+        [SwaggerResponse(204, "The Survey was successfully archived.")]
+        [SwaggerResponse(401, "Unauthorized.")]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        [SwaggerResponse(409, "Survey is not in a suitable state to archive.")]
+        public IActionResult ArchiveSurvey(int id)
+        {
+            try
+            {
+                _surveys.ArchiveSurvey(id, OwnerId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Conflict(e.Message);
+            }
+        }
+
+        [HttpPost("{id}/unarchive")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [SwaggerOperation("Unarchive the specified Survey.")]
+        [SwaggerResponse(204, "The Survey was successfully unarchived.")]
+        [SwaggerResponse(401, "Unauthorized.")]
+        [SwaggerResponse(404, "No Survey was found with the provided ID.")]
+        [SwaggerResponse(409, "Survey is already unarchived.")]
+        public IActionResult UnarchiveSurvey(int id)
+        {
+            try
+            {
+                _surveys.UnarchiveSurvey(id, OwnerId);
+                return NoContent();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return Conflict(e.Message);
+            }
         }
     }
 

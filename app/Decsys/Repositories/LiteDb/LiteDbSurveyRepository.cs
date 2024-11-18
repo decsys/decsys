@@ -281,5 +281,32 @@ namespace Decsys.Repositories.LiteDb
 
         public List<Models.SurveySummary> ListChildren(int parentId)
             => List(parentId);
+
+        public void ArchiveSurvey(int id, string? ownerId)
+        {
+            var survey = _surveys.FindById(id) ?? throw new KeyNotFoundException($"Survey with ID {id} not found.");
+
+            if (survey.ArchivedDate != null)
+                throw new InvalidOperationException("This survey is already archived and cannot be archived again.");
+
+            var activeInstances = _instances.Find(x => x.Survey.Id == id && x.Closed == null).ToList();
+            if (activeInstances.Count != 0)
+                throw new InvalidOperationException("Cannot archive the survey because there are active instances.");
+
+            survey.ArchivedDate = DateTimeOffset.UtcNow;
+            _surveys.Update(survey);
+        }
+
+        public void UnarchiveSurvey(int id, string? ownerId)
+        {
+            var survey = _surveys.FindById(id) ?? throw new KeyNotFoundException($"Survey with ID {id} not found.");
+
+            if (survey.ArchivedDate == null)
+                throw new InvalidOperationException("This survey is not archived");
+
+            survey.ArchivedDate = null;
+            _surveys.Update(survey);
+        }
+
     }
 }

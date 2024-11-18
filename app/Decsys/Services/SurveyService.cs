@@ -134,6 +134,9 @@ namespace Decsys.Services
 
             survey.Name = model.Name ?? $"{survey.Name} (Copy)";
 
+            survey.ArchivedDate = null;
+
+
             if (survey.Parent is not null)
             {
                 // if it's a child, but it/its study are locked,
@@ -166,6 +169,7 @@ namespace Decsys.Services
                     var childSurvey = _surveys.Find(child.Id);
 
                     childSurvey.Parent = study;
+                    childSurvey.ArchivedDate = null; 
 
                     var newChildId = _surveys.Create(
                         childSurvey,
@@ -319,6 +323,26 @@ namespace Decsys.Services
             var survey = _surveys.Find(id) ?? throw new KeyNotFoundException();
             survey.Settings = settings;
             _surveys.Update(survey);
+        }
+
+        /// <summary>
+        /// Archive a Survey by ID.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to archive.</param>
+        /// <exception cref="KeyNotFoundException">Thrown if the Survey cannot be found.</exception>
+        public void ArchiveSurvey(int id, string? userId)
+        {
+            _surveys.ArchiveSurvey(id, userId);
+        }
+
+        /// <summary>
+        /// Unarchive a Survey by ID.
+        /// </summary>
+        /// <param name="id">The ID of the Survey to unarchive.</param>
+        /// <exception cref="KeyNotFoundException">Thrown if the Survey cannot be found.</exception>
+        public void UnarchiveSurvey(int id, string? userId)
+        {
+            _surveys.UnarchiveSurvey(id, userId);
         }
     }
 }
