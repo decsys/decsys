@@ -40,6 +40,7 @@ const SurveyCard = () => {
     children,
     type,
     settings,
+    archivedDate,
   } = survey;
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
 
@@ -99,6 +100,8 @@ const SurveyCard = () => {
               editable={!runCount && !isStudy}
               isStudy={isStudy}
               areSettingsValid={validateSettings()}
+              archivedDate={archivedDate}
+              activeInstanceId={activeInstanceId}
             />
           </Grid>
 
