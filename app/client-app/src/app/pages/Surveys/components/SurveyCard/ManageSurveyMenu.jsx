@@ -20,7 +20,6 @@ import { useWebhook } from "api/webhooks";
 import { useState } from "react";
 import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
 import { useToast } from "@chakra-ui/react";
-import { archiveSurvey, unarchiveSurvey } from "api/surveys";
 
 const ManageSurveyMenu = ({
   id,
@@ -32,10 +31,11 @@ const ManageSurveyMenu = ({
   isStudy,
   hasInvalidExternalLink,
   runCount,
-  archivedDate: initialArchivedDate,
   activeInstanceId,
+  currentArchiveDate,
+  handleUnarchive,
+  handleArchive,
 }) => {
-  const [archivedDate, setArchivedDate] = useState(initialArchivedDate); // Manage archived state locally
   const deleteModal = useDisclosure();
   const configModal = useDisclosure();
   const exportModal = useDisclosure();
@@ -45,7 +45,6 @@ const ManageSurveyMenu = ({
   const WebhookListModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
-  const toast = useToast();
 
   const handleDuplicate = (name, type, settings, creationOptions) => {
     duplicate(id, name, type, settings, creationOptions);
@@ -53,48 +52,6 @@ const ManageSurveyMenu = ({
   };
 
   const handleDelete = async () => await deleteSurvey(id);
-
-  const handleArchive = async () => {
-    try {
-      await archiveSurvey(id);
-      setArchivedDate(new Date().toISOString());
-      toast({
-        title: "Survey Archived",
-        description: "The survey was successfully archived.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: "Error Archiving Survey",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-  const handleUnarchive = async () => {
-    try {
-      await unarchiveSurvey(id);
-      setArchivedDate(null);
-      toast({
-        title: "Survey Unarchived",
-        description: "The survey was successfully unarchived.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } catch (error) {
-      toast({
-        title: "Error Unarchiving Survey",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
 
   return (
     <>
@@ -142,7 +99,7 @@ const ManageSurveyMenu = ({
             <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
           )}
           {!!!activeInstanceId &&
-            (archivedDate ? (
+            (currentArchiveDate ? (
               <MenuItem onClick={handleUnarchive}>Unarchive</MenuItem>
             ) : (
               <MenuItem onClick={handleArchive}>Archive</MenuItem>
