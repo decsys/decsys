@@ -15,11 +15,7 @@ import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 import { capitalise } from "services/strings";
 import { SelectStudyModal } from "./SelectStudyModal";
-import WebhookListModal from "components/shared/Webhook/WebhookListModal";
-import { useWebhook } from "api/webhooks";
-import { useState } from "react";
 import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
-import { useToast } from "@chakra-ui/react";
 
 const ManageSurveyMenu = ({
   id,
@@ -42,7 +38,6 @@ const ManageSurveyMenu = ({
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
   const selectStudyModal = useDisclosure();
-  const WebhookListModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
 
@@ -98,7 +93,7 @@ const ManageSurveyMenu = ({
           {(editable || !parentSurveyId) && (
             <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
           )}
-          {!!!activeInstanceId &&
+          {!activeInstanceId &&
             (currentArchiveDate ? (
               <MenuItem onClick={handleUnarchive}>Unarchive</MenuItem>
             ) : (
