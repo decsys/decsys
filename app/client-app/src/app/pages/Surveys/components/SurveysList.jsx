@@ -1,5 +1,5 @@
 import SurveyCard from "./SurveyCard";
-import { Stack, Box } from "@chakra-ui/react";
+import { Stack, Box, Select } from "@chakra-ui/react";
 import { useSortingAndFiltering } from "components/shared/SortPanel";
 import SurveysSortingAndFiltering from "./SurveysSortingAndFiltering";
 import { SurveyProvider } from "../../../contexts/Survey";
@@ -9,6 +9,8 @@ import { useNavigate, useParams } from "@reach/router";
 
 const SurveysList = ({ surveys }) => {
   const navigate = useNavigate();
+
+  const [filter, setFilter] = useState("hideArchived");
 
   const getQueryParams = () => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -21,7 +23,16 @@ const SurveysList = ({ surveys }) => {
   const [currentPage, setCurrentPage] = useState(page - 1);
   const [itemLimit, setItemLimit] = useState(limit);
 
-  const sortingAndFiltering = useSortingAndFiltering(surveys);
+  const filteredSurveys = Object.values(surveys).filter((survey) => {
+    if (filter === "hideArchived") {
+      return !survey.archivedDate;
+    } else if (filter === "onlyArchived") {
+      return survey.archivedDate;
+    }
+    return true;
+  });
+
+  const sortingAndFiltering = useSortingAndFiltering(filteredSurveys);
   const totalItems = sortingAndFiltering.surveyList.length;
 
   useEffect(() => {
@@ -42,7 +53,6 @@ const SurveysList = ({ surveys }) => {
       <Box py={4}>
         <SurveysSortingAndFiltering {...sortingAndFiltering} />
       </Box>
-
       <Stack boxShadow="callout" spacing={0}>
         {currentSurveys.map(
           (survey) =>
@@ -55,13 +65,22 @@ const SurveysList = ({ surveys }) => {
         )}
       </Stack>
 
-      {/* Pagination Controls */}
+      <Select
+        w="200px"
+        onChange={(e) => setFilter(e.target.value)}
+        defaultValue="hideArchived"
+      >
+        <option value="hideArchived">Hide Archived</option>
+        <option value="onlyArchived">Show Only Archived</option>
+        <option value="showAll">Show All</option>
+      </Select>
+
       <PaginationControls
         currentPage={currentPage}
         itemLimit={itemLimit}
         setItemLimit={(newLimit) => {
           setItemLimit(newLimit);
-          setCurrentPage(0); // Reset to first page when limit changes
+          setCurrentPage(0);
         }}
         setCurrentPage={setCurrentPage}
         totalItems={totalItems}
