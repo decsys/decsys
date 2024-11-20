@@ -15,9 +15,6 @@ import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 import { capitalise } from "services/strings";
 import { SelectStudyModal } from "./SelectStudyModal";
-import WebhookListModal from "components/shared/Webhook/WebhookListModal";
-import { useWebhook } from "api/webhooks";
-import { useState } from "react";
 import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
 
 const ManageSurveyMenu = ({
@@ -30,6 +27,10 @@ const ManageSurveyMenu = ({
   isStudy,
   hasInvalidExternalLink,
   runCount,
+  activeInstanceId,
+  currentArchiveDate,
+  handleUnarchive,
+  handleArchive,
 }) => {
   const deleteModal = useDisclosure();
   const configModal = useDisclosure();
@@ -37,16 +38,15 @@ const ManageSurveyMenu = ({
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
   const selectStudyModal = useDisclosure();
-  const WebhookListModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
+
   const handleDuplicate = (name, type, settings, creationOptions) => {
     duplicate(id, name, type, settings, creationOptions);
     createSurveyModal.onClose();
   };
-  const handleDelete = async () => await deleteSurvey(id);
 
-  const { data: webhookData, mutate } = useWebhook(id);
+  const handleDelete = async () => await deleteSurvey(id);
 
   return (
     <>
@@ -93,6 +93,12 @@ const ManageSurveyMenu = ({
           {(editable || !parentSurveyId) && (
             <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
           )}
+          {!activeInstanceId &&
+            (currentArchiveDate ? (
+              <MenuItem onClick={handleUnarchive}>Unarchive</MenuItem>
+            ) : (
+              <MenuItem onClick={handleArchive}>Archive</MenuItem>
+            ))}
         </MenuList>
       </Menu>
 

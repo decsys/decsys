@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { validateYupSchema } from "formik";
 import { getValidationSchema } from "../../external-types";
 import {
@@ -11,6 +11,7 @@ import {
   useDisclosure,
   Icon,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { ActiveIndicator } from "components/core";
 import SurveyInfoLine from "./SurveyInfoLine";
@@ -23,6 +24,7 @@ import { SurveyProvider, useSurvey } from "../../../../contexts/Survey";
 import themes, { defaultColorMode } from "themes";
 import { FaChevronDown, FaChevronRight, FaPlus } from "react-icons/fa";
 import AddSurveyModal from "../AddSurveyModal";
+import { archiveSurvey, unarchiveSurvey } from "api/surveys";
 
 const SurveyCard = () => {
   const { onToggle, isOpen } = useDisclosure();
@@ -40,7 +42,10 @@ const SurveyCard = () => {
     children,
     type,
     settings,
+    archivedDate: initialArchivedDate,
   } = survey;
+  const [currentArchiveDate, setCurrentArchiveDate] =
+    useState(initialArchivedDate);
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
 
   const validateSettings = useCallback(() => {
@@ -54,7 +59,54 @@ const SurveyCard = () => {
     }
   }, [settings, type]);
 
-  const actionButtons = getActionButtons(survey, validateSettings());
+  const actionButtons = getActionButtons(
+    survey,
+    validateSettings(),
+    currentArchiveDate
+  );
+  const toast = useToast();
+
+  const handleArchive = async () => {
+    try {
+      await archiveSurvey(id);
+      setCurrentArchiveDate(new Date().toISOString());
+      toast({
+        title: "Survey Archived",
+        description: "The survey was successfully archived.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error Archiving Survey",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleUnarchive = async () => {
+    try {
+      await unarchiveSurvey(id);
+      setCurrentArchiveDate(null);
+      toast({
+        title: "Survey Unarchived",
+        description: "The survey was successfully unarchived.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error Unarchiving Survey",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -91,6 +143,7 @@ const SurveyCard = () => {
             <ActionButtons
               actionButtons={actionButtons}
               {...survey}
+              currentArchiveDate={currentArchiveDate}
               friendlyId={friendlyId}
             />
 
@@ -99,6 +152,10 @@ const SurveyCard = () => {
               editable={!runCount && !isStudy}
               isStudy={isStudy}
               areSettingsValid={validateSettings()}
+              activeInstanceId={activeInstanceId}
+              currentArchiveDate={currentArchiveDate}
+              handleUnarchive={handleUnarchive}
+              handleArchive={handleArchive}
             />
           </Grid>
 

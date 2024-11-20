@@ -67,11 +67,16 @@ const buttons = {
 
 export const getActionButtons = (
   { activeInstanceId, runCount, parentSurveyId, isStudy },
-  areSettingsValid
+  areSettingsValid,
+  currentArchiveDate
 ) => ({
   close: !parentSurveyId && !!activeInstanceId,
   dashboard: !isStudy && !!activeInstanceId,
-  launch: !parentSurveyId && !activeInstanceId && areSettingsValid,
+  launch:
+    !parentSurveyId &&
+    !activeInstanceId &&
+    areSettingsValid &&
+    !currentArchiveDate,
   results: !isStudy && runCount > 0,
   settings: !parentSurveyId && !areSettingsValid,
 });

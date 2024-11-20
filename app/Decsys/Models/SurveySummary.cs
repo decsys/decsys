@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 
 using System.Collections.Generic;
 
@@ -30,6 +30,8 @@ namespace Decsys.Models
         public int? ParentSurveyId { get; set; }
         
         public int ActiveInstanceParticipantCount { get; set; }
+
+        public DateTimeOffset? ArchivedDate { get; set; }
 
         public List<SurveySummary>? Children { get; set; }
     }

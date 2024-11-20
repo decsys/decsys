@@ -132,3 +132,43 @@ export const getSurveyExport = async (surveyId, type) =>
     `/api/surveys/${surveyId}/export?type=${type}`,
     withHeaders(await authorization_BearerToken())
   );
+
+/**
+ * Archive a Survey by ID
+ * @param {number} id The ID of the Survey to archive
+ */
+export const archiveSurvey = async (id) => {
+  try {
+    await axios.post(
+      `/api/surveys/${id}/archive`,
+      null,
+      withHeaders(await authorization_BearerToken())
+    );
+  } catch (error) {
+    console.error(
+      `Error archiving survey with ID ${id}:`,
+      error.response || error.message
+    );
+    throw error;
+  }
+};
+
+/**
+ * Unarchive a Survey by ID
+ * @param {number} id The ID of the Survey to unarchive
+ */
+export const unarchiveSurvey = async (id) => {
+  try {
+    await axios.post(
+      `/api/surveys/${id}/unarchive`,
+      null,
+      withHeaders(await authorization_BearerToken())
+    );
+  } catch (error) {
+    console.error(
+      `Error unarchiving survey with ID ${id}:`,
+      error.response || error.message
+    );
+    throw error;
+  }
+};
