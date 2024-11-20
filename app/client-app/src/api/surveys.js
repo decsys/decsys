@@ -6,7 +6,7 @@ import {
   authorization_BearerToken,
   contentType_AppJson,
 } from "./helpers";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { toDictionary } from "services/data-structures";
 
 /**
@@ -144,6 +144,7 @@ export const archiveSurvey = async (id) => {
       null,
       withHeaders(await authorization_BearerToken())
     );
+    await mutate("/api/surveys");
   } catch (error) {
     console.error(
       `Error archiving survey with ID ${id}:`,
@@ -164,6 +165,7 @@ export const unarchiveSurvey = async (id) => {
       null,
       withHeaders(await authorization_BearerToken())
     );
+    await mutate("/api/surveys");
   } catch (error) {
     console.error(
       `Error unarchiving survey with ID ${id}:`,
