@@ -118,7 +118,7 @@ const SurveyCard = () => {
         {!parentSurveyId && (
           <ActiveIndicator
             active={!!activeInstanceId}
-            archived={currentArchiveDate}
+            archived={!!currentArchiveDate}
           />
         )}
 

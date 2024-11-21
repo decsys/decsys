@@ -59,10 +59,17 @@ const SurveysList = ({ surveys }) => {
     setCurrentPage(0); // Reset to the first page when filter changes
   };
 
+  const hasArchivedDate = filteredSurveys.some(
+    (survey) => survey.archivedDate !== null
+  );
+
   return (
     <Stack mt={2}>
       <Box pb={4}>
-        <SurveysSortingAndFiltering {...sortingAndFiltering} />
+        <SurveysSortingAndFiltering
+          {...sortingAndFiltering}
+          hasArchivedDate={hasArchivedDate}
+        />
       </Box>
       <Stack boxShadow="callout" spacing={0}>
         {currentSurveys.map(

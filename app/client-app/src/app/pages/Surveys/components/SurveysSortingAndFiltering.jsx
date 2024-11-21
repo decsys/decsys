@@ -6,6 +6,7 @@ const SurveysSortingAndFiltering = ({
   setSorting,
   filter,
   setFilter,
+  hasArchivedDate,
 }) => {
   const handleSort = (key) => {
     setSorting({
@@ -23,7 +24,12 @@ const SurveysSortingAndFiltering = ({
       <SortPanel
         state={sorting}
         onSortButtonClick={handleSort}
-        keys={["Active", ["Run Count", "runCount"], "Name"]}
+        keys={[
+          "Active",
+          ["Run Count", "runCount"],
+          "Name",
+          ...(hasArchivedDate ? [["Archived", "archivedDate"]] : []),
+        ]}
       />
 
       <Flex ml="auto">

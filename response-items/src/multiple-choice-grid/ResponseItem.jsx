@@ -62,7 +62,6 @@ const ResponseItem = ({
         logResults(newSelectedDetails);
         setNextEnabled(true);
         setIsValidResponse(true);
-        console.log(newSelectedDetails);
       } else {
         setIsValidResponse(false);
       }
