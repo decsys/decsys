@@ -12,7 +12,7 @@ const getPropertySorter = (key, asc) => {
       { [key]: a },
       { [key]: b } // use custom sort logic
     ) => {
-      a = a == null ? "" : a; // converting null or undefined to an empty string
+      a = a ?? ""; // converting null or undefined to an empty string
       b = b ?? "";
       return asc ? a.localeCompare(b) : b.localeCompare(a);
     },
