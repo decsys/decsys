@@ -13,7 +13,7 @@ const getPropertySorter = (key, asc) => {
       { [key]: b } // use custom sort logic
     ) => {
       a = a == null ? "" : a; // converting null or undefined to an empty string
-      b = b == null ? "" : b;
+      b = b ?? "";
       return asc ? a.localeCompare(b) : b.localeCompare(a);
     },
     archivedDate: ({ [key]: a }, { [key]: b }) => {
