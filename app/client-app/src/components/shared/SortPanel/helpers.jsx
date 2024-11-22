@@ -11,7 +11,11 @@ const getPropertySorter = (key, asc) => {
     name: (
       { [key]: a },
       { [key]: b } // use custom sort logic
-    ) => (asc ? a.localeCompare(b) : b.localeCompare(a)),
+    ) => {
+      a = a == null ? "" : a; // converting null or undefined to an empty string
+      b = b == null ? "" : b;
+      return asc ? a.localeCompare(b) : b.localeCompare(a);
+    },
     archivedDate: ({ [key]: a }, { [key]: b }) => {
       if (a === null) a = "9999-12-31T23:59:59.999Z"; // Push unarchived items to the end if ascending
       if (b === null) b = "9999-12-31T23:59:59.999Z"; // Push unarchived items to the end if ascending
