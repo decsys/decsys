@@ -11,7 +11,11 @@ const getPropertySorter = (key, asc) => {
     name: (
       { [key]: a },
       { [key]: b } // use custom sort logic
-    ) => (asc ? a.localeCompare(b) : b.localeCompare(a)),
+    ) => {
+      a = a == null ? "" : a; // converting null or undefined to an empty string
+      b = b == null ? "" : b;
+      return asc ? a.localeCompare(b) : b.localeCompare(a);
+    },
     active: (
       // use custom property keys
       { activeInstanceId: a = 0 },
