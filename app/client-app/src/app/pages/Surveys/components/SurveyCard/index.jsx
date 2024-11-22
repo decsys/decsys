@@ -115,7 +115,12 @@ const SurveyCard = () => {
         spacing={0}
         {...style[colorMode || defaultColorMode]}
       >
-        {!parentSurveyId && <ActiveIndicator active={!!activeInstanceId} />}
+        {!parentSurveyId && (
+          <ActiveIndicator
+            active={!!activeInstanceId}
+            archived={!!currentArchiveDate}
+          />
+        )}
 
         <Stack spacing={0} w="100%">
           <Grid
