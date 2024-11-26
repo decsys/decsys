@@ -72,7 +72,7 @@ const PaginationControls = ({
           value={filterType} // Bind the current filter to the Select
           w="250px"
         >
-          <option value="active">Hide Archived Surveys</option>
+          <option value="unarchived">Hide Archived Surveys</option>
           <option value="all">Show All Surveys</option>
           <option value="archived">Only Archived Surveys</option>
         </Select>

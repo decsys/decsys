@@ -20,7 +20,7 @@ const SurveysList = ({ surveys }) => {
   const [currentPage, setCurrentPage] = useState(page - 1);
   const [itemLimit, setItemLimit] = useState(limit);
   const [filteredSurveys, setFilteredSurveys] = useState([]);
-  const [filterType, setFilterType] = useState("active");
+  const [filterType, setFilterType] = useState("unarchived");
 
   const sortingAndFiltering = useSortingAndFiltering(filteredSurveys);
   const totalItems = sortingAndFiltering.surveyList.length;
@@ -33,7 +33,7 @@ const SurveysList = ({ surveys }) => {
       );
     } else if (filterType === "all") {
       updatedSurveys = Object.values(surveys);
-    } else if (filterType === "active") {
+    } else if (filterType === "unarchived") {
       updatedSurveys = Object.values(surveys).filter(
         (survey) => survey.archivedDate == null
       );

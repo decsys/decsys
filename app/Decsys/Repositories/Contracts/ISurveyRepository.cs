@@ -23,6 +23,22 @@ namespace Decsys.Repositories.Contracts
         List<SurveySummary> List(string? userId = null, bool includeOwnerless = false);
 
         /// <summary>
+        /// List Summaries of all Surveys matching the specified criteria.
+        /// </summary>
+        /// <param name="userId">Optional User ID</param>
+        /// <param name="includeOwnerless">
+        /// Even if a User ID is specified, still additionally include Surveys with no Owner
+        /// </param>
+        /// <param name="name">Optional filter by name (partial match)</param>
+        /// <param name="view">
+        /// Specify the view filter:
+        /// - "all" to return all Surveys
+        /// - "active" to return only active Surveys
+        /// - "archived" to return only archived Surveys
+        /// </param>
+        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "all");
+
+        /// <summary>
         /// List Summaries of all children of the specified Study.
         /// </summary>
         /// <param name="parentId"></param>

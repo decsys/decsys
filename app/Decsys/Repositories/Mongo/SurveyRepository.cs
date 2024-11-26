@@ -253,7 +253,15 @@ namespace Decsys.Repositories.Mongo
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null, userId, includeOwnerless);
 
-        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false)
+        public List<Models.SurveySummary> List(
+            string? userId = null,
+            bool includeOwnerless = false,
+            string? name = null,
+            string view = "all")
+            => List(null, userId, includeOwnerless, name, view);
+
+        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null,
+        string view = "all")
         {
             var surveys = userId is null
                 ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
@@ -262,6 +270,21 @@ namespace Decsys.Repositories.Mongo
                         (x.Owner == userId ||
                         (includeOwnerless && x.Owner == null)))
                     .ToList();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            switch (view.ToLower())
+            {
+                case "unarchived":
+                    surveys = surveys.Where(x => x.ArchivedDate == null).ToList();
+                    break;
+                case "archived":
+                    surveys = surveys.Where(x => x.ArchivedDate != null).ToList();
+                    break;
+            }
 
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
 
