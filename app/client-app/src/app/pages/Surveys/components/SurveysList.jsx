@@ -1,11 +1,22 @@
 import SurveyCard from "./SurveyCard";
-import { Stack, Box, Select, Text, HStack } from "@chakra-ui/react";
+import {
+  Stack,
+  Box,
+  Select,
+  Text,
+  HStack,
+  Input,
+  Flex,
+  Button,
+} from "@chakra-ui/react";
 import { useSortingAndFiltering } from "components/shared/SortPanel";
 import SurveysSortingAndFiltering from "./SurveysSortingAndFiltering";
 import { SurveyProvider } from "../../../contexts/Survey";
 import { useEffect, useState } from "react";
 import PaginationControls from "./Pagination/PaginationControls";
 import { useNavigate, useParams } from "@reach/router";
+import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
+import { useFilteredSurveys } from "api/surveys";
 
 const SurveysList = ({ surveys }) => {
   const navigate = useNavigate();
@@ -19,27 +30,39 @@ const SurveysList = ({ surveys }) => {
   const { page, limit } = getQueryParams();
   const [currentPage, setCurrentPage] = useState(page - 1);
   const [itemLimit, setItemLimit] = useState(limit);
-  const [filteredSurveys, setFilteredSurveys] = useState([]);
   const [filterType, setFilterType] = useState("unarchived");
+  const [filteredSurveys, setFilteredSurveys] = useState([]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const { data: surveysFromApi, mutate: refetchSurveys } = useFilteredSurveys(
+    debouncedSearchTerm,
+    "all"
+  );
 
   const sortingAndFiltering = useSortingAndFiltering(filteredSurveys);
   const totalItems = sortingAndFiltering.surveyList.length;
 
   useEffect(() => {
-    let updatedSurveys = [];
-    if (filterType === "archived") {
-      updatedSurveys = Object.values(surveys).filter(
-        (survey) => survey.archivedDate !== null
-      );
-    } else if (filterType === "all") {
-      updatedSurveys = Object.values(surveys);
-    } else if (filterType === "unarchived") {
-      updatedSurveys = Object.values(surveys).filter(
-        (survey) => survey.archivedDate == null
-      );
+    if (surveysFromApi) {
+      let updatedSurveys = surveysFromApi;
+      if (filterType === "archived") {
+        updatedSurveys = surveysFromApi.filter(
+          (survey) => survey.archivedDate !== null
+        );
+      } else if (filterType === "unarchived") {
+        updatedSurveys = surveysFromApi.filter(
+          (survey) => survey.archivedDate == null
+        );
+      }
+      setFilteredSurveys(updatedSurveys);
     }
-    setFilteredSurveys(updatedSurveys);
-  }, [surveys, filterType]);
+  }, [surveysFromApi, filterType]);
+
+  useEffect(() => {
+    refetchSurveys();
+  }, [debouncedSearchTerm, refetchSurveys]);
 
   useEffect(() => {
     const params = new URLSearchParams({
@@ -54,6 +77,10 @@ const SurveysList = ({ surveys }) => {
     (currentPage + 1) * itemLimit
   );
 
+  const handleFilterChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   const handleSurveyFilterChange = (value) => {
     setFilterType(value);
     setCurrentPage(0); // Reset to the first page when filter changes
@@ -66,20 +93,35 @@ const SurveysList = ({ surveys }) => {
   return (
     <Stack mt={2}>
       <Box pb={4}>
-        <SurveysSortingAndFiltering
-          {...sortingAndFiltering}
-          hasArchivedDate={hasArchivedDate}
-        />
+        <Flex alignItems="center" justifyContent="space-between">
+          <SurveysSortingAndFiltering
+            {...sortingAndFiltering}
+            hasArchivedDate={hasArchivedDate}
+          />
+          <Input
+            placeholder="Filter"
+            size="sm"
+            maxW="200px"
+            value={searchTerm}
+            onChange={handleFilterChange}
+          />
+        </Flex>
       </Box>
       <Stack boxShadow="callout" spacing={0}>
-        {currentSurveys.map(
-          (survey) =>
-            survey.id &&
-            surveys[survey.id] && (
-              <SurveyProvider key={survey.id} value={surveys[survey.id]}>
-                <SurveyCard />
-              </SurveyProvider>
-            )
+        {currentSurveys.length > 0 ? (
+          currentSurveys.map(
+            (survey) =>
+              survey.id &&
+              surveys[survey.id] && (
+                <SurveyProvider key={survey.id} value={surveys[survey.id]}>
+                  <SurveyCard />
+                </SurveyProvider>
+              )
+          )
+        ) : (
+          <Flex p={5}>
+            <Text>No surveys found matching your criteria.</Text>
+          </Flex>
         )}
       </Stack>
 
