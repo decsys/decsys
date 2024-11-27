@@ -278,7 +278,7 @@ namespace Decsys.Repositories.Mongo
 
             switch (view.ToLower())
             {
-                case SurveyArchivedTypes.UnArchived:
+                case SurveyArchivedTypes.Unarchived:
                     surveys = surveys.Where(x => x.ArchivedDate == null).ToList();
                     break;
                 case SurveyArchivedTypes.Archived:
