@@ -473,7 +473,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(200, "A list of filtered Surveys.", typeof(IEnumerable<SurveySummary>))]
         public IEnumerable<SurveySummary> FilteredList(
             [FromQuery] string? name = null,
-            [FromQuery] string view = "all")
+            [FromQuery] string view = "")
         {
             return _surveys.List(
                 userId: OwnerId,

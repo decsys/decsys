@@ -108,15 +108,14 @@ namespace Decsys.Services
         /// <param name="includeOwnerless">Include Surveys with no Owner</param>
         /// <param name="name">Filter Surveys containing this name</param>
         /// <param name="view">
-        /// View filter: "all" for all surveys, "active" for non-archived surveys, 
-        /// "archived" for archived surveys.
+        /// View filter: "active" for non-archived surveys and "archived" for archived surveys.
         /// </param>
         /// <returns>Filtered list of surveys summarised.</returns>
         public IEnumerable<SurveySummary> List(
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,
-            string view = "all")
+            string view = "")
         {
             return _surveys.List(userId, includeOwnerless, name, view);
         }

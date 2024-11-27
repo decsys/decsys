@@ -257,11 +257,11 @@ namespace Decsys.Repositories.Mongo
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,
-            string view = "all")
+            string view = "")
             => List(null, userId, includeOwnerless, name, view);
 
         private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null,
-        string view = "all")
+        string view = "")
         {
             var surveys = userId is null
                 ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
@@ -278,10 +278,10 @@ namespace Decsys.Repositories.Mongo
 
             switch (view.ToLower())
             {
-                case "unarchived":
+                case SurveyArchivedTypes.UnArchived:
                     surveys = surveys.Where(x => x.ArchivedDate == null).ToList();
                     break;
-                case "archived":
+                case SurveyArchivedTypes.Archived:
                     surveys = surveys.Where(x => x.ArchivedDate != null).ToList();
                     break;
             }

@@ -32,11 +32,10 @@ namespace Decsys.Repositories.Contracts
         /// <param name="name">Optional filter by name (partial match)</param>
         /// <param name="view">
         /// Specify the view filter:
-        /// - "all" to return all Surveys
         /// - "active" to return only active Surveys
         /// - "archived" to return only archived Surveys
         /// </param>
-        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "all");
+        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "");
 
         /// <summary>
         /// List Summaries of all children of the specified Study.

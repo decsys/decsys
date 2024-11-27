@@ -53,7 +53,7 @@ namespace Decsys.Repositories.LiteDb
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null);
 
-        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "all")
+        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "")
         {
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();
@@ -69,10 +69,10 @@ namespace Decsys.Repositories.LiteDb
             // Filter by view: all, active, archived
             switch (view.ToLower())
             {
-                case "active":
+                case SurveyArchivedTypes.UnArchived:
                     surveys = surveys.Where(x => x.ArchivedDate == null).ToList();
                     break;
-                case "archived":
+                case SurveyArchivedTypes.Archived:
                     surveys = surveys.Where(x => x.ArchivedDate != null).ToList();
                     break;
             }
