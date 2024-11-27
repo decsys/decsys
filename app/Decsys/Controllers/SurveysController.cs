@@ -478,8 +478,8 @@ namespace Decsys.Controllers
             return _surveys.List(
                 userId: OwnerId,
                 includeOwnerless: User.IsSuperUser(),
-                name: name,
-                view: view);
+                name,
+                view);
         }
     }
 
