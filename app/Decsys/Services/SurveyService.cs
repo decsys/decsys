@@ -108,7 +108,7 @@ namespace Decsys.Services
         /// <param name="includeOwnerless">Include Surveys with no Owner</param>
         /// <param name="name">Filter Surveys containing this name</param>
         /// <param name="view">
-        /// View filter: "active" for non-archived surveys and "archived" for archived surveys.
+        /// View filter: "unarchived" for non-archived surveys and "archived" for archived surveys.
         /// </param>
         /// <returns>Filtered list of surveys summarised.</returns>
         public IEnumerable<SurveySummary> List(
