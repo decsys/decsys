@@ -51,7 +51,7 @@ const SurveysList = ({ surveys }) => {
   const handleFilterChange = (e) => setSearchTerm(e.target.value);
   const handleSurveyFilterChange = (value) => {
     setFilterType(value);
-    setCurrentPage(0);
+    setCurrentPage(0); // Reset to first page when filter changes
   };
 
   return (

@@ -66,7 +66,7 @@ namespace Decsys.Repositories.LiteDb
                     .ToList();
             }
 
-            // Filter by view: active, archived
+            // Filter by view: unarchived, archived
             switch (view.ToLower())
             {
                 case SurveyArchivedTypes.Unarchived:
