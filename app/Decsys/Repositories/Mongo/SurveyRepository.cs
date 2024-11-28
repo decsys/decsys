@@ -260,7 +260,7 @@ namespace Decsys.Repositories.Mongo
             string view = "",
             string sortBy = "name",
             string direction = "up")
-            => List(null, userId, includeOwnerless, name, view);
+            => List(null, userId, includeOwnerless, name, view, sortBy, direction);
 
         private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null, string view = "", string sortBy = "name", string direction = "up")
         {
@@ -397,9 +397,10 @@ namespace Decsys.Repositories.Mongo
             Func<Models.SurveySummary, object> sortKeySelector = sortBy.ToLower() switch
             {
                 "name" => s => s.Name,
-                "active" => s => s.ActiveInstanceId.HasValue ? s.ActiveInstanceId.Value : (direction == "up" ? int.MinValue : int.MaxValue),
+                "active" => s => s.ActiveInstanceId ?? int.MinValue,
                 "run count" => s => s.RunCount,
-                "archived" => s => s.ArchivedDate.HasValue ? s.ArchivedDate.Value.Ticks : (direction == "up" ? long.MinValue : long.MaxValue),
+                "archived" => s => s.ArchivedDate ?? DateTimeOffset.MinValue,
+
                 _ => s => s.Name 
             };
 
