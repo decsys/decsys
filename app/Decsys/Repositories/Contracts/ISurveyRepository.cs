@@ -34,8 +34,12 @@ namespace Decsys.Repositories.Contracts
         /// Specify the view filter:
         /// - "unarchived" to return only unarchived Surveys
         /// - "archived" to return only archived Surveys
+        ///  An empty string or null means no archival status filter is applied.
         /// </param>
-        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "");
+        /// <param name="sortBy">Specifies the field to sort by. Default is "name".</param>
+        /// <param name="direction">Specifies the direction of the sort: "up" (ascending) or "down" (descending). Default is "up". </param>
+        /// <returns>A list of filtered and sorted survey summaries.</returns>
+        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy ="name", string direction="up");
 
         /// <summary>
         /// List Summaries of all children of the specified Study.

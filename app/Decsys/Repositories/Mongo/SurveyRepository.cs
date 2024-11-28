@@ -257,11 +257,12 @@ namespace Decsys.Repositories.Mongo
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,
-            string view = "")
+            string view = "",
+            string sortBy = "name",
+            string direction = "up")
             => List(null, userId, includeOwnerless, name, view);
 
-        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null,
-        string view = "")
+        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null, string view = "", string sortBy = "name", string direction = "up")
         {
             var surveys = userId is null
                 ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
@@ -317,7 +318,7 @@ namespace Decsys.Repositories.Mongo
                 return summary;
             }
 
-            return summaries
+             summaries
                 .ConvertAll(survey =>
                     {
                         var summary = EnhanceSummary(survey);
@@ -334,6 +335,9 @@ namespace Decsys.Repositories.Mongo
 
                         return summary;
                     });
+
+            summaries = SortSurveys(summaries, sortBy, direction);
+            return summaries;
         }
 
         public void Update(Models.Survey survey)
@@ -386,6 +390,27 @@ namespace Decsys.Repositories.Mongo
             // Unarchive the survey by setting ArchivedDate to null
             var update = Builders<Survey>.Update.Set(x => x.ArchivedDate, null);
             _surveys.UpdateOne(x => x.Id == id, update);
+        }
+
+        private List<Models.SurveySummary> SortSurveys(List<Models.SurveySummary> surveys, string sortBy, string direction)
+        {
+            Func<Models.SurveySummary, object> sortKeySelector = sortBy.ToLower() switch
+            {
+                "name" => s => s.Name,
+                "active" => s => s.ActiveInstanceId.HasValue ? s.ActiveInstanceId.Value : (direction == "up" ? int.MinValue : int.MaxValue),
+                "run count" => s => s.RunCount,
+                "archived" => s => s.ArchivedDate.HasValue ? s.ArchivedDate.Value.Ticks : (direction == "up" ? long.MinValue : long.MaxValue),
+                _ => s => s.Name 
+            };
+
+            if (direction.ToLower() == "up")
+            {
+                return surveys.OrderBy(sortKeySelector).ToList();
+            }
+            else
+            {
+                return surveys.OrderByDescending(sortKeySelector).ToList();
+            }
         }
 
     }

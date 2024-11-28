@@ -102,22 +102,24 @@ namespace Decsys.Services
             => _surveys.List(userId, includeOwnerless);
 
         /// <summary>
-        /// List summary data for all Surveys with filtering options.
+        /// List summary data for all Surveys with filtering and sorting options.
         /// </summary>
-        /// <param name="userId">Optional Owner of the Survey</param>
-        /// <param name="includeOwnerless">Include Surveys with no Owner</param>
-        /// <param name="name">Filter Surveys containing this name</param>
-        /// <param name="view">
-        /// View filter: "unarchived" for non-archived surveys and "archived" for archived surveys.
-        /// </param>
-        /// <returns>Filtered list of surveys summarised.</returns>
+        /// <param name="userId">Optional owner of the survey</param>
+        /// <param name="includeOwnerless">Include surveys with no owner</param>
+        /// <param name="name">Filter surveys containing this name</param>
+        /// <param name="view">View filter: "unarchived" for non-archived surveys and "archived" for archived surveys</param>
+        /// <param name="sortBy">The field by which to sort the surveys</param>
+        /// <param name="direction">The direction to sort the surveys ("up" or "down")</param>
+        /// <returns>Filtered and sorted list of survey summaries.</returns>
         public IEnumerable<SurveySummary> List(
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,
-            string view = "")
+            string view = "",
+            string sortBy = "name",
+            string direction = "up")
         {
-            return _surveys.List(userId, includeOwnerless, name, view);
+            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction);
         }
 
 
