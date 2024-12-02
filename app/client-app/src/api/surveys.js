@@ -174,3 +174,17 @@ export const unarchiveSurvey = async (id) => {
     throw error;
   }
 };
+
+/**
+ * Fetch a List of Filtered Survey Summaries from the API based on name and view parameters
+ * @param {string|null} name - The name to filter surveys by (partial match)
+ * @param {string} view - The view to filter surveys by (active, or archived)
+ * @returns `{data, mutate}`
+ */
+export const useFilteredSurveys = (name, view = "") => {
+  const queryString = new URLSearchParams({ name, view }).toString();
+
+  return useSWR(`/api/surveys/filtered?${queryString}`, defaultFetcher(true), {
+    suspense: true,
+  });
+};

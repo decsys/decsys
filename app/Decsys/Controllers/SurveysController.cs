@@ -467,6 +467,20 @@ namespace Decsys.Controllers
                 return Conflict(e.Message);
             }
         }
+
+        [HttpGet("filtered")]
+        [SwaggerOperation("List summary data for Surveys filtered by name and view (unarchived, archived, or all).")]
+        [SwaggerResponse(200, "A list of filtered Surveys.", typeof(IEnumerable<SurveySummary>))]
+        public IEnumerable<SurveySummary> FilteredList(
+            [FromQuery] string? name = null,
+            [FromQuery] string view = "")
+        {
+            return _surveys.List(
+                userId: OwnerId,
+                includeOwnerless: User.IsSuperUser(),
+                name,
+                view);
+        }
     }
 
     class ImportZipContentModel

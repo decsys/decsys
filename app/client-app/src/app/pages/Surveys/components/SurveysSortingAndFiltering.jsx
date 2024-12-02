@@ -4,8 +4,6 @@ import SortPanel from "components/shared/SortPanel";
 const SurveysSortingAndFiltering = ({
   sorting,
   setSorting,
-  filter,
-  setFilter,
   hasArchivedDate,
 }) => {
   const handleSort = (key) => {
@@ -31,15 +29,6 @@ const SurveysSortingAndFiltering = ({
           ...(hasArchivedDate ? [["Archived", "archivedDate"]] : []),
         ]}
       />
-
-      <Flex ml="auto">
-        <Input
-          placeholder="Filter"
-          size="sm"
-          value={filter}
-          onChange={({ target }) => setFilter(target.value)}
-        />
-      </Flex>
     </Flex>
   );
 };

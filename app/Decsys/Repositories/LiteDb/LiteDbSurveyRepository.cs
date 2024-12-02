@@ -53,6 +53,78 @@ namespace Decsys.Repositories.LiteDb
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null);
 
+        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "")
+        {
+            // Fetch all surveys
+            var surveys = _surveys.FindAll().ToList();
+
+            // Filter by name if specified
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                surveys = surveys
+                    .Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // Filter by view: unarchived, archived
+            switch (view.ToLower())
+            {
+                case SurveyArchivedTypes.Unarchived:
+                    surveys = surveys.Where(x => x.ArchivedDate == null).ToList();
+                    break;
+                case SurveyArchivedTypes.Archived:
+                    surveys = surveys.Where(x => x.ArchivedDate != null).ToList();
+                    break;
+            }
+
+            var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
+
+            // Reusable enhancement
+            Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
+            {
+                var instances = _instances
+                    .Find(instance => instance.Survey.Id == survey.Id)
+                    .OrderByDescending(x => x.Published)
+                    .ToList();
+
+                var summary = _mapper.Map(instances, survey);
+
+                var latestInstanceId = instances.FirstOrDefault()?.Id;
+
+                // Validate external link if necessary
+                summary.HasInvalidExternalLink =
+                    !string.IsNullOrWhiteSpace(summary.Type) &&
+                    _external.Find(x =>
+                            x.SurveyId == summary.Id &&
+                            x.InstanceId == latestInstanceId)
+                        .SingleOrDefault() is null;
+
+                if (latestInstanceId.HasValue)
+                    survey.ActiveInstanceParticipantCount =
+                        _events.GetParticipantCount(latestInstanceId.Value);
+
+                return summary;
+            }
+
+            return summaries
+                .ConvertAll(survey =>
+                {
+                    var summary = EnhanceSummary(survey);
+
+                    // Get Children for studies
+                    if (survey.IsStudy)
+                    {
+                        summary.Children = _mapper.Map<List<Models.SurveySummary>>(
+                            _surveys.Find(x => x.ParentSurveyId == survey.Id).ToList());
+
+                        // They also need enhancing
+                        summary.Children = summary.Children.ConvertAll(EnhanceSummary);
+                    }
+
+                    return summary;
+                });
+        }
+
         private List<Models.SurveySummary> List(int? parentId = null)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
