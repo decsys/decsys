@@ -198,7 +198,11 @@ export const useFilteredSurveys = (
     direction,
   }).toString();
 
-  return useSWR(`/api/surveys/filtered?${queryString}`, defaultFetcher(true), {
-    suspense: true,
-  });
+  return useSWR(
+    `/api/surveys/filtering-and-sorting?${queryString}`,
+    defaultFetcher(true),
+    {
+      suspense: true,
+    }
+  );
 };
