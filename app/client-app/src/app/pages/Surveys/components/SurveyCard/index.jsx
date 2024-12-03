@@ -26,7 +26,7 @@ import { FaChevronDown, FaChevronRight, FaPlus } from "react-icons/fa";
 import AddSurveyModal from "../AddSurveyModal";
 import { archiveSurvey, unarchiveSurvey } from "api/surveys";
 
-const SurveyCard = () => {
+const SurveyCard = ({ refetchSurveys }) => {
   const { onToggle, isOpen } = useDisclosure();
   const addSurveyModal = useDisclosure();
 
@@ -42,10 +42,9 @@ const SurveyCard = () => {
     children,
     type,
     settings,
-    archivedDate: initialArchivedDate,
+    archivedDate,
   } = survey;
-  const [currentArchiveDate, setCurrentArchiveDate] =
-    useState(initialArchivedDate);
+
   const friendlyId = !!activeInstanceId ? encode(id, activeInstanceId) : "";
 
   const validateSettings = useCallback(() => {
@@ -62,14 +61,14 @@ const SurveyCard = () => {
   const actionButtons = getActionButtons(
     survey,
     validateSettings(),
-    currentArchiveDate
+    archivedDate
   );
   const toast = useToast();
 
   const handleArchive = async () => {
     try {
       await archiveSurvey(id);
-      setCurrentArchiveDate(new Date().toISOString());
+      refetchSurveys();
       toast({
         title: "Survey Archived",
         description: "The survey was successfully archived.",
@@ -90,7 +89,7 @@ const SurveyCard = () => {
   const handleUnarchive = async () => {
     try {
       await unarchiveSurvey(id);
-      setCurrentArchiveDate(null);
+      refetchSurveys();
       toast({
         title: "Survey Unarchived",
         description: "The survey was successfully unarchived.",
@@ -118,7 +117,7 @@ const SurveyCard = () => {
         {!parentSurveyId && (
           <ActiveIndicator
             active={!!activeInstanceId}
-            archived={!!currentArchiveDate}
+            archived={!!archivedDate}
           />
         )}
 
@@ -148,7 +147,7 @@ const SurveyCard = () => {
             <ActionButtons
               actionButtons={actionButtons}
               {...survey}
-              currentArchiveDate={currentArchiveDate}
+              currentArchiveDate={archivedDate}
               friendlyId={friendlyId}
             />
 
@@ -158,7 +157,7 @@ const SurveyCard = () => {
               isStudy={isStudy}
               areSettingsValid={validateSettings()}
               activeInstanceId={activeInstanceId}
-              currentArchiveDate={currentArchiveDate}
+              currentArchiveDate={archivedDate}
               handleUnarchive={handleUnarchive}
               handleArchive={handleArchive}
             />

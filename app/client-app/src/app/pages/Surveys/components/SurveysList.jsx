@@ -11,26 +11,28 @@ import SortPanel from "components/shared/SortPanel";
 
 const SurveysList = ({ surveys }) => {
   const { page, limit } = getQueryParams();
-
   const { currentPage, setCurrentPage, itemLimit, setItemLimit } =
     useSurveyPagination(page - 1, limit);
+
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [filterType, setFilterType] = useState("unarchived");
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
-  const { data: surveysFromApi, mutate: refetchSurveys } = useFilteredSurveys(
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const { data: surveysList, mutate: refetchSurveys } = useFilteredSurveys(
     debouncedSearchTerm,
     filterType,
     sortBy,
     direction
   );
-  const filteredSurveys = useFilterSurveys(surveysFromApi, filterType);
 
-  const totalItems = surveysFromApi.length;
+  const filteredSurveys = useFilterSurveys(surveysList, filterType);
+  const totalItems = surveysList.length;
   const hasArchivedDate = filteredSurveys.some(
     (survey) => survey.archivedDate !== null
   );
+
   useEffect(() => {
     refetchSurveys();
   }, [debouncedSearchTerm, refetchSurveys]);
@@ -51,7 +53,11 @@ const SurveysList = ({ surveys }) => {
     setCurrentPage(0);
   };
 
-  console.log(totalItems);
+  const currentSurveys = surveysList.slice(
+    currentPage * itemLimit,
+    (currentPage + 1) * itemLimit
+  );
+
   return (
     <Stack mt={2}>
       <Box pb={4}>
@@ -81,12 +87,12 @@ const SurveysList = ({ surveys }) => {
         </Flex>
       </Box>
       <Stack boxShadow="callout" spacing={0}>
-        {surveysFromApi.map(
+        {currentSurveys.map(
           (survey) =>
             survey.id &&
             surveys[survey.id] && (
               <SurveyProvider key={survey.id} value={surveys[survey.id]}>
-                <SurveyCard />
+                <SurveyCard refetchSurveys={refetchSurveys} />
               </SurveyProvider>
             )
         )}
