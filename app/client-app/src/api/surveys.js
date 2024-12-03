@@ -176,13 +176,27 @@ export const unarchiveSurvey = async (id) => {
 };
 
 /**
- * Fetch a List of Filtered Survey Summaries from the API based on name and view parameters
- * @param {string|null} name - The name to filter surveys by (partial match)
- * @param {string} view - The view to filter surveys by (active, or archived)
- * @returns `{data, mutate}`
+ * Fetch a List of Filtered Survey Summaries from the API based on various filter and sorting parameters.
+ * @param {string|null} name - The name to filter surveys by (partial match, optional).
+ * @param {string} view - The view to filter surveys by ("unarchived", "archived", or "all"). Defaults to "" (all).
+ * @param {string} sortBy - The field to sort surveys by (e.g., "name", "date", etc.). Defaults to "name".
+ * @param {string} direction - The direction of sorting ("up" for ascending, "down" for descending). Defaults to "up".
+ * @returns {Object} An object containing:
+ *   - `data`: The fetched survey summaries.
+ *   - `mutate`: A function to manually revalidate or update the cached data.
  */
-export const useFilteredSurveys = (name, view = "") => {
-  const queryString = new URLSearchParams({ name, view }).toString();
+export const useFilteredSurveys = (
+  name,
+  view = "",
+  sortBy = "name",
+  direction = "up"
+) => {
+  const queryString = new URLSearchParams({
+    name,
+    view,
+    sortBy,
+    direction,
+  }).toString();
 
   return useSWR(`/api/surveys/filtered?${queryString}`, defaultFetcher(true), {
     suspense: true,

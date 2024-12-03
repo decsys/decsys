@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using AutoMapper;
 
 using Decsys.Config;
@@ -394,24 +393,38 @@ namespace Decsys.Repositories.Mongo
 
         private List<Models.SurveySummary> SortSurveys(List<Models.SurveySummary> surveys, string sortBy, string direction)
         {
-            Func<Models.SurveySummary, object> sortKeySelector = sortBy.ToLower() switch
-            {
-                "name" => s => s.Name,
-                "active" => s => s.ActiveInstanceId ?? int.MinValue,
-                "run count" => s => s.RunCount,
-                "archived" => s => s.ArchivedDate ?? DateTimeOffset.MinValue,
+            IEnumerable<Models.SurveySummary> sortedSurveys;
 
-                _ => s => s.Name 
-            };
+            switch (sortBy.ToLower())
+            {
+                case SurveySortingKeys.Name:
+                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.Name)
+                        : surveys.OrderByDescending(s => s.Name);
+                    break;
+                case SurveySortingKeys.Active:
+                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.ActiveInstanceId ?? int.MinValue)
+                        : surveys.OrderByDescending(s => s.ActiveInstanceId ?? int.MinValue);
+                    break;
+                case SurveySortingKeys.RunCount:
+                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.RunCount)
+                        : surveys.OrderByDescending(s => s.RunCount);
+                    break;
+                case SurveySortingKeys.Archived:
+                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.ArchivedDate ?? DateTimeOffset.MinValue)
+                        : surveys.OrderByDescending(s => s.ArchivedDate ?? DateTimeOffset.MinValue);
+                    break;
+                default:
+                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.Name)
+                        : surveys.OrderByDescending(s => s.Name);
+                    break;
+            }
 
-            if (direction.ToLower() == "up")
-            {
-                return surveys.OrderBy(sortKeySelector).ToList();
-            }
-            else
-            {
-                return surveys.OrderByDescending(sortKeySelector).ToList();
-            }
+            return sortedSurveys.ToList();
         }
 
     }
