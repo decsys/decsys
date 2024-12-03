@@ -395,30 +395,30 @@ namespace Decsys.Repositories.Mongo
         {
             IEnumerable<Models.SurveySummary> sortedSurveys;
 
-            switch (sortBy.ToLower())
+            switch (sortBy)
             {
                 case SurveySortingKeys.Name:
-                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                    sortedSurveys = direction == SurveySortingKeys.Direction
                         ? surveys.OrderBy(s => s.Name)
                         : surveys.OrderByDescending(s => s.Name);
                     break;
                 case SurveySortingKeys.Active:
-                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                    sortedSurveys = direction == SurveySortingKeys.Direction
                         ? surveys.OrderBy(s => s.ActiveInstanceId ?? int.MinValue)
                         : surveys.OrderByDescending(s => s.ActiveInstanceId ?? int.MinValue);
                     break;
                 case SurveySortingKeys.RunCount:
-                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                    sortedSurveys = direction == SurveySortingKeys.Direction
                         ? surveys.OrderBy(s => s.RunCount)
                         : surveys.OrderByDescending(s => s.RunCount);
                     break;
                 case SurveySortingKeys.Archived:
-                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                    sortedSurveys = direction == SurveySortingKeys.Direction
                         ? surveys.OrderBy(s => s.ArchivedDate ?? DateTimeOffset.MinValue)
                         : surveys.OrderByDescending(s => s.ArchivedDate ?? DateTimeOffset.MinValue);
                     break;
-                default:
-                    sortedSurveys = direction.ToLower() == SurveySortingKeys.Direction
+                default:    
+                    sortedSurveys = direction == SurveySortingKeys.Direction
                         ? surveys.OrderBy(s => s.Name)
                         : surveys.OrderByDescending(s => s.Name);
                     break;
