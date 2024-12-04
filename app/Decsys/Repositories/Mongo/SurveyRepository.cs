@@ -257,11 +257,11 @@ namespace Decsys.Repositories.Mongo
             bool includeOwnerless = false,
             string? name = null,
             string view = "",
-            string sortBy = "name",
-            string direction = "up")
+            string sortBy = SurveySortingKeys.Name,
+            string direction = SurveySortingKeys.Direction)
             => List(null, userId, includeOwnerless, name, view, sortBy, direction);
 
-        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null, string view = "", string sortBy = "name", string direction = "up")
+        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction)
         {
             var surveys = userId is null
                 ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()

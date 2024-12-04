@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Decsys.Config;
+using Decsys.Constants;
 using Decsys.Models;
 using Decsys.Models.Webhooks;
 using Decsys.Repositories.Contracts;
@@ -116,8 +117,8 @@ namespace Decsys.Services
             bool includeOwnerless = false,
             string? name = null,
             string view = "",
-            string sortBy = "name",
-            string direction = "up")
+            string sortBy = SurveySortingKeys.Name,
+            string direction = SurveySortingKeys.Direction)
         {
             return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction);
         }

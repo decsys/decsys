@@ -82,15 +82,15 @@ namespace Decsys.Repositories.LiteDb
             // Sorting
             Func<Models.SurveySummary, object> sortCriteria = sortBy.ToLower() switch
             {
-                "name" => s => s.Name ?? "",
-                "active" => s => s.ActiveInstanceId ?? int.MinValue,
-                "runCount" => s => s.RunCount,
-                "archived" => s => s.ArchivedDate ?? DateTimeOffset.MinValue,
+                SurveySortingKeys.Name => s => s.Name ?? "",
+                SurveySortingKeys.Active => s => s.ActiveInstanceId ?? int.MinValue,
+                SurveySortingKeys.RunCount => s => s.RunCount,
+                SurveySortingKeys.Archived => s => s.ArchivedDate ?? DateTimeOffset.MinValue,
                 _ => s => s.Name ?? ""
             };
 
             // Apply sorting
-            summaries = direction.ToLower() == "up"
+            summaries = direction.ToLower() == SurveySortingKeys.Direction
                 ? summaries.OrderBy(sortCriteria).ToList()
                 : summaries.OrderByDescending(sortCriteria).ToList();
 
