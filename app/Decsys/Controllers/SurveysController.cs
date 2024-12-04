@@ -1,5 +1,6 @@
 using Decsys.Auth;
 using Decsys.Config;
+using Decsys.Constants;
 using Decsys.Models;
 using Decsys.Services;
 
@@ -87,7 +88,7 @@ namespace Decsys.Controllers
             [FromQuery] string? name = null,
             [FromQuery] string view = "",
             [FromQuery] string sortBy = SurveySortingKeys.Name,
-            [FromQuery] string direction = SurveySortingKeys.Direction
+            [FromQuery] string direction = SurveySortingKeys.Direction)
         {
             return _surveys.List(
                 userId: OwnerId,
