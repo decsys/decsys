@@ -86,8 +86,8 @@ namespace Decsys.Controllers
         public IEnumerable<SurveySummary> FilteredList(
             [FromQuery] string? name = null,
             [FromQuery] string view = "",
-            [FromQuery] string sortBy = "name",
-            [FromQuery] string direction = "up")
+            [FromQuery] string sortBy = SurveySortingKeys.Name,
+            [FromQuery] string direction = SurveySortingKeys.Direction
         {
             return _surveys.List(
                 userId: OwnerId,
