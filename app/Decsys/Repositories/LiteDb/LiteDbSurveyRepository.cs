@@ -53,7 +53,7 @@ namespace Decsys.Repositories.LiteDb
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null);
 
-        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = "name", string direction = "up")
+        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int page = 1, int pageSize = 10)
         {
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();
@@ -121,7 +121,7 @@ namespace Decsys.Repositories.LiteDb
                 return summary;
             }
 
-            return summaries
+             summaries
                 .ConvertAll(survey =>
                 {
                     var summary = EnhanceSummary(survey);
@@ -138,6 +138,14 @@ namespace Decsys.Repositories.LiteDb
 
                     return summary;
                 });
+
+
+            var pagedSurveys = summaries
+                  .Skip((page - 1) * pageSize)
+                  .Take(pageSize)
+                  .ToList();
+
+            return pagedSurveys;
         }
 
         private List<Models.SurveySummary> List(int? parentId = null)

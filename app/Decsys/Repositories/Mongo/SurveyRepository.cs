@@ -258,10 +258,12 @@ namespace Decsys.Repositories.Mongo
             string? name = null,
             string view = "",
             string sortBy = SurveySortingKeys.Name,
-            string direction = SurveySortingKeys.Direction)
-            => List(null, userId, includeOwnerless, name, view, sortBy, direction);
+            string direction = SurveySortingKeys.Direction,
+            int page = 1, 
+            int pageSize = 10)
+            => List(null, userId, includeOwnerless, name, view, sortBy, direction, page, pageSize);
 
-        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction)
+        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int page = 1, int pageSize = 10)
         {
             var surveys = userId is null
                 ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
@@ -336,7 +338,13 @@ namespace Decsys.Repositories.Mongo
                     });
 
             summaries = SortSurveys(summaries, sortBy, direction);
-            return summaries;
+
+            var pagedSurveys = summaries
+                  .Skip((page - 1) * pageSize)
+                  .Take(pageSize)
+                  .ToList();
+
+            return pagedSurveys;
         }
 
         public void Update(Models.Survey survey)

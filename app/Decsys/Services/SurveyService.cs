@@ -118,9 +118,10 @@ namespace Decsys.Services
             string? name = null,
             string view = "",
             string sortBy = SurveySortingKeys.Name,
-            string direction = SurveySortingKeys.Direction)
+            string direction = SurveySortingKeys.Direction,
+            int page = 1, int pageSize = 10)
         {
-            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction);
+            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, page, pageSize);
         }
 
 
