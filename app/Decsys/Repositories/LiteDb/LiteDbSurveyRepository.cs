@@ -53,7 +53,27 @@ namespace Decsys.Repositories.LiteDb
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null);
 
-        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int page = 1, int pageSize = 10)
+        public Models.PagedSurveySummary ListPagedSurveys(
+            string? userId = null,
+            bool includeOwnerless = false,
+            string? name = null,
+            string view = "",
+            string sortBy = SurveySortingKeys.Name,
+            string direction = SurveySortingKeys.Direction,
+            int pageIndex = 0,
+            int pageSize = 10)
+        {
+            var surveys = List(userId, includeOwnerless, name, view, sortBy, direction, pageIndex, pageSize);
+
+            var totalSurveys = _surveys.FindAll().ToList().Count();
+
+            return new Models.PagedSurveySummary
+            {
+                Surveys = surveys,
+                TotalCount = (int)totalSurveys
+            };
+        }
+            private List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int pageIndex = 0, int pageSize = 10)
         {
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();
@@ -141,7 +161,7 @@ namespace Decsys.Repositories.LiteDb
 
 
             var pagedSurveys = summaries
-                  .Skip((page - 1) * pageSize)
+                  .Skip(pageIndex * pageSize)
                   .Take(pageSize)
                   .ToList();
 

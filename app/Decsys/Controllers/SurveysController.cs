@@ -84,22 +84,22 @@ namespace Decsys.Controllers
         [HttpGet("filtering-and-sorting")]
         [SwaggerOperation("List summary data for Surveys filtered by name and view (unarchived, archived, or all), with sorting and pagination.")]
         [SwaggerResponse(200, "A list of filtered, sorted, and paginated Surveys.", typeof(IEnumerable<SurveySummary>))]
-        public IEnumerable<SurveySummary> FilteredList(
+        public PagedSurveySummary FilteredList(
         [FromQuery] string? name = null,
         [FromQuery] string view = "",
         [FromQuery] string sortBy = SurveySortingKeys.Name,
         [FromQuery] string direction = SurveySortingKeys.Direction,
-        [FromQuery] int page = 1,
+        [FromQuery] int pageIndex = 0,
         [FromQuery] int pageSize = 10)
         {
-            return _surveys.List(
+            return _surveys.ListPagedSurveys(
                 userId: OwnerId,
                 includeOwnerless: User.IsSuperUser(),
                 name,
                 view,
                 sortBy,
                 direction,
-                page,
+                pageIndex,
                 pageSize);
         }
 

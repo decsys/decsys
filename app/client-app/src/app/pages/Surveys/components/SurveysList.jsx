@@ -27,8 +27,9 @@ const SurveysList = ({ surveys }) => {
     direction
   );
 
-  const filteredSurveys = useFilterSurveys(surveysList, filterType);
-  const totalItems = surveysList.length;
+  const filteredSurveys = useFilterSurveys(surveysList.surveys, filterType);
+  console.log(surveysList);
+  const totalItems = surveysList.totalCount;
   const hasArchivedDate = filteredSurveys.some(
     (survey) => survey.archivedDate !== null
   );
@@ -53,7 +54,7 @@ const SurveysList = ({ surveys }) => {
     setCurrentPage(0);
   };
 
-  const currentSurveys = surveysList.slice(
+  const currentSurveys = surveysList.surveys.slice(
     currentPage * itemLimit,
     (currentPage + 1) * itemLimit
   );

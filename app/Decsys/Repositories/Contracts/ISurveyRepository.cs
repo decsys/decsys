@@ -42,7 +42,7 @@ namespace Decsys.Repositories.Contracts
         /// <param name="page">Specifies the page number for pagination, starting from 1. Default is 1.</param>
         /// <param name="pageSize">Specifies the number of survey summaries per page. Default is 10.</param>
         /// <returns>A list of filtered, sorted, and paginated survey summaries.</returns>
-        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction= SurveySortingKeys.Direction, int page = 1, int pageSize = 10);
+        PagedSurveySummary ListPagedSurveys(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction= SurveySortingKeys.Direction, int page = 1, int pageSize = 10);
 
         /// <summary>
         /// List Summaries of all children of the specified Study.

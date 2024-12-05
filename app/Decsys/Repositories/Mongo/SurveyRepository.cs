@@ -252,18 +252,32 @@ namespace Decsys.Repositories.Mongo
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null, userId, includeOwnerless);
 
-        public List<Models.SurveySummary> List(
-            string? userId = null,
-            bool includeOwnerless = false,
-            string? name = null,
-            string view = "",
-            string sortBy = SurveySortingKeys.Name,
-            string direction = SurveySortingKeys.Direction,
-            int page = 1, 
-            int pageSize = 10)
-            => List(null, userId, includeOwnerless, name, view, sortBy, direction, page, pageSize);
+        public Models.PagedSurveySummary ListPagedSurveys(
+           string? userId = null,
+           bool includeOwnerless = false,
+           string? name = null,
+           string view = "",
+           string sortBy = SurveySortingKeys.Name,
+           string direction = SurveySortingKeys.Direction,
+           int pageIndex = 0,
+           int pageSize = 10
+        )
+        {
+            var surveys = List(null, userId, includeOwnerless, name, view, sortBy, direction, pageIndex, pageSize);
 
-        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int page = 1, int pageSize = 10)
+            var totalSurveys = _surveys.CountDocuments(x =>
+                (userId == null || x.Owner == userId || (includeOwnerless && x.Owner == null)) &&
+                (string.IsNullOrWhiteSpace(name) || (x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase))));
+
+            return new Models.PagedSurveySummary
+            {
+                Surveys = surveys,
+                TotalCount = (int)totalSurveys
+            };
+        }
+
+
+        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int pageIndex = 0, int pageSize = 10)
         {
             var surveys = userId is null
                 ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
@@ -340,7 +354,7 @@ namespace Decsys.Repositories.Mongo
             summaries = SortSurveys(summaries, sortBy, direction);
 
             var pagedSurveys = summaries
-                  .Skip((page - 1) * pageSize)
+                  .Skip((pageIndex) * pageSize)
                   .Take(pageSize)
                   .ToList();
 

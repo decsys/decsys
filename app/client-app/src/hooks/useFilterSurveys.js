@@ -1,28 +1,28 @@
 import { useState, useEffect } from "react";
 
-export function useFilterSurveys(surveysFromApi, filterType) {
+export function useFilterSurveys(surveys, filterType) {
   const [filteredSurveys, setFilteredSurveys] = useState([]);
 
   useEffect(() => {
     let updatedSurveys = [];
-    if (surveysFromApi) {
+    if (surveys) {
       switch (filterType) {
         case "archived":
-          updatedSurveys = surveysFromApi.filter(
+          updatedSurveys = surveys.filter(
             (survey) => survey.archivedDate !== null
           );
           break;
         case "unarchived":
-          updatedSurveys = surveysFromApi.filter(
+          updatedSurveys = surveys.filter(
             (survey) => survey.archivedDate == null
           );
           break;
         default:
-          updatedSurveys = [...surveysFromApi];
+          updatedSurveys = [...surveys];
       }
       setFilteredSurveys(updatedSurveys);
     }
-  }, [surveysFromApi, filterType]);
+  }, [surveys, filterType]);
 
   return filteredSurveys;
 }
