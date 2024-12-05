@@ -53,7 +53,7 @@ namespace Decsys.Repositories.LiteDb
         public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
             => List(null);
 
-        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "")
+        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = "name", string direction = "up")
         {
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();
@@ -78,6 +78,21 @@ namespace Decsys.Repositories.LiteDb
             }
 
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
+
+            // Sorting
+            Func<Models.SurveySummary, object> sortCriteria = sortBy.ToLower() switch
+            {
+                SurveySortingKeys.Name => s => s.Name ?? "",
+                SurveySortingKeys.Active => s => s.ActiveInstanceId ?? int.MinValue,
+                SurveySortingKeys.RunCount => s => s.RunCount,
+                SurveySortingKeys.Archived => s => s.ArchivedDate ?? DateTimeOffset.MinValue,
+                _ => s => s.Name ?? ""
+            };
+
+            // Apply sorting
+            summaries = direction.ToLower() == SurveySortingKeys.Direction
+                ? summaries.OrderBy(sortCriteria).ToList()
+                : summaries.OrderByDescending(sortCriteria).ToList();
 
             // Reusable enhancement
             Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)

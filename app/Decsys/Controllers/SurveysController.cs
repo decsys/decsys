@@ -1,5 +1,6 @@
 using Decsys.Auth;
 using Decsys.Config;
+using Decsys.Constants;
 using Decsys.Models;
 using Decsys.Services;
 
@@ -78,6 +79,24 @@ namespace Decsys.Controllers
             return survey is null
                 ? NotFound()
                 : Ok(survey);
+        }
+
+        [HttpGet("filtering-and-sorting")]
+        [SwaggerOperation("List summary data for Surveys filtered by name and view (unarchived, archived, or all).")]
+        [SwaggerResponse(200, "A list of filtered Surveys.", typeof(IEnumerable<SurveySummary>))]
+        public IEnumerable<SurveySummary> FilteredList(
+            [FromQuery] string? name = null,
+            [FromQuery] string view = "",
+            [FromQuery] string sortBy = SurveySortingKeys.Name,
+            [FromQuery] string direction = SurveySortingKeys.Direction)
+        {
+            return _surveys.List(
+                userId: OwnerId,
+                includeOwnerless: User.IsSuperUser(),
+                name,
+                view,
+                sortBy,
+                direction);
         }
 
         [HttpPost("external/{surveyId?}")]
@@ -466,20 +485,6 @@ namespace Decsys.Controllers
             {
                 return Conflict(e.Message);
             }
-        }
-
-        [HttpGet("filtered")]
-        [SwaggerOperation("List summary data for Surveys filtered by name and view (unarchived, archived, or all).")]
-        [SwaggerResponse(200, "A list of filtered Surveys.", typeof(IEnumerable<SurveySummary>))]
-        public IEnumerable<SurveySummary> FilteredList(
-            [FromQuery] string? name = null,
-            [FromQuery] string view = "")
-        {
-            return _surveys.List(
-                userId: OwnerId,
-                includeOwnerless: User.IsSuperUser(),
-                name,
-                view);
         }
     }
 

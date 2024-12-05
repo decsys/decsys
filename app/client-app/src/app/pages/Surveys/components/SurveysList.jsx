@@ -1,45 +1,34 @@
 import SurveyCard from "./SurveyCard";
-import {
-  Stack,
-  Box,
-  Select,
-  Text,
-  HStack,
-  Input,
-  Flex,
-  Button,
-} from "@chakra-ui/react";
-import { useSortingAndFiltering } from "components/shared/SortPanel";
-import SurveysSortingAndFiltering from "./SurveysSortingAndFiltering";
+import { Stack, Box, Input, Flex, Text } from "@chakra-ui/react";
 import { SurveyProvider } from "../../../contexts/Survey";
 import { useEffect, useState } from "react";
 import PaginationControls from "./Pagination/PaginationControls";
-import { useNavigate, useParams } from "@reach/router";
 import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
 import { useFilteredSurveys } from "api/surveys";
 import { useSurveyPagination } from "hooks/useSurveyPagination";
 import { useFilterSurveys } from "hooks/useFilterSurveys";
+import SortPanel from "components/shared/SortPanel";
 
 const SurveysList = ({ surveys }) => {
   const { page, limit } = getQueryParams();
-
   const { currentPage, setCurrentPage, itemLimit, setItemLimit } =
     useSurveyPagination(page - 1, limit);
-  const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data: surveysFromApi, mutate: refetchSurveys } = useFilteredSurveys(
-    debouncedSearchTerm,
-    "all"
-  );
-  const [filterType, setFilterType] = useState("unarchived");
-  const filteredSurveys = useFilterSurveys(surveysFromApi, filterType);
-  const sortingAndFiltering = useSortingAndFiltering(filteredSurveys);
 
-  const totalItems = sortingAndFiltering.surveyList.length;
-  const currentSurveys = sortingAndFiltering.surveyList.slice(
-    currentPage * itemLimit,
-    (currentPage + 1) * itemLimit
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("unarchived");
+  const [sortBy, setSortBy] = useState("name");
+  const [direction, setDirection] = useState("up");
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const { data: surveysList, mutate: refetchSurveys } = useFilteredSurveys(
+    debouncedSearchTerm,
+    filterType,
+    sortBy,
+    direction
   );
+
+  const filteredSurveys = useFilterSurveys(surveysList, filterType);
+  const totalItems = surveysList.length;
   const hasArchivedDate = filteredSurveys.some(
     (survey) => survey.archivedDate !== null
   );
@@ -54,14 +43,40 @@ const SurveysList = ({ surveys }) => {
     setCurrentPage(0); // Reset to first page when filter changes
   };
 
+  const handleSortButtonClick = (key) => {
+    if (sortBy === key) {
+      setDirection((prev) => (prev === "up" ? "down" : "up"));
+    } else {
+      setSortBy(key);
+      setDirection("up");
+    }
+    setCurrentPage(0);
+  };
+
+  const currentSurveys = surveysList.slice(
+    currentPage * itemLimit,
+    (currentPage + 1) * itemLimit
+  );
+
   return (
     <Stack mt={2}>
       <Box pb={4}>
         <Flex alignItems="center" justifyContent="space-between">
-          <SurveysSortingAndFiltering
-            {...sortingAndFiltering}
-            hasArchivedDate={hasArchivedDate}
-          />
+          <Flex alignItems="center">
+            <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
+              Sort by:
+            </Text>
+            <SortPanel
+              state={{ key: sortBy, [sortBy]: direction === "up" }}
+              keys={[
+                "Active",
+                ["Run Count", "runCount"],
+                "Name",
+                ...(hasArchivedDate ? [["Archived", "archived"]] : []),
+              ]}
+              onSortButtonClick={handleSortButtonClick}
+            />
+          </Flex>
           <Input
             placeholder="Filter"
             size="sm"
@@ -77,7 +92,7 @@ const SurveysList = ({ surveys }) => {
             survey.id &&
             surveys[survey.id] && (
               <SurveyProvider key={survey.id} value={surveys[survey.id]}>
-                <SurveyCard />
+                <SurveyCard refetchSurveys={refetchSurveys} />
               </SurveyProvider>
             )
         )}

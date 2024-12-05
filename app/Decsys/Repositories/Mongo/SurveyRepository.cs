@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using AutoMapper;
 
 using Decsys.Config;
@@ -257,11 +256,12 @@ namespace Decsys.Repositories.Mongo
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,
-            string view = "")
-            => List(null, userId, includeOwnerless, name, view);
+            string view = "",
+            string sortBy = SurveySortingKeys.Name,
+            string direction = SurveySortingKeys.Direction)
+            => List(null, userId, includeOwnerless, name, view, sortBy, direction);
 
-        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null,
-        string view = "")
+        private List<Models.SurveySummary> List(int? parentId = null, string? userId = null, bool includeOwnerless = false ,string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction)
         {
             var surveys = userId is null
                 ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
@@ -317,7 +317,7 @@ namespace Decsys.Repositories.Mongo
                 return summary;
             }
 
-            return summaries
+             summaries
                 .ConvertAll(survey =>
                     {
                         var summary = EnhanceSummary(survey);
@@ -334,6 +334,9 @@ namespace Decsys.Repositories.Mongo
 
                         return summary;
                     });
+
+            summaries = SortSurveys(summaries, sortBy, direction);
+            return summaries;
         }
 
         public void Update(Models.Survey survey)
@@ -386,6 +389,42 @@ namespace Decsys.Repositories.Mongo
             // Unarchive the survey by setting ArchivedDate to null
             var update = Builders<Survey>.Update.Set(x => x.ArchivedDate, null);
             _surveys.UpdateOne(x => x.Id == id, update);
+        }
+
+        private List<Models.SurveySummary> SortSurveys(List<Models.SurveySummary> surveys, string sortBy, string direction)
+        {
+            IEnumerable<Models.SurveySummary> sortedSurveys;
+
+            switch (sortBy)
+            {
+                case SurveySortingKeys.Name:
+                    sortedSurveys = direction == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.Name)
+                        : surveys.OrderByDescending(s => s.Name);
+                    break;
+                case SurveySortingKeys.Active:
+                    sortedSurveys = direction == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.ActiveInstanceId ?? int.MinValue)
+                        : surveys.OrderByDescending(s => s.ActiveInstanceId ?? int.MinValue);
+                    break;
+                case SurveySortingKeys.RunCount:
+                    sortedSurveys = direction == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.RunCount)
+                        : surveys.OrderByDescending(s => s.RunCount);
+                    break;
+                case SurveySortingKeys.Archived:
+                    sortedSurveys = direction == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.ArchivedDate ?? DateTimeOffset.MinValue)
+                        : surveys.OrderByDescending(s => s.ArchivedDate ?? DateTimeOffset.MinValue);
+                    break;
+                default:    
+                    sortedSurveys = direction == SurveySortingKeys.Direction
+                        ? surveys.OrderBy(s => s.Name)
+                        : surveys.OrderByDescending(s => s.Name);
+                    break;
+            }
+
+            return sortedSurveys.ToList();
         }
 
     }
