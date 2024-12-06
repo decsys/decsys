@@ -2,7 +2,7 @@ import SurveyCard from "./SurveyCard";
 import { Stack, Box, Input, Flex, Text } from "@chakra-ui/react";
 import { SurveyProvider } from "../../../contexts/Survey";
 import { useEffect, useState } from "react";
-import PaginationControls from "./Pagination/PaginationControls";
+import FilterControls from "./Pagination/PaginationControls";
 import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
 import { useFilteredSurveys } from "api/surveys";
 import SortPanel from "components/shared/SortPanel";
@@ -12,20 +12,37 @@ const SurveysList = () => {
   const [filterType, setFilterType] = useState("unarchived");
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const { data: surveysList, mutate: refetchSurveys } = useFilteredSurveys(
     debouncedSearchTerm,
     filterType,
     sortBy,
-    direction
+    direction,
+    pageIndex,
+    pageSize
   );
 
   const totalItems = surveysList.totalCount;
+  const totalPages = Math.ceil(totalItems / pageSize);
 
   useEffect(() => {
     refetchSurveys();
-  }, [debouncedSearchTerm, refetchSurveys]);
+  }, [
+    debouncedSearchTerm,
+    filterType,
+    sortBy,
+    direction,
+    pageIndex,
+    pageSize,
+    refetchSurveys,
+  ]);
+
+  useEffect(() => {
+    setPageIndex(0); // reset to first page whenever filter is changed
+  }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
   const handleFilterChange = (e) => setSearchTerm(e.target.value);
   const handleSurveyFilterChange = (value) => {
@@ -41,7 +58,13 @@ const SurveysList = () => {
     }
   };
 
-  console.log(filterType);
+  const handlePageChange = (newPageIndex) => {
+    setPageIndex(newPageIndex);
+  };
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+  };
 
   return (
     <Stack mt={2}>
@@ -57,7 +80,9 @@ const SurveysList = () => {
                 "Active",
                 ["Run Count", "runCount"],
                 "Name",
-                ...(filterType === "all" ? [["Archived", "archived"]] : []),
+                ...(filterType !== "unarchived"
+                  ? [["Archived", "archived"]]
+                  : []),
               ]}
               onSortButtonClick={handleSortButtonClick}
             />
@@ -79,8 +104,13 @@ const SurveysList = () => {
             </SurveyProvider>
           ))}
       </Stack>
-      <PaginationControls
+      <FilterControls
         totalItems={totalItems}
+        totalPages={totalPages}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        handlePageChange={handlePageChange}
+        handlePageSizeChange={handlePageSizeChange}
         handleSurveyFilterChange={handleSurveyFilterChange}
         filterType={filterType}
       />
