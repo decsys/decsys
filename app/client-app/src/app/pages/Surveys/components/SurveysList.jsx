@@ -6,14 +6,26 @@ import FilterControls from "./Pagination/PaginationControls";
 import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
 import { useFilteredSurveys } from "api/surveys";
 import SortPanel from "components/shared/SortPanel";
+import { useLocation, navigate } from "@reach/router";
 
 const SurveysList = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("unarchived");
-  const [sortBy, setSortBy] = useState("name");
-  const [direction, setDirection] = useState("up");
-  const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const [searchTerm, setSearchTerm] = useState(queryParams.get("search") || "");
+  const [filterType, setFilterType] = useState(
+    queryParams.get("filter") || "unarchived"
+  );
+  const [sortBy, setSortBy] = useState(queryParams.get("sort") || "name");
+  const [direction, setDirection] = useState(
+    queryParams.get("direction") || "up"
+  );
+  const [pageIndex, setPageIndex] = useState(
+    parseInt(queryParams.get("page") || "0")
+  );
+  const [pageSize, setPageSize] = useState(
+    parseInt(queryParams.get("size") || "10")
+  );
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const { data: surveysList, mutate: refetchSurveys } = useFilteredSurveys(
@@ -44,6 +56,18 @@ const SurveysList = () => {
     setPageIndex(0); // reset to first page whenever filter is changed
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams();
+    if (searchTerm) searchParams.set("search", searchTerm);
+    if (filterType) searchParams.set("filter", filterType);
+    if (sortBy) searchParams.set("sort", sortBy);
+    searchParams.set("direction", direction);
+    searchParams.set("page", (pageIndex + 1).toString());
+    searchParams.set("size", pageSize.toString());
+
+    navigate(`?${searchParams.toString()}`, { replace: true });
+  }, [searchTerm, filterType, sortBy, direction, pageIndex, pageSize]);
+
   const handleFilterChange = (e) => setSearchTerm(e.target.value);
   const handleSurveyFilterChange = (value) => {
     setFilterType(value);
@@ -56,6 +80,7 @@ const SurveysList = () => {
       setSortBy(key);
       setDirection("up");
     }
+    setPageIndex(0);
   };
 
   const handlePageChange = (newPageIndex) => {
@@ -64,6 +89,7 @@ const SurveysList = () => {
 
   const handlePageSizeChange = (newPageSize) => {
     setPageSize(newPageSize);
+    setPageIndex(0);
   };
 
   return (
