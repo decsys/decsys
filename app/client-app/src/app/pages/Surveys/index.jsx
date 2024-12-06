@@ -13,7 +13,7 @@ import { FaList } from "react-icons/fa";
 import { SurveysListProvider } from "./contexts/SurveysList";
 import { BusyPage } from "components/core";
 
-const ShowSurveys = ({ surveys, actions }) => (
+const ShowSurveys = ({ actions }) => (
   <>
     <Alert>
       <AlertIcon />
@@ -22,7 +22,7 @@ const ShowSurveys = ({ surveys, actions }) => (
     </Alert>
 
     <SurveyCardActionsProvider value={actions}>
-      <SurveysList surveys={surveys} />
+      <SurveysList />
     </SurveyCardActionsProvider>
   </>
 );
@@ -61,7 +61,7 @@ const Surveys = ({ navigate }) => {
 
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
   const pageBody = Object.keys(surveys).length ? (
-    (surveyArea = <ShowSurveys surveys={surveys} actions={SurveyCardActions} />)
+    (surveyArea = <ShowSurveys actions={SurveyCardActions} />)
   ) : (
     <NoSurveys action={handleAddSurvey} />
   );

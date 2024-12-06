@@ -77,7 +77,7 @@ const PaginationControls = ({
           <option value="archived">Only Archived Surveys</option>
         </Select>
       </HStack>
-      <HStack>
+      {/* <HStack>
         <HStack>
           <Text>Surveys Per Page:</Text>
           <Select
@@ -131,7 +131,7 @@ const PaginationControls = ({
         <Flex>
           Page {currentPage + 1} of {numPages}
         </Flex>
-      </HStack>
+      </HStack> */}
     </HStack>
   );
 };

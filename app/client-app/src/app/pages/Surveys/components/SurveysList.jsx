@@ -5,15 +5,9 @@ import { useEffect, useState } from "react";
 import PaginationControls from "./Pagination/PaginationControls";
 import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
 import { useFilteredSurveys } from "api/surveys";
-import { useSurveyPagination } from "hooks/useSurveyPagination";
-import { useFilterSurveys } from "hooks/useFilterSurveys";
 import SortPanel from "components/shared/SortPanel";
 
-const SurveysList = ({ surveys }) => {
-  const { page, limit } = getQueryParams();
-  const { currentPage, setCurrentPage, itemLimit, setItemLimit } =
-    useSurveyPagination(page - 1, limit);
-
+const SurveysList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("unarchived");
   const [sortBy, setSortBy] = useState("name");
@@ -27,12 +21,7 @@ const SurveysList = ({ surveys }) => {
     direction
   );
 
-  const filteredSurveys = useFilterSurveys(surveysList.surveys, filterType);
-  console.log(surveysList);
   const totalItems = surveysList.totalCount;
-  const hasArchivedDate = filteredSurveys.some(
-    (survey) => survey.archivedDate !== null
-  );
 
   useEffect(() => {
     refetchSurveys();
@@ -41,7 +30,6 @@ const SurveysList = ({ surveys }) => {
   const handleFilterChange = (e) => setSearchTerm(e.target.value);
   const handleSurveyFilterChange = (value) => {
     setFilterType(value);
-    setCurrentPage(0); // Reset to first page when filter changes
   };
 
   const handleSortButtonClick = (key) => {
@@ -51,13 +39,9 @@ const SurveysList = ({ surveys }) => {
       setSortBy(key);
       setDirection("up");
     }
-    setCurrentPage(0);
   };
 
-  const currentSurveys = surveysList.surveys.slice(
-    currentPage * itemLimit,
-    (currentPage + 1) * itemLimit
-  );
+  console.log(filterType);
 
   return (
     <Stack mt={2}>
@@ -73,7 +57,7 @@ const SurveysList = ({ surveys }) => {
                 "Active",
                 ["Run Count", "runCount"],
                 "Name",
-                ...(hasArchivedDate ? [["Archived", "archived"]] : []),
+                ...(filterType === "all" ? [["Archived", "archived"]] : []),
               ]}
               onSortButtonClick={handleSortButtonClick}
             />
@@ -88,24 +72,14 @@ const SurveysList = ({ surveys }) => {
         </Flex>
       </Box>
       <Stack boxShadow="callout" spacing={0}>
-        {currentSurveys.map(
-          (survey) =>
-            survey.id &&
-            surveys[survey.id] && (
-              <SurveyProvider key={survey.id} value={surveys[survey.id]}>
-                <SurveyCard refetchSurveys={refetchSurveys} />
-              </SurveyProvider>
-            )
-        )}
+        {surveysList.surveys &&
+          surveysList.surveys.map((survey) => (
+            <SurveyProvider key={survey.id} value={survey}>
+              <SurveyCard refetchSurveys={refetchSurveys} />
+            </SurveyProvider>
+          ))}
       </Stack>
       <PaginationControls
-        currentPage={currentPage}
-        itemLimit={itemLimit}
-        setItemLimit={(newLimit) => {
-          setItemLimit(newLimit);
-          setCurrentPage(0); // Reset to first page when limit changes
-        }}
-        setCurrentPage={setCurrentPage}
         totalItems={totalItems}
         handleSurveyFilterChange={handleSurveyFilterChange}
         filterType={filterType}
@@ -115,11 +89,3 @@ const SurveysList = ({ surveys }) => {
 };
 
 export default SurveysList;
-
-function getQueryParams() {
-  const searchParams = new URLSearchParams(window.location.search);
-  return {
-    page: parseInt(searchParams.get("page"), 10) || 1,
-    limit: parseInt(searchParams.get("limit"), 10) || 10,
-  };
-}
