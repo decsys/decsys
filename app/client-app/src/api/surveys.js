@@ -23,7 +23,7 @@ import { toDictionary } from "services/data-structures";
  */
 export const useSurveysList = (
   name = "",
-  view = "archived",
+  view = "unarchived",
   sortBy = "name",
   direction = "up",
   pageIndex = "0",
