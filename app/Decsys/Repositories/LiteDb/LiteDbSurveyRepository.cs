@@ -50,30 +50,11 @@ namespace Decsys.Repositories.LiteDb
             return survey;
         }
         
-        public Models.PagedSurveySummary ListPagedSurveys(
-            string? userId = null,
-            bool includeOwnerless = false,
-            string? name = null,
-            string view = "",
-            string sortBy = SurveySortingKeys.Name,
-            string direction = SurveySortingKeys.Direction,
-            int pageIndex = 0,
-            int pageSize = 10)
-        {
-            var surveys = List(userId, includeOwnerless, name, view, sortBy, direction, pageIndex, pageSize);
-
-            var totalSurveys = _surveys.FindAll().ToList().Count();
-
-            return new Models.PagedSurveySummary
-            {
-                Surveys = surveys,
-                TotalCount = (int)totalSurveys
-            };
-        }
-            private List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int pageIndex = 0, int pageSize = 10)
+        public Models.PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int pageIndex = 0, int pageSize = 10)
         {
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();
+            var totalSurveys = surveys.Count();
 
             // Filter by name if specified
             if (!string.IsNullOrWhiteSpace(name))
@@ -162,7 +143,11 @@ namespace Decsys.Repositories.LiteDb
                   .Take(pageSize)
                   .ToList();
 
-            return pagedSurveys;
+            return new Models.PagedSurveySummary
+            {
+                Surveys = pagedSurveys,
+                TotalCount = (int)totalSurveys
+            };        
         }
 
         private List<Models.SurveySummary> List(int? parentId = null)

@@ -100,7 +100,7 @@ namespace Decsys.Services
         /// <param name="sortBy">The field by which to sort the surveys</param>
         /// <param name="direction">The direction to sort the surveys ("up" or "down")</param>
         /// <returns>Filtered and sorted list of survey summaries.</returns>
-        public Models.PagedSurveySummary ListPagedSurveys(
+        public Models.PagedSurveySummary List(
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,
@@ -109,7 +109,7 @@ namespace Decsys.Services
             string direction = SurveySortingKeys.Direction,
             int pageIndex = 0, int pageSize = 10)
         {
-            return _surveys.ListPagedSurveys(userId, includeOwnerless, name, view, sortBy, direction, pageIndex, pageSize);
+            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, pageIndex, pageSize);
         }
 
 

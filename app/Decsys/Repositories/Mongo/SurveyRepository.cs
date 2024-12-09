@@ -249,7 +249,7 @@ namespace Decsys.Repositories.Mongo
             return survey;
         }
         
-        public Models.PagedSurveySummary ListPagedSurveys(
+        public Models.PagedSurveySummary List(
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,

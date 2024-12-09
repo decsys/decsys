@@ -38,13 +38,9 @@ export const useSurveysList = (
     pageSize: pageSize.toString(),
   }).toString();
 
-  return useSWR(
-    `/api/surveys/filtering-and-sorting?${queryString}`,
-    defaultFetcher(true),
-    {
-      suspense: true,
-    }
-  );
+  return useSWR(`/api/surveys/?${queryString}`, defaultFetcher(true), {
+    suspense: true,
+  });
 };
 
 /**

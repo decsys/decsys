@@ -55,9 +55,9 @@ namespace Decsys.Controllers
 
         private string? OwnerId => _mode.IsWorkshop ? null : User.GetUserId();
 
-        [HttpGet("filtering-and-sorting")]
+        [HttpGet]
         [SwaggerOperation("List summary data for Surveys filtered by name and view (unarchived, archived, or all), with sorting and pagination.")]
-        [SwaggerResponse(200, "A list of filtered, sorted, and paginated Surveys.", typeof(IEnumerable<SurveySummary>))]
+        [SwaggerResponse(200, "A list of filtered, sorted, and paginated Surveys.", typeof(PagedSurveySummary))]
         public PagedSurveySummary FilteredList(
             [FromQuery] string? name = null,
             [FromQuery] string view = "",
@@ -66,7 +66,7 @@ namespace Decsys.Controllers
             [FromQuery] int pageIndex = 0,
             [FromQuery] int pageSize = 10)
         {
-            return _surveys.ListPagedSurveys(
+            return _surveys.List(
                 userId: OwnerId,
                 includeOwnerless: User.IsSuperUser(),
                 name,
