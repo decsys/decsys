@@ -36,7 +36,7 @@ namespace Decsys.Services
         {
             var zip = await ExportStructure(surveyId);
 
-            foreach (var child in _surveys.ListChildren(surveyId))
+            foreach (var child in _surveys.ListChildren(surveyId).Surveys)
             {
                 zip.AddBytes(
                     (await ExportStructure(child.Id)).AsByteArray(),
@@ -82,7 +82,7 @@ namespace Decsys.Services
                     $"{studyPrefix}Instance-{publishTimestamp}.json");
             }
 
-            foreach (var child in _surveys.ListChildren(surveyId))
+            foreach (var child in _surveys.ListChildren(surveyId).Surveys)
                 zip.AddBytes(await Full(child.Id), $"{child.Id}.zip");
 
             // return the zip data

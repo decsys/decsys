@@ -150,7 +150,7 @@ namespace Decsys.Repositories.LiteDb
             };        
         }
 
-        private List<Models.SurveySummary> List(int? parentId = null)
+        private Models.PagedSurveySummary List(int? parentId = null)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
                 _surveys.Find(x => x.ParentSurveyId == parentId));
@@ -184,7 +184,7 @@ namespace Decsys.Repositories.LiteDb
                 return summary;
             }
 
-            return summaries
+            summaries
                 .ConvertAll(survey =>
                 {
                     var summary = EnhanceSummary(survey);
@@ -200,8 +200,15 @@ namespace Decsys.Repositories.LiteDb
                     }
 
                     return summary;
-                })
-;
+                });
+                
+            var totalSurveys = summaries.Count();
+            
+            return new Models.PagedSurveySummary
+             {
+                 Surveys = summaries,
+                 TotalCount = (int)totalSurveys
+             };
         }
 
         private Survey? GetParent(Models.CreateSurveyModel model)
@@ -376,7 +383,7 @@ namespace Decsys.Repositories.LiteDb
                     x => (externalKey == null && x.SurveyId.ToString() == externalId) ||
                     (x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId)));
 
-        public List<Models.SurveySummary> ListChildren(int parentId)
+        public Models.PagedSurveySummary ListChildren(int parentId)
             => List(parentId);
 
         public void ArchiveSurvey(int id, string? ownerId)

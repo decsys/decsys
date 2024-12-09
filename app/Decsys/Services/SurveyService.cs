@@ -119,7 +119,7 @@ namespace Decsys.Services
         /// <param name="parentId"></param>
         /// <returns></returns>
         public IEnumerable<SurveySummary> ListChildren(int parentId)
-            => _surveys.ListChildren(parentId);
+            => _surveys.ListChildren(parentId).Surveys;
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
@@ -176,7 +176,7 @@ namespace Decsys.Services
             if (survey.IsStudy)
             {
                 var study = _surveys.Find(newId);
-                foreach (var child in _surveys.ListChildren(oldId))
+                foreach (var child in _surveys.ListChildren(oldId).Surveys)
                 {
                     var childSurvey = _surveys.Find(child.Id);
 
@@ -287,7 +287,7 @@ namespace Decsys.Services
 
             // Studies need to delete children too
             var children = _surveys.ListChildren(id);
-            toDelete.AddRange(children.Select(x => x.Id));
+            toDelete.AddRange(children.Surveys.Select(x => x.Id));
 
             foreach (var surveyId in toDelete)
             {

@@ -8,54 +8,26 @@ import { useSurveysList } from "api/surveys";
 import SortPanel from "components/shared/SortPanel";
 import { useLocation, navigate } from "@reach/router";
 
-const SurveysList = () => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
+const SurveysList = ({
+  surveys,
+  totalCount,
+  pageSize,
+  setPageSize,
+  searchTerm,
+  setSearchTerm,
+  filterType,
+  setFilterType,
+  sortBy,
+  setSortBy,
+  direction,
+  setDirection,
+  pageIndex,
+  setPageIndex,
+  mutateSurveys,
+}) => {
+  const totalPages = Math.ceil(totalCount / pageSize);
 
-  const [searchTerm, setSearchTerm] = useState(queryParams.get("search") || "");
-  const [filterType, setFilterType] = useState(
-    queryParams.get("filter") || "unarchived"
-  );
-  const [sortBy, setSortBy] = useState(queryParams.get("sort") || "name");
-  const [direction, setDirection] = useState(
-    queryParams.get("direction") || "up"
-  );
-  const [pageIndex, setPageIndex] = useState(
-    parseInt(queryParams.get("page") || "0")
-  );
-  const [pageSize, setPageSize] = useState(
-    parseInt(queryParams.get("size") || "10")
-  );
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data: surveysList, mutate: refetchSurveys } = useSurveysList(
-    debouncedSearchTerm,
-    filterType,
-    sortBy,
-    direction,
-    pageIndex,
-    pageSize
-  );
-
-  const totalItems = surveysList.totalCount;
-  const totalPages = Math.ceil(totalItems / pageSize);
-
-  useEffect(() => {
-    refetchSurveys();
-  }, [
-    debouncedSearchTerm,
-    filterType,
-    sortBy,
-    direction,
-    pageIndex,
-    pageSize,
-    refetchSurveys,
-  ]);
-
-  useEffect(() => {
-    setPageIndex(0); // reset to first page whenever filter is changed
-  }, [debouncedSearchTerm, filterType, sortBy, direction]);
-
+  // Update query string
   useEffect(() => {
     const searchParams = new URLSearchParams();
     if (searchTerm) searchParams.set("search", searchTerm);
@@ -68,6 +40,7 @@ const SurveysList = () => {
     navigate(`?${searchParams.toString()}`, { replace: true });
   }, [searchTerm, filterType, sortBy, direction, pageIndex, pageSize]);
 
+  // Handle filter search
   const handleFilterChange = (e) => setSearchTerm(e.target.value);
   const handleSurveyFilterChange = (value) => {
     setFilterType(value);
@@ -123,15 +96,15 @@ const SurveysList = () => {
         </Flex>
       </Box>
       <Stack boxShadow="callout" spacing={0}>
-        {surveysList.surveys &&
-          surveysList.surveys.map((survey) => (
+        {surveys &&
+          surveys.map((survey) => (
             <SurveyProvider key={survey.id} value={survey}>
-              <SurveyCard refetchSurveys={refetchSurveys} />
+              <SurveyCard mutateSurveys={mutateSurveys} />
             </SurveyProvider>
           ))}
       </Stack>
       <FilterControls
-        totalItems={totalItems}
+        totalItems={totalCount}
         totalPages={totalPages}
         pageIndex={pageIndex}
         pageSize={pageSize}
