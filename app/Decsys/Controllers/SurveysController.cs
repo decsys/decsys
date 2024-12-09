@@ -60,7 +60,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(200, "A list of filtered, sorted, and paginated Surveys.", typeof(PagedSurveySummary))]
         public PagedSurveySummary FilteredList(
             [FromQuery] string? name = null,
-            [FromQuery] string view = "",
+            [FromQuery] string view = SurveySortingKeys.Archived,
             [FromQuery] string sortBy = SurveySortingKeys.Name,
             [FromQuery] string direction = SurveySortingKeys.Direction,
             [FromQuery] int pageIndex = 0,

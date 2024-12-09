@@ -253,7 +253,7 @@ namespace Decsys.Repositories.Mongo
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,
-            string view = "",
+            string view = SurveySortingKeys.Archived,
             string sortBy = SurveySortingKeys.Name,
             string direction = SurveySortingKeys.Direction,
             int pageIndex = 0,
