@@ -49,10 +49,7 @@ namespace Decsys.Repositories.LiteDb
 
             return survey;
         }
-
-        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
-            => List(null);
-
+        
         public Models.PagedSurveySummary ListPagedSurveys(
             string? userId = null,
             bool includeOwnerless = false,

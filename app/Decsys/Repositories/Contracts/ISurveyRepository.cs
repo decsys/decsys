@@ -14,16 +14,6 @@ namespace Decsys.Repositories.Contracts
         Survey Find(int id);
 
         /// <summary>
-        /// List Summaries of all Surveys,
-        /// or all Surveys accessible by the specified user, if any.
-        /// </summary>
-        /// <param name="userId">Optional User ID</param>
-        /// <param name="includeOwnerless">
-        /// Even if a User ID is specified, still additionally include Surveys with no Owner
-        /// </param>
-        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false);
-
-        /// <summary>
         /// List Summaries of all Surveys matching the specified criteria.
         /// </summary>
         /// <param name="userId">Optional User ID</param>

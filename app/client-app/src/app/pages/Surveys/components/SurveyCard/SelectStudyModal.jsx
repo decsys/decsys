@@ -177,6 +177,7 @@ export const StudySelectList = ({
 
 export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
   const { surveys, mutateSurveys } = useSurveysList();
+
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -248,10 +248,7 @@ namespace Decsys.Repositories.Mongo
 
             return survey;
         }
-
-        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
-            => List(null, userId, includeOwnerless);
-
+        
         public Models.PagedSurveySummary ListPagedSurveys(
             string? userId = null,
             bool includeOwnerless = false,
@@ -316,11 +313,12 @@ namespace Decsys.Repositories.Mongo
                         (x.Owner == userId ||
                         (includeOwnerless && x.Owner == null)))
                     .ToList();
-
+            
             if (!string.IsNullOrWhiteSpace(name))
             {
-                surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name)).ToList();
+                surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
+
 
             switch (view.ToLower())
             {

@@ -55,12 +55,27 @@ namespace Decsys.Controllers
 
         private string? OwnerId => _mode.IsWorkshop ? null : User.GetUserId();
 
-        [HttpGet]
-        [SwaggerOperation("List summary data for all Surveys the authenticated User can access.")]
-        public IEnumerable<SurveySummary> List()
-            => _surveys.List(
-                OwnerId,
-                User.IsSuperUser());
+        [HttpGet("filtering-and-sorting")]
+        [SwaggerOperation("List summary data for Surveys filtered by name and view (unarchived, archived, or all), with sorting and pagination.")]
+        [SwaggerResponse(200, "A list of filtered, sorted, and paginated Surveys.", typeof(IEnumerable<SurveySummary>))]
+        public PagedSurveySummary FilteredList(
+            [FromQuery] string? name = null,
+            [FromQuery] string view = "",
+            [FromQuery] string sortBy = SurveySortingKeys.Name,
+            [FromQuery] string direction = SurveySortingKeys.Direction,
+            [FromQuery] int pageIndex = 0,
+            [FromQuery] int pageSize = 10)
+        {
+            return _surveys.ListPagedSurveys(
+                userId: OwnerId,
+                includeOwnerless: User.IsSuperUser(),
+                name,
+                view,
+                sortBy,
+                direction,
+                pageIndex,
+                pageSize);
+        }
 
         [HttpGet("{id}/children")]
         [SwaggerOperation("List summary data for all Child Surveys of this.")]
@@ -80,29 +95,6 @@ namespace Decsys.Controllers
                 ? NotFound()
                 : Ok(survey);
         }
-
-        [HttpGet("filtering-and-sorting")]
-        [SwaggerOperation("List summary data for Surveys filtered by name and view (unarchived, archived, or all), with sorting and pagination.")]
-        [SwaggerResponse(200, "A list of filtered, sorted, and paginated Surveys.", typeof(IEnumerable<SurveySummary>))]
-        public PagedSurveySummary FilteredList(
-        [FromQuery] string? name = null,
-        [FromQuery] string view = "",
-        [FromQuery] string sortBy = SurveySortingKeys.Name,
-        [FromQuery] string direction = SurveySortingKeys.Direction,
-        [FromQuery] int pageIndex = 0,
-        [FromQuery] int pageSize = 10)
-        {
-            return _surveys.ListPagedSurveys(
-                userId: OwnerId,
-                includeOwnerless: User.IsSuperUser(),
-                name,
-                view,
-                sortBy,
-                direction,
-                pageIndex,
-                pageSize);
-        }
-
 
         [HttpPost("external/{surveyId?}")]
         [SwaggerOperation("Lookup Survey details for an External Survey, from the external params")]

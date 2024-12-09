@@ -90,18 +90,6 @@ namespace Decsys.Services
         /// <returns>The requested Survey, or null if not found.</returns>
         public Survey Get(int id) => _surveys.Find(id);
 
-        // TODO: PAGINATE?
-        /// <summary>
-        /// List summary data for all Surveys.
-        /// </summary>
-        /// <param name="userId">Optional Owner of the new Survey</param>
-        /// <param name="includeOwnerless">
-        /// Even if a User ID is specified, still additionally include Surveys with no Owner
-        /// </param>
-        /// <returns>All surveys summarised.</returns>
-        public IEnumerable<SurveySummary> List(string? userId = null, bool includeOwnerless = false)
-            => _surveys.List(userId, includeOwnerless);
-
         /// <summary>
         /// List summary data for all Surveys with filtering and sorting options.
         /// </summary>

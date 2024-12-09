@@ -4,7 +4,7 @@ import { SurveyProvider } from "../../../contexts/Survey";
 import { useEffect, useState } from "react";
 import FilterControls from "./Pagination/PaginationControls";
 import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
-import { useFilteredSurveys } from "api/surveys";
+import { useSurveysList } from "api/surveys";
 import SortPanel from "components/shared/SortPanel";
 import { useLocation, navigate } from "@reach/router";
 
@@ -28,7 +28,7 @@ const SurveysList = () => {
   );
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data: surveysList, mutate: refetchSurveys } = useFilteredSurveys(
+  const { data: surveysList, mutate: refetchSurveys } = useSurveysList(
     debouncedSearchTerm,
     filterType,
     sortBy,

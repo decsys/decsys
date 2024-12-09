@@ -42,7 +42,10 @@ const NoSurveys = ({ action }) => (
 );
 
 const Surveys = ({ navigate }) => {
-  const { data: surveys, mutate: mutateSurveys } = useSurveysList();
+  const { data, mutate: mutateSurveys } = useSurveysList();
+
+  const surveys = data.surveys;
+
   const addSurveyModal = useDisclosure();
   const [addStudy, setAddStudy] = useState(false);
 
