@@ -77,7 +77,6 @@ const SurveyCard = ({ mutateSurveys }) => {
         isClosable: true,
       });
     } catch (error) {
-      console.log(error);
       toast({
         title: "Error Archiving Survey",
         status: "error",
