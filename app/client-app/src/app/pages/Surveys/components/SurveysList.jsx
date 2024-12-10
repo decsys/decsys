@@ -1,12 +1,10 @@
 import SurveyCard from "./SurveyCard";
 import { Stack, Box, Input, Flex, Text } from "@chakra-ui/react";
 import { SurveyProvider } from "../../../contexts/Survey";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import FilterControls from "./Pagination/PaginationControls";
-import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
-import { useSurveysList } from "api/surveys";
 import SortPanel from "components/shared/SortPanel";
-import { useLocation, navigate } from "@reach/router";
+import { navigate } from "@reach/router";
 
 const SurveysList = ({
   surveys,

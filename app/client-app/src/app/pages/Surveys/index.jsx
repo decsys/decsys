@@ -12,27 +12,10 @@ import { surveyCardActions } from "./actions/surveyCardActions";
 import { FaList } from "react-icons/fa";
 import { SurveysListProvider } from "./contexts/SurveysList";
 import { BusyPage } from "components/core";
-import { useLocation, navigate } from "@reach/router";
+import { useLocation } from "@reach/router";
 import { useDebounce } from "../Editor/components/Helpers/useDebounce";
 
-const ShowSurveys = ({
-  surveys,
-  totalCount,
-  pageSize,
-  setPageSize,
-  searchTerm,
-  setSearchTerm,
-  filterType,
-  setFilterType,
-  sortBy,
-  setSortBy,
-  direction,
-  setDirection,
-  pageIndex,
-  setPageIndex,
-  mutateSurveys,
-  actions,
-}) => (
+const ShowSurveys = ({ actions, ...props }) => (
   <>
     <Alert>
       <AlertIcon />
@@ -41,23 +24,7 @@ const ShowSurveys = ({
     </Alert>
 
     <SurveyCardActionsProvider value={actions}>
-      <SurveysList
-        surveys={surveys}
-        totalCount={totalCount}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        filterType={filterType}
-        setFilterType={setFilterType}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        direction={direction}
-        setDirection={setDirection}
-        pageIndex={pageIndex}
-        setPageIndex={setPageIndex}
-        mutateSurveys={mutateSurveys}
-      />
+      <SurveysList {...props} />
     </SurveyCardActionsProvider>
   </>
 );
@@ -142,8 +109,6 @@ const Surveys = ({ navigate }) => {
     addSurveyModal.onOpen();
   };
 
-  console.log(intialSurveys.surveys);
-  console.log(data.surveys);
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
   const pageBody = Object.keys(intialSurveys.surveys).length ? (
     (surveyArea = (
