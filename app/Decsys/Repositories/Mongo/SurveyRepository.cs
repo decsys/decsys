@@ -256,10 +256,11 @@ namespace Decsys.Repositories.Mongo
             string view = SurveySortingKeys.Archived,
             string sortBy = SurveySortingKeys.Name,
             string direction = SurveySortingKeys.Direction,
+            bool isStudy = false,
             int pageIndex = 0,
             int pageSize = 10)
 
-            => List(null, userId, includeOwnerless, name, view, sortBy, direction,pageIndex,pageSize);
+            => List(null, userId, includeOwnerless, name, view, sortBy, direction, isStudy, pageIndex,pageSize);
         
         private Models.PagedSurveySummary List(
             int? parentId = null,
@@ -269,18 +270,24 @@ namespace Decsys.Repositories.Mongo
             string view = SurveySortingKeys.Archived,
             string sortBy = SurveySortingKeys.Name,
             string direction = SurveySortingKeys.Direction,
+            bool isStudy = false,
             int pageIndex = 0,
             int pageSize = 10
         )
         {
             // Filtering
-            var surveys = userId is null
-                ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
-                : _surveys.Find(
-                        x => x.ParentSurveyId == parentId &&
-                             (x.Owner == userId ||
-                              (includeOwnerless && x.Owner == null)))
-                    .ToList();
+            var surveys = _surveys.Find(x =>
+                x.ParentSurveyId == parentId &&
+                (!isStudy || x.IsStudy == isStudy) && 
+                (userId == null || x.Owner == userId || (includeOwnerless && x.Owner == null))
+            ).ToList();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+
             
             if (!string.IsNullOrWhiteSpace(name))
             {
@@ -347,9 +354,16 @@ namespace Decsys.Repositories.Mongo
                 .Take(pageSize)
                 .ToList();
             
+            // Count Surveys
+           
             var baseFilter = Builders<Survey>.Filter.Empty;
 
-            // Count Surveys
+            // Only filter by parentId, userId and ownerless for the count
+            if (parentId.HasValue)
+            {
+                baseFilter &= Builders<Survey>.Filter.Eq(x => x.ParentSurveyId, parentId.Value);
+            }
+
             if (userId != null)
             {
                 var userFilter = Builders<Survey>.Filter.Where(x => x.Owner == userId);
@@ -361,17 +375,6 @@ namespace Decsys.Repositories.Mongo
                 baseFilter &= userFilter;
             }
             
-            if (view == SurveyArchivedTypes.Unarchived)
-            {
-                var unarchivedFilter = Builders<Survey>.Filter.Where(x => x.ArchivedDate == null);
-                baseFilter &= unarchivedFilter;
-            }
-            else if (view == SurveyArchivedTypes.Archived)
-            {
-                var archivedFilter = Builders<Survey>.Filter.Where(x => x.ArchivedDate != null);
-                baseFilter &= archivedFilter;
-            }
-
             var surveyCount = _surveys.CountDocuments(baseFilter);
 
             return new Models.PagedSurveySummary

@@ -26,6 +26,7 @@ export const useSurveysList = (
   view = "unarchived",
   sortBy = "name",
   direction = "up",
+  isStudy = false,
   pageIndex = "0",
   pageSize = "10"
 ) => {
@@ -34,6 +35,7 @@ export const useSurveysList = (
     view,
     sortBy,
     direction,
+    isStudy: isStudy.toString(),
     pageIndex: pageIndex.toString(),
     pageSize: pageSize.toString(),
   }).toString();

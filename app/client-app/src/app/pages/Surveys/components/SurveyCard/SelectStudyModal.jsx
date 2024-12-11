@@ -20,9 +20,9 @@ import SurveysSortingAndFiltering from "../SurveysSortingAndFiltering";
 import themes, { defaultColorMode } from "themes";
 import { FaArrowDown, FaInfoCircle } from "react-icons/fa";
 import StandardModal from "components/core/StandardModal";
-import { useSurveysList } from "../../contexts/SurveysList";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import { navigate } from "@reach/router";
+import { useSurveysList } from "api/surveys";
 
 function RadioCard({ children, ...p }) {
   const { getInputProps, getCheckboxProps } = useRadio(p);
@@ -160,15 +160,13 @@ export const StudySelectList = ({
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
         {sortingAndFiltering.surveyList.map(({ id }) => {
-          const survey = surveys[id];
-
+          const survey = surveys.find((survey) => survey.id === id);
+          console.log(survey);
           if (!survey || !survey.isStudy || survey.runCount) return null;
 
           const radio = getRadioProps({ value: id.toString() });
 
-          return (
-            <SelectableStudyCard key={id} study={surveys[id]} {...radio} />
-          );
+          return <SelectableStudyCard key={id} study={survey} {...radio} />;
         })}
       </Stack>
     </Stack>
@@ -176,7 +174,16 @@ export const StudySelectList = ({
 };
 
 export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
-  const { surveys, mutateSurveys } = useSurveysList();
+  const { data, mutateSurveys } = useSurveysList(
+    "",
+    "all",
+    "name",
+    "up",
+    true,
+    0,
+    10
+  );
+  const surveys = data.surveys;
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
@@ -215,7 +222,7 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           <Icon as={FaArrowDown} />
           <Text>
             <strong>Parent: </strong>
-            {selectedStudyId ? surveys[selectedStudyId].name : "None"}
+            {selectedStudyId ? surveys.name : "None"}
           </Text>
         </Stack>
 

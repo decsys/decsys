@@ -106,10 +106,12 @@ namespace Decsys.Services
             string? name = null,
             string view = "",
             string sortBy = SurveySortingKeys.Name,
-            string direction = SurveySortingKeys.Direction,
-            int pageIndex = 0, int pageSize = 10)
+            string direction = SurveySortingKeys.Direction, 
+            bool isStudy = false,
+            int pageIndex = 0,
+            int pageSize = 10)
         {
-            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, pageIndex, pageSize);
+            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, isStudy, pageIndex, pageSize);
         }
 
 

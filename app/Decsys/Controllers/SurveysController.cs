@@ -63,6 +63,7 @@ namespace Decsys.Controllers
             [FromQuery] string view = SurveySortingKeys.Archived,
             [FromQuery] string sortBy = SurveySortingKeys.Name,
             [FromQuery] string direction = SurveySortingKeys.Direction,
+            [FromQuery] bool isStudy = false,
             [FromQuery] int pageIndex = 0,
             [FromQuery] int pageSize = 10)
         {
@@ -73,6 +74,7 @@ namespace Decsys.Controllers
                 view,
                 sortBy,
                 direction,
+                isStudy,
                 pageIndex,
                 pageSize);
         }
