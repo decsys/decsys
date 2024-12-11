@@ -10,54 +10,53 @@ import {
 import { useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const PaginationControls = ({
-  currentPage,
-  itemLimit,
-  setItemLimit,
-  setCurrentPage,
+const FilterControls = ({
   totalItems,
+  totalPages,
+  pageIndex,
+  pageSize,
+  handlePageChange,
+  handlePageSizeChange,
   handleSurveyFilterChange,
   filterType,
 }) => {
-  const numPages = Math.ceil(totalItems / itemLimit);
-
   useEffect(() => {
-    if (numPages > 0 && currentPage >= numPages) {
-      setCurrentPage(numPages - 1);
-    } else if (numPages > 0 && currentPage < 0) {
-      setCurrentPage(0);
+    if (totalPages > 0 && pageIndex >= totalPages) {
+      handlePageChange(totalPages - 1);
+    } else if (totalPages > 0 && pageIndex < 0) {
+      handlePageChange(0);
     }
-  }, [currentPage, numPages, setCurrentPage]);
+  }, [pageIndex, totalPages, handlePageChange]);
 
   const setPage = (newPage) => {
-    setCurrentPage(newPage);
+    handlePageChange(newPage);
   };
 
   const generatePageNumbers = () => {
     const pages = [];
-    if (numPages <= 5) {
-      for (let i = 0; i < numPages; i++) pages.push(i);
+    if (totalPages <= 5) {
+      for (let i = 0; i < totalPages; i++) pages.push(i);
     } else {
-      if (currentPage < 2) {
-        pages.push(0, 1, 2, "...", numPages - 1);
-      } else if (currentPage >= numPages - 3) {
+      if (pageIndex < 2) {
+        pages.push(0, 1, 2, "...", totalPages - 1);
+      } else if (pageIndex >= totalPages - 3) {
         pages.push(
           0,
           "...",
-          numPages - 4,
-          numPages - 3,
-          numPages - 2,
-          numPages - 1
+          totalPages - 4,
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1
         );
       } else {
         pages.push(
           0,
           "...",
-          currentPage - 1,
-          currentPage,
-          currentPage + 1,
+          pageIndex - 1,
+          pageIndex,
+          pageIndex + 1,
           "...",
-          numPages - 1
+          totalPages - 1
         );
       }
     }
@@ -69,7 +68,7 @@ const PaginationControls = ({
       <HStack justifyContent="end">
         <Select
           onChange={(e) => handleSurveyFilterChange(e.target.value)}
-          value={filterType} // Bind the current filter to the Select
+          value={filterType}
           w="250px"
         >
           <option value="unarchived">Hide Archived Surveys</option>
@@ -82,15 +81,11 @@ const PaginationControls = ({
           <Text>Surveys Per Page:</Text>
           <Select
             w="80px"
-            value={itemLimit}
-            onChange={(e) => {
-              const newLimit = Number(e.target.value);
-              setItemLimit(newLimit);
-              setCurrentPage(0); // Reset the page to the first page
-            }}
+            value={pageSize}
+            onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
           >
-            {[5, 10, 20, 30, 50, 75, 100].map((limit, index) => (
-              <option key={index} value={limit}>
+            {[5, 10, 20, 30, 50, 75, 100].map((limit) => (
+              <option key={limit} value={limit}>
                 {limit}
               </option>
             ))}
@@ -99,17 +94,16 @@ const PaginationControls = ({
         <Flex alignItems="center" justifyContent="center">
           <IconButton
             icon={<FaChevronLeft />}
-            onClick={() => setPage(currentPage - 1)}
-            isDisabled={currentPage === 0}
+            onClick={() => setPage(pageIndex - 1)}
+            isDisabled={pageIndex === 0}
             aria-label="Previous Page"
           />
-
           {generatePageNumbers().map((page, index) =>
             typeof page === "number" ? (
               <Button
                 key={index}
                 onClick={() => setPage(page)}
-                isActive={page === currentPage}
+                isActive={page === pageIndex}
                 mx={1}
               >
                 {page + 1}
@@ -120,20 +114,19 @@ const PaginationControls = ({
               </Box>
             )
           )}
-
           <IconButton
             icon={<FaChevronRight />}
-            onClick={() => setPage(currentPage + 1)}
-            isDisabled={currentPage >= numPages - 1}
+            onClick={() => setPage(pageIndex + 1)}
+            isDisabled={pageIndex >= totalPages - 1}
             aria-label="Next Page"
           />
         </Flex>
-        <Flex>
-          Page {currentPage + 1} of {numPages}
-        </Flex>
+        <Text>
+          Page {pageIndex + 1} of {totalPages}
+        </Text>
       </HStack>
     </HStack>
   );
 };
 
-export default PaginationControls;
+export default FilterControls;

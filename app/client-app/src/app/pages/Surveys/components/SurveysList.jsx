@@ -1,46 +1,47 @@
 import SurveyCard from "./SurveyCard";
 import { Stack, Box, Input, Flex, Text } from "@chakra-ui/react";
 import { SurveyProvider } from "../../../contexts/Survey";
-import { useEffect, useState } from "react";
-import PaginationControls from "./Pagination/PaginationControls";
-import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
-import { useFilteredSurveys } from "api/surveys";
-import { useSurveyPagination } from "hooks/useSurveyPagination";
-import { useFilterSurveys } from "hooks/useFilterSurveys";
+import { useEffect } from "react";
+import FilterControls from "./Pagination/PaginationControls";
 import SortPanel from "components/shared/SortPanel";
+import { navigate } from "@reach/router";
 
-const SurveysList = ({ surveys }) => {
-  const { page, limit } = getQueryParams();
-  const { currentPage, setCurrentPage, itemLimit, setItemLimit } =
-    useSurveyPagination(page - 1, limit);
+const SurveysList = ({
+  surveys,
+  totalCount,
+  pageSize,
+  setPageSize,
+  searchTerm,
+  setSearchTerm,
+  filterType,
+  setFilterType,
+  sortBy,
+  setSortBy,
+  direction,
+  setDirection,
+  pageIndex,
+  setPageIndex,
+  mutateSurveys,
+}) => {
+  const totalPages = Math.ceil(totalCount / pageSize);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState("unarchived");
-  const [sortBy, setSortBy] = useState("name");
-  const [direction, setDirection] = useState("up");
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const { data: surveysList, mutate: refetchSurveys } = useFilteredSurveys(
-    debouncedSearchTerm,
-    filterType,
-    sortBy,
-    direction
-  );
-
-  const filteredSurveys = useFilterSurveys(surveysList, filterType);
-  const totalItems = surveysList.length;
-  const hasArchivedDate = filteredSurveys.some(
-    (survey) => survey.archivedDate !== null
-  );
-
+  // Update query string
   useEffect(() => {
-    refetchSurveys();
-  }, [debouncedSearchTerm, refetchSurveys]);
+    const searchParams = new URLSearchParams();
+    if (searchTerm) searchParams.set("search", searchTerm);
+    if (filterType) searchParams.set("filter", filterType);
+    if (sortBy) searchParams.set("sort", sortBy);
+    searchParams.set("direction", direction);
+    searchParams.set("page", (pageIndex + 1).toString());
+    searchParams.set("size", pageSize.toString());
 
+    navigate(`?${searchParams.toString()}`, { replace: true });
+  }, [searchTerm, filterType, sortBy, direction, pageIndex, pageSize]);
+
+  // Handle filter search
   const handleFilterChange = (e) => setSearchTerm(e.target.value);
   const handleSurveyFilterChange = (value) => {
     setFilterType(value);
-    setCurrentPage(0); // Reset to first page when filter changes
   };
 
   const handleSortButtonClick = (key) => {
@@ -50,13 +51,17 @@ const SurveysList = ({ surveys }) => {
       setSortBy(key);
       setDirection("up");
     }
-    setCurrentPage(0);
+    setPageIndex(0);
   };
 
-  const currentSurveys = surveysList.slice(
-    currentPage * itemLimit,
-    (currentPage + 1) * itemLimit
-  );
+  const handlePageChange = (newPageIndex) => {
+    setPageIndex(newPageIndex);
+  };
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setPageIndex(0);
+  };
 
   return (
     <Stack mt={2}>
@@ -72,7 +77,9 @@ const SurveysList = ({ surveys }) => {
                 "Active",
                 ["Run Count", "runCount"],
                 "Name",
-                ...(hasArchivedDate ? [["Archived", "archived"]] : []),
+                ...(filterType !== "unarchived"
+                  ? [["Archived", "archived"]]
+                  : []),
               ]}
               onSortButtonClick={handleSortButtonClick}
             />
@@ -87,25 +94,20 @@ const SurveysList = ({ surveys }) => {
         </Flex>
       </Box>
       <Stack boxShadow="callout" spacing={0}>
-        {currentSurveys.map(
-          (survey) =>
-            survey.id &&
-            surveys[survey.id] && (
-              <SurveyProvider key={survey.id} value={surveys[survey.id]}>
-                <SurveyCard refetchSurveys={refetchSurveys} />
-              </SurveyProvider>
-            )
-        )}
+        {surveys &&
+          surveys.map((survey) => (
+            <SurveyProvider key={survey.id} value={survey}>
+              <SurveyCard mutateSurveys={mutateSurveys} />
+            </SurveyProvider>
+          ))}
       </Stack>
-      <PaginationControls
-        currentPage={currentPage}
-        itemLimit={itemLimit}
-        setItemLimit={(newLimit) => {
-          setItemLimit(newLimit);
-          setCurrentPage(0); // Reset to first page when limit changes
-        }}
-        setCurrentPage={setCurrentPage}
-        totalItems={totalItems}
+      <FilterControls
+        totalItems={totalCount}
+        totalPages={totalPages}
+        pageIndex={pageIndex}
+        pageSize={pageSize}
+        handlePageChange={handlePageChange}
+        handlePageSizeChange={handlePageSizeChange}
         handleSurveyFilterChange={handleSurveyFilterChange}
         filterType={filterType}
       />
@@ -114,11 +116,3 @@ const SurveysList = ({ surveys }) => {
 };
 
 export default SurveysList;
-
-function getQueryParams() {
-  const searchParams = new URLSearchParams(window.location.search);
-  return {
-    page: parseInt(searchParams.get("page"), 10) || 1,
-    limit: parseInt(searchParams.get("limit"), 10) || 10,
-  };
-}

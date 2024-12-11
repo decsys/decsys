@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Page, EmptyState } from "components/core";
 import SurveysList from "./components/SurveysList";
 import { useDisclosure, Box, Alert, AlertIcon } from "@chakra-ui/react";
@@ -12,8 +12,10 @@ import { surveyCardActions } from "./actions/surveyCardActions";
 import { FaList } from "react-icons/fa";
 import { SurveysListProvider } from "./contexts/SurveysList";
 import { BusyPage } from "components/core";
+import { useLocation } from "@reach/router";
+import { useDebounce } from "../Editor/components/Helpers/useDebounce";
 
-const ShowSurveys = ({ surveys, actions }) => (
+const ShowSurveys = ({ actions, ...props }) => (
   <>
     <Alert>
       <AlertIcon />
@@ -22,7 +24,7 @@ const ShowSurveys = ({ surveys, actions }) => (
     </Alert>
 
     <SurveyCardActionsProvider value={actions}>
-      <SurveysList surveys={surveys} />
+      <SurveysList {...props} />
     </SurveyCardActionsProvider>
   </>
 );
@@ -42,7 +44,55 @@ const NoSurveys = ({ action }) => (
 );
 
 const Surveys = ({ navigate }) => {
-  const { data: surveys, mutate: mutateSurveys } = useSurveysList();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const [searchTerm, setSearchTerm] = useState(queryParams.get("search") || "");
+  const [filterType, setFilterType] = useState(
+    queryParams.get("filter") || "unarchived"
+  );
+  const [sortBy, setSortBy] = useState(queryParams.get("sort") || "name");
+  const [direction, setDirection] = useState(
+    queryParams.get("direction") || "up"
+  );
+  const [pageIndex, setPageIndex] = useState(
+    parseInt(queryParams.get("page") || "0")
+  );
+  const [pageSize, setPageSize] = useState(
+    parseInt(queryParams.get("size") || "10")
+  );
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  const { data, mutate: mutateSurveys } = useSurveysList(
+    debouncedSearchTerm,
+    filterType,
+    sortBy,
+    direction,
+    pageIndex,
+    pageSize
+  );
+
+  const { data: intialSurveys } = useSurveysList();
+
+  useEffect(() => {
+    mutateSurveys();
+  }, [
+    debouncedSearchTerm,
+    filterType,
+    sortBy,
+    direction,
+    pageIndex,
+    pageSize,
+    mutateSurveys,
+  ]);
+
+  useEffect(() => {
+    setPageIndex(0); // reset to first page whenever filter is changed
+  }, [debouncedSearchTerm, filterType, sortBy, direction]);
+
+  const surveys = data.surveys;
+  const totalCount = data.totalCount;
+
   const addSurveyModal = useDisclosure();
   const [addStudy, setAddStudy] = useState(false);
 
@@ -60,8 +110,27 @@ const Surveys = ({ navigate }) => {
   };
 
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
-  const pageBody = Object.keys(surveys).length ? (
-    (surveyArea = <ShowSurveys surveys={surveys} actions={SurveyCardActions} />)
+  const pageBody = Object.keys(intialSurveys.surveys).length ? (
+    (surveyArea = (
+      <ShowSurveys
+        surveys={surveys}
+        totalCount={totalCount}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        filterType={filterType}
+        setFilterType={setFilterType}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        direction={direction}
+        setDirection={setDirection}
+        pageIndex={pageIndex}
+        setPageIndex={setPageIndex}
+        mutateSurveys={mutateSurveys}
+        actions={SurveyCardActions}
+      />
+    ))
   ) : (
     <NoSurveys action={handleAddSurvey} />
   );

@@ -26,7 +26,7 @@ import { FaChevronDown, FaChevronRight, FaPlus } from "react-icons/fa";
 import AddSurveyModal from "../AddSurveyModal";
 import { archiveSurvey, unarchiveSurvey } from "api/surveys";
 
-const SurveyCard = ({ refetchSurveys }) => {
+const SurveyCard = ({ mutateSurveys }) => {
   const { onToggle, isOpen } = useDisclosure();
   const addSurveyModal = useDisclosure();
 
@@ -68,7 +68,7 @@ const SurveyCard = ({ refetchSurveys }) => {
   const handleArchive = async () => {
     try {
       await archiveSurvey(id);
-      refetchSurveys();
+      mutateSurveys();
       toast({
         title: "Survey Archived",
         description: "The survey was successfully archived.",
@@ -89,7 +89,7 @@ const SurveyCard = ({ refetchSurveys }) => {
   const handleUnarchive = async () => {
     try {
       await unarchiveSurvey(id);
-      refetchSurveys();
+      mutateSurveys();
       toast({
         title: "Survey Unarchived",
         description: "The survey was successfully unarchived.",

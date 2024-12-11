@@ -90,18 +90,6 @@ namespace Decsys.Services
         /// <returns>The requested Survey, or null if not found.</returns>
         public Survey Get(int id) => _surveys.Find(id);
 
-        // TODO: PAGINATE?
-        /// <summary>
-        /// List summary data for all Surveys.
-        /// </summary>
-        /// <param name="userId">Optional Owner of the new Survey</param>
-        /// <param name="includeOwnerless">
-        /// Even if a User ID is specified, still additionally include Surveys with no Owner
-        /// </param>
-        /// <returns>All surveys summarised.</returns>
-        public IEnumerable<SurveySummary> List(string? userId = null, bool includeOwnerless = false)
-            => _surveys.List(userId, includeOwnerless);
-
         /// <summary>
         /// List summary data for all Surveys with filtering and sorting options.
         /// </summary>
@@ -112,15 +100,16 @@ namespace Decsys.Services
         /// <param name="sortBy">The field by which to sort the surveys</param>
         /// <param name="direction">The direction to sort the surveys ("up" or "down")</param>
         /// <returns>Filtered and sorted list of survey summaries.</returns>
-        public IEnumerable<SurveySummary> List(
+        public Models.PagedSurveySummary List(
             string? userId = null,
             bool includeOwnerless = false,
             string? name = null,
             string view = "",
             string sortBy = SurveySortingKeys.Name,
-            string direction = SurveySortingKeys.Direction)
+            string direction = SurveySortingKeys.Direction,
+            int pageIndex = 0, int pageSize = 10)
         {
-            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction);
+            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, pageIndex, pageSize);
         }
 
 
@@ -130,7 +119,7 @@ namespace Decsys.Services
         /// <param name="parentId"></param>
         /// <returns></returns>
         public IEnumerable<SurveySummary> ListChildren(int parentId)
-            => _surveys.ListChildren(parentId);
+            => _surveys.ListChildren(parentId).Surveys;
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
@@ -187,7 +176,7 @@ namespace Decsys.Services
             if (survey.IsStudy)
             {
                 var study = _surveys.Find(newId);
-                foreach (var child in _surveys.ListChildren(oldId))
+                foreach (var child in _surveys.ListChildren(oldId).Surveys)
                 {
                     var childSurvey = _surveys.Find(child.Id);
 
@@ -298,7 +287,7 @@ namespace Decsys.Services
 
             // Studies need to delete children too
             var children = _surveys.ListChildren(id);
-            toDelete.AddRange(children.Select(x => x.Id));
+            toDelete.AddRange(children.Surveys.Select(x => x.Id));
 
             foreach (var surveyId in toDelete)
             {

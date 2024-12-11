@@ -14,16 +14,6 @@ namespace Decsys.Repositories.Contracts
         Survey Find(int id);
 
         /// <summary>
-        /// List Summaries of all Surveys,
-        /// or all Surveys accessible by the specified user, if any.
-        /// </summary>
-        /// <param name="userId">Optional User ID</param>
-        /// <param name="includeOwnerless">
-        /// Even if a User ID is specified, still additionally include Surveys with no Owner
-        /// </param>
-        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false);
-
-        /// <summary>
         /// List Summaries of all Surveys matching the specified criteria.
         /// </summary>
         /// <param name="userId">Optional User ID</param>
@@ -39,14 +29,16 @@ namespace Decsys.Repositories.Contracts
         /// </param>
         /// <param name="sortBy">Specifies the field to sort by. Default is "name".</param>
         /// <param name="direction">Specifies the direction of the sort: "up" (ascending) or "down" (descending). Default is "up". </param>
-        /// <returns>A list of filtered and sorted survey summaries.</returns>
-        List<SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction= SurveySortingKeys.Direction);
+        /// <param name="page">Specifies the page number for pagination, starting from 1. Default is 1.</param>
+        /// <param name="pageSize">Specifies the number of survey summaries per page. Default is 10.</param>
+        /// <returns>A list of filtered, sorted, and paginated survey summaries.</returns>
+        PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction= SurveySortingKeys.Direction, int pageIndex = 0, int pageSize = 10);
 
         /// <summary>
         /// List Summaries of all children of the specified Study.
         /// </summary>
         /// <param name="parentId"></param>
-        List<SurveySummary> ListChildren(int parentId);
+        PagedSurveySummary ListChildren(int parentId);
 
         /// <summary>
         /// Create a new empty Survey, optionally belonging to a specific user.

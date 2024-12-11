@@ -49,14 +49,12 @@ namespace Decsys.Repositories.LiteDb
 
             return survey;
         }
-
-        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false)
-            => List(null);
-
-        public List<Models.SurveySummary> List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = "name", string direction = "up")
+        
+        public Models.PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, int pageIndex = 0, int pageSize = 10)
         {
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();
+            var totalSurveys = surveys.Count();
 
             // Filter by name if specified
             if (!string.IsNullOrWhiteSpace(name))
@@ -121,7 +119,7 @@ namespace Decsys.Repositories.LiteDb
                 return summary;
             }
 
-            return summaries
+             summaries
                 .ConvertAll(survey =>
                 {
                     var summary = EnhanceSummary(survey);
@@ -138,9 +136,21 @@ namespace Decsys.Repositories.LiteDb
 
                     return summary;
                 });
+
+
+            var pagedSurveys = summaries
+                  .Skip(pageIndex * pageSize)
+                  .Take(pageSize)
+                  .ToList();
+
+            return new Models.PagedSurveySummary
+            {
+                Surveys = pagedSurveys,
+                TotalCount = (int)totalSurveys
+            };        
         }
 
-        private List<Models.SurveySummary> List(int? parentId = null)
+        private Models.PagedSurveySummary List(int? parentId = null)
         {
             var summaries = _mapper.Map<List<Models.SurveySummary>>(
                 _surveys.Find(x => x.ParentSurveyId == parentId));
@@ -174,7 +184,7 @@ namespace Decsys.Repositories.LiteDb
                 return summary;
             }
 
-            return summaries
+            summaries
                 .ConvertAll(survey =>
                 {
                     var summary = EnhanceSummary(survey);
@@ -190,8 +200,15 @@ namespace Decsys.Repositories.LiteDb
                     }
 
                     return summary;
-                })
-;
+                });
+                
+            var totalSurveys = summaries.Count();
+            
+            return new Models.PagedSurveySummary
+             {
+                 Surveys = summaries,
+                 TotalCount = (int)totalSurveys
+             };
         }
 
         private Survey? GetParent(Models.CreateSurveyModel model)
@@ -366,7 +383,7 @@ namespace Decsys.Repositories.LiteDb
                     x => (externalKey == null && x.SurveyId.ToString() == externalId) ||
                     (x.ExternalIdKey == externalKey && x.ExternalIdValue == externalId)));
 
-        public List<Models.SurveySummary> ListChildren(int parentId)
+        public Models.PagedSurveySummary ListChildren(int parentId)
             => List(parentId);
 
         public void ArchiveSurvey(int id, string? ownerId)
