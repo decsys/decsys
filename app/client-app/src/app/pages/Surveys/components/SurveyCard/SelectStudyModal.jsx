@@ -23,6 +23,7 @@ import StandardModal from "components/core/StandardModal";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import { navigate } from "@reach/router";
 import { useSurveysList } from "api/surveys";
+import FilterControls from "../Pagination/PaginationControls";
 
 function RadioCard({ children, ...p }) {
   const { getInputProps, getCheckboxProps } = useRadio(p);
@@ -140,9 +141,11 @@ export const StudySelectList = ({
   defaultValue = "none",
   surveys,
   onChange,
+  totalCount,
+  pageIndex,
+  setPageIndex,
+  pageSize,
 }) => {
-  const sortingAndFiltering = useSortingAndFiltering(surveys);
-
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "targetStudy",
     defaultValue,
@@ -150,18 +153,20 @@ export const StudySelectList = ({
   });
 
   const group = getRootProps();
+  const totalPages = Math.ceil(totalCount / pageSize);
+
+  const handlePageChange = (newPageIndex) => {
+    setPageIndex(newPageIndex);
+  };
 
   return (
     <Stack mt={2}>
-      <Box py={4}>
-        <SurveysSortingAndFiltering {...sortingAndFiltering} />
-      </Box>
+      <Box py={4}>Sorting</Box>
 
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
-        {sortingAndFiltering.surveyList.map(({ id }) => {
+        {surveys.map(({ id }) => {
           const survey = surveys.find((survey) => survey.id === id);
-          console.log(survey);
           if (!survey || !survey.isStudy || survey.runCount) return null;
 
           const radio = getRadioProps({ value: id.toString() });
@@ -169,21 +174,39 @@ export const StudySelectList = ({
           return <SelectableStudyCard key={id} study={survey} {...radio} />;
         })}
       </Stack>
+      <Flex justifyContent="end" pt="2">
+        <FilterControls
+          totalItems={totalCount}
+          totalPages={totalPages}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          handlePageChange={handlePageChange}
+          handlePageSizeChange={null}
+          handleSurveyFilterChange={null}
+          filterType={null}
+        />
+      </Flex>
     </Stack>
   );
 };
 
 export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
+  const pageSize = 10;
+  const [pageIndex, setPageIndex] = useState(0);
+
   const { data, mutateSurveys } = useSurveysList(
     "",
-    "all",
+    "unarchived",
     "name",
-    "up",
+    "down",
     true,
-    0,
-    10
+    true,
+    pageIndex,
+    pageSize
   );
+
   const surveys = data.surveys;
+  const totalCount = data.studyTotalCount;
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
@@ -242,6 +265,10 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           surveys={surveys}
           defaultValue={parentId?.toString()}
           onChange={handleChange}
+          totalCount={totalCount}
+          pageIndex={pageIndex}
+          setPageIndex={setPageIndex}
+          pageSize={pageSize}
         />
       </Stack>
     </StandardModal>

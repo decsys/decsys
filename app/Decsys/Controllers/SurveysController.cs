@@ -64,6 +64,7 @@ namespace Decsys.Controllers
             [FromQuery] string sortBy = SurveySortingKeys.Name,
             [FromQuery] string direction = SurveySortingKeys.Direction,
             [FromQuery] bool isStudy = false,
+            [FromQuery] bool canChangeStudy = false,
             [FromQuery] int pageIndex = 0,
             [FromQuery] int pageSize = 10)
         {
@@ -75,6 +76,7 @@ namespace Decsys.Controllers
                 sortBy,
                 direction,
                 isStudy,
+                canChangeStudy,
                 pageIndex,
                 pageSize);
         }

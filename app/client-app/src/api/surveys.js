@@ -27,6 +27,7 @@ export const useSurveysList = (
   sortBy = "name",
   direction = "up",
   isStudy = false,
+  canChangeStudy = false,
   pageIndex = "0",
   pageSize = "10"
 ) => {
@@ -36,6 +37,7 @@ export const useSurveysList = (
     sortBy,
     direction,
     isStudy: isStudy.toString(),
+    canChangeStudy: canChangeStudy.toString(),
     pageIndex: pageIndex.toString(),
     pageSize: pageSize.toString(),
   }).toString();

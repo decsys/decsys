@@ -257,10 +257,11 @@ namespace Decsys.Repositories.Mongo
             string sortBy = SurveySortingKeys.Name,
             string direction = SurveySortingKeys.Direction,
             bool isStudy = false,
+            bool canChangeStudy = false,
             int pageIndex = 0,
             int pageSize = 10)
 
-            => List(null, userId, includeOwnerless, name, view, sortBy, direction, isStudy, pageIndex,pageSize);
+            => List(null, userId, includeOwnerless, name, view, sortBy, direction, isStudy, canChangeStudy, pageIndex,pageSize);
         
         private Models.PagedSurveySummary List(
             int? parentId = null,
@@ -271,6 +272,7 @@ namespace Decsys.Repositories.Mongo
             string sortBy = SurveySortingKeys.Name,
             string direction = SurveySortingKeys.Direction,
             bool isStudy = false,
+            bool canChangeStudy = false,
             int pageIndex = 0,
             int pageSize = 10
         )
@@ -281,13 +283,11 @@ namespace Decsys.Repositories.Mongo
                 (!isStudy || x.IsStudy == isStudy) && 
                 (userId == null || x.Owner == userId || (includeOwnerless && x.Owner == null))
             ).ToList();
-
+            
             if (!string.IsNullOrWhiteSpace(name))
             {
                 surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-
-
             
             if (!string.IsNullOrWhiteSpace(name))
             {
@@ -345,6 +345,11 @@ namespace Decsys.Repositories.Mongo
                     return summary;
                 });
             
+            if (canChangeStudy)
+            {
+                summaries = summaries.Where(x => x.RunCount == 0).ToList();
+            }
+            
             // Sorting
             summaries = SortSurveys(summaries, sortBy, direction);
 
@@ -376,11 +381,13 @@ namespace Decsys.Repositories.Mongo
             }
             
             var surveyCount = _surveys.CountDocuments(baseFilter);
-
+            var totalStudyCount = summaries.Count(s => s.RunCount == 0);
+            
             return new Models.PagedSurveySummary
             {
                 Surveys = pagedSurveys,
-                TotalCount = (int)surveyCount
+                TotalCount = (int)surveyCount,
+                StudyTotalCount = totalStudyCount 
             };
         }
         

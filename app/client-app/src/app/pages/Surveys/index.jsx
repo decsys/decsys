@@ -69,6 +69,7 @@ const Surveys = ({ navigate }) => {
     sortBy,
     direction,
     "false",
+    "false",
     pageIndex,
     pageSize
   );
