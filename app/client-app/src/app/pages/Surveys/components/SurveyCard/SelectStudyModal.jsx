@@ -14,9 +14,9 @@ import {
   Text,
   Alert,
   AlertIcon,
+  Input,
+  HStack,
 } from "@chakra-ui/react";
-import { useSortingAndFiltering } from "components/shared/SortPanel";
-import SurveysSortingAndFiltering from "../SurveysSortingAndFiltering";
 import themes, { defaultColorMode } from "themes";
 import { FaArrowDown, FaInfoCircle } from "react-icons/fa";
 import StandardModal from "components/core/StandardModal";
@@ -24,6 +24,8 @@ import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import { navigate } from "@reach/router";
 import { useSurveysList } from "api/surveys";
 import FilterControls from "../Pagination/PaginationControls";
+import SortPanel from "components/shared/SortPanel";
+import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
 
 function RadioCard({ children, ...p }) {
   const { getInputProps, getCheckboxProps } = useRadio(p);
@@ -145,6 +147,10 @@ export const StudySelectList = ({
   pageIndex,
   setPageIndex,
   pageSize,
+  sortBy,
+  setSortBy,
+  direction,
+  setDirection,
 }) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "targetStudy",
@@ -159,10 +165,30 @@ export const StudySelectList = ({
     setPageIndex(newPageIndex);
   };
 
+  const handleSortButtonClick = (key) => {
+    if (sortBy === key) {
+      setDirection((prev) => (prev === "up" ? "down" : "up"));
+    } else {
+      setSortBy(key);
+      setDirection("up");
+    }
+    setPageIndex(0);
+  };
+
   return (
     <Stack mt={2}>
-      <Box py={4}>Sorting</Box>
-
+      <HStack justifyContent="space-between">
+        <HStack>
+          <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
+            Sort by:
+          </Text>
+          <SortPanel
+            state={{ key: sortBy, [sortBy]: direction === "up" }}
+            keys={["Name"]}
+            onSortButtonClick={handleSortButtonClick}
+          />
+        </HStack>
+      </HStack>
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
         {surveys.map(({ id }) => {
@@ -181,9 +207,6 @@ export const StudySelectList = ({
           pageIndex={pageIndex}
           pageSize={pageSize}
           handlePageChange={handlePageChange}
-          handlePageSizeChange={null}
-          handleSurveyFilterChange={null}
-          filterType={null}
         />
       </Flex>
     </Stack>
@@ -193,12 +216,14 @@ export const StudySelectList = ({
 export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
   const pageSize = 10;
   const [pageIndex, setPageIndex] = useState(0);
+  const [sortBy, setSortBy] = useState("name");
+  const [direction, setDirection] = useState("up");
 
   const { data, mutateSurveys } = useSurveysList(
     "",
     "unarchived",
-    "name",
-    "down",
+    sortBy,
+    direction,
     true,
     true,
     pageIndex,
@@ -269,6 +294,10 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           pageIndex={pageIndex}
           setPageIndex={setPageIndex}
           pageSize={pageSize}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          direction={direction}
+          setDirection={setDirection}
         />
       </Stack>
     </StandardModal>
