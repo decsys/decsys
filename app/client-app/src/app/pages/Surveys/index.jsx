@@ -63,14 +63,16 @@ const Surveys = ({ navigate }) => {
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const { data, mutate: mutateSurveys } = useSurveysList(
-    debouncedSearchTerm,
-    filterType,
+  const { data, mutate: mutateSurveys } = useSurveysList({
+    name: debouncedSearchTerm,
+    view: filterType,
     sortBy,
     direction,
+    isStudy: false,
+    canChangeStudy: false,
     pageIndex,
-    pageSize
-  );
+    pageSize,
+  });
 
   const { data: intialSurveys } = useSurveysList();
 

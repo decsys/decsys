@@ -65,32 +65,36 @@ const FilterControls = ({
 
   return (
     <HStack spacing={4} py={2} justifyContent="space-between">
-      <HStack justifyContent="end">
-        <Select
-          onChange={(e) => handleSurveyFilterChange(e.target.value)}
-          value={filterType}
-          w="250px"
-        >
-          <option value="unarchived">Hide Archived Surveys</option>
-          <option value="all">Show All Surveys</option>
-          <option value="archived">Only Archived Surveys</option>
-        </Select>
-      </HStack>
-      <HStack>
-        <HStack>
-          <Text>Surveys Per Page:</Text>
+      {handleSurveyFilterChange && (
+        <HStack justifyContent="end">
           <Select
-            w="80px"
-            value={pageSize}
-            onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
+            onChange={(e) => handleSurveyFilterChange(e.target.value)}
+            value={filterType}
+            w="250px"
           >
-            {[5, 10, 20, 30, 50, 75, 100].map((limit) => (
-              <option key={limit} value={limit}>
-                {limit}
-              </option>
-            ))}
+            <option value="unarchived">Hide Archived Surveys</option>
+            <option value="all">Show All Surveys</option>
+            <option value="archived">Only Archived Surveys</option>
           </Select>
         </HStack>
+      )}
+      <HStack>
+        {handlePageSizeChange && (
+          <HStack>
+            <Text>Surveys Per Page:</Text>
+            <Select
+              w="80px"
+              value={pageSize}
+              onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
+            >
+              {[5, 10, 20, 30, 50, 75, 100].map((limit) => (
+                <option key={limit} value={limit}>
+                  {limit}
+                </option>
+              ))}
+            </Select>
+          </HStack>
+        )}
         <Flex alignItems="center" justifyContent="center">
           <IconButton
             icon={<FaChevronLeft />}
