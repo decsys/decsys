@@ -219,16 +219,14 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
 
-  const { data, mutateSurveys } = useSurveysList(
-    "",
-    "unarchived",
+  const { data, mutateSurveys } = useSurveysList({
     sortBy,
     direction,
-    true,
-    true,
+    isStudy: true,
+    canChangeStudy: true,
     pageIndex,
-    pageSize
-  );
+    pageSize,
+  });
 
   const surveys = data.surveys;
   const totalCount = data.studyTotalCount;

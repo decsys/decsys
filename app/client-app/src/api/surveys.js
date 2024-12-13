@@ -21,16 +21,16 @@ import { toDictionary } from "services/data-structures";
  *   - `data`: The fetched survey summaries.
  *   - `mutate`: A function to manually revalidate or update the cached data.
  */
-export const useSurveysList = (
+export const useSurveysList = ({
   name = "",
   view = "unarchived",
   sortBy = "name",
   direction = "up",
   isStudy = false,
   canChangeStudy = false,
-  pageIndex = "0",
-  pageSize = "10"
-) => {
+  pageIndex = 0,
+  pageSize = 10,
+} = {}) => {
   const queryString = new URLSearchParams({
     name,
     view,
