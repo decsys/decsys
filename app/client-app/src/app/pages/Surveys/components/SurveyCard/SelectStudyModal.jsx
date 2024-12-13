@@ -219,7 +219,10 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
 
-  const { data, mutateSurveys } = useSurveysList({
+  const {
+    data: { surveys = [], studyTotalCount: totalCount = 0 } = {},
+    mutateSurveys,
+  } = useSurveysList({
     sortBy,
     direction,
     isStudy: true,
@@ -227,9 +230,6 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
     pageIndex,
     pageSize,
   });
-
-  const surveys = data.surveys;
-  const totalCount = data.studyTotalCount;
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
@@ -268,7 +268,9 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           <Icon as={FaArrowDown} />
           <Text>
             <strong>Parent: </strong>
-            {selectedStudyId ? surveys.name : "None"}
+            {selectedStudyId
+              ? surveys.find((survey) => survey.id == selectedStudyId)?.name
+              : "None"}
           </Text>
         </Stack>
 
