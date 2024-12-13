@@ -289,11 +289,6 @@ namespace Decsys.Repositories.Mongo
                 surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             
-            if (!string.IsNullOrWhiteSpace(name))
-            {
-                surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
-            
             switch (view)
             {
                 case SurveyArchivedTypes.Unarchived:
@@ -380,8 +375,25 @@ namespace Decsys.Repositories.Mongo
                 baseFilter &= userFilter;
             }
             
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var nameFilter = Builders<Survey>.Filter.Regex(x => x.Name, new MongoDB.Bson.BsonRegularExpression(name, "i"));
+                baseFilter &= nameFilter;
+            }
+            
+            if (view == SurveyArchivedTypes.Unarchived)
+            {
+                var unarchivedFilter = Builders<Survey>.Filter.Where(x => x.ArchivedDate == null);
+                baseFilter &= unarchivedFilter;
+            }
+            else if (view == SurveyArchivedTypes.Archived)
+            {
+                var archivedFilter = Builders<Survey>.Filter.Where(x => x.ArchivedDate != null);
+                baseFilter &= archivedFilter;
+            }
+
             var surveyCount = _surveys.CountDocuments(baseFilter);
-            var totalStudyCount = summaries.Count(s => s.RunCount == 0);
+            var totalStudyCount = summaries.Count(s => s is { RunCount: 0, IsStudy: true });
             
             return new Models.PagedSurveySummary
             {

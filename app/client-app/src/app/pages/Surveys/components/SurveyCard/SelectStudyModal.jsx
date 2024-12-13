@@ -269,7 +269,7 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           <Text>
             <strong>Parent: </strong>
             {selectedStudyId
-              ? surveys.find((survey) => survey.id == selectedStudyId)?.name
+              ? surveys?.find((survey) => survey.id == selectedStudyId)?.name
               : "None"}
           </Text>
         </Stack>
@@ -285,10 +285,9 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
             </Text>
           </Stack>
         </Alert>
-
         <StudySelectList
-          surveys={surveys}
           defaultValue={parentId?.toString()}
+          surveys={surveys}
           onChange={handleChange}
           totalCount={totalCount}
           pageIndex={pageIndex}
