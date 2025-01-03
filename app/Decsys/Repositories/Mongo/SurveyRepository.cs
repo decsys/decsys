@@ -262,7 +262,7 @@ namespace Decsys.Repositories.Mongo
             int pageSize = 10)
 
             => List(null, userId, includeOwnerless, name, view, sortBy, direction, isStudy, canChangeStudy, pageIndex,pageSize);
-        
+
         private Models.PagedSurveySummary List(
             int? parentId = null,
             string? userId = null,
@@ -278,25 +278,31 @@ namespace Decsys.Repositories.Mongo
         )
         {
             // Filtering
-            var surveys = _surveys.Find(x =>
-                x.ParentSurveyId == parentId &&
-                (!isStudy || x.IsStudy == isStudy) && 
-                (userId == null || x.Owner == userId || (includeOwnerless && x.Owner == null))
-            ).ToList();
-            
+            var surveys = userId is null
+                ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
+                : _surveys.Find(
+                    x => x.ParentSurveyId == parentId &&
+                    (!isStudy || x.IsStudy == isStudy) &&
+                    (x.Owner == userId || (includeOwnerless && x.Owner == null))
+                ).ToList();
+
+
             if (!string.IsNullOrWhiteSpace(name))
             {
                 surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            
-            switch (view)
+
+            if (userId != null)
             {
-                case SurveyArchivedTypes.Unarchived:
-                    surveys = surveys.Where(x => x.ArchivedDate == null).ToList();
-                    break;
-                case SurveyArchivedTypes.Archived:
-                    surveys = surveys.Where(x => x.ArchivedDate != null).ToList();
-                    break;
+                switch (view)
+                {
+                    case SurveyArchivedTypes.Unarchived:
+                        surveys = surveys.Where(x => x.ArchivedDate == null).ToList();
+                        break;
+                    case SurveyArchivedTypes.Archived:
+                        surveys = surveys.Where(x => x.ArchivedDate != null).ToList();
+                        break;                    
+                }
             }
             
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
