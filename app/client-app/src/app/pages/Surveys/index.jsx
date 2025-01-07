@@ -93,7 +93,7 @@ const Surveys = ({ navigate }) => {
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
   const surveys = data.surveys;
-  const totalCount = data.totalCount;
+  const totalItemCount = Math.ceil(data.totalCount - data.studyTotalCount);
 
   const addSurveyModal = useDisclosure();
   const [addStudy, setAddStudy] = useState(false);
@@ -116,7 +116,7 @@ const Surveys = ({ navigate }) => {
     (surveyArea = (
       <ShowSurveys
         surveys={surveys}
-        totalCount={totalCount}
+        totalCount={totalItemCount}
         pageSize={pageSize}
         setPageSize={setPageSize}
         searchTerm={searchTerm}
