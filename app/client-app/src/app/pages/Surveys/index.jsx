@@ -93,7 +93,7 @@ const Surveys = ({ navigate }) => {
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
   const surveys = data.surveys;
-  const totalItemCount = Math.ceil(data.totalCount - data.studyTotalCount);
+  const totalItemCount = Math.ceil(data.surveyCount + data.totalStudyCount);
 
   const addSurveyModal = useDisclosure();
   const [addStudy, setAddStudy] = useState(false);

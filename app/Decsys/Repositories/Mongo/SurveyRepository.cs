@@ -364,11 +364,9 @@ namespace Decsys.Repositories.Mongo
            
             var baseFilter = Builders<Survey>.Filter.Empty;
 
-            // Only filter by parentId, userId and ownerless for the count
-            if (parentId.HasValue)
-            {
-                baseFilter &= Builders<Survey>.Filter.Eq(x => x.ParentSurveyId, parentId.Value);
-            }
+            // Non Study Surveys
+            baseFilter &= Builders<Survey>.Filter.Where(x => x.ParentSurveyId == null);
+            baseFilter &= Builders<Survey>.Filter.Where(x => x.IsStudy == false);
 
             if (userId != null)
             {
@@ -399,13 +397,12 @@ namespace Decsys.Repositories.Mongo
             }
 
             var surveyCount = _surveys.CountDocuments(baseFilter);
-            var totalStudyCount = summaries.Count(s => s is { RunCount: 0, IsStudy: true });
             
             return new Models.PagedSurveySummary
             {
                 Surveys = pagedSurveys,
-                TotalCount = (int)surveyCount,
-                StudyTotalCount = totalStudyCount 
+                SurveyCount = (int)surveyCount,
+                TotalStudyCount = summaries.Count(s => s.IsStudy is true)
             };
         }
         

@@ -219,17 +219,15 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
 
-  const {
-    data: { surveys = [], studyTotalCount: totalCount = 0 } = {},
-    mutateSurveys,
-  } = useSurveysList({
-    sortBy,
-    direction,
-    isStudy: true,
-    canChangeStudy: true,
-    pageIndex,
-    pageSize,
-  });
+  const { data: { surveys = [], totalStudyCount = 0 } = {}, mutateSurveys } =
+    useSurveysList({
+      sortBy,
+      direction,
+      isStudy: true,
+      canChangeStudy: true,
+      pageIndex,
+      pageSize,
+    });
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
@@ -289,7 +287,7 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           defaultValue={parentId?.toString()}
           surveys={surveys}
           onChange={handleChange}
-          totalCount={totalCount}
+          totalCount={totalStudyCount}
           pageIndex={pageIndex}
           setPageIndex={setPageIndex}
           pageSize={pageSize}

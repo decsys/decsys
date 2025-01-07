@@ -150,7 +150,7 @@ namespace Decsys.Repositories.LiteDb
             return new Models.PagedSurveySummary
             {
                 Surveys = pagedSurveys,
-                TotalCount = (int)totalSurveys
+                SurveyCount = (int)totalSurveys
             };        
         }
 
@@ -211,7 +211,7 @@ namespace Decsys.Repositories.LiteDb
             return new Models.PagedSurveySummary
              {
                  Surveys = summaries,
-                 TotalCount = (int)totalSurveys
+                 SurveyCount = (int)totalSurveys
              };
         }
 
