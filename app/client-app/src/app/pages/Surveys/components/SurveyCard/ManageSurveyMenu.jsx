@@ -78,8 +78,7 @@ const ManageSurveyMenu = ({
           <MenuItem onClick={() => navigate(`/admin/surveys/${id}/preview`)}>
             Preview
           </MenuItem>
-
-          <WebhookManagementController surveyId={id} />
+          {!isStudy && <WebhookManagementController surveyId={id} />}
           <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
 
           {!isStudy && editable && (
