@@ -14,15 +14,18 @@ import {
   Text,
   Alert,
   AlertIcon,
+  Input,
+  HStack,
 } from "@chakra-ui/react";
-import { useSortingAndFiltering } from "components/shared/SortPanel";
-import SurveysSortingAndFiltering from "../SurveysSortingAndFiltering";
 import themes, { defaultColorMode } from "themes";
 import { FaArrowDown, FaInfoCircle } from "react-icons/fa";
 import StandardModal from "components/core/StandardModal";
-import { useSurveysList } from "../../contexts/SurveysList";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import { navigate } from "@reach/router";
+import { useSurveysList } from "api/surveys";
+import FilterControls from "../Pagination/PaginationControls";
+import SortPanel from "components/shared/SortPanel";
+import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
 
 function RadioCard({ children, ...p }) {
   const { getInputProps, getCheckboxProps } = useRadio(p);
@@ -140,9 +143,15 @@ export const StudySelectList = ({
   defaultValue = "none",
   surveys,
   onChange,
+  totalCount,
+  pageIndex,
+  setPageIndex,
+  pageSize,
+  sortBy,
+  setSortBy,
+  direction,
+  setDirection,
 }) => {
-  const sortingAndFiltering = useSortingAndFiltering(surveys);
-
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "targetStudy",
     defaultValue,
@@ -150,33 +159,75 @@ export const StudySelectList = ({
   });
 
   const group = getRootProps();
+  const totalPages = Math.ceil(totalCount / pageSize);
+
+  const handlePageChange = (newPageIndex) => {
+    setPageIndex(newPageIndex);
+  };
+
+  const handleSortButtonClick = (key) => {
+    if (sortBy === key) {
+      setDirection((prev) => (prev === "up" ? "down" : "up"));
+    } else {
+      setSortBy(key);
+      setDirection("up");
+    }
+    setPageIndex(0);
+  };
 
   return (
     <Stack mt={2}>
-      <Box py={4}>
-        <SurveysSortingAndFiltering {...sortingAndFiltering} />
-      </Box>
-
+      <HStack justifyContent="space-between">
+        <HStack>
+          <Text mr=".5em" display={{ xs: "none", md: "inline" }}>
+            Sort by:
+          </Text>
+          <SortPanel
+            state={{ key: sortBy, [sortBy]: direction === "up" }}
+            keys={["Name"]}
+            onSortButtonClick={handleSortButtonClick}
+          />
+        </HStack>
+      </HStack>
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
-        {sortingAndFiltering.surveyList.map(({ id }) => {
-          const survey = surveys[id];
-
+        {surveys.map(({ id }) => {
+          const survey = surveys.find((survey) => survey.id === id);
           if (!survey || !survey.isStudy || survey.runCount) return null;
 
           const radio = getRadioProps({ value: id.toString() });
 
-          return (
-            <SelectableStudyCard key={id} study={surveys[id]} {...radio} />
-          );
+          return <SelectableStudyCard key={id} study={survey} {...radio} />;
         })}
       </Stack>
+      <Flex justifyContent="end" pt="2">
+        <FilterControls
+          totalItems={totalCount}
+          totalPages={totalPages}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
+          handlePageChange={handlePageChange}
+        />
+      </Flex>
     </Stack>
   );
 };
 
 export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
-  const { surveys, mutateSurveys } = useSurveysList();
+  const pageSize = 10;
+  const [pageIndex, setPageIndex] = useState(0);
+  const [sortBy, setSortBy] = useState("name");
+  const [direction, setDirection] = useState("up");
+
+  const { data: { surveys = [], totalStudyCount = 0 } = {}, mutateSurveys } =
+    useSurveysList({
+      sortBy,
+      direction,
+      isStudy: true,
+      canChangeStudy: true,
+      pageIndex,
+      pageSize,
+    });
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
@@ -215,7 +266,9 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           <Icon as={FaArrowDown} />
           <Text>
             <strong>Parent: </strong>
-            {selectedStudyId ? surveys[selectedStudyId].name : "None"}
+            {selectedStudyId
+              ? surveys?.find((survey) => survey.id == selectedStudyId)?.name
+              : "None"}
           </Text>
         </Stack>
 
@@ -230,11 +283,18 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
             </Text>
           </Stack>
         </Alert>
-
         <StudySelectList
-          surveys={surveys}
           defaultValue={parentId?.toString()}
+          surveys={surveys}
           onChange={handleChange}
+          totalCount={totalStudyCount}
+          pageIndex={pageIndex}
+          setPageIndex={setPageIndex}
+          pageSize={pageSize}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          direction={direction}
+          setDirection={setDirection}
         />
       </Stack>
     </StandardModal>

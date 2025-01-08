@@ -63,14 +63,16 @@ const Surveys = ({ navigate }) => {
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  const { data, mutate: mutateSurveys } = useSurveysList(
-    debouncedSearchTerm,
-    filterType,
+  const { data, mutate: mutateSurveys } = useSurveysList({
+    name: debouncedSearchTerm,
+    view: filterType,
     sortBy,
     direction,
+    isStudy: false,
+    canChangeStudy: false,
     pageIndex,
-    pageSize
-  );
+    pageSize,
+  });
 
   const { data: intialSurveys } = useSurveysList();
 
@@ -91,7 +93,7 @@ const Surveys = ({ navigate }) => {
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
   const surveys = data.surveys;
-  const totalCount = data.totalCount;
+  const totalItemCount = Math.ceil(data.surveyCount + data.totalStudyCount);
 
   const addSurveyModal = useDisclosure();
   const [addStudy, setAddStudy] = useState(false);
@@ -114,7 +116,7 @@ const Surveys = ({ navigate }) => {
     (surveyArea = (
       <ShowSurveys
         surveys={surveys}
-        totalCount={totalCount}
+        totalCount={totalItemCount}
         pageSize={pageSize}
         setPageSize={setPageSize}
         searchTerm={searchTerm}

@@ -60,9 +60,11 @@ namespace Decsys.Controllers
         [SwaggerResponse(200, "A list of filtered, sorted, and paginated Surveys.", typeof(PagedSurveySummary))]
         public PagedSurveySummary FilteredList(
             [FromQuery] string? name = null,
-            [FromQuery] string view = SurveySortingKeys.Archived,
+            [FromQuery] string view = SurveySortingKeys.Unarchived,
             [FromQuery] string sortBy = SurveySortingKeys.Name,
             [FromQuery] string direction = SurveySortingKeys.Direction,
+            [FromQuery] bool isStudy = false,
+            [FromQuery] bool canChangeStudy = false,
             [FromQuery] int pageIndex = 0,
             [FromQuery] int pageSize = 10)
         {
@@ -73,6 +75,8 @@ namespace Decsys.Controllers
                 view,
                 sortBy,
                 direction,
+                isStudy,
+                canChangeStudy,
                 pageIndex,
                 pageSize);
         }

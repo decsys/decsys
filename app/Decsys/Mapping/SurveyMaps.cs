@@ -56,9 +56,35 @@ namespace Decsys.Mapping
             // Survey Type Settings only
             // these will only be used to apply to existing Survey objects
             CreateMap<CreateSurveyModel, Data.Entities.LiteDb.Survey>()
-                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()));
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectLiteDbBsonConverter()))
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Name, opt => opt.Ignore())
+                .ForMember(dest => dest.Type, opt => opt.Ignore())
+                .ForMember(dest => dest.IsStudy, opt => opt.Ignore())
+                .ForMember(dest => dest.Pages, opt => opt.Ignore())
+                .ForMember(dest => dest.PageCreationCounter, opt => opt.Ignore())
+                .ForMember(dest => dest.Owner, opt => opt.Ignore())
+                .ForMember(dest => dest.ParentSurveyId, opt => opt.Ignore())
+                .ForMember(dest => dest.OneTimeParticipants, opt => opt.Ignore())
+                .ForMember(dest => dest.UseParticipantIdentifiers, opt => opt.Ignore())
+                .ForMember(dest => dest.ValidIdentifiers, opt => opt.Ignore())
+                .ForMember(dest => dest.ArchivedDate, opt => opt.Ignore());
+
             CreateMap<CreateSurveyModel, Data.Entities.Mongo.Survey>()
-                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter()));
+                .ForMember(dest => dest.Settings, opt => opt.ConvertUsing(new JObjectMongoBsonConverter(), src => src.Settings))
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.Name, opt => opt.Ignore())
+                .ForMember(dest => dest.Type, opt => opt.Ignore())
+                .ForMember(dest => dest.IsStudy, opt => opt.Ignore())
+                .ForMember(dest => dest.Pages, opt => opt.Ignore())
+                .ForMember(dest => dest.PageCreationCounter, opt => opt.Ignore())
+                .ForMember(dest => dest.Owner, opt => opt.Ignore())
+                .ForMember(dest => dest.ParentSurveyId, opt => opt.Ignore())
+                .ForMember(dest => dest.OneTimeParticipants, opt => opt.Ignore())
+                .ForMember(dest => dest.UseParticipantIdentifiers, opt => opt.Ignore())
+                .ForMember(dest => dest.ValidIdentifiers, opt => opt.Ignore())
+                .ForMember(dest => dest.ArchivedDate, opt => opt.Ignore());
+
 
 
             // Page
