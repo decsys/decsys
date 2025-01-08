@@ -25,6 +25,30 @@ const SurveysList = ({
 }) => {
   const totalPages = Math.ceil(totalCount / pageSize);
 
+  // Load saved state from sessionStorage on initial render
+  useEffect(() => {
+    const savedPageSize = sessionStorage.getItem("pageSize");
+    const savedFilterType = sessionStorage.getItem("filterType");
+    const savedSortBy = sessionStorage.getItem("sortBy");
+    const savedDirection = sessionStorage.getItem("direction");
+    const savedPageIndex = sessionStorage.getItem("pageIndex");
+
+    if (savedPageSize) setPageSize(parseInt(savedPageSize, 10));
+    if (savedFilterType) setFilterType(savedFilterType);
+    if (savedSortBy) setSortBy(savedSortBy);
+    if (savedDirection) setDirection(savedDirection);
+    if (savedPageIndex) setPageIndex(parseInt(savedPageIndex, 10));
+  }, [setPageSize, setFilterType, setSortBy, setDirection, setPageIndex]);
+
+  // Save state to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("pageSize", pageSize);
+    sessionStorage.setItem("filterType", filterType);
+    sessionStorage.setItem("sortBy", sortBy);
+    sessionStorage.setItem("direction", direction);
+    sessionStorage.setItem("pageIndex", pageIndex);
+  }, [pageSize, filterType, sortBy, direction, pageIndex]);
+
   // Update query string
   useEffect(() => {
     const searchParams = new URLSearchParams();
