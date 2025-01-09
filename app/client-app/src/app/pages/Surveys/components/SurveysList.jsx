@@ -1,10 +1,9 @@
 import SurveyCard from "./SurveyCard";
 import { Stack, Box, Input, Flex, Text } from "@chakra-ui/react";
 import { SurveyProvider } from "../../../contexts/Survey";
-import { useEffect } from "react";
 import FilterControls from "./Pagination/PaginationControls";
 import SortPanel from "components/shared/SortPanel";
-import { navigate } from "@reach/router";
+import useSurveySessionState from "hooks/useSurveySessionState";
 
 const SurveysList = ({
   surveys,
@@ -25,18 +24,18 @@ const SurveysList = ({
 }) => {
   const totalPages = Math.ceil(totalCount / pageSize);
 
-  // Update query string
-  useEffect(() => {
-    const searchParams = new URLSearchParams();
-    if (searchTerm) searchParams.set("search", searchTerm);
-    if (filterType) searchParams.set("filter", filterType);
-    if (sortBy) searchParams.set("sort", sortBy);
-    searchParams.set("direction", direction);
-    searchParams.set("page", (pageIndex + 1).toString());
-    searchParams.set("size", pageSize.toString());
-
-    navigate(`?${searchParams.toString()}`, { replace: true });
-  }, [searchTerm, filterType, sortBy, direction, pageIndex, pageSize]);
+  useSurveySessionState({
+    pageSize,
+    setPageSize,
+    filterType,
+    setFilterType,
+    sortBy,
+    setSortBy,
+    direction,
+    setDirection,
+    pageIndex,
+    setPageIndex,
+  });
 
   // Handle filter search
   const handleFilterChange = (e) => setSearchTerm(e.target.value);
