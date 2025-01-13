@@ -16,7 +16,7 @@ public class FolderService
     /// Creates a folder
     /// <param name> Folder name to create </param>
     /// <returns> the created folder
-    public Task<Folder> Create(string name, string ownerId)
+    public string Create(string name, string? ownerId =null)
         => _folders.Create(name, ownerId);
     
 }
