@@ -18,6 +18,7 @@ namespace Decsys.Constants
         public const string Grants = "Grants";
 
         public const string Webhooks = "Webhooks";
+        public const string Folders = "Folders";
 
         #endregion
 
