@@ -12,6 +12,7 @@ import {
   ModalFooter,
   FormLabel,
 } from "@chakra-ui/react";
+import { createFolder } from "api/folder";
 import { useState } from "react";
 
 export const AddFolderModal = ({
@@ -22,7 +23,7 @@ export const AddFolderModal = ({
   const [error, setError] = useState("");
   const toast = useToast();
 
-  const handleFolderCreate = () => {
+  const handleFolderCreate = async () => {
     if (!folderName.trim()) {
       setError("Folder name cannot be empty.");
       return;
@@ -32,13 +33,25 @@ export const AddFolderModal = ({
       return;
     }
 
-    toast({
-      title: "Folder created.",
-      description: `Folder "${folderName}" was successfully created.`,
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+    const response = await createFolder(folderName.trim());
+
+    if (response) {
+      toast({
+        title: "Folder created.",
+        description: `Folder "${folderName}" was successfully created.`,
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Failed to create a folder",
+        description: "Failed to create a folder. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
 
     setFolderName("");
     setError("");
