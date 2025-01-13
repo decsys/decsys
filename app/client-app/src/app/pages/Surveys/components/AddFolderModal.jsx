@@ -15,25 +15,22 @@ import {
 import { createFolder } from "api/folder";
 import { useState } from "react";
 
-export const AddFolderModal = ({
-  modalState,
-  existingFolders = ["New Folder"], //TODO: Replace
-}) => {
+export const AddFolderModal = ({ modalState, existingFolders }) => {
   const [folderName, setFolderName] = useState("");
   const [error, setError] = useState("");
   const toast = useToast();
 
   const handleFolderCreate = async () => {
-    if (!folderName.trim()) {
+    if (!folderName) {
       setError("Folder name cannot be empty.");
       return;
     }
-    if (existingFolders.includes(folderName.trim())) {
+    if (existingFolders.includes(folderName)) {
       setError("Folder name already exists. Please choose a unique name.");
       return;
     }
 
-    const response = await createFolder(folderName.trim());
+    const response = await createFolder(folderName);
 
     if (response) {
       toast({
@@ -57,6 +54,7 @@ export const AddFolderModal = ({
     setError("");
     modalState.onClose();
   };
+
   return (
     <Modal isOpen={modalState.isOpen} onClose={modalState.onClose}>
       <ModalOverlay />
