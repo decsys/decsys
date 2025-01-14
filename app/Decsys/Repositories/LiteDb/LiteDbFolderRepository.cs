@@ -13,5 +13,5 @@ public class LiteDbFolderRepository : IFolderRepository
     }
 
     public string Create(string name, string? ownerId = null)
-    => _folders.Create(name, ownerId);
+    => _folders.Create(name);
 }
