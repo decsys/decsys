@@ -14,6 +14,7 @@ import { SurveysListProvider } from "./contexts/SurveysList";
 import { BusyPage } from "components/core";
 import { useLocation } from "@reach/router";
 import { useDebounce } from "../Editor/components/Helpers/useDebounce";
+import { AddFolderModal } from "./components/AddFolderModal";
 
 const ShowSurveys = ({ actions, ...props }) => (
   <>
@@ -96,7 +97,10 @@ const Surveys = ({ navigate }) => {
   const totalItemCount = Math.ceil(data.surveyCount + data.totalStudyCount);
 
   const addSurveyModal = useDisclosure();
+  const addFolderModal = useDisclosure();
+
   const [addStudy, setAddStudy] = useState(false);
+  const [addFolder, setAddFolder] = useState(false);
 
   const AddSurveyActions = addSurveyActions(navigate, mutateSurveys);
   const SurveyCardActions = surveyCardActions(navigate, mutateSurveys);
@@ -109,6 +113,11 @@ const Surveys = ({ navigate }) => {
   const handleAddStudy = () => {
     setAddStudy(true);
     addSurveyModal.onOpen();
+  };
+
+  const handleAddFolder = () => {
+    setAddFolder(true);
+    addFolderModal.onOpen();
   };
 
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
@@ -144,12 +153,13 @@ const Surveys = ({ navigate }) => {
           <PageHeader
             addSurveyAction={handleAddSurvey}
             addStudyAction={handleAddStudy}
+            addFolderAction={handleAddFolder}
           />
-
           {pageBody}
         </Page>
 
         <AddSurveyModal modalState={addSurveyModal} isStudy={addStudy} />
+        <AddFolderModal modalState={addFolderModal} />
       </AddSurveyActionsProvider>
     </SurveysListProvider>
   );

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Decsys.Models;
 
 namespace Decsys.Data.Entities
 {
@@ -21,6 +22,8 @@ namespace Decsys.Data.Entities
         public string? Owner { get; set; }
 
         public int? ParentSurveyId { get; set; }
+
+        public Folder? ParentFolder { get; set; } 
 
         public int PageCreationCounter { get; set; }
 
