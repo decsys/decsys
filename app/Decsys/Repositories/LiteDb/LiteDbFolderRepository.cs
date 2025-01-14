@@ -13,5 +13,11 @@ public class LiteDbFolderRepository : IFolderRepository
     }
 
     public async Task<Folder> Create(string name, string? ownerId = null)
-    => await _folders.Create(name);
+    => await _folders.Create(name, ownerId);
+
+    public async Task<Folder?> GetByName(string name, string? ownerId = null)
+     => await _folders.GetByName(name, ownerId);
+
+    public async Task<IEnumerable<Folder>> List(string? ownerId = null)
+     => await _folders.List(ownerId);
 }
