@@ -15,7 +15,7 @@ import {
 import { createFolder } from "api/folder";
 import { useState } from "react";
 
-export const AddFolderModal = ({ modalState, existingFolders }) => {
+export const AddFolderModal = ({ modalState, existingFolders = [] }) => {
   const [folderName, setFolderName] = useState("");
   const [error, setError] = useState("");
   const toast = useToast();
