@@ -23,10 +23,10 @@ public class FolderController: ControllerBase
     [SwaggerOperation("Create a new Folder.")]
     [SwaggerResponse(200, "The Folder was successfully created.", Type = (typeof(Folder)))]
 
-    public IActionResult Create(string name)
+    public async Task<IActionResult> Create(string name)
     {
         string ownerId = User.GetUserId();
-        var folder = _folders.Create(name, ownerId);
+        var folder = await _folders.Create(name, ownerId);
         return Ok(folder);
     }
 }

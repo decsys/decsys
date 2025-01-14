@@ -23,16 +23,16 @@ public class FolderRepository : IFolderRepository
         _folders = db.GetCollection<Folder>(Collections.Folders);
     }
 
-    public string Create(string name, string? ownerId = null)
+    public async Task<Models.Folder> Create(string name, string? ownerId = null)
     {
         var entity = new Folder
         {
             Name = name,
             Owner = ownerId
-        }; 
-        _folders.InsertOneAsync(entity);
+        };
+        await _folders.InsertOneAsync(entity);
 
         var userFolder = _mapper.Map<Models.Folder>(entity);
-        return userFolder.Name;
+        return userFolder;
     }
 }
