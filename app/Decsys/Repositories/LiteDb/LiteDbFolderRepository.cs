@@ -5,8 +5,13 @@ namespace Decsys.Repositories.LiteDb;
 
 public class LiteDbFolderRepository : IFolderRepository
 {
-    public string Create(string name, string? ownerId = null)
+    private readonly IFolderRepository _folders;
+
+    public LiteDbFolderRepository(IFolderRepository folders)
     {
-        throw new NotImplementedException();
+        _folders = folders;
     }
+
+    public string Create(string name, string? ownerId = null)
+    => _folders.Create(name, ownerId);
 }
