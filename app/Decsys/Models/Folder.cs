@@ -5,5 +5,4 @@ namespace Decsys.Models;
 public class Folder
 {
     public string Name { get; set; } = string.Empty;
-    public string Owner { get; set; } = string.Empty;
 }
