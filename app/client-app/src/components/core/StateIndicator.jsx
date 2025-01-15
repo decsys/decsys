@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { Flex, Tooltip, Icon } from "@chakra-ui/react";
 import { FaArchive, FaCheck, FaTimes } from "react-icons/fa";
 import { getContrastColor } from "services/colors";
+import { FaFolder } from "react-icons/fa";
 
 const statePresets = {
   active: {
@@ -19,6 +20,11 @@ const statePresets = {
     label: "Archived",
     icon: FaArchive,
   },
+  folder: {
+    color: "gray.700",
+    label: "Folder",
+    icon: FaFolder,
+  },
 };
 
 /**
@@ -28,13 +34,20 @@ const statePresets = {
  * All props other than `active`, `archived`, and `tooltips` are passed on
  * to the underlying `Flex` which composes the layout of this component.
  */
-const ActiveIndicator = ({ active, archived, tooltips, ...p }) => {
+const ActiveIndicator = ({ active, archived, folder, tooltips, ...p }) => {
   const state = archived
     ? statePresets.archive
+    : folder
+    ? statePresets.folder
     : active
     ? statePresets.active
     : statePresets.inactive;
-  const tooltipLabel = archived ? "Archived" : tooltips[active];
+
+  const tooltipLabel = folder
+    ? statePresets.folder.label
+    : archived
+    ? "Archived"
+    : tooltips[active];
 
   return (
     <StateIndicator
