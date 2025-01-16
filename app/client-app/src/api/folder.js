@@ -1,5 +1,7 @@
 import axios from "axios";
 import { authorization_BearerToken, withHeaders } from "./helpers";
+import { defaultFetcher } from "./helpers";
+import useSWR from "swr";
 
 export const createFolder = async (name) => {
   const response = await axios.post(
@@ -9,3 +11,14 @@ export const createFolder = async (name) => {
   );
   return response.data;
 };
+
+export const checkExistingFolder = async (name) => {
+  const response = await axios.get(
+    `/api/Folder/${name}`,
+    withHeaders(await authorization_BearerToken())
+  );
+  return response.data;
+};
+
+export const useFolders = () =>
+  useSWR("/api/Folder", defaultFetcher(true), { suspense: true });

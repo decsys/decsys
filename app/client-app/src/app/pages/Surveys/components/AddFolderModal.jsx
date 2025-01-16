@@ -12,10 +12,10 @@ import {
   ModalFooter,
   FormLabel,
 } from "@chakra-ui/react";
-import { createFolder } from "api/folder";
+import { checkExistingFolder, createFolder } from "api/folder";
 import { useState } from "react";
 
-export const AddFolderModal = ({ modalState, existingFolders = [] }) => {
+export const AddFolderModal = ({ modalState }) => {
   const [folderName, setFolderName] = useState("");
   const [error, setError] = useState("");
   const toast = useToast();
@@ -25,7 +25,9 @@ export const AddFolderModal = ({ modalState, existingFolders = [] }) => {
       setError("Folder name cannot be empty.");
       return;
     }
-    if (existingFolders.includes(folderName)) {
+    const existingFolder = await checkExistingFolder(folderName);
+
+    if (existingFolder.name == folderName) {
       setError("Folder name already exists. Please choose a unique name.");
       return;
     }
@@ -40,6 +42,7 @@ export const AddFolderModal = ({ modalState, existingFolders = [] }) => {
         duration: 3000,
         isClosable: true,
       });
+      mutate();
     } else {
       toast({
         title: "Failed to create a folder",

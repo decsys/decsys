@@ -4,6 +4,7 @@ import { SurveyProvider } from "../../../contexts/Survey";
 import FilterControls from "./Pagination/PaginationControls";
 import SortPanel from "components/shared/SortPanel";
 import useSurveySessionState from "hooks/useSurveySessionState";
+import { useFolders } from "api/folder";
 
 const SurveysList = ({
   surveys,
@@ -22,6 +23,8 @@ const SurveysList = ({
   setPageIndex,
   mutateSurveys,
 }) => {
+  const { data: folders, mutate } = useFolders();
+
   const totalPages = Math.ceil(totalCount / pageSize);
 
   useSurveySessionState({
@@ -97,6 +100,16 @@ const SurveysList = ({
           surveys.map((survey) => (
             <SurveyProvider key={survey.id} value={survey}>
               <SurveyCard mutateSurveys={mutateSurveys} />
+            </SurveyProvider>
+          ))}
+        {folders &&
+          folders.map((folder) => (
+            <SurveyProvider key={folder.id} value={folder}>
+              <SurveyCard
+                mutateSurveys={mutateSurveys}
+                isFolder={!!folder}
+                folder={folder}
+              />
             </SurveyProvider>
           ))}
       </Stack>

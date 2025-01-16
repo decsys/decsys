@@ -26,7 +26,7 @@ import { FaChevronDown, FaChevronRight, FaPlus } from "react-icons/fa";
 import AddSurveyModal from "../AddSurveyModal";
 import { archiveSurvey, unarchiveSurvey } from "api/surveys";
 
-const SurveyCard = ({ mutateSurveys }) => {
+const SurveyCard = ({ mutateSurveys, isFolder, folder }) => {
   const { onToggle, isOpen } = useDisclosure();
   const addSurveyModal = useDisclosure();
 
@@ -118,6 +118,7 @@ const SurveyCard = ({ mutateSurveys }) => {
           <ActiveIndicator
             active={!!activeInstanceId}
             archived={!!archivedDate}
+            folder={isFolder}
           />
         )}
 
@@ -142,25 +143,31 @@ const SurveyCard = ({ mutateSurveys }) => {
               {...survey}
               friendlyId={friendlyId}
               areSettingsValid={validateSettings()}
+              isFolder={isFolder}
+              folder={folder}
             />
 
-            <ActionButtons
-              actionButtons={actionButtons}
-              {...survey}
-              currentArchiveDate={archivedDate}
-              friendlyId={friendlyId}
-            />
+            {!isFolder && (
+              <ActionButtons
+                actionButtons={actionButtons}
+                {...survey}
+                currentArchiveDate={archivedDate}
+                friendlyId={friendlyId}
+              />
+            )}
 
-            <ManageSurveyMenu
-              {...survey}
-              editable={!runCount && !isStudy}
-              isStudy={isStudy}
-              areSettingsValid={validateSettings()}
-              activeInstanceId={activeInstanceId}
-              currentArchiveDate={archivedDate}
-              handleUnarchive={handleUnarchive}
-              handleArchive={handleArchive}
-            />
+            {!isFolder && (
+              <ManageSurveyMenu
+                {...survey}
+                editable={!runCount && !isStudy}
+                isStudy={isStudy}
+                areSettingsValid={validateSettings()}
+                activeInstanceId={activeInstanceId}
+                currentArchiveDate={archivedDate}
+                handleUnarchive={handleUnarchive}
+                handleArchive={handleArchive}
+              />
+            )}
           </Grid>
 
           {!parentSurveyId && activeInstanceId && (
