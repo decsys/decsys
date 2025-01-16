@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using AutoMapper;
 
 using Decsys.Config;
@@ -22,6 +23,7 @@ namespace Decsys.Repositories.Mongo
         private readonly IMongoCollection<Survey> _surveys;
         private readonly IMongoCollection<SurveyInstance> _instances;
         private readonly IMongoCollection<ExternalLookup> _external;
+        private readonly IMongoCollection<Folder> _folders;
         private readonly IParticipantEventRepository _events;
         private readonly IMapper _mapper;
 
@@ -35,6 +37,7 @@ namespace Decsys.Repositories.Mongo
             _surveys = db.GetCollection<Survey>(Collections.Surveys);
             _instances = db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
             _external = db.GetCollection<ExternalLookup>(Collections.ExternalLookup);
+            _folders = db.GetCollection<Folder>(Collections.Folders);
             _events = events;
             _mapper = mapper;
         }
@@ -494,5 +497,25 @@ namespace Decsys.Repositories.Mongo
             return sortedSurveys.ToList();
         }
 
+        public void SetParentFolder(int surveyId, string? parentFolderId = null)
+        {
+            var survey = _surveys.Find(x => x.Id == surveyId).SingleOrDefault();
+
+            if (parentFolderId != null)
+            {
+                var parentFolder = _folders.Find(f => f.Id == ObjectId.Parse(parentFolderId)).SingleOrDefault();
+                if (parentFolder == null)
+                {
+                    throw new KeyNotFoundException($"No folder found with ID {parentFolderId}");
+                }
+                survey.ParentFolderId = parentFolderId;
+            }
+            else
+            {
+                survey.ParentFolderId = null;
+            }
+
+            _surveys.ReplaceOne(x => x.Id == surveyId, survey);
+        }
     }
 }

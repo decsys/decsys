@@ -21,6 +21,7 @@ namespace Decsys.Repositories.LiteDb
         private readonly ILiteCollection<Survey> _surveys;
         private readonly ILiteCollection<SurveyInstance> _instances;
         private readonly ILiteCollection<ExternalLookup> _external;
+        private readonly ILiteCollection<Folder> _folders;
         private readonly IMapper _mapper;
         private readonly IParticipantEventRepository _events;
 
@@ -32,6 +33,7 @@ namespace Decsys.Repositories.LiteDb
             _surveys = db.Surveys.GetCollection<Survey>(Collections.Surveys);
             _instances = db.Surveys.GetCollection<SurveyInstance>(Collections.SurveyInstances);
             _external = db.Surveys.GetCollection<ExternalLookup>(Collections.ExternalLookup);
+            _folders = db.Surveys.GetCollection<Folder>(Collections.Folders);
             _mapper = mapper;
             _events = events;
         }
@@ -413,6 +415,27 @@ namespace Decsys.Repositories.LiteDb
                 throw new InvalidOperationException("This survey is not archived");
 
             survey.ArchivedDate = null;
+            _surveys.Update(survey);
+        }
+
+        public void SetParentFolder(int surveyId, string? parentFolderId = null)
+        {
+            var survey = _surveys.FindById(surveyId) ?? throw new KeyNotFoundException($"Survey with ID {surveyId} not found.");
+
+            if (parentFolderId is not null)
+            {
+                var parentFolder = _folders.FindOne(f => f.Id == parentFolderId);
+                if (parentFolder == null)
+                {
+                    throw new KeyNotFoundException($"No folder found with ID {parentFolderId}");
+                }
+                survey.ParentFolderId = parentFolderId;
+            }
+            else
+            {
+                survey.ParentFolderId = null;
+            }
+
             _surveys.Update(survey);
         }
 

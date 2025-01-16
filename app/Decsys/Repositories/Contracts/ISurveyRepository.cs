@@ -116,5 +116,13 @@ namespace Decsys.Repositories.Contracts
         /// <param name="id">The ID of the Survey to unarchive</param>
         /// <param name="userId">The ID of the user attempting to unarchive the survey.</param>
         void UnarchiveSurvey(int id, string? userId);
+
+        /// <summary>
+        /// Set the parent folder of a Survey
+        /// </summary>
+        /// <param name="surveyId">The ID of the Survey to set</param>
+        /// <param name="parentFolderId">The ID of the folder attempting the survey is being set to.</param>
+        public void SetParentFolder(int surveyId, string? parentFolderId = null);
+
     }
 }

@@ -359,5 +359,10 @@ namespace Decsys.Services
         {
             _surveys.UnarchiveSurvey(id, userId);
         }
+
+        public void SetParentFolder(int surveyId, string? parentFolderId = null)
+        {
+            _surveys.SetParentFolder(surveyId, parentFolderId);
+        }
     }
 }
