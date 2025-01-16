@@ -21,7 +21,7 @@ const statePresets = {
     icon: FaArchive,
   },
   folder: {
-    color: "gray.700",
+    color: "gray.500",
     label: "Folder",
     icon: FaFolder,
   },
