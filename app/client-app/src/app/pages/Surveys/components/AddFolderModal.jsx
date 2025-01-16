@@ -12,21 +12,13 @@ import {
   ModalFooter,
   FormLabel,
 } from "@chakra-ui/react";
-import { checkExistingFolder, useFolders, createFolder } from "api/folder";
-import { useState, useEffect } from "react";
+import { checkExistingFolder, createFolder } from "api/folder";
+import { useState } from "react";
 
 export const AddFolderModal = ({ modalState }) => {
   const [folderName, setFolderName] = useState("");
   const [error, setError] = useState("");
   const toast = useToast();
-
-  const { data: folders, mutate } = useFolders();
-
-  useEffect(() => {
-    if (folders) {
-      console.log("Existing folders:", folders);
-    }
-  }, [folders]);
 
   const handleFolderCreate = async () => {
     if (!folderName) {

@@ -33,7 +33,7 @@ const InfoBadge = ({
     badgeProps.colorScheme = "cyan";
     badgeProps.children = `${runCount} runs`;
   } else if (type === "Folder") {
-    badgeProps.children = `0 Surveys`;
+    badgeProps.children = `0 Surveys`; //TODO: Update once backend is set up for survey folder support
   } else {
     // Invalid External Link Error
     if (hasInvalidExternalLink) {
