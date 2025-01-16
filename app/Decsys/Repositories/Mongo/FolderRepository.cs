@@ -43,6 +43,10 @@ public class FolderRepository : IFolderRepository
 
     public async Task<Models.Folder?> GetByName(string name, string? ownerId = null)
     {
+        if (string.IsNullOrWhiteSpace(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
         var entity = await _folders.Find(f => f.Name == name && f.Owner == ownerId).FirstOrDefaultAsync();
         if (entity == null)
             return null;
