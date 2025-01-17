@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Decsys.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
+[Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
 public class FolderController: ControllerBase
 {
     private readonly FolderService _folders;

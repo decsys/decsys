@@ -360,6 +360,12 @@ namespace Decsys.Services
             _surveys.UnarchiveSurvey(id, userId);
         }
 
+        /// <summary>
+        /// Assigns a survey to a folder, or removes it from its current folder if the folder ID is null.
+        /// </summary>
+        /// <param name="surveyId">The ID of the survey that is going to be assigned to a folder.</param>
+        /// <param name="parentFolderId">The optional ID of the new parent folder. If null, the survey will be removed from its current folder.</param>
+        /// <exception cref="KeyNotFoundException">Thrown when the specified survey or folder does not exist.</exception>
         public void SetParentFolder(int surveyId, string? parentFolderId = null)
         {
             _surveys.SetParentFolder(surveyId, parentFolderId);
