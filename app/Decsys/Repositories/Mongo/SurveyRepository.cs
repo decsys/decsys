@@ -497,25 +497,55 @@ namespace Decsys.Repositories.Mongo
             return sortedSurveys.ToList();
         }
 
-        public void SetParentFolder(int surveyId, string? parentFolderId = null)
+        public void SetParentFolder(int surveyId, string? newParentFolderId = null)
         {
             var survey = _surveys.Find(x => x.Id == surveyId).SingleOrDefault();
-
-            if (parentFolderId != null)
+            if (survey == null)
             {
-                var parentFolder = _folders.Find(f => f.Id == ObjectId.Parse(parentFolderId)).SingleOrDefault();
+                throw new KeyNotFoundException($"No survey found with ID {surveyId}");
+            }
+
+            var originalParentFolderId = survey.ParentFolderId; 
+
+            if (newParentFolderId != null)
+            {
+                var parentFolder = _folders.Find(f => f.Id == ObjectId.Parse(newParentFolderId)).SingleOrDefault();
                 if (parentFolder == null)
                 {
-                    throw new KeyNotFoundException($"No folder found with ID {parentFolderId}");
+                    throw new KeyNotFoundException($"No folder found with ID {newParentFolderId}");
                 }
-                survey.ParentFolderId = parentFolderId;
+
+                survey.ParentFolderId = newParentFolderId;
+                parentFolder.SurveyCount++;
+                _folders.ReplaceOne(f => f.Id == ObjectId.Parse(newParentFolderId), parentFolder);
+
+                if (originalParentFolderId != null && originalParentFolderId != newParentFolderId)
+                {
+                    var originalParentFolder = _folders.Find(f => f.Id == ObjectId.Parse(originalParentFolderId)).SingleOrDefault();
+                    if (originalParentFolder != null)
+                    {
+                        originalParentFolder.SurveyCount--;
+                        _folders.ReplaceOne(f => f.Id == ObjectId.Parse(originalParentFolderId), originalParentFolder);
+                    }
+                }
             }
             else
             {
                 survey.ParentFolderId = null;
+
+                if (originalParentFolderId != null)
+                {
+                    var originalParentFolder = _folders.Find(f => f.Id == ObjectId.Parse(originalParentFolderId)).SingleOrDefault();
+                    if (originalParentFolder != null)
+                    {
+                        originalParentFolder.SurveyCount--;
+                        _folders.ReplaceOne(f => f.Id == ObjectId.Parse(originalParentFolderId), originalParentFolder);
+                    }
+                }
             }
 
             _surveys.ReplaceOne(x => x.Id == surveyId, survey);
         }
+
     }
 }

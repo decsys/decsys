@@ -418,18 +418,30 @@ namespace Decsys.Repositories.LiteDb
             _surveys.Update(survey);
         }
 
-        public void SetParentFolder(int surveyId, string? parentFolderId = null)
+        public void SetParentFolder(int surveyId, string? newParentFolderId = null)
         {
             var survey = _surveys.FindById(surveyId) ?? throw new KeyNotFoundException($"Survey with ID {surveyId} not found.");
 
-            if (parentFolderId is not null)
+            if (survey.ParentFolderId is not null)
             {
-                var parentFolder = _folders.FindOne(f => f.Id == parentFolderId);
-                if (parentFolder == null)
+                var existingParentFolder = _folders.FindOne(f => f.Id == survey.ParentFolderId);
+                if (existingParentFolder != null)
                 {
-                    throw new KeyNotFoundException($"No folder found with ID {parentFolderId}");
+                    existingParentFolder.SurveyCount--;
+                    _folders.Update(existingParentFolder);
                 }
-                survey.ParentFolderId = parentFolderId;
+            }
+
+            if (newParentFolderId != null)
+            {
+                var newParentFolder = _folders.FindOne(f => f.Id == newParentFolderId);
+                if (newParentFolder == null)
+                {
+                    throw new KeyNotFoundException($"No folder found with ID {newParentFolder}");
+                }
+                survey.ParentFolderId = newParentFolderId;
+                newParentFolder.SurveyCount++;
+                _folders.Update(newParentFolder);
             }
             else
             {
