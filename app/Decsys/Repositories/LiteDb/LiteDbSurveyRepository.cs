@@ -450,6 +450,5 @@ namespace Decsys.Repositories.LiteDb
 
             _surveys.Update(survey);
         }
-
     }
 }
