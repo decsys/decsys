@@ -487,6 +487,32 @@ namespace Decsys.Controllers
                 return Conflict(e.Message);
             }
         }
+
+        [HttpPut("{id}/folder")]
+        [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
+        [SwaggerOperation("Set or remove the parent folder of the specified Survey.")]
+        [SwaggerResponse(204, "The Survey folder was successfully updated.")]
+        [SwaggerResponse(401, "Unauthorized.")]
+        [SwaggerResponse(404, "No Survey or folder was found with the provided ID.")]
+        public IActionResult SetSurveyFolder(int id, string? folderId = null)
+        {
+            try
+            {
+                if (folderId != null)
+                {
+                    _surveys.SetParentFolder(id, folderId);
+                }
+                else
+                {
+                    _surveys.SetParentFolder(id, null);
+                }
+
+                return NoContent();
+            }
+            catch (KeyNotFoundException) {
+                return NotFound(); 
+            }
+        }
     }
 
     class ImportZipContentModel

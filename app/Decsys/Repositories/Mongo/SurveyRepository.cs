@@ -22,6 +22,7 @@ namespace Decsys.Repositories.Mongo
         private readonly IMongoCollection<Survey> _surveys;
         private readonly IMongoCollection<SurveyInstance> _instances;
         private readonly IMongoCollection<ExternalLookup> _external;
+        private readonly IMongoCollection<Folder> _folders;
         private readonly IParticipantEventRepository _events;
         private readonly IMapper _mapper;
 
@@ -35,6 +36,7 @@ namespace Decsys.Repositories.Mongo
             _surveys = db.GetCollection<Survey>(Collections.Surveys);
             _instances = db.GetCollection<SurveyInstance>(Collections.SurveyInstances);
             _external = db.GetCollection<ExternalLookup>(Collections.ExternalLookup);
+            _folders = db.GetCollection<Folder>(Collections.Folders);
             _events = events;
             _mapper = mapper;
         }
@@ -492,6 +494,56 @@ namespace Decsys.Repositories.Mongo
             }
 
             return sortedSurveys.ToList();
+        }
+
+        public void SetParentFolder(int surveyId, string? newParentFolderId = null)
+        {
+            var survey = _surveys.Find(x => x.Id == surveyId).SingleOrDefault();
+            if (survey == null)
+            {
+                throw new KeyNotFoundException($"No survey found with ID {surveyId}");
+            }
+
+            var originalParentFolderId = survey.ParentFolderId; 
+
+            if (newParentFolderId != null)
+            {
+                var parentFolder = _folders.Find(f => f.Id == ObjectId.Parse(newParentFolderId)).SingleOrDefault();
+                if (parentFolder == null)
+                {
+                    throw new KeyNotFoundException($"No folder found with ID {newParentFolderId}");
+                }
+
+                survey.ParentFolderId = newParentFolderId;
+                parentFolder.SurveyCount++;
+                _folders.ReplaceOne(f => f.Id == ObjectId.Parse(newParentFolderId), parentFolder);
+
+                if (originalParentFolderId != null && originalParentFolderId != newParentFolderId)
+                {
+                    var originalParentFolder = _folders.Find(f => f.Id == ObjectId.Parse(originalParentFolderId)).SingleOrDefault();
+                    if (originalParentFolder != null)
+                    {
+                        originalParentFolder.SurveyCount--;
+                        _folders.ReplaceOne(f => f.Id == ObjectId.Parse(originalParentFolderId), originalParentFolder);
+                    }
+                }
+            }
+            else
+            {
+                survey.ParentFolderId = null;
+
+                if (originalParentFolderId != null)
+                {
+                    var originalParentFolder = _folders.Find(f => f.Id == ObjectId.Parse(originalParentFolderId)).SingleOrDefault();
+                    if (originalParentFolder != null)
+                    {
+                        originalParentFolder.SurveyCount--;
+                        _folders.ReplaceOne(f => f.Id == ObjectId.Parse(originalParentFolderId), originalParentFolder);
+                    }
+                }
+            }
+
+            _surveys.ReplaceOne(x => x.Id == surveyId, survey);
         }
 
     }
