@@ -30,6 +30,7 @@ namespace Decsys.Models
         public int? ParentSurveyId { get; set; }
         
         public string? ParentFolderId { get; set; }
+        
         public int ActiveInstanceParticipantCount { get; set; }
 
         public DateTimeOffset? ArchivedDate { get; set; }

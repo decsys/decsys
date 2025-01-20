@@ -56,6 +56,7 @@ const ManageSurveyMenu = ({
     setCanChangeFolder(true);
     selectStudyModal.onOpen();
   };
+
   const changeStudySelect = () => {
     setCanChangeFolder(false);
     selectStudyModal.onOpen();
