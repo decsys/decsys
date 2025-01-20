@@ -26,6 +26,8 @@ import { useSurveysList } from "api/surveys";
 import FilterControls from "../Pagination/PaginationControls";
 import SortPanel from "components/shared/SortPanel";
 import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
+import { useFolders } from "api/folder";
+import { setSurveyFolder } from "api/surveys";
 
 function RadioCard({ children, ...p }) {
   const { getInputProps, getCheckboxProps } = useRadio(p);
@@ -176,6 +178,7 @@ const NoneCard = (p) => {
 export const StudySelectList = ({
   defaultValue = "none",
   surveys,
+  folders,
   onChange,
   totalCount,
   pageIndex,
@@ -185,26 +188,13 @@ export const StudySelectList = ({
   setSortBy,
   direction,
   setDirection,
-  changeFolder,
+  canChangeFolder,
 }) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "targetStudy",
     defaultValue,
     onChange,
   });
-
-  const folders = [
-    {
-      id: "678e2240c1750357de4ceb3d",
-      name: "Folder",
-      surveyCount: 2,
-    },
-    {
-      id: "678e224041750357de4ceb3d",
-      name: "2nd Folder",
-      surveyCount: 4,
-    },
-  ];
 
   const group = getRootProps();
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -239,7 +229,7 @@ export const StudySelectList = ({
       </HStack>
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
-        {changeFolder
+        {canChangeFolder
           ? folders.map(({ id }) => {
               const folder = folders.find((folder) => folder.id === id);
               if (!folder) return null;
@@ -277,7 +267,7 @@ export const SelectStudyModal = ({
   name,
   parentId,
   modalState,
-  changeFolder,
+  canChangeFolder,
   ...p
 }) => {
   const pageSize = 10;
@@ -295,6 +285,8 @@ export const SelectStudyModal = ({
       pageSize,
     });
 
+  const { data: folders, mutate } = useFolders();
+
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
   const [selectedFolderId, setSelectedFolderId] = useState();
@@ -307,29 +299,21 @@ export const SelectStudyModal = ({
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    await changeStudy(id, selectedStudyId);
+    if (canChangeFolder) {
+      await setSurveyFolder(id, selectedFolderId);
+      mutate();
+    } else {
+      await changeStudy(id, selectedStudyId);
+    }
     setIsSubmitting(false);
     modalState.onClose();
   };
-
-  const folders = [
-    {
-      id: "678e2240c1750357de4ceb3d",
-      name: "Folder",
-      surveyCount: 2,
-    },
-    {
-      id: "678e224041750357de4ceb3d",
-      name: "2nd Folder",
-      surveyCount: 4,
-    },
-  ];
 
   return (
     <StandardModal
       {...modalState}
       size="2xl"
-      header={changeFolder ? "Change Folder" : "Change Parent Study"}
+      header={canChangeFolder ? "Change Folder" : "Change Parent Study"}
       confirmButton={{
         colorScheme: "blue",
         children: "Save",
@@ -347,8 +331,8 @@ export const SelectStudyModal = ({
           </Text>
           <Icon as={FaArrowDown} />
           <Text>
-            <strong> {changeFolder ? "Folder" : "Parent"}: </strong>
-            {changeFolder
+            <strong> {canChangeFolder ? "Folder" : "Parent"}: </strong>
+            {canChangeFolder
               ? selectedFolderId
                 ? folders?.find((folder) => folder.id == selectedFolderId)?.name
                 : "None"
@@ -362,18 +346,19 @@ export const SelectStudyModal = ({
           <AlertIcon />
           <Stack spacing={0}>
             <Text as="p">
-              Select a valid {changeFolder ? "Folder" : "Study"} from below to
-              move this Survey to,
+              Select a valid {canChangeFolder ? "Folder" : "Study"} from below
+              to move this Survey to,
             </Text>
             <Text as="p">
               or choose <strong>None</strong> to make it a standalone{" "}
-              {changeFolder ? "Folder" : "Study"} .
+              {canChangeFolder ? "Folder" : "Study"} .
             </Text>
           </Stack>
         </Alert>
         <StudySelectList
           defaultValue={parentId?.toString()}
           surveys={surveys}
+          folders={folders}
           onChange={handleChange}
           totalCount={totalStudyCount}
           pageIndex={pageIndex}
@@ -383,7 +368,7 @@ export const SelectStudyModal = ({
           setSortBy={setSortBy}
           direction={direction}
           setDirection={setDirection}
-          changeFolder={changeFolder}
+          canChangeFolder={canChangeFolder}
         />
       </Stack>
     </StandardModal>

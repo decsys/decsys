@@ -19,6 +19,7 @@ const InfoBadge = ({
   runCount,
   areSettingsValid,
   hasInvalidExternalLink,
+  folder,
 }) => {
   let tooltip;
   const badgeProps = {
@@ -33,7 +34,7 @@ const InfoBadge = ({
     badgeProps.colorScheme = "cyan";
     badgeProps.children = `${runCount} runs`;
   } else if (type === "Folder") {
-    badgeProps.children = `0 Surveys`; //TODO: Update once backend is set up for survey folder support
+    badgeProps.children = `${folder.surveyCount} Surveys`;
   } else {
     // Invalid External Link Error
     if (hasInvalidExternalLink) {
@@ -103,6 +104,7 @@ const SurveyInfoLine = ({
           type={type}
           hasInvalidExternalLink={hasInvalidExternalLink}
           areSettingsValid={areSettingsValid}
+          folder={folder}
         />
       )}
 

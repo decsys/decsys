@@ -34,7 +34,7 @@ const ManageSurveyMenu = ({
   handleArchive,
   isFolder,
 }) => {
-  const [changeFolder, setChangeFolder] = useState(false);
+  const [canChangeFolder, setcanChangeFolder] = useState(false);
 
   const deleteModal = useDisclosure();
   const configModal = useDisclosure();
@@ -52,12 +52,12 @@ const ManageSurveyMenu = ({
 
   const handleDelete = async () => await deleteSurvey(id);
 
-  const changeFolderSelect = () => {
-    setChangeFolder(true);
+  const canChangeFolderSelect = () => {
+    setcanChangeFolder(true);
     selectStudyModal.onOpen();
   };
   const changeStudySelect = () => {
-    setChangeFolder(false);
+    setcanChangeFolder(false);
     selectStudyModal.onOpen();
   };
 
@@ -104,7 +104,7 @@ const ManageSurveyMenu = ({
               )}
 
               {!isStudy && editable && (
-                <MenuItem onClick={changeFolderSelect}>
+                <MenuItem onClick={canChangeFolderSelect}>
                   Change Folder...
                 </MenuItem>
               )}
@@ -153,7 +153,7 @@ const ManageSurveyMenu = ({
             id={id}
             parentId={parentSurveyId}
             modalState={selectStudyModal}
-            changeFolder={changeFolder}
+            canChangeFolder={canChangeFolder}
           />
         </>
       )}
