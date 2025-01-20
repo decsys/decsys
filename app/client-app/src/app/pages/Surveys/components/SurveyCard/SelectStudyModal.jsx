@@ -257,13 +257,15 @@ export const StudySelectList = ({
             })}
       </Stack>
       <Flex justifyContent="end" pt="2">
-        <FilterControls
-          totalItems={totalCount}
-          totalPages={totalPages}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          handlePageChange={handlePageChange}
-        />
+        {!!totalPages && (
+          <FilterControls
+            totalItems={totalCount}
+            totalPages={totalPages}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+            handlePageChange={handlePageChange}
+          />
+        )}
       </Flex>
       <AddFolderModal modalState={addFolderModal} />
     </Stack>
