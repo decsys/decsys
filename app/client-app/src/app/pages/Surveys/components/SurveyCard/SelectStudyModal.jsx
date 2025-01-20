@@ -213,7 +213,14 @@ export const StudySelectList = ({
   );
 };
 
-export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
+export const SelectStudyModal = ({
+  id,
+  name,
+  parentId,
+  modalState,
+  changeFolder,
+  ...p
+}) => {
   const pageSize = 10;
   const [pageIndex, setPageIndex] = useState(0);
   const [sortBy, setSortBy] = useState("name");
@@ -247,7 +254,7 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
     <StandardModal
       {...modalState}
       size="2xl"
-      header="Change Parent Study"
+      header={changeFolder ? "Chaneg Folder" : "Change Parent Study"}
       confirmButton={{
         colorScheme: "blue",
         children: "Save",
@@ -265,7 +272,7 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           </Text>
           <Icon as={FaArrowDown} />
           <Text>
-            <strong>Parent: </strong>
+            <strong> {changeFolder ? "Folder" : "Parent"}: </strong>
             {selectedStudyId
               ? surveys?.find((survey) => survey.id == selectedStudyId)?.name
               : "None"}
@@ -276,10 +283,12 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           <AlertIcon />
           <Stack spacing={0}>
             <Text as="p">
-              Select a valid Study from below to move this Survey to,
+              Select a valid {changeFolder ? "Folder" : "Study"} from below to
+              move this Survey to,
             </Text>
             <Text as="p">
-              or choose <strong>None</strong> to make it a standalone Survey.
+              or choose <strong>None</strong> to make it a standalone{" "}
+              {changeFolder ? "Folder" : "Study"} .
             </Text>
           </Stack>
         </Alert>
