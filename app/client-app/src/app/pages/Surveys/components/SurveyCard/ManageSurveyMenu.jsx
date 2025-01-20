@@ -105,7 +105,7 @@ const ManageSurveyMenu = ({
 
               {!isStudy && editable && (
                 <MenuItem onClick={canChangeFolderSelect}>
-                  Change Folder...
+                  Add to a Folder...
                 </MenuItem>
               )}
 
@@ -149,8 +149,8 @@ const ManageSurveyMenu = ({
             hasFixedSettings={!!parentSurveyId}
           />
           <SelectStudyModal
-            name={name}
             id={id}
+            name={name}
             parentId={parentSurveyId}
             modalState={selectStudyModal}
             canChangeFolder={canChangeFolder}

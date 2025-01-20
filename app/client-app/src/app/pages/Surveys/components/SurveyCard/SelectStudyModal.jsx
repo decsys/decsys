@@ -16,6 +16,8 @@ import {
   AlertIcon,
   Input,
   HStack,
+  Button,
+  useDisclosure,
 } from "@chakra-ui/react";
 import themes, { defaultColorMode } from "themes";
 import { FaArrowDown, FaInfoCircle } from "react-icons/fa";
@@ -27,7 +29,7 @@ import FilterControls from "../Pagination/PaginationControls";
 import SortPanel from "components/shared/SortPanel";
 import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
 import { useFolders } from "api/folder";
-import { setSurveyFolder } from "api/surveys";
+import { AddFolderModal } from "../AddFolderModal";
 
 function RadioCard({ children, ...p }) {
   const { getInputProps, getCheckboxProps } = useRadio(p);
@@ -199,6 +201,8 @@ export const StudySelectList = ({
   const group = getRootProps();
   const totalPages = Math.ceil(totalCount / pageSize);
 
+  const addFolderModal = useDisclosure();
+
   const handlePageChange = (newPageIndex) => {
     setPageIndex(newPageIndex);
   };
@@ -226,6 +230,9 @@ export const StudySelectList = ({
             onSortButtonClick={handleSortButtonClick}
           />
         </HStack>
+        <Button onClick={addFolderModal.onOpen} colorScheme="green">
+          Add new Folder
+        </Button>
       </HStack>
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
@@ -235,7 +242,6 @@ export const StudySelectList = ({
               if (!folder) return null;
 
               const radio = getRadioProps({ value: id });
-
               return (
                 <SelectableFolderCard key={id} folder={folder} {...radio} />
               );
@@ -258,6 +264,7 @@ export const StudySelectList = ({
           handlePageChange={handlePageChange}
         />
       </Flex>
+      <AddFolderModal modalState={addFolderModal} />
     </Stack>
   );
 };
@@ -288,6 +295,7 @@ export const SelectStudyModal = ({
   const { data: folders, mutate } = useFolders();
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
+  const { setSurveyFolder } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
   const [selectedFolderId, setSelectedFolderId] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -313,7 +321,7 @@ export const SelectStudyModal = ({
     <StandardModal
       {...modalState}
       size="2xl"
-      header={canChangeFolder ? "Change Folder" : "Change Parent Study"}
+      header={canChangeFolder ? "Add to a Folder" : "Change Parent Study"}
       confirmButton={{
         colorScheme: "blue",
         children: "Save",
@@ -350,13 +358,12 @@ export const SelectStudyModal = ({
               to move this Survey to,
             </Text>
             <Text as="p">
-              or choose <strong>None</strong> to make it a standalone{" "}
-              {canChangeFolder ? "Folder" : "Study"} .
+              or choose <strong>None</strong> to make it a standalone Survey.
             </Text>
           </Stack>
         </Alert>
         <StudySelectList
-          defaultValue={parentId?.toString()}
+          defaultValue={canChangeFolder ? selectedFolderId : selectedStudyId}
           surveys={surveys}
           folders={folders}
           onChange={handleChange}
