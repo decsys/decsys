@@ -18,6 +18,7 @@ import {
   HStack,
   Button,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import themes, { defaultColorMode } from "themes";
 import { FaArrowDown, FaInfoCircle } from "react-icons/fa";
@@ -299,6 +300,7 @@ export const SelectStudyModal = ({
   const [selectedStudyId, setSelectedStudyId] = useState();
   const [selectedFolderId, setSelectedFolderId] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToast();
 
   const handleChange = (value) => {
     setSelectedFolderId(value !== "none" ? value : null);
@@ -308,8 +310,23 @@ export const SelectStudyModal = ({
   const handleSubmit = async () => {
     setIsSubmitting(true);
     if (canChangeFolder) {
-      await setSurveyFolder(id, selectedFolderId);
-      mutate();
+      try {
+        await setSurveyFolder(id, selectedFolderId);
+        mutate();
+        toast({
+          title: "Added to Folder.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } catch (error) {
+        toast({
+          title: "Error Adding to folder",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     } else {
       await changeStudy(id, selectedStudyId);
     }
