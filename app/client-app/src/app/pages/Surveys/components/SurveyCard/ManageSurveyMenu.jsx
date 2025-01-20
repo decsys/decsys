@@ -56,6 +56,10 @@ const ManageSurveyMenu = ({
     setChangeFolder(true);
     selectStudyModal.onOpen();
   };
+  const changeStudySelect = () => {
+    setChangeFolder(false);
+    selectStudyModal.onOpen();
+  };
 
   return (
     <>
@@ -91,13 +95,12 @@ const ManageSurveyMenu = ({
               >
                 Preview
               </MenuItem>
+
               {!isStudy && <WebhookManagementController surveyId={id} />}
               <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
 
               {!isStudy && editable && (
-                <MenuItem onClick={selectStudyModal.onOpen}>
-                  Change Study...
-                </MenuItem>
+                <MenuItem onClick={changeStudySelect}>Change Study...</MenuItem>
               )}
 
               {!isStudy && editable && (

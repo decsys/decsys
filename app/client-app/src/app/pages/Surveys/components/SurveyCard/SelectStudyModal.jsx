@@ -54,6 +54,40 @@ function RadioCard({ children, ...p }) {
   );
 }
 
+const SelectableFolderCard = ({ folder, ...p }) => {
+  const { colorMode } = useColorMode();
+  const style = themes.sharedStyles.card;
+  const { name, surveyCount } = folder;
+
+  return (
+    <RadioCard {...p} bg={style[colorMode || defaultColorMode].bg}>
+      <Stack direction="row" spacing={0}>
+        <Stack spacing={0} w="100%">
+          <Grid
+            borderBottom="thin solid"
+            borderColor={style[colorMode || defaultColorMode].borderColor}
+            gap={2}
+            templateColumns={`440px 1fr`}
+            p={2}
+            alignItems="center"
+          >
+            <Heading size="sm" fontWeight="medium">
+              {name}
+            </Heading>
+
+            <Heading size="xs" fontWeight="medium">
+              <Stack direction="row" align="center">
+                <Icon as={FaInfoCircle} />
+                <Text>Surveys ({surveyCount ?? 0})</Text>
+              </Stack>
+            </Heading>
+          </Grid>
+        </Stack>
+      </Stack>
+    </RadioCard>
+  );
+};
+
 const SelectableStudyCard = ({ study, ...p }) => {
   const { colorMode } = useColorMode();
   const style = themes.sharedStyles.card;
@@ -151,12 +185,26 @@ export const StudySelectList = ({
   setSortBy,
   direction,
   setDirection,
+  changeFolder,
 }) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "targetStudy",
     defaultValue,
     onChange,
   });
+
+  const folders = [
+    {
+      id: "678e2240c1750357de4ceb3d",
+      name: "Folder",
+      surveyCount: 2,
+    },
+    {
+      id: "678e224041750357de4ceb3d",
+      name: "2nd Folder",
+      surveyCount: 4,
+    },
+  ];
 
   const group = getRootProps();
   const totalPages = Math.ceil(totalCount / pageSize);
@@ -191,14 +239,25 @@ export const StudySelectList = ({
       </HStack>
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
-        {surveys.map(({ id }) => {
-          const survey = surveys.find((survey) => survey.id === id);
-          if (!survey || !survey.isStudy || survey.runCount) return null;
+        {changeFolder
+          ? folders.map(({ id }) => {
+              const folder = folders.find((folder) => folder.id === id);
+              if (!folder) return null;
 
-          const radio = getRadioProps({ value: id.toString() });
+              const radio = getRadioProps({ value: id });
 
-          return <SelectableStudyCard key={id} study={survey} {...radio} />;
-        })}
+              return (
+                <SelectableFolderCard key={id} folder={folder} {...radio} />
+              );
+            })
+          : surveys.map(({ id }) => {
+              const survey = surveys.find((survey) => survey.id === id);
+              if (!survey || !survey.isStudy || survey.runCount) return null;
+
+              const radio = getRadioProps({ value: id.toString() });
+
+              return <SelectableStudyCard key={id} study={survey} {...radio} />;
+            })}
       </Stack>
       <Flex justifyContent="end" pt="2">
         <FilterControls
@@ -238,10 +297,13 @@ export const SelectStudyModal = ({
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
+  const [selectedFolderId, setSelectedFolderId] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (value) =>
+  const handleChange = (value) => {
+    setSelectedFolderId(value !== "none" ? value : null);
     setSelectedStudyId(value !== "none" ? value : null);
+  };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -250,11 +312,24 @@ export const SelectStudyModal = ({
     modalState.onClose();
   };
 
+  const folders = [
+    {
+      id: "678e2240c1750357de4ceb3d",
+      name: "Folder",
+      surveyCount: 2,
+    },
+    {
+      id: "678e224041750357de4ceb3d",
+      name: "2nd Folder",
+      surveyCount: 4,
+    },
+  ];
+
   return (
     <StandardModal
       {...modalState}
       size="2xl"
-      header={changeFolder ? "Chaneg Folder" : "Change Parent Study"}
+      header={changeFolder ? "Change Folder" : "Change Parent Study"}
       confirmButton={{
         colorScheme: "blue",
         children: "Save",
@@ -273,7 +348,11 @@ export const SelectStudyModal = ({
           <Icon as={FaArrowDown} />
           <Text>
             <strong> {changeFolder ? "Folder" : "Parent"}: </strong>
-            {selectedStudyId
+            {changeFolder
+              ? selectedFolderId
+                ? folders?.find((folder) => folder.id == selectedFolderId)?.name
+                : "None"
+              : selectedStudyId
               ? surveys?.find((survey) => survey.id == selectedStudyId)?.name
               : "None"}
           </Text>
@@ -304,6 +383,7 @@ export const SelectStudyModal = ({
           setSortBy={setSortBy}
           direction={direction}
           setDirection={setDirection}
+          changeFolder={changeFolder}
         />
       </Stack>
     </StandardModal>
