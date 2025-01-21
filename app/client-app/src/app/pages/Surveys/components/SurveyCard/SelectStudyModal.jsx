@@ -16,6 +16,9 @@ import {
   AlertIcon,
   Input,
   HStack,
+  Button,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import themes, { defaultColorMode } from "themes";
 import { FaArrowDown, FaInfoCircle } from "react-icons/fa";
@@ -26,6 +29,8 @@ import { useSurveysList } from "api/surveys";
 import FilterControls from "../Pagination/PaginationControls";
 import SortPanel from "components/shared/SortPanel";
 import { useDebounce } from "app/pages/Editor/components/Helpers/useDebounce";
+import { useFolders } from "api/folder";
+import { AddFolderModal } from "../AddFolderModal";
 
 function RadioCard({ children, ...p }) {
   const { getInputProps, getCheckboxProps } = useRadio(p);
@@ -53,6 +58,40 @@ function RadioCard({ children, ...p }) {
     </Box>
   );
 }
+
+const SelectableFolderCard = ({ folder, ...p }) => {
+  const { colorMode } = useColorMode();
+  const style = themes.sharedStyles.card;
+  const { name, surveyCount } = folder;
+
+  return (
+    <RadioCard {...p} bg={style[colorMode || defaultColorMode].bg}>
+      <Stack direction="row" spacing={0}>
+        <Stack spacing={0} w="100%">
+          <Grid
+            borderBottom="thin solid"
+            borderColor={style[colorMode || defaultColorMode].borderColor}
+            gap={2}
+            templateColumns={`440px 1fr`}
+            p={2}
+            alignItems="center"
+          >
+            <Heading size="sm" fontWeight="medium">
+              {name}
+            </Heading>
+
+            <Heading size="xs" fontWeight="medium">
+              <Stack direction="row" align="center">
+                <Icon as={FaInfoCircle} />
+                <Text>Surveys ({surveyCount ?? 0})</Text>
+              </Stack>
+            </Heading>
+          </Grid>
+        </Stack>
+      </Stack>
+    </RadioCard>
+  );
+};
 
 const SelectableStudyCard = ({ study, ...p }) => {
   const { colorMode } = useColorMode();
@@ -142,6 +181,7 @@ const NoneCard = (p) => {
 export const StudySelectList = ({
   defaultValue = "none",
   surveys,
+  folders,
   onChange,
   totalCount,
   pageIndex,
@@ -151,6 +191,7 @@ export const StudySelectList = ({
   setSortBy,
   direction,
   setDirection,
+  canChangeFolder,
 }) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "targetStudy",
@@ -160,6 +201,8 @@ export const StudySelectList = ({
 
   const group = getRootProps();
   const totalPages = Math.ceil(totalCount / pageSize);
+
+  const addFolderModal = useDisclosure();
 
   const handlePageChange = (newPageIndex) => {
     setPageIndex(newPageIndex);
@@ -188,32 +231,55 @@ export const StudySelectList = ({
             onSortButtonClick={handleSortButtonClick}
           />
         </HStack>
+        <Button onClick={addFolderModal.onOpen} colorScheme="green">
+          Add new Folder
+        </Button>
       </HStack>
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
-        {surveys.map(({ id }) => {
-          const survey = surveys.find((survey) => survey.id === id);
-          if (!survey || !survey.isStudy || survey.runCount) return null;
+        {canChangeFolder
+          ? folders.map(({ id }) => {
+              const folder = folders.find((folder) => folder.id === id);
+              if (!folder) return null;
 
-          const radio = getRadioProps({ value: id.toString() });
+              const radio = getRadioProps({ value: id });
+              return (
+                <SelectableFolderCard key={id} folder={folder} {...radio} />
+              );
+            })
+          : surveys.map(({ id }) => {
+              const survey = surveys.find((survey) => survey.id === id);
+              if (!survey || !survey.isStudy || survey.runCount) return null;
 
-          return <SelectableStudyCard key={id} study={survey} {...radio} />;
-        })}
+              const radio = getRadioProps({ value: id.toString() });
+
+              return <SelectableStudyCard key={id} study={survey} {...radio} />;
+            })}
       </Stack>
       <Flex justifyContent="end" pt="2">
-        <FilterControls
-          totalItems={totalCount}
-          totalPages={totalPages}
-          pageIndex={pageIndex}
-          pageSize={pageSize}
-          handlePageChange={handlePageChange}
-        />
+        {!!totalPages && (
+          <FilterControls
+            totalItems={totalCount}
+            totalPages={totalPages}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+            handlePageChange={handlePageChange}
+          />
+        )}
       </Flex>
+      <AddFolderModal modalState={addFolderModal} />
     </Stack>
   );
 };
 
-export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
+export const SelectStudyModal = ({
+  id,
+  name,
+  parentId,
+  modalState,
+  canChangeFolder,
+  ...p
+}) => {
   const pageSize = 10;
   const [pageIndex, setPageIndex] = useState(0);
   const [sortBy, setSortBy] = useState("name");
@@ -229,16 +295,43 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
       pageSize,
     });
 
-  const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
-  const [selectedStudyId, setSelectedStudyId] = useState();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: folders, mutate } = useFolders();
 
-  const handleChange = (value) =>
+  const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
+  const { setSurveyFolder } = useSurveyCardActions(navigate, mutateSurveys);
+  const [selectedStudyId, setSelectedStudyId] = useState();
+  const [selectedFolderId, setSelectedFolderId] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToast();
+
+  const handleChange = (value) => {
+    setSelectedFolderId(value !== "none" ? value : null);
     setSelectedStudyId(value !== "none" ? value : null);
+  };
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    await changeStudy(id, selectedStudyId);
+    if (canChangeFolder) {
+      try {
+        await setSurveyFolder(id, selectedFolderId);
+        mutate();
+        toast({
+          title: "Added to Folder.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } catch (error) {
+        toast({
+          title: "Error Adding to folder",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } else {
+      await changeStudy(id, selectedStudyId);
+    }
     setIsSubmitting(false);
     modalState.onClose();
   };
@@ -247,7 +340,7 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
     <StandardModal
       {...modalState}
       size="2xl"
-      header="Change Parent Study"
+      header={canChangeFolder ? "Add to a Folder" : "Change Parent Study"}
       confirmButton={{
         colorScheme: "blue",
         children: "Save",
@@ -265,8 +358,12 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           </Text>
           <Icon as={FaArrowDown} />
           <Text>
-            <strong>Parent: </strong>
-            {selectedStudyId
+            <strong> {canChangeFolder ? "Folder" : "Parent"}: </strong>
+            {canChangeFolder
+              ? selectedFolderId
+                ? folders?.find((folder) => folder.id == selectedFolderId)?.name
+                : "None"
+              : selectedStudyId
               ? surveys?.find((survey) => survey.id == selectedStudyId)?.name
               : "None"}
           </Text>
@@ -276,7 +373,8 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           <AlertIcon />
           <Stack spacing={0}>
             <Text as="p">
-              Select a valid Study from below to move this Survey to,
+              Select a valid {canChangeFolder ? "Folder" : "Study"} from below
+              to move this Survey to,
             </Text>
             <Text as="p">
               or choose <strong>None</strong> to make it a standalone Survey.
@@ -284,8 +382,9 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           </Stack>
         </Alert>
         <StudySelectList
-          defaultValue={parentId?.toString()}
+          defaultValue={canChangeFolder ? selectedFolderId : selectedStudyId}
           surveys={surveys}
+          folders={folders}
           onChange={handleChange}
           totalCount={totalStudyCount}
           pageIndex={pageIndex}
@@ -295,6 +394,7 @@ export const SelectStudyModal = ({ id, name, parentId, modalState, ...p }) => {
           setSortBy={setSortBy}
           direction={direction}
           setDirection={setDirection}
+          canChangeFolder={canChangeFolder}
         />
       </Stack>
     </StandardModal>

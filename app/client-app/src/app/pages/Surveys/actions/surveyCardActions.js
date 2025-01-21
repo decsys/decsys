@@ -4,6 +4,7 @@ import {
   launchSurvey,
   setSurveyName,
   setParent,
+  setSurveyFolder,
 } from "api/surveys";
 import { closeSurveyInstance } from "api/survey-instances";
 import produce from "immer";
@@ -47,6 +48,10 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
   },
   changeStudy: async (id, parentId) => {
     await setParent(id, parentId);
+    mutateSurveys();
+  },
+  setSurveyFolder: async (id, parentId) => {
+    await setSurveyFolder(id, parentId);
     mutateSurveys();
   },
   deleteSurvey: async (id) => {

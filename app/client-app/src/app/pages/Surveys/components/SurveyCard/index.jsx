@@ -156,18 +156,17 @@ const SurveyCard = ({ mutateSurveys, isFolder, folder }) => {
               />
             )}
 
-            {!isFolder && (
-              <ManageSurveyMenu
-                {...survey}
-                editable={!runCount && !isStudy}
-                isStudy={isStudy}
-                areSettingsValid={validateSettings()}
-                activeInstanceId={activeInstanceId}
-                currentArchiveDate={archivedDate}
-                handleUnarchive={handleUnarchive}
-                handleArchive={handleArchive}
-              />
-            )}
+            <ManageSurveyMenu
+              {...survey}
+              editable={!runCount && !isStudy}
+              isStudy={isStudy}
+              areSettingsValid={validateSettings()}
+              activeInstanceId={activeInstanceId}
+              currentArchiveDate={archivedDate}
+              handleUnarchive={handleUnarchive}
+              handleArchive={handleArchive}
+              isFolder={isFolder}
+            />
           </Grid>
 
           {!parentSurveyId && activeInstanceId && (

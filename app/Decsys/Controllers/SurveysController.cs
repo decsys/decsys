@@ -494,7 +494,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(204, "The Survey folder was successfully updated.")]
         [SwaggerResponse(401, "Unauthorized.")]
         [SwaggerResponse(404, "No Survey or folder was found with the provided ID.")]
-        public IActionResult SetSurveyFolder(int id, string? folderId = null)
+        public IActionResult SetSurveyFolder(int id, [FromBody] string? folderId = null)
         {
             try
             {

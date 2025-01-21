@@ -199,3 +199,25 @@ export const unarchiveSurvey = async (id) => {
     throw error;
   }
 };
+
+/**
+ * Sets or removes the parent folder of a specified survey.
+ * @param {number} id - The ID of the survey to modify.
+ * @param {string|null} folderId - The ID of the folder to set as the parent, or null to remove the parent folder.
+ * @returns {Promise<void>} - A promise that resolves when the operation is successful, and rejects if an error occurs.
+ */
+export const setSurveyFolder = async (id, folderId = null) => {
+  try {
+    await axios.put(
+      `/api/surveys/${id}/folder`,
+      folderId,
+      withHeaders(contentType_AppJson, await authorization_BearerToken())
+    );
+  } catch (error) {
+    console.error(
+      `Error setting folder for survey with ID ${id}:`,
+      error.response || error.message
+    );
+    throw error;
+  }
+};
