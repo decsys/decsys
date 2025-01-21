@@ -93,7 +93,7 @@ const Surveys = ({ navigate }) => {
     setPageIndex(0); // reset to first page whenever filter is changed
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
-  const surveys = data.surveys;
+  const surveys = data.items;
   const totalItemCount = Math.ceil(data.surveyCount + data.totalStudyCount);
 
   const addSurveyModal = useDisclosure();
@@ -121,29 +121,26 @@ const Surveys = ({ navigate }) => {
   };
 
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
-  const pageBody = Object.keys(intialSurveys.surveys).length ? (
-    (surveyArea = (
-      <ShowSurveys
-        surveys={surveys}
-        totalCount={totalItemCount}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        filterType={filterType}
-        setFilterType={setFilterType}
-        sortBy={sortBy}
-        setSortBy={setSortBy}
-        direction={direction}
-        setDirection={setDirection}
-        pageIndex={pageIndex}
-        setPageIndex={setPageIndex}
-        mutateSurveys={mutateSurveys}
-        actions={SurveyCardActions}
-      />
-    ))
-  ) : (
-    <NoSurveys action={handleAddSurvey} />
+
+  const pageBody = (
+    <ShowSurveys
+      surveys={surveys}
+      totalCount={totalItemCount}
+      pageSize={pageSize}
+      setPageSize={setPageSize}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      filterType={filterType}
+      setFilterType={setFilterType}
+      sortBy={sortBy}
+      setSortBy={setSortBy}
+      direction={direction}
+      setDirection={setDirection}
+      pageIndex={pageIndex}
+      setPageIndex={setPageIndex}
+      mutateSurveys={mutateSurveys}
+      actions={SurveyCardActions}
+    />
   );
 
   return (

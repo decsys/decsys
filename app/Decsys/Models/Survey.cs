@@ -31,7 +31,7 @@ namespace Decsys.Models
 
         public Survey? Parent { get; set; }
 
-        public string? ParentFolderId { get; set; }
+        public string? ParentFolderName { get; set; }
         public DateTimeOffset? ArchivedDate { get; set; }
     }
 }

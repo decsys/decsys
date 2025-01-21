@@ -151,7 +151,7 @@ namespace Decsys.Repositories.LiteDb
 
             return new Models.PagedSurveySummary
             {
-                Surveys = pagedSurveys,
+                Items = pagedSurveys.Cast<Models.ISummaryItem>().ToList(),
                 SurveyCount = (int)totalSurveys
             };        
         }
@@ -212,7 +212,7 @@ namespace Decsys.Repositories.LiteDb
             
             return new Models.PagedSurveySummary
              {
-                 Surveys = summaries,
+                 Items = summaries.Cast<Models.ISummaryItem>().ToList(),
                  SurveyCount = (int)totalSurveys
              };
         }
@@ -418,13 +418,13 @@ namespace Decsys.Repositories.LiteDb
             _surveys.Update(survey);
         }
 
-        public void SetParentFolder(int surveyId, string? newParentFolderId = null)
+        public void SetParentFolder(int surveyId, string? newParentFolderName = null)
         {
             var survey = _surveys.FindById(surveyId) ?? throw new KeyNotFoundException($"Survey with ID {surveyId} not found.");
 
-            if (survey.ParentFolderId is not null)
+            if (survey.ParentFolderName is not null)
             {
-                var existingParentFolder = _folders.FindOne(f => f.Id == survey.ParentFolderId);
+                var existingParentFolder = _folders.FindOne(f => f.Name == survey.ParentFolderName);
                 if (existingParentFolder != null)
                 {
                     existingParentFolder.SurveyCount--;
@@ -432,20 +432,20 @@ namespace Decsys.Repositories.LiteDb
                 }
             }
 
-            if (newParentFolderId != null)
+            if (newParentFolderName != null)
             {
-                var newParentFolder = _folders.FindOne(f => f.Id == newParentFolderId);
+                var newParentFolder = _folders.FindOne(f => f.Name == newParentFolderName);
                 if (newParentFolder == null)
                 {
-                    throw new KeyNotFoundException($"No folder found with ID {newParentFolder}");
+                    throw new KeyNotFoundException($"No folder found with Name {newParentFolder}");
                 }
-                survey.ParentFolderId = newParentFolderId;
+                survey.ParentFolderName = newParentFolderName;
                 newParentFolder.SurveyCount++;
                 _folders.Update(newParentFolder);
             }
             else
             {
-                survey.ParentFolderId = null;
+                survey.ParentFolderName = null;
             }
 
             _surveys.Update(survey);

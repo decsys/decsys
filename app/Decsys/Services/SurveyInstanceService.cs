@@ -79,8 +79,11 @@ namespace Decsys.Services
 
             if (survey.IsStudy)
             {
+                var children = _surveys.ListChildren(surveyId).Items
+                        .OfType<Models.SurveySummary>();
+
                 // Create child instances too
-                foreach (var child in _surveys.ListChildren(survey.Id).Surveys)
+                foreach (var child in children)
                 {
                     _instances.Create(
                         new SurveyInstance(_surveys.Find(child.Id))
@@ -145,7 +148,10 @@ namespace Decsys.Services
             // If study, close child instances too
             if (instance.Survey.IsStudy)
             {
-                foreach (var child in _surveys.ListChildren(instance.Survey.Id).Surveys)
+                var children = _surveys.ListChildren(surveyId).Items
+                       .OfType<Models.SurveySummary>();
+
+                foreach (var child in children)
                 {
                     if (child.ActiveInstanceId is not null)
                         _instances.Close(child.ActiveInstanceId.Value);

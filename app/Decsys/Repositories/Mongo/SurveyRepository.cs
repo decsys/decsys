@@ -288,10 +288,12 @@ namespace Decsys.Repositories.Mongo
                     (x.Owner == userId || (includeOwnerless && x.Owner == null))
                 ).ToList();
 
+            var folders = _folders.Find(f => f.Owner == userId).ToList();
 
             if (!string.IsNullOrWhiteSpace(name))
             {
                 surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+                folders = folders.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             if (userId != null)
@@ -308,7 +310,7 @@ namespace Decsys.Repositories.Mongo
             }
             
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
-            
+
             Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
             {
                 var instances = _instances
@@ -352,9 +354,33 @@ namespace Decsys.Repositories.Mongo
             {
                 summaries = summaries.Where(x => x.RunCount == 0).ToList();
             }
-            
+
+            var folderItems = folders
+              .Select(folder => new Models.Folder
+              {
+                  Name = folder.Name,
+                  SurveyCount = 0,
+                  IsFolder = true
+              })
+              .ToList<Models.ISummaryItem>(); // Directly casting each Folder to ISummaryItem when creating the list
+
+            foreach (var item in folderItems)
+            {
+                if (!(item is Models.ISummaryItem))
+                {
+                    throw new InvalidCastException("Item cannot be cast to ISummaryItem");
+                }
+            }
+
+            var sumarryItems = summaries
+                .Select(summary => (Models.ISummaryItem)summary)
+                .ToList();
+
+            var items = sumarryItems.Concat(folderItems).ToList();
+
             // Sorting
-            summaries = SortSurveys(summaries, sortBy, direction);
+            var sortedSummaries = SortSurveys(folderItems.OfType<Models.SurveySummary>().ToList(), sortBy, direction);
+
 
             // Pagination
             var pagedSurveys = summaries
@@ -402,7 +428,7 @@ namespace Decsys.Repositories.Mongo
             
             return new Models.PagedSurveySummary
             {
-                Surveys = pagedSurveys,
+                Items = items,
                 SurveyCount = (int)surveyCount,
                 TotalStudyCount = summaries.Count(s => s.IsStudy is true)
             };
@@ -496,7 +522,7 @@ namespace Decsys.Repositories.Mongo
             return sortedSurveys.ToList();
         }
 
-        public void SetParentFolder(int surveyId, string? newParentFolderId = null)
+        public void SetParentFolder(int surveyId, string? newParentFolderName = null)
         {
             var survey = _surveys.Find(x => x.Id == surveyId).SingleOrDefault();
             if (survey == null)
@@ -504,41 +530,41 @@ namespace Decsys.Repositories.Mongo
                 throw new KeyNotFoundException($"No survey found with ID {surveyId}");
             }
 
-            var originalParentFolderId = survey.ParentFolderId; 
+            var originalParentFolderName = survey.ParentFolderName; 
 
-            if (newParentFolderId != null)
+            if (newParentFolderName != null)
             {
-                var parentFolder = _folders.Find(f => f.Id == ObjectId.Parse(newParentFolderId)).SingleOrDefault();
+                var parentFolder = _folders.Find(f => f.Name == newParentFolderName).SingleOrDefault();
                 if (parentFolder == null)
                 {
-                    throw new KeyNotFoundException($"No folder found with ID {newParentFolderId}");
+                    throw new KeyNotFoundException($"No folder found with ID {newParentFolderName}");
                 }
 
-                survey.ParentFolderId = newParentFolderId;
+                survey.ParentFolderName = newParentFolderName;
                 parentFolder.SurveyCount++;
-                _folders.ReplaceOne(f => f.Id == ObjectId.Parse(newParentFolderId), parentFolder);
+                _folders.ReplaceOne(f => f.Name == newParentFolderName, parentFolder);
 
-                if (originalParentFolderId != null && originalParentFolderId != newParentFolderId)
+                if (originalParentFolderName != null && originalParentFolderName != newParentFolderName)
                 {
-                    var originalParentFolder = _folders.Find(f => f.Id == ObjectId.Parse(originalParentFolderId)).SingleOrDefault();
+                    var originalParentFolder = _folders.Find(f => f.Name == originalParentFolderName).SingleOrDefault();
                     if (originalParentFolder != null)
                     {
                         originalParentFolder.SurveyCount--;
-                        _folders.ReplaceOne(f => f.Id == ObjectId.Parse(originalParentFolderId), originalParentFolder);
+                        _folders.ReplaceOne(f => f.Name == originalParentFolderName, originalParentFolder);
                     }
                 }
             }
             else
             {
-                survey.ParentFolderId = null;
+                survey.ParentFolderName = null;
 
-                if (originalParentFolderId != null)
+                if (originalParentFolderName != null)
                 {
-                    var originalParentFolder = _folders.Find(f => f.Id == ObjectId.Parse(originalParentFolderId)).SingleOrDefault();
+                    var originalParentFolder = _folders.Find(f => f.Name == originalParentFolderName).SingleOrDefault();
                     if (originalParentFolder != null)
                     {
                         originalParentFolder.SurveyCount--;
-                        _folders.ReplaceOne(f => f.Id == ObjectId.Parse(originalParentFolderId), originalParentFolder);
+                        _folders.ReplaceOne(f => f.Name == originalParentFolderName, originalParentFolder);
                     }
                 }
             }

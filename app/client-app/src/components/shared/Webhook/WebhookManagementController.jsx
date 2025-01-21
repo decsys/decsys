@@ -5,6 +5,10 @@ import WebhookEditCreateForm from "./WebhookEditCreateForm";
 import WebhookManagementTrigger from "./WebhookManagementTrigger";
 
 const WebhookManagementController = ({ surveyId }) => {
+  if (!surveyId) {
+    return null;
+  }
+
   const { data, mutate } = useWebhook(surveyId);
   const {
     isFormOpen,

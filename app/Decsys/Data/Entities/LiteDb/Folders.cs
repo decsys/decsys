@@ -1,6 +1,9 @@
+using LiteDB;
+
 namespace Decsys.Data.Entities.LiteDb;
 
 public class Folder : BaseFolder
 {
-    public string Id { get; set; } = string.Empty;
+    [BsonId] 
+    public  string Name { get; set; } = string.Empty;
 }

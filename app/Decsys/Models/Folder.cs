@@ -2,9 +2,9 @@ using MongoDB.Bson;
 
 namespace Decsys.Models;
 
-public class Folder
+public class Folder : ISummaryItem
 {
-    public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
-    public int SurveyCount { get; set; }    
+    public bool IsFolder { get; set; } = true;
+    public int SurveyCount { get; set; }
 }

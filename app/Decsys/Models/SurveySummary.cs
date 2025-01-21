@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Decsys.Models
 {
-    public class SurveySummary
+    public class SurveySummary : ISummaryItem
     {
         public SurveySummary(string name)
         {
@@ -36,5 +36,7 @@ namespace Decsys.Models
         public DateTimeOffset? ArchivedDate { get; set; }
 
         public List<SurveySummary>? Children { get; set; }
+
+        public bool IsFolder { get; set; } = false;
     }
 }
