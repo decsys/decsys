@@ -121,8 +121,8 @@ namespace Decsys.Repositories.Contracts
         /// Set the parent folder of a Survey
         /// </summary>
         /// <param name="surveyId">The ID of the Survey to set</param>
-        /// <param name="parentFolderId">The ID of the folder attempting the survey is being set to.</param>
-        public void SetParentFolder(int surveyId, string? newParentFolderId = null);
+        /// <param name="parentFolderName">The name of the folder attempting the survey is being set to.</param>
+        public void SetParentFolder(int surveyId, string? parentFolderName = null);
 
     }
 }

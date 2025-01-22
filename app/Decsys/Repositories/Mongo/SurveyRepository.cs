@@ -364,14 +364,6 @@ namespace Decsys.Repositories.Mongo
               })
               .ToList<Models.ISummaryItem>(); 
 
-            foreach (var item in folderItems)
-            {
-                if (!(item is Models.ISummaryItem))
-                {
-                    throw new InvalidCastException("Item cannot be cast to ISummaryItem");
-                }
-            }
-
             var sumarryItems = summaries
                 .Select(summary => (Models.ISummaryItem)summary)
                 .ToList();
@@ -428,8 +420,9 @@ namespace Decsys.Repositories.Mongo
             return new Models.PagedSurveySummary
             {
                 Items = pagedSurveys,
-                SurveyCount = (int)surveyCount,
-                TotalStudyCount = summaries.Count(s => s.IsStudy is true)
+                SurveyCount = (int)surveyCount ,
+                StudyCount = summaries.Count(s => s.IsStudy is true),
+                FolderCount = folderItems.Count()
             };
         }
         

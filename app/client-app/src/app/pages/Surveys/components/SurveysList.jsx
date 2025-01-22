@@ -96,7 +96,7 @@ const SurveysList = ({
         {surveys &&
           surveys.map((survey) => {
             return (
-              !survey.parentFolderId && (
+              !survey.parentFolderName && (
                 <SurveyProvider key={survey.id} value={survey}>
                   <SurveyCard
                     mutateSurveys={mutateSurveys}

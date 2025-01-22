@@ -285,7 +285,7 @@ export const SelectStudyModal = ({
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
 
-  const { data: { surveys = [], totalStudyCount = 0 } = {}, mutateSurveys } =
+  const { data: { surveys = [], studyCount = 0 } = {}, mutateSurveys } =
     useSurveysList({
       sortBy,
       direction,
@@ -387,7 +387,7 @@ export const SelectStudyModal = ({
           surveys={surveys}
           folders={folders}
           onChange={handleChange}
-          totalCount={totalStudyCount}
+          totalCount={studyCount}
           pageIndex={pageIndex}
           setPageIndex={setPageIndex}
           pageSize={pageSize}

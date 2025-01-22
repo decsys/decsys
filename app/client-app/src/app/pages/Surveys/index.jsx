@@ -75,7 +75,7 @@ const Surveys = ({ navigate }) => {
     pageSize,
   });
 
-  const { data: intialSurveys } = useSurveysList();
+  const { data: intialSurveys } = useSurveysList(); //TODO: FIx
 
   useEffect(() => {
     mutateSurveys();
@@ -94,7 +94,9 @@ const Surveys = ({ navigate }) => {
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
   const surveys = data.items;
-  const totalItemCount = Math.ceil(data.surveyCount + data.totalStudyCount);
+  const totalItemCount = Math.ceil(
+    data.surveyCount + data.studyCount + data.folderCount
+  );
 
   const addSurveyModal = useDisclosure();
   const addFolderModal = useDisclosure();

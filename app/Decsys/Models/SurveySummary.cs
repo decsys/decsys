@@ -29,7 +29,7 @@ namespace Decsys.Models
 
         public int? ParentSurveyId { get; set; }
         
-        public string? ParentFolderId { get; set; }
+        public string? ParentFolderName { get; set; }
         
         public int ActiveInstanceParticipantCount { get; set; }
 
