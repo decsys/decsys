@@ -371,10 +371,10 @@ namespace Decsys.Repositories.Mongo
             var items = sumarryItems.Concat(folderItems).ToList();
 
             // Sorting
-            var sortedSummaries = SortSurveys(items, sortBy, direction);
+            var sortedItems = SortItems(items, sortBy, direction);
 
             // Pagination
-            var pagedSurveys = sortedSummaries
+            var pagedItems = sortedItems
                 .Skip((pageIndex) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -419,7 +419,7 @@ namespace Decsys.Repositories.Mongo
             
             return new Models.PagedSurveySummary
             {
-                Items = pagedSurveys,
+                Items = pagedItems,
                 SurveyCount = (int)surveyCount ,
                 StudyCount = summaries.Count(s => s.IsStudy is true),
                 FolderCount = folderItems.Count()
@@ -478,7 +478,7 @@ namespace Decsys.Repositories.Mongo
             _surveys.UpdateOne(x => x.Id == id, update);
         }
 
-        private List<Models.ISummaryItem> SortSurveys(List<Models.ISummaryItem> surveys, string sortBy, string direction)
+        private List<Models.ISummaryItem> SortItems(List<Models.ISummaryItem> surveys, string sortBy, string direction)
         {
             var folders = surveys.OfType<Models.Folder>().Cast<Models.ISummaryItem>().ToList();
             var surveySummaries = surveys.OfType<Models.SurveySummary>().Cast<Models.ISummaryItem>().ToList();
