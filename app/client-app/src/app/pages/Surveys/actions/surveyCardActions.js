@@ -50,8 +50,8 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
     await setParent(id, parentId);
     mutateSurveys();
   },
-  setSurveyFolder: async (id, parentId) => {
-    await setSurveyFolder(id, parentId);
+  setSurveyFolder: async (id, folderName) => {
+    await setSurveyFolder(id, folderName);
     mutateSurveys();
   },
   deleteSurvey: async (id) => {

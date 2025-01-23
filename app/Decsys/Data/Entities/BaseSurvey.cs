@@ -23,7 +23,7 @@ namespace Decsys.Data.Entities
 
         public int? ParentSurveyId { get; set; }
 
-        public string? ParentFolderId { get; set; } 
+        public string? ParentFolderName { get; set; } 
 
         public int PageCreationCounter { get; set; }
 

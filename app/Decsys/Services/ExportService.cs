@@ -1,6 +1,3 @@
-﻿using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-
 using Decsys.Repositories.Contracts;
 using Decsys.Services.Contracts;
 
@@ -36,7 +33,10 @@ namespace Decsys.Services
         {
             var zip = await ExportStructure(surveyId);
 
-            foreach (var child in _surveys.ListChildren(surveyId).Surveys)
+            var children = _surveys.ListChildren(surveyId).Items
+                .OfType<Models.SurveySummary>();
+
+            foreach (var child in children)
             {
                 zip.AddBytes(
                     (await ExportStructure(child.Id)).AsByteArray(),
@@ -82,7 +82,10 @@ namespace Decsys.Services
                     $"{studyPrefix}Instance-{publishTimestamp}.json");
             }
 
-            foreach (var child in _surveys.ListChildren(surveyId).Surveys)
+            var children = _surveys.ListChildren(surveyId).Items
+            .OfType<Models.SurveySummary>();
+
+            foreach (var child in children)
                 zip.AddBytes(await Full(child.Id), $"{child.Id}.zip");
 
             // return the zip data

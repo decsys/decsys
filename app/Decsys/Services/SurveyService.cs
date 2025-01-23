@@ -122,7 +122,9 @@ namespace Decsys.Services
         /// <param name="parentId"></param>
         /// <returns></returns>
         public IEnumerable<SurveySummary> ListChildren(int parentId)
-            => _surveys.ListChildren(parentId).Surveys;
+           => _surveys.ListChildren(parentId).Items
+               .OfType<SurveySummary>(); 
+
 
         /// <summary>
         /// Creates a Survey with the provided name (or the default one).
@@ -179,7 +181,10 @@ namespace Decsys.Services
             if (survey.IsStudy)
             {
                 var study = _surveys.Find(newId);
-                foreach (var child in _surveys.ListChildren(oldId).Surveys)
+
+                var children = _surveys.ListChildren(oldId).Items
+                    .OfType<Models.SurveySummary>();
+                foreach (var child in children)
                 {
                     var childSurvey = _surveys.Find(child.Id);
 
@@ -290,7 +295,7 @@ namespace Decsys.Services
 
             // Studies need to delete children too
             var children = _surveys.ListChildren(id);
-            toDelete.AddRange(children.Surveys.Select(x => x.Id));
+            toDelete.AddRange(children.Items.OfType<SurveySummary>().Select(x => x.Id));
 
             foreach (var surveyId in toDelete)
             {
@@ -364,11 +369,11 @@ namespace Decsys.Services
         /// Assigns a survey to a folder, or removes it from its current folder if the folder ID is null.
         /// </summary>
         /// <param name="surveyId">The ID of the survey that is going to be assigned to a folder.</param>
-        /// <param name="parentFolderId">The optional ID of the new parent folder. If null, the survey will be removed from its current folder.</param>
+        /// <param name="parentFolderName">The optional name of the new parent folder. If null, the survey will be removed from its current folder.</param>
         /// <exception cref="KeyNotFoundException">Thrown when the specified survey or folder does not exist.</exception>
-        public void SetParentFolder(int surveyId, string? parentFolderId = null)
+        public void SetParentFolder(int surveyId, string? parentFolderName = null)
         {
-            _surveys.SetParentFolder(surveyId, parentFolderId);
+            _surveys.SetParentFolder(surveyId, parentFolderName);
         }
     }
 }

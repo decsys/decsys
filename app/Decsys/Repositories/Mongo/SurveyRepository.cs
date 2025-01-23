@@ -288,10 +288,12 @@ namespace Decsys.Repositories.Mongo
                     (x.Owner == userId || (includeOwnerless && x.Owner == null))
                 ).ToList();
 
+            var folders = _folders.Find(f => f.Owner == userId).ToList();
 
             if (!string.IsNullOrWhiteSpace(name))
             {
                 surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+                folders = folders.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             if (userId != null)
@@ -308,7 +310,7 @@ namespace Decsys.Repositories.Mongo
             }
             
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
-            
+
             Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
             {
                 var instances = _instances
@@ -352,12 +354,27 @@ namespace Decsys.Repositories.Mongo
             {
                 summaries = summaries.Where(x => x.RunCount == 0).ToList();
             }
-            
+
+            var folderItems = folders
+              .Select(folder => new Models.Folder
+              {
+                  Name = folder.Name,
+                  SurveyCount = folder.SurveyCount,
+                  IsFolder = true
+              })
+              .ToList<Models.ISummaryItem>(); 
+
+            var sumarryItems = summaries
+                .Select(summary => (Models.ISummaryItem)summary)
+                .ToList();
+
+            var items = sumarryItems.Concat(folderItems).ToList();
+
             // Sorting
-            summaries = SortSurveys(summaries, sortBy, direction);
+            var sortedItems = SortItems(items, sortBy, direction);
 
             // Pagination
-            var pagedSurveys = summaries
+            var pagedItems = sortedItems
                 .Skip((pageIndex) * pageSize)
                 .Take(pageSize)
                 .ToList();
@@ -402,9 +419,10 @@ namespace Decsys.Repositories.Mongo
             
             return new Models.PagedSurveySummary
             {
-                Surveys = pagedSurveys,
-                SurveyCount = (int)surveyCount,
-                TotalStudyCount = summaries.Count(s => s.IsStudy is true)
+                Items = pagedItems,
+                SurveyCount = (int)surveyCount ,
+                StudyCount = summaries.Count(s => s.IsStudy is true),
+                FolderCount = folderItems.Count()
             };
         }
         
@@ -460,43 +478,55 @@ namespace Decsys.Repositories.Mongo
             _surveys.UpdateOne(x => x.Id == id, update);
         }
 
-        private List<Models.SurveySummary> SortSurveys(List<Models.SurveySummary> surveys, string sortBy, string direction)
+        private List<Models.ISummaryItem> SortItems(List<Models.ISummaryItem> surveys, string sortBy, string direction)
         {
-            IEnumerable<Models.SurveySummary> sortedSurveys;
+            var folders = surveys.OfType<Models.Folder>().Cast<Models.ISummaryItem>().ToList();
+            var surveySummaries = surveys.OfType<Models.SurveySummary>().Cast<Models.ISummaryItem>().ToList();
+
+            IEnumerable<Models.ISummaryItem> sortedSurveys;
+
+            bool isAscending = direction == "up";
 
             switch (sortBy)
             {
                 case SurveySortingKeys.Name:
-                    sortedSurveys = direction == SurveySortingKeys.Direction
+                    sortedSurveys = isAscending
                         ? surveys.OrderBy(s => s.Name)
                         : surveys.OrderByDescending(s => s.Name);
                     break;
                 case SurveySortingKeys.Active:
-                    sortedSurveys = direction == SurveySortingKeys.Direction
-                        ? surveys.OrderBy(s => s.ActiveInstanceId ?? int.MinValue)
-                        : surveys.OrderByDescending(s => s.ActiveInstanceId ?? int.MinValue);
+                    sortedSurveys = folders.Concat(
+                        isAscending
+                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).ActiveInstanceId ?? int.MinValue)
+                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).ActiveInstanceId ?? int.MinValue));
                     break;
                 case SurveySortingKeys.RunCount:
-                    sortedSurveys = direction == SurveySortingKeys.Direction
-                        ? surveys.OrderBy(s => s.RunCount)
-                        : surveys.OrderByDescending(s => s.RunCount);
+                    sortedSurveys = folders.Concat(
+                        isAscending
+                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).RunCount)
+                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).RunCount));
                     break;
                 case SurveySortingKeys.Archived:
-                    sortedSurveys = direction == SurveySortingKeys.Direction
-                        ? surveys.OrderBy(s => s.ArchivedDate ?? DateTimeOffset.MinValue)
-                        : surveys.OrderByDescending(s => s.ArchivedDate ?? DateTimeOffset.MinValue);
+                    sortedSurveys = folders.Concat(
+                        isAscending
+                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).ArchivedDate ?? DateTimeOffset.MinValue)
+                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).ArchivedDate ?? DateTimeOffset.MinValue));
                     break;
-                default:    
-                    sortedSurveys = direction == SurveySortingKeys.Direction
-                        ? surveys.OrderBy(s => s.Name)
-                        : surveys.OrderByDescending(s => s.Name);
+                default:
+                    sortedSurveys = folders
+                        .OrderBy(f => f.Name)
+                        .Concat(
+                            isAscending
+                            ? surveySummaries.OrderBy(s => s.Name)
+                            : surveySummaries.OrderByDescending(s => s.Name));
                     break;
             }
 
             return sortedSurveys.ToList();
         }
 
-        public void SetParentFolder(int surveyId, string? newParentFolderId = null)
+
+        public void SetParentFolder(int surveyId, string? newParentFolderName = null)
         {
             var survey = _surveys.Find(x => x.Id == surveyId).SingleOrDefault();
             if (survey == null)
@@ -504,41 +534,41 @@ namespace Decsys.Repositories.Mongo
                 throw new KeyNotFoundException($"No survey found with ID {surveyId}");
             }
 
-            var originalParentFolderId = survey.ParentFolderId; 
+            var originalParentFolderName = survey.ParentFolderName; 
 
-            if (newParentFolderId != null)
+            if (newParentFolderName != null)
             {
-                var parentFolder = _folders.Find(f => f.Id == ObjectId.Parse(newParentFolderId)).SingleOrDefault();
+                var parentFolder = _folders.Find(f => f.Name == newParentFolderName).SingleOrDefault();
                 if (parentFolder == null)
                 {
-                    throw new KeyNotFoundException($"No folder found with ID {newParentFolderId}");
+                    throw new KeyNotFoundException($"No folder found with ID {newParentFolderName}");
                 }
 
-                survey.ParentFolderId = newParentFolderId;
+                survey.ParentFolderName = newParentFolderName;
                 parentFolder.SurveyCount++;
-                _folders.ReplaceOne(f => f.Id == ObjectId.Parse(newParentFolderId), parentFolder);
+                _folders.ReplaceOne(f => f.Name == newParentFolderName, parentFolder);
 
-                if (originalParentFolderId != null && originalParentFolderId != newParentFolderId)
+                if (originalParentFolderName != null && originalParentFolderName != newParentFolderName)
                 {
-                    var originalParentFolder = _folders.Find(f => f.Id == ObjectId.Parse(originalParentFolderId)).SingleOrDefault();
+                    var originalParentFolder = _folders.Find(f => f.Name == originalParentFolderName).SingleOrDefault();
                     if (originalParentFolder != null)
                     {
                         originalParentFolder.SurveyCount--;
-                        _folders.ReplaceOne(f => f.Id == ObjectId.Parse(originalParentFolderId), originalParentFolder);
+                        _folders.ReplaceOne(f => f.Name == originalParentFolderName, originalParentFolder);
                     }
                 }
             }
             else
             {
-                survey.ParentFolderId = null;
+                survey.ParentFolderName = null;
 
-                if (originalParentFolderId != null)
+                if (originalParentFolderName != null)
                 {
-                    var originalParentFolder = _folders.Find(f => f.Id == ObjectId.Parse(originalParentFolderId)).SingleOrDefault();
+                    var originalParentFolder = _folders.Find(f => f.Name == originalParentFolderName).SingleOrDefault();
                     if (originalParentFolder != null)
                     {
                         originalParentFolder.SurveyCount--;
-                        _folders.ReplaceOne(f => f.Id == ObjectId.Parse(originalParentFolderId), originalParentFolder);
+                        _folders.ReplaceOne(f => f.Name == originalParentFolderName, originalParentFolder);
                     }
                 }
             }

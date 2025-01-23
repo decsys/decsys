@@ -238,13 +238,13 @@ export const StudySelectList = ({
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
         {canChangeFolder
-          ? folders.map(({ id }) => {
-              const folder = folders.find((folder) => folder.id === id);
+          ? folders.map(({ name }) => {
+              const folder = folders.find((folder) => folder.name === name);
               if (!folder) return null;
 
-              const radio = getRadioProps({ value: id });
+              const radio = getRadioProps({ value: name });
               return (
-                <SelectableFolderCard key={id} folder={folder} {...radio} />
+                <SelectableFolderCard key={name} folder={folder} {...radio} />
               );
             })
           : surveys.map(({ id }) => {
@@ -285,7 +285,7 @@ export const SelectStudyModal = ({
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
 
-  const { data: { surveys = [], totalStudyCount = 0 } = {}, mutateSurveys } =
+  const { data: { surveys = [], studyCount = 0 } = {}, mutateSurveys } =
     useSurveysList({
       sortBy,
       direction,
@@ -300,12 +300,12 @@ export const SelectStudyModal = ({
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const { setSurveyFolder } = useSurveyCardActions(navigate, mutateSurveys);
   const [selectedStudyId, setSelectedStudyId] = useState();
-  const [selectedFolderId, setSelectedFolderId] = useState();
+  const [selectedFolderName, setSelectedFolderName] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
   const handleChange = (value) => {
-    setSelectedFolderId(value !== "none" ? value : null);
+    setSelectedFolderName(value !== "none" ? value : null);
     setSelectedStudyId(value !== "none" ? value : null);
   };
 
@@ -313,7 +313,7 @@ export const SelectStudyModal = ({
     setIsSubmitting(true);
     if (canChangeFolder) {
       try {
-        await setSurveyFolder(id, selectedFolderId);
+        await setSurveyFolder(id, selectedFolderName);
         mutate();
         toast({
           title: "Added to Folder.",
@@ -360,8 +360,9 @@ export const SelectStudyModal = ({
           <Text>
             <strong> {canChangeFolder ? "Folder" : "Parent"}: </strong>
             {canChangeFolder
-              ? selectedFolderId
-                ? folders?.find((folder) => folder.id == selectedFolderId)?.name
+              ? selectedFolderName
+                ? folders?.find((folder) => folder.name == selectedFolderName)
+                    ?.name
                 : "None"
               : selectedStudyId
               ? surveys?.find((survey) => survey.id == selectedStudyId)?.name
@@ -382,11 +383,11 @@ export const SelectStudyModal = ({
           </Stack>
         </Alert>
         <StudySelectList
-          defaultValue={canChangeFolder ? selectedFolderId : selectedStudyId}
+          defaultValue={canChangeFolder ? selectedFolderName : selectedStudyId}
           surveys={surveys}
           folders={folders}
           onChange={handleChange}
-          totalCount={totalStudyCount}
+          totalCount={studyCount}
           pageIndex={pageIndex}
           setPageIndex={setPageIndex}
           pageSize={pageSize}

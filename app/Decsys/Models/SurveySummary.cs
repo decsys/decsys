@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Decsys.Models
 {
-    public class SurveySummary
+    public class SurveySummary : ISummaryItem
     {
         public SurveySummary(string name)
         {
@@ -29,12 +29,14 @@ namespace Decsys.Models
 
         public int? ParentSurveyId { get; set; }
         
-        public string? ParentFolderId { get; set; }
+        public string? ParentFolderName { get; set; }
         
         public int ActiveInstanceParticipantCount { get; set; }
 
         public DateTimeOffset? ArchivedDate { get; set; }
 
         public List<SurveySummary>? Children { get; set; }
+
+        public bool IsFolder { get; set; } = false;
     }
 }
