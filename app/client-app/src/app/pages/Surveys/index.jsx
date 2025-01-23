@@ -75,8 +75,6 @@ const Surveys = ({ navigate }) => {
     pageSize,
   });
 
-  const { data: intialSurveys } = useSurveysList(); //TODO: FIx
-
   useEffect(() => {
     mutateSurveys();
   }, [
@@ -124,25 +122,29 @@ const Surveys = ({ navigate }) => {
 
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
 
-  const pageBody = (
-    <ShowSurveys
-      surveys={surveys}
-      totalCount={totalItemCount}
-      pageSize={pageSize}
-      setPageSize={setPageSize}
-      searchTerm={searchTerm}
-      setSearchTerm={setSearchTerm}
-      filterType={filterType}
-      setFilterType={setFilterType}
-      sortBy={sortBy}
-      setSortBy={setSortBy}
-      direction={direction}
-      setDirection={setDirection}
-      pageIndex={pageIndex}
-      setPageIndex={setPageIndex}
-      mutateSurveys={mutateSurveys}
-      actions={SurveyCardActions}
-    />
+  const pageBody = data.items.length ? (
+    (surveyArea = (
+      <ShowSurveys
+        surveys={surveys}
+        totalCount={totalItemCount}
+        pageSize={pageSize}
+        setPageSize={setPageSize}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        filterType={filterType}
+        setFilterType={setFilterType}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        direction={direction}
+        setDirection={setDirection}
+        pageIndex={pageIndex}
+        setPageIndex={setPageIndex}
+        mutateSurveys={mutateSurveys}
+        actions={SurveyCardActions}
+      />
+    ))
+  ) : (
+    <NoSurveys action={handleAddSurvey} />
   );
 
   return (

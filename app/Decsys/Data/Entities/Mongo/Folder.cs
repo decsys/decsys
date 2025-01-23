@@ -6,7 +6,6 @@ namespace Decsys.Data.Entities.Mongo;
 public class Folder : BaseFolder
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)] 
     public string Name { get; set; } = string.Empty;
 
 }
