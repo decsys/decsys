@@ -160,7 +160,10 @@ const Surveys = ({ navigate }) => {
         </Page>
 
         <AddSurveyModal modalState={addSurveyModal} isStudy={addStudy} />
-        <AddFolderModal modalState={addFolderModal} />
+        <AddFolderModal
+          modalState={addFolderModal}
+          mutateSurveys={mutateSurveys}
+        />
       </AddSurveyActionsProvider>
     </SurveysListProvider>
   );
