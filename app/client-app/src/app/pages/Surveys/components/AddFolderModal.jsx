@@ -16,7 +16,7 @@ import { useFolders } from "api/folder";
 import { checkExistingFolder, createFolder } from "api/folder";
 import { useState } from "react";
 
-export const AddFolderModal = ({ modalState }) => {
+export const AddFolderModal = ({ modalState, mutateSurveys }) => {
   const [folderName, setFolderName] = useState("");
   const [error, setError] = useState("");
   const toast = useToast();
@@ -45,6 +45,7 @@ export const AddFolderModal = ({ modalState }) => {
         isClosable: true,
       });
       mutate();
+      mutateSurveys();
     } else {
       toast({
         title: "Failed to create a folder",

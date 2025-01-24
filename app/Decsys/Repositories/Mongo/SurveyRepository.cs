@@ -494,6 +494,18 @@ namespace Decsys.Repositories.Mongo
                         ? surveys.OrderBy(s => s.Name)
                         : surveys.OrderByDescending(s => s.Name);
                     break;
+                case SurveySortingKeys.Type:
+                    if (isAscending)
+                    {
+                        sortedSurveys = surveySummaries.OrderBy(s => s.Name)
+                            .Concat(folders.OrderBy(f => f.Name));
+                    }
+                    else
+                    {
+                        sortedSurveys = folders.OrderBy(f => f.Name)
+                            .Concat(surveySummaries.OrderBy(s => s.Name));
+                    }
+                    break;
                 case SurveySortingKeys.Active:
                     sortedSurveys = folders.Concat(
                         isAscending

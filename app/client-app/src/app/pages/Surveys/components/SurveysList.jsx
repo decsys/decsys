@@ -62,6 +62,17 @@ const SurveysList = ({
     setPageIndex(0);
   };
 
+  const sortKeys = [
+    "Active",
+    ["Run Count", "runCount"],
+    "Name",
+    ...(filterType !== "unarchived" ? [["Archived", "archived"]] : []),
+  ];
+
+  if (surveys.some((survey) => survey.isFolder)) {
+    sortKeys.push("Type");
+  }
+
   return (
     <Stack mt={2}>
       <Box pb={4}>
@@ -72,14 +83,7 @@ const SurveysList = ({
             </Text>
             <SortPanel
               state={{ key: sortBy, [sortBy]: direction === "up" }}
-              keys={[
-                "Active",
-                ["Run Count", "runCount"],
-                "Name",
-                ...(filterType !== "unarchived"
-                  ? [["Archived", "archived"]]
-                  : []),
-              ]}
+              keys={sortKeys}
               onSortButtonClick={handleSortButtonClick}
             />
           </Flex>
