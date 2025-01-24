@@ -75,6 +75,7 @@ const SurveysList = ({
               keys={[
                 "Active",
                 ["Run Count", "runCount"],
+                "Type",
                 "Name",
                 ...(filterType !== "unarchived"
                   ? [["Archived", "archived"]]
