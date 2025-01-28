@@ -20,4 +20,7 @@ public class LiteDbFolderRepository : IFolderRepository
 
     public async Task<IEnumerable<Folder>> List(string? ownerId = null)
      => await _folders.List();
+
+    public async Task Delete(string name, string? ownerId = null)
+     => await _folders.Delete(name);
 }

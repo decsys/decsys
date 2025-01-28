@@ -22,3 +22,9 @@ export const checkExistingFolder = async (name) => {
 
 export const useFolders = () =>
   useSWR("/api/Folder", defaultFetcher(true), { suspense: true });
+
+export const deleteFolder = async (name) => {
+  const headers = await withHeaders(await authorization_BearerToken());
+  const response = await axios.delete(`/api/Folder/${name}`, headers);
+  return response.data;
+};

@@ -76,4 +76,27 @@ public class FolderController: ControllerBase
             return Unauthorized();
         }
     }
+    [HttpDelete("{name}")]
+    [SwaggerOperation("Delete a folder with the given name.")]
+    [SwaggerResponse(204, "The folder was successfully deleted.")]
+    [SwaggerResponse(404, "No folder found with the given name.")]
+    [SwaggerResponse(401, "Unauthorized.")]
+    [SwaggerResponse(409, "Only folders that are empty can be deleted.")]
+    public async Task<IActionResult> Delete(string name)
+    {
+        string ownerId = User.GetUserId();
+        try
+        {
+            await _folders.Delete(name, ownerId);
+            return NoContent();  
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(ex.Message);  
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized();
+        }
+    }
 }

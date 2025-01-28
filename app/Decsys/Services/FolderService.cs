@@ -36,4 +36,12 @@ public class FolderService
     /// <returns>A list of folders belonging to the owner.</returns>
     public async Task<IEnumerable<Folder>> List(string? ownerId)
         => await _folders.List(ownerId);
+
+    /// <summary>
+    /// Deletes folder for a specific owner.
+    /// </summary>
+    /// <param name="ownerId">ID of the folder owner.</param>
+    /// <returns>A list of folders belonging to the owner.</returns>
+    public async Task Delete(string name, string? ownerId = null)
+        => await _folders.Delete(name, ownerId);
 }
