@@ -1,44 +1,70 @@
 import { useState } from "react";
-import { Icon, Stack, Text } from "@chakra-ui/react";
+import {
+  Alert,
+  AlertIcon,
+  AlertDescription,
+  Flex,
+  Stack,
+  Text,
+  AlertTitle,
+  HStack,
+  VStack,
+} from "@chakra-ui/react";
 import { FaExclamationTriangle } from "react-icons/fa";
 import StandardModal from "components/core/StandardModal";
 
-const DeleteFolderModal = ({ modalState, name, onConfirm }) => {
+const DeleteFolderModal = ({ modalState, name, onConfirm, surveyCount }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDelete = async () => {
-    setIsSubmitting(true);
-    await onConfirm();
-    setIsSubmitting(false);
+    if (surveyCount === 0) {
+      setIsSubmitting(true);
+      await onConfirm();
+      setIsSubmitting(false);
+    }
   };
+
+  const isDisabled = surveyCount !== 0 || isSubmitting;
 
   return (
     <StandardModal
-      size="lg"
+      size="md"
       {...modalState}
       header="Delete Folder"
       confirmButton={{
         colorScheme: "red",
         children: "Delete folder",
         onClick: handleDelete,
-        disabled: isSubmitting,
+        disabled: isDisabled,
         isLoading: isSubmitting,
       }}
     >
-      <Icon as={FaExclamationTriangle} fontSize="5em" color="red.500" />
-      <Stack spacing={2} ml={4}>
+      {surveyCount > 0 ? (
+        <Alert status="warning">
+          <VStack>
+            <HStack>
+              <AlertIcon />
+              <AlertTitle>
+                Cannot delete Folder as it contains {surveyCount}{" "}
+                {surveyCount === 1 ? `Survey` : `Surveys`}.
+              </AlertTitle>
+            </HStack>
+            <AlertDescription fontSize="sm">
+              Please remove the {surveyCount === 1 ? `survey` : `surveys`}{" "}
+              contained within this folder or relocate them to another folder to
+              enable its deletion.
+            </AlertDescription>
+          </VStack>
+        </Alert>
+      ) : (
         <Text>
-          Are you sure you want to delete{" "}
+          Are you sure you want to delete the folder{" "}
           <Text as="span" fontWeight="bold">
             {name}
           </Text>
           ?
         </Text>
-        <Text as="p" color="red.500">
-          This will remove the folder, including all contents and data
-          associated with it.
-        </Text>
-      </Stack>
+      )}
     </StandardModal>
   );
 };

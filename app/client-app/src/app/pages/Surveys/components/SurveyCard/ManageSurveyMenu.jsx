@@ -24,6 +24,7 @@ const ManageSurveyMenu = ({
   editable,
   name,
   type,
+  surveyCount,
   settings,
   parentSurveyId,
   isStudy,
@@ -64,6 +65,8 @@ const ManageSurveyMenu = ({
     setCanChangeFolder(false);
     selectStudyModal.onOpen();
   };
+
+  console.log(surveyCount);
 
   return (
     <>
@@ -142,6 +145,7 @@ const ManageSurveyMenu = ({
           name={name}
           onConfirm={handleFolderDelete}
           modalState={deleteFolderModal}
+          surveyCount={surveyCount}
         />
         <DeleteSurveyModal
           name={name}
