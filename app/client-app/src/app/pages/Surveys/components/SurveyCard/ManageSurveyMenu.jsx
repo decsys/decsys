@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { FaEllipsisV } from "react-icons/fa";
 import DeleteSurveyModal from "../../../../../components/shared/DeleteSurveyModal";
+import DeleteFolderModal from "../../../../../components/shared/DeleteFolderModal";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import SurveyConfigModal from "../SurveyConfigModal";
 import ExportModal from "components/shared/ExportModal";
@@ -23,6 +24,7 @@ const ManageSurveyMenu = ({
   editable,
   name,
   type,
+  surveyCount,
   settings,
   parentSurveyId,
   isStudy,
@@ -35,15 +37,16 @@ const ManageSurveyMenu = ({
   isFolder,
 }) => {
   const [canChangeFolder, setCanChangeFolder] = useState(false);
-
   const deleteModal = useDisclosure();
+  const deleteFolderModal = useDisclosure();
   const configModal = useDisclosure();
   const exportModal = useDisclosure();
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
   const selectStudyModal = useDisclosure();
 
-  const { duplicate, deleteSurvey, navigate } = useSurveyCardActions();
+  const { duplicate, deleteSurvey, navigate, deleteFolder } =
+    useSurveyCardActions();
 
   const handleDuplicate = (name, type, settings, creationOptions) => {
     duplicate(id, name, type, settings, creationOptions);
@@ -51,6 +54,7 @@ const ManageSurveyMenu = ({
   };
 
   const handleDelete = async () => await deleteSurvey(id);
+  const handleFolderDelete = async () => await deleteFolder(name);
 
   const canChangeFolderSelect = () => {
     setCanChangeFolder(true);
@@ -64,100 +68,117 @@ const ManageSurveyMenu = ({
 
   return (
     <>
-      {!isFolder && (
-        <>
-          <Menu>
-            <MenuButton
-              border="thin solid"
-              borderColor="gray.500"
-              as={IconButton}
-              icon={<FaEllipsisV />}
-              boxSize={parentSurveyId ? "32px" : null}
-            />
-            <MenuList>
-              {editable && (
-                <MenuItem onClick={() => navigate(`/admin/surveys/${id}`)}>
-                  Edit
+      <>
+        <Menu>
+          <MenuButton
+            border="thin solid"
+            borderColor="gray.500"
+            as={IconButton}
+            icon={<FaEllipsisV />}
+            boxSize={parentSurveyId ? "32px" : null}
+            width="40px"
+          />
+          <MenuList>
+            {isFolder && (
+              <MenuItem onClick={deleteFolderModal.onOpen}>Delete</MenuItem>
+            )}
+            {!isFolder && (
+              <>
+                {editable && (
+                  <MenuItem onClick={() => navigate(`/admin/surveys/${id}`)}>
+                    Edit
+                  </MenuItem>
+                )}
+
+                {!type && !parentSurveyId && (
+                  <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>
+                )}
+
+                {type && !parentSurveyId && (
+                  <MenuItem onClick={externalDetailsModal.onOpen}>
+                    {capitalise(type)} Details
+                  </MenuItem>
+                )}
+
+                <MenuItem
+                  onClick={() => navigate(`/admin/surveys/${id}/preview`)}
+                >
+                  Preview
                 </MenuItem>
-              )}
 
-              {!type && !parentSurveyId && (
-                <MenuItem onClick={configModal.onOpen}>Configure</MenuItem>
-              )}
+                {!isStudy && <WebhookManagementController surveyId={id} />}
+                <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
 
-              {type && !parentSurveyId && (
-                <MenuItem onClick={externalDetailsModal.onOpen}>
-                  {capitalise(type)} Details
+                {!isStudy && editable && (
+                  <MenuItem onClick={changeStudySelect}>
+                    Change Study...
+                  </MenuItem>
+                )}
+
+                {!activeInstanceId && (
+                  <MenuItem onClick={canChangeFolderSelect}>
+                    Add to a Folder...
+                  </MenuItem>
+                )}
+
+                <MenuItem onClick={createSurveyModal.onOpen}>
+                  Duplicate
                 </MenuItem>
-              )}
 
-              <MenuItem
-                onClick={() => navigate(`/admin/surveys/${id}/preview`)}
-              >
-                Preview
-              </MenuItem>
+                {(editable || !parentSurveyId) && (
+                  <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
+                )}
 
-              {!isStudy && <WebhookManagementController surveyId={id} />}
-              <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
+                {!activeInstanceId &&
+                  (currentArchiveDate ? (
+                    <MenuItem onClick={handleUnarchive}>Unarchive</MenuItem>
+                  ) : (
+                    <MenuItem onClick={handleArchive}>Archive</MenuItem>
+                  ))}
+              </>
+            )}
+          </MenuList>
+        </Menu>
 
-              {!isStudy && editable && (
-                <MenuItem onClick={changeStudySelect}>Change Study...</MenuItem>
-              )}
-
-              {!activeInstanceId && (
-                <MenuItem onClick={canChangeFolderSelect}>
-                  Add to a Folder...
-                </MenuItem>
-              )}
-
-              <MenuItem onClick={createSurveyModal.onOpen}>Duplicate</MenuItem>
-
-              {(editable || !parentSurveyId) && (
-                <MenuItem onClick={deleteModal.onOpen}>Delete</MenuItem>
-              )}
-              {!activeInstanceId &&
-                (currentArchiveDate ? (
-                  <MenuItem onClick={handleUnarchive}>Unarchive</MenuItem>
-                ) : (
-                  <MenuItem onClick={handleArchive}>Archive</MenuItem>
-                ))}
-            </MenuList>
-          </Menu>
-
-          <DeleteSurveyModal
-            name={name}
-            onConfirm={handleDelete}
-            modalState={deleteModal}
-            isStudy={isStudy}
-          />
-          <SurveyConfigModal id={id} name={name} modalState={configModal} />
-          <ExportModal id={id} name={name} modalState={exportModal} />
-          <ExternalDetailsModal
-            id={id}
-            name={name}
-            type={type}
-            settings={settings}
-            runCount={runCount}
-            hasInvalidExternalLink={hasInvalidExternalLink}
-            modalState={externalDetailsModal}
-          />
-          <CreateSurveyModal
-            name={`${name} (Copy)`} // we always use this modal for duplicating only
-            modalState={createSurveyModal}
-            onCreate={handleDuplicate}
-            parentId={parentSurveyId}
-            isFixedType={!!parentSurveyId}
-            hasFixedSettings={!!parentSurveyId}
-          />
-          <SelectStudyModal
-            id={id}
-            name={name}
-            parentId={parentSurveyId}
-            modalState={selectStudyModal}
-            canChangeFolder={canChangeFolder}
-          />
-        </>
-      )}
+        <DeleteFolderModal
+          name={name}
+          onConfirm={handleFolderDelete}
+          modalState={deleteFolderModal}
+          surveyCount={surveyCount}
+        />
+        <DeleteSurveyModal
+          name={name}
+          onConfirm={handleDelete}
+          modalState={deleteModal}
+          isStudy={isStudy}
+        />
+        <SurveyConfigModal id={id} name={name} modalState={configModal} />
+        <ExportModal id={id} name={name} modalState={exportModal} />
+        <ExternalDetailsModal
+          id={id}
+          name={name}
+          type={type}
+          settings={settings}
+          runCount={runCount}
+          hasInvalidExternalLink={hasInvalidExternalLink}
+          modalState={externalDetailsModal}
+        />
+        <CreateSurveyModal
+          name={`${name} (Copy)`} // we always use this modal for duplicating only
+          modalState={createSurveyModal}
+          onCreate={handleDuplicate}
+          parentId={parentSurveyId}
+          isFixedType={!!parentSurveyId}
+          hasFixedSettings={!!parentSurveyId}
+        />
+        <SelectStudyModal
+          id={id}
+          name={name}
+          parentId={parentSurveyId}
+          modalState={selectStudyModal}
+          canChangeFolder={canChangeFolder}
+        />
+      </>
     </>
   );
 };

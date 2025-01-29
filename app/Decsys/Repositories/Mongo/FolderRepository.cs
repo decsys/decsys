@@ -64,4 +64,26 @@ public class FolderRepository : IFolderRepository
         var entities = await _folders.Find(f => f.Owner == ownerId).ToListAsync();
         return _mapper.Map<IEnumerable<Models.Folder>>(entities);
     }
+
+    public async Task Delete(string name, string? ownerId = null)
+    {
+        if (string.IsNullOrWhiteSpace(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
+
+        var folder = await _folders.Find(f => f.Name == name && f.Owner == ownerId).FirstOrDefaultAsync();
+
+        if (folder == null)
+        {
+            throw new InvalidOperationException("Folder not found.");
+        }
+
+        if (folder.SurveyCount > 0)
+        {
+            throw new InvalidOperationException("Only folders that are empty can be deleted.");
+        }
+
+        await _folders.DeleteOneAsync(f => f.Name == name && f.Owner == ownerId);
+    }
 }

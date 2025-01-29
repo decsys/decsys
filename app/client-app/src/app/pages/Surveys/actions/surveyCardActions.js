@@ -6,6 +6,7 @@ import {
   setParent,
   setSurveyFolder,
 } from "api/surveys";
+import { deleteFolder } from "api/folder";
 import { closeSurveyInstance } from "api/survey-instances";
 import produce from "immer";
 import { saveSurveySettings } from "api/survey-config";
@@ -52,6 +53,10 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
   },
   setSurveyFolder: async (id, folderName) => {
     await setSurveyFolder(id, folderName);
+    mutateSurveys();
+  },
+  deleteFolder: async (name) => {
+    await deleteFolder(name);
     mutateSurveys();
   },
   deleteSurvey: async (id) => {

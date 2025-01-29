@@ -7,6 +7,7 @@ const SurveyCardActionsContext = createContext({
   changeStudy: async () => {},
   setSurveyFolder: async () => {},
   deleteSurvey: async () => {},
+  deleteFolder: async () => {},
   navigate: () => {},
 });
 
