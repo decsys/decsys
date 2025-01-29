@@ -41,7 +41,7 @@ public class FolderService
     /// Deletes folder for a specific owner.
     /// </summary>
     /// <param name="ownerId">ID of the folder owner.</param>
-    /// <returns>A list of folders belonging to the owner.</returns>
+    /// <param name="name">Folder name to delete.</param>
     public async Task Delete(string name, string? ownerId = null)
         => await _folders.Delete(name, ownerId);
 }
