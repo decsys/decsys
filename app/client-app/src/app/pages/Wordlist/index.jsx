@@ -77,13 +77,13 @@ const Wordlist = ({ id, navigate }) => {
   const [maxLength, setMaxLength] = useState(15);
 
   useEffect(() => {
-    let max = 15;
-    cards.forEach((obj) => {
-      if (obj.word.length > max) {
-        max = obj.word.length;
+    let maxSliderValue = 15;
+    cards.forEach((wordCard) => {
+      if (wordCard.word.length > maxSliderValue) {
+        maxSliderValue = wordCard.word.length;
       }
     });
-    setMaxLength(max);
+    setMaxLength(maxSliderValue);
   }, [cards]);
 
   const [sliderValues, setSliderValues] = useState([1, maxLength]);
