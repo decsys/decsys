@@ -66,8 +66,6 @@ const ManageSurveyMenu = ({
     selectStudyModal.onOpen();
   };
 
-  console.log(surveyCount);
-
   return (
     <>
       <>
@@ -78,6 +76,7 @@ const ManageSurveyMenu = ({
             as={IconButton}
             icon={<FaEllipsisV />}
             boxSize={parentSurveyId ? "32px" : null}
+            width="40px"
           />
           <MenuList>
             {isFolder && (

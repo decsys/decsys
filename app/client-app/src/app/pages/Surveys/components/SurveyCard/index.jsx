@@ -146,16 +146,16 @@ const SurveyCard = ({ mutateSurveys, isFolder, folder }) => {
               isFolder={isFolder}
               folder={folder}
             />
-
-            {!isFolder && (
+            {!isFolder ? (
               <ActionButtons
                 actionButtons={actionButtons}
                 {...survey}
                 currentArchiveDate={archivedDate}
                 friendlyId={friendlyId}
               />
+            ) : (
+              <div />
             )}
-
             <ManageSurveyMenu
               {...survey}
               editable={!runCount && !isStudy}
