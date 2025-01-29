@@ -73,7 +73,24 @@ const Wordlist = ({ id, navigate }) => {
   const { cards, toggleExclude, mutate } = useWordData(id);
   const { sorting, onSort, outputList, filterConfig, setFilter } =
     useWordlistSortingAndFiltering(cards);
-  const [sliderValues, setSliderValues] = useState([1, 15]);
+
+  const [maxLength, setMaxLength] = useState(15);
+
+  useEffect(() => {
+    let max = 15;
+    cards.forEach((obj) => {
+      if (obj.word.length > max) {
+        max = obj.word.length;
+      }
+    });
+    setMaxLength(max);
+  }, [cards]);
+
+  const [sliderValues, setSliderValues] = useState([1, maxLength]);
+
+  useEffect(() => {
+    setSliderValues([sliderValues[0], maxLength]);
+  }, [maxLength]);
 
   const handleSliderChange = (values) => {
     setSliderValues(values);
@@ -123,6 +140,7 @@ const Wordlist = ({ id, navigate }) => {
                   <WordLengthFilter
                     sliderValues={sliderValues}
                     handleSliderChange={handleSliderChange}
+                    maxLength={maxLength}
                   />
                 </VStack>
                 <Spacer />
