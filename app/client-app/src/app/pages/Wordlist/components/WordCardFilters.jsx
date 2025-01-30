@@ -39,16 +39,20 @@ export const ExclusionFilter = (props) => {
   return <RadioOptions {...props} options={exclusionState} label="State" />;
 };
 
-export const WordLengthFilter = ({ sliderValues, handleSliderChange }) => {
+export const WordLengthFilter = ({
+  sliderValues,
+  handleSliderChange,
+  maxLength = 15,
+}) => {
   return (
     <HStack pt={4}>
       <Text>Word Length:</Text>
       <Flex pl="2" width="300px">
         <RangeSlider
           id="word-length"
-          defaultValue={[1, 15]}
+          defaultValue={[1, maxLength]}
           min={1}
-          max={15}
+          max={maxLength}
           step={1}
           onChange={handleSliderChange}
           value={sliderValues}
