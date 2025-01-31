@@ -7,12 +7,14 @@ import {
   Stack,
   Text,
   Tooltip,
+  Link,
 } from "@chakra-ui/react";
 import NameInput from "components/shared/NameInput";
 import { useSurveyCardActions } from "../../contexts/SurveyCardActions";
 import { AiOutlineGroup } from "react-icons/ai";
 import { RiSurveyLine } from "react-icons/ri";
 import { RespondentCountBadge } from "./ActiveInstanceLine";
+import { Link as ReachLink } from "@reach/router";
 
 const InfoBadge = ({
   type = "Folder",
@@ -107,21 +109,28 @@ const SurveyInfoLine = ({
           folder={folder}
         />
       )}
+      {isFolder ? (
+        <Link
+          as={ReachLink}
+          to={`/admin/folders/${name}`}
+          display="flex"
+          alignItems="center"
+        >
+          <Flex align="center">
+            <Text fontSize="1.3rem" fontWeight="normal">
+              {folder.name}
+            </Text>
+          </Flex>
+        </Link>
+      ) : (
+        <NameInput
+          name={name}
+          handleNameSave={handleNameSave}
+          nameState={nameState}
+          size="sm"
+        />
+      )}
 
-      <Flex align="center">
-        {isFolder ? (
-          <Text fontSize="1.3rem" fontWeight="normal">
-            {folder.name}
-          </Text>
-        ) : (
-          <NameInput
-            name={name}
-            handleNameSave={handleNameSave}
-            nameState={nameState}
-            size="sm"
-          />
-        )}
-      </Flex>
       {parentSurveyId && friendlyId && (
         <Stack direction="row" alignItems="center">
           <RespondentCountBadge count={activeInstanceParticipantCount} />

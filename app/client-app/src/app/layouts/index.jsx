@@ -5,6 +5,8 @@ import results from "./Results";
 import manageAccount from "./ManageAccount";
 import wordlist from "./Wordlist";
 import wordlists from "./Wordlists";
+import folders from "./Folders";
+
 const layouts = {
   default: Default,
   preview,
@@ -13,6 +15,7 @@ const layouts = {
   manageAccount,
   wordlist,
   wordlists,
+  folders,
 };
 
 export default layouts;

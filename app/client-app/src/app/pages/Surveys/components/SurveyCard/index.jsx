@@ -12,6 +12,7 @@ import {
   Icon,
   Button,
   useToast,
+  Link,
 } from "@chakra-ui/react";
 import { ActiveIndicator } from "components/core";
 import SurveyInfoLine from "./SurveyInfoLine";
@@ -25,6 +26,7 @@ import themes, { defaultColorMode } from "themes";
 import { FaChevronDown, FaChevronRight, FaPlus } from "react-icons/fa";
 import AddSurveyModal from "../AddSurveyModal";
 import { archiveSurvey, unarchiveSurvey } from "api/surveys";
+import { Link as ReachLink } from "@reach/router";
 
 const SurveyCard = ({ mutateSurveys, isFolder, folder }) => {
   const { onToggle, isOpen } = useDisclosure();
@@ -146,6 +148,7 @@ const SurveyCard = ({ mutateSurveys, isFolder, folder }) => {
               isFolder={isFolder}
               folder={folder}
             />
+
             {!isFolder ? (
               <ActionButtons
                 actionButtons={actionButtons}

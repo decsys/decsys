@@ -1,5 +1,5 @@
 import SurveyCard from "./SurveyCard";
-import { Stack, Box, Input, Flex, Text } from "@chakra-ui/react";
+import { Stack, Box, Input, Flex, Text, Button, Link } from "@chakra-ui/react";
 import { SurveyProvider } from "../../../contexts/Survey";
 import FilterControls from "./Pagination/PaginationControls";
 import SortPanel from "components/shared/SortPanel";
@@ -99,6 +99,7 @@ const SurveysList = ({
       <Stack boxShadow="callout" spacing={0}>
         {surveys &&
           surveys.map((survey) => {
+            console.log(survey);
             return (
               !survey.parentFolderName && (
                 <SurveyProvider key={survey.id} value={survey}>
