@@ -80,8 +80,14 @@ const ManageSurveyMenu = ({
           />
           <MenuList>
             {isFolder && (
+              <MenuItem onClick={() => navigate(`/admin/folders/${name}`)}>
+                View
+              </MenuItem>
+            )}
+            {isFolder && (
               <MenuItem onClick={deleteFolderModal.onOpen}>Delete</MenuItem>
             )}
+
             {!isFolder && (
               <>
                 {editable && (

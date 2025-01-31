@@ -99,17 +99,14 @@ const SurveysList = ({
       <Stack boxShadow="callout" spacing={0}>
         {surveys &&
           surveys.map((survey) => {
-            console.log(survey);
             return (
-              !survey.parentFolderName && (
-                <SurveyProvider key={survey.id} value={survey}>
-                  <SurveyCard
-                    mutateSurveys={mutateSurveys}
-                    isFolder={survey.isFolder}
-                    folder={survey}
-                  />
-                </SurveyProvider>
-              )
+              <SurveyProvider key={survey.id} value={survey}>
+                <SurveyCard
+                  mutateSurveys={mutateSurveys}
+                  isFolder={survey.isFolder}
+                  folder={survey}
+                />
+              </SurveyProvider>
             );
           })}
       </Stack>

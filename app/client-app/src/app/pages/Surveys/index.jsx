@@ -44,7 +44,7 @@ const NoSurveys = ({ action }) => (
   </Box>
 );
 
-const Surveys = ({ navigate }) => {
+const Surveys = ({ navigate, foldersName }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [searchTerm, setSearchTerm] = useState(queryParams.get("search") || "");
@@ -91,7 +91,15 @@ const Surveys = ({ navigate }) => {
     setPageIndex(0); // reset to first page whenever filter is changed
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
-  const surveys = data.items;
+  let surveys = data.items;
+
+  console.log(foldersName);
+  foldersName
+    ? (surveys = surveys.filter(
+        (survey) => survey.parentFolderName === foldersName
+      ))
+    : (surveys = surveys.filter((survey) => !survey.parentFolderName));
+
   const totalItemCount = Math.ceil(
     data.surveyCount + data.studyCount + data.folderCount
   );
@@ -122,7 +130,8 @@ const Surveys = ({ navigate }) => {
 
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
 
-  const pageBody = data.items.length ? (
+  console.log(surveys);
+  const pageBody = surveys.length ? (
     (surveyArea = (
       <ShowSurveys
         surveys={surveys}
@@ -155,6 +164,7 @@ const Surveys = ({ navigate }) => {
             addSurveyAction={handleAddSurvey}
             addStudyAction={handleAddStudy}
             addFolderAction={handleAddFolder}
+            foldersName={foldersName}
           />
           {pageBody}
         </Page>
