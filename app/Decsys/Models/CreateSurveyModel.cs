@@ -31,5 +31,11 @@ namespace Decsys.Models
         /// Optional ID of a Survey to attach this Survey to as a child.
         /// </summary>
         public int? ParentSurveyId { get; set; }
+        
+        
+        /// <summary>
+        /// Optional name of a Folder to attach this Survey to as a child.
+        /// </summary>
+        public string? ParentFolderName { get; set; }
     }
 }

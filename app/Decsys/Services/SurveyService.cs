@@ -289,7 +289,7 @@ namespace Decsys.Services
         /// Deleting Studies will also delete all child surveys.
         /// </summary>
         /// <param name="id">The ID of the Survey to delete.</param>
-        public async Task Delete(int id)
+        public async Task Delete(int id, string? parentFolderName)
         {
             List<int> toDelete = new() { id };
 
@@ -307,7 +307,7 @@ namespace Decsys.Services
                 }
 
                 await _images.RemoveAllSurveyImages(surveyId); // delete stored images for built-in image Page Items
-                _surveys.Delete(surveyId);
+                _surveys.Delete(surveyId, parentFolderName);
             }
         }
 

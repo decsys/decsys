@@ -5,14 +5,16 @@ import {
 } from "api/surveys";
 
 export const addSurveyActions = (navigate, mutateSurveys) => ({
-  create: async (name, type, settings, creationOptions = {}) => {
+  create: async (name, type, settings, creationOptions = {}, folderName) => {
     const { data: id } = await createSurvey(
       name,
       type,
       settings,
-      creationOptions
+      creationOptions,
+      folderName
     );
     if (!creationOptions.isStudy) navigate(`/admin/surveys/${id}`);
+    else if (folderName) navigate(`/admin/surveys/folders/${folderName}`);
     else mutateSurveys();
   },
   importFile: async (

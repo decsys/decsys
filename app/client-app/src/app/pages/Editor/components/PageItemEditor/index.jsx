@@ -33,7 +33,8 @@ const PageItemCustomParamsEditor = ({
 };
 
 const PageItemEditor = () => {
-  const { pages, id, mutate } = useFetchSurvey();
+  const { pages, id, mutate, parentFolderName } = useFetchSurvey();
+
   const { selectedPageItem, setSelectedPageItem } = usePageListContext();
 
   if (!selectedPageItem?.itemId) return null;

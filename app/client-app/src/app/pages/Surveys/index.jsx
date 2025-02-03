@@ -168,7 +168,11 @@ const Surveys = ({ navigate, foldersName }) => {
           {pageBody}
         </Page>
 
-        <AddSurveyModal modalState={addSurveyModal} isStudy={addStudy} />
+        <AddSurveyModal
+          modalState={addSurveyModal}
+          isStudy={addStudy}
+          parentFolderName={foldersName}
+        />
         <AddFolderModal
           modalState={addFolderModal}
           mutateSurveys={mutateSurveys}

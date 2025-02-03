@@ -1,9 +1,9 @@
 import Surveys from "../Surveys";
 
-const Folders = ({ name }) => {
+const Folders = ({ navigate, name }) => {
   return (
     <>
-      <Surveys foldersName={name} />
+      <Surveys navigate={navigate} foldersName={name} />
     </>
   );
 };

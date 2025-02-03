@@ -49,12 +49,20 @@ const ManageSurveyMenu = ({
   const { duplicate, deleteSurvey, navigate, deleteFolder } =
     useSurveyCardActions();
 
-  const handleDuplicate = (name, type, settings, creationOptions) => {
-    duplicate(id, name, type, settings, creationOptions);
+  let parentFolderName = foldersName;
+
+  const handleDuplicate = (
+    name,
+    type,
+    settings,
+    creationOptions,
+    parentFolderName
+  ) => {
+    duplicate(id, name, type, settings, creationOptions, parentFolderName);
     createSurveyModal.onClose();
   };
 
-  const handleDelete = async () => await deleteSurvey(id);
+  const handleDelete = async () => await deleteSurvey(id, parentFolderName);
   const handleFolderDelete = async () => await deleteFolder(name);
 
   const canChangeFolderSelect = () => {
@@ -176,6 +184,7 @@ const ManageSurveyMenu = ({
           parentId={parentSurveyId}
           isFixedType={!!parentSurveyId}
           hasFixedSettings={!!parentSurveyId}
+          parentFolderName={foldersName}
         />
         <SelectStudyModal
           id={id}

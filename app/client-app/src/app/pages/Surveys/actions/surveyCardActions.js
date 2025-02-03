@@ -43,8 +43,22 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
       })
     );
   },
-  duplicate: async (id, name, type, settings, creationOptions) => {
-    await duplicateSurvey(id, name, type, settings, creationOptions);
+  duplicate: async (
+    id,
+    name,
+    type,
+    settings,
+    creationOptions,
+    parentFolderName
+  ) => {
+    await duplicateSurvey(
+      id,
+      name,
+      type,
+      settings,
+      creationOptions,
+      parentFolderName
+    );
     mutateSurveys();
   },
   changeStudy: async (id, parentId) => {
@@ -59,8 +73,8 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
     await deleteFolder(name);
     mutateSurveys();
   },
-  deleteSurvey: async (id) => {
-    await deleteSurvey(id);
+  deleteSurvey: async (id, parentFolderName) => {
+    await deleteSurvey(id, parentFolderName);
     mutateSurveys();
   },
   saveSettings: async (id, settings) => {

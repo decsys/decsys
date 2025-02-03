@@ -2,7 +2,12 @@ import { Button, useDisclosure } from "@chakra-ui/react";
 import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { useAddSurveyActions } from "../../contexts/AddSurveyActions";
 
-const CreateBlankSurveyButton = ({ parent, isStudy, closeModal }) => {
+const CreateBlankSurveyButton = ({
+  parent,
+  isStudy,
+  closeModal,
+  parentFolderName,
+}) => {
   const { create } = useAddSurveyActions();
   const createSurveyModal = useDisclosure();
 
@@ -24,6 +29,7 @@ const CreateBlankSurveyButton = ({ parent, isStudy, closeModal }) => {
         type={parent?.type}
         isFixedType={!!parent}
         hasFixedSettings={!!parent}
+        parentFolderName={parentFolderName}
       />
     </>
   );

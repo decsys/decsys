@@ -92,9 +92,14 @@ namespace Decsys.Repositories.Mongo
                 Id = id,
                 Owner = ownerId,
                 IsStudy = model.IsStudy,
-                ParentSurveyId = parent?.Id
+                ParentSurveyId = parent?.Id,
+                ParentFolderName = model.ParentFolderName
             };
 
+            var parentFolder = _folders.Find(f => f.Name == model.ParentFolderName).SingleOrDefault();
+            parentFolder.SurveyCount++;
+            _folders.ReplaceOne(f => f.Name == model.ParentFolderName, parentFolder);
+            
             if (survey.IsStudy)
                 survey.Name = "Untitled Study";
             if (!string.IsNullOrWhiteSpace(model.Name))
@@ -155,6 +160,11 @@ namespace Decsys.Repositories.Mongo
             var entity = _mapper.Map<Survey>(survey);
 
             entity.ParentSurveyId = model.ParentSurveyId;
+            entity.ParentFolderName = model.ParentFolderName;
+
+            var parentFolder = _folders.Find(f => f.Name == model.ParentFolderName).SingleOrDefault();
+            parentFolder.SurveyCount++;
+            _folders.ReplaceOne(f => f.Name == model.ParentFolderName, parentFolder);
 
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
 
@@ -204,14 +214,21 @@ namespace Decsys.Repositories.Mongo
             }
         }
 
-        public void Delete(int id)
+        public void Delete(int id, string? parentFolderName)
         {
+            if (parentFolderName != null)
+            {
+                var parentFolder = _folders.Find(f => f.Name == parentFolderName).SingleOrDefault();
+                parentFolder.SurveyCount--;
+                _folders.ReplaceOne(f => f.Name == parentFolderName, parentFolder);
+            }
+
             // Delete all Instance Event Logs
             _instances.Find(x => x.SurveyId == id)
                 .Project(x => x.Id)
                 .ToList()
                 .ForEach(_events.Delete);
-
+            
             // Delete all Instances
             _instances.DeleteMany(x => x.SurveyId == id);
 

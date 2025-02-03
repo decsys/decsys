@@ -35,7 +35,7 @@ export const BarButton = (p) => {
     />
   );
 };
-
+// TODO: Back button should return to the current folder for a survey
 export const BackButton = () => (
   <BarButton as={Link} to="/admin/surveys" leftIcon={<FaChevronLeft />}>
     Survey List
@@ -68,11 +68,11 @@ export const ExportButton = ({ id, name }) => {
   );
 };
 
-export const DuplicateButton = ({ name }) => {
+export const DuplicateButton = ({ name, parentFolderName }) => {
   const { duplicate } = useEditorBarContext();
   const createSurveyModal = useDisclosure();
-  const handleDuplicate = (name, type, settings) => {
-    duplicate(name, type, settings);
+  const handleDuplicate = (name, type, settings, parentFolderName) => {
+    duplicate(name, type, settings, parentFolderName);
     createSurveyModal.onClose();
   };
   return (
@@ -84,6 +84,7 @@ export const DuplicateButton = ({ name }) => {
         name={`${name} (Copy)`} // we always use this modal for duplicating only
         modalState={createSurveyModal}
         onCreate={handleDuplicate}
+        parentFolderName={parentFolderName}
       />
     </>
   );

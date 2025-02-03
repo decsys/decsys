@@ -13,7 +13,8 @@ import { useEditorBarContext } from "../../contexts/EditorBar";
 import { useSurvey } from "api/surveys";
 
 const EditorBar = () => {
-  const { id, name, pages } = useFetchSurvey();
+  const { id, name, pages, parentFolderName } = useFetchSurvey();
+  console.log(parentFolderName, "editor bar");
   const { saveName, nameState } = useEditorBarContext();
   const { colorMode } = useColorMode();
   const bg = { light: "gray.800" };
@@ -37,7 +38,7 @@ const EditorBar = () => {
 
       {hasPages && <PreviewButton />}
       <ExportButton id={id} name={name} />
-      <DuplicateButton name={name} />
+      <DuplicateButton name={name} parentFolderName={parentFolderName} />
       <DeleteButton name={name} />
     </Grid>
   );

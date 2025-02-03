@@ -60,7 +60,7 @@ namespace Decsys.Repositories.Contracts
         /// Delete a Survey
         /// </summary>
         /// <param name="id">ID of the Survey to delete</param>
-        void Delete(int id);
+        void Delete(int id, string? parentFolderName);
 
         /// <summary>
         /// Update the name of a Survey

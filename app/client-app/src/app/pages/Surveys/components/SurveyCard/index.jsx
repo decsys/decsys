@@ -231,6 +231,7 @@ const SurveyCard = ({ mutateSurveys, isFolder, folder, foldersName }) => {
       <AddSurveyModal
         modalState={addSurveyModal}
         parent={{ id, type, settings }}
+        parentFolderName={foldersName}
       />
     </>
   );

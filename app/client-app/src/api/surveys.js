@@ -69,11 +69,12 @@ export const createSurvey = async (
   name,
   type,
   settings,
-  { isStudy, parentId: parentSurveyId } = {}
+  { isStudy, parentId: parentSurveyId } = {},
+  parentFolderName
 ) =>
   await axios.post(
     "/api/surveys",
-    { name, type, settings, isStudy, parentSurveyId },
+    { name, type, settings, isStudy, parentSurveyId, parentFolderName },
     withHeaders(await authorization_BearerToken())
   );
 
@@ -111,9 +112,9 @@ export const loadInternalSurvey = async (
     withHeaders(await authorization_BearerToken())
   );
 
-export const deleteSurvey = async (id) =>
+export const deleteSurvey = async (id, parentFolderName) =>
   await axios.delete(
-    `/api/surveys/${id}`,
+    `/api/surveys/${id}/${parentFolderName}`,
     withHeaders(await authorization_BearerToken())
   );
 
@@ -122,11 +123,12 @@ export const duplicateSurvey = async (
   name,
   type,
   settings,
-  { isStudy, parentId: parentSurveyId }
+  { isStudy, parentId: parentSurveyId },
+  parentFolderName
 ) =>
   await axios.post(
     `/api/surveys/${id}/duplicate`,
-    { name, type, settings, isStudy, parentSurveyId },
+    { name, type, settings, isStudy, parentSurveyId, parentFolderName },
     withHeaders(await authorization_BearerToken())
   );
 

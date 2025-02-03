@@ -345,8 +345,9 @@ namespace Decsys.Repositories.LiteDb
             return surveyId;
         }
 
-        public void Delete(int id)
+        public void Delete(int id, string? parentFolderName)
         {
+
             // Delete all Instance Event Logs
             _instances.Find(x => x.Survey.Id == id)
                 .Select(x => x.Id)
