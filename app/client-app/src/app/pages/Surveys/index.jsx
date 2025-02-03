@@ -93,7 +93,6 @@ const Surveys = ({ navigate, foldersName }) => {
 
   let surveys = data.items;
 
-  console.log(foldersName);
   foldersName
     ? (surveys = surveys.filter(
         (survey) => survey.parentFolderName === foldersName
@@ -130,7 +129,6 @@ const Surveys = ({ navigate, foldersName }) => {
 
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
 
-  console.log(surveys);
   const pageBody = surveys.length ? (
     (surveyArea = (
       <ShowSurveys
@@ -150,6 +148,7 @@ const Surveys = ({ navigate, foldersName }) => {
         setPageIndex={setPageIndex}
         mutateSurveys={mutateSurveys}
         actions={SurveyCardActions}
+        foldersName={foldersName}
       />
     ))
   ) : (

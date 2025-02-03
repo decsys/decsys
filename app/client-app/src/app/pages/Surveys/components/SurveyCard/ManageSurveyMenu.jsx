@@ -35,6 +35,7 @@ const ManageSurveyMenu = ({
   handleUnarchive,
   handleArchive,
   isFolder,
+  foldersName,
 }) => {
   const [canChangeFolder, setCanChangeFolder] = useState(false);
   const deleteModal = useDisclosure();
@@ -120,10 +121,9 @@ const ManageSurveyMenu = ({
                     Change Study...
                   </MenuItem>
                 )}
-
                 {!activeInstanceId && (
                   <MenuItem onClick={canChangeFolderSelect}>
-                    Add to a Folder...
+                    {foldersName ? "Change Folders" : "Add to a Folder..."}
                   </MenuItem>
                 )}
 
@@ -183,6 +183,7 @@ const ManageSurveyMenu = ({
           parentId={parentSurveyId}
           modalState={selectStudyModal}
           canChangeFolder={canChangeFolder}
+          foldersName={foldersName}
         />
       </>
     </>

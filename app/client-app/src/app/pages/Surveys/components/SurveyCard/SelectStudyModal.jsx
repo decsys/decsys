@@ -192,6 +192,8 @@ export const StudySelectList = ({
   direction,
   setDirection,
   canChangeFolder,
+  foldersName,
+  mutate,
 }) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "targetStudy",
@@ -218,6 +220,10 @@ export const StudySelectList = ({
     setPageIndex(0);
   };
 
+  const changeFoldersList = folders.filter(
+    (folder) => folder.name !== foldersName
+  );
+
   return (
     <Stack mt={2}>
       <HStack justifyContent="space-between">
@@ -238,8 +244,10 @@ export const StudySelectList = ({
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
         {canChangeFolder
-          ? folders.map(({ name }) => {
-              const folder = folders.find((folder) => folder.name === name);
+          ? changeFoldersList.map(({ name }) => {
+              const folder = changeFoldersList.find(
+                (folder) => folder.name === name
+              );
               if (!folder) return null;
 
               const radio = getRadioProps({ value: name });
@@ -267,7 +275,7 @@ export const StudySelectList = ({
           />
         )}
       </Flex>
-      <AddFolderModal modalState={addFolderModal} />
+      <AddFolderModal modalState={addFolderModal} mutateSurveys={mutate} />
     </Stack>
   );
 };
@@ -278,6 +286,7 @@ export const SelectStudyModal = ({
   parentId,
   modalState,
   canChangeFolder,
+  foldersName,
   ...p
 }) => {
   const pageSize = 10;
@@ -340,7 +349,13 @@ export const SelectStudyModal = ({
     <StandardModal
       {...modalState}
       size="2xl"
-      header={canChangeFolder ? "Add to a Folder" : "Change Parent Study"}
+      header={
+        foldersName
+          ? "Change Folders"
+          : canChangeFolder
+          ? "Add to a Folder"
+          : "Change Parent Study"
+      }
       confirmButton={{
         colorScheme: "blue",
         children: "Save",
@@ -396,6 +411,8 @@ export const SelectStudyModal = ({
           direction={direction}
           setDirection={setDirection}
           canChangeFolder={canChangeFolder}
+          foldersName={foldersName}
+          mutate={mutate}
         />
       </Stack>
     </StandardModal>
