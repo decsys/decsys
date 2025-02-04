@@ -76,7 +76,7 @@ const Surveys = ({ navigate, foldersName }) => {
     pageSize,
     parentFolderName,
   });
-
+  console.log(data);
   useEffect(() => {
     mutateSurveys();
   }, [
@@ -101,11 +101,9 @@ const Surveys = ({ navigate, foldersName }) => {
       ))
     : (surveys = surveys.filter((survey) => !survey.parentFolderName));
 
-  const totalItemCount = Math.ceil(
-    data.surveyCount + data.studyCount + data.folderCount
-  );
-
-  console.log(totalItemCount);
+  const totalItemCount = foldersName
+    ? Math.ceil(data.surveyCount + data.studyCount)
+    : Math.ceil(data.surveyCount + data.studyCount + data.folderCount);
 
   const addSurveyModal = useDisclosure();
   const addFolderModal = useDisclosure();

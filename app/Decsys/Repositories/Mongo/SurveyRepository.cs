@@ -398,22 +398,27 @@ namespace Decsys.Repositories.Mongo
             var sortedItems = SortItems(items, sortBy, direction);
 
             // Pagination
-            var filteredItems = sortedItems
-            .Where(item =>
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
             {
-                if (item is Models.SurveySummary survey)
-                {
-                    return string.IsNullOrWhiteSpace(parentFolderName) ? string.IsNullOrWhiteSpace(survey.ParentFolderName) : survey.ParentFolderName == parentFolderName;
-                }
-                return true; 
-            })
-            .ToList();
+                sortedItems = sortedItems
+                    .Where(x => x is Models.SurveySummary survey && survey.ParentFolderName == parentFolderName)
+                    .ToList();
+            }
+            else
+            {
+                sortedItems = sortedItems
+                    .Where(x => !(x is Models.SurveySummary survey) || survey.ParentFolderName == null)
+                    .ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
+            {
+                sortedItems = sortedItems.Where(x => !(x is Models.Folder)).ToList();
+            }
 
-            var pagedItems = filteredItems
+            var pagedItems = sortedItems
                 .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .ToList();
-
 
             // Count Surveys
 
@@ -451,12 +456,25 @@ namespace Decsys.Repositories.Mongo
                 baseFilter &= archivedFilter;
             }
 
-            var surveyCount = _surveys.CountDocuments(baseFilter & Builders<Survey>.Filter.Where(x => string.IsNullOrWhiteSpace(x.ParentFolderName)));
-            var studyCount = summaries.Count(s => s.IsStudy && string.IsNullOrWhiteSpace(s.ParentFolderName));
+            int surveyCount;
+            int studyCount;
+
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
+            {
+                var folderFilter = Builders<Survey>.Filter.Where(x => x.ParentFolderName == parentFolderName);
+                surveyCount = (int)_surveys.CountDocuments(baseFilter & folderFilter);
+                studyCount = summaries.Count(s => s.IsStudy && s.ParentFolderName == parentFolderName);
+            }
+            else
+            {
+                surveyCount = (int)_surveys.CountDocuments(baseFilter & Builders<Survey>.Filter.Where(x => string.IsNullOrWhiteSpace(x.ParentFolderName)));
+                studyCount = summaries.Count(s => s.IsStudy && string.IsNullOrWhiteSpace(s.ParentFolderName));
+            }
+
             return new Models.PagedSurveySummary
             {
                 Items = pagedItems,
-                SurveyCount = (int)surveyCount ,
+                SurveyCount = surveyCount,
                 StudyCount = studyCount,
                 FolderCount = folderItems.Count()
             };
@@ -517,7 +535,7 @@ namespace Decsys.Repositories.Mongo
         private List<Models.ISummaryItem> SortItems(List<Models.ISummaryItem> surveys, string sortBy, string direction)
         {
             var folders = surveys.OfType<Models.Folder>().Cast<Models.ISummaryItem>().ToList();
-            var surveySummaries = surveys.OfType<Models.SurveySummary>().Cast<Models.ISummaryItem>().ToList();
+            var surveySummaries = surveys.OfType<Models.SurveySummary>().ToList(); 
 
             IEnumerable<Models.ISummaryItem> sortedSurveys;
 
@@ -533,32 +551,38 @@ namespace Decsys.Repositories.Mongo
                 case SurveySortingKeys.Type:
                     if (isAscending)
                     {
-                        sortedSurveys = surveySummaries.OrderBy(s => s.Name)
+                        sortedSurveys = surveySummaries
+                            .OrderBy(s => s.IsStudy) 
+                            .ThenBy(s => s.Name)
+                            .Cast<Models.ISummaryItem>()
                             .Concat(folders.OrderBy(f => f.Name));
                     }
                     else
                     {
                         sortedSurveys = folders.OrderBy(f => f.Name)
-                            .Concat(surveySummaries.OrderBy(s => s.Name));
+                            .Concat(surveySummaries
+                                .OrderBy(s => !s.IsStudy) 
+                                .ThenBy(s => s.Name)
+                                .Cast<Models.ISummaryItem>());
                     }
                     break;
                 case SurveySortingKeys.Active:
                     sortedSurveys = folders.Concat(
                         isAscending
-                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).ActiveInstanceId ?? int.MinValue)
-                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).ActiveInstanceId ?? int.MinValue));
+                        ? surveySummaries.OrderBy(s => (s).ActiveInstanceId ?? int.MinValue)
+                        : surveySummaries.OrderByDescending(s => (s).ActiveInstanceId ?? int.MinValue));
                     break;
                 case SurveySortingKeys.RunCount:
                     sortedSurveys = folders.Concat(
                         isAscending
-                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).RunCount)
-                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).RunCount));
+                        ? surveySummaries.OrderBy(s => (s).RunCount)
+                        : surveySummaries.OrderByDescending(s => (s).RunCount));
                     break;
                 case SurveySortingKeys.Archived:
                     sortedSurveys = folders.Concat(
                         isAscending
-                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).ArchivedDate ?? DateTimeOffset.MinValue)
-                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).ArchivedDate ?? DateTimeOffset.MinValue));
+                        ? surveySummaries.OrderBy(s => (s).ArchivedDate ?? DateTimeOffset.MinValue)
+                        : surveySummaries.OrderByDescending(s => (s).ArchivedDate ?? DateTimeOffset.MinValue));
                     break;
                 default:
                     sortedSurveys = folders
