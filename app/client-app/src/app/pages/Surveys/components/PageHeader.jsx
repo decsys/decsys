@@ -9,11 +9,16 @@ import {
   Tooltip,
   MenuDivider,
   Stack,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
 } from "@chakra-ui/react";
 import { FaChevronDown, FaFolder, FaPlusCircle } from "react-icons/fa";
 import { AiOutlineGroup } from "react-icons/ai";
 import { RiSurveyLine } from "react-icons/ri";
 import LightHeading from "components/core/LightHeading";
+import { FaChevronRight } from "react-icons/fa";
 
 export const PageHeader = ({
   addSurveyAction,
@@ -81,9 +86,31 @@ export const PageHeader = ({
 
   return (
     <Flex my={8} align="center" justify="space-between">
-      <LightHeading as="h1" size="xl">
-        {foldersName ? `My Folder: ${foldersName}  ` : "My Surveys"}
-      </LightHeading>
+      {foldersName ? (
+        <Breadcrumb
+          spacing="8px"
+          separator={<FaChevronRight color="gray.500" />}
+        >
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/admin/surveys">
+              <LightHeading as="h1" size="md">
+                Home
+              </LightHeading>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem isCurrentPage>
+            <BreadcrumbLink>
+              <LightHeading as="h1" size="md">
+                Folder: {foldersName}
+              </LightHeading>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+      ) : (
+        <LightHeading as="h1" size="xl">
+          {foldersName ? `Folder: ${foldersName}  ` : "My Surveys"}
+        </LightHeading>
+      )}
       {foldersName ? (
         renderButtons()
       ) : (
