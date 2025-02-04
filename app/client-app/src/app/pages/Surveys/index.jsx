@@ -64,6 +64,7 @@ const Surveys = ({ navigate, foldersName }) => {
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
+  let parentFolderName = foldersName;
   const { data, mutate: mutateSurveys } = useSurveysList({
     name: debouncedSearchTerm,
     view: filterType,
@@ -73,6 +74,7 @@ const Surveys = ({ navigate, foldersName }) => {
     canChangeStudy: false,
     pageIndex,
     pageSize,
+    parentFolderName,
   });
 
   useEffect(() => {
@@ -102,6 +104,8 @@ const Surveys = ({ navigate, foldersName }) => {
   const totalItemCount = Math.ceil(
     data.surveyCount + data.studyCount + data.folderCount
   );
+
+  console.log(totalItemCount);
 
   const addSurveyModal = useDisclosure();
   const addFolderModal = useDisclosure();

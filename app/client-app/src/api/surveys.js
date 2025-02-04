@@ -30,8 +30,9 @@ export const useSurveysList = ({
   canChangeStudy = false,
   pageIndex = 0,
   pageSize = 10,
+  parentFolderName = null,
 } = {}) => {
-  const queryString = new URLSearchParams({
+  const params = new URLSearchParams({
     name,
     view,
     sortBy,
@@ -40,9 +41,14 @@ export const useSurveysList = ({
     canChangeStudy: canChangeStudy.toString(),
     pageIndex: pageIndex.toString(),
     pageSize: pageSize.toString(),
-  }).toString();
+  });
 
-  return useSWR(`/api/surveys/?${queryString}`, defaultFetcher(true), {
+  // Only append parentFolderName if it's not null or undefined
+  if (parentFolderName) {
+    params.append("parentFolderName", parentFolderName);
+  }
+
+  return useSWR(`/api/surveys/?${params.toString()}`, defaultFetcher(true), {
     suspense: true,
   });
 };

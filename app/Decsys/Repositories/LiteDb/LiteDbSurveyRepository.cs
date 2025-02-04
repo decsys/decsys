@@ -52,7 +52,7 @@ namespace Decsys.Repositories.LiteDb
             return survey;
         }
         
-        public Models.PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, bool isStudy=false, bool canChangeStudy = false,int pageIndex = 0, int pageSize = 10)
+        public Models.PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, bool isStudy=false, bool canChangeStudy = false,int pageIndex = 0, int pageSize = 10, string? parentFolderName = null)
         {
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();

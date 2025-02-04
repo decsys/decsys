@@ -110,9 +110,10 @@ namespace Decsys.Services
             bool isStudy = false,
             bool canChangeStudy = false,
             int pageIndex = 0,
-            int pageSize = 10)
+            int pageSize = 10,
+            string? parentFolderName = null)
         {
-            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, isStudy, canChangeStudy, pageIndex, pageSize);
+            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, isStudy, canChangeStudy, pageIndex, pageSize, parentFolderName);
         }
 
 
