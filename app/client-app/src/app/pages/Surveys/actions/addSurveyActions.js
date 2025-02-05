@@ -14,8 +14,10 @@ export const addSurveyActions = (navigate, mutateSurveys) => ({
       folderName
     );
     if (!creationOptions.isStudy) navigate(`/admin/surveys/${id}`);
-    else if (folderName) navigate(`/admin/surveys/folders/${folderName}`);
-    else mutateSurveys();
+    else if (folderName) {
+      navigate(`/admin/folders/${folderName}`);
+      mutateSurveys();
+    } else mutateSurveys();
   },
   importFile: async (
     file,

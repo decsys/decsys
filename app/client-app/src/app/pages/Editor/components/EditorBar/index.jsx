@@ -25,7 +25,7 @@ const EditorBar = () => {
       templateColumns="auto 1fr auto auto auto auto auto"
       bg={bg[colorMode || defaultColorMode]}
     >
-      <BackButton />
+      <BackButton parentFolderName={parentFolderName} />
 
       <Flex bg="gray.100">
         <NameInput

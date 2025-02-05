@@ -347,7 +347,6 @@ export const SelectStudyModal = ({
     modalState.onClose();
   };
 
-  console.log(parentFolderName);
   return (
     <StandardModal
       {...modalState}
