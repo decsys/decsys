@@ -28,7 +28,7 @@ import AddSurveyModal from "../AddSurveyModal";
 import { archiveSurvey, unarchiveSurvey } from "api/surveys";
 import { Link as ReachLink } from "@reach/router";
 
-const SurveyCard = ({ mutateSurveys, isFolder, folder, foldersName }) => {
+const SurveyCard = ({ mutateSurveys, isFolder, folder, parentFolderName }) => {
   const { onToggle, isOpen } = useDisclosure();
   const addSurveyModal = useDisclosure();
 
@@ -169,7 +169,7 @@ const SurveyCard = ({ mutateSurveys, isFolder, folder, foldersName }) => {
               handleUnarchive={handleUnarchive}
               handleArchive={handleArchive}
               isFolder={isFolder}
-              foldersName={foldersName}
+              parentFolderName={parentFolderName}
             />
           </Grid>
 
@@ -231,7 +231,7 @@ const SurveyCard = ({ mutateSurveys, isFolder, folder, foldersName }) => {
       <AddSurveyModal
         modalState={addSurveyModal}
         parent={{ id, type, settings }}
-        parentFolderName={foldersName}
+        parentFolderName={parentFolderName}
       />
     </>
   );

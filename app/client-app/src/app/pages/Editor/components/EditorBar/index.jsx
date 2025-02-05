@@ -14,7 +14,6 @@ import { useSurvey } from "api/surveys";
 
 const EditorBar = () => {
   const { id, name, pages, parentFolderName } = useFetchSurvey();
-  console.log(parentFolderName, "editor bar");
   const { saveName, nameState } = useEditorBarContext();
   const { colorMode } = useColorMode();
   const bg = { light: "gray.800" };

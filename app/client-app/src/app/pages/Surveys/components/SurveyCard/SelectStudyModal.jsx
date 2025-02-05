@@ -192,7 +192,7 @@ export const StudySelectList = ({
   direction,
   setDirection,
   canChangeFolder,
-  foldersName,
+  parentFolderName,
   mutate,
 }) => {
   const { getRootProps, getRadioProps } = useRadioGroup({
@@ -221,7 +221,7 @@ export const StudySelectList = ({
   };
 
   const changeFoldersList = folders.filter(
-    (folder) => folder.name !== foldersName
+    (folder) => folder.name !== parentFolderName
   );
 
   return (
@@ -237,9 +237,11 @@ export const StudySelectList = ({
             onSortButtonClick={handleSortButtonClick}
           />
         </HStack>
-        <Button onClick={addFolderModal.onOpen} colorScheme="green">
-          Add new Folder
-        </Button>
+        {canChangeFolder && (
+          <Button onClick={addFolderModal.onOpen} colorScheme="green">
+            Add new Folder
+          </Button>
+        )}
       </HStack>
       <Stack boxShadow="callout" spacing={0} {...group}>
         <NoneCard {...getRadioProps({ value: "none" })} />
@@ -286,7 +288,7 @@ export const SelectStudyModal = ({
   parentId,
   modalState,
   canChangeFolder,
-  foldersName,
+  parentFolderName,
   ...p
 }) => {
   const pageSize = 10;
@@ -345,16 +347,17 @@ export const SelectStudyModal = ({
     modalState.onClose();
   };
 
+  console.log(parentFolderName);
   return (
     <StandardModal
       {...modalState}
       size="2xl"
       header={
-        foldersName
-          ? "Change Folders"
-          : canChangeFolder
-          ? "Add to a Folder"
-          : "Change Parent Study"
+        canChangeFolder
+          ? parentFolderName
+            ? "Change Folder "
+            : "Add to a Folder"
+          : "Change Study"
       }
       confirmButton={{
         colorScheme: "blue",
@@ -411,7 +414,7 @@ export const SelectStudyModal = ({
           direction={direction}
           setDirection={setDirection}
           canChangeFolder={canChangeFolder}
-          foldersName={foldersName}
+          parentFolderName={parentFolderName}
           mutate={mutate}
         />
       </Stack>

@@ -21,7 +21,7 @@ const SurveysList = ({
   pageIndex,
   setPageIndex,
   mutateSurveys,
-  foldersName,
+  parentFolderName,
 }) => {
   const totalPages = Math.ceil(totalCount / pageSize);
 
@@ -106,7 +106,7 @@ const SurveysList = ({
                   mutateSurveys={mutateSurveys}
                   isFolder={survey.isFolder}
                   folder={survey}
-                  foldersName={foldersName}
+                  parentFolderName={parentFolderName}
                 />
               </SurveyProvider>
             );

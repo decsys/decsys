@@ -24,7 +24,7 @@ export const PageHeader = ({
   addSurveyAction,
   addStudyAction,
   addFolderAction,
-  foldersName,
+  parentFolderName,
 }) => {
   const renderAddStudyTooltip = (children) => (
     <Tooltip
@@ -86,7 +86,7 @@ export const PageHeader = ({
 
   return (
     <Flex my={8} align="center" justify="space-between">
-      {foldersName ? (
+      {parentFolderName ? (
         <Breadcrumb
           spacing="8px"
           separator={<FaChevronRight color="gray.500" />}
@@ -101,17 +101,17 @@ export const PageHeader = ({
           <BreadcrumbItem isCurrentPage>
             <BreadcrumbLink>
               <LightHeading as="h1" size="md">
-                Folder: {foldersName}
+                Folder: {parentFolderName}
               </LightHeading>
             </BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
       ) : (
         <LightHeading as="h1" size="xl">
-          {foldersName ? `Folder: ${foldersName}  ` : "My Surveys"}
+          {parentFolderName ? `Folder: ${parentFolderName}  ` : "My Surveys"}
         </LightHeading>
       )}
-      {foldersName ? (
+      {parentFolderName ? (
         renderButtons()
       ) : (
         <VStack align="end">{renderMenu()}</VStack>

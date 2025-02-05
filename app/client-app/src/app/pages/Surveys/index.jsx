@@ -44,7 +44,7 @@ const NoSurveys = ({ action }) => (
   </Box>
 );
 
-const Surveys = ({ navigate, foldersName }) => {
+const Surveys = ({ navigate, parentFolderName }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [searchTerm, setSearchTerm] = useState(queryParams.get("search") || "");
@@ -64,7 +64,6 @@ const Surveys = ({ navigate, foldersName }) => {
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  let parentFolderName = foldersName;
   const { data, mutate: mutateSurveys } = useSurveysList({
     name: debouncedSearchTerm,
     view: filterType,
@@ -76,7 +75,6 @@ const Surveys = ({ navigate, foldersName }) => {
     pageSize,
     parentFolderName,
   });
-  console.log(data);
   useEffect(() => {
     mutateSurveys();
   }, [
@@ -95,13 +93,13 @@ const Surveys = ({ navigate, foldersName }) => {
 
   let surveys = data.items;
 
-  foldersName
+  parentFolderName
     ? (surveys = surveys.filter(
-        (survey) => survey.parentFolderName === foldersName
+        (survey) => survey.parentFolderName === parentFolderName
       ))
     : (surveys = surveys.filter((survey) => !survey.parentFolderName));
 
-  const totalItemCount = foldersName
+  const totalItemCount = parentFolderName
     ? Math.ceil(data.surveyCount + data.studyCount)
     : Math.ceil(data.surveyCount + data.studyCount + data.folderCount);
 
@@ -150,7 +148,7 @@ const Surveys = ({ navigate, foldersName }) => {
         setPageIndex={setPageIndex}
         mutateSurveys={mutateSurveys}
         actions={SurveyCardActions}
-        foldersName={foldersName}
+        parentFolderName={parentFolderName}
       />
     ))
   ) : (
@@ -165,7 +163,7 @@ const Surveys = ({ navigate, foldersName }) => {
             addSurveyAction={handleAddSurvey}
             addStudyAction={handleAddStudy}
             addFolderAction={handleAddFolder}
-            foldersName={foldersName}
+            parentFolderName={parentFolderName}
           />
           {pageBody}
         </Page>
@@ -173,7 +171,7 @@ const Surveys = ({ navigate, foldersName }) => {
         <AddSurveyModal
           modalState={addSurveyModal}
           isStudy={addStudy}
-          parentFolderName={foldersName}
+          parentFolderName={parentFolderName}
         />
         <AddFolderModal
           modalState={addFolderModal}

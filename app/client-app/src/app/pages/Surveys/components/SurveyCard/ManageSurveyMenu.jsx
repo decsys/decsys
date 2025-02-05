@@ -35,7 +35,7 @@ const ManageSurveyMenu = ({
   handleUnarchive,
   handleArchive,
   isFolder,
-  foldersName,
+  parentFolderName,
 }) => {
   const [canChangeFolder, setCanChangeFolder] = useState(false);
   const deleteModal = useDisclosure();
@@ -48,8 +48,6 @@ const ManageSurveyMenu = ({
 
   const { duplicate, deleteSurvey, navigate, deleteFolder } =
     useSurveyCardActions();
-
-  let parentFolderName = foldersName;
 
   const handleDuplicate = (
     name,
@@ -131,7 +129,9 @@ const ManageSurveyMenu = ({
                 )}
                 {!activeInstanceId && (
                   <MenuItem onClick={canChangeFolderSelect}>
-                    {foldersName ? "Change Folders" : "Add to a Folder..."}
+                    {parentFolderName
+                      ? "Change Folder..."
+                      : "Add to a Folder..."}
                   </MenuItem>
                 )}
 
@@ -184,7 +184,7 @@ const ManageSurveyMenu = ({
           parentId={parentSurveyId}
           isFixedType={!!parentSurveyId}
           hasFixedSettings={!!parentSurveyId}
-          parentFolderName={foldersName}
+          parentFolderName={parentFolderName}
         />
         <SelectStudyModal
           id={id}
@@ -192,7 +192,7 @@ const ManageSurveyMenu = ({
           parentId={parentSurveyId}
           modalState={selectStudyModal}
           canChangeFolder={canChangeFolder}
-          foldersName={foldersName}
+          parentFolderName={parentFolderName}
         />
       </>
     </>
