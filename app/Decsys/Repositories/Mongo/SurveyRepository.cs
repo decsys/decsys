@@ -167,8 +167,11 @@ namespace Decsys.Repositories.Mongo
             entity.ParentFolderName = model.ParentFolderName;
 
             var parentFolder = _folders.Find(f => f.Name == model.ParentFolderName).SingleOrDefault();
-            parentFolder.SurveyCount++;
-            _folders.ReplaceOne(f => f.Name == model.ParentFolderName, parentFolder);
+            if (parentFolder is not null)
+            {
+                parentFolder.SurveyCount++;
+                _folders.ReplaceOne(f => f.Name == model.ParentFolderName, parentFolder);
+            }
 
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
 

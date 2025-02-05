@@ -37,7 +37,7 @@ export const editorBarActions = (
     });
   },
   deleteSurvey: async () => {
-    await deleteSurvey(id, parentFolderName);
+    await deleteSurvey(id, parentFolderName ?? "");
     navigate("/admin", {
       state: {
         toast: {

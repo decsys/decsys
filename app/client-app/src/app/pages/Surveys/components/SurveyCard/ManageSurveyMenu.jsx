@@ -60,7 +60,8 @@ const ManageSurveyMenu = ({
     createSurveyModal.onClose();
   };
 
-  const handleDelete = async () => await deleteSurvey(id, parentFolderName);
+  const handleDelete = async () =>
+    await deleteSurvey(id, parentFolderName ?? "");
   const handleFolderDelete = async () => await deleteFolder(name);
 
   const canChangeFolderSelect = () => {

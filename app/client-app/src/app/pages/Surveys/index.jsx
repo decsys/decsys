@@ -73,7 +73,7 @@ const Surveys = ({ navigate, parentFolderName }) => {
     canChangeStudy: false,
     pageIndex,
     pageSize,
-    parentFolderName,
+    parentFolderName: parentFolderName ?? "",
   });
   useEffect(() => {
     mutateSurveys();
