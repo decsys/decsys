@@ -32,7 +32,7 @@ export const useSurveysList = ({
   pageSize = 10,
   parentFolderName = "",
 } = {}) => {
-  const params = new URLSearchParams({
+  const queryString = new URLSearchParams({
     name,
     view,
     sortBy,
@@ -42,9 +42,9 @@ export const useSurveysList = ({
     pageIndex: pageIndex.toString(),
     pageSize: pageSize.toString(),
     parentFolderName,
-  });
+  }).toString();
 
-  return useSWR(`/api/surveys/?${params.toString()}`, defaultFetcher(true), {
+  return useSWR(`/api/surveys/?${queryString}`, defaultFetcher(true), {
     suspense: true,
   });
 };

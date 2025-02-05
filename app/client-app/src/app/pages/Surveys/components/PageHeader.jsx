@@ -108,7 +108,7 @@ export const PageHeader = ({
         </Breadcrumb>
       ) : (
         <LightHeading as="h1" size="xl">
-          {parentFolderName ? `Folder: ${parentFolderName}  ` : "My Surveys"}
+          {parentFolderName ? `Folder: ${parentFolderName}` : "My Surveys"}
         </LightHeading>
       )}
       {parentFolderName ? (

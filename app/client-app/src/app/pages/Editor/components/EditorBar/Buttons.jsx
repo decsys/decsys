@@ -35,7 +35,7 @@ export const BarButton = (p) => {
     />
   );
 };
-// TODO: Back button should return to the current folder for a survey
+
 export const BackButton = ({ parentFolderName }) => {
   const link = parentFolderName
     ? `/admin/folders/${parentFolderName}`
