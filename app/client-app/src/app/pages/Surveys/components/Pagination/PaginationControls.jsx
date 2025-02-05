@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const FilterControls = ({
-  totalItems,
   totalPages,
   pageIndex,
   pageSize,

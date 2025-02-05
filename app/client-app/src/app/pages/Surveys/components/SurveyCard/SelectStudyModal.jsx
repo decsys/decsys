@@ -183,7 +183,8 @@ export const StudySelectList = ({
   surveys,
   folders,
   onChange,
-  totalCount,
+  studyCount,
+  folderCount,
   pageIndex,
   setPageIndex,
   pageSize,
@@ -202,7 +203,11 @@ export const StudySelectList = ({
   });
 
   const group = getRootProps();
-  const totalPages = Math.ceil(totalCount / pageSize);
+
+  let totalPages;
+  canChangeFolder
+    ? (totalPages = Math.ceil(folderCount / pageSize))
+    : (totalPages = Math.ceil(studyCount / pageSize));
 
   const addFolderModal = useDisclosure();
 
@@ -269,7 +274,6 @@ export const StudySelectList = ({
       <Flex justifyContent="end" pt="2">
         {!!totalPages && (
           <FilterControls
-            totalItems={totalCount}
             totalPages={totalPages}
             pageIndex={pageIndex}
             pageSize={pageSize}
@@ -296,15 +300,26 @@ export const SelectStudyModal = ({
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
 
-  const { data: { surveys = [], studyCount = 0 } = {}, mutateSurveys } =
-    useSurveysList({
-      sortBy,
-      direction,
-      isStudy: true,
-      canChangeStudy: true,
-      pageIndex,
-      pageSize,
-    });
+  const {
+    data: { items = [], studyCount = 0, folderCount = 0 } = {},
+    mutateSurveys,
+  } = useSurveysList({
+    sortBy,
+    direction,
+    isStudy: true,
+    canChangeStudy: true,
+    pageIndex,
+    pageSize,
+  });
+
+  const { data } = useSurveysList({
+    sortBy,
+    direction,
+    isStudy: true,
+    canChangeStudy: true,
+    pageIndex,
+    pageSize,
+  });
 
   const { data: folders, mutate } = useFolders();
 
@@ -382,7 +397,7 @@ export const SelectStudyModal = ({
                     ?.name
                 : "None"
               : selectedStudyId
-              ? surveys?.find((survey) => survey.id == selectedStudyId)?.name
+              ? items?.find((survey) => survey.id == selectedStudyId)?.name
               : "None"}
           </Text>
         </Stack>
@@ -401,10 +416,11 @@ export const SelectStudyModal = ({
         </Alert>
         <StudySelectList
           defaultValue={canChangeFolder ? selectedFolderName : selectedStudyId}
-          surveys={surveys}
+          surveys={items}
           folders={folders}
           onChange={handleChange}
-          totalCount={studyCount}
+          studyCount={studyCount}
+          folderCount={folderCount}
           pageIndex={pageIndex}
           setPageIndex={setPageIndex}
           pageSize={pageSize}
