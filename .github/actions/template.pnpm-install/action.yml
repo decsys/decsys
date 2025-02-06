@@ -3,7 +3,7 @@ description: Setup node and pnpm, then install dependencies for a single package
 
 inputs:
   node-version:
-    default: "19"
+    default: "20"
     type: string
   filter:
     type: string
