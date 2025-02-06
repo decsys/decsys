@@ -310,15 +310,7 @@ export const SelectStudyModal = ({
     canChangeStudy: true,
     pageIndex,
     pageSize,
-  });
-
-  const { data } = useSurveysList({
-    sortBy,
-    direction,
-    isStudy: true,
-    canChangeStudy: true,
-    pageIndex,
-    pageSize,
+    parentFolderName,
   });
 
   const { data: folders, mutate } = useFolders();

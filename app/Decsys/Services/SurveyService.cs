@@ -22,6 +22,7 @@ namespace Decsys.Services
     public class SurveyService
     {
         private readonly ISurveyRepository _surveys;
+        private readonly IFolderRepository _folder;
         private readonly IImageService _images;
         private readonly ISurveyInstanceRepository _instances;
         private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;
@@ -30,12 +31,14 @@ namespace Decsys.Services
         /// <summary>DI Constructor</summary>
         public SurveyService(
             ISurveyRepository surveys,
+            IFolderRepository folder,
             IImageService images,
             ISurveyInstanceRepository instances,
             IOptionsSnapshot<ComponentTypeMap> componentTypeMaps,
             WebhookService webhooks)
         {
             _surveys = surveys;
+            _folder = folder;
             _images = images;
             _instances = instances;
             _componentTypeMaps = componentTypeMaps;
@@ -254,12 +257,18 @@ namespace Decsys.Services
                     $"The specified survey {id} is a Study and therefore cannot have a parent.", nameof(id));
 
             Survey? parent = null;
+            if(parentId is null)
+            {
+                _folder.AddFolderCountForStudy(id);
+            }
+
             if (parentId is not null)
             {
                 parent = _surveys.Find(parentId.Value) ?? throw new KeyNotFoundException();
                 if (!parent.IsStudy)
                     throw new ArgumentException(
                         $"The specified parent {parentId} is not a Study and therefore cannot have children.", nameof(parentId));
+                _folder.SubstractFolderCountForStudy(id);
             }
 
             survey.Parent = parent;

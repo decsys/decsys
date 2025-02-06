@@ -23,4 +23,10 @@ public class LiteDbFolderRepository : IFolderRepository
 
     public async Task Delete(string name, string? ownerId = null)
      => await _folders.Delete(name);
+
+    public async Task AddFolderCountForStudy(int id)
+     => await _folders.AddFolderCountForStudy(id);
+
+    public async Task SubstractFolderCountForStudy(int id)
+    => await _folders.AddFolderCountForStudy(id);
 }

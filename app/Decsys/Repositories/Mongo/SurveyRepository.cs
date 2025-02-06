@@ -98,7 +98,7 @@ namespace Decsys.Repositories.Mongo
 
             
             var parentFolder = _folders.Find(f => f.Name == model.ParentFolderName).SingleOrDefault();
-            if(parentFolder is not null)
+            if(parentFolder is not null && survey.ParentSurveyId is null) // TODO update
             {
                 parentFolder.SurveyCount++;
                 _folders.ReplaceOne(f => f.Name == model.ParentFolderName, parentFolder);
@@ -226,10 +226,10 @@ namespace Decsys.Repositories.Mongo
             var survey = Find(id);
             var parentFolderName = survey.ParentFolderName;
 
-            if (parentFolderName != null)
+            if (parentFolderName is not null && survey?.Parent?.Id is null) 
             {
                 var parentFolder = _folders.Find(f => f.Name == parentFolderName).SingleOrDefault();
-                parentFolder.SurveyCount--;
+                parentFolder.SurveyCount--; 
                 _folders.ReplaceOne(f => f.Name == parentFolderName, parentFolder);
             }
 
@@ -603,7 +603,7 @@ namespace Decsys.Repositories.Mongo
             return sortedSurveys.ToList();
         }
 
-
+         
         public void SetParentFolder(int surveyId, string? newParentFolderName = null)
         {
             var survey = _surveys.Find(x => x.Id == surveyId).SingleOrDefault();
