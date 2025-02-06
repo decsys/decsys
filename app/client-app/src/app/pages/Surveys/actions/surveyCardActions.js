@@ -73,8 +73,8 @@ export const surveyCardActions = (navigate, mutateSurveys) => ({
     await deleteFolder(name);
     mutateSurveys();
   },
-  deleteSurvey: async (id, parentFolderName) => {
-    await deleteSurvey(id, parentFolderName ?? "");
+  deleteSurvey: async (id) => {
+    await deleteSurvey(id);
     mutateSurveys();
   },
   saveSettings: async (id, settings) => {

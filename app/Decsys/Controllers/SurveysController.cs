@@ -132,15 +132,15 @@ namespace Decsys.Controllers
             return Created(url, id);
         }
 
-        [HttpDelete("{id}/{parentFolderName?}")]
+        [HttpDelete("{id}")]
         [Authorize(Policy = nameof(AuthPolicies.CanManageSurvey))]
         [SwaggerOperation("Delete a single Survey by ID.")]
         [SwaggerResponse(204, "The Survey, with its associated data, was succesfully deleted.")]
         public async Task<IActionResult> Delete(
             [SwaggerParameter("ID of the Survey to delete.")]
-            int id, string? parentFolderName)
+            int id)
         {
-            await _surveys.Delete(id, parentFolderName);
+            await _surveys.Delete(id);
             return NoContent();
         }
 

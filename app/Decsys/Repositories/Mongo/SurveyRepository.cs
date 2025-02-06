@@ -221,8 +221,11 @@ namespace Decsys.Repositories.Mongo
             }
         }
 
-        public void Delete(int id, string? parentFolderName)
+        public void Delete(int id)
         {
+            var survey = Find(id);
+            var parentFolderName = survey.ParentFolderName;
+
             if (parentFolderName != null)
             {
                 var parentFolder = _folders.Find(f => f.Name == parentFolderName).SingleOrDefault();

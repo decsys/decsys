@@ -114,9 +114,9 @@ export const loadInternalSurvey = async (
     withHeaders(await authorization_BearerToken())
   );
 
-export const deleteSurvey = async (id, parentFolderName) =>
+export const deleteSurvey = async (id) =>
   await axios.delete(
-    `/api/surveys/${id}/${parentFolderName}`,
+    `/api/surveys/${id}`,
     withHeaders(await authorization_BearerToken())
   );
 

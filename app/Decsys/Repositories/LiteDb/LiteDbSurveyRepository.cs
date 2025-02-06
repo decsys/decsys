@@ -345,7 +345,7 @@ namespace Decsys.Repositories.LiteDb
             return surveyId;
         }
 
-        public void Delete(int id, string? parentFolderName)
+        public void Delete(int id)
         {
 
             // Delete all Instance Event Logs

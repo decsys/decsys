@@ -31,6 +31,7 @@ namespace Decsys.Repositories.Contracts
         /// <param name="direction">Specifies the direction of the sort: "up" (ascending) or "down" (descending). Default is "up". </param>
         /// <param name="page">Specifies the page number for pagination, starting from 1. Default is 1.</param>
         /// <param name="pageSize">Specifies the number of survey summaries per page. Default is 10.</param>
+        /// <param name="parentFolderName">Name of the parent folder of the Survey</param>
         /// <returns>A list of filtered, sorted, and paginated survey summaries.</returns>
         PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction= SurveySortingKeys.Direction, bool isStudy = false, bool canChangeStudy = false, int pageIndex = 0, int pageSize = 10, string? parentFolderName = null);
 
@@ -60,7 +61,7 @@ namespace Decsys.Repositories.Contracts
         /// Delete a Survey
         /// </summary>
         /// <param name="id">ID of the Survey to delete</param>
-        void Delete(int id, string? parentFolderName);
+        void Delete(int id);
 
         /// <summary>
         /// Update the name of a Survey
