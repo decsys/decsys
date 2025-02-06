@@ -479,7 +479,7 @@ namespace Decsys.Repositories.Mongo
 
             return new Models.PagedSurveySummary
             {
-                Items = pagedItems,
+                SurveyItems = pagedItems,
                 SurveyCount = surveyCount,
                 StudyCount = studyCount,
                 FolderCount = folderItems.Count()

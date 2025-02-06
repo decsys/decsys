@@ -126,7 +126,7 @@ namespace Decsys.Services
         /// <param name="parentId"></param>
         /// <returns></returns>
         public IEnumerable<SurveySummary> ListChildren(int parentId)
-           => _surveys.ListChildren(parentId).Items
+           => _surveys.ListChildren(parentId).SurveyItems
                .OfType<SurveySummary>(); 
 
 
@@ -186,7 +186,7 @@ namespace Decsys.Services
             {
                 var study = _surveys.Find(newId);
 
-                var children = _surveys.ListChildren(oldId).Items
+                var children = _surveys.ListChildren(oldId).SurveyItems
                     .OfType<Models.SurveySummary>();
                 foreach (var child in children)
                 {
@@ -305,7 +305,7 @@ namespace Decsys.Services
 
             // Studies need to delete children too
             var children = _surveys.ListChildren(id);
-            toDelete.AddRange(children.Items.OfType<SurveySummary>().Select(x => x.Id));
+            toDelete.AddRange(children.SurveyItems.OfType<SurveySummary>().Select(x => x.Id));
 
             foreach (var surveyId in toDelete)
             {

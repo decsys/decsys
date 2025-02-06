@@ -151,7 +151,7 @@ namespace Decsys.Repositories.LiteDb
 
             return new Models.PagedSurveySummary
             {
-                Items = pagedSurveys.Cast<Models.ISummaryItem>().ToList(),
+                SurveyItems = pagedSurveys.Cast<Models.ISummaryItem>().ToList(),
                 SurveyCount = (int)totalSurveys
             };        
         }
@@ -212,7 +212,7 @@ namespace Decsys.Repositories.LiteDb
             
             return new Models.PagedSurveySummary
              {
-                 Items = summaries.Cast<Models.ISummaryItem>().ToList(),
+                SurveyItems = summaries.Cast<Models.ISummaryItem>().ToList(),
                  SurveyCount = (int)totalSurveys
              };
         }

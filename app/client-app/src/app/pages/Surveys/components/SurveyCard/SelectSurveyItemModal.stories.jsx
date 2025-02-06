@@ -1,4 +1,4 @@
-import { SelectStudyModal } from "./SelectStudyModal";
+import { SelectSurveyItemModal } from "./SelectSurveyItemModal";
 import { surveys } from "./StudySelectList.stories";
 import { SurveysListProvider } from "../../contexts/SurveysList";
 import { SurveyCardActionsProvider } from "../../contexts/SurveyCardActions";
@@ -6,7 +6,7 @@ import { SurveyCardActionsProvider } from "../../contexts/SurveyCardActions";
 /* eslint-disable-next-line */
 export default {
   title: "Select Study Modal",
-  component: SelectStudyModal,
+  component: SelectSurveyItemModal,
   decorators: [
     (Story, context) => (
       <SurveysListProvider value={{ surveys, mutateSurveys: () => {} }}>
@@ -29,7 +29,7 @@ export default {
 };
 
 export const Basic = (args) => (
-  <SelectStudyModal
+  <SelectSurveyItemModal
     name="My Survey"
     id={1}
     size="2xl"

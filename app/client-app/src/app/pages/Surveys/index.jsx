@@ -91,7 +91,7 @@ const Surveys = ({ navigate, parentFolderName }) => {
     setPageIndex(0); // reset to first page whenever filter is changed
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
-  let surveys = data.items;
+  let surveys = data.surveyItems;
 
   parentFolderName
     ? (surveys = surveys.filter(

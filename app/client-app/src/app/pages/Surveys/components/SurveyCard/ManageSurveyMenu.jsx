@@ -15,7 +15,7 @@ import ExportModal from "components/shared/ExportModal";
 import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 import { capitalise } from "services/strings";
-import { SelectStudyModal } from "./SelectStudyModal";
+import { SelectSurveyItemModal } from "./SelectSurveyItemModal";
 import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
 import { useState } from "react";
 
@@ -44,7 +44,7 @@ const ManageSurveyMenu = ({
   const exportModal = useDisclosure();
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
-  const selectStudyModal = useDisclosure();
+  const selectSurveyItemModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate, deleteFolder } =
     useSurveyCardActions();
@@ -65,12 +65,12 @@ const ManageSurveyMenu = ({
 
   const canChangeFolderSelect = () => {
     setCanChangeFolder(true);
-    selectStudyModal.onOpen();
+    selectSurveyItemModal.onOpen();
   };
 
   const changeStudySelect = () => {
     setCanChangeFolder(false);
-    selectStudyModal.onOpen();
+    selectSurveyItemModal.onOpen();
   };
 
   return (
@@ -186,11 +186,11 @@ const ManageSurveyMenu = ({
           hasFixedSettings={!!parentSurveyId}
           parentFolderName={parentFolderName}
         />
-        <SelectStudyModal
+        <SelectSurveyItemModal
           id={id}
           name={name}
           parentId={parentSurveyId}
-          modalState={selectStudyModal}
+          modalState={selectSurveyItemModal}
           canChangeFolder={canChangeFolder}
           parentFolderName={parentFolderName}
         />

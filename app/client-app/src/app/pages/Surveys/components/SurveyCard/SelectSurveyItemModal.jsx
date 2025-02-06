@@ -286,7 +286,7 @@ export const StudySelectList = ({
   );
 };
 
-export const SelectStudyModal = ({
+export const SelectSurveyItemModal = ({
   id,
   name,
   parentId,
@@ -301,7 +301,7 @@ export const SelectStudyModal = ({
   const [direction, setDirection] = useState("up");
 
   const {
-    data: { items = [], studyCount = 0, folderCount = 0 } = {},
+    data: { surveyItems = [], studyCount = 0, folderCount = 0 } = {},
     mutateSurveys,
   } = useSurveysList({
     sortBy,
@@ -389,7 +389,8 @@ export const SelectStudyModal = ({
                     ?.name
                 : "None"
               : selectedStudyId
-              ? items?.find((survey) => survey.id == selectedStudyId)?.name
+              ? surveyItems?.find((survey) => survey.id == selectedStudyId)
+                  ?.name
               : "None"}
           </Text>
         </Stack>
@@ -408,7 +409,7 @@ export const SelectStudyModal = ({
         </Alert>
         <StudySelectList
           defaultValue={canChangeFolder ? selectedFolderName : selectedStudyId}
-          surveys={items}
+          surveys={surveyItems}
           folders={folders}
           onChange={handleChange}
           studyCount={studyCount}
