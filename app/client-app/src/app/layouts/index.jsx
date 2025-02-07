@@ -5,6 +5,7 @@ import results from "./Results";
 import manageAccount from "./ManageAccount";
 import wordlist from "./Wordlist";
 import wordlists from "./Wordlists";
+
 const layouts = {
   default: Default,
   preview,

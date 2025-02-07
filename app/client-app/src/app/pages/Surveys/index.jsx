@@ -44,7 +44,7 @@ const NoSurveys = ({ action }) => (
   </Box>
 );
 
-const Surveys = ({ navigate }) => {
+const Surveys = ({ navigate, parentFolderName }) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const [searchTerm, setSearchTerm] = useState(queryParams.get("search") || "");
@@ -73,8 +73,8 @@ const Surveys = ({ navigate }) => {
     canChangeStudy: false,
     pageIndex,
     pageSize,
+    parentFolderName: parentFolderName ?? "",
   });
-
   useEffect(() => {
     mutateSurveys();
   }, [
@@ -91,10 +91,17 @@ const Surveys = ({ navigate }) => {
     setPageIndex(0); // reset to first page whenever filter is changed
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
-  const surveys = data.items;
-  const totalItemCount = Math.ceil(
-    data.surveyCount + data.studyCount + data.folderCount
-  );
+  let surveys = data.surveyItems;
+
+  parentFolderName
+    ? (surveys = surveys.filter(
+        (survey) => survey.parentFolderName === parentFolderName
+      ))
+    : (surveys = surveys.filter((survey) => !survey.parentFolderName));
+
+  const totalItemCount = parentFolderName
+    ? Math.ceil(data.surveyCount + data.studyCount)
+    : Math.ceil(data.surveyCount + data.studyCount + data.folderCount);
 
   const addSurveyModal = useDisclosure();
   const addFolderModal = useDisclosure();
@@ -122,7 +129,7 @@ const Surveys = ({ navigate }) => {
 
   let surveyArea = <BusyPage verb="Fetching" noun="Surveys" />;
 
-  const pageBody = data.items.length ? (
+  const pageBody = surveys.length ? (
     (surveyArea = (
       <ShowSurveys
         surveys={surveys}
@@ -141,6 +148,7 @@ const Surveys = ({ navigate }) => {
         setPageIndex={setPageIndex}
         mutateSurveys={mutateSurveys}
         actions={SurveyCardActions}
+        parentFolderName={parentFolderName}
       />
     ))
   ) : (
@@ -155,11 +163,16 @@ const Surveys = ({ navigate }) => {
             addSurveyAction={handleAddSurvey}
             addStudyAction={handleAddStudy}
             addFolderAction={handleAddFolder}
+            parentFolderName={parentFolderName}
           />
           {pageBody}
         </Page>
 
-        <AddSurveyModal modalState={addSurveyModal} isStudy={addStudy} />
+        <AddSurveyModal
+          modalState={addSurveyModal}
+          isStudy={addStudy}
+          parentFolderName={parentFolderName}
+        />
         <AddFolderModal
           modalState={addFolderModal}
           mutateSurveys={mutateSurveys}

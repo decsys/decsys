@@ -92,8 +92,17 @@ namespace Decsys.Repositories.Mongo
                 Id = id,
                 Owner = ownerId,
                 IsStudy = model.IsStudy,
-                ParentSurveyId = parent?.Id
+                ParentSurveyId = parent?.Id,
+                ParentFolderName = model.ParentFolderName
             };
+
+            
+            var parentFolder = _folders.Find(f => f.Name == model.ParentFolderName).SingleOrDefault();
+            if(parentFolder is not null && survey.ParentSurveyId is null) // TODO update
+            {
+                parentFolder.SurveyCount++;
+                _folders.ReplaceOne(f => f.Name == model.ParentFolderName, parentFolder);
+            }
 
             if (survey.IsStudy)
                 survey.Name = "Untitled Study";
@@ -155,6 +164,14 @@ namespace Decsys.Repositories.Mongo
             var entity = _mapper.Map<Survey>(survey);
 
             entity.ParentSurveyId = model.ParentSurveyId;
+            entity.ParentFolderName = model.ParentFolderName;
+
+            var parentFolder = _folders.Find(f => f.Name == model.ParentFolderName).SingleOrDefault();
+            if (parentFolder is not null)
+            {
+                parentFolder.SurveyCount++;
+                _folders.ReplaceOne(f => f.Name == model.ParentFolderName, parentFolder);
+            }
 
             if (!string.IsNullOrWhiteSpace(model.Name)) entity.Name = model.Name;
 
@@ -206,12 +223,22 @@ namespace Decsys.Repositories.Mongo
 
         public void Delete(int id)
         {
+            var survey = Find(id);
+            var parentFolderName = survey.ParentFolderName;
+
+            if (parentFolderName is not null && survey?.Parent?.Id is null) 
+            {
+                var parentFolder = _folders.Find(f => f.Name == parentFolderName).SingleOrDefault();
+                parentFolder.SurveyCount--; 
+                _folders.ReplaceOne(f => f.Name == parentFolderName, parentFolder);
+            }
+
             // Delete all Instance Event Logs
             _instances.Find(x => x.SurveyId == id)
                 .Project(x => x.Id)
                 .ToList()
                 .ForEach(_events.Delete);
-
+            
             // Delete all Instances
             _instances.DeleteMany(x => x.SurveyId == id);
 
@@ -261,9 +288,10 @@ namespace Decsys.Repositories.Mongo
             bool isStudy = false,
             bool canChangeStudy = false,
             int pageIndex = 0,
-            int pageSize = 10)
+            int pageSize = 10,
+            string? parentFolderName = null)
 
-            => List(null, userId, includeOwnerless, name, view, sortBy, direction, isStudy, canChangeStudy, pageIndex,pageSize);
+            => List(null, userId, includeOwnerless, name, view, sortBy, direction, isStudy, canChangeStudy, pageIndex,pageSize, parentFolderName);
 
         private Models.PagedSurveySummary List(
             int? parentId = null,
@@ -276,16 +304,18 @@ namespace Decsys.Repositories.Mongo
             bool isStudy = false,
             bool canChangeStudy = false,
             int pageIndex = 0,
-            int pageSize = 10
-        )
+            int pageSize = 10,
+            string? parentFolderName = null)
         {
             // Filtering
             var surveys = userId is null
-                ? _surveys.Find(x => x.ParentSurveyId == parentId).ToList()
+                ? _surveys.Find(x => x.ParentSurveyId == parentId &&
+                                     (string.IsNullOrWhiteSpace(parentFolderName) || x.ParentFolderName == parentFolderName)).ToList()
                 : _surveys.Find(
                     x => x.ParentSurveyId == parentId &&
                     (!isStudy || x.IsStudy == isStudy) &&
-                    (x.Owner == userId || (includeOwnerless && x.Owner == null))
+                    (x.Owner == userId || (includeOwnerless && x.Owner == null)) &&
+                    (string.IsNullOrWhiteSpace(parentFolderName) || x.ParentFolderName == parentFolderName)
                 ).ToList();
 
             var folders = _folders.Find(f => f.Owner == userId).ToList();
@@ -374,13 +404,30 @@ namespace Decsys.Repositories.Mongo
             var sortedItems = SortItems(items, sortBy, direction);
 
             // Pagination
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
+            {
+                sortedItems = sortedItems
+                    .Where(x => x is Models.SurveySummary survey && survey.ParentFolderName == parentFolderName)
+                    .ToList();
+            }
+            else
+            {
+                sortedItems = sortedItems
+                    .Where(x => !(x is Models.SurveySummary survey) || survey.ParentFolderName == null)
+                    .ToList();
+            }
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
+            {
+                sortedItems = sortedItems.Where(x => !(x is Models.Folder)).ToList();
+            }
+
             var pagedItems = sortedItems
-                .Skip((pageIndex) * pageSize)
+                .Skip(pageIndex * pageSize)
                 .Take(pageSize)
                 .ToList();
-            
+
             // Count Surveys
-           
+
             var baseFilter = Builders<Survey>.Filter.Empty;
 
             // Non Study Surveys
@@ -415,13 +462,26 @@ namespace Decsys.Repositories.Mongo
                 baseFilter &= archivedFilter;
             }
 
-            var surveyCount = _surveys.CountDocuments(baseFilter);
-            
+            int surveyCount;
+            int studyCount;
+
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
+            {
+                var folderFilter = Builders<Survey>.Filter.Where(x => x.ParentFolderName == parentFolderName);
+                surveyCount = (int)_surveys.CountDocuments(baseFilter & folderFilter);
+                studyCount = summaries.Count(s => s.IsStudy && s.ParentFolderName == parentFolderName);
+            }
+            else
+            {
+                surveyCount = (int)_surveys.CountDocuments(baseFilter & Builders<Survey>.Filter.Where(x => string.IsNullOrWhiteSpace(x.ParentFolderName)));
+                studyCount = summaries.Count(s => s.IsStudy && string.IsNullOrWhiteSpace(s.ParentFolderName));
+            }
+
             return new Models.PagedSurveySummary
             {
-                Items = pagedItems,
-                SurveyCount = (int)surveyCount ,
-                StudyCount = summaries.Count(s => s.IsStudy is true),
+                SurveyItems = pagedItems,
+                SurveyCount = surveyCount,
+                StudyCount = studyCount,
                 FolderCount = folderItems.Count()
             };
         }
@@ -481,7 +541,7 @@ namespace Decsys.Repositories.Mongo
         private List<Models.ISummaryItem> SortItems(List<Models.ISummaryItem> surveys, string sortBy, string direction)
         {
             var folders = surveys.OfType<Models.Folder>().Cast<Models.ISummaryItem>().ToList();
-            var surveySummaries = surveys.OfType<Models.SurveySummary>().Cast<Models.ISummaryItem>().ToList();
+            var surveySummaries = surveys.OfType<Models.SurveySummary>().ToList(); 
 
             IEnumerable<Models.ISummaryItem> sortedSurveys;
 
@@ -497,32 +557,38 @@ namespace Decsys.Repositories.Mongo
                 case SurveySortingKeys.Type:
                     if (isAscending)
                     {
-                        sortedSurveys = surveySummaries.OrderBy(s => s.Name)
+                        sortedSurveys = surveySummaries
+                            .OrderBy(s => s.IsStudy) 
+                            .ThenBy(s => s.Name)
+                            .Cast<Models.ISummaryItem>()
                             .Concat(folders.OrderBy(f => f.Name));
                     }
                     else
                     {
                         sortedSurveys = folders.OrderBy(f => f.Name)
-                            .Concat(surveySummaries.OrderBy(s => s.Name));
+                            .Concat(surveySummaries
+                                .OrderBy(s => !s.IsStudy) 
+                                .ThenBy(s => s.Name)
+                                .Cast<Models.ISummaryItem>());
                     }
                     break;
                 case SurveySortingKeys.Active:
                     sortedSurveys = folders.Concat(
                         isAscending
-                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).ActiveInstanceId ?? int.MinValue)
-                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).ActiveInstanceId ?? int.MinValue));
+                        ? surveySummaries.OrderBy(s => (s).ActiveInstanceId ?? int.MinValue)
+                        : surveySummaries.OrderByDescending(s => (s).ActiveInstanceId ?? int.MinValue));
                     break;
                 case SurveySortingKeys.RunCount:
                     sortedSurveys = folders.Concat(
                         isAscending
-                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).RunCount)
-                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).RunCount));
+                        ? surveySummaries.OrderBy(s => (s).RunCount)
+                        : surveySummaries.OrderByDescending(s => (s).RunCount));
                     break;
                 case SurveySortingKeys.Archived:
                     sortedSurveys = folders.Concat(
                         isAscending
-                        ? surveySummaries.OrderBy(s => ((Models.SurveySummary)s).ArchivedDate ?? DateTimeOffset.MinValue)
-                        : surveySummaries.OrderByDescending(s => ((Models.SurveySummary)s).ArchivedDate ?? DateTimeOffset.MinValue));
+                        ? surveySummaries.OrderBy(s => (s).ArchivedDate ?? DateTimeOffset.MinValue)
+                        : surveySummaries.OrderByDescending(s => (s).ArchivedDate ?? DateTimeOffset.MinValue));
                     break;
                 default:
                     sortedSurveys = folders
@@ -537,7 +603,7 @@ namespace Decsys.Repositories.Mongo
             return sortedSurveys.ToList();
         }
 
-
+         
         public void SetParentFolder(int surveyId, string? newParentFolderName = null)
         {
             var survey = _surveys.Find(x => x.Id == surveyId).SingleOrDefault();

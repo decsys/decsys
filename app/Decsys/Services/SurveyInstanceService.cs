@@ -79,7 +79,7 @@ namespace Decsys.Services
 
             if (survey.IsStudy)
             {
-                var children = _surveys.ListChildren(surveyId).Items
+                var children = _surveys.ListChildren(surveyId).SurveyItems
                         .OfType<Models.SurveySummary>();
 
                 // Create child instances too
@@ -148,7 +148,7 @@ namespace Decsys.Services
             // If study, close child instances too
             if (instance.Survey.IsStudy)
             {
-                var children = _surveys.ListChildren(surveyId).Items
+                var children = _surveys.ListChildren(surveyId).SurveyItems
                        .OfType<Models.SurveySummary>();
 
                 foreach (var child in children)

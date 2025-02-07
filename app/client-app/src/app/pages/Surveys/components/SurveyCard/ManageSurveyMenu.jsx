@@ -15,7 +15,7 @@ import ExportModal from "components/shared/ExportModal";
 import { CreateSurveyModal } from "components/shared/CreateSurveyModal";
 import { ExternalDetailsModal } from "../ExternalDetailsModal";
 import { capitalise } from "services/strings";
-import { SelectStudyModal } from "./SelectStudyModal";
+import { SelectSurveyItemModal } from "./SelectSurveyItemModal";
 import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
 import { useState } from "react";
 
@@ -35,6 +35,7 @@ const ManageSurveyMenu = ({
   handleUnarchive,
   handleArchive,
   isFolder,
+  parentFolderName,
 }) => {
   const [canChangeFolder, setCanChangeFolder] = useState(false);
   const deleteModal = useDisclosure();
@@ -43,13 +44,19 @@ const ManageSurveyMenu = ({
   const exportModal = useDisclosure();
   const externalDetailsModal = useDisclosure();
   const createSurveyModal = useDisclosure();
-  const selectStudyModal = useDisclosure();
+  const selectSurveyItemModal = useDisclosure();
 
   const { duplicate, deleteSurvey, navigate, deleteFolder } =
     useSurveyCardActions();
 
-  const handleDuplicate = (name, type, settings, creationOptions) => {
-    duplicate(id, name, type, settings, creationOptions);
+  const handleDuplicate = (
+    name,
+    type,
+    settings,
+    creationOptions,
+    parentFolderName
+  ) => {
+    duplicate(id, name, type, settings, creationOptions, parentFolderName);
     createSurveyModal.onClose();
   };
 
@@ -58,12 +65,12 @@ const ManageSurveyMenu = ({
 
   const canChangeFolderSelect = () => {
     setCanChangeFolder(true);
-    selectStudyModal.onOpen();
+    selectSurveyItemModal.onOpen();
   };
 
   const changeStudySelect = () => {
     setCanChangeFolder(false);
-    selectStudyModal.onOpen();
+    selectSurveyItemModal.onOpen();
   };
 
   return (
@@ -80,8 +87,14 @@ const ManageSurveyMenu = ({
           />
           <MenuList>
             {isFolder && (
+              <MenuItem onClick={() => navigate(`/admin/folders/${name}`)}>
+                View
+              </MenuItem>
+            )}
+            {isFolder && (
               <MenuItem onClick={deleteFolderModal.onOpen}>Delete</MenuItem>
             )}
+
             {!isFolder && (
               <>
                 {editable && (
@@ -114,10 +127,11 @@ const ManageSurveyMenu = ({
                     Change Study...
                   </MenuItem>
                 )}
-
                 {!activeInstanceId && (
                   <MenuItem onClick={canChangeFolderSelect}>
-                    Add to a Folder...
+                    {parentFolderName
+                      ? "Change Folder..."
+                      : "Add to a Folder..."}
                   </MenuItem>
                 )}
 
@@ -170,13 +184,15 @@ const ManageSurveyMenu = ({
           parentId={parentSurveyId}
           isFixedType={!!parentSurveyId}
           hasFixedSettings={!!parentSurveyId}
+          parentFolderName={parentFolderName}
         />
-        <SelectStudyModal
+        <SelectSurveyItemModal
           id={id}
           name={name}
           parentId={parentSurveyId}
-          modalState={selectStudyModal}
+          modalState={selectSurveyItemModal}
           canChangeFolder={canChangeFolder}
+          parentFolderName={parentFolderName}
         />
       </>
     </>

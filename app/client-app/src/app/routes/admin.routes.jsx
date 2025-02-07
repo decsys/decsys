@@ -10,6 +10,7 @@ import { useAuth } from "auth/AuthContext";
 import { BusyPage } from "components/core";
 import Wordlists from "app/pages/Wordlists";
 import DefaultWordlist from "app/pages/Wordlist/DefaultWordlist";
+import Folders from "app/pages/Folders";
 
 const Admin = () => {
   const { isAdmin, user, login } = useAuth();
@@ -31,6 +32,7 @@ const Admin = () => {
       <Preview path="/surveys/:id/preview" />
       <Results path="/surveys/:id/results" />
       <Dashboard path="/surveys/dashboard/:combinedId" />
+      <Folders path="/folders/:name" />
       <Error message="404: Not Found" default />
     </Router>
   );

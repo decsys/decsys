@@ -36,11 +36,16 @@ export const BarButton = (p) => {
   );
 };
 
-export const BackButton = () => (
-  <BarButton as={Link} to="/admin/surveys" leftIcon={<FaChevronLeft />}>
-    Survey List
-  </BarButton>
-);
+export const BackButton = ({ parentFolderName }) => {
+  const link = parentFolderName
+    ? `/admin/folders/${parentFolderName}`
+    : "/admin/surveys";
+  return (
+    <BarButton as={Link} to={link} leftIcon={<FaChevronLeft />}>
+      Survey List
+    </BarButton>
+  );
+};
 
 export const PreviewButton = () => {
   const location = useLocation();

@@ -1,5 +1,5 @@
 import SurveyCard from "./SurveyCard";
-import { Stack, Box, Input, Flex, Text } from "@chakra-ui/react";
+import { Stack, Box, Input, Flex, Text, Button, Link } from "@chakra-ui/react";
 import { SurveyProvider } from "../../../contexts/Survey";
 import FilterControls from "./Pagination/PaginationControls";
 import SortPanel from "components/shared/SortPanel";
@@ -21,6 +21,7 @@ const SurveysList = ({
   pageIndex,
   setPageIndex,
   mutateSurveys,
+  parentFolderName,
 }) => {
   const totalPages = Math.ceil(totalCount / pageSize);
 
@@ -100,15 +101,14 @@ const SurveysList = ({
         {surveys &&
           surveys.map((survey) => {
             return (
-              !survey.parentFolderName && (
-                <SurveyProvider key={survey.id} value={survey}>
-                  <SurveyCard
-                    mutateSurveys={mutateSurveys}
-                    isFolder={survey.isFolder}
-                    folder={survey}
-                  />
-                </SurveyProvider>
-              )
+              <SurveyProvider key={survey.id} value={survey}>
+                <SurveyCard
+                  mutateSurveys={mutateSurveys}
+                  isFolder={survey.isFolder}
+                  folder={survey}
+                  parentFolderName={parentFolderName}
+                />
+              </SurveyProvider>
             );
           })}
       </Stack>

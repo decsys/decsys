@@ -1,4 +1,4 @@
-import { StudySelectList } from "./SelectStudyModal";
+import { StudySelectList } from "./SelectSurveyItemModal";
 import { toDictionary } from "services/data-structures";
 
 /* eslint-disable-next-line */

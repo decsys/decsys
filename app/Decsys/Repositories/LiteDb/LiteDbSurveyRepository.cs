@@ -52,7 +52,7 @@ namespace Decsys.Repositories.LiteDb
             return survey;
         }
         
-        public Models.PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, bool isStudy=false, bool canChangeStudy = false,int pageIndex = 0, int pageSize = 10)
+        public Models.PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, bool isStudy=false, bool canChangeStudy = false,int pageIndex = 0, int pageSize = 10, string? parentFolderName = null)
         {
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();
@@ -151,7 +151,7 @@ namespace Decsys.Repositories.LiteDb
 
             return new Models.PagedSurveySummary
             {
-                Items = pagedSurveys.Cast<Models.ISummaryItem>().ToList(),
+                SurveyItems = pagedSurveys.Cast<Models.ISummaryItem>().ToList(),
                 SurveyCount = (int)totalSurveys
             };        
         }
@@ -212,7 +212,7 @@ namespace Decsys.Repositories.LiteDb
             
             return new Models.PagedSurveySummary
              {
-                 Items = summaries.Cast<Models.ISummaryItem>().ToList(),
+                SurveyItems = summaries.Cast<Models.ISummaryItem>().ToList(),
                  SurveyCount = (int)totalSurveys
              };
         }
@@ -347,6 +347,7 @@ namespace Decsys.Repositories.LiteDb
 
         public void Delete(int id)
         {
+
             // Delete all Instance Event Logs
             _instances.Find(x => x.Survey.Id == id)
                 .Select(x => x.Id)

@@ -4,7 +4,7 @@ import CreateBlankSurveyButton from "./CreateBlankSurveyButton";
 import LoadInternalSurveys from "./LoadInternalSurveys";
 import ImportSurvey from "./ImportSurvey";
 
-const AddSurveyModal = ({ modalState, parent, isStudy }) => {
+const AddSurveyModal = ({ modalState, parent, isStudy, parentFolderName }) => {
   return (
     <StandardModal
       {...modalState}
@@ -16,6 +16,7 @@ const AddSurveyModal = ({ modalState, parent, isStudy }) => {
           closeModal={modalState.onClose}
           parent={parent}
           isStudy={isStudy}
+          parentFolderName={parentFolderName}
         />
         <ImportSurvey
           modalState={modalState}

@@ -66,7 +66,8 @@ namespace Decsys.Controllers
             [FromQuery] bool isStudy = false,
             [FromQuery] bool canChangeStudy = false,
             [FromQuery] int pageIndex = 0,
-            [FromQuery] int pageSize = 10)
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? parentFolderName = null)
         {
             return _surveys.List(
                 userId: OwnerId,
@@ -78,7 +79,8 @@ namespace Decsys.Controllers
                 isStudy,
                 canChangeStudy,
                 pageIndex,
-                pageSize);
+                pageSize,
+                parentFolderName);
         }
 
         [HttpGet("{id}/children")]

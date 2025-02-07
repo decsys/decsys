@@ -13,7 +13,7 @@ import { useEditorBarContext } from "../../contexts/EditorBar";
 import { useSurvey } from "api/surveys";
 
 const EditorBar = () => {
-  const { id, name, pages } = useFetchSurvey();
+  const { id, name, pages, parentFolderName } = useFetchSurvey();
   const { saveName, nameState } = useEditorBarContext();
   const { colorMode } = useColorMode();
   const bg = { light: "gray.800" };
@@ -25,7 +25,7 @@ const EditorBar = () => {
       templateColumns="auto 1fr auto auto auto auto auto"
       bg={bg[colorMode || defaultColorMode]}
     >
-      <BackButton />
+      <BackButton parentFolderName={parentFolderName} />
 
       <Flex bg="gray.100">
         <NameInput
@@ -37,7 +37,7 @@ const EditorBar = () => {
 
       {hasPages && <PreviewButton />}
       <ExportButton id={id} name={name} />
-      <DuplicateButton name={name} />
+      <DuplicateButton name={name} parentFolderName={parentFolderName} />
       <DeleteButton name={name} />
     </Grid>
   );

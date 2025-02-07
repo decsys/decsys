@@ -3,24 +3,42 @@ import {
   Alert,
   AlertIcon,
   AlertDescription,
-  Flex,
-  Stack,
   Text,
   AlertTitle,
   HStack,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
-import { FaExclamationTriangle } from "react-icons/fa";
 import StandardModal from "components/core/StandardModal";
 
 const DeleteFolderModal = ({ modalState, name, onConfirm, surveyCount }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToast();
 
   const handleDelete = async () => {
     if (surveyCount === 0) {
       setIsSubmitting(true);
-      await onConfirm();
-      setIsSubmitting(false);
+      try {
+        await onConfirm();
+        toast({
+          title: "Folder deleted",
+          description: "The folder was successfully deleted.",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        modalState.onClose();
+      } catch (error) {
+        toast({
+          title: "Error Deleting Folder",
+          description: "An error occurred while deleting the folder.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 

@@ -1,6 +1,12 @@
 import { setSurveyName, duplicateSurvey, deleteSurvey } from "api/surveys";
 
-export const editorBarActions = (id, navigate, mutate, setNameState) => ({
+export const editorBarActions = (
+  id,
+  navigate,
+  mutate,
+  setNameState,
+  parentFolderName
+) => ({
   saveName: async (newName) => {
     setNameState({ isSaving: true });
     const { data: name } = await setSurveyName(id, newName);
@@ -10,8 +16,14 @@ export const editorBarActions = (id, navigate, mutate, setNameState) => ({
     // we don't want them to trigger erroneously on other re-renders
     setNameState({});
   },
-  duplicate: async (name, type, settings) => {
-    const { data: newId } = await duplicateSurvey(id, name, type, settings);
+  duplicate: async (name, type, settings, parentFolderName) => {
+    const { data: newId } = await duplicateSurvey(
+      id,
+      name,
+      type,
+      settings,
+      parentFolderName
+    );
     navigate(`../${newId}`, {
       state: {
         toast: {

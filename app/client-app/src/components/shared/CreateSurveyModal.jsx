@@ -63,6 +63,7 @@ const CreateSurveyModal = ({
   isStudy,
   parentId,
   hasFixedSettings,
+  parentFolderName,
 }) => {
   const entityName = isStudy ? "Study" : "Survey";
   const defaultName = name ?? "";
@@ -95,10 +96,16 @@ const CreateSurveyModal = ({
               : o,
           {}
         );
-    await onCreate(name, type, settings, {
-      isStudy,
-      parentId,
-    });
+    await onCreate(
+      name,
+      type,
+      settings,
+      {
+        isStudy,
+        parentId,
+      },
+      parentFolderName
+    );
     actions.setSubmitting(false);
     actions.resetForm();
     modalState.onClose();

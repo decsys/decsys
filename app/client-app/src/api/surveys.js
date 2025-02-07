@@ -30,6 +30,7 @@ export const useSurveysList = ({
   canChangeStudy = false,
   pageIndex = 0,
   pageSize = 10,
+  parentFolderName = "",
 } = {}) => {
   const queryString = new URLSearchParams({
     name,
@@ -40,6 +41,7 @@ export const useSurveysList = ({
     canChangeStudy: canChangeStudy.toString(),
     pageIndex: pageIndex.toString(),
     pageSize: pageSize.toString(),
+    parentFolderName,
   }).toString();
 
   return useSWR(`/api/surveys/?${queryString}`, defaultFetcher(true), {
@@ -69,11 +71,12 @@ export const createSurvey = async (
   name,
   type,
   settings,
-  { isStudy, parentId: parentSurveyId } = {}
+  { isStudy, parentId: parentSurveyId } = {},
+  parentFolderName
 ) =>
   await axios.post(
     "/api/surveys",
-    { name, type, settings, isStudy, parentSurveyId },
+    { name, type, settings, isStudy, parentSurveyId, parentFolderName },
     withHeaders(await authorization_BearerToken())
   );
 
@@ -122,11 +125,12 @@ export const duplicateSurvey = async (
   name,
   type,
   settings,
-  { isStudy, parentId: parentSurveyId }
+  { isStudy, parentId: parentSurveyId } = {},
+  parentFolderName
 ) =>
   await axios.post(
     `/api/surveys/${id}/duplicate`,
-    { name, type, settings, isStudy, parentSurveyId },
+    { name, type, settings, isStudy, parentSurveyId, parentFolderName },
     withHeaders(await authorization_BearerToken())
   );
 

@@ -6,6 +6,7 @@ import { defaultColorMode } from "themes";
 import { useDerivedState } from "hooks/useDerivedState";
 import useDeferredAction from "hooks/useDeferredAction";
 import { usePageListContext } from "../../contexts/PageList";
+
 const PageHeader = ({ page, order, dragHandleProps }) => {
   const { colorMode } = useColorMode();
   const headerStyle = { light: { bg: "gray.300" }, dark: { bg: "gray.600" } };

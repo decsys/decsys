@@ -22,6 +22,7 @@ namespace Decsys.Services
     public class SurveyService
     {
         private readonly ISurveyRepository _surveys;
+        private readonly IFolderRepository _folder;
         private readonly IImageService _images;
         private readonly ISurveyInstanceRepository _instances;
         private readonly IOptionsSnapshot<ComponentTypeMap> _componentTypeMaps;
@@ -30,12 +31,14 @@ namespace Decsys.Services
         /// <summary>DI Constructor</summary>
         public SurveyService(
             ISurveyRepository surveys,
+            IFolderRepository folder,
             IImageService images,
             ISurveyInstanceRepository instances,
             IOptionsSnapshot<ComponentTypeMap> componentTypeMaps,
             WebhookService webhooks)
         {
             _surveys = surveys;
+            _folder = folder;
             _images = images;
             _instances = instances;
             _componentTypeMaps = componentTypeMaps;
@@ -110,9 +113,10 @@ namespace Decsys.Services
             bool isStudy = false,
             bool canChangeStudy = false,
             int pageIndex = 0,
-            int pageSize = 10)
+            int pageSize = 10,
+            string? parentFolderName = null)
         {
-            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, isStudy, canChangeStudy, pageIndex, pageSize);
+            return _surveys.List(userId, includeOwnerless, name, view, sortBy, direction, isStudy, canChangeStudy, pageIndex, pageSize, parentFolderName);
         }
 
 
@@ -122,7 +126,7 @@ namespace Decsys.Services
         /// <param name="parentId"></param>
         /// <returns></returns>
         public IEnumerable<SurveySummary> ListChildren(int parentId)
-           => _surveys.ListChildren(parentId).Items
+           => _surveys.ListChildren(parentId).SurveyItems
                .OfType<SurveySummary>(); 
 
 
@@ -182,7 +186,7 @@ namespace Decsys.Services
             {
                 var study = _surveys.Find(newId);
 
-                var children = _surveys.ListChildren(oldId).Items
+                var children = _surveys.ListChildren(oldId).SurveyItems
                     .OfType<Models.SurveySummary>();
                 foreach (var child in children)
                 {
@@ -253,12 +257,18 @@ namespace Decsys.Services
                     $"The specified survey {id} is a Study and therefore cannot have a parent.", nameof(id));
 
             Survey? parent = null;
+            if(parentId is null)
+            {
+                _folder.AddFolderCountForStudy(id);
+            }
+
             if (parentId is not null)
             {
                 parent = _surveys.Find(parentId.Value) ?? throw new KeyNotFoundException();
                 if (!parent.IsStudy)
                     throw new ArgumentException(
                         $"The specified parent {parentId} is not a Study and therefore cannot have children.", nameof(parentId));
+                _folder.SubstractFolderCountForStudy(id);
             }
 
             survey.Parent = parent;
@@ -295,7 +305,7 @@ namespace Decsys.Services
 
             // Studies need to delete children too
             var children = _surveys.ListChildren(id);
-            toDelete.AddRange(children.Items.OfType<SurveySummary>().Select(x => x.Id));
+            toDelete.AddRange(children.SurveyItems.OfType<SurveySummary>().Select(x => x.Id));
 
             foreach (var surveyId in toDelete)
             {

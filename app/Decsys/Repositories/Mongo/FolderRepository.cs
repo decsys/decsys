@@ -12,15 +12,18 @@ public class FolderRepository : IFolderRepository
 {
     private readonly IMapper _mapper;
     private readonly IMongoCollection<Folder> _folders;
+    private readonly ISurveyRepository _surveys;
 
     public FolderRepository(
         IOptions<HostedDbSettings> config,
         IMapper mapper,
-        IMongoClient mongo)
+        IMongoClient mongo,
+        ISurveyRepository surveys)
     {
         _mapper = mapper;
         var db = mongo.GetDatabase(config.Value.DatabaseName);
         _folders = db.GetCollection<Folder>(Collections.Folders);
+        _surveys = surveys;
     }
 
     public async Task<Models.Folder> Create(string name, string? ownerId = null)
@@ -85,5 +88,25 @@ public class FolderRepository : IFolderRepository
         }
 
         await _folders.DeleteOneAsync(f => f.Name == name && f.Owner == ownerId);
+    }
+
+    public async Task AddFolderCountForStudy(int id)
+    {
+        var survey = _surveys.Find(id);
+        var parentFolderName = survey.ParentFolderName;
+
+        var parentFolder = _folders.Find(f => f.Name == parentFolderName).SingleOrDefault();
+        parentFolder.SurveyCount++;
+        await _folders.ReplaceOneAsync(f => f.Name == parentFolderName, parentFolder);  
+    }
+
+    public async Task SubstractFolderCountForStudy(int id)
+    {
+        var survey = _surveys.Find(id);
+        var parentFolderName = survey.ParentFolderName;
+
+        var parentFolder = _folders.Find(f => f.Name == parentFolderName).SingleOrDefault();
+        parentFolder.SurveyCount--;
+        await _folders.ReplaceOneAsync(f => f.Name == parentFolderName, parentFolder);
     }
 }

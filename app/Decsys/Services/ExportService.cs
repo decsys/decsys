@@ -33,7 +33,7 @@ namespace Decsys.Services
         {
             var zip = await ExportStructure(surveyId);
 
-            var children = _surveys.ListChildren(surveyId).Items
+            var children = _surveys.ListChildren(surveyId).SurveyItems
                 .OfType<Models.SurveySummary>();
 
             foreach (var child in children)
@@ -82,7 +82,7 @@ namespace Decsys.Services
                     $"{studyPrefix}Instance-{publishTimestamp}.json");
             }
 
-            var children = _surveys.ListChildren(surveyId).Items
+            var children = _surveys.ListChildren(surveyId).SurveyItems
             .OfType<Models.SurveySummary>();
 
             foreach (var child in children)

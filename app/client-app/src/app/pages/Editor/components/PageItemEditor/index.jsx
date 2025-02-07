@@ -34,6 +34,7 @@ const PageItemCustomParamsEditor = ({
 
 const PageItemEditor = () => {
   const { pages, id, mutate } = useFetchSurvey();
+
   const { selectedPageItem, setSelectedPageItem } = usePageListContext();
 
   if (!selectedPageItem?.itemId) return null;
