@@ -28,5 +28,5 @@
       }
     }
   },
-  "packageManager": "pnpm@9.15.5"
+  "packageManager": "npm@11.1.0+sha1.dba08f7d0f5301ebedaf968b4f74b2282f97a750"
 }
