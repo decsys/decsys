@@ -312,7 +312,6 @@ export const SelectSurveyItemModal = ({
     });
 
   const { data: foldersSummary, mutate } = useFolders(pageIndex, pageSize);
-  console.log(foldersSummary);
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const { setSurveyFolder } = useSurveyCardActions(navigate, mutateSurveys);
