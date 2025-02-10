@@ -20,8 +20,16 @@ export const checkExistingFolder = async (name) => {
   return response.data;
 };
 
-export const useFolders = () =>
-  useSWR("/api/Folder", defaultFetcher(true), { suspense: true });
+export const useFolders = (pageIndex = 0, pageSize = 10) => {
+  const queryString = new URLSearchParams({
+    pageIndex: pageIndex.toString(),
+    pageSize: pageSize.toString(),
+  }).toString();
+
+  return useSWR(`/api/Folder/?${queryString}`, defaultFetcher(true), {
+    suspense: true,
+  });
+};
 
 export const deleteFolder = async (name) => {
   const headers = await withHeaders(await authorization_BearerToken());

@@ -63,12 +63,14 @@ public class FolderController: ControllerBase
     [SwaggerOperation("Get all folders for the current user.")]
     [SwaggerResponse(200, "Returns a list of folders.", Type = typeof(IEnumerable<Folder>))]
     [SwaggerResponse(401, "Unauthorized.")]
-    public async Task<IActionResult> ListFolders()
+    public async Task<IActionResult> ListFolders(
+    [FromQuery] int pageIndex = 0,
+    [FromQuery] int pageSize = 10)
     {
         try
         {
             string ownerId = User.GetUserId(); 
-            var folders = await _folders.List(ownerId);
+            var folders = await _folders.List(ownerId, pageIndex,pageSize);
             return Ok(folders);
         }
         catch (UnauthorizedAccessException)

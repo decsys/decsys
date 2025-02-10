@@ -18,7 +18,7 @@ public class LiteDbFolderRepository : IFolderRepository
     public async Task<Folder?> GetByName(string name, string? ownerId = null)
      => await _folders.GetByName(name);
 
-    public async Task<IEnumerable<Folder>> List(string? ownerId = null)
+    public async Task<PagedFolderSummary> List(string? ownerId = null, int pageIndex = 0, int pageSize = 10)
      => await _folders.List();
 
     public async Task Delete(string name, string? ownerId = null)

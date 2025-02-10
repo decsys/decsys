@@ -181,7 +181,7 @@ const NoneCard = (p) => {
 export const StudySelectList = ({
   defaultValue = "none",
   surveys,
-  folders,
+  foldersSummary,
   onChange,
   studyCount,
   folderCount,
@@ -225,7 +225,7 @@ export const StudySelectList = ({
     setPageIndex(0);
   };
 
-  const changeFoldersList = folders.filter(
+  const changeFoldersList = foldersSummary.folders.filter(
     (folder) => folder.name !== parentFolderName
   );
 
@@ -300,20 +300,19 @@ export const SelectSurveyItemModal = ({
   const [sortBy, setSortBy] = useState("name");
   const [direction, setDirection] = useState("up");
 
-  const {
-    data: { surveyItems = [], studyCount = 0, folderCount = 0 } = {},
-    mutateSurveys,
-  } = useSurveysList({
-    sortBy,
-    direction,
-    isStudy: true,
-    canChangeStudy: true,
-    pageIndex,
-    pageSize,
-    parentFolderName,
-  });
+  const { data: { surveyItems = [], studyCount = 0 } = {}, mutateSurveys } =
+    useSurveysList({
+      sortBy,
+      direction,
+      isStudy: true,
+      canChangeStudy: true,
+      pageIndex,
+      pageSize,
+      parentFolderName,
+    });
 
-  const { data: folders, mutate } = useFolders();
+  const { data: foldersSummary, mutate } = useFolders(pageIndex, pageSize);
+  console.log(foldersSummary);
 
   const { changeStudy } = useSurveyCardActions(navigate, mutateSurveys);
   const { setSurveyFolder } = useSurveyCardActions(navigate, mutateSurveys);
@@ -385,8 +384,9 @@ export const SelectSurveyItemModal = ({
             <strong> {canChangeFolder ? "Folder" : "Parent"}: </strong>
             {canChangeFolder
               ? selectedFolderName
-                ? folders?.find((folder) => folder.name == selectedFolderName)
-                    ?.name
+                ? foldersSummary.folders?.find(
+                    (folder) => folder.name == selectedFolderName
+                  )?.name
                 : "None"
               : selectedStudyId
               ? surveyItems?.find((survey) => survey.id == selectedStudyId)
@@ -410,10 +410,10 @@ export const SelectSurveyItemModal = ({
         <StudySelectList
           defaultValue={canChangeFolder ? selectedFolderName : selectedStudyId}
           surveys={surveyItems}
-          folders={folders}
+          foldersSummary={foldersSummary}
           onChange={handleChange}
           studyCount={studyCount}
-          folderCount={folderCount}
+          folderCount={foldersSummary.folderCount}
           pageIndex={pageIndex}
           setPageIndex={setPageIndex}
           pageSize={pageSize}
