@@ -57,7 +57,7 @@ public class FolderRepository : IFolderRepository
         return _mapper.Map<Models.Folder>(entity);
     }
 
-    public async Task<IEnumerable<Models.Folder>> List(string? ownerId = null)
+    public async Task<Models.PagedFolderSummary> List(string? ownerId = null, int pageIndex = 0, int pageSize = 10)
     {
         if (string.IsNullOrWhiteSpace(ownerId))
         {
@@ -65,7 +65,14 @@ public class FolderRepository : IFolderRepository
         }
 
         var entities = await _folders.Find(f => f.Owner == ownerId).ToListAsync();
-        return _mapper.Map<IEnumerable<Models.Folder>>(entities);
+        var pagedItems = entities.Skip(pageIndex * pageSize).Take(pageSize);
+        var folder = _mapper.Map<List<Models.Folder>>(pagedItems);
+        var folderCount = entities.Count();
+        return new Models.PagedFolderSummary
+        {
+            Folders = folder,
+            FolderCount = folderCount
+        };
     }
 
     public async Task Delete(string name, string? ownerId = null)

@@ -33,9 +33,11 @@ public class FolderService
     /// Lists all folders for a specific owner.
     /// </summary>
     /// <param name="ownerId">ID of the folder owner.</param>
+    /// <param name="pageIndex">The index of the page to retrieve.</param>
+    /// <param name="pageSize">The number of items per page.</param>
     /// <returns>A list of folders belonging to the owner.</returns>
-    public async Task<IEnumerable<Folder>> List(string? ownerId)
-        => await _folders.List(ownerId);
+    public async Task<PagedFolderSummary> List(string? ownerId, int pageIndex, int pageSize)
+        => await _folders.List(ownerId,pageIndex, pageSize);
 
     /// <summary>
     /// Deletes folder for a specific owner.
