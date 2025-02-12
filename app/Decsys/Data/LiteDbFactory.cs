@@ -28,7 +28,6 @@ namespace Decsys.Data
                   .Id(x => x.Name);
         }
 
-
         private const string SurveysFile = "user-surveys.db";
 
         private static string InstanceEventLogsFile(int instanceId)

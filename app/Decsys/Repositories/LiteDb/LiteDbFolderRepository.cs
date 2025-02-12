@@ -23,7 +23,6 @@ public class LiteDbFolderRepository : IFolderRepository
 
     public async Task<Folder> Create(string name, string? ownerId = null)
     {
-     
         var entity = new Folder { Name = name };
         _folders.Insert(entity);
 
@@ -52,7 +51,6 @@ public class LiteDbFolderRepository : IFolderRepository
 
     public async Task Delete(string name, string? ownerId = null)
     {
-
         var folder = _folders.FindOne(f => f.Name == name);
         if (folder == null)
         {
