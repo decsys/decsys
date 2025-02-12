@@ -7,6 +7,7 @@ const WebhookManagementController = ({ surveyId }) => {
   if (!surveyId) {
     return null;
   }
+
   const { data, mutate } = useWebhook(surveyId);
   const {
     isFormOpen,

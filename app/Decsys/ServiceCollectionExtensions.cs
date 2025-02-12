@@ -77,8 +77,7 @@ namespace Decsys
                 
 
         public static IServiceCollection AddAppServices(this IServiceCollection s, IConfiguration c)
-            => s.
-                 AddHttpClient()
+            => s.AddHttpClient()
                 .AddTransient<SurveyService>()
                 .AddTransient<PageService>()
                 .AddTransient<ComponentService>()

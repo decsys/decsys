@@ -92,7 +92,6 @@ const Surveys = ({ navigate, parentFolderName }) => {
   }, [debouncedSearchTerm, filterType, sortBy, direction]);
 
   let surveys = data.surveyItems;
-  console.log(surveys);
   parentFolderName
     ? (surveys = surveys.filter(
         (survey) => survey.parentFolderName === parentFolderName
