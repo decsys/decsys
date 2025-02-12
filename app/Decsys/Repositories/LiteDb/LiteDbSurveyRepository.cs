@@ -89,8 +89,6 @@ namespace Decsys.Repositories.LiteDb
 
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
 
-            // Sorting
-
 
             // Reusable enhancement
             Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
@@ -209,67 +207,72 @@ namespace Decsys.Repositories.LiteDb
                 FolderCount = folderItems.Count()
             };
         }
-        private List<Models.ISummaryItem> SortItems(List<Models.ISummaryItem> items, string sortBy, string direction)
-        {
-            // Separate folders and surveys
-            var folders = items.OfType<Models.Folder>().ToList();
-            var surveySummaries = items.OfType<Models.SurveySummary>().ToList();
 
-            // Determine if sorting is ascending or descending
+        private List<Models.ISummaryItem> SortItems(List<Models.ISummaryItem> surveys, string sortBy, string direction)
+          {
+            var folders = surveys.OfType<Models.Folder>().Cast<Models.ISummaryItem>().ToList();
+            var surveySummaries = surveys.OfType<Models.SurveySummary>().ToList();
+
+            IEnumerable<Models.ISummaryItem> sortedSurveys;
+
             bool isAscending = direction == "up";
-
-            // Sort folders by name (always ascending for folders)
-            var sortedFolders = folders.OrderBy(f => f.Name).ToList();
-
-            // Sort surveys based on the specified criteria
-            IEnumerable<Models.SurveySummary> sortedSurveys;
 
             switch (sortBy)
             {
                 case SurveySortingKeys.Name:
                     sortedSurveys = isAscending
-                        ? surveySummaries.OrderBy(s => s.Name)
-                        : surveySummaries.OrderByDescending(s => s.Name);
+                        ? surveys.OrderBy(s => s.Name)
+                        : surveys.OrderByDescending(s => s.Name);
                     break;
-
                 case SurveySortingKeys.Type:
-                    sortedSurveys = isAscending
-                        ? surveySummaries.OrderBy(s => s.IsStudy).ThenBy(s => s.Name)
-                        : surveySummaries.OrderBy(s => !s.IsStudy).ThenBy(s => s.Name);
+                    if (isAscending)
+                    {
+                        sortedSurveys = surveySummaries
+                            .OrderBy(s => s.IsStudy)
+                            .ThenBy(s => s.Name)
+                            .Cast<Models.ISummaryItem>()
+                            .Concat(folders.OrderBy(f => f.Name));
+                    }
+                    else
+                    {
+                        sortedSurveys = folders.OrderBy(f => f.Name)
+                            .Concat(surveySummaries
+                                .OrderBy(s => !s.IsStudy)
+                                .ThenBy(s => s.Name)
+                                .Cast<Models.ISummaryItem>());
+                    }
                     break;
-
                 case SurveySortingKeys.Active:
-                    sortedSurveys = isAscending
-                        ? surveySummaries.OrderBy(s => s.ActiveInstanceId ?? int.MinValue)
-                        : surveySummaries.OrderByDescending(s => s.ActiveInstanceId ?? int.MinValue);
+                    sortedSurveys = folders.Concat(
+                        isAscending
+                        ? surveySummaries.OrderBy(s => (s).ActiveInstanceId ?? int.MinValue)
+                        : surveySummaries.OrderByDescending(s => (s).ActiveInstanceId ?? int.MinValue));
                     break;
-
                 case SurveySortingKeys.RunCount:
-                    sortedSurveys = isAscending
-                        ? surveySummaries.OrderBy(s => s.RunCount)
-                        : surveySummaries.OrderByDescending(s => s.RunCount);
+                    sortedSurveys = folders.Concat(
+                        isAscending
+                        ? surveySummaries.OrderBy(s => (s).RunCount)
+                        : surveySummaries.OrderByDescending(s => (s).RunCount));
                     break;
-
                 case SurveySortingKeys.Archived:
-                    sortedSurveys = isAscending
-                        ? surveySummaries.OrderBy(s => s.ArchivedDate ?? DateTimeOffset.MinValue)
-                        : surveySummaries.OrderByDescending(s => s.ArchivedDate ?? DateTimeOffset.MinValue);
+                    sortedSurveys = folders.Concat(
+                        isAscending
+                        ? surveySummaries.OrderBy(s => (s).ArchivedDate ?? DateTimeOffset.MinValue)
+                        : surveySummaries.OrderByDescending(s => (s).ArchivedDate ?? DateTimeOffset.MinValue));
                     break;
-
                 default:
-                    sortedSurveys = isAscending
-                        ? surveySummaries.OrderBy(s => s.Name)
-                        : surveySummaries.OrderByDescending(s => s.Name);
+                    sortedSurveys = folders
+                        .OrderBy(f => f.Name)
+                        .Concat(
+                            isAscending
+                            ? surveySummaries.OrderBy(s => s.Name)
+                            : surveySummaries.OrderByDescending(s => s.Name));
                     break;
             }
 
-            // Combine sorted folders and sorted surveys
-            var sortedItems = sortedFolders.Cast<Models.ISummaryItem>()
-                                           .Concat(sortedSurveys.Cast<Models.ISummaryItem>())
-                                           .ToList();
-
-            return sortedItems;
+            return sortedSurveys.ToList();
         }
+
 
         private Models.PagedSurveySummary List(int? parentId = null)
         {

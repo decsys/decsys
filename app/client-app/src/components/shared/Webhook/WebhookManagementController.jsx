@@ -1,15 +1,10 @@
-import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { useWebhook } from "api/webhooks";
 import { useWebhookManager } from "./useWebhookManager";
 import WebhookEditCreateForm from "./WebhookEditCreateForm";
 import WebhookManagementTrigger from "./WebhookManagementTrigger";
-import { useServerConfig } from "api/config";
-import { WORKSHOP } from "constants/app-modes";
 
 const WebhookManagementController = ({ surveyId }) => {
-  const { mode } = useServerConfig();
-
-  if (!surveyId || mode === WORKSHOP) {
+  if (!surveyId) {
     return null;
   }
   const { data, mutate } = useWebhook(surveyId);
