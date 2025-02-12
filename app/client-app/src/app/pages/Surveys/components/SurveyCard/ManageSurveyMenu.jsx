@@ -18,6 +18,8 @@ import { capitalise } from "services/strings";
 import { SelectSurveyItemModal } from "./SelectSurveyItemModal";
 import WebhookManagementController from "components/shared/Webhook/WebhookManagementController";
 import { useState } from "react";
+import { useServerConfig } from "api/config";
+import { WORKSHOP } from "constants/app-modes";
 
 const ManageSurveyMenu = ({
   id,
@@ -37,6 +39,8 @@ const ManageSurveyMenu = ({
   isFolder,
   parentFolderName,
 }) => {
+  const { mode } = useServerConfig();
+
   const [canChangeFolder, setCanChangeFolder] = useState(false);
   const deleteModal = useDisclosure();
   const deleteFolderModal = useDisclosure();
@@ -119,7 +123,9 @@ const ManageSurveyMenu = ({
                   Preview
                 </MenuItem>
 
-                {!isStudy && <WebhookManagementController surveyId={id} />}
+                {!isStudy && mode !== WORKSHOP && (
+                  <WebhookManagementController surveyId={id} />
+                )}
                 <MenuItem onClick={exportModal.onOpen}>Export</MenuItem>
 
                 {!isStudy && editable && (

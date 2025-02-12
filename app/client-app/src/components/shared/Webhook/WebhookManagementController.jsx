@@ -1,4 +1,3 @@
-import { useFetchSurvey } from "app/contexts/FetchSurvey";
 import { useWebhook } from "api/webhooks";
 import { useWebhookManager } from "./useWebhookManager";
 import WebhookEditCreateForm from "./WebhookEditCreateForm";
