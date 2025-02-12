@@ -3,12 +3,15 @@ import { useWebhook } from "api/webhooks";
 import { useWebhookManager } from "./useWebhookManager";
 import WebhookEditCreateForm from "./WebhookEditCreateForm";
 import WebhookManagementTrigger from "./WebhookManagementTrigger";
+import { useServerConfig } from "api/config";
+import { WORKSHOP } from "constants/app-modes";
 
 const WebhookManagementController = ({ surveyId }) => {
-  if (!surveyId) {
+  const { mode } = useServerConfig();
+
+  if (!surveyId || mode === WORKSHOP) {
     return null;
   }
-
   const { data, mutate } = useWebhook(surveyId);
   const {
     isFormOpen,

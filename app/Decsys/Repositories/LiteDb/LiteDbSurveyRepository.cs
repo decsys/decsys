@@ -54,9 +54,11 @@ namespace Decsys.Repositories.LiteDb
         
         public Models.PagedSurveySummary List(string? userId = null, bool includeOwnerless = false, string? name = null, string view = "", string sortBy = SurveySortingKeys.Name, string direction = SurveySortingKeys.Direction, bool isStudy=false, bool canChangeStudy = false,int pageIndex = 0, int pageSize = 10, string? parentFolderName = null)
         {
+;
+
             // Fetch all surveys
             var surveys = _surveys.FindAll().ToList();
-            var totalSurveys = surveys.Count();
+            var folders = _folders.FindAll().ToList();
 
             if (isStudy)
             {
@@ -65,9 +67,8 @@ namespace Decsys.Repositories.LiteDb
             // Filter by name if specified
             if (!string.IsNullOrWhiteSpace(name))
             {
-                surveys = surveys
-                    .Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                surveys = surveys.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
+                folders = folders.Where(x => x.Name != null && x.Name.Contains(name, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             // Filter by view: unarchived, archived
@@ -81,22 +82,15 @@ namespace Decsys.Repositories.LiteDb
                     break;
             }
 
+            if (isStudy)
+            {
+                surveys = surveys.Where(x => x.IsStudy).ToList();
+            }
+
             var summaries = _mapper.Map<List<Models.SurveySummary>>(surveys);
 
             // Sorting
-            Func<Models.SurveySummary, object> sortCriteria = sortBy.ToLower() switch
-            {
-                SurveySortingKeys.Name => s => s.Name ?? "",
-                SurveySortingKeys.Active => s => s.ActiveInstanceId ?? int.MinValue,
-                SurveySortingKeys.RunCount => s => s.RunCount,
-                SurveySortingKeys.Archived => s => s.ArchivedDate ?? DateTimeOffset.MinValue,
-                _ => s => s.Name ?? ""
-            };
 
-            // Apply sorting
-            summaries = direction.ToLower() == SurveySortingKeys.Direction
-                ? summaries.OrderBy(sortCriteria).ToList()
-                : summaries.OrderByDescending(sortCriteria).ToList();
 
             // Reusable enhancement
             Models.SurveySummary EnhanceSummary(Models.SurveySummary survey)
@@ -143,17 +137,138 @@ namespace Decsys.Repositories.LiteDb
                     return summary;
                 });
 
+            // Filter by canChangeStudy
+            if (canChangeStudy)
+            {
+                summaries = summaries.Where(x => x.RunCount == 0).ToList();
+            }
 
-            var pagedSurveys = summaries
-                  .Skip(pageIndex * pageSize)
-                  .Take(pageSize)
-                  .ToList();
+            // Create folder items
+            var folderItems = folders
+                .Select(folder => new Models.Folder
+                {
+                    Name = folder.Name,
+                    SurveyCount = folder.SurveyCount,
+                    IsFolder = true
+                })
+                .ToList<Models.ISummaryItem>();
+
+            // Combine surveys and folders
+            var summaryItems = summaries
+                .Select(summary => (Models.ISummaryItem)summary)
+                .ToList();
+
+            var items = summaryItems.Concat(folderItems).ToList();
+
+            var sortedItems = SortItems(items, sortBy, direction);
+
+            // Filter by parentFolderName
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
+            {
+                sortedItems = sortedItems
+                    .Where(x => x is Models.SurveySummary survey && survey.ParentFolderName == parentFolderName)
+                    .ToList();
+            }
+            else
+            {
+                sortedItems = sortedItems
+                    .Where(x => !(x is Models.SurveySummary survey) || survey.ParentFolderName == null)
+                    .ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
+            {
+                sortedItems = sortedItems.Where(x => !(x is Models.Folder)).ToList();
+            }
+
+            // Pagination
+            var pagedItems = sortedItems
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .ToList();
+            // Count Surveys and Studies
+            int surveyCount;
+            int studyCount;
+
+            if (!string.IsNullOrWhiteSpace(parentFolderName))
+            {
+                surveyCount = surveys.Count(x => x.ParentFolderName == parentFolderName && !x.IsStudy);
+                studyCount = summaries.Count(s => s.IsStudy && s.ParentFolderName == parentFolderName);
+            }
+            else
+            {
+                surveyCount = surveys.Count(x => string.IsNullOrWhiteSpace(x.ParentFolderName) && !x.IsStudy);
+                studyCount = summaries.Count(s => s.IsStudy && string.IsNullOrWhiteSpace(s.ParentFolderName));
+            }
 
             return new Models.PagedSurveySummary
             {
-                SurveyItems = pagedSurveys.Cast<Models.ISummaryItem>().ToList(),
-                SurveyCount = (int)totalSurveys
-            };        
+                SurveyItems = pagedItems,
+                SurveyCount = surveyCount,
+                StudyCount = studyCount,
+                FolderCount = folderItems.Count()
+            };
+        }
+        private List<Models.ISummaryItem> SortItems(List<Models.ISummaryItem> items, string sortBy, string direction)
+        {
+            // Separate folders and surveys
+            var folders = items.OfType<Models.Folder>().ToList();
+            var surveySummaries = items.OfType<Models.SurveySummary>().ToList();
+
+            // Determine if sorting is ascending or descending
+            bool isAscending = direction == "up";
+
+            // Sort folders by name (always ascending for folders)
+            var sortedFolders = folders.OrderBy(f => f.Name).ToList();
+
+            // Sort surveys based on the specified criteria
+            IEnumerable<Models.SurveySummary> sortedSurveys;
+
+            switch (sortBy)
+            {
+                case SurveySortingKeys.Name:
+                    sortedSurveys = isAscending
+                        ? surveySummaries.OrderBy(s => s.Name)
+                        : surveySummaries.OrderByDescending(s => s.Name);
+                    break;
+
+                case SurveySortingKeys.Type:
+                    sortedSurveys = isAscending
+                        ? surveySummaries.OrderBy(s => s.IsStudy).ThenBy(s => s.Name)
+                        : surveySummaries.OrderBy(s => !s.IsStudy).ThenBy(s => s.Name);
+                    break;
+
+                case SurveySortingKeys.Active:
+                    sortedSurveys = isAscending
+                        ? surveySummaries.OrderBy(s => s.ActiveInstanceId ?? int.MinValue)
+                        : surveySummaries.OrderByDescending(s => s.ActiveInstanceId ?? int.MinValue);
+                    break;
+
+                case SurveySortingKeys.RunCount:
+                    sortedSurveys = isAscending
+                        ? surveySummaries.OrderBy(s => s.RunCount)
+                        : surveySummaries.OrderByDescending(s => s.RunCount);
+                    break;
+
+                case SurveySortingKeys.Archived:
+                    sortedSurveys = isAscending
+                        ? surveySummaries.OrderBy(s => s.ArchivedDate ?? DateTimeOffset.MinValue)
+                        : surveySummaries.OrderByDescending(s => s.ArchivedDate ?? DateTimeOffset.MinValue);
+                    break;
+
+                default:
+                    sortedSurveys = isAscending
+                        ? surveySummaries.OrderBy(s => s.Name)
+                        : surveySummaries.OrderByDescending(s => s.Name);
+                    break;
+            }
+
+            // Combine sorted folders and sorted surveys
+            var sortedItems = sortedFolders.Cast<Models.ISummaryItem>()
+                                           .Concat(sortedSurveys.Cast<Models.ISummaryItem>())
+                                           .ToList();
+
+            return sortedItems;
         }
 
         private Models.PagedSurveySummary List(int? parentId = null)
