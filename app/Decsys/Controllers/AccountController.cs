@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -415,6 +415,7 @@ namespace Decsys.Controllers
         private async Task<IActionResult> AccountApprovalResult(AccountApprovalOutcomes outcome, string userId, string code)
         {
             var generalError = "The User ID or Token is invalid or has expired.";
+            var tokenError = "The token has expired or is invalid. Please request a new approval email.";
 
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
                 ModelState.AddModelError(string.Empty, generalError);
@@ -439,10 +440,10 @@ namespace Decsys.Controllers
 
                         var result = await _users.VerifyUserTokenAsync(
                             user, "Default", TokenPurpose.AccountApproval, code);
-
-                        if (!result)
+                        if (!result) 
                         {
-                            ModelState.AddModelError(string.Empty, generalError);
+                            ModelState.AddModelError(string.Empty, tokenError);
+                            route = ("approval", "tokenexpired"); 
                         }
                         else
                         {
@@ -485,8 +486,11 @@ namespace Decsys.Controllers
             };
 
             return Redirect(
-                ClientRoutes.UserFeedback(route.category, route.state)
-                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
+             ClientRoutes.UserFeedback(route.category, route.state)
+             + $"?userId={WebUtility.UrlEncode(userId)}"
+             + $"&code={WebUtility.UrlEncode(code)}"
+             + $"&ViewModel={vm.ObjectToBase64UrlJson()}");
+
         }
 
         [HttpGet("approve/{userId}/{code}")]
@@ -498,6 +502,28 @@ namespace Decsys.Controllers
         public async Task<IActionResult> Reject(string userId, string code)
             => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
 
+        [HttpGet("approval/resend/{userId}")]
+        public async Task<IActionResult> ResendApprovalEmail(string userId)
+        {
+            var user = await _users.FindByIdAsync(userId);
+            if (user is null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found.");
+            }
+            else
+            {
+                await _tokens.SendAccountApprovalRequest(user);
+            }
+
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState)
+            };
+
+            return Redirect(
+                ClientRoutes.UserFeedback("approval", "emailsent")
+                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
+        }
         #endregion
 
         #region Change / Reset Password
