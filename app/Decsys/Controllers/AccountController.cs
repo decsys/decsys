@@ -440,7 +440,7 @@ namespace Decsys.Controllers
 
                         var result = await _users.VerifyUserTokenAsync(
                             user, "Default", TokenPurpose.AccountApproval, code);
-                        if (!result) 
+                        if (result) // expired vs invalid
                         {
                             ModelState.AddModelError(string.Empty, tokenError);
                             route = ("approval", "tokenexpired"); 
@@ -482,6 +482,7 @@ namespace Decsys.Controllers
             var vm = new
             {
                 Email,
+                userId,
                 errors = CollapseModelStateErrors(ModelState)
             };
 
