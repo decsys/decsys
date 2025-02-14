@@ -3,8 +3,9 @@ import { FeedbackAlert } from ".";
 import { useQueryStringViewModel } from "hooks/useQueryString";
 import { Box, Button } from "@chakra-ui/react";
 
-export const TokenExpiredFeedback = () => {
+export const TokenExpired = () => {
   const { errors, userId } = useQueryStringViewModel();
+
   const handleResendApprovalEmail = async (userId) => {
     await resendEmail(userId);
   };

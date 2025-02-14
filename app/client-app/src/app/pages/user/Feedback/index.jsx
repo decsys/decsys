@@ -7,19 +7,17 @@ import {
   Link,
   Stack,
   Flex,
-  Box,
-  Button,
 } from "@chakra-ui/react";
 import { useQueryStringViewModel } from "hooks/useQueryString";
 import ErrorsAlert from "components/core/ErrorsAlert";
 import DefaultContainer from "components/shared/DefaultContainer";
-import { Router, navigate, useLocation } from "@reach/router";
+import { Router } from "@reach/router";
 import AccountApprovalFeedback from "./Approval";
 import RegisterFeedback from "./Register";
 import PasswordFeedback from "./Password";
 import EmailFeedback from "./Email";
-import AccountResentComplete from "./Resent";
-import { TokenExpiredFeedback } from "./TokenResend";
+import { TokenExpired } from "./Token";
+import { AccountResentComplete } from "./EmailResent";
 
 export const FeedbackAlert = ({ title, children, ...p }) => (
   <Alert status="info" boxShadow="callout" mt={4} borderRadius={5} p={4} {...p}>
@@ -77,8 +75,8 @@ const UserFeedback = () => (
           <RegisterFeedback path="register/*" />
           <PasswordFeedback path="password/*" />
           <EmailFeedback path="email/*" />
-          <AccountResentComplete path="approval/*" />
-          <TokenExpiredFeedback path="approval/tokenexpired/*" />
+          <AccountResentComplete path="approval/emailsent/*" />
+          <TokenExpired path="approval/tokenexpired/*" />
           <DefaultFeedback default />
         </Router>
       </Flex>
