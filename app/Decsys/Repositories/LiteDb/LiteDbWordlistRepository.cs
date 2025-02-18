@@ -30,12 +30,12 @@ public class LiteDbWordlistRepository : IWordlistRepository
         var wordlists = _wordlist.FindAll().ToList();
         return _mapper.Map<List<Models.Wordlist.UserWordlist>>(wordlists);
     }
-    public async Task<Models.Wordlist.UserWordlist> Create(string? ownerId)
+    public Task<Models.Wordlist.UserWordlist> Create(string? ownerId)
     {
         var userWordlist = new UserWordlist{};
         _wordlist.Insert(userWordlist);
 
-        return await Task.FromResult(_mapper.Map<Models.Wordlist.UserWordlist>(userWordlist));
+        return Task.FromResult(_mapper.Map<Models.Wordlist.UserWordlist>(userWordlist));
     }
     public void UpdateName(string id, string name)
     {
@@ -47,17 +47,17 @@ public class LiteDbWordlistRepository : IWordlistRepository
         _wordlist.Update(wordlist);
     }
 
-    public async Task<Models.Wordlist.UserWordlist> GetById(string? ownerId, string wordlistId)
+    public Task<Models.Wordlist.UserWordlist> GetById(string? ownerId, string wordlistId)
     {
         var bsonId = new ObjectId(wordlistId);
         var wordlist = _wordlist.FindById(bsonId);
         if (wordlist == null)
             throw new KeyNotFoundException("Wordlist not found with ID: " + wordlistId);
 
-        return await Task.FromResult(_mapper.Map<Models.Wordlist.UserWordlist>(wordlist));
+        return Task.FromResult(_mapper.Map<Models.Wordlist.UserWordlist>(wordlist));
     }
 
-    public async Task<Models.Wordlist.UserWordlist> CreateWordlist(string? ownerId, string name)
+    public Task<Models.Wordlist.UserWordlist> CreateWordlist(string? ownerId, string name)
     {
         var userWordlist = new UserWordlist
         {
@@ -66,17 +66,17 @@ public class LiteDbWordlistRepository : IWordlistRepository
 
         _wordlist.Insert(userWordlist);
 
-        return await Task.FromResult(_mapper.Map<Models.Wordlist.UserWordlist>(userWordlist));
+        return Task.FromResult(_mapper.Map<Models.Wordlist.UserWordlist>(userWordlist));
     }
-    public async Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
+    public Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
     {
         var wordlist = _wordlist.FindById(new BsonValue(wordlistId));
         if (wordlist == null)
             throw new KeyNotFoundException("Wordlist not found.");
         _wordlist.Update(wordlist);
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
-    public async Task Delete(string wordlistId)
+    public Task Delete(string wordlistId)
     {
         var bsonId = new ObjectId(wordlistId);
 
@@ -86,10 +86,10 @@ public class LiteDbWordlistRepository : IWordlistRepository
             throw new KeyNotFoundException($"Wordlist not found with ID: {wordlistId}.");
         }
 
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    public async Task DeleteRule(string wordlistId, int ruleIndex)
+    public Task DeleteRule(string wordlistId, int ruleIndex)
     {
         var wordlist = _wordlist.FindById(new BsonValue(wordlistId));
         if (wordlist == null)
@@ -101,11 +101,11 @@ public class LiteDbWordlistRepository : IWordlistRepository
         wordlist.Rules.RemoveAt(ruleIndex);
         _wordlist.Update(wordlist);
 
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
 
-    public async Task<Models.Wordlist.WordlistWord> SetExcludedBuiltins(string wordlistId, string type, string word)
+    public Task<Models.Wordlist.WordlistWord> SetExcludedBuiltins(string wordlistId, string type, string word)
     {
         var wordlist = _wordlist.FindById(new BsonValue(wordlistId));
         if (wordlist == null)
@@ -115,10 +115,10 @@ public class LiteDbWordlistRepository : IWordlistRepository
         wordlist.ExcludedBuiltins.Add(newExcludedBuiltins);
         _wordlist.Update(wordlist);
 
-        return await Task.FromResult(_mapper.Map<Models.Wordlist.WordlistWord>(newExcludedBuiltins));
+        return Task.FromResult(_mapper.Map<Models.Wordlist.WordlistWord>(newExcludedBuiltins));
     }
 
-    public async Task<Models.Wordlist.WordlistWord> AddCustomWord(string? ownerId, string wordlistId, string type, string word)
+    public Task<Models.Wordlist.WordlistWord> AddCustomWord(string? ownerId, string wordlistId, string type, string word)
     {
         var bsonId = new ObjectId(wordlistId);
 
@@ -130,10 +130,10 @@ public class LiteDbWordlistRepository : IWordlistRepository
         wordlist.CustomWords.Add(newCustomWord);
         _wordlist.Update(wordlist);
 
-        return await Task.FromResult(_mapper.Map<Models.Wordlist.WordlistWord>(newCustomWord));
+        return Task.FromResult(_mapper.Map<Models.Wordlist.WordlistWord>(newCustomWord));
     }
 
-    public async Task DeleteCustomWord(string? ownerId, string wordlistId, string type, string word)
+    public Task DeleteCustomWord(string? ownerId, string wordlistId, string type, string word)
     {
         var wordlist = _wordlist.FindById(new ObjectId(wordlistId));
         if (wordlist == null)
@@ -150,9 +150,9 @@ public class LiteDbWordlistRepository : IWordlistRepository
             throw new Exception("Custom word not found in the wordlist.");
         }
 
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
-    public async Task DeleteExcludedBuiltins(string wordlistId, string type, string word)
+    public Task DeleteExcludedBuiltins(string wordlistId, string type, string word)
     {
         var wordlist = _wordlist.FindById(new BsonValue(wordlistId));
         if (wordlist == null)
@@ -169,6 +169,6 @@ public class LiteDbWordlistRepository : IWordlistRepository
             throw new Exception("Excluded builtin not found in the wordlist.");
         }
 
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 } 
