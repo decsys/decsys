@@ -68,14 +68,7 @@ public class LiteDbWordlistRepository : IWordlistRepository
 
         return Task.FromResult(_mapper.Map<Models.Wordlist.UserWordlist>(userWordlist));
     }
-    public Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
-    {
-        var wordlist = _wordlist.FindById(new BsonValue(wordlistId));
-        if (wordlist == null)
-            throw new KeyNotFoundException("Wordlist not found.");
-        _wordlist.Update(wordlist);
-        return Task.CompletedTask;
-    }
+   
     public Task Delete(string wordlistId)
     {
         var bsonId = new ObjectId(wordlistId);
@@ -88,22 +81,6 @@ public class LiteDbWordlistRepository : IWordlistRepository
 
         return Task.CompletedTask;
     }
-
-    public Task DeleteRule(string wordlistId, int ruleIndex)
-    {
-        var wordlist = _wordlist.FindById(new BsonValue(wordlistId));
-        if (wordlist == null)
-            throw new KeyNotFoundException("Wordlist not found.");
-
-        if (ruleIndex < 0 || ruleIndex >= wordlist.Rules.Count)
-            throw new Exception("Invalid rule index.");
-
-        wordlist.Rules.RemoveAt(ruleIndex);
-        _wordlist.Update(wordlist);
-
-        return Task.CompletedTask;
-    }
-
 
     public Task<Models.Wordlist.WordlistWord> SetExcludedBuiltins(string wordlistId, string type, string word)
     {
@@ -152,6 +129,7 @@ public class LiteDbWordlistRepository : IWordlistRepository
 
         return Task.CompletedTask;
     }
+
     public Task DeleteExcludedBuiltins(string wordlistId, string type, string word)
     {
         var wordlist = _wordlist.FindById(new BsonValue(wordlistId));
@@ -170,5 +148,15 @@ public class LiteDbWordlistRepository : IWordlistRepository
         }
 
         return Task.CompletedTask;
+    }
+
+    public Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteRule(string wordlistId, int ruleIndex)
+    {
+        throw new NotImplementedException();
     }
 } 
