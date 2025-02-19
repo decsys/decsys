@@ -414,8 +414,8 @@ namespace Decsys.Controllers
         private enum AccountApprovalOutcomes { Approved, Rejected }
         private async Task<IActionResult> AccountApprovalResult(AccountApprovalOutcomes outcome, string userId, string code)
         {
-            var generalError = "The User ID or Token is invalid or has expired.";
-            var tokenError = "The token has expired or is invalid. Please request a new approval email.";
+            var generalError = "The User ID or Token is invalid.";
+            var tokenError = "The token has expired. Please request a new approval email.";
 
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(code))
                 ModelState.AddModelError(string.Empty, generalError);
