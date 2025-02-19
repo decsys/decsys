@@ -1,10 +1,12 @@
 using AutoMapper;
 using Decsys.Auth;
+using Decsys.Config;
 using Decsys.Constants;
 using Decsys.Models.Wordlist;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers
@@ -15,12 +17,16 @@ namespace Decsys.Controllers
     {
         private readonly WordlistService _service;
         private readonly IMapper _mapper;
+        private readonly AppMode _mode;
 
-        public WordlistsController(WordlistService service, IMapper mapper)
+        public WordlistsController(WordlistService service, IMapper mapper, IOptions<AppMode> mode)
         {
             _service = service;
             _mapper = mapper;
+            _mode = mode.Value;
         }
+
+        private string? OwnerId => _mode.IsWorkshop ? null : User.GetUserId();
 
         [HttpGet("{wordlistId}")]
         [Authorize(Policy = nameof(AuthPolicies.IsSurveyAdmin))]
@@ -31,11 +37,9 @@ namespace Decsys.Controllers
         [SwaggerResponse(404, "Wordlist not found or access denied.")]
         public async Task<IActionResult> GetById(string wordlistId)
         {
-            string ownerId = User.GetUserId();
-
             try
             {
-                var wordlist = await _service.GetById(ownerId, wordlistId);
+                var wordlist = await _service.GetById(OwnerId, wordlistId);
                 return Ok(wordlist);
             }
             catch (KeyNotFoundException ex)
@@ -71,9 +75,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
         public IActionResult List()
         {
-            string ownerId = User.GetUserId();
-
-            var wordlist = _service.ListAll(ownerId);
+            var wordlist = _service.ListAll(OwnerId);
 
             return Ok(wordlist);
         }
@@ -87,9 +89,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
         public async Task<IActionResult> CreateWordlist([FromBody] UserWordlist request)
         {
-            string ownerId = User.GetUserId();
-
-            var wordlist = await _service.CreateWordlist(ownerId, request.Name);
+            var wordlist = await _service.CreateWordlist(OwnerId, request.Name);
 
             return CreatedAtAction(nameof(List), new { id = wordlist.Id }, wordlist);
         }
@@ -103,15 +103,13 @@ namespace Decsys.Controllers
         [SwaggerResponse(403, "User is not authorized to perform this operation")]
         public async Task<IActionResult> PutRule(string wordlistId, int ruleIndex, [FromBody] Models.Wordlist.WordlistRules rule)
         {
-            string ownerId = User.GetUserId();
-
-            var wordlist = _service.List(ownerId);
+            var wordlist = _service.List(OwnerId);
 
             if (ruleIndex >= 0 && ruleIndex <= wordlist.Rules.Count)
             {
                 //Update or Add the rule
                 await _service.PutRule(wordlistId, ruleIndex, rule);
-                wordlist = _service.List(ownerId);
+                wordlist = _service.List(OwnerId);
             }
             else
             {
@@ -130,9 +128,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(404, "Wordlist not found.")]
         public async Task<IActionResult> DeleteWordlist(string wordlistId)
         {
-            string ownerId = User.GetUserId();
-
-            var wordlist = await _service.GetById(ownerId, wordlistId);
+            var wordlist = await _service.GetById(OwnerId, wordlistId);
 
             if (wordlist == null)
             {
@@ -155,9 +151,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(404, "Wordlist not found.")]
         public async Task<IActionResult> DeleteRule(string wordlistId, int ruleIndex)
         {
-            string ownerId = User.GetUserId();
-
-            var wordlist = _service.List(ownerId);
+            var wordlist = _service.List(OwnerId);
 
             if (wordlist == null)
             {
@@ -171,7 +165,7 @@ namespace Decsys.Controllers
 
             await _service.DeleteRule(wordlistId, ruleIndex);
 
-            wordlist = _service.List(ownerId);
+            wordlist = _service.List(OwnerId);
 
             return Ok(wordlist.Rules);
         }
@@ -198,9 +192,9 @@ namespace Decsys.Controllers
                 return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
             }
 
-            string ownerId = User.GetUserId();
+           
             
-            var customWord = await _service.AddCustomWord(ownerId, wordlistId, wordlistWord.Type, wordlistWord.Word);
+            var customWord = await _service.AddCustomWord(OwnerId, wordlistId, wordlistWord.Type, wordlistWord.Word);
             return Ok(customWord);
 
         }
@@ -226,8 +220,8 @@ namespace Decsys.Controllers
                 return BadRequest("Invalid type. Type can only be 'Noun' or 'Adjective'.");
             }
 
-            string ownerId = User.GetUserId();
-            await _service.DeleteCustomWord(ownerId, wordlistId, wordlistWord.Type, wordlistWord.Word);
+           
+            await _service.DeleteCustomWord(OwnerId, wordlistId, wordlistWord.Type, wordlistWord.Word);
             return NoContent();
         }
 
@@ -241,8 +235,7 @@ namespace Decsys.Controllers
         [SwaggerResponse(404, "Wordlist not found")]
         public async Task<IActionResult> SetExcludedBuiltins(string wordlistId, WordType type, string word)
         {
-            string ownerId = User.GetUserId();
-            var wordlist = await _service.GetById(ownerId, wordlistId);
+            var wordlist = await _service.GetById(OwnerId, wordlistId);
             if (wordlist == null)
             {
                 return NotFound("Wordlist not found.");
@@ -271,10 +264,7 @@ namespace Decsys.Controllers
         public async Task<IActionResult> DeleteExcludedBuiltins(string wordlistId, string type, string word)
         {
             type = type.ToLowerInvariant();
-
-            string ownerId = User.GetUserId();
-
-            var wordlist = _service.List(ownerId);
+            var wordlist = _service.List(OwnerId);
 
             if (wordlist == null)
             {

@@ -23,5 +23,8 @@ public class WordlistMaps : Profile
 
         CreateMap<UserWordlist, Data.Entities.Mongo.UserWordlist>();
         CreateMap<Data.Entities.Mongo.UserWordlist, UserWordlist>();
+
+        CreateMap<Data.Entities.LiteDb.UserWordlist, Models.Wordlist.UserWordlist>()
+              .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.ToString()));
     }
 }

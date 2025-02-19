@@ -14,23 +14,23 @@ public class WordlistService : IWordlistRepository
         _wordlist = wordlist;
     }
 
-    public UserWordlist List(string ownerId)
+    public UserWordlist List(string? ownerId)
         => _wordlist.List(ownerId);
 
 
     public void UpdateName(string id, string name)
         => _wordlist.UpdateName(id, name);
 
-    public List<UserWordlist> ListAll(string ownerId)
+    public List<UserWordlist> ListAll(string? ownerId)
     => _wordlist.ListAll(ownerId);
 
-    public async Task<UserWordlist> Create(string ownerId)
+    public async Task<UserWordlist> Create(string? ownerId)
     => await _wordlist.Create(ownerId);
 
-    public async Task<UserWordlist> CreateWordlist(string ownerId, string name)
+    public async Task<UserWordlist> CreateWordlist(string? ownerId, string name)
     => await _wordlist.CreateWordlist(ownerId, name);
 
-    public async Task<UserWordlist> GetById(string ownerId, string wordlistId)
+    public async Task<UserWordlist> GetById(string? ownerId, string wordlistId)
     => await _wordlist.GetById(ownerId,wordlistId);
 
     public async Task PutRule(string wordlistId, int ruleIndex, Models.Wordlist.WordlistRules rule)
@@ -51,12 +51,12 @@ public class WordlistService : IWordlistRepository
     public async Task<WordlistWord> SetExcludedBuiltins (string wordlistId, string type, string word)
     => await _wordlist.SetExcludedBuiltins(wordlistId, type, word);
     
-    public async Task<WordlistWord> AddCustomWord(string ownerId, string wordlistId, string type, string word)
+    public async Task<WordlistWord> AddCustomWord(string? ownerId, string wordlistId, string type, string word)
     => await _wordlist.AddCustomWord(ownerId, wordlistId, type, word);
 
     public async Task DeleteExcludedBuiltins(string wordlistId, string type, string word)
     => await _wordlist.DeleteExcludedBuiltins(wordlistId, type, word);
-    public async Task DeleteCustomWord(string ownerId,string wordlistId, string type, string customWord)
+    public async Task DeleteCustomWord(string? ownerId,string wordlistId, string type, string customWord)
         => await _wordlist.DeleteCustomWord(ownerId,wordlistId, type, customWord);
 
 }
