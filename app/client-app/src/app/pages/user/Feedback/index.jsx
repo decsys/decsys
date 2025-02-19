@@ -16,6 +16,8 @@ import AccountApprovalFeedback from "./Approval";
 import RegisterFeedback from "./Register";
 import PasswordFeedback from "./Password";
 import EmailFeedback from "./Email";
+import { TokenExpired } from "./Token";
+import { AccountResentComplete } from "./EmailResent";
 
 export const FeedbackAlert = ({ title, children, ...p }) => (
   <Alert status="info" boxShadow="callout" mt={4} borderRadius={5} p={4} {...p}>
@@ -73,6 +75,8 @@ const UserFeedback = () => (
           <RegisterFeedback path="register/*" />
           <PasswordFeedback path="password/*" />
           <EmailFeedback path="email/*" />
+          <AccountResentComplete path="approval/emailsent/*" />
+          <TokenExpired path="approval/tokenexpired/*" />
           <DefaultFeedback default />
         </Router>
       </Flex>

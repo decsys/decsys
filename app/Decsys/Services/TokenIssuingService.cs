@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Decsys.Auth;
 using Decsys.Constants;
 using Decsys.Data.Entities;
