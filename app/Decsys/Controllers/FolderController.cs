@@ -1,8 +1,10 @@
 using Decsys.Auth;
+using Decsys.Config;
 using Decsys.Models;
 using Decsys.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Decsys.Controllers;
@@ -12,23 +14,27 @@ namespace Decsys.Controllers;
 public class FolderController: ControllerBase
 {
     private readonly FolderService _folders;
-
+    private readonly AppMode _mode;
     public FolderController(
-        FolderService folders)
+        FolderService folders,
+        IOptions<AppMode> mode)
     {
         _folders = folders;
+        _mode = mode.Value;
+
     }
-    
+
+    private string? OwnerId => _mode.IsWorkshop ? null : User.GetUserId();
+
     [HttpPost]
     [SwaggerOperation("Create a new Folder.")]
     [SwaggerResponse(200, "The Folder was successfully created.", Type = (typeof(Folder)))]
     [SwaggerResponse(401, "Unauthorized.")]
     public async Task<IActionResult> Create(string name)
     {
-        string ownerId = User.GetUserId();
         try
         {
-            var folder = await _folders.Create(name, ownerId);
+            var folder = await _folders.Create(name, OwnerId);
             return Ok(folder);
         }
         catch (UnauthorizedAccessException)
@@ -45,10 +51,9 @@ public class FolderController: ControllerBase
     [SwaggerResponse(401, "Unauthorized.")]
     public async Task<IActionResult> CheckIfFolderExists(string name)
     {
-        string ownerId = User.GetUserId();
         try
         {
-            var folder = await _folders.GetByName(name, ownerId);
+            var folder = await _folders.GetByName(name, OwnerId);
             if (folder == null)
                 return NoContent(); 
             return Ok(folder); 
@@ -69,8 +74,7 @@ public class FolderController: ControllerBase
     {
         try
         {
-            string ownerId = User.GetUserId(); 
-            var folders = await _folders.List(ownerId, pageIndex,pageSize);
+            var folders = await _folders.List(OwnerId, pageIndex,pageSize);
             return Ok(folders);
         }
         catch (UnauthorizedAccessException)
@@ -86,10 +90,9 @@ public class FolderController: ControllerBase
     [SwaggerResponse(409, "Only folders that are empty can be deleted.")]
     public async Task<IActionResult> Delete(string name)
     {
-        string ownerId = User.GetUserId();
         try
         {
-            await _folders.Delete(name, ownerId);
+            await _folders.Delete(name, OwnerId);
             return NoContent();  
         }
         catch (InvalidOperationException ex)

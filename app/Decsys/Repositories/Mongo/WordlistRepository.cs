@@ -27,24 +27,36 @@ public class WordlistRepository :IWordlistRepository
         _mapper = mapper;
     }
 
-    public Models.Wordlist.UserWordlist List(string ownerId)
+    public Models.Wordlist.UserWordlist List(string? ownerId)
     {
-
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
         var wordlist = _wordlists.Find(wl => wl.Owner == ownerId).FirstOrDefault();
 
         return _mapper.Map<Models.Wordlist.UserWordlist>(wordlist);
     }
 
-    public List<Models.Wordlist.UserWordlist> ListAll(string ownerId)
+    public List<Models.Wordlist.UserWordlist> ListAll(string? ownerId)
     {
-
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
         var wordlist = _wordlists.Find(wl => wl.Owner == ownerId).ToList();
 
         return _mapper.Map<List<Models.Wordlist.UserWordlist>>(wordlist);
     }
 
-    public async Task<Models.Wordlist.UserWordlist> Create(string ownerId)
+    public async Task<Models.Wordlist.UserWordlist> Create(string? ownerId)
     {
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
 
         var userWordlistEntity = new Data.Entities.Mongo.UserWordlist
         {
@@ -71,8 +83,13 @@ public class WordlistRepository :IWordlistRepository
     }
 
 
-    public async Task<Models.Wordlist.UserWordlist> GetById(string ownerId, string wordlistId)
+    public async Task<Models.Wordlist.UserWordlist> GetById(string? ownerId, string wordlistId)
     {
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
         ObjectId objectId;
         if (!ObjectId.TryParse(wordlistId, out objectId))
         {
@@ -89,8 +106,12 @@ public class WordlistRepository :IWordlistRepository
     }
 
 
-    public async Task<Models.Wordlist.UserWordlist> CreateWordlist(string ownerId, string name)
+    public async Task<Models.Wordlist.UserWordlist> CreateWordlist(string? ownerId, string name)
     {
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
 
         if (string.IsNullOrEmpty(name))
         {
@@ -222,8 +243,13 @@ public class WordlistRepository :IWordlistRepository
         return _mapper.Map<Models.Wordlist.WordlistWord>(newExcludedBuiltins);
     }
 
-    public async Task<Models.Wordlist.WordlistWord> AddCustomWord(string ownerId, string wordlistId, string type, string customWord)
+    public async Task<Models.Wordlist.WordlistWord> AddCustomWord(string? ownerId, string wordlistId, string type, string customWord)
     {
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
         if (string.IsNullOrWhiteSpace(wordlistId)) throw new ArgumentException("Wordlist ID cannot be null or empty.", nameof(wordlistId));
         if (string.IsNullOrWhiteSpace(type)) throw new ArgumentException("Type cannot be null or empty.", nameof(type));
         if (string.IsNullOrWhiteSpace(customWord)) throw new ArgumentException("Custom word cannot be null or empty.", nameof(customWord));
@@ -265,8 +291,13 @@ public class WordlistRepository :IWordlistRepository
         return _mapper.Map<Models.Wordlist.WordlistWord>(newCustomWord); 
     }
 
-    public async Task DeleteCustomWord(string ownerId, string wordlistId, string type, string customWord)
+    public async Task DeleteCustomWord(string? ownerId, string wordlistId, string type, string customWord)
     {
+        if (string.IsNullOrEmpty(ownerId))
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
         if (!ObjectId.TryParse(wordlistId, out var objectId))
         {
             throw new KeyNotFoundException("Invalid ObjectId format.");

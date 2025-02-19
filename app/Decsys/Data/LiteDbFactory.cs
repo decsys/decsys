@@ -1,5 +1,6 @@
 
 using Decsys.Constants;
+using Decsys.Models;
 using Decsys.Services.Contracts;
 
 using LiteDB;
@@ -12,10 +13,19 @@ namespace Decsys.Data
     public class LiteDbFactory : IDisposable
     {
         private readonly string _localDbPath;
+        private readonly BsonMapper _mapper;
 
         public LiteDbFactory(ILocalPathsProvider paths)
         {
             _localDbPath = paths.Databases;
+            _mapper = new BsonMapper();
+            ConfigureMappings();
+        }
+
+        private void ConfigureMappings()
+        {
+            _mapper.Entity<Folder>()
+                  .Id(x => x.Name);
         }
 
         private const string SurveysFile = "user-surveys.db";
@@ -35,7 +45,7 @@ namespace Decsys.Data
         {
             if (!_connections.ContainsKey(connectionString))
             {
-                _connections[connectionString] = new LiteDatabase(connectionString)
+                _connections[connectionString] = new LiteDatabase(connectionString, _mapper)
                 {
                     CheckpointSize = 1
                 };
