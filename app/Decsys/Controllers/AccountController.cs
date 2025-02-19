@@ -482,7 +482,6 @@ namespace Decsys.Controllers
             var vm = new
             {
                 Email,
-                userId,
                 errors = CollapseModelStateErrors(ModelState)
             };
 
@@ -500,10 +499,10 @@ namespace Decsys.Controllers
         public async Task<IActionResult> Reject(string userId, string code)
             => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
 
-        [HttpGet("confirm/resend/token/{userId}")]
-        public async Task<IActionResult> ResendApprovalEmail(string userId)
+        [HttpGet("confirm/resend/token/{email}")]
+        public async Task<IActionResult> ResendApprovalEmail(string email)
       {
-            var user = await _users.FindByIdAsync(userId);
+            var user = await _users.FindByEmailAsync(email);
 
             if (user is null)
             {
