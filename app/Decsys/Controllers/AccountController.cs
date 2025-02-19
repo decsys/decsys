@@ -19,7 +19,6 @@ using System.Security.Claims;
 using Decsys.Services;
 using Decsys.Services.EmailServices;
 using Decsys.Constants;
-using static IdentityServer4.Models.IdentityResources;
 
 namespace Decsys.Controllers
 {
@@ -410,39 +409,7 @@ namespace Decsys.Controllers
 
         #endregion
 
-        #region Account Approval
-        private async Task<IActionResult> ResendEmail (string userId)
-        {
-            var user = await _users.FindByIdAsync(userId);
-            string Email = "";
-
-            if (user is null)
-            {
-                ModelState.AddModelError(string.Empty, "User not found.");
-            }
-            else
-            {
-                if (user.Email is not null)
-                {
-                    Email = user.Email;
-                    await _tokens.SendAccountApprovalRequest(user);
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Email not found.");
-                }
-            }
-            var vm = new
-            {
-                errors = CollapseModelStateErrors(ModelState),
-                Email
-            };
-
-            return Redirect(
-                ClientRoutes.UserFeedback("approval", "emailsent")
-                + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
-        }
-
+        #region Account Approval     
 
         private enum AccountApprovalOutcomes { Approved, Rejected }
         private async Task<IActionResult> AccountApprovalResult(AccountApprovalOutcomes outcome, string userId, string code)
@@ -473,7 +440,7 @@ namespace Decsys.Controllers
 
                         var result = await _users.VerifyUserTokenAsync(
                             user, "Default", TokenPurpose.AccountApproval, code);
-                        if (result)  //TODO expired vs invalid
+                        if (!result)  
                         {
                             ModelState.AddModelError(string.Empty, tokenError);
                             route = ("approval", "tokenexpired"); 
@@ -533,9 +500,35 @@ namespace Decsys.Controllers
         public async Task<IActionResult> Reject(string userId, string code)
             => await AccountApprovalResult(AccountApprovalOutcomes.Rejected, userId, code);
 
-        [HttpGet("approval/resend/{userId}")]
+        [HttpGet("confirm/resend/token/{userId}")]
         public async Task<IActionResult> ResendApprovalEmail(string userId)
-        => await ResendEmail(userId);
+      {
+            var user = await _users.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found.");
+            }
+            else
+            {
+                if (user.Email is not null)
+                {
+                    await _tokens.SendAccountApprovalRequest(user);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Email not found.");
+                }
+            }
+            var vm = new
+            {
+                errors = CollapseModelStateErrors(ModelState),
+            };
+
+            return Redirect(
+            ClientRoutes.UserFeedback("approval", "emailsent")
+            + $"?ViewModel={vm.ObjectToBase64UrlJson()}");
+        }
 
         #endregion
 

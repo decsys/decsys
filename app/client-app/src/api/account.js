@@ -27,12 +27,3 @@ export const requestEmailChange = async (data) =>
       withHeaders(await authorization_BearerToken())
     )
   ).data;
-
-export const resendEmail = async (userId) =>
-  (
-    await axios.get(
-      `/Account/approval/resend/${userId}`,
-      {},
-      withHeaders(await authorization_BearerToken())
-    )
-  ).data;

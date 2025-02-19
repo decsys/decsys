@@ -1,25 +1,15 @@
-import { resendEmail } from "api/account";
-import { FeedbackAlert } from ".";
 import { useQueryStringViewModel } from "hooks/useQueryString";
-import { Box, Button } from "@chakra-ui/react";
+import TryThisAlert from "components/core/TryThisAlert";
+import { Utf8ToBase64Url } from "services/data-structures";
 
 export const TokenExpired = () => {
   const { errors, userId } = useQueryStringViewModel();
-
-  const handleResendApprovalEmail = async (userId) => {
-    await resendEmail(userId);
-  };
-
   return (
-    <FeedbackAlert title="Token Expired" status="error">
-      <Box>{errors}.</Box>
-      <Button
-        colorScheme="blue"
-        mt={4}
-        onClick={() => handleResendApprovalEmail(userId)}
-      >
-        Resend Approval Email
-      </Button>
-    </FeedbackAlert>
+    <TryThisAlert
+      status="warning"
+      text={errors}
+      linkText="Approval email link."
+      href={`/Account/confirm/resend/token/${userId}`}
+    />
   );
 };
