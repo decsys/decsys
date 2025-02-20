@@ -6,11 +6,7 @@ const Root = ({ children }) => {
     <ChakraProvider
       resetCSS={false}
       theme={extendTheme({
-        components: {
-          Heading: {
-            baseStyle: { m: 0 },
-          },
-        },
+        components: {},
         styles: {
           global: {
             body: {

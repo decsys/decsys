@@ -99,9 +99,10 @@ const SurveysList = ({
       </Box>
       <Stack boxShadow="callout" spacing={0}>
         {surveys &&
-          surveys.map((survey) => {
+          surveys.map((survey, index) => {
+            const key = survey.id || `survey-${index}`;
             return (
-              <SurveyProvider key={survey.id} value={survey}>
+              <SurveyProvider key={key} value={survey}>
                 <SurveyCard
                   mutateSurveys={mutateSurveys}
                   isFolder={survey.isFolder}
