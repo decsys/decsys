@@ -46,6 +46,8 @@ export const ScaleBar = forwardRef(function ScaleBar(
     topMargin = "50%",
     thickness = "0.2em",
     barColor = "black",
+    minValue,
+    maxValue,
     ...p
   },
   ref

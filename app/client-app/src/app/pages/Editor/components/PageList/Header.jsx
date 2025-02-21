@@ -6,6 +6,7 @@ import {
   Menu,
   MenuButton,
   MenuList,
+  Box,
 } from "@chakra-ui/react";
 import LightHeading from "components/core/LightHeading";
 import { FaEllipsisV, FaPlus } from "react-icons/fa";
@@ -28,18 +29,20 @@ const Header = () => {
           Add Page
         </Button>
         {mode !== WORKSHOP && (
-          <Menu>
-            <MenuButton
-              border="thin solid"
-              borderColor="gray.500"
-              as={IconButton}
-              icon={<FaEllipsisV />}
-              boxSize={"40px"}
-            />
-            <MenuList>
-              <WebhookManagementController surveyId={id} />
-            </MenuList>
-          </Menu>
+          <Box>
+            <Menu>
+              <MenuButton
+                border="thin solid"
+                borderColor="gray.500"
+                as={IconButton}
+                icon={<FaEllipsisV />}
+                boxSize={"40px"}
+              />
+              <MenuList style={{ margin: 0 }}>
+                <WebhookManagementController surveyId={id} />
+              </MenuList>
+            </Menu>
+          </Box>
         )}
       </HStack>
     </Flex>
