@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { params } from "./ResponseItem.params";
 import { DiscreteScale } from "@decsys/rating-scales/discrete";
 import { stats } from "./ResponseItem.stats";
-import { getRadios, getRadioParams } from "./utils/radio-params";
+import { getRadios, getRadioParams } from "./utility/radio-params";
 
 const ResponseItem = ({
   barLeftMargin,

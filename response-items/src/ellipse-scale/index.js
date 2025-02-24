@@ -4,8 +4,8 @@ import { responseItemName } from "./metadata";
 import Icon from "./Icon";
 
 // Set ResponseItem Metadata
-ResponseItem.icon = Icon;
 ResponseItem.displayName = responseItemName;
 ResponseItem.version = version;
+ResponseItem.icon = Icon;
 
 export default ResponseItem;
