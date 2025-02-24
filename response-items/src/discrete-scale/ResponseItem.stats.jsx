@@ -1,5 +1,5 @@
 import * as math from "mathjs";
-import { getRadioParams, getRadios } from "./utility/radio-params";
+import { getRadioParams, getRadios } from "./utils/radio-params";
 
 const fixedVal = 3;
 const fixed = (fn, ...args) => parseFloat(fn(...args).toFixed(fixedVal));
