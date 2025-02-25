@@ -6,9 +6,7 @@ import {
   useImperativeHandle,
   useRef,
 } from "react";
-import "./pixi";
-import { Graphics } from "@pixi/graphics";
-import { Application } from "@pixi/app";
+import * as PIXI from "./pixi.js";
 import * as Color from "./services/color";
 import * as Collision from "./services/collision";
 import PropTypes from "prop-types";
@@ -69,7 +67,7 @@ const initialisePixi = (
   setPen,
   { handlePointerDown, handlePointerMove, handlePointerUp, handleResize }
 ) => {
-  const app = new Application({
+  const app = new PIXI.Application({
     width: 0,
     height: 0,
     view: canvas,
@@ -79,7 +77,7 @@ const initialisePixi = (
   });
 
   // pen
-  const pen = new Graphics();
+  const pen = new PIXI.Graphics();
   app.stage.addChild(pen);
   setPen(pen);
 
@@ -136,7 +134,7 @@ const draw = (pen, thickness, color, points) => {
  */
 const EllipseCanvas = forwardRef(
   ({ color, thickness, onCompleted, onDraw }, externalRef) => {
-    const [pen, setPen] = useState(new Graphics());
+    const [pen, setPen] = useState(new PIXI.Graphics());
     const [penPoints, setPenPoints] = useState([]);
     const [completed, setCompleted] = useState(false);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
