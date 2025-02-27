@@ -31,7 +31,7 @@ config.plugins = [
     ...pluginConfigs.babel,
   }),
   resolve(pluginConfigs.resolve),
-  cjs({ ignore: ["utils", "inherits"] }),
+  cjs(),
   json(),
   terser(),
 ];
