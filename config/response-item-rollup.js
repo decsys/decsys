@@ -25,7 +25,6 @@ const banner = (responseItemName) =>
 const pluginConfigs = {
   replace: {
     "process.env.NODE_ENV": JSON.stringify("production"),
-    "process.env.NODE_DEBUG": JSON.stringify(false),
     preventAssignment: true,
   },
   babel: {
@@ -82,10 +81,6 @@ const buildRollupConfig = (responseItemName, dirname, entryDir) => ({
     // we actually want builds to FAIL on warnings
     // not make spurious decisions for us
     // like adding unresolved dependencies to externals
-    if (warning.code === "CIRCULAR_DEPENDENCY") {
-      console.warn(`Ignoring circular dependency: ${warning.message}`);
-      return;
-    }
     throw new Error(warning.message);
   },
 });
