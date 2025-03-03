@@ -13,6 +13,7 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbSeparator,
+  Box,
 } from "@chakra-ui/react";
 import { FaChevronDown, FaFolder, FaPlusCircle } from "react-icons/fa";
 import { AiOutlineGroup } from "react-icons/ai";
@@ -63,25 +64,31 @@ export const PageHeader = ({
   );
 
   const renderMenu = () => (
-    <Menu>
-      <MenuButton as={Button} colorScheme="green" rightIcon={<FaChevronDown />}>
-        Create New
-      </MenuButton>
-      <MenuList>
-        <MenuItem icon={<FaFolder />} onClick={addFolderAction}>
-          Create Folder
-        </MenuItem>
-        <MenuDivider />
-        <MenuItem icon={<RiSurveyLine />} onClick={addSurveyAction}>
-          Add a Survey
-        </MenuItem>
-        {renderAddStudyTooltip(
-          <MenuItem icon={<AiOutlineGroup />} onClick={addStudyAction}>
-            Add a Study
+    <Box>
+      <Menu>
+        <MenuButton
+          as={Button}
+          colorScheme="green"
+          rightIcon={<FaChevronDown />}
+        >
+          Create New
+        </MenuButton>
+        <MenuList>
+          <MenuItem icon={<FaFolder />} onClick={addFolderAction}>
+            Create Folder
           </MenuItem>
-        )}
-      </MenuList>
-    </Menu>
+          <MenuDivider />
+          <MenuItem icon={<RiSurveyLine />} onClick={addSurveyAction}>
+            Add a Survey
+          </MenuItem>
+          {renderAddStudyTooltip(
+            <MenuItem icon={<AiOutlineGroup />} onClick={addStudyAction}>
+              Add a Study
+            </MenuItem>
+          )}
+        </MenuList>
+      </Menu>
+    </Box>
   );
 
   return (
